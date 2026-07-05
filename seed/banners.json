@@ -1,0 +1,92 @@
+[
+  {
+    "tenant_id": "tenant-1",
+    "title": "Kiệt Tác Sống Bên Sông Sài Gòn",
+    "subtitle": "Trải nghiệm không gian sống hoàng gia tại The Grand Riverside",
+    "image_url": "https://res.cloudinary.com/demo/image/upload/v1234567890/banners/grand-riverside.jpg",
+    "action_url": "/projects/the-grand-riverside",
+    "action_text": "Khám Phá Ngay",
+    "sort_order": 1
+  },
+  {
+    "tenant_id": "tenant-1",
+    "title": "Biệt Thự Đảo Hoàng Gia - Royal Island",
+    "subtitle": "Khu compound khép kín biệt lập dành cho giới thượng lưu",
+    "image_url": "https://res.cloudinary.com/demo/image/upload/v1234567890/banners/royal-island.jpg",
+    "action_url": "/projects/royal-island-villas",
+    "action_text": "Xem Chi Tiết",
+    "sort_order": 2
+  },
+  {
+    "tenant_id": "tenant-1",
+    "title": "Penthouse The Opera Residence",
+    "subtitle": "Tầm nhìn panorama ôm trọn trung tâm Quận 1",
+    "image_url": "https://res.cloudinary.com/demo/image/upload/v1234567890/banners/opera-penthouse.jpg",
+    "action_url": "/projects/the-opera-penthouse",
+    "action_text": "Liên Hệ Đặt Chỗ",
+    "sort_order": 3
+  },
+  {
+    "tenant_id": "tenant-2",
+    "title": "Sống Xanh Cùng Thiên Nhiên",
+    "subtitle": "Dự án Eco Valley - Nơi tâm hồn được chữa lành",
+    "image_url": "https://res.cloudinary.com/demo/image/upload/v1234567890/banners/eco-valley.jpg",
+    "action_url": "/projects/eco-valley-resort",
+    "action_text": "Trải Nghiệm",
+    "sort_order": 1
+  },
+  {
+    "tenant_id": "tenant-2",
+    "title": "Căn Hộ Tối Giản Nhập Khẩu Nhật Bản",
+    "subtitle": "Dự án Sakura Heights - Quận 7",
+    "image_url": "https://res.cloudinary.com/demo/image/upload/v1234567890/banners/sakura-heights.jpg",
+    "action_url": "/projects/sakura-heights",
+    "action_text": "Xem Layout",
+    "sort_order": 2
+  },
+  {
+    "tenant_id": "tenant-2",
+    "title": "Zen Garden Villas",
+    "subtitle": "Bình yên giữa lòng phố thị tấp nập",
+    "image_url": "https://res.cloudinary.com/demo/image/upload/v1234567890/banners/zen-garden.jpg",
+    "action_url": "/projects/zen-garden-villas",
+    "action_text": "Nhận Báo Giá",
+    "sort_order": 3
+  },
+  {
+    "tenant_id": "tenant-3",
+    "title": "Tương Lai Của Sự Sống Đô Thị",
+    "subtitle": "Metropolis Smart Tower - Căn hộ thông minh 5.0",
+    "image_url": "https://res.cloudinary.com/demo/image/upload/v1234567890/banners/smart-tower.jpg",
+    "action_url": "/projects/metropolis-smart-tower",
+    "action_text": "Đăng Ký Tham Quan",
+    "sort_order": 1
+  },
+  {
+    "tenant_id": "tenant-3",
+    "title": "Cyber Shophouse Landmark",
+    "subtitle": "Cơ hội đầu tư sinh lời vượt trội năm 2026",
+    "image_url": "https://res.cloudinary.com/demo/image/upload/v1234567890/banners/cyber-shophouse.jpg",
+    "action_url": "/projects/cyber-shophouse",
+    "action_text": "Xem Bảng Giá",
+    "sort_order": 2
+  },
+  {
+    "tenant_id": "tenant-3",
+    "title": "Sky Center Office",
+    "subtitle": "Văn phòng hạng A tiêu chuẩn quốc tế",
+    "image_url": "https://res.cloudinary.com/demo/image/upload/v1234567890/banners/sky-office.jpg",
+    "action_url": "/projects/sky-office",
+    "action_text": "Đặt Lịch Khảo Sát",
+    "sort_order": 3
+  },
+  {
+    "tenant_id": "tenant-3",
+    "title": "Apex Penthouse Collection",
+    "subtitle": "Biểu tượng đỉnh cao của sự thành đạt",
+    "image_url": "https://res.cloudinary.com/demo/image/upload/v1234567890/banners/apex-penthouse.jpg",
+    "action_url": "/projects/apex-penthouse",
+    "action_text": "Khám Phá BST",
+    "sort_order": 4
+  }
+]
