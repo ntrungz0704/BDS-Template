@@ -126,7 +126,24 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
-// 7. Test route để kiểm tra server hoạt động
+// 7. Import các routers của các modules
+import authRoutes from './routes/auth.routes';
+import marketplaceRoutes from './routes/marketplace.routes';
+import projectCmsRoutes from './routes/project.cms.routes';
+import postCmsRoutes from './routes/post.cms.routes';
+import mediaRoutes from './routes/media.routes';
+import adminRoutes from './routes/admin.routes';
+import publicWebsiteRoutes from './routes/public.website.routes';
+
+app.use('/api/auth', authRoutes);
+app.use('/api/marketplace', marketplaceRoutes);
+app.use('/api/cms/projects', projectCmsRoutes);
+app.use('/api/cms/posts', postCmsRoutes);
+app.use('/api/cms/media', mediaRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/website', publicWebsiteRoutes);
+
+// 8. Test route để kiểm tra server hoạt động
 app.get('/api', (req, res) => {
   res.json({
     success: true,
@@ -136,6 +153,7 @@ app.get('/api', (req, res) => {
     },
   });
 });
+
 
 // 8. Middleware xử lý lỗi tập trung (Global Error Handler)
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
