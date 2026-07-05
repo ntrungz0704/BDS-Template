@@ -1,23 +1,36 @@
-Write-Host "Đang kiểm tra Docker Daemon..." -ForegroundColor Cyan
+Write-Host "Checking Docker Daemon..." -ForegroundColor Cyan
 $dockerStatus = docker info 2>&1
 if ($dockerStatus -like "*error*") {
-    Write-Error "Docker Desktop chưa được khởi chạy. Vui lòng bật Docker Desktop và thử lại."
+    Write-Error "Docker Desktop is not running. Please start Docker Desktop and retry."
     Exit 1
 }
 
-Write-Host "1. Khởi động Docker containers..." -ForegroundColor Green
+Write-Host "1. Starting Docker containers..." -ForegroundColor Green
 docker compose up -d
 
-Write-Host "Đợi PostgreSQL và Redis khởi động..." -ForegroundColor Yellow
+Write-Host "Waiting for PostgreSQL and Redis to start..." -ForegroundColor Yellow
 Start-Sleep -Seconds 5
 
-Write-Host "2. Chạy Prisma Migrate..." -ForegroundColor Green
-npx prisma migrate dev --name init --schema=packages/database/prisma/schema.prisma
+Write-Host "Loading environment variables from root .env..." -ForegroundColor Yellow
+if (Test-Path ".env") {
+    Get-Content .env | Where-Object { $_ -match '=' -and $_ -notmatch '^#' } | ForEach-Object {
+        $key, $value = $_.Split('=', 2)
+        # Loại bỏ dấu nháy kép nếu có
+        $value = $value.Trim('"').Trim("'")
+        [System.Environment]::SetEnvironmentVariable($key, $value, "Process")
+    }
+} else {
+    Write-Error "File .env not found at root workspace. Setup cannot proceed."
+    Exit 1
+}
 
-Write-Host "3. Chạy Prisma Generate..." -ForegroundColor Green
-npx prisma generate --schema=packages/database/prisma/schema.prisma
+Write-Host "2. Running Prisma Migrate (using local v5)..." -ForegroundColor Green
+pnpm --filter @repo/database exec prisma migrate dev --name init --schema=prisma/schema.prisma
 
-Write-Host "4. Nạp dữ liệu Seed Data..." -ForegroundColor Green
-npx ts-node packages/database/src/seed.ts
+Write-Host "3. Generating Prisma Client (using local v5)..." -ForegroundColor Green
+pnpm --filter @repo/database exec prisma generate --schema=prisma/schema.prisma
 
-Write-Host ">>> KHỞI DỰNG DATABASE THÀNH CÔNG! <<<" -ForegroundColor Green
+Write-Host "4. Running Database Seed..." -ForegroundColor Green
+pnpm --filter @repo/database db:seed
+
+Write-Host "=== DATABASE SETUP COMPLETED SUCCESSFULLY! ===" -ForegroundColor Green

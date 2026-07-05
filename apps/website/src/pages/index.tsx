@@ -159,7 +159,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   } catch (error: any) {
-    logger.error('Lỗi SSR load Website Tenant: ' + error.message);
+    console.error('Lỗi SSR load Website Tenant: ' + error.message);
     return {
       props: {
         company: null,

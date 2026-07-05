@@ -1,3 +1,8 @@
+import dotenv from 'dotenv';
+import path from 'path';
+// Nạp biến môi trường từ root .env của Monorepo
+dotenv.config({ path: path.join(process.cwd(), '../../.env') });
+
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -8,7 +13,6 @@ import { prisma } from '@repo/database';
 import { SYSTEM_CONFIG } from '@repo/config';
 import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
-import path from 'path';
 
 // 1. Cấu hình Winston Logger
 const logFormat = winston.format.combine(

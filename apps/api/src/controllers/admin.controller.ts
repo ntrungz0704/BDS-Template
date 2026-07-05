@@ -161,8 +161,7 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
         const tenant = await tx.tenant.create({
           data: {
             name: order.fullName + ' Office',
-            slug: order.subdomain,
-            ownerId: tenantOwner.id,
+            slug: order.subdomain as string,
             templateId: order.templateId,
             status: 'ACTIVE',
           },

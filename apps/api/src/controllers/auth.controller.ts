@@ -7,16 +7,16 @@ import { z } from 'zod';
 import crypto from 'crypto';
 
 // Định nghĩa schemas Zod validation
-const registerSchema = z.zod.object({
-  email: z.zod.string().email('Định dạng email không hợp lệ.'),
-  fullName: z.zod.string().min(2, 'Họ và tên tối thiểu phải có 2 ký tự.'),
-  password: z.zod.string().min(8, 'Mật khẩu tối thiểu phải từ 8 ký tự trở lên.'),
-  phone: z.zod.string().optional(),
+const registerSchema = z.object({
+  email: z.string().email('Định dạng email không hợp lệ.'),
+  fullName: z.string().min(2, 'Họ và tên tối thiểu phải có 2 ký tự.'),
+  password: z.string().min(8, 'Mật khẩu tối thiểu phải từ 8 ký tự trở lên.'),
+  phone: z.string().optional(),
 });
 
-const loginSchema = z.zod.object({
-  email: z.zod.string().email('Định dạng email không hợp lệ.'),
-  password: z.zod.string().min(1, 'Mật khẩu không được để trống.'),
+const loginSchema = z.object({
+  email: z.string().email('Định dạng email không hợp lệ.'),
+  password: z.string().min(1, 'Mật khẩu không được để trống.'),
 });
 
 const ACCESS_TOKEN_EXPIRY = '15m';

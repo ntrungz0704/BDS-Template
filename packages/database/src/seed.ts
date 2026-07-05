@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, ProjectType, ProjectStatus } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as bcrypt from 'bcrypt';
@@ -83,7 +83,7 @@ async function main() {
 
   // 4. Đọc dữ liệu seed từ thư mục seed/
   console.log('Đọc các file JSON seed...');
-  const seedDir = path.join(__dirname, '../../../seed');
+  const seedDir = path.join(process.cwd(), '../../seed');
   
   const companies = JSON.parse(fs.readFileSync(path.join(seedDir, 'companies.json'), 'utf-8'));
   const projects = JSON.parse(fs.readFileSync(path.join(seedDir, 'projects.json'), 'utf-8'));
@@ -108,15 +108,14 @@ async function main() {
       },
     });
 
-    // Tạo Tenant gắn với owner và template
+    // Tạo Tenant gắn với template
     const tenant = await prisma.tenant.create({
       data: {
         name: comp.name,
         slug: comp.slug,
-        ownerId: tenantOwner.id,
         templateId: 'template-1',
         status: 'ACTIVE',
-        colorTheme: comp.colorTheme || 'gold',
+        themeOverrides: { colorTheme: comp.colorTheme || 'gold' },
       },
     });
 

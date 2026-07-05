@@ -3,12 +3,12 @@ import { prisma } from '@repo/database';
 import { z } from 'zod';
 import { logger } from '../index';
 
-const contactFormSchema = z.zod.object({
-  fullName: z.zod.string().min(2, 'Họ và tên tối thiểu 2 ký tự.'),
-  email: z.zod.string().email('Định dạng email không hợp lệ.'),
-  phone: z.zod.string().min(10, 'Số điện thoại tối thiểu 10 số.'),
-  message: z.zod.string().min(5, 'Lời nhắn tối thiểu từ 5 ký tự.'),
-  source: z.zod.string().optional(),
+const contactFormSchema = z.object({
+  fullName: z.string().min(2, 'Họ và tên tối thiểu 2 ký tự.'),
+  email: z.string().email('Định dạng email không hợp lệ.'),
+  phone: z.string().min(10, 'Số điện thoại tối thiểu 10 số.'),
+  message: z.string().min(5, 'Lời nhắn tối thiểu từ 5 ký tự.'),
+  source: z.string().optional(),
 });
 
 export async function getCompanyInfo(req: Request, res: Response, next: NextFunction) {
@@ -20,7 +20,7 @@ export async function getCompanyInfo(req: Request, res: Response, next: NextFunc
       include: {
         tenant: {
           select: {
-            colorTheme: true,
+            themeOverrides: true,
             templateId: true,
             status: true,
           },

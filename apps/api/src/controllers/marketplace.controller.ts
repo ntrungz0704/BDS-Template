@@ -5,19 +5,19 @@ import { logger } from '../index';
 import crypto from 'crypto';
 
 // Định nghĩa schemas Zod validation
-const createOrderSchema = z.zod.object({
-  templateId: z.zod.string().cuid('ID Template không hợp lệ.'),
-  type: z.zod.enum(['BUY', 'RENT']),
-  fullName: z.zod.string().min(2, 'Họ và tên tối thiểu phải có 2 ký tự.'),
-  email: z.zod.string().email('Định dạng email không hợp lệ.'),
-  phone: z.zod.string().min(10, 'Số điện thoại tối thiểu phải từ 10 số.'),
-  subdomain: z.zod.string().optional(),
-  note: z.zod.string().optional(),
+const createOrderSchema = z.object({
+  templateId: z.string().cuid('ID Template không hợp lệ.'),
+  type: z.enum(['BUY', 'RENT']),
+  fullName: z.string().min(2, 'Họ và tên tối thiểu phải có 2 ký tự.'),
+  email: z.string().email('Định dạng email không hợp lệ.'),
+  phone: z.string().min(10, 'Số điện thoại tối thiểu phải từ 10 số.'),
+  subdomain: z.string().optional(),
+  note: z.string().optional(),
 });
 
-const uploadPaymentSchema = z.zod.object({
-  transactionCode: z.zod.string().min(3, 'Mã giao dịch tối thiểu 3 ký tự.'),
-  billImageUrl: z.zod.string().url('URL ảnh hóa đơn không hợp lệ.'),
+const uploadPaymentSchema = z.object({
+  transactionCode: z.string().min(3, 'Mã giao dịch tối thiểu 3 ký tự.'),
+  billImageUrl: z.string().url('URL ảnh hóa đơn không hợp lệ.'),
 });
 
 export async function getTemplates(req: Request, res: Response, next: NextFunction) {
@@ -206,6 +206,7 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
         status: 'PENDING',
         templateId: data.templateId,
         amount,
+        subdomain: normalizedSubdomain || null,
         note: data.note,
       },
     });

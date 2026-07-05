@@ -141,6 +141,7 @@ model Order {
   email           String
   phone           String
   note            String?
+  subdomain       String?     @map("subdomain") // Đăng ký subdomain cho đơn thuê
   type            String      // BUY, RENT
   status          OrderStatus @default(PENDING)
   templateId      String      @map("template_id")

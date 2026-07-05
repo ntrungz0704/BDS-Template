@@ -3,7 +3,7 @@ import { prisma } from '@repo/database';
 import { SYSTEM_CONFIG } from '@repo/config';
 import { logger } from '../index';
 import crypto from 'crypto';
-import { fileTypeFromBuffer } from 'file-type';
+import { fromBuffer } from 'file-type';
 import sharp from 'sharp';
 
 // Vì Cloudinary SDK yêu cầu nạp config, tôi viết helper sinh signature đơn giản

@@ -4,14 +4,14 @@ import { z } from 'zod';
 import { slugify } from '@repo/utils';
 import { logger } from '../index';
 
-const postSchema = z.zod.object({
-  title: z.zod.string().min(3, 'Tiêu đề bài viết tối thiểu 3 ký tự.'),
-  content: z.zod.string().optional(),
-  summary: z.zod.string().optional(),
-  thumbnail: z.zod.string().optional(),
-  categoryId: z.zod.string().optional(),
-  published: z.zod.coerce.boolean().optional().default(false),
-  tagNames: z.zod.array(z.zod.string()).optional().default([]),
+const postSchema = z.object({
+  title: z.string().min(3, 'Tiêu đề bài viết tối thiểu 3 ký tự.'),
+  content: z.string().optional(),
+  summary: z.string().optional(),
+  thumbnail: z.string().optional(),
+  categoryId: z.string().optional(),
+  published: z.coerce.boolean().optional().default(false),
+  tagNames: z.array(z.string()).optional().default([]),
 });
 
 export async function getPosts(req: Request, res: Response, next: NextFunction) {
@@ -116,8 +116,8 @@ export async function createPost(req: Request, res: Response, next: NextFunction
     const tagConnectOrCreate = data.tagNames.map((name) => {
       const tagSlug = slugify(name);
       return {
-        where: { tenantId_slug: { tenantId, slug: tagSlug } },
-        create: { tenantId, name, slug: tagSlug },
+        where: { tenantId_slug: { tenantId: tenantId as string, slug: tagSlug } },
+        create: { tenantId: tenantId as string, name, slug: tagSlug },
       };
     });
 
@@ -219,8 +219,8 @@ export async function updatePost(req: Request, res: Response, next: NextFunction
     const tagConnectOrCreate = data.tagNames.map((name) => {
       const tagSlug = slugify(name);
       return {
-        where: { tenantId_slug: { tenantId, slug: tagSlug } },
-        create: { tenantId, name, slug: tagSlug },
+        where: { tenantId_slug: { tenantId: tenantId as string, slug: tagSlug } },
+        create: { tenantId: tenantId as string, name, slug: tagSlug },
       };
     });
 
