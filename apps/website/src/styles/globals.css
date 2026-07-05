@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Các biến màu sắc CSS động sẽ được nạp đè từ DB của Tenant */
+  --primary: #C5A572; /* Gold mặc định */
+  --secondary: #1A1A2E; /* Navy mặc định */
+  --background: #F8F6F3;
+  --foreground: #1A1A2E;
+  --radius: 12px;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
+}
