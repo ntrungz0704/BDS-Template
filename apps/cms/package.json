@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
     "@repo/config": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/ui": "workspace:*",
