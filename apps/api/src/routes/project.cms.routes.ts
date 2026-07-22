@@ -9,14 +9,16 @@ import {
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/role.middleware';
 import { checkTenantAccess } from '../middlewares/tenant.middleware';
+import { subscriptionMiddleware } from '../middlewares/subscription.middleware';
 import { csrfMiddleware } from '../middlewares/csrf.middleware';
 
 const router = Router();
 
 // Toàn bộ các routes CMS yêu cầu đăng nhập và có quyền TENANT_ADMIN hoặc TENANT_EDITOR
 router.use(authMiddleware);
-router.use(requireRole(['TENANT_ADMIN', 'TENANT_EDITOR']));
+router.use(requireRole(['TENANT_OWNER', 'EDITOR']));
 router.use(checkTenantAccess); // Middleware cách ly tenant chéo
+router.use(subscriptionMiddleware); // Middleware kiểm soát subscription gói cước
 
 router.get('/', getProjects);
 router.get('/:id', getProjectDetail);

@@ -3,6 +3,27 @@ import { prisma } from '@repo/database';
 import { z } from 'zod';
 import { logger } from '../index';
 
+function formatPriceHelper(from?: number | null, to?: number | null, overridePrice?: string): string {
+  if (overridePrice) return overridePrice;
+  if (!from && !to) return 'Liên hệ';
+  
+  const formatSingle = (val: number) => {
+    if (val >= 1000) {
+      return `${(val / 1000).toFixed(val % 1000 === 0 ? 0 : 1)} Tỷ`;
+    }
+    return `${val} Triệu`;
+  };
+
+  if (from && to && from !== to) {
+    return `${formatSingle(from)} - ${formatSingle(to)}`;
+  }
+  
+  if (from) return `${formatSingle(from)}`;
+  if (to) return `${formatSingle(to)}`;
+  
+  return 'Liên hệ';
+}
+
 // Định nghĩa Zod validation và Coercion tự động cho các dữ liệu số/JSON
 const projectSchema = z.object({
   title: z.string().min(2, 'Tiêu đề dự án tối thiểu 2 ký tự.'),
@@ -138,7 +159,7 @@ export async function createProject(req: Request, res: Response, next: NextFunct
         shortDescription: data.shortDescription,
         type: data.type,
         status: data.status,
-        price: data.price,
+        price: data.price || formatPriceHelper(data.priceFrom, data.priceTo),
         priceFrom: data.priceFrom ? BigInt(data.priceFrom) : null,
         priceTo: data.priceTo ? BigInt(data.priceTo) : null,
         area: data.area,
@@ -244,7 +265,7 @@ export async function updateProject(req: Request, res: Response, next: NextFunct
         shortDescription: data.shortDescription,
         type: data.type,
         status: data.status,
-        price: data.price,
+        price: data.price || formatPriceHelper(data.priceFrom, data.priceTo),
         priceFrom: data.priceFrom ? BigInt(data.priceFrom) : null,
         priceTo: data.priceTo ? BigInt(data.priceTo) : null,
         area: data.area,

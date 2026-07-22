@@ -12,6 +12,19 @@ const queryClient = new QueryClient({
   },
 });
 
+if (typeof window !== 'undefined') {
+  import('axios').then((axios) => {
+    axios.default.interceptors.request.use((config) => {
+      const match = document.cookie.match(new RegExp('(^| )csrf_token=([^;]+)'));
+      if (match) {
+        config.headers['x-csrf-token'] = match[2];
+      }
+      return config;
+    });
+  });
+}
+
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>

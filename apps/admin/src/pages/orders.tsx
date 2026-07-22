@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import Link from 'next/link';
+import AdminLayout from '../components/AdminLayout';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 export default function AdminOrders() {
   const queryClient = useQueryClient();
@@ -12,7 +15,7 @@ export default function AdminOrders() {
   const { data: ordersRes, isLoading } = useQuery({
     queryKey: ['adminOrders'],
     queryFn: async () => {
-      const res = await axios.get('http://localhost:5000/api/admin/orders', {
+      const res = await axios.get(`${API_URL}/api/admin/orders`, {
         withCredentials: true,
       });
       return res.data;
@@ -28,7 +31,7 @@ export default function AdminOrders() {
         ?.split('=')[1];
 
       const res = await axios.put(
-        `http://localhost:5000/api/admin/orders/${id}/approve`,
+        `${API_URL}/api/admin/orders/${id}/approve`,
         { version },
         {
           headers: { 'X-CSRF-Token': csrfToken || '' },
@@ -38,10 +41,25 @@ export default function AdminOrders() {
       return res.data;
     },
     onSuccess: (res) => {
-      alert(res.data.status === 'AWAITING_MANUAL_REVIEW' 
-        ? 'Phát hiện trùng lặp subdomain. Đơn hàng chuyển sang hàng chờ xử lý đổi slug.'
-        : 'Đã phê duyệt đơn hàng & tự động khởi tạo Tenant Website thành công!'
-      );
+      if (res.data?.status === 'PENDING_SUBDOMAIN_CONFLICT' || res.meta?.conflict) {
+        alert('Phát hiện trùng lặp subdomain. Đơn hàng chuyển sang hàng chờ xử lý đổi slug.');
+      } else {
+        const creds = res.data?.credentials;
+        if (creds) {
+          alert(
+            `Đã phê duyệt đơn hàng & tự động khởi tạo Tenant Website thành công!\n\n` +
+            `THÔNG TIN BÀN GIAO CHO KHÁCH HÀNG:\n` +
+            `-----------------------------------\n` +
+            `- Tên miền website: http://${creds.subdomain}.localhost:3003\n` +
+            `- Quản trị website (CMS): http://localhost:3001\n` +
+            `- Email đăng nhập: ${creds.email}\n` +
+            `- Mật khẩu tạm thời: ${creds.password}\n\n` +
+            `👉 Hãy COPY thông tin này gửi cho khách hàng qua Zalo!`
+          );
+        } else {
+          alert('Đã phê duyệt đơn hàng & tự động khởi tạo Tenant Website thành công!');
+        }
+      }
       setSelectedOrder(null);
       queryClient.invalidateQueries({ queryKey: ['adminOrders'] });
     },
@@ -59,7 +77,7 @@ export default function AdminOrders() {
         ?.split('=')[1];
 
       const res = await axios.put(
-        `http://localhost:5000/api/admin/orders/${id}/reject`,
+        `${API_URL}/api/admin/orders/${id}/reject`,
         { version, adminNotes: notes },
         {
           headers: { 'X-CSRF-Token': csrfToken || '' },
@@ -81,8 +99,14 @@ export default function AdminOrders() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F8F6F3]">
-        <div className="text-lg font-medium text-[#7F7F8F]">Đang tải danh sách đơn hàng...</div>
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-3">
+          <svg className="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span className="text-sm font-bold text-slate-500">Đang tải danh sách đơn hàng...</span>
+        </div>
       </div>
     );
   }
@@ -90,130 +114,136 @@ export default function AdminOrders() {
   const orders = ordersRes?.data || [];
 
   return (
-    <div className="min-h-screen bg-[#F8F6F3]">
-      {/* Navbar */}
-      <nav className="border-b border-[#E5E0D8] bg-white px-8 py-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center space-x-8">
-            <span className="text-xl font-bold text-[#1A1A2E]">SUPER ADMIN PANEL</span>
-            <div className="flex space-x-6 text-sm font-medium text-[#7F7F8F]">
-              <Link href="/" className="hover:text-[#1A1A2E]">Tổng quan</Link>
-              <Link href="/orders" className="text-[#C5A572] hover:text-[#B8941F]">Quản lý đơn hàng</Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <main className="mx-auto max-w-7xl px-8 py-10">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#1A1A2E]">Duyệt Đơn Hàng & Kích Hoạt</h1>
-          <p className="text-sm text-[#7F7F8F] mt-1">Kiểm tra thông tin giao dịch chuyển khoản và ảnh hóa đơn.</p>
-        </div>
-
-        {/* Table */}
-        <div className="rounded-xl border border-[#E5E0D8] bg-white shadow-sm overflow-hidden mb-10">
-          <table className="w-full border-collapse text-left text-sm text-[#1A1A2E]">
-            <thead className="bg-[#F8F6F3] text-xs font-semibold text-[#7F7F8F]">
+    <AdminLayout title="Duyệt Đơn Hàng & Kích Hoạt" subtitle="Kiểm tra thông tin giao dịch chuyển khoản, ảnh hóa đơn chuyển tiền của khách hàng.">
+      {/* Table */}
+      <div className="rounded-2xl bg-white shadow-sm border border-slate-100 overflow-hidden mb-10">
+        <table className="w-full border-collapse text-left text-sm text-slate-700">
+          <thead className="bg-slate-50/50 text-xs font-bold text-slate-400 border-b border-slate-100">
+            <tr>
+              <th className="px-8 py-4">Mã đơn hàng</th>
+              <th className="px-8 py-4">Khách hàng</th>
+              <th className="px-8 py-4">Subdomain yêu cầu</th>
+              <th className="px-8 py-4">Số tiền</th>
+              <th className="px-8 py-4">Trạng thái</th>
+              <th className="px-8 py-4">Mã giao dịch</th>
+              <th className="px-8 py-4 text-right">Hành động</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {orders.length === 0 ? (
               <tr>
-                <th className="px-6 py-3">Mã đơn hàng</th>
-                <th className="px-6 py-3">Khách hàng</th>
-                <th className="px-6 py-3">Subdomain yêu cầu</th>
-                <th className="px-6 py-3">Số tiền</th>
-                <th className="px-6 py-3">Trạng thái</th>
-                <th className="px-6 py-3">Mã giao dịch</th>
-                <th className="px-6 py-3 text-right">Hành động</th>
+                <td colSpan={7} className="px-8 py-12 text-center text-slate-400 font-semibold">Không có đơn hàng nào cần duyệt.</td>
               </tr>
-            </thead>
-            <tbody className="divide-y divide-[#E5E0D8]">
-              {orders.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="px-6 py-10 text-center text-[#7F7F8F]">Không có đơn hàng nào cần duyệt.</td>
-                </tr>
-              ) : (
-                orders.map((order: any) => (
-                  <tr key={order.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 font-mono font-semibold">{order.orderNumber}</td>
-                    <td className="px-6 py-4">
-                      <div>
-                        <div className="font-semibold">{order.fullName}</div>
-                        <div className="text-xs text-[#7F7F8F]">{order.phone}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 font-semibold text-[#C5A572]">{order.subdomain || 'Mua Source (Không)'}</td>
-                    <td className="px-6 py-4 font-semibold">
-                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.amount)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                        order.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :
-                        order.status === 'WAITING_CONFIRM' ? 'bg-yellow-100 text-yellow-800' :
-                        order.status === 'PENDING' ? 'bg-gray-100 text-gray-800' : 'bg-red-100 text-red-800'
-                      }`}>
-                        {order.status}
+            ) : (
+              orders.map((order: any) => (
+                <tr key={order.id} className="hover:bg-slate-50/50 transition-colors">
+                  <td className="px-8 py-4 font-mono font-bold text-slate-800">{order.orderNumber}</td>
+                  <td className="px-8 py-4">
+                    <div>
+                      <div className="font-bold text-slate-800">{order.fullName}</div>
+                      <div className="text-xs text-slate-400 font-semibold">{order.phone}</div>
+                    </div>
+                  </td>
+                  <td className="px-8 py-4 font-bold text-xs tracking-wide text-slate-500">
+                    {order.subdomain ? (
+                      <span className="bg-indigo-50 text-indigo-700 border border-indigo-100/50 px-2.5 py-1 rounded-md text-xs font-mono">
+                        {order.subdomain}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 font-mono text-xs">{order.transactionCode || 'Chưa nạp'}</td>
-                    <td className="px-6 py-4 text-right">
-                      {order.status === 'WAITING_CONFIRM' && (
-                        <button
-                          onClick={() => setSelectedOrder(order)}
-                          className="rounded-lg bg-[#C5A572] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#B8941F] transition-colors"
-                        >
-                          Xem & Xét Duyệt
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </main>
+                    ) : (
+                      <span className="text-slate-400 font-normal italic">Mua Source (Không)</span>
+                    )}
+                  </td>
+                  <td className="px-8 py-4 font-extrabold text-slate-800">
+                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.amount)}
+                  </td>
+                  <td className="px-8 py-4">
+                    <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
+                      order.status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
+                      order.status === 'WAITING_CONFIRM' ? 'bg-amber-50 text-amber-700 border border-amber-100' :
+                      order.status === 'PENDING' ? 'bg-slate-100 text-slate-600' : 'bg-rose-50 text-rose-700 border border-rose-100'
+                    }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${
+                        order.status === 'COMPLETED' ? 'bg-emerald-500' :
+                        order.status === 'WAITING_CONFIRM' ? 'bg-amber-500' :
+                        order.status === 'PENDING' ? 'bg-slate-400' : 'bg-rose-500'
+                      }`}></span>
+                      {order.status === 'COMPLETED' ? 'Hoàn thành' :
+                       order.status === 'WAITING_CONFIRM' ? 'Chờ duyệt' :
+                       order.status === 'PENDING' ? 'Mới' : 'Từ chối'}
+                    </span>
+                  </td>
+                  <td className="px-8 py-4 font-mono text-xs font-bold text-slate-500">{order.transactionCode || '—'}</td>
+                  <td className="px-8 py-4 text-right">
+                    {order.status === 'WAITING_CONFIRM' ? (
+                      <button
+                        onClick={() => setSelectedOrder(order)}
+                        className="text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100/70 px-4 py-2 rounded-xl transition-all shadow-sm"
+                      >
+                        Xem & Xét Duyệt
+                      </button>
+                    ) : (
+                      <span className="text-xs text-slate-400 font-semibold">Đã xử lý</span>
+                    )}
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
 
       {/* Modal Xét Duyệt Chi Tiết */}
       {selectedOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4">
-          <div className="w-full max-w-2xl rounded-xl bg-white p-6 shadow-lg border border-[#E5E0D8] max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-bold text-[#1A1A2E] mb-4">Xét Duyệt Đơn Hàng: {selectedOrder.orderNumber}</h2>
+        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-8 shadow-2xl border border-slate-200/50 max-h-[90vh] overflow-y-auto relative animate-scale-in">
+            <button
+              onClick={() => setSelectedOrder(null)}
+              className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center transition-all text-lg"
+            >
+              ✕
+            </button>
+            <h2 className="text-lg font-extrabold text-slate-855 mb-6 uppercase tracking-wider">Xét Duyệt Đơn Hàng: {selectedOrder.orderNumber}</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
               <div>
-                <h3 className="text-sm font-semibold text-[#7F7F8F] mb-2">Thông tin hóa đơn chuyển khoản</h3>
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Minh chứng chuyển khoản</h3>
                 {selectedOrder.billImageUrl ? (
-                  <img
-                    src={selectedOrder.billImageUrl}
-                    alt="Biên lai thanh toán"
-                    className="w-full h-auto rounded-lg border border-[#E5E0D8] object-cover"
-                  />
+                  <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-inner bg-slate-50 p-2">
+                    <img
+                      src={selectedOrder.billImageUrl}
+                      alt="Biên lai thanh toán"
+                      className="w-full h-auto max-h-[300px] rounded-xl object-contain"
+                    />
+                  </div>
                 ) : (
-                  <div className="rounded-lg bg-gray-100 py-20 text-center text-sm text-[#7F7F8F]">Khách hàng chưa tải ảnh hóa đơn.</div>
+                  <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 py-24 text-center text-xs font-bold text-slate-400">
+                    Khách hàng chưa tải ảnh hóa đơn.
+                  </div>
                 )}
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <span className="text-xs text-[#7F7F8F]">Khách hàng</span>
-                  <p className="font-semibold">{selectedOrder.fullName}</p>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Khách hàng</span>
+                  <p className="font-extrabold text-slate-800 mt-1">{selectedOrder.fullName}</p>
                 </div>
                 <div>
-                  <span className="text-xs text-[#7F7F8F]">Mã giao dịch ngân hàng</span>
-                  <p className="font-mono font-semibold text-sm">{selectedOrder.transactionCode || 'Không nạp'}</p>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Mã giao dịch ngân hàng</span>
+                  <p className="font-mono font-bold text-sm text-slate-800 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg inline-block mt-1">{selectedOrder.transactionCode || 'Không nạp'}</p>
                 </div>
                 <div>
-                  <span className="text-xs text-[#7F7F8F]">Số tiền cần thanh toán</span>
-                  <p className="text-lg font-bold text-[#1A1A2E]">
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Số tiền thanh toán</span>
+                  <p className="text-2xl font-extrabold text-slate-855 mt-1">
                     {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(selectedOrder.amount)}
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-[#E5E0D8]">
-                  <label className="block text-xs font-semibold text-[#7F7F8F] mb-2">Ghi chú từ chối (nếu có)</label>
+                <div className="pt-4 border-t border-slate-100">
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Ghi chú từ chối (nếu có)</label>
                   <textarea
                     value={rejectNotes}
                     onChange={(e) => setRejectNotes(e.target.value)}
-                    className="w-full rounded-lg border border-[#E5E0D8] px-3 py-2 text-sm focus:border-[#C5A572] focus:outline-none"
+                    className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-indigo-500 focus:outline-none transition-all placeholder:text-slate-400"
                     placeholder="Mã giao dịch sai, tiền chưa nổi..."
                     rows={3}
                   />
@@ -221,22 +251,22 @@ export default function AdminOrders() {
               </div>
             </div>
 
-            <div className="flex justify-end space-x-3 border-t border-[#E5E0D8] pt-4">
+            <div className="flex justify-end gap-3 border-t border-slate-100 pt-5">
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="rounded-lg border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#1A1A2E] hover:bg-gray-50"
+                className="px-5 py-2.5 border border-slate-300 text-slate-600 font-bold text-xs rounded-xl hover:bg-slate-50 transition-all"
               >
                 Hủy bỏ
               </button>
               <button
                 onClick={() => rejectMutation.mutate({ id: selectedOrder.id, version: selectedOrder.version, notes: rejectNotes })}
-                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+                className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-rose-600/10"
               >
                 Từ Chối Giao Dịch
               </button>
               <button
                 onClick={() => approveMutation.mutate({ id: selectedOrder.id, version: selectedOrder.version })}
-                className="rounded-lg bg-[#C5A572] px-4 py-2 text-sm font-semibold text-white hover:bg-[#B8941F]"
+                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-indigo-600/10"
               >
                 Phê Duyệt & Kích Hoạt
               </button>
@@ -244,6 +274,6 @@ export default function AdminOrders() {
           </div>
         </div>
       )}
-    </div>
+    </AdminLayout>
   );
 }

@@ -1,15 +1,20 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../generated/client/index.js';
+import { tenantIsolationExtension } from './tenant-isolation';
 
 declare global {
-  var prisma: PrismaClient | undefined;
+  var prisma: any;
 }
 
-export const prisma = global.prisma || new PrismaClient({
+const basePrisma = global.prisma || new PrismaClient({
   log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
 });
 
+export const prisma = basePrisma.$extends(tenantIsolationExtension);
+
 if (process.env.NODE_ENV !== 'production') {
-  global.prisma = prisma;
+  global.prisma = basePrisma;
 }
 
-export * from '@prisma/client';
+export * from '../generated/client/index.js';
+export * from './tenant-isolation';
+export * from './template-registry';

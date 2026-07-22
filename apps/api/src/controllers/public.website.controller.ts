@@ -29,12 +29,11 @@ export async function getCompanyInfo(req: Request, res: Response, next: NextFunc
     });
 
     if (!company) {
-      return res.status(404).json({
-        success: false,
-        error: {
-          code: 'COMPANY_NOT_FOUND',
-          message: 'Không tìm thấy thông tin giới thiệu của công ty.',
-        },
+      // Tenant chưa hoàn thành onboarding — trả về object rỗng để frontend hiển thị placeholder
+      return res.status(200).json({
+        success: true,
+        data: null,
+        meta: { onboardingRequired: true },
       });
     }
 
@@ -230,6 +229,145 @@ export async function submitContactForm(req: Request, res: Response, next: NextF
         },
       });
     }
+    next(error);
+  }
+}
+
+/**
+ * GET /:tenantSlug/theme
+ * Returns tenant's active theme settings for SSR injection.
+ * Used by the website runtime to inject CSS variables into <head>.
+ */
+export async function getThemeSettings(req: Request, res: Response, next: NextFunction) {
+  const tenantId = req.tenantId;
+  const slug = req.params.tenantSlug;
+
+  const DEFAULT_THEME = {
+    primaryColor: '#2563EB',
+    secondaryColor: '#64748B',
+    accentColor: '#F59E0B',
+    backgroundColor: '#FFFFFF',
+    surfaceColor: '#F8FAFC',
+    textColor: '#0F172A',
+    textMutedColor: '#64748B',
+    borderColor: '#E2E8F0',
+    fontHeading: 'Plus Jakarta Sans',
+    fontBody: 'Inter',
+    fontSizeBase: '16px',
+    lineHeight: '1.6',
+    containerWidth: '1280px',
+    borderRadius: '8px',
+    shadowStyle: 'soft',
+    darkMode: false,
+    buttonStyle: 'rounded',
+    animationsEnabled: true,
+  };
+
+  try {
+    if (!tenantId) {
+      return res.json({ success: true, data: DEFAULT_THEME });
+    }
+    const theme = await prisma.tenantThemeSettings.findUnique({ where: { tenantId } });
+    return res.json({ success: true, data: theme || DEFAULT_THEME });
+  } catch (error) {
+    // Graceful fallback — never crash the website
+    logger.warn(`[getThemeSettings] DB unavailable for tenant ${slug}, using defaults.`);
+    return res.json({ success: true, data: DEFAULT_THEME });
+  }
+}
+
+/**
+ * GET /:tenantSlug/pages/:pageSlug
+ * Returns a page with all its sections for server-side rendering.
+ * Only returns published sections and pages.
+ */
+export async function getPageContent(req: Request, res: Response, next: NextFunction) {
+  const tenantId = req.tenantId;
+  const { pageSlug } = req.params;
+
+  try {
+    if (!tenantId) {
+      return res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Trang không tồn tại.' } });
+    }
+
+    const page = await prisma.tenantPage.findFirst({
+      where: {
+        tenantId,
+        slug: pageSlug,
+        published: true,
+        deletedAt: null,
+      },
+      include: {
+        sections: {
+          where: { isVisible: true },
+          orderBy: { sortOrder: 'asc' },
+        },
+      },
+    });
+
+    if (!page) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'PAGE_NOT_FOUND', message: `Trang '${pageSlug}' không tồn tại hoặc chưa được xuất bản.` },
+      });
+    }
+
+    return res.json({ success: true, data: page });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * GET /api/website/resolve-domain?domain=www.mysite.vn
+ * Internal endpoint called by the Next.js Edge Middleware.
+ * Looks up a custom domain in TenantDomainSettings and returns the tenantSlug.
+ * Protected by x-internal-token header (set in env).
+ */
+export async function resolveDomain(req: Request, res: Response, next: NextFunction) {
+  const internalToken = req.headers['x-internal-token'];
+  const expectedToken = process.env.INTERNAL_API_TOKEN;
+
+  // Only enforce token in production to simplify local development
+  if (process.env.NODE_ENV === 'production' && internalToken !== expectedToken) {
+    return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Invalid internal token.' } });
+  }
+
+  const domain = req.query.domain as string;
+  if (!domain) {
+    return res.status(400).json({ success: false, error: { code: 'MISSING_DOMAIN', message: 'domain query param is required.' } });
+  }
+
+  try {
+    const domainSettings = await prisma.tenantDomainSettings.findFirst({
+      where: {
+        customDomain: domain.toLowerCase().trim(),
+        sslStatus: { not: 'ERROR' },
+        dnsVerified: true,
+      },
+      include: {
+        tenant: {
+          select: { slug: true, status: true },
+        },
+      },
+    });
+
+    if (!domainSettings || !domainSettings.tenant || domainSettings.tenant.status !== 'ACTIVE') {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'DOMAIN_NOT_FOUND', message: `Domain '${domain}' không được đăng ký hoặc chưa xác thực DNS.` },
+      });
+    }
+
+    return res.json({
+      success: true,
+      data: {
+        tenantSlug: domainSettings.tenant.slug,
+        tenantId: domainSettings.tenantId,
+        sslStatus: domainSettings.sslStatus,
+      },
+    });
+  } catch (error) {
     next(error);
   }
 }

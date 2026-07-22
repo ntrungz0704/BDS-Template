@@ -1,4 +1,4 @@
-export type UserRole = 'SUPER_ADMIN' | 'TENANT_ADMIN' | 'TENANT_EDITOR';
+export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'TENANT_OWNER' | 'EDITOR' | 'STAFF' | 'CUSTOMER' | 'GUEST';
 
 export type OrderStatus =
   | 'PENDING'

@@ -12,6 +12,8 @@ const loginSchema = z.object({
 
 type LoginFields = z.infer<typeof loginSchema>;
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
 export default function LoginPage() {
   const router = useRouter();
   const [errorMsg, setErrorMsg] = useState('');
@@ -30,7 +32,7 @@ export default function LoginPage() {
     setErrorMsg('');
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/auth/login',
+        `${API_URL}/api/auth/login`,
         {
           email: data.email,
           password: data.password,
@@ -40,13 +42,14 @@ export default function LoginPage() {
 
       if (res.data.success) {
         const user = res.data.data.user;
-        if (user.role !== 'TENANT_ADMIN' && user.role !== 'TENANT_EDITOR') {
-          setErrorMsg('Tài khoản của bạn không thuộc vai trò quản lý Website.');
+        const allowedRoles = ['TENANT_OWNER', 'EDITOR', 'STAFF', 'SUPER_ADMIN'];
+        if (!allowedRoles.includes(user.role)) {
+          setErrorMsg('Tài khoản của bạn chưa có website nào. Vui lòng mua gói dịch vụ tại Marketplace trước.');
           return;
         }
-        // Lưu thông tin Tenant ID vào localStorage để sử dụng cho Header x-tenant-id
-        localStorage.setItem('tenantId', user.tenantId || '');
-        router.push('/');
+        // Redirect về trang mà user muốn vào, hoặc trang chủ CMS
+        const redirectTo = (router.query.redirect as string) || '/';
+        router.push(redirectTo);
       }
     } catch (error: any) {
       setErrorMsg(

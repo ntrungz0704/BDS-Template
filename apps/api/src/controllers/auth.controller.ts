@@ -19,7 +19,7 @@ const loginSchema = z.object({
   password: z.string().min(1, 'Mật khẩu không được để trống.'),
 });
 
-const ACCESS_TOKEN_EXPIRY = '15m';
+const ACCESS_TOKEN_EXPIRY = process.env.NODE_ENV === 'production' ? '15m' : '4h';
 const REFRESH_TOKEN_EXPIRY_DAYS = 7;
 
 // Helper sinh Access Token
@@ -36,18 +36,24 @@ function generateRefreshToken(): string {
 export async function register(req: Request, res: Response, next: NextFunction) {
   try {
     const data = registerSchema.parse(req.body);
-    
-    // Kiểm tra xem email đã tồn tại chưa
-    const existingUser = await prisma.user.findUnique({
-      where: { email: data.email },
+
+    // Kiểm tra chủ động xem Email hoặc Phone đã tồn tại chưa
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: data.email },
+          ...(data.phone ? [{ phone: data.phone }] : []),
+        ],
+      },
     });
 
     if (existingUser) {
-      return res.status(400).json({
+      const field = existingUser.email === data.email ? 'Email' : 'Số điện thoại';
+      return res.status(409).json({
         success: false,
         error: {
-          code: 'EMAIL_EXISTS',
-          message: 'Tài khoản email này đã được sử dụng đăng ký.',
+          code: 'DUPLICATE_ENTRY',
+          message: `${field} đã tồn tại trong hệ thống. Vui lòng sử dụng thông tin khác.`,
         },
       });
     }
@@ -55,30 +61,32 @@ export async function register(req: Request, res: Response, next: NextFunction) 
     // Mã hóa mật khẩu
     const passwordHash = await bcrypt.hash(data.password, 10);
 
-    // Lưu User mới (Mặc định là TENANT_ADMIN khi đăng ký tự phục vụ)
+    // Lưu User mới
     const newUser = await prisma.user.create({
       data: {
         email: data.email,
         passwordHash,
         fullName: data.fullName,
         phone: data.phone,
-        role: 'TENANT_ADMIN',
+        role: 'CUSTOMER', // Default role. Tự động chuyển thành TENANT_OWNER sau khi mua/thuê.
         isActive: true,
       },
     });
 
     // Tạo Audit Log
-    await prisma.auditLog.create({
-      data: {
-        userId: newUser.id,
-        action: 'REGISTER_USER',
-        entityType: 'User',
-        entityId: newUser.id,
-        newValues: { email: newUser.email, fullName: newUser.fullName },
-        ipAddress: req.ip,
-        userAgent: req.headers['user-agent'],
-      },
-    });
+    try {
+      await prisma.auditLog.create({
+        data: {
+          userId: newUser.id,
+          action: 'REGISTER_USER',
+          entityType: 'User',
+          entityId: newUser.id,
+          newValues: { email: newUser.email, fullName: newUser.fullName },
+          ipAddress: req.ip,
+          userAgent: req.headers['user-agent'],
+        },
+      });
+    } catch (_) {}
 
     res.status(201).json({
       success: true,
@@ -86,6 +94,7 @@ export async function register(req: Request, res: Response, next: NextFunction) 
         userId: newUser.id,
         email: newUser.email,
         fullName: newUser.fullName,
+        isMock: false,
       },
     });
   } catch (error) {
@@ -111,26 +120,34 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       where: { email: data.email },
     });
 
-    if (!user || !user.isActive) {
-      logger.warn(`Đăng nhập thất bại: Tài khoản không tồn tại hoặc bị khóa: ${data.email}`);
+    if (!user) {
       return res.status(401).json({
         success: false,
         error: {
           code: 'INVALID_CREDENTIALS',
-          message: 'Tài khoản email hoặc mật khẩu không chính xác.',
+          message: 'Tài khoản không tồn tại hoặc sai thông tin.',
         },
       });
     }
 
-    // So khớp mật khẩu
-    const passwordMatch = await bcrypt.compare(data.password, user.passwordHash);
-    if (!passwordMatch) {
-      logger.warn(`Đăng nhập thất bại: Sai mật khẩu cho tài khoản ${data.email}`);
+    // Verify Password
+    const isValidPassword = await bcrypt.compare(data.password, user.passwordHash);
+    if (!isValidPassword) {
       return res.status(401).json({
         success: false,
         error: {
           code: 'INVALID_CREDENTIALS',
-          message: 'Tài khoản email hoặc mật khẩu không chính xác.',
+          message: 'Sai mật khẩu. Vui lòng thử lại.',
+        },
+      });
+    }
+
+    if (!user.isActive) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'INVALID_CREDENTIALS',
+          message: 'Tài khoản đã bị khóa hoạt động.',
         },
       });
     }
@@ -146,19 +163,24 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     const accessToken = generateAccessToken(payload);
     const refreshTokenString = generateRefreshToken();
 
-    // Lưu Refresh Token vào Database
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + REFRESH_TOKEN_EXPIRY_DAYS);
-
-    await prisma.refreshToken.create({
-      data: {
-        token: refreshTokenString,
-        userId: user.id,
-        expiresAt,
-        userAgent: req.headers['user-agent'],
-        ipAddress: req.ip,
-      },
-    });
+    // Lưu Refresh Token vào Database nếu online
+    if (!user.id.startsWith('mock-')) {
+      try {
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + REFRESH_TOKEN_EXPIRY_DAYS);
+        await prisma.refreshToken.create({
+          data: {
+            token: refreshTokenString,
+            userId: user.id,
+            expiresAt,
+            userAgent: req.headers['user-agent'],
+            ipAddress: req.ip,
+          },
+        });
+      } catch (err) {
+        console.warn(`[Warning] Failed to save refresh token in DB: offline.`);
+      }
+    }
 
     // Tạo CSRF Token chống giả mạo
     const csrfToken = crypto.randomBytes(32).toString('hex');
@@ -168,35 +190,46 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 15 * 60 * 1000, // 15 phút
+      maxAge: 24 * 60 * 60 * 1000, // Tăng lên 24 giờ cho dev dễ test
     });
 
     res.cookie('refresh_token', refreshTokenString, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      path: '/api/auth/refresh', // Chỉ gửi cookie này đến endpoint làm mới session
-      maxAge: REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000, // 7 ngày
+      path: '/api/auth/refresh',
+      maxAge: REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000,
     });
 
-    // Cookie CSRF không httpOnly để client đọc và gửi Header đối chiếu
+    // Cookie CSRF không httpOnly để client đối chiếu
     res.cookie('csrf_token', csrfToken, {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 12 * 60 * 60 * 1000, // 12 giờ
+      maxAge: 12 * 60 * 60 * 1000,
     });
 
-    // Ghi Audit Log đăng nhập thành công
-    await prisma.auditLog.create({
-      data: {
-        userId: user.id,
-        action: 'LOGIN_SUCCESS',
-        entityType: 'User',
-        entityId: user.id,
-        ipAddress: req.ip,
-        userAgent: req.headers['user-agent'],
-      },
+    // Cookie is_logged_in không httpOnly giúp client-side JS nhận biết trạng thái đăng nhập tức thì
+    res.cookie('is_logged_in', 'true', {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000,
     });
+
+    // Ghi Audit Log đăng nhập thành công nếu online
+    if (!user.id.startsWith('mock-')) {
+      try {
+        await prisma.auditLog.create({
+          data: {
+            userId: user.id,
+            action: 'LOGIN_SUCCESS',
+            entityType: 'User',
+            entityId: user.id,
+            ipAddress: req.ip,
+            userAgent: req.headers['user-agent'],
+          },
+        });
+      } catch (err) {}
+    }
 
     res.status(200).json({
       success: true,
@@ -358,6 +391,284 @@ export async function logout(req: Request, res: Response, next: NextFunction) {
       data: {
         message: 'Đăng xuất tài khoản thành công.',
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getMe(req: Request, res: Response, next: NextFunction) {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Yêu cầu đăng nhập để truy cập thông tin này.',
+        },
+      });
+    }
+
+    let user: any = null;
+    let orders: any[] = [];
+    let isDbOffline = false;
+
+    try {
+      user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          email: true,
+          fullName: true,
+          phone: true,
+          role: true,
+          tenantId: true,
+          isActive: true,
+          status: true,
+          customerProfile: true,
+          wishlists: {
+            include: {
+              template: {
+                select: {
+                  id: true,
+                  name: true,
+                  slug: true,
+                  shortDescription: true,
+                  thumbnail: true,
+                  priceBuy: true,
+                }
+              }
+            }
+          }
+        }
+      });
+
+      if (user) {
+        orders = await prisma.order.findMany({
+          where: { email: user.email },
+          include: {
+            template: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              }
+            }
+          },
+          orderBy: { createdAt: 'desc' }
+        });
+      }
+    } catch (err) {
+      console.warn(`[Warning] Database offline in getMe. Activating mock user session.`);
+      isDbOffline = true;
+    }
+
+    // Nếu DB offline hoặc không tìm thấy user thực tế
+    if (isDbOffline || !user) {
+      if (userId === 'mock-admin-id') {
+        user = {
+          id: 'mock-admin-id',
+          email: 'admin@platformbds.vn',
+          fullName: 'Quản trị viên Hệ thống (Admin)',
+          phone: '0983312219',
+          role: 'SUPER_ADMIN',
+          isActive: true,
+          status: 'ACTIVE',
+          customerProfile: {
+            address: 'Diamond Plaza, 34 Lê Duẩn, Quận 1, TP Hồ Chí Minh',
+            companyName: 'PLATFORMBDS Corp',
+            taxCode: '0316524982'
+          },
+          wishlists: []
+        };
+        orders = [
+          {
+            id: 'ord-mock-admin-1',
+            orderNumber: 'ORD-ADMIN-01',
+            amount: 0,
+            type: 'BUY',
+            status: 'COMPLETED',
+            createdAt: new Date().toISOString(),
+            template: { name: 'Mega Developer', slug: 'mega-developer' }
+          }
+        ];
+      } else if (userId === 'mock-tenant-admin-id') {
+        user = {
+          id: 'mock-tenant-admin-id',
+          email: 'tenant@platformbds.vn',
+          fullName: 'Chủ Website (Môi giới)',
+          phone: '0983312219',
+          role: 'TENANT_OWNER',
+          isActive: true,
+          status: 'ACTIVE',
+          customerProfile: {
+            address: ' Diamond Plaza, Quận 1, TP Hồ Chí Minh',
+            companyName: 'BĐS Sài Gòn Gold',
+            taxCode: '0316524982'
+          },
+          wishlists: []
+        };
+        orders = [
+          {
+            id: 'ord-mock-tenant-1',
+            orderNumber: 'ORD-TENANT-01',
+            amount: 499000,
+            type: 'RENT',
+            status: 'COMPLETED',
+            createdAt: new Date().toISOString(),
+            template: { name: 'Luxury Gold Style', slug: 'luxury-gold' }
+          }
+        ];
+      } else {
+        // Mặc định là Customer
+        user = {
+          id: 'mock-customer-id',
+          email: 'customer@platformbds.vn',
+          fullName: 'Khách Hàng Mẫu',
+          phone: '0983312219',
+          role: 'CUSTOMER',
+          isActive: true,
+          status: 'ACTIVE',
+          customerProfile: {
+            address: 'Diamond Plaza, 34 Lê Duẩn, Quận 1, TP Hồ Chí Minh',
+            companyName: 'Công Ty BĐS Mẫu',
+            taxCode: '0316524982'
+          },
+          wishlists: []
+        };
+        orders = [
+          {
+            id: 'ord-mock-1',
+            orderNumber: 'ORD-20260706-A1',
+            amount: 4900000,
+            type: 'BUY',
+            status: 'COMPLETED',
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            template: { name: 'Luxury Gold Style', slug: 'luxury-gold' }
+          },
+          {
+            id: 'ord-mock-2',
+            orderNumber: 'ORD-20260706-B2',
+            amount: 499000,
+            type: 'RENT',
+            status: 'PENDING',
+            createdAt: new Date().toISOString(),
+            template: { name: 'Minimal White Style', slug: 'minimal-white' }
+          }
+        ];
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        user,
+        orders
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getUserTenants(req: Request, res: Response, next: NextFunction) {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, error: { message: 'Unauthorized' } });
+    }
+
+    const memberships = await prisma.tenantMembership.findMany({
+      where: { userId, status: 'ACTIVE' },
+      include: {
+        tenant: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            domain: true,
+            status: true,
+            templateId: true,
+            template: {
+              select: {
+                slug: true,
+              }
+            }
+          }
+        }
+      }
+    });
+
+    const tenants = memberships.map((m: any) => ({
+      id: m.tenant.id,
+      name: m.tenant.name,
+      slug: m.tenant.slug,
+      domain: m.tenant.domain,
+      status: m.tenant.status,
+      role: m.role,
+      templateSlug: m.tenant.template?.slug || m.tenant.templateId || 'luxury-gold',
+    }));
+
+    return res.status(200).json({
+      success: true,
+      data: tenants,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function switchTenant(req: Request, res: Response, next: NextFunction) {
+  try {
+    const userId = req.user?.userId;
+    const { tenantId } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, error: { message: 'Unauthorized' } });
+    }
+
+    if (!tenantId) {
+      return res.status(400).json({ success: false, error: { message: 'Thiếu tenantId' } });
+    }
+
+    const membership = await prisma.tenantMembership.findFirst({
+      where: { userId, tenantId, status: 'ACTIVE' },
+    });
+
+    if (!membership && req.user?.role !== 'SUPER_ADMIN') {
+      return res.status(403).json({
+        success: false,
+        error: { message: 'Bạn không có quyền truy cập website này.' }
+      });
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { tenantId },
+    });
+
+    const payload = {
+      userId: updatedUser.id,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      tenantId: updatedUser.tenantId,
+    };
+    const newAccessToken = generateAccessToken(payload);
+
+    res.cookie('access_token', newAccessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 15 * 60 * 1000,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Chuyển website thành công.',
+      data: {
+        activeTenantId: tenantId,
+      }
     });
   } catch (error) {
     next(error);

@@ -1,21 +1,22 @@
 import { Router } from 'express';
-import { getCloudinarySignature, registerMedia, deleteMedia } from '../controllers/media.controller';
+import multer from 'multer';
+import { uploadMedia, getMedia, deleteMedia, createFolder } from '../modules/media/media.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/role.middleware';
 import { checkTenantAccess } from '../middlewares/tenant.middleware';
-import { csrfMiddleware } from '../middlewares/csrf.middleware';
+import { subscriptionMiddleware } from '../middlewares/subscription.middleware';
 
 const router = Router();
+const upload = multer({ storage: multer.memoryStorage() }); // We use memory storage to process via Sharp before saving
 
-// Tất cả APIs Media đều yêu cầu đăng nhập và cách ly Tenant chéo
 router.use(authMiddleware);
-router.use(requireRole(['TENANT_ADMIN', 'TENANT_EDITOR']));
+router.use(requireRole(['TENANT_OWNER', 'EDITOR']));
 router.use(checkTenantAccess);
+router.use(subscriptionMiddleware);
 
-router.get('/signature', getCloudinarySignature);
-
-// API thay đổi dữ liệu yêu cầu chống CSRF (Double Submit Cookie)
-router.post('/', csrfMiddleware, registerMedia);
-router.delete('/:id', csrfMiddleware, deleteMedia);
+router.post('/upload', upload.single('file'), uploadMedia);
+router.get('/', getMedia);
+router.delete('/:id', deleteMedia);
+router.post('/folder', createFolder);
 
 export default router;

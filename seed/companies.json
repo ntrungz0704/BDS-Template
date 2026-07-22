@@ -5,9 +5,9 @@
     "slug": "hoanggialand",
     "logo": "https://res.cloudinary.com/demo/image/upload/v1234567890/logos/hoanggia-logo.png",
     "phone": "0901234567",
-    "email": "contact@hoanggialand.vn",
+    "email": "owner@hoanggialand.vn",
     "address": "Tòa nhà Diamond Plaza, 34 Lê Duẩn, Quận 1, TP. Hồ Chí Minh",
-    "website": "hoanggialand.myplatform.com",
+    "website": "hoanggialand.platformbds.vn",
     "color_theme": "gold",
     "template_id": "template-1",
     "slogan": "Nâng Tầm Không Gian Sống Thượng Lưu",
@@ -20,40 +20,21 @@
   },
   {
     "id": "tenant-2",
-    "name": "Zen Homes",
-    "slug": "zenhomes",
+    "name": "Green Home",
+    "slug": "greenhome",
     "logo": "https://res.cloudinary.com/demo/image/upload/v1234567890/logos/zenhomes-logo.png",
     "phone": "0908888999",
-    "email": "info@zenhomes.vn",
+    "email": "owner@greenhome.vn",
     "address": "Shophouse SH-05, Tòa S1.02 Vinhomes Grand Park, Quận 9, TP. Hồ Chí Minh",
-    "website": "zenhomes.myplatform.com",
+    "website": "greenhome.platformbds.vn",
     "color_theme": "minimal-white",
-    "template_id": "template-3",
-    "slogan": "Trở Về Với Bình Yên",
-    "description": "Zen Homes mang đến triết lý thiết kế và phân phối các bất động sản xanh, tối giản và hòa mình cùng thiên nhiên. Nơi ngôi nhà là tổ ấm bình yên nhất sau ngày dài mệt mỏi.",
+    "template_id": "template-1",
+    "slogan": "Không Gian Sống Xanh",
+    "description": "Green Home mang đến không gian sống xanh, sạch, hiện đại.",
     "social_links": {
-      "facebook": "https://facebook.com/zenhomes",
-      "youtube": "https://youtube.com/zenhomes",
-      "tiktok": "https://tiktok.com/@zenhomes"
-    }
-  },
-  {
-    "id": "tenant-3",
-    "name": "Apex Realty",
-    "slug": "apexrealty",
-    "logo": "https://res.cloudinary.com/demo/image/upload/v1234567890/logos/apex-logo.png",
-    "phone": "0987654321",
-    "email": "sales@apexrealty.vn",
-    "address": "Tầng 45, Tòa nhà Landmark 81, 720A Điện Biên Phủ, Bình Thạnh, TP. Hồ Chí Minh",
-    "website": "apexrealty.myplatform.com",
-    "color_theme": "modern-dark",
-    "template_id": "template-2",
-    "slogan": "Tiên Phong Công Nghệ - Dẫn Đầu Xu Hướng BĐS",
-    "description": "Apex Realty là đơn vị BĐS công nghệ hàng đầu, tập trung phân phối các dự án căn hộ thông minh, cao ốc văn phòng đẳng cấp với trải nghiệm số vượt trội.",
-    "social_links": {
-      "facebook": "https://facebook.com/apexrealty",
-      "youtube": "https://youtube.com/apexrealty",
-      "tiktok": "https://tiktok.com/@apexrealty"
+      "facebook": "https://facebook.com/greenhome",
+      "youtube": "https://youtube.com/greenhome",
+      "tiktok": "https://tiktok.com/@greenhome"
     }
   }
 ]

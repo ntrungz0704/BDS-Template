@@ -9,14 +9,16 @@ import {
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/role.middleware';
 import { checkTenantAccess } from '../middlewares/tenant.middleware';
+import { subscriptionMiddleware } from '../middlewares/subscription.middleware';
 import { csrfMiddleware } from '../middlewares/csrf.middleware';
 
 const router = Router();
 
 // Middleware xác thực bảo mật & cách ly tenant chéo
 router.use(authMiddleware);
-router.use(requireRole(['TENANT_ADMIN', 'TENANT_EDITOR']));
+router.use(requireRole(['TENANT_OWNER', 'EDITOR']));
 router.use(checkTenantAccess);
+router.use(subscriptionMiddleware);
 
 router.get('/', getPosts);
 router.get('/:id', getPostDetail);

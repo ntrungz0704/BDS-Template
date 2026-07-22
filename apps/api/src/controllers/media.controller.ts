@@ -18,7 +18,12 @@ export function getCloudinarySignature(req: Request, res: Response, next: NextFu
     const cloudName = process.env.CLOUDINARY_CLOUD_NAME || 'your-cloud-name';
 
     // Chuỗi ký số đơn giản cho Cloudinary upload signature
+    // Validate and enforce tenant prefix constraint for Cloudinary upload folder signature
     const folder = `tenant_${tenantId}`;
+    if (!folder.startsWith('tenant_') || folder.includes('..') || folder.includes('/')) {
+      return res.status(400).json({ success: false, error: { code: 'INVALID_FOLDER_STRUCTURE', message: 'Tên thư mục không hợp lệ.' } });
+    }
+
     const signatureStr = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
     const signature = crypto.createHash('sha1').update(signatureStr).digest('hex');
 
@@ -55,6 +60,34 @@ export async function registerMedia(req: Request, res: Response, next: NextFunct
     });
   }
 
+  // Validate mime type and file extension safety bounds (images, videos, basic document formats)
+  const allowedMimeTypes = [
+    'image/jpeg', 'image/png', 'image/gif', 'image/webp',
+    'video/mp4', 'video/mpeg', 'video/quicktime',
+    'application/pdf', 'application/msword', 
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  ];
+
+  const allowedExtensions = [
+    '.jpg', '.jpeg', '.png', '.gif', '.webp',
+    '.mp4', '.mpeg', '.mov',
+    '.pdf', '.doc', '.docx', '.xls', '.xlsx'
+  ];
+
+  const ext = filename.substring(filename.lastIndexOf('.')).toLowerCase();
+
+  if (!allowedMimeTypes.includes(mimeType) || !allowedExtensions.includes(ext)) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'UNSUPPORTED_FILE_TYPE',
+        message: 'Hệ thống chỉ hỗ trợ các định dạng hình ảnh, video và văn bản văn phòng cơ bản.',
+      },
+    });
+  }
+
   // Cấm file SVG do rủi ro Stored XSS
   if (mimeType.includes('svg') || filename.toLowerCase().endsWith('.svg')) {
     return res.status(400).json({
@@ -66,9 +99,21 @@ export async function registerMedia(req: Request, res: Response, next: NextFunct
     });
   }
 
+  // Validate the URL format and verify Cloudinary folder matches the active tenant prefix
+  const targetFolder = `tenant_${tenantId}`;
+  if (!url.includes(targetFolder)) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'INVALID_MEDIA_URL',
+        message: 'URL tệp phương tiện không thuộc thư mục lưu trữ được phân cấp cho tài khoản của bạn.',
+      },
+    });
+  }
+
   try {
     // THỰC HIỆN TRANSACTION KIỂM TRA QUOTA UPLOAD CHỐNG RACE CONDITION (SELECT FOR UPDATE)
-    const media = await prisma.$transaction(async (tx) => {
+    const media = await prisma.$transaction(async (tx: any) => {
       // 1. Khóa hàng Tenant để ngăn luồng ghi đồng thời
       const tenants = await tx.$queryRaw<any[]>`
         SELECT * FROM "tenants" 
@@ -151,7 +196,7 @@ export async function deleteMedia(req: Request, res: Response, next: NextFunctio
     }
 
     // Chạy transaction cập nhật dung lượng quota và xóa mềm file
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       // 1. SELECT ... FOR UPDATE khóa Tenant
       const tenants = await tx.$queryRaw<any[]>`
         SELECT * FROM "tenants" 

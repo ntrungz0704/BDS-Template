@@ -1,0 +1,260 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # 1. REVERSE PROXY (Duy nhất tiếp xúc với Internet qua Port 80/443)
+  # ============================================================================
+  nginx:
+    image: nginx:alpine
+    container_name: app-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./docker/nginx/ssl-params.conf:/etc/nginx/ssl-params.conf:ro
+      - certbot_data:/var/www/certbot:rw
+      - letsencrypt_certs:/etc/letsencrypt:ro
+    depends_on:
+      api:
+        condition: service_healthy
+      marketplace:
+        condition: service_healthy
+      cms:
+        condition: service_healthy
+      admin:
+        condition: service_healthy
+      website:
+        condition: service_healthy
+    networks:
+      - internal_net
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================================================
+  # 2. MARKETPLACE APP (platformbds.vn - Port 3000 Internal)
+  # ============================================================================
+  marketplace:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.marketplace
+    container_name: app-marketplace
+    restart: always
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://api.platformbds.vn
+      - NEXT_PUBLIC_DOMAIN=platformbds.vn
+    expose:
+      - "3000"
+    networks:
+      - internal_net
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ============================================================================
+  # 3. CMS QUẢN TRỊ (cms.platformbds.vn - Port 3001 Internal)
+  # ============================================================================
+  cms:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.cms
+    container_name: app-cms
+    restart: always
+    environment:
+      - PORT=3001
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://api.platformbds.vn
+      - NEXT_PUBLIC_DOMAIN=cms.platformbds.vn
+    expose:
+      - "3001"
+    networks:
+      - internal_net
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3001 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ============================================================================
+  # 4. SUPER ADMIN PANEL (admin.platformbds.vn - Port 3002 Internal)
+  # ============================================================================
+  admin:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.admin
+    container_name: app-admin
+    restart: always
+    environment:
+      - PORT=3002
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://api.platformbds.vn
+      - NEXT_PUBLIC_DOMAIN=admin.platformbds.vn
+    expose:
+      - "3002"
+    networks:
+      - internal_net
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3002 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ============================================================================
+  # 5. TENANT WEBSITES WILDCARD (*.platformbds.vn - Port 3003 Internal)
+  # ============================================================================
+  website:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.website
+    container_name: app-tenant
+    restart: always
+    environment:
+      - PORT=3003
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://api.platformbds.vn
+      - NEXT_PUBLIC_ROOT_DOMAIN=platformbds.vn
+    expose:
+      - "3003"
+    networks:
+      - internal_net
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3003 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ============================================================================
+  # 6. API BACKEND (api.platformbds.vn - Port 5000 Internal)
+  # ============================================================================
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: app-api
+    restart: always
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-securepassword}@app-pgbouncer:6432/${POSTGRES_DB:-real_estate_platform}?schema=public&pgbouncer=true
+      - JWT_SECRET=${JWT_SECRET:-supersecretjwtkeyproduction}
+      - CORS_ORIGINS=https://platformbds.vn,https://www.platformbds.vn,https://cms.platformbds.vn,https://admin.platformbds.vn
+      - REDIS_URL=redis://app-redis:6379 # Prepared for Phase 2
+    expose:
+      - "5000"
+    networks:
+      - internal_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      pgbouncer:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:5000/api/health || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ============================================================================
+  # 7. POSTGRESQL DATABASE (Internal Only - Port 5432)
+  # ============================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: app-postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-securepassword}
+      - POSTGRES_DB=${POSTGRES_DB:-real_estate_platform}
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    networks:
+      - internal_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-real_estate_platform}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # 8. FUTURE ARCHITECTURE PREPARATION (Phase 2: Redis & PgBouncer)
+  # ============================================================================
+  # Khi scale lên 500 - 1000+ tenants, hãy bỏ comment (uncomment) 2 service dưới đây:
+  
+  redis:
+    image: redis:7-alpine
+    container_name: app-redis
+    restart: always
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redissecret}
+    volumes:
+      - redis_prod_data:/data
+    expose:
+      - "6379"
+    networks:
+      - internal_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redissecret}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgbouncer:
+    image: edoburu/pgbouncer:latest
+    container_name: app-pgbouncer
+    restart: always
+    environment:
+      - DB_USER=${POSTGRES_USER:-postgres}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-securepassword}
+      - DB_HOST=app-postgres
+      - DB_NAME=${POSTGRES_DB:-real_estate_platform}
+      - POOL_MODE=transaction
+      - MAX_CLIENT_CONN=1000
+      - DEFAULT_POOL_SIZE=50
+    expose:
+      - "6432"
+    networks:
+      - internal_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+# ==============================================================================
+# VOLUMES & NETWORKS
+# ==============================================================================
+volumes:
+  postgres_prod_data:
+  redis_prod_data:
+  certbot_data:
+  letsencrypt_certs:
+
+networks:
+  internal_net:
+    name: platformbds_internal_net
+    driver: bridge

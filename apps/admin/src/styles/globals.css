@@ -28,3 +28,8 @@
 body {
   @apply bg-[#F8F6F3] text-[#1A1A2E] font-sans antialiased;
 }
+
+/* TEST CSS LOADING */
+body {
+  background-color: #0a0f24 !important;
+}

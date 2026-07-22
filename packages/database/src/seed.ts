@@ -1,7 +1,43 @@
-import { PrismaClient, ProjectType, ProjectStatus } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as bcrypt from 'bcrypt';
+
+// Load root .env environment variables manually before PrismaClient initialization
+try {
+  const possiblePaths = [
+    path.join(process.cwd(), '.env'),
+    path.join(process.cwd(), '../../.env'),
+    path.join(process.cwd(), '../.env'),
+    path.join(process.cwd(), 'packages/database', '.env')
+  ];
+  let envPathFound = '';
+  for (const p of possiblePaths) {
+    if (fs.existsSync(p)) {
+      envPathFound = p;
+      break;
+    }
+  }
+  if (envPathFound) {
+    const envConfig = fs.readFileSync(envPathFound, 'utf-8');
+    envConfig.split('\n').forEach((line) => {
+      const parts = line.split('=');
+      if (parts.length >= 2) {
+        const key = parts[0].trim();
+        const value = parts.slice(1).join('=').trim().replace(/^["']|["']$/g, '');
+        if (key && !key.startsWith('#')) {
+          process.env[key] = value;
+        }
+      }
+    });
+    console.log('Đã nạp thành công biến môi trường từ:', envPathFound);
+  } else {
+    console.warn('Không tìm thấy file .env ở bất kỳ vị trí khả thi nào.');
+  }
+} catch (e) {
+  console.error('Lỗi khi nạp file .env:', e);
+}
+
+import { PrismaClient, ProjectType, ProjectStatus } from '../generated/client/index.js';
 
 const prisma = new PrismaClient();
 
@@ -25,6 +61,7 @@ async function main() {
   await prisma.companyInfo.deleteMany({});
   await prisma.seoConfig.deleteMany({});
   await prisma.media.deleteMany({});
+  await prisma.tenantMembership.deleteMany({});
   await prisma.user.deleteMany({});
   await prisma.tenant.deleteMany({});
   await prisma.template.deleteMany({});
@@ -70,15 +107,52 @@ async function main() {
 
   // 3. Tạo Super Admin hệ thống
   console.log('Tạo tài khoản Super Admin...');
-  const adminPasswordHash = await bcrypt.hash('adminpassword123', 10);
-  const superAdmin = await prisma.user.create({
+  const adminPasswordHash = await bcrypt.hash('123456', 10);
+  await prisma.user.create({
     data: {
-      email: 'admin@myplatform.com',
+      email: 'admin@platformbds.vn',
       passwordHash: adminPasswordHash,
-      fullName: 'Hệ Thống Super Admin',
+      fullName: 'Admin PlatformBDS',
       role: 'SUPER_ADMIN',
       isActive: true,
     },
+  });
+
+  // 3.1. Tạo tài khoản Khách hàng demo
+  // MVP: Đây là tài khoản DUY NHẤT của khách hàng.
+  // 1 account → nhiều website (giống Shopify).
+  // customer@platformbds.vn đã được provision sẵn 2 website demo để test CMS ngay.
+  // Nếu muốn test luồng "mua → admin duyệt → provision", dùng ORD-TEST-003 bên dưới.
+  console.log('Tạo tài khoản Khách hàng MVP...');
+  const customerPasswordHash = await bcrypt.hash('123456', 10);
+  const customerUser = await prisma.user.create({
+    data: {
+      email: 'customer@platformbds.vn',
+      passwordHash: customerPasswordHash,
+      fullName: 'Nguyễn Văn Khách',
+      phone: '0983312219',
+      // MVP: Role sẽ là TENANT_OWNER vì đã có website được provision.
+      // Trong thực tế luồng: đăng ký với CUSTOMER → Admin duyệt → tự chuyển thành TENANT_OWNER.
+      role: 'TENANT_OWNER',
+      isActive: true,
+    },
+  });
+
+  // Đơn hàng test: Mô phỏng trạng thái "Khách đã chuyển khoản, chờ Admin duyệt".
+  // Khi Admin bấm Approve → hệ thống tự provision Website thứ 3 cho customer này.
+  await prisma.order.create({
+    data: {
+      orderNumber: 'ORD-TEST-003',
+      fullName: 'Nguyễn Văn Khách',
+      email: 'customer@platformbds.vn',
+      phone: '0983312219',
+      amount: 3000000,
+      type: 'RENT',
+      status: 'WAITING_CONFIRM',
+      templateId: 'template-1',
+      subdomain: 'luxury-gold-demo03',
+      version: 1,
+    }
   });
 
   // 4. Đọc dữ liệu seed từ thư mục seed/
@@ -91,23 +165,13 @@ async function main() {
   const banners = JSON.parse(fs.readFileSync(path.join(seedDir, 'banners.json'), 'utf-8'));
 
   // 5. Tạo các Tenants mẫu
-  console.log('Tạo các Tenants & Company Infos...');
+  // MVP: Tất cả tenant thuộc về customer@platformbds.vn — 1 account, nhiều website.
+  // Không tạo owner@hoanggialand.vn hay owner@greenhome.vn nữa.
+  // customer@platformbds.vn đã có role TENANT_OWNER từ bước trên.
+  console.log('Tạo các Tenants (gắn vào customer@platformbds.vn)...');
   const tenantMap = new Map<string, string>(); // map company slug to tenantId
 
   for (const comp of companies) {
-    const tenantPasswordHash = await bcrypt.hash('tenantpassword123', 10);
-    
-    // Tạo Tenant Admin trước làm owner
-    const tenantOwner = await prisma.user.create({
-      data: {
-        email: comp.email,
-        passwordHash: tenantPasswordHash,
-        fullName: comp.name + ' Admin',
-        role: 'TENANT_ADMIN',
-        isActive: true,
-      },
-    });
-
     // Tạo Tenant gắn với template
     const tenant = await prisma.tenant.create({
       data: {
@@ -119,11 +183,25 @@ async function main() {
       },
     });
 
-    // Gắn ngược tenantId vào user owner
-    await prisma.user.update({
-      where: { id: tenantOwner.id },
-      data: { tenantId: tenant.id },
+    // Tạo membership cho tenant
+    await prisma.tenantMembership.create({
+      data: {
+        userId: customerUser.id,
+        tenantId: tenant.id,
+        role: 'OWNER',
+        status: 'ACTIVE',
+      },
     });
+
+    // Gắn tenant đầu tiên làm primaryTenantId của customer (nếu chưa có).
+    // Với multi-website: user có nhiều tenant, CMS dùng websiteSwitcher để chọn.
+    // Ở đây chỉ update tenantId cho tenant đầu tiên để CMS biết default website.
+    if (!customerUser.tenantId) {
+      await prisma.user.update({
+        where: { id: customerUser.id },
+        data: { tenantId: tenant.id },
+      });
+    }
 
     tenantMap.set(comp.slug, tenant.id);
 

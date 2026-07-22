@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, register, refresh, logout } from '../controllers/auth.controller';
+import { login, register, refresh, logout, getMe, getUserTenants, switchTenant } from '../controllers/auth.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 
 const router = Router();
@@ -11,5 +11,8 @@ router.post('/refresh', refresh);
 
 // Routes yêu cầu người dùng phải đăng nhập trước
 router.post('/logout', authMiddleware, logout);
+router.get('/me', authMiddleware, getMe);
+router.get('/tenants', authMiddleware, getUserTenants);
+router.post('/switch-tenant', authMiddleware, switchTenant);
 
 export default router;

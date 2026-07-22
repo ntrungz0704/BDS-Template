@@ -1,0 +1,41 @@
+# Build Stage
+FROM node:20-alpine AS builder
+
+WORKDIR /usr/src/app
+
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY apps/admin/package.json ./apps/admin/
+COPY packages/ui/package.json ./packages/ui/
+COPY packages/config/package.json ./packages/config/
+COPY packages/types/package.json ./packages/types/
+COPY packages/utils/package.json ./packages/utils/
+
+RUN npm install -g pnpm
+RUN pnpm install --frozen-lockfile
+
+COPY . .
+
+# Build dependencies và Next.js app
+RUN pnpm --filter @repo/config build
+RUN pnpm --filter @repo/types build
+RUN pnpm --filter @repo/utils build
+RUN pnpm --filter @repo/ui build
+RUN pnpm --filter admin build
+
+# Production Stage
+FROM node:20-alpine AS runner
+
+WORKDIR /usr/src/app
+
+COPY --from=builder /usr/src/app/package.json ./
+COPY --from=builder /usr/src/app/apps/admin/package.json ./apps/admin/
+COPY --from=builder /usr/src/app/apps/admin/.next ./apps/admin/.next
+COPY --from=builder /usr/src/app/apps/admin/public ./apps/admin/public
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+
+ENV NODE_ENV=production
+PORT=3002
+
+EXPOSE 3002
+
+CMD ["pnpm", "--filter", "admin", "start"]

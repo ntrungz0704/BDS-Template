@@ -135,10 +135,15 @@ export default function PublicProjectDetail({ company, project, tenantSlug, erro
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { slug } = context.params as { slug: string };
   const host = context.req.headers.host || '';
-  let tenantSlug = host.split('.')[0];
-
-  if (tenantSlug === 'localhost:3003' || tenantSlug === 'localhost') {
-    tenantSlug = 'hoanggialand';
+  let tenantSlug = (context.req.headers['x-tenant-slug'] as string) || '';
+  
+  if (!tenantSlug || tenantSlug === 'localhost:3003' || tenantSlug === 'localhost') {
+    const isDev = process.env.NODE_ENV !== 'production';
+    if (isDev) {
+      tenantSlug = (context.query.tenant as string) || 'hoanggialand';
+    } else {
+      tenantSlug = '_notfound';
+    }
   }
 
   try {

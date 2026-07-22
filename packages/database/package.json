@@ -7,7 +7,9 @@
   "scripts": {
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
-    "db:seed": "ts-node src/seed.ts"
+    "db:seed": "ts-node src/seed.ts",
+    "db:seed:dev": "ts-node src/seed.dev.ts",
+    "db:reset:dev": "prisma migrate reset --force --skip-seed && ts-node src/seed.dev.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.10.0",
