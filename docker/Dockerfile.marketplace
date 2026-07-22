@@ -34,7 +34,7 @@ COPY --from=builder /usr/src/app/apps/marketplace/public ./apps/marketplace/publ
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 
 ENV NODE_ENV=production
-PORT=3000
+ENV PORT=3000
 
 EXPOSE 3000
 

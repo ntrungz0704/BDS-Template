@@ -34,7 +34,7 @@ COPY --from=builder /usr/src/app/apps/cms/public ./apps/cms/public
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 
 ENV NODE_ENV=production
-PORT=3001
+ENV PORT=3001
 
 EXPOSE 3001
 
