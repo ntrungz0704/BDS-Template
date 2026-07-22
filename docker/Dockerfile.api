@@ -22,9 +22,7 @@ COPY . .
 RUN npx prisma generate --schema=packages/database/prisma/schema.prisma
 
 # Build các dependencies và api
-RUN pnpm --filter @repo/config build
-RUN pnpm --filter @repo/types build
-RUN pnpm --filter @repo/utils build
+
 RUN pnpm --filter api build
 
 # Production Stage

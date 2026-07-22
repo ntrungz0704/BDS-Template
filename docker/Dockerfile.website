@@ -16,10 +16,7 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 # Build dependencies và Next.js app
-RUN pnpm --filter @repo/config build
-RUN pnpm --filter @repo/types build
-RUN pnpm --filter @repo/utils build
-RUN pnpm --filter @repo/ui build
+
 RUN pnpm --filter website build
 
 # Production Stage
