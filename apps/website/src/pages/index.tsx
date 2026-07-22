@@ -90,12 +90,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   try {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
     const [compRes, themeRes, pageRes, projRes, postRes] = await Promise.all([
-      axios.get(`http://localhost:5000/api/website/${tenantSlug}/company-info`),
-      axios.get(`http://localhost:5000/api/website/${tenantSlug}/theme`),
-      axios.get(`http://localhost:5000/api/website/${tenantSlug}/pages/home`),
-      axios.get(`http://localhost:5000/api/website/${tenantSlug}/projects?limit=6`),
-      axios.get(`http://localhost:5000/api/website/${tenantSlug}/posts?limit=3`),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/company-info`),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/theme`),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/pages/home`),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/projects?limit=6`),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/posts?limit=3`),
     ]);
 
     return {

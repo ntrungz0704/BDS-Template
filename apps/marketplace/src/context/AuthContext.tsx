@@ -129,10 +129,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUser(JSON.parse(savedUser));
           } catch (e) {
             console.error('Failed to parse saved user', e);
+            setUser(null);
           }
         } else {
-          setUser(INITIAL_ADMIN_USER);
-          localStorage.setItem('platformbds_user_v3', JSON.stringify(INITIAL_ADMIN_USER));
+          setUser(null);
         }
 
         if (savedOrders) {
