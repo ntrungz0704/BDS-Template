@@ -30,6 +30,9 @@ jobs:
   build-and-push:
     needs: lint-and-test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     strategy:
       matrix:
         service: [api, marketplace, cms, admin, website]
@@ -46,6 +49,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Lowercase Repository Name
+        run: |
+          echo "REPO=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
@@ -54,7 +61,7 @@ jobs:
           file: docker/Dockerfile.${{ matrix.service }}
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/${{ matrix.service }}:latest
-            ghcr.io/${{ github.repository }}/${{ matrix.service }}:${{ github.sha }}
+            ghcr.io/${{ env.REPO }}/${{ matrix.service }}:latest
+            ghcr.io/${{ env.REPO }}/${{ matrix.service }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
