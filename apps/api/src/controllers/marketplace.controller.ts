@@ -6,6 +6,9 @@ import crypto from 'crypto';
 import AdmZip from 'adm-zip';
 import path from 'path';
 import fs from 'fs';
+import { approveOrder } from './admin.controller';
+import { websiteProvisioningService } from '../services/website-provisioning.service';
+import { TemplatePackagingService } from '../services/template-packaging.service';
 
 // ?nh nghia schemas Zod validation
 const createOrderSchema = z.object({
@@ -19,24 +22,24 @@ const createOrderSchema = z.object({
 });
 
 const uploadPaymentSchema = z.object({
-  transactionCode: z.string().min(3, 'M� giao d?ch t?i thi?u 3 k� t?.'),
-  billImageUrl: z.string().url('URL ?nh h�a don kh�ng h?p l?.'),
+  transactionCode: z.string().min(3, 'M giao d?ch t?i thi?u 3 k t?.'),
+  billImageUrl: z.string().url('URL ?nh ha don khng h?p l?.'),
 });
 
-// Mock data templates d�ng khi DB offline
+// Mock data templates dùng khi DB offline
 const MOCK_TEMPLATES = [
-  { id: 'mock-1', name: 'Luxury Gold Style', slug: 'luxury-gold', shortDescription: 'Giao di?n sang tr?ng phong c�ch v�ng cao c?p', description: 'Website B�S cao c?p v?i t�ng m�u v�ng sang tr?ng, ph� h?p cho d? �n h?ng A.', thumbnail: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600', priceBuy: 4900000, priceRentMonthly: 899000, category: 'luxury', tags: ['luxury', 'gold', 'premium'], isActive: true, sortOrder: 1, isFeatured: true, templateConfig: null },
-  { id: 'mock-2', name: 'Minimal White Style', slug: 'minimal-white', shortDescription: 'Thi?t k? t?i gi?n, hi?n d?i, s?ch s?', description: 'Website B�S v?i thi?t k? t?i gi?n, tr?ng tinh t?, ph� h?p thuong hi?u hi?n d?i.', thumbnail: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600', priceBuy: 3900000, priceRentMonthly: 499000, category: 'minimal', tags: ['minimal', 'white', 'modern'], isActive: true, sortOrder: 2, isFeatured: true, templateConfig: null },
-  { id: 'mock-3', name: 'Modern Corporate Style', slug: 'modern-corporate', shortDescription: 'Phong c�ch doanh nghi?p chuy�n nghi?p', description: 'Giao di?n doanh nghi?p B�S chuy�n nghi?p, uy t�n, ph� h?p van ph�ng m�i gi?i l?n.', thumbnail: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600', priceBuy: 3900000, priceRentMonthly: 499000, category: 'corporate', tags: ['corporate', 'professional', 'blue'], isActive: true, sortOrder: 3, isFeatured: false, templateConfig: null },
-  { id: 'mock-4', name: 'Eco Green Style', slug: 'eco-green', shortDescription: 'Phong c�ch xanh m�t, g?n gui thi�n nhi�n', description: 'Website B�S xanh, th�n thi?n thi�n nhi�n, ph� h?p d? �n nh� vu?n sinh th�i.', thumbnail: 'https://images.unsplash.com/photo-1448630360428-65456885c650?w=600', priceBuy: 2900000, priceRentMonthly: 399000, category: 'eco', tags: ['eco', 'green', 'nature'], isActive: true, sortOrder: 4, isFeatured: false, templateConfig: null },
-  { id: 'mock-5', name: 'Dark Prestige Style', slug: 'dark-prestige', shortDescription: 'Phong c�ch t?i sang tr?ng, uy l?c', description: 'Giao di?n t?i m�u d?ng c?p cho d? �n B�S cao c?p hu?ng kh�ch h�ng VIP.', thumbnail: 'https://images.unsplash.com/photo-1531971589569-0d9370cbe1e5?w=600', priceBuy: 4900000, priceRentMonthly: 799000, category: 'dark', tags: ['dark', 'prestige', 'vip'], isActive: true, sortOrder: 5, isFeatured: true, templateConfig: null },
-  { id: 'mock-6', name: 'Ocean Blue Style', slug: 'ocean-blue', shortDescription: 'Phong c�ch bi?n xanh tuoi m�t', description: 'Website B�S bi?n, ngh? du?ng ven bi?n v?i t�ng xanh duong tuoi s�ng.', thumbnail: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600', priceBuy: 3500000, priceRentMonthly: 499000, category: 'coastal', tags: ['ocean', 'blue', 'coastal'], isActive: true, sortOrder: 6, isFeatured: false, templateConfig: null },
-  { id: 'mock-7', name: 'Industrial Estate Style', slug: 'industrial-estate', shortDescription: 'Chuy�n bi?t cho B�S khu c�ng nghi?p', description: 'Giao di?n chuy�n nghi?p d�nh ri�ng cho m�i gi?i khu c�ng nghi?p, nh� xu?ng.', thumbnail: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600', priceBuy: 3200000, priceRentMonthly: 399000, category: 'industrial', tags: ['industrial', 'factory', 'b2b'], isActive: true, sortOrder: 7, isFeatured: false, templateConfig: null },
-  { id: 'mock-8', name: 'Agency OnePage Style', slug: 'agency-onepage', shortDescription: 'Landing page m?t trang cho agency', description: 'Website m?t trang t?i uu conversion cho s�n m�i gi?i, agency B�S chuy�n nghi?p.', thumbnail: 'https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=600', priceBuy: 2500000, priceRentMonthly: 299000, category: 'onepage', tags: ['agency', 'onepage', 'landing'], isActive: true, sortOrder: 8, isFeatured: false, templateConfig: null },
-  { id: 'mock-9', name: 'Apartment Premium Style', slug: 'apartment-premium', shortDescription: 'Chuy�n bi?t cho can h? cao c?p', description: 'Giao di?n chuy�n bi?t cho d? �n can h? cao c?p, chung cu h?ng sang.', thumbnail: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600', priceBuy: 4200000, priceRentMonthly: 699000, category: 'apartment', tags: ['apartment', 'condo', 'premium'], isActive: true, sortOrder: 9, isFeatured: false, templateConfig: null },
-  { id: 'mock-10', name: 'Villa Luxury Style', slug: 'villa-luxury', shortDescription: 'Chuy�n bi?t cho bi?t th?, villa cao c?p', description: 'Website B�S sang tr?ng d�nh ri�ng cho d? �n bi?t th?, villa ngh? du?ng.', thumbnail: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600', priceBuy: 5500000, priceRentMonthly: 999000, category: 'villa', tags: ['villa', 'luxury', 'resort'], isActive: true, sortOrder: 10, isFeatured: true, templateConfig: null },
-  { id: 'mock-11', name: 'Land Plot Style', slug: 'land-plot', shortDescription: 'Chuy�n bi?t cho d?t n?n, d?t ph�n l�', description: 'Giao di?n t?i uu cho s�n m�i gi?i d?t n?n, d?t ph�n l� d? �n khu d� th?.', thumbnail: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600', priceBuy: 2800000, priceRentMonthly: 349000, category: 'land', tags: ['land', 'plot', 'subdivision'], isActive: true, sortOrder: 11, isFeatured: false, templateConfig: null },
-  { id: 'mock-12', name: 'Office Commercial Style', slug: 'office-commercial', shortDescription: 'Chuy�n cho van ph�ng, thuong m?i', description: 'Website B�S thuong m?i, van ph�ng cho thu� chuy�n nghi?p, uy t�n.', thumbnail: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600', priceBuy: 3100000, priceRentMonthly: 449000, category: 'commercial', tags: ['office', 'commercial', 'rent'], isActive: true, sortOrder: 12, isFeatured: false, templateConfig: null },
+  { id: 'mock-1', name: 'Luxury Gold Style', slug: 'luxury-gold', shortDescription: 'Giao diện sang trọng phong cách vàng cao cấp', description: 'Website BĐS cao cấp với tông màu vàng sang trọng, phù hợp cho dự án hạng A.', thumbnail: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'luxury', tags: ['luxury', 'gold', 'premium'], isActive: true, sortOrder: 1, isFeatured: true, templateConfig: null },
+  { id: 'mock-2', name: 'Minimal White Style', slug: 'minimal-white', shortDescription: 'Thiết kế tối giản, hiện đại, sạch sẽ', description: 'Website BĐS với thiết kế tối giản, trắng tinh tế, phù hợp thương hiệu hiện đại.', thumbnail: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'minimal', tags: ['minimal', 'white', 'modern'], isActive: true, sortOrder: 2, isFeatured: true, templateConfig: null },
+  { id: 'mock-3', name: 'Modern Corporate Style', slug: 'modern-corporate', shortDescription: 'Phong cách doanh nghiệp chuyên nghiệp', description: 'Giao diện doanh nghiệp BĐS chuyên nghiệp, uy tín, phù hợp văn phòng môi giới lớn.', thumbnail: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'corporate', tags: ['corporate', 'professional', 'blue'], isActive: true, sortOrder: 3, isFeatured: false, templateConfig: null },
+  { id: 'mock-4', name: 'Eco Green Style', slug: 'eco-green', shortDescription: 'Phong cách xanh mát, gần gũi thiên nhiên', description: 'Website BĐS xanh, thân thiện thiên nhiên, phù hợp dự án nhà vườn sinh thái.', thumbnail: 'https://images.unsplash.com/photo-1448630360428-65456885c650?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'eco', tags: ['eco', 'green', 'nature'], isActive: true, sortOrder: 4, isFeatured: false, templateConfig: null },
+  { id: 'mock-5', name: 'Dark Prestige Style', slug: 'dark-prestige', shortDescription: 'Phong cách tối sang trọng, uy lực', description: 'Giao diện tối màu đẳng cấp cho dự án BĐS cao cấp hướng khách hàng VIP.', thumbnail: 'https://images.unsplash.com/photo-1531971589569-0d9370cbe1e5?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'dark', tags: ['dark', 'prestige', 'vip'], isActive: true, sortOrder: 5, isFeatured: true, templateConfig: null },
+  { id: 'mock-6', name: 'Ocean Blue Style', slug: 'ocean-blue', shortDescription: 'Phong cách biển xanh tươi mát', description: 'Website BĐS biển, nghỉ dưỡng ven biển với tông xanh dương tươi sáng.', thumbnail: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'coastal', tags: ['ocean', 'blue', 'coastal'], isActive: true, sortOrder: 6, isFeatured: false, templateConfig: null },
+  { id: 'mock-7', name: 'Industrial Estate Style', slug: 'industrial-estate', shortDescription: 'Chuyên biệt cho BĐS khu công nghiệp', description: 'Giao diện chuyên nghiệp dành riêng cho môi giới khu công nghiệp, nhà xưởng.', thumbnail: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'industrial', tags: ['industrial', 'factory', 'b2b'], isActive: true, sortOrder: 7, isFeatured: false, templateConfig: null },
+  { id: 'mock-8', name: 'Agency OnePage Style', slug: 'agency-onepage', shortDescription: 'Landing page một trang cho agency', description: 'Website một trang tối ưu conversion cho sàn môi giới, agency BĐS chuyên nghiệp.', thumbnail: 'https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'onepage', tags: ['agency', 'onepage', 'landing'], isActive: true, sortOrder: 8, isFeatured: false, templateConfig: null },
+  { id: 'mock-9', name: 'Apartment Premium Style', slug: 'apartment-premium', shortDescription: 'Chuyên biệt cho căn hộ cao cấp', description: 'Giao diện chuyên biệt cho dự án căn hộ cao cấp, chung cư hạng sang.', thumbnail: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'apartment', tags: ['apartment', 'condo', 'premium'], isActive: true, sortOrder: 9, isFeatured: false, templateConfig: null },
+  { id: 'mock-10', name: 'Villa Luxury Style', slug: 'villa-luxury', shortDescription: 'Chuyên biệt cho biệt thự, villa cao cấp', description: 'Website BĐS sang trọng dành riêng cho dự án biệt thự, villa nghỉ dưỡng.', thumbnail: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'villa', tags: ['villa', 'luxury', 'resort'], isActive: true, sortOrder: 10, isFeatured: true, templateConfig: null },
+  { id: 'mock-11', name: 'Land Plot Style', slug: 'land-plot', shortDescription: 'Chuyên biệt cho đất nền, đất phân lô', description: 'Giao diện tối ưu cho sàn môi giới đất nền, đất phân lô dự án khu đô thị.', thumbnail: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'land', tags: ['land', 'plot', 'subdivision'], isActive: true, sortOrder: 11, isFeatured: false, templateConfig: null },
+  { id: 'mock-12', name: 'Office Commercial Style', slug: 'office-commercial', shortDescription: 'Chuyên cho văn phòng, thương mại', description: 'Website BĐS thương mại, văn phòng cho thuê chuyên nghiệp, uy tín.', thumbnail: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'commercial', tags: ['office', 'commercial', 'rent'], isActive: true, sortOrder: 12, isFeatured: false, templateConfig: null },
 ];
 
 export async function getTemplates(req: Request, res: Response, next: NextFunction) {
@@ -166,32 +169,34 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
   try {
     const data = createOrderSchema.parse(req.body);
 
-    // 1. Ki?m tra template t?n t?i
-    if (data.templateId.startsWith('mock-')) {
-      return res.status(400).json({
-        success: false,
-        error: {
-          code: 'INVALID_TEMPLATE',
-          message: 'Template ID kh�ng h?p l?.',
-        },
+    // 1. Kiểm tra template tồn tại (tìm theo ID, Slug hoặc Fallback mẫu đầu tiên)
+    let template = await prisma.template.findFirst({
+      where: {
+        OR: [
+          { id: data.templateId },
+          { slug: data.templateId },
+          { slug: data.templateId.replace(/^template-/, '') },
+        ],
+      },
+    });
+
+    if (!template) {
+      template = await prisma.template.findFirst({
+        orderBy: { createdAt: 'asc' },
       });
     }
-
-    const template = await prisma.template.findUnique({
-      where: { id: data.templateId },
-    });
 
     if (!template) {
       return res.status(404).json({
         success: false,
         error: {
           code: 'TEMPLATE_NOT_FOUND',
-          message: 'Template kh�ng t?n t?i trong h? th?ng.',
+          message: 'Hệ thống chưa có mẫu website nào.',
         },
       });
     }
 
-    // 2. N?u l� don thu� (RENT), chu?n h�a subdomain
+    // 2. N?u l don thu (RENT), chu?n ha subdomain
     let normalizedSubdomain = '';
     if (data.type === 'RENT') {
       if (!data.subdomain) {
@@ -214,18 +219,18 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
           success: false,
           error: {
             code: 'SUBDOMAIN_CONFLICT',
-            message: 'T�n mi?n n�y d� c� ngu?i dang k�, vui l�ng ch?n t�n kh�c.',
+            message: 'Tên miền/subdomain này đã có người đăng ký, vui lòng chọn tên khác.',
           },
         });
       }
     }
 
-    // 3. T�nh to�n s? ti?n thanh to�n tuong ?ng
+    // 3. Tính toán số tiền thanh toán tương ứng
     const amount = data.type === 'BUY' 
-      ? (template.priceBuy || 3900000) 
-      : (template.priceRentMonthly || 499000);
+      ? (template.priceBuy || 499000) 
+      : (template.priceRentMonthly || 199000);
 
-    // 4. Sinh m� don h�ng duy nh?t ORD-YYYYMMDD-XXXX
+    // 4. Sinh m don hng duy nh?t ORD-YYYYMMDD-XXXX
     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
     const randomHex = crypto.randomBytes(2).toString('hex').toUpperCase();
     const orderNumber = `ORD-${dateStr}-${randomHex}`;
@@ -241,10 +246,11 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
           phone: data.phone,
           type: data.type,
           status: 'PENDING',
-          templateId: data.templateId,
+          templateId: template.id,
           amount,
           subdomain: normalizedSubdomain || null,
           note: data.note,
+          userId: (req as any).user?.userId || null,
         },
       });
       logger.info(`�� t?o don h�ng m?i trong DB: ${orderNumber} - S? ti?n: ${amount} VN�`);
@@ -292,6 +298,13 @@ export async function uploadPaymentProof(req: Request, res: Response, next: Next
   try {
     const data = uploadPaymentSchema.parse(req.body);
 
+    // [P0-FIX] Auth check
+    const userId = req.user?.userId;
+    const userEmail = req.user?.email;
+    if (!userId) {
+      return res.status(401).json({ success: false, error: { code: "UNAUTHENTICATED", message: "Vui long dang nhap de xac nhan thanh toan." } });
+    }
+
     const order = await prisma.order.findUnique({
       where: { id },
     });
@@ -304,6 +317,11 @@ export async function uploadPaymentProof(req: Request, res: Response, next: Next
           message: '�on h�ng kh�ng t?n t?i tr�n h? th?ng.',
         },
       });
+    }
+
+    // [P0-FIX] Verify order ownership
+    if (order.userId !== userId && order.email !== userEmail && req.user?.role !== "SUPER_ADMIN") {
+      return res.status(403).json({ success: false, error: { code: "FORBIDDEN", message: "Ban khong co quyen thao tac tren don hang nay." } });
     }
 
     if (order.status !== 'PENDING') {
@@ -399,66 +417,351 @@ export async function downloadTemplateSource(req: Request, res: Response, next: 
   const { slug } = req.params;
 
   try {
-    const zip = new AdmZip();
-    // Resolve absolute path to apps/website directory
-    const websiteDir = path.resolve(__dirname, '../../../../website');
-
-    if (!fs.existsSync(websiteDir)) {
-      return res.status(500).json({
-        success: false,
-        error: { code: 'SOURCE_NOT_FOUND', message: 'Không tìm thấy mã nguồn mẫu trên máy chủ.' }
-      });
+    // [P0-FIX] Auth + purchase verification
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, error: { code: "UNAUTHENTICATED", message: "Vui long dang nhap de tai ma nguon." } });
     }
-
-    // Add các file cấu hình Next.js quan trọng
-    const configFiles = ['package.json', 'tsconfig.json', 'tailwind.config.js', 'next.config.js', 'postcss.config.js'];
-    configFiles.forEach(file => {
-      const filePath = path.join(websiteDir, file);
-      if (fs.existsSync(filePath)) {
-        zip.addLocalFile(filePath);
-      }
+    const cleanSlug = slug.toLowerCase().trim();
+    let tpl = await prisma.template.findFirst({
+      where: {
+        OR: [
+          { slug: cleanSlug },
+          { id: cleanSlug },
+          { id: `template-${cleanSlug}` },
+          { slug: cleanSlug.replace('template-', '') },
+        ],
+      },
     });
 
-    // Add thư mục src
-    const srcDir = path.join(websiteDir, 'src');
-    if (fs.existsSync(srcDir)) {
-      zip.addLocalFolder(srcDir, 'src');
+    const targetSlug = tpl?.slug || cleanSlug;
+    const userEmail = req.user?.email;
+
+    const paidOrder = await prisma.order.findFirst({
+      where: {
+        OR: [
+          ...(userId ? [{ userId }] : []),
+          ...(userEmail ? [{ email: userEmail }] : []),
+        ],
+        ...(tpl ? { templateId: tpl.id } : {}),
+        type: "BUY",
+        status: "COMPLETED",
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!paidOrder && req.user?.role !== "SUPER_ADMIN") {
+      return res.status(403).json({ success: false, error: { code: "NO_PURCHASE", message: "Ban chua mua ban quyen mau nay hoac don hang chua hoan tat." } });
     }
 
-    // Tạo file hướng dẫn README.md cá nhân hóa theo template tương ứng
-    const readmeContent = `# ${slug.toUpperCase()} - WEBSITE BẤT ĐỘNG SẢN CHUYÊN NGHIỆP PHÁT TRIỂN BỞI PLATFORMBDS
-
-Bộ mã nguồn Next.js 15, Tailwind CSS, Prisma của bạn đã sẵn sàng!
-
-## Hướng dẫn cài đặt & Khởi chạy nhanh:
-1. Giải nén file source code ZIP này vào một thư mục làm việc.
-2. Mở terminal tại thư mục vừa giải nén và chạy lệnh cài đặt thư viện:
-   \`\`\`bash
-   npm install
-   # hoặc: pnpm install
-   \`\`\`
-3. Cấu hình các biến môi trường trong file \`.env\`.
-4. Khởi chạy máy chủ phát triển ở môi trường local:
-   \`\`\`bash
-   npm run dev
-   # hoặc: pnpm dev
-   \`\`\`
-5. Mở trình duyệt và truy cập: \`http://localhost:3003\`
-
-Chúc bạn kinh doanh thành công cùng PlatformBDS!
-`;
-    zip.addFile('README.md', Buffer.from(readmeContent, 'utf-8'));
-
-    // Trả về file ZIP trực tiếp
-    const zipBuffer = zip.toBuffer();
+    const packageResult = await TemplatePackagingService.generateStandalonePackage({
+      slug: targetSlug,
+      orderNumber: paidOrder?.orderNumber || 'ORD-VIP',
+      customerName: paidOrder?.fullName || (req.user as any)?.fullName || 'Khách Hàng',
+      customerPhone: paidOrder?.phone || (req.user as any)?.phone || '',
+      customerEmail: paidOrder?.email || userEmail || '',
+    });
 
     res.setHeader('Content-Type', 'application/zip');
-    res.setHeader('Content-Disposition', `attachment; filename="${slug}-source-v1.0.0.zip"`);
-    res.setHeader('Content-Length', zipBuffer.length);
-    res.end(zipBuffer);
+    res.setHeader('Content-Disposition', `attachment; filename="${packageResult.fileName}"`);
+    res.setHeader('Content-Length', packageResult.buffer.length);
+    res.end(packageResult.buffer);
 
-    logger.info(`[Marketplace] Tải xuống thành công full source ZIP của template: ${slug}`);
+    logger.info(`[Marketplace] Tải xuống thành công full source ZIP của template: ${slug} (${packageResult.fileName})`);
   } catch (error) {
     next(error);
   }
 }
+
+/**
+ * POST /api/marketplace/orders/:id/quick-approve
+ * Duyet nhanh don hang - Yeu cau xac thuc va phan quyen SUPER_ADMIN / ADMIN
+ */
+export async function quickApproveOrder(req: Request, res: Response, next: NextFunction) {
+  try {
+    return await approveOrder(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * POST /api/marketplace/webhook/sepay
+ * Webhook tự động nhận thông báo biến động số dư từ SePay
+ */
+export async function handleSepayWebhook(req: Request, res: Response, next: NextFunction) {
+  try {
+    const payload = req.body;
+    logger.info(`[SePay Webhook] Received payload: ${JSON.stringify(payload)}`);
+
+    // Payload SePay gồm: content, transferAmount, referenceCode, id, gateway, etc.
+    const content = payload.content || payload.description || '';
+    const transferAmount = Number(payload.transferAmount) || 0;
+    const refCode = payload.referenceCode || String(payload.id || '');
+
+    // 1. Trích xuất mã đơn hàng từ nội dung chuyển khoản (ORD-YYYYMMDD-XXXX hoặc ORD-XXXXX)
+    const match = content.match(/ORD-[A-Za-z0-9-]+/i);
+    if (!match) {
+      logger.warn(`[SePay Webhook] Không tìm thấy mã đơn hàng trong nội dung: "${content}"`);
+      return res.status(200).json({ success: true, message: 'No matching order code in content' });
+    }
+
+    const orderNumber = match[0].toUpperCase();
+    const order = await prisma.order.findUnique({
+      where: { orderNumber },
+      include: { template: true },
+    });
+
+    if (!order) {
+      logger.warn(`[SePay Webhook] Không tìm thấy đơn hàng với mã: ${orderNumber}`);
+      return res.status(200).json({ success: true, message: `Order ${orderNumber} not found` });
+    }
+
+    if (order.status === 'COMPLETED') {
+      logger.info(`[SePay Webhook] Đơn hàng ${orderNumber} đã hoàn tất trước đó.`);
+      return res.status(200).json({ success: true, message: `Order ${orderNumber} already completed` });
+    }
+
+    // 2. Kiểm tra số tiền chuyển
+    if (transferAmount > 0 && transferAmount < order.amount) {
+      logger.warn(`[SePay Webhook] Số tiền chuyển ${transferAmount} nhỏ hơn giá trị đơn ${order.amount}`);
+      await prisma.order.update({
+        where: { id: order.id },
+        data: { adminNotes: `SePay:${refCode} (Chuyển thiếu: ${transferAmount}/${order.amount} VND)` },
+      });
+      return res.status(200).json({ success: true, message: 'Partial payment received' });
+    }
+
+    // 3. Cập nhật trạng thái đơn hàng thành COMPLETED
+    await prisma.order.update({
+      where: { id: order.id },
+      data: {
+        status: 'COMPLETED',
+        transactionCode: `SEPAY_${refCode}`,
+        paidAt: new Date(),
+      },
+    });
+
+    // 4. Tự động khởi tạo Website Instance cho khách hàng
+    const candidateSubdomain = order.subdomain || order.phone.replace(/[^a-zA-Z0-9]/g, '') || `site-${Date.now().toString().slice(-6)}`;
+    const cleanSubdomain = candidateSubdomain.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 30);
+
+    let finalSubdomain = cleanSubdomain;
+    const existingTenant = await prisma.tenant.findUnique({ where: { slug: finalSubdomain } });
+    if (existingTenant) {
+      finalSubdomain = `${cleanSubdomain}-${crypto.randomBytes(2).toString('hex').toLowerCase()}`;
+    }
+
+    const provResult = await websiteProvisioningService.createWebsiteFromTemplate({
+      templateId: order.templateId,
+      customerId: order.userId || undefined,
+      customerEmail: order.email,
+      customerFullName: order.fullName,
+      customerPhone: order.phone,
+      websiteName: `${order.fullName} Real Estate`,
+      slug: finalSubdomain,
+      plan: 'STARTER',
+    });
+
+    logger.info(`[SePay Webhook] Đã tự động duyệt đơn ${orderNumber} và tạo Website Instance thành công: ${finalSubdomain}`);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Payment verified and website provisioned successfully',
+      data: {
+        orderNumber,
+        tenantSlug: finalSubdomain,
+        credentials: provResult.credentials,
+      },
+    });
+  } catch (error) {
+    logger.error(`[SePay Webhook] Error:`, error);
+    return res.status(200).json({ success: false, error: 'Internal webhook error' });
+  }
+}
+
+/**
+ * GET /api/marketplace/orders/:orderNumber/status
+ * Kiểm tra trạng thái đơn hàng realtime cho frontend polling
+ */
+export async function getOrderStatus(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { orderNumber } = req.params;
+    const order = await prisma.order.findUnique({
+      where: { orderNumber },
+      include: { template: { select: { name: true, slug: true, thumbnail: true } } },
+    });
+
+    if (!order) {
+      return res.status(404).json({ success: false, error: { message: 'Không tìm thấy đơn hàng' } });
+    }
+
+    let tenant = null;
+    if (order.status === 'COMPLETED') {
+      // Ưu tiên tìm tenant trực tiếp từ order.tenantId (đáng tin nhất)
+      if (order.tenantId) {
+        tenant = await prisma.tenant.findUnique({
+          where: { id: order.tenantId },
+        });
+      }
+      // Fallback: tìm theo email relationship
+      if (!tenant) {
+        tenant = await prisma.tenant.findFirst({
+          where: {
+            OR: [
+              { users: { some: { email: order.email } } },
+              { memberships: { some: { user: { email: order.email } } } },
+            ],
+          },
+          orderBy: { createdAt: 'desc' },
+        });
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        orderNumber: order.orderNumber,
+        status: order.status,
+        isCompleted: order.status === 'COMPLETED',
+        amount: order.amount,
+        fullName: order.fullName,
+        email: order.email,
+        phone: order.phone,
+        note: order.note,
+        type: order.type,
+        subdomain: order.subdomain,
+        createdAt: order.createdAt,
+        tenantSlug: tenant?.slug,
+        template: order.template,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * POST /api/marketplace/orders/:orderNumber/simulate-payment
+ * Dev test sandbox: Giả lập thanh toán thành công ngay lập tức
+ */
+export async function simulatePayment(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { orderNumber } = req.params;
+    const order = await prisma.order.findUnique({
+      where: { orderNumber },
+      include: { template: true },
+    });
+
+    if (!order) {
+      return res.status(404).json({ success: false, error: { message: 'Không tìm thấy đơn hàng' } });
+    }
+
+    if (order.status === 'COMPLETED') {
+      return res.status(200).json({ success: true, message: 'Đơn hàng đã được thanh toán và kích hoạt trước đó.' });
+    }
+
+    // 1. Cập nhật trạng thái
+    await prisma.order.update({
+      where: { id: order.id },
+      data: {
+        status: 'COMPLETED',
+        transactionCode: `TEST_SANDBOX_${Date.now()}`,
+        paidAt: new Date(),
+      },
+    });
+
+    // 2. Tự động provision website instance
+    const slugifyBrand = (text: string) => {
+      return (text || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/Đ/g, 'd')
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+    };
+
+    let candidateSubdomain = order.subdomain;
+    if (!candidateSubdomain || candidateSubdomain.trim() === '') {
+      const brandSlug = slugifyBrand(order.fullName || '');
+      candidateSubdomain = brandSlug ? `${brandSlug}-land` : `bds-${Date.now().toString().slice(-6)}`;
+    }
+
+    const cleanSubdomain = candidateSubdomain.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 30);
+
+    let finalSubdomain = cleanSubdomain;
+    const existingTenant = await prisma.tenant.findUnique({ where: { slug: finalSubdomain } });
+    if (existingTenant) {
+      finalSubdomain = `${cleanSubdomain}-${crypto.randomBytes(2).toString('hex').toLowerCase()}`;
+    }
+
+    const provResult = await websiteProvisioningService.createWebsiteFromTemplate({
+      templateId: order.templateId,
+      customerId: order.userId || undefined,
+      customerEmail: order.email,
+      customerFullName: order.fullName,
+      customerPhone: order.phone,
+      websiteName: `${order.fullName} Real Estate`,
+      slug: finalSubdomain,
+      plan: 'STARTER',
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Giả lập thanh toán thành công! Website đã được kích hoạt.',
+      data: {
+        orderNumber,
+        tenantSlug: finalSubdomain,
+        credentials: provResult.credentials,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * GET /api/marketplace/orders/my-orders
+ * Khách hàng đã đăng nhập xem lại lịch sử đơn hàng (như TMĐT)
+ */
+export async function getMyOrders(req: Request, res: Response, next: NextFunction) {
+  try {
+    const userId = (req as any).user?.userId;
+    const userEmail = (req as any).user?.email;
+
+    if (!userId && !userEmail) {
+      return res.status(401).json({
+        success: false,
+        error: { code: 'UNAUTHENTICATED', message: 'Vui lòng đăng nhập để xem đơn hàng.' },
+      });
+    }
+
+    // Tìm tất cả đơn hàng theo userId HOẶC email (phòng trường hợp đơn cũ chưa có userId)
+    const orders = await prisma.order.findMany({
+      where: {
+        OR: [
+          ...(userId ? [{ userId }] : []),
+          ...(userEmail ? [{ email: userEmail }] : []),
+        ],
+      },
+      include: {
+        template: {
+          select: { name: true, slug: true, thumbnail: true },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: orders,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+

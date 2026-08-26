@@ -1,4 +1,5 @@
 import { prisma, Prisma } from '@repo/database';
+import { BUSINESS_CONFIG } from '@repo/config';
 import { hash } from 'bcrypt';
 
 // ─── Types ─────────────────────────────────────────────────────────────────
@@ -316,25 +317,30 @@ export class OnboardingService {
         },
       });
 
-      // 10. Create Subscription (link to order if provided)
+      // 10. Activate Trial (NOT subscription — subscription is created after payment)
       const now = new Date();
-      const endDate = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate());
-      await tx.subscription.create({
+      const trialEndAt = new Date(now.getTime() + BUSINESS_CONFIG.TRIAL_DURATION_DAYS * 24 * 60 * 60 * 1000);
+      await tx.tenant.update({
+        where: { id: tenant.id },
         data: {
-          tenantId: tenant.id,
-          orderId: orderId ?? null,
-          plan,
-          status: 'ACTIVE',
-          amount: 0,
-          startDate: now,
-          endDate,
+          trialStartAt: now,
+          trialEndAt,
+          trialSaveLimit: BUSINESS_CONFIG.TRIAL_SAVE_LIMIT,
+          trialSaveCount: 0,
+          trialStatus: BUSINESS_CONFIG.TRIAL_STATUS.ACTIVE,
+          onboardingCompletedAt: new Date(),
         },
       });
 
-      // 11. Mark onboarding complete
-      await tx.tenant.update({
-        where: { id: tenant.id },
-        data: { onboardingCompletedAt: new Date() },
+      // 11. Create TenantMembership for owner
+      await tx.tenantMembership.create({
+        data: {
+          userId: owner.id,
+          tenantId: tenant.id,
+          role: 'OWNER',
+          status: 'ACTIVE',
+          inviteStatus: 'ACTIVE',
+        },
       });
 
       return { tenant, owner };

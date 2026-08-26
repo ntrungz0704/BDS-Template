@@ -214,8 +214,11 @@ export default function MarketplaceHome() {
       if (!dbTpl.modules || (Array.isArray(dbTpl.modules) && dbTpl.modules.length === 0)) {
         merged.modules = original.modules;
       }
-      if (!dbTpl.benefits || (Array.isArray(dbTpl.benefits) && dbTpl.benefits.length === 0)) {
-        merged.benefits = original.benefits;
+      if (!dbTpl.priceBuySource) {
+        merged.priceBuySource = (original as any)?.priceBuySource || (original as any)?.price || 799000;
+      }
+      if (!dbTpl.priceBuy) {
+        merged.priceBuy = (original as any)?.priceBuy || (original as any)?.price || 499000;
       }
 
       mergedTemplates[idx] = merged;
@@ -533,16 +536,6 @@ export default function MarketplaceHome() {
                 <span className="opacity-70 text-[12px] font-semibold">({tab.count})</span>
               </button>
             ))}
-            <div className="ml-auto flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2">
-              <Search className="w-3.5 h-3.5 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Tìm kiếm..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                className="text-[12px] outline-none w-36 placeholder-slate-300 font-medium"
-              />
-            </div>
           </div>
 
           {/* Grid */}
@@ -823,7 +816,7 @@ export default function MarketplaceHome() {
                 if (user) {
                   router.push('/templates?plan=trial');
                 } else {
-                  openAuthModal('register');
+                  router.push('/register');
                 }
               }}
               className="h-12 px-8 rounded-xl bg-white text-[#2563EB] font-black text-sm hover:scale-105 transition-transform shadow-lg"
@@ -839,7 +832,6 @@ export default function MarketplaceHome() {
       </section>
 
       <Footer />
-      <FloatingButtons />
 
       {/* ── DETAILS MODAL ── */}
       {activeDetailsTemplate && (

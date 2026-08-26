@@ -26,8 +26,8 @@ export default function PricingPage() {
       a: "Hoàn toàn được! Đội ngũ PlatformBDS hỗ trợ kích hoạt Hosting tốc độ cao và cấu hình trỏ tên miền riêng thương hiệu (.com, .vn) của bạn chỉ trong vòng 10-15 phút làm việc."
     },
     {
-      q: "Gói bảo trì website 299.000đ/tháng hỗ trợ những gì?",
-      a: "Đội ngũ kỹ thuật sẽ thực hiện kiểm tra bảo mật định kỳ, tự động sao lưu dữ liệu toàn bộ tin đăng hàng tuần, xử lý nhanh mọi lỗi phát sinh khi vận hành và tối ưu hóa tốc độ tải trang giúp website của bạn luôn chạy mượt mà."
+      q: "Gói bảo trì website 299.000đ/năm hỗ trợ những gì?",
+      a: "Đội ngũ kỹ thuật sẽ thực hiện kiểm tra bảo mật định kỳ, tự động sao lưu dữ liệu toàn bộ tin đăng hàng tuần, xử lý nhanh mọi lỗi phát sinh khi vận hành và tối ưu hóa tốc độ tải trang giúp website của bạn luôn chạy mượt mà trong suốt 12 tháng."
     },
     {
       q: "Tôi đã có sẵn Hosting và Tên miền riêng, tôi có thể chỉ mua gói thiết kế không?",
@@ -151,7 +151,7 @@ export default function PricingPage() {
                     <h3 className="text-base font-extrabold text-slate-900 mb-2">BẢO TRÌ WEBSITE</h3>
                     <div className="mb-4">
                       <span className="text-2xl font-black text-slate-900">299.000đ</span>
-                      <span className="text-[10px] font-bold text-emerald-600 ml-1">/ THÁNG</span>
+                      <span className="text-[10px] font-bold text-emerald-600 ml-1">/ NĂM</span>
                     </div>
                     <ul className="space-y-2.5 text-xs text-slate-650 font-medium mb-6">
                       <li className="flex items-start gap-2">

@@ -392,6 +392,8 @@ const LIST_TIMELINE = [
 ];
 
 export default function ApartmentTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
+  const brandPrimary = dynamicTheme?.primaryColor || '#7C3AED';
+  const brandAccent = dynamicTheme?.accentColor || '#A78BFA';
   // Dynamic Posts Override & Shadowing Variable via globalThis reference
   const activePosts = posts && posts.length > 0
     ? posts.map((p, index) => ({
@@ -460,7 +462,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
     if (typeof setSelectedArticle === "function") setSelectedArticle(null);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
+      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
     }
   };
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -517,9 +519,14 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
   const renderHeader = () => (
     <header className="bg-white sticky top-0 z-50 shadow-sm" style={fontBody}>
       <div className={`${MAX_W} px-4 py-4 flex justify-between items-center`}>
-        <div className="flex items-center gap-2 text-violet-600 font-bold text-2xl cursor-pointer" onClick={() => navigateTo('home')} style={fontHeading}>
-          <Building2 size={32} />
-          <span>SmartUrban</span>
+        <div className="flex items-center gap-2 text-violet-600 font-bold cursor-pointer text-left" onClick={() => navigateTo('home')} style={fontHeading}>
+          <Building2 size={32} className="shrink-0" />
+          <div>
+            <span className="text-xl sm:text-2xl uppercase block leading-none">{company?.name || template?.name || 'SmartUrban'}</span>
+            {company?.slogan && (
+              <span className="text-[10px] text-violet-400 uppercase font-semibold tracking-wider block mt-1">{company.slogan}</span>
+            )}
+          </div>
         </div>
         {!isSmall ? (
           <nav className="flex gap-8 items-center font-medium text-slate-600">
@@ -1066,9 +1073,9 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
         <div>
           <h4 className="text-white font-bold text-xl mb-8" style={fontHeading}>Thông Tin Liên Hệ</h4>
           <ul className="space-y-6 opacity-90">
-            <li className="flex items-start gap-4"><MapPin size={24} className="shrink-0 text-amber-500" /> <span>Số 1 Đại lộ Mới, Quận Trung Tâm, TP.HCM</span></li>
-            <li className="flex items-center gap-4"><Phone size={24} className="shrink-0 text-amber-500" /> <span className="font-bold text-white text-lg">1800 9999</span></li>
-            <li className="flex items-center gap-4"><Mail size={24} className="shrink-0 text-amber-500" /> <span>info@smarturban.vn</span></li>
+            <li className="flex items-start gap-4"><MapPin size={24} className="shrink-0 text-amber-500" /> <span>{company?.address || company?.address || 'Số 1 Đại lộ Mới, Quận Trung Tâm, TP.HCM'}</span></li>
+            <li className="flex items-center gap-4"><Phone size={24} className="shrink-0 text-amber-500" /> <span className="font-bold text-white text-lg">{company?.phone || company?.hotline || company?.phone || company?.hotline || '1800 9999'}</span></li>
+            <li className="flex items-center gap-4"><Mail size={24} className="shrink-0 text-amber-500" /> <span>{company?.email || company?.email || 'info@smarturban.vn'}</span></li>
           </ul>
         </div>
         <div>
@@ -1625,7 +1632,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               <div className="bg-violet-100 p-4 rounded-2xl text-violet-600 shrink-0"><MapPin size={28}/></div>
               <div>
                 <h4 className="font-bold text-violet-950 text-lg mb-2">Địa chỉ nhà mẫu</h4>
-                <p className="text-slate-600 leading-relaxed">Số 1 Đại lộ Mới, Quận Trung Tâm, TP.HCM</p>
+                <p className="text-slate-600 leading-relaxed">{company?.address || company?.address || 'Số 1 Đại lộ Mới, Quận Trung Tâm, TP.HCM'}</p>
               </div>
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-violet-100 flex items-start gap-5 hover:shadow-md transition">
@@ -1639,7 +1646,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               <div className="bg-violet-100 p-4 rounded-2xl text-violet-600 shrink-0"><Mail size={28}/></div>
               <div>
                 <h4 className="font-bold text-violet-950 text-lg mb-2">Email liên hệ</h4>
-                <p className="text-slate-600 leading-relaxed">info@smarturban.vn</p>
+                <p className="text-slate-600 leading-relaxed">{company?.email || company?.email || 'info@smarturban.vn'}</p>
               </div>
             </div>
           </div>

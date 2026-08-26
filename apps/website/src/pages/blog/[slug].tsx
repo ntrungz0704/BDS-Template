@@ -11,14 +11,15 @@ import { demoBlogs } from '../../utils/demoData';
 
 interface BlogDetailProps {
   company: any;
+  post?: any;
   blogSlug: string;
   tenantSlug: string;
   error?: string;
 }
 
-export default function PublicBlogDetail({ company, blogSlug, tenantSlug, error }: BlogDetailProps) {
-  // Find blog in mock database
-  const blog = demoBlogs.find((b) => b.slug === blogSlug) || demoBlogs[0];
+export default function PublicBlogDetail({ company, post, blogSlug, tenantSlug, error }: BlogDetailProps) {
+  // Use real post from API if available, otherwise find in mock or show error
+  const blog = post || demoBlogs.find((b) => b.slug === blogSlug) || demoBlogs[0];
 
   const [copied, setCopied] = useState(false);
   const copyLink = () => {
@@ -30,14 +31,14 @@ export default function PublicBlogDetail({ company, blogSlug, tenantSlug, error 
   const primaryColor = '#C5A572'; // Luxury color
 
   const relatedBlogs = demoBlogs
-    .filter((b) => b.slug !== blog.slug)
+    .filter((b) => b.slug !== blog?.slug)
     .slice(0, 3);
 
   return (
     <div className="min-h-screen bg-[#F8F6F3] text-slate-900 pb-12 font-sans">
       <Head>
-        <title>{blog.title} | Góc tin tức BĐS</title>
-        <meta name="description" content={blog.summary} />
+        <title>{blog?.title || 'Bài viết'} | Góc tin tức BĐS</title>
+        <meta name="description" content={blog?.summary || blog?.title || ''} />
       </Head>
 
       {/* HEADER */}
@@ -209,16 +210,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
   try {
-    const [compRes, themeRes] = await Promise.allSettled([
-      axios.get(`${API_URL}/api/website/${tenantSlug}/company-info`, { timeout: 2000 }),
-      axios.get(`${API_URL}/api/website/${tenantSlug}/theme`, { timeout: 2000 }),
+    const [compRes, themeRes, postRes] = await Promise.allSettled([
+      axios.get(`${API_URL}/api/website/${tenantSlug}/company-info`, { timeout: 3000 }),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/theme`, { timeout: 3000 }),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/posts/${slug}`, { timeout: 3000 }),
     ]);
     const company = compRes.status === 'fulfilled' ? compRes.value.data.data : null;
     const theme = themeRes.status === 'fulfilled' ? themeRes.value.data.data : null;
+    const post = postRes.status === 'fulfilled' ? postRes.value.data.data : null;
     const fallback = { name: tenantSlug.toUpperCase().replace(/-/g, ' ') + ' LAND', phone: '0983 312 219', email: `contact@${tenantSlug}.vn` };
     return {
       props: {
         company: company || fallback,
+        post: post || null,
         blogSlug: slug,
         tenantSlug,
         theme: theme || null,
@@ -229,6 +233,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       props: {
         company: { name: tenantSlug.toUpperCase().replace(/-/g, ' ') + ' LAND', phone: '0983 312 219', email: `contact@${tenantSlug}.vn` },
+        post: null,
         blogSlug: slug,
         tenantSlug,
         theme: null,

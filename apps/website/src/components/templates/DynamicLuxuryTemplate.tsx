@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Crown, Star, Phone, Mail, Clock, Building2, Users, ArrowRight, Menu, X, ChevronRight, Download } from 'lucide-react';
 
 interface DynamicLuxuryTemplateProps {

@@ -18,3 +18,4 @@ export function formatVND(amount: number): string {
 }
 
 export * from './template-configs';
+export * from './vietnam-addresses';

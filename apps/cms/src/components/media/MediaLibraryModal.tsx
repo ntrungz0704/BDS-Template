@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import axios from 'axios';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 interface MediaAsset {
   id: string;
@@ -36,16 +39,11 @@ export const MediaLibraryModal: React.FC<{ isOpen: boolean; onClose: () => void;
 
   const fetchMedia = async () => {
     try {
-      const url = currentFolder ? `/api/cms/media?folderId=${currentFolder}` : '/api/cms/media';
-      const res = await fetch(url, {
-        headers: {
-          'x-tenant-id': 'dev-tenant', // Should come from context
-        },
-      });
-      const data = await res.json();
-      if (data.success) {
-        setAssets(data.data.assets);
-        setFolders(data.data.folders);
+      const url = currentFolder ? `${API_URL}/api/cms/media?folderId=${currentFolder}` : `${API_URL}/api/cms/media`;
+      const res = await axios.get(url, { withCredentials: true });
+      if (res.data?.success) {
+        setAssets(res.data.data.assets || []);
+        setFolders(res.data.data.folders || []);
       }
     } catch (err) {
       console.error('Failed to fetch media', err);
@@ -63,12 +61,9 @@ export const MediaLibraryModal: React.FC<{ isOpen: boolean; onClose: () => void;
         if (currentFolder) {
           formData.append('folderId', currentFolder);
         }
-        return fetch('/api/cms/media/upload', {
-          method: 'POST',
-          headers: {
-            'x-tenant-id': 'dev-tenant',
-          },
-          body: formData,
+        return axios.post(`${API_URL}/api/cms/media/upload`, formData, {
+          withCredentials: true,
+          headers: { 'Content-Type': 'multipart/form-data' },
         });
       });
       await Promise.all(uploadPromises);

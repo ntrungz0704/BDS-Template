@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Link from 'next/link';
 import AdminLayout from '../components/AdminLayout';
+import { formatVND } from '@repo/utils';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -32,46 +33,125 @@ export default function AdminDashboard() {
     );
   }
 
-  const stats = statsRes?.data || { totalTenants: 0, totalOrders: 0, totalRevenue: 0, recentOrders: [] };
+  const stats = statsRes?.data || { 
+    totalTenants: 0, 
+    activeTenants: 0,
+    activeTrials: 0,
+    expiringTrials: 0,
+    expiredTrials: 0,
+    activeSubscriptions: 0,
+    totalUsers: 0,
+    totalOrders: 0, 
+    totalRevenue: 0, 
+    recentOrders: [] 
+  };
 
   return (
-    <AdminLayout title="Tổng Quan Hệ Thống" subtitle="Theo dõi hoạt động kinh doanh và kích hoạt các văn phòng bất động sản SaaS.">
+    <AdminLayout title="Tổng Quan Hệ Thống" subtitle="Trung tâm giám sát toàn bộ hoạt động kinh doanh và vận hành của nền tảng PlatformBDS SaaS.">
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 mb-10">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
         {/* Stat 1 */}
-        <div className="rounded-2xl bg-white p-8 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+        <div className="rounded-2xl bg-white p-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all">
           <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Tổng Doanh Thu</span>
-          <div className="mt-4 flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-slate-900 tracking-tight">
-              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(stats.totalRevenue)}
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="text-2xl font-black text-slate-900 tracking-tight">
+              {formatVND(stats.totalRevenue)}
             </span>
           </div>
+          <p className="text-xs text-emerald-600 font-semibold mt-2">Từ các đơn hàng đã thanh toán</p>
         </div>
 
         {/* Stat 2 */}
-        <div className="rounded-2xl bg-white p-8 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Website Khách Thuê (Tenants)</span>
-          <div className="mt-4 flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-slate-900 tracking-tight">{stats.totalTenants}</span>
-            <span className="text-xs font-bold text-indigo-500">website active</span>
+        <div className="rounded-2xl bg-white p-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all">
+          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Website Đang Hoạt Động</span>
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="text-2xl font-black text-indigo-600 tracking-tight">{stats.activeTenants}</span>
+            <span className="text-xs font-bold text-slate-500">/ {stats.totalTenants} tổng website</span>
           </div>
+          <p className="text-xs text-indigo-600 font-semibold mt-2">{stats.activeSubscriptions} gói thuê năm</p>
         </div>
 
         {/* Stat 3 */}
-        <div className="rounded-2xl bg-white p-8 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Tổng Số Đơn Hàng</span>
-          <div className="mt-4 flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-slate-900 tracking-tight">{stats.totalOrders}</span>
-            <span className="text-xs font-bold text-amber-500">giao dịch</span>
+        <div className="rounded-2xl bg-white p-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all">
+          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Website Đang Dùng Thử</span>
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="text-2xl font-black text-amber-600 tracking-tight">{stats.activeTrials}</span>
+            <span className="text-xs font-bold text-amber-600">trial</span>
           </div>
+          <p className="text-xs text-amber-600 font-semibold mt-2">{stats.expiringTrials} trial sắp hết hạn (&lt;24h)</p>
+        </div>
+
+        {/* Stat 4 */}
+        <div className="rounded-2xl bg-white p-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all">
+          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Tổng Giao Dịch</span>
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="text-2xl font-black text-slate-900 tracking-tight">{stats.totalOrders}</span>
+            <span className="text-xs font-bold text-slate-500">đơn hàng</span>
+          </div>
+          <p className="text-xs text-slate-500 font-semibold mt-2">{stats.totalUsers} khách hàng</p>
+        </div>
+      </div>
+
+      {/* Quick Actions Bar */}
+      <div className="mb-8">
+        <h3 className="text-xs font-extrabold uppercase text-slate-400 tracking-wider mb-3">Thao Tác Nhanh Quản Trị</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <Link
+            href="/customers"
+            className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg group-hover:scale-105 transition-transform">
+              👤
+            </div>
+            <div>
+              <p className="text-xs font-bold text-slate-800">Tạo Khách Hàng</p>
+              <p className="text-[10px] text-slate-400">Cấp tài khoản & Trial</p>
+            </div>
+          </Link>
+
+          <Link
+            href="/tenants"
+            className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg group-hover:scale-105 transition-transform">
+              🌐
+            </div>
+            <div>
+              <p className="text-xs font-bold text-slate-800">Tạo Website Mới</p>
+              <p className="text-[10px] text-slate-400">Khởi tạo tenant</p>
+            </div>
+          </Link>
+
+          <Link
+            href="/templates"
+            className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-amber-200 transition-all group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-lg group-hover:scale-105 transition-transform">
+              🎨
+            </div>
+            <div>
+              <p className="text-xs font-bold text-slate-800">Quản Lý Template</p>
+              <p className="text-[10px] text-slate-400">16+ Mẫu & Giá bán</p>
+            </div>
+          </Link>
+
+          <Link
+            href="/orders"
+            className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-rose-200 transition-all group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-lg group-hover:scale-105 transition-transform">
+              💳
+            </div>
+            <div>
+              <p className="text-xs font-bold text-slate-800">Xét Duyệt Đơn Hàng</p>
+              <p className="text-[10px] text-slate-400">Kích hoạt chuyển khoản</p>
+            </div>
+          </Link>
         </div>
       </div>
 
       {/* Recent Orders Table */}
-      <div className="rounded-2xl bg-white shadow-sm border border-slate-100 overflow-hidden">
+      <div className="rounded-2xl bg-white shadow-sm border border-slate-200 overflow-hidden">
         <div className="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
           <h3 className="text-sm font-extrabold text-slate-800 uppercase tracking-wider">Giao Dịch Gần Đây</h3>
           <Link href="/orders" className="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-all flex items-center gap-1">
@@ -112,7 +192,7 @@ export default function AdminDashboard() {
                     {order.type === 'BUY' ? 'Mua Source Code' : 'Thuê Subdomain'}
                   </td>
                   <td className="px-8 py-4 font-extrabold text-slate-800">
-                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.amount)}
+                    {formatVND(order.amount)}
                   </td>
                   <td className="px-8 py-4">
                     <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${

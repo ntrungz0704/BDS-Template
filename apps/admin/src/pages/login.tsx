@@ -23,6 +23,7 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<LoginFields>({
     resolver: zodResolver(loginSchema),
@@ -143,6 +144,20 @@ export default function LoginPage() {
               </span>
             ) : 'Đăng Nhập Quản Trị'}
           </button>
+
+          {/* Quick Fill Button */}
+          <div className="pt-2 text-center">
+            <button
+              type="button"
+              onClick={() => {
+                setValue('email', 'admin@platformbds.vn');
+                setValue('password', 'adminsuper@123456');
+              }}
+              className="text-xs text-indigo-400/90 hover:text-indigo-300 hover:underline inline-flex items-center gap-1.5 transition-colors"
+            >
+              <span>🔑 Điền nhanh tài khoản Admin mẫu</span>
+            </button>
+          </div>
         </form>
       </div>
     </div>

@@ -299,6 +299,8 @@ const GALLERY_ITEMS: GalleryItem[] = [
 ];
 
 export default function AuctionTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
+  const brandPrimary = dynamicTheme?.primaryColor || '#DC2626';
+  const brandAccent = dynamicTheme?.accentColor || '#EF4444';
   // Dynamic Posts Override & Shadowing Variable via globalThis reference
   const activePosts = posts && posts.length > 0
     ? posts.map((p, index) => ({
@@ -367,7 +369,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
     if (typeof setSelectedArticle === "function") setSelectedArticle(null);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
+      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
     }
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -1542,7 +1544,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                     <MapPin className="text-red-500 shrink-0 mt-1" size={20} />
                     <div>
                       <p className="font-bold uppercase tracking-wider text-sm text-gray-300">Địa chỉ</p>
-                      <p className="text-gray-400 text-sm font-medium">123 Đường Đấu Giá, Phường Bình An, Quận 2, TP.HCM</p>
+                      <p className="text-gray-400 text-sm font-medium">{company?.address || company?.address || '123 Đường Đấu Giá, Phường Bình An, Quận 2, TP.HCM'}</p>
                     </div>
                   </li>
                   <li className="flex items-start gap-4">
@@ -1556,7 +1558,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                     <Mail className="text-red-500 shrink-0 mt-1" size={20} />
                     <div>
                       <p className="font-bold uppercase tracking-wider text-sm text-gray-300">Email nhận hồ sơ</p>
-                      <p className="text-gray-400 text-sm font-medium">contact@auctionbds.vn</p>
+                      <p className="text-gray-400 text-sm font-medium">{company?.email || company?.email || 'contact@auctionbds.vn'}</p>
                     </div>
                   </li>
                 </ul>
@@ -1676,11 +1678,11 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
         <div className="bg-gray-900 text-white py-1">
           <div className={`${MAX_W} px-4 mx-auto flex justify-between items-center text-xs font-medium uppercase tracking-wider`}>
             <div className="flex gap-4">
-              <span className="flex items-center gap-1"><Phone size={12} className="text-red-500" /> 1900 6868</span>
-              <span className="hidden sm:flex items-center gap-1"><Mail size={12} className="text-red-500" /> contact@auctionbds.vn</span>
+              <span className="flex items-center gap-1"><Phone size={12} className="text-red-500" /> {company?.phone || '1900 6868'}</span>
+              <span className="hidden sm:flex items-center gap-1"><Mail size={12} className="text-red-500" /> {company?.email || 'contact@auctionbds.vn'}</span>
             </div>
             <div className="flex gap-4">
-              <span className="hidden sm:inline-block text-gray-400">Giờ làm việc: 08:00 - 17:30</span>
+              <span className="hidden sm:inline-block text-gray-400">{company?.workingHours || 'Giờ làm việc: 08:00 - 17:30'}</span>
               <div className="flex items-center gap-2 text-red-500">
                 <Facebook size={12} className="hover:text-white cursor-pointer" />
                 <Instagram size={12} className="hover:text-white cursor-pointer" />
@@ -1691,14 +1693,21 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
         </div>
         <div className={`${MAX_W} px-4 mx-auto h-20 flex items-center justify-between`}>
           <div 
-            className="flex items-center gap-2 cursor-pointer group"
+            className="flex items-center gap-2 cursor-pointer group text-left"
             onClick={() => navigateTo('home')}
           >
-            <div className="w-10 h-10 bg-red-600 text-white rounded-lg flex items-center justify-center transform group-hover:rotate-12 transition-transform shadow-lg shadow-red-600/30">
+            <div className="w-10 h-10 bg-red-600 text-white rounded-lg flex items-center justify-center transform group-hover:rotate-12 transition-transform shadow-lg shadow-red-600/30 shrink-0">
               <Gavel size={24} />
             </div>
-            <div className="font-['Barlow_Condensed'] font-bold text-2xl uppercase tracking-tighter text-gray-900">
-              Platform<span className="text-red-600">BDS</span>
+            <div>
+              <div className="font-['Barlow_Condensed'] font-bold text-2xl uppercase tracking-tighter text-gray-900 leading-none">
+                {company?.name || template?.name || 'PlatformBDS'}
+              </div>
+              {company?.slogan && (
+                <div className="text-[10px] text-red-600 font-semibold tracking-wider uppercase">
+                  {company.slogan}
+                </div>
+              )}
             </div>
           </div>
 

@@ -22,12 +22,14 @@ import {
   Minimize2,
   Share2,
   ShoppingBag,
+  ShoppingCart,
   Eye,
   EyeOff,
   ChevronRight,
   Zap,
   Check,
 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 export type ViewportType = 'desktop' | 'tablet' | 'mobile';
 
@@ -70,6 +72,7 @@ export default function PreviewToolbar({
   className = '',
 }: PreviewToolbarProps) {
   const router = useRouter();
+  const { addToCart } = useAuth();
   const [copied, setCopied] = useState(false);
   const [toolbarVisible, setToolbarVisible] = useState(true);
 
@@ -94,9 +97,14 @@ export default function PreviewToolbar({
     onHide?.();
   }, [onHide]);
 
+  const handleAddToCart = useCallback(() => {
+    addToCart(template, 'BUY');
+  }, [addToCart, template]);
+
   const handleBuyNow = useCallback(() => {
-    router.push(`/?order=${template.slug}`);
-  }, [router, template.slug]);
+    addToCart(template, 'BUY');
+    router.push('/cart');
+  }, [addToCart, template, router]);
 
   const handleTrial = useCallback(() => {
     router.push(`/?trial=${template.slug}`);
@@ -227,13 +235,14 @@ export default function PreviewToolbar({
         {/* Divider */}
         <div className="h-6 w-px bg-slate-700 hidden sm:block" />
 
-        {/* Trial CTA */}
+        {/* Add to Cart CTA */}
         <button
-          onClick={handleTrial}
-          className="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 border border-slate-600 text-white text-xs font-bold transition-all duration-150 items-center gap-1.5 hidden lg:flex"
+          onClick={handleAddToCart}
+          className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white text-xs font-bold transition-all duration-150 items-center gap-1.5 flex"
+          title="Thêm mẫu này vào giỏ hàng"
         >
-          <Eye className="w-3.5 h-3.5" />
-          <span>Dùng thử</span>
+          <ShoppingCart className="w-3.5 h-3.5 text-blue-400" />
+          <span className="hidden md:inline">Thêm giỏ</span>
         </button>
 
         {/* Buy CTA — primary action */}

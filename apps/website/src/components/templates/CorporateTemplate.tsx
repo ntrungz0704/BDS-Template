@@ -1,4 +1,4 @@
-import Image from 'next/image';
+﻿import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
@@ -65,7 +65,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
     setActivePageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
+      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
     }
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -75,11 +75,11 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
 
   const colors = {
-    header: '#0B1D3A',
-    body: '#F8FAFC',
-    surface: '#FFFFFF',
-    primary: '#0F4C81',
-    accent: '#E8C547',
+    header: dynamicTheme?.secondaryColor || '#0B1D3A',
+    body: dynamicTheme?.backgroundColor || '#F8FAFC',
+    surface: dynamicTheme?.surfaceColor || '#FFFFFF',
+    primary: dynamicTheme?.primaryColor || '#0F4C81',
+    accent: dynamicTheme?.accentColor || '#E8C547',
     text: '#1E293B',
     muted: '#64748B',
     border: '#E2E8F0',
@@ -110,11 +110,11 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
         <div className="flex space-x-6">
           <div className="flex items-center space-x-2">
             <Phone size={14} style={{ color: colors.accent }} />
-            <span>+84 (0) 24 3828 9999</span>
+            <span>{company?.phone || company?.hotline || company?.phone || company?.hotline || '+84 (0) 24 3828 9999'}</span>
           </div>
           <div className="flex items-center space-x-2">
             <Mail size={14} style={{ color: colors.accent }} />
-            <span>contact@vinacorporate.vn</span>
+            <span>{company?.email || company?.email || 'contact@vinacorporate.vn'}</span>
           </div>
           <div className="flex items-center space-x-2">
             <Clock size={14} style={{ color: colors.accent }} />
@@ -139,8 +139,8 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           <div className="flex items-center cursor-pointer" onClick={() => handleNavClick('home')}>
             <Building2 size={32} style={{ color: colors.primary }} className="mr-2" />
             <div>
-              <h1 className="font-bold text-2xl tracking-tight leading-none" style={{ color: colors.primary, fontFamily: fonts.heading }}>VINACORP</h1>
-              <p className="text-[10px] tracking-widest uppercase font-semibold" style={{ color: colors.accent }}>Real Estate Group</p>
+              <h1 className="font-bold text-2xl tracking-tight leading-none" style={{ color: colors.primary, fontFamily: fonts.heading }}>{company?.name || 'VINACORP'}</h1>
+              <p className="text-[10px] tracking-widest uppercase font-semibold" style={{ color: colors.accent }}>{company?.slogan || 'Real Estate Group'}</p>
             </div>
           </div>
           
@@ -396,11 +396,11 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <div className="p-2 bg-white/20 rounded-full"><Phone size={20} /></div>
-                  <span className="font-bold text-xl">+84 24 3828 9999</span>
+                  <span className="font-bold text-xl">{company?.phone || company?.hotline || company?.phone || company?.hotline || '+84 24 3828 9999'}</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="p-2 bg-white/20 rounded-full"><Mail size={20} /></div>
-                  <span className="font-bold text-xl">invest@vinacorporate.vn</span>
+                  <span className="font-bold text-xl">{company?.email || company?.email || 'invest@vinacorporate.vn'}</span>
                 </div>
               </div>
             </div>
@@ -514,11 +514,11 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
               </div>
               <div className="flex items-center space-x-4">
                 <Phone className="text-blue-800" />
-                <p>+84 (0) 24 3828 9999</p>
+                <p>{company?.phone || company?.hotline || company?.phone || company?.hotline || '+84 (0) 24 3828 9999'}</p>
               </div>
               <div className="flex items-center space-x-4">
                 <Mail className="text-blue-800" />
-                <p>contact@vinacorporate.vn</p>
+                <p>{company?.email || company?.email || 'contact@vinacorporate.vn'}</p>
               </div>
             </div>
           </div>
@@ -607,11 +607,11 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
               </li>
               <li className="flex items-center space-x-3">
                 <Phone size={18} className="shrink-0" style={{ color: colors.accent }} />
-                <span>+84 (0) 24 3828 9999</span>
+                <span>{company?.phone || company?.hotline || company?.phone || company?.hotline || '+84 (0) 24 3828 9999'}</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail size={18} className="shrink-0" style={{ color: colors.accent }} />
-                <span>contact@vinacorporate.vn</span>
+                <span>{company?.email || company?.email || 'contact@vinacorporate.vn'}</span>
               </li>
             </ul>
           </div>

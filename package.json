@@ -14,8 +14,11 @@
     "clean": "turbo clean"
   },
   "devDependencies": {
+    "prettier": "^3.2.5",
     "turbo": "^1.13.0",
-    "typescript": "^5.3.3",
-    "prettier": "^3.2.5"
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "puppeteer": "^25.9.0"
   }
 }

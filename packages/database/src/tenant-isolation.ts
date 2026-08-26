@@ -23,10 +23,10 @@ export const tenantIsolationExtension = Prisma.defineExtension((client) => {
           // Check if model has a tenantId field by inspecting typical models
           // (Can be optimized or statically checked, but Prisma args manipulation is standard)
           const tenantModels = [
-            'Project', 'Post', 'Category', 'Tag', 'Banner', 'Menu', 'MenuItem',
+            'Project', 'Post', 'Category', 'Tag', 'Banner', 'Menu',
             'CompanyInfo', 'SeoConfig', 'Media', 'ContactFormSubmission',
             'TenantThemeSettings', 'TenantPage', 'TenantSection', 'MediaFolder',
-            'MediaAsset', 'MediaUsage', 'MediaRecycleBin',
+            'MediaAsset', 'MediaRecycleBin',
             // Lead CRM
             'Lead', 'LeadNote', 'LeadActivity',
             // External Integrations

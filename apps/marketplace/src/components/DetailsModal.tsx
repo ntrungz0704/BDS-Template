@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import { X, Check, ChevronLeft, ChevronRight, ShoppingCart, Play, Monitor, Tablet, Smartphone, ChevronDown, Building, Users, Zap, Globe, BarChart3, Shield, Headphones, Star } from 'lucide-react';
 import { getTemplateDemoUrl } from '../utils/demo';
+import { useAuth } from '../context/AuthContext';
 
 interface Template {
   id: string;
@@ -198,6 +200,9 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
   const shots = extra.screenshots;
   const accent = extra.accentColor;
 
+  const router = useRouter();
+  const { addToCart } = useAuth();
+
   const fmt = (v: number) =>
     new Intl.NumberFormat('vi-VN').format(v) + 'đ';
 
@@ -387,14 +392,18 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
               <div className="rounded-xl border p-4" style={{ borderColor: accent + '30', backgroundColor: '#fff' }}>
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Giá dịch vụ</p>
 
-                <div className="mb-1">
-                  <span className="text-[10px] text-slate-400">Thuê SaaS</span>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-black" style={{ color: accent }}>{fmt(template.priceRentMonthly)}</span>
-                    <span className="text-xs text-slate-400">/tháng</span>
+                <div className="mb-3">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <span className="text-xs text-slate-400 line-through font-semibold">799.000đ</span>
+                    <span className="text-[10px] bg-rose-50 text-rose-600 font-extrabold px-1.5 py-0.5 rounded border border-rose-200">
+                      Ưu đãi -38%
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl font-black text-blue-600">499.000đ</span>
+                    <span className="text-xs text-slate-500 font-bold">/ trọn gói</span>
                   </div>
                 </div>
-                <p className="text-[11px] text-slate-400 mb-4">Mua đứt nguồn: <span className="font-bold text-slate-600">{fmt(template.priceBuy)}</span></p>
 
                 <div className="space-y-2">
                   <button
@@ -406,15 +415,22 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
                   </button>
                   <div className="grid grid-cols-2 gap-2">
                     <button
-                      onClick={() => { onSelect(template, 'BUY'); onClose(); }}
+                      onClick={() => {
+                        addToCart(template, 'BUY');
+                        onClose();
+                        router.push('/cart');
+                      }}
                       className="h-10 text-[13px] font-bold rounded-xl text-white flex items-center justify-center gap-1.5 transition-all hover:opacity-90 shadow-md"
                       style={{ backgroundColor: accent }}
                     >
                       <Zap className="w-3.5 h-3.5" /> Mua ngay
                     </button>
                     <button
-                      onClick={() => { onSelect(template, 'RENT'); onClose(); }}
-                      className="h-10 text-[13px] font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all hover:opacity-80"
+                      onClick={() => {
+                        addToCart(template, 'BUY');
+                        onClose();
+                      }}
+                      className="h-10 text-[13px] font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all hover:opacity-80 border border-slate-200"
                       style={{ backgroundColor: accent + '15', color: accent }}
                     >
                       <ShoppingCart className="w-3.5 h-3.5" /> Thêm vào giỏ

@@ -34,7 +34,16 @@ export async function resolveTenantSlug(req: Request, res: Response, next: NextF
     });
 
     if (!tenant) {
-      // Dù không tìm thấy trong DB, ở chế độ dev ta vẫn tự động giải quyết slug thành mock id để phục vụ 12 templates
+      if (process.env.NODE_ENV === 'production') {
+        return res.status(404).json({
+          success: false,
+          error: {
+            code: 'TENANT_NOT_FOUND',
+            message: 'Website không tồn tại.',
+          },
+        });
+      }
+      // Dev fallback only
       req.tenantId = `mock-id-${slug}`;
       return next();
     }
@@ -48,14 +57,23 @@ export async function resolveTenantSlug(req: Request, res: Response, next: NextF
     req.tenantId = tenant.id;
     tenantStorage.run(tenant.id, () => next());
   } catch (error) {
-    // Lỗi kết nối DB (offline) -> Fallback sang mock id
+    if (process.env.NODE_ENV === 'production') {
+      console.error(`[Error] Database connection failed for tenant resolution: ${(error as Error).message}`);
+      return res.status(503).json({
+        success: false,
+        error: {
+          code: 'SERVICE_UNAVAILABLE',
+          message: 'Hệ thống đang bảo trì. Vui lòng thử lại sau.',
+        },
+      });
+    }
     console.warn(`[Warning] Database connection failed. Falling back to mock tenant resolution for slug: ${slug}`);
     req.tenantId = `mock-id-${slug}`;
     tenantStorage.run(`mock-id-${slug}`, () => next());
   }
 }
 
-export function checkTenantAccess(req: Request, res: Response, next: NextFunction) {
+export async function checkTenantAccess(req: Request, res: Response, next: NextFunction) {
   const user = req.user;
 
   if (!user) {
@@ -68,32 +86,74 @@ export function checkTenantAccess(req: Request, res: Response, next: NextFunctio
     });
   }
 
-  // Super Admin có quyền xem và chỉnh sửa dữ liệu của mọi tenant
-  if (user.role === 'SUPER_ADMIN') {
-    // Admin có thể chỉ định tenantId qua header để thao tác trên tenant cụ thể
-    const targetTenantId = req.headers['x-tenant-id'] as string || req.body?.tenantId || req.query?.tenantId as string;
-    if (targetTenantId) {
-      req.tenantId = targetTenantId;
-      return tenantStorage.run(targetTenantId, () => next());
+  // 1. Super Admin: lấy targetTenantId hoặc lấy tenant đầu tiên trong hệ thống
+  if (user.role === 'SUPER_ADMIN' || user.role === 'ADMIN') {
+    let targetTenantId = (req.headers['x-tenant-id'] as string) || req.body?.tenantId || (req.query?.tenantId as string);
+    if (!targetTenantId) {
+      const firstTenant = await prisma.tenant.findFirst({
+        where: { deletedAt: null },
+        orderBy: { createdAt: 'desc' },
+        select: { id: true },
+      });
+      targetTenantId = firstTenant?.id || 'tenant-default';
     }
-    return next();
+    req.tenantId = targetTenantId;
+    return tenantStorage.run(targetTenantId, () => next());
   }
 
-  // Với TENANT_OWNER / EDITOR: Lấy tenantId từ JWT token (đã được mã hóa khi login)
-  // Không cần header x-tenant-id riêng — đây là cách đúng để tránh khách hàng truy cập tenant khác
-  const tenantIdFromJwt = user.tenantId;
+  // 2. Với User thường: Lấy tenantId từ JWT hoặc fallback tìm trong DB
+  let tenantId = user.tenantId;
 
-  if (!tenantIdFromJwt) {
+  if (!tenantId) {
+    // Tìm trong DB xem user đã được cấp Tenant sau khi duyệt đơn chưa
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.userId },
+      select: { tenantId: true },
+    });
+
+    if (dbUser?.tenantId) {
+      tenantId = dbUser.tenantId;
+    } else {
+      // Tìm qua bảng tenant_memberships
+      const membership = await prisma.tenantMembership.findFirst({
+        where: { userId: user.userId, status: 'ACTIVE' },
+        select: { tenantId: true },
+        orderBy: { createdAt: 'desc' },
+      });
+      if (membership?.tenantId) {
+        tenantId = membership.tenantId;
+      }
+    }
+  }
+
+  if (!tenantId) {
+    // Nếu vẫn chưa có tenant, tìm xem có tenant nào mới tạo theo email của user không
+    const emailTenant = await prisma.tenant.findFirst({
+      where: {
+        OR: [
+          { users: { some: { email: user.email } } },
+          { memberships: { some: { user: { email: user.email } } } },
+        ],
+        deletedAt: null,
+      },
+      select: { id: true },
+      orderBy: { createdAt: 'desc' },
+    });
+    if (emailTenant) {
+      tenantId = emailTenant.id;
+    }
+  }
+
+  if (!tenantId) {
     return res.status(403).json({
       success: false,
       error: {
         code: 'NO_TENANT_ASSIGNED',
-        message: 'Tài khoản của bạn chưa được gắn với website nào. Vui lòng mua gói dịch vụ để tiếp tục.',
+        message: 'Tài khoản của bạn chưa được gắn với website nào. Vui lòng đặt mua template hoặc chờ Admin duyệt kích hoạt.',
       },
     });
   }
 
-  // Gắn tenantId vào request từ JWT — an toàn, không thể giả mạo
-  req.tenantId = tenantIdFromJwt;
-  tenantStorage.run(tenantIdFromJwt, () => next());
+  req.tenantId = tenantId;
+  tenantStorage.run(tenantId, () => next());
 }

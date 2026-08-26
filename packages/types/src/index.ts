@@ -1,4 +1,6 @@
 export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'TENANT_OWNER' | 'EDITOR' | 'STAFF' | 'CUSTOMER' | 'GUEST';
+export type BusinessRole = 'SUPER_ADMIN' | 'CUSTOMER_OWNER';
+export const CUSTOMER_OWNER: UserRole = 'TENANT_OWNER';
 
 export type OrderStatus =
   | 'PENDING'

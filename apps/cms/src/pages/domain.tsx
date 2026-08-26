@@ -139,7 +139,10 @@ function SectionCard({
 export default function DomainSettingsPage() {
   const [state, setState] = useState<DomainState>(INITIAL_STATE);
   const [customDomainInput, setCustomDomainInput] = useState(INITIAL_STATE.customDomain);
-  const [subdomainDisplay, setSubdomainDisplay] = useState(SUBDOMAIN);
+  const [subdomainInput, setSubdomainInput] = useState('hoanggialand');
+  const [platformDomain, setPlatformDomain] = useState('platformbds.vn');
+  const [subdomainSaving, setSubdomainSaving] = useState(false);
+  const [subdomainSaved, setSubdomainSaved] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -155,9 +158,12 @@ export default function DomainSettingsPage() {
         const res = await axios.get(`${API_URL}/api/cms/builder/domain`, { withCredentials: true });
         if (res.data?.data) {
           const d = res.data.data;
-          setSubdomainDisplay(
-            d.subdomain ? `${d.subdomain}.${d.platformDomain || 'platformbds.vn'}` : SUBDOMAIN
-          );
+          if (d.subdomain) {
+            setSubdomainInput(d.subdomain);
+          }
+          if (d.platformDomain) {
+            setPlatformDomain(d.platformDomain);
+          }
           setCustomDomainInput(d.customDomain || '');
           setState(prev => ({
             ...prev,
@@ -177,6 +183,24 @@ export default function DomainSettingsPage() {
     await navigator.clipboard.writeText(text);
     setCopied(key);
     setTimeout(() => setCopied(null), 2000);
+  };
+
+  const handleSaveSubdomain = async () => {
+    setSubdomainSaving(true);
+    try {
+      const axios = (await import('axios')).default;
+      await axios.put(
+        `${API_URL}/api/cms/builder/domain`,
+        { subdomain: subdomainInput.trim() },
+        { withCredentials: true }
+      );
+      setSubdomainSaved(true);
+      setTimeout(() => setSubdomainSaved(false), 3000);
+    } catch (err: any) {
+      alert(err?.response?.data?.error?.message || 'Lỗi lưu subdomain. Vui lòng thử lại.');
+    } finally {
+      setSubdomainSaving(false);
+    }
   };
 
   const handleSaveDomain = async () => {
@@ -236,22 +260,52 @@ export default function DomainSettingsPage() {
         {/* ── Section 1: Subdomain ──────────────────────────────────── */}
         <SectionCard
           icon={<Server className="w-4 h-4 text-blue-500" />}
-          title="Subdomain Mặc Định"
-          subtitle="Tên miền miễn phí từ PlatformBDS"
+          title="Tên Miền Phụ Miễn Phí (Subdomain)"
+          subtitle="Tùy chỉnh tên miền thương hiệu miễn phí chạy trên hạ tầng PlatformBDS"
         >
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            <div className="flex-1 flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-50 border border-slate-200">
-              <Globe className="w-4 h-4 text-slate-400 shrink-0" />
-              <span className="text-sm font-mono font-semibold text-slate-700 flex-1 truncate">
-                {subdomainDisplay}
-              </span>
-              <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full shrink-0">
-                ACTIVE
-              </span>
+            <div className="flex-1 relative">
+              <div className="flex items-center rounded-xl bg-slate-50 border border-slate-200 overflow-hidden focus-within:border-blue-500 focus-within:bg-white transition-all">
+                <div className="pl-3.5 pr-2 py-3 flex items-center pointer-events-none text-slate-400">
+                  <Globe className="w-4 h-4" />
+                </div>
+                <input
+                  type="text"
+                  value={subdomainInput}
+                  onChange={(e) => {
+                    setSubdomainInput(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''));
+                    setSubdomainSaved(false);
+                  }}
+                  placeholder="ten-thuong-hieu"
+                  className="flex-1 py-3 text-sm font-mono font-bold text-blue-600 bg-transparent focus:outline-none placeholder:text-slate-400"
+                />
+                <span className="pr-4 py-3 text-xs font-mono font-bold text-slate-500 bg-slate-100/80 border-l border-slate-200 pl-3 select-none">
+                  .{platformDomain}
+                </span>
+              </div>
             </div>
+
             <button
-              onClick={() => handleCopy(SUBDOMAIN, 'subdomain')}
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-semibold transition-all shrink-0 ${
+              onClick={handleSaveSubdomain}
+              disabled={subdomainSaving || !subdomainInput}
+              className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold text-white transition-all shrink-0 cursor-pointer ${
+                subdomainSaved
+                  ? 'bg-emerald-600'
+                  : 'bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-600/20'
+              }`}
+            >
+              {subdomainSaving ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Đang Lưu...</>
+              ) : subdomainSaved ? (
+                <><Check className="w-4 h-4" /> Đã Cập Nhật</>
+              ) : (
+                <><Save className="w-4 h-4" /> Lưu Subdomain</>
+              )}
+            </button>
+
+            <button
+              onClick={() => handleCopy(`https://${subdomainInput}.${platformDomain}`, 'subdomain')}
+              className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-semibold transition-all shrink-0 cursor-pointer ${
                 copied === 'subdomain'
                   ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
                   : 'border-slate-200 text-slate-600 hover:bg-slate-50'
@@ -260,13 +314,13 @@ export default function DomainSettingsPage() {
               {copied === 'subdomain' ? (
                 <><Check className="w-4 h-4" /> Đã Sao Chép</>
               ) : (
-                <><Copy className="w-4 h-4" /> Sao Chép</>
+                <><Copy className="w-4 h-4" /> Sao Chép Link</>
               )}
             </button>
           </div>
-          <p className="mt-3 text-xs text-slate-400 flex items-center gap-1.5">
-            <Info className="w-3.5 h-3.5 shrink-0" />
-            Subdomain này được cung cấp miễn phí và không thể thay đổi. Bạn có thể thêm tên miền riêng bên dưới.
+          <p className="mt-3 text-xs text-slate-500 flex items-center gap-1.5">
+            <Info className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+            Bạn có thể đổi tên miền phụ thương hiệu bất kỳ lúc nào hoàn toàn miễn phí. Website sẽ tự động trỏ theo tên mới tức thì.
           </p>
         </SectionCard>
 

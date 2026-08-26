@@ -20,9 +20,13 @@ pnpm-debug.log*
 # Environment variables
 .env
 .env.local
+.env.production
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Scratch and temporary scripts
+scratch/
 
 # Database migration lock/logs
 .prisma/
@@ -33,3 +37,17 @@ Thumbs.db
 
 # Turborepo cache
 .turbo/
+
+# Temp files
+*.tmp*
+*.node.tmp*
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Uploads (user-generated, not source code)
+uploads/
+
+# Audit reports (auto-generated, not source code)
+PROJECT_AUDIT_REPORT.md
+TECH_STACK_AUDIT_REPORT.md

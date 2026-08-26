@@ -42,9 +42,9 @@ export default function LoginPage() {
 
       if (res.data.success) {
         const user = res.data.data.user;
-        const allowedRoles = ['TENANT_OWNER', 'EDITOR', 'STAFF', 'SUPER_ADMIN'];
+        const allowedRoles = ['TENANT_OWNER', 'EDITOR', 'STAFF', 'SUPER_ADMIN', 'ADMIN', 'CUSTOMER', 'CUSTOMER_OWNER', 'USER'];
         if (!allowedRoles.includes(user.role)) {
-          setErrorMsg('Tài khoản của bạn chưa có website nào. Vui lòng mua gói dịch vụ tại Marketplace trước.');
+          setErrorMsg('Tài khoản không hợp lệ.');
           return;
         }
         // Redirect về trang mà user muốn vào, hoặc trang chủ CMS

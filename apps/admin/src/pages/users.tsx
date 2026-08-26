@@ -63,7 +63,10 @@ export default function AdminUsers() {
   const users = usersRes?.data || [];
 
   return (
-    <AdminLayout title="Quản Lý Thành Viên" subtitle="Khóa hoặc mở khóa quyền truy cập hệ thống của các tài khoản thành viên.">
+    <AdminLayout 
+      title={`Quản Lý Thành Viên (${users.length})`} 
+      subtitle="Khóa hoặc mở khóa quyền truy cập hệ thống của các tài khoản thành viên."
+    >
       {/* Table */}
       <div className="rounded-2xl bg-white shadow-sm border border-slate-100 overflow-hidden mb-10">
         <table className="w-full border-collapse text-left text-sm text-slate-700">
@@ -78,53 +81,61 @@ export default function AdminUsers() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {users.map((user: any) => (
-              <tr key={user.id} className="hover:bg-slate-50/50 transition-colors">
-                <td className="px-8 py-4 font-bold text-slate-800">{user.fullName}</td>
-                <td className="px-8 py-4 font-mono text-xs font-semibold text-slate-500">{user.email}</td>
-                <td className="px-8 py-4">
-                  <span className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-bold ${
-                    user.role === 'SUPER_ADMIN' ? 'bg-purple-50 text-purple-700 border border-purple-100' : 'bg-blue-50 text-blue-700 border border-blue-100'
-                  }`}>
-                    {user.role}
-                  </span>
-                </td>
-                <td className="px-8 py-4 text-xs font-bold text-slate-600">
-                  {user.tenant ? (
-                    <span className="bg-slate-100 px-2 py-1 rounded text-slate-600">{user.tenant.name}</span>
-                  ) : (
-                    <span className="text-slate-400 italic font-normal">Không có</span>
-                  )}
-                </td>
-                <td className="px-8 py-4">
-                  <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
-                    user.isActive && user.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-rose-50 text-rose-700 border border-rose-100'
-                  }`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${user.isActive && user.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
-                    {user.isActive && user.status === 'ACTIVE' ? 'Hoạt động' : 'Đã Khóa'}
-                  </span>
-                </td>
-                <td className="px-8 py-4 text-right">
-                  {user.role === 'SUPER_ADMIN' ? (
-                    <span className="text-xs text-slate-400 italic font-semibold">Quyền tối cao</span>
-                  ) : user.isActive && user.status === 'ACTIVE' ? (
-                    <button
-                      onClick={() => updateStatusMutation.mutate({ id: user.id, status: 'BANNED', isActive: false })}
-                      className="text-xs font-bold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100/70 px-3.5 py-2 rounded-xl transition-all shadow-sm"
-                    >
-                      Khóa Tài Khoản
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => updateStatusMutation.mutate({ id: user.id, status: 'ACTIVE', isActive: true })}
-                      className="text-xs font-bold text-emerald-600 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100/70 px-3.5 py-2 rounded-xl transition-all shadow-sm"
-                    >
-                      Mở Khóa
-                    </button>
-                  )}
+            {users.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-8 py-12 text-center text-sm font-semibold text-slate-400">
+                  Chưa có thành viên nào trong hệ thống.
                 </td>
               </tr>
-            ))}
+            ) : (
+              users.map((user: any) => (
+                <tr key={user.id} className="hover:bg-slate-50/50 transition-colors">
+                  <td className="px-8 py-4 font-bold text-slate-800">{user.fullName}</td>
+                  <td className="px-8 py-4 font-mono text-xs font-semibold text-slate-500">{user.email}</td>
+                  <td className="px-8 py-4">
+                    <span className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-bold ${
+                      user.role === 'SUPER_ADMIN' ? 'bg-purple-50 text-purple-700 border border-purple-100' : 'bg-blue-50 text-blue-700 border border-blue-100'
+                    }`}>
+                      {user.role}
+                    </span>
+                  </td>
+                  <td className="px-8 py-4 text-xs font-bold text-slate-600">
+                    {user.tenant ? (
+                      <span className="bg-slate-100 px-2 py-1 rounded text-slate-600">{user.tenant.name}</span>
+                    ) : (
+                      <span className="text-slate-400 italic font-normal">Không có</span>
+                    )}
+                  </td>
+                  <td className="px-8 py-4">
+                    <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
+                      user.isActive && user.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-rose-50 text-rose-700 border border-rose-100'
+                    }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${user.isActive && user.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
+                      {user.isActive && user.status === 'ACTIVE' ? 'Hoạt động' : 'Đã Khóa'}
+                    </span>
+                  </td>
+                  <td className="px-8 py-4 text-right">
+                    {user.role === 'SUPER_ADMIN' ? (
+                      <span className="text-xs text-slate-400 italic font-semibold">Quyền tối cao</span>
+                    ) : user.isActive && user.status === 'ACTIVE' ? (
+                      <button
+                        onClick={() => updateStatusMutation.mutate({ id: user.id, status: 'BANNED', isActive: false })}
+                        className="text-xs font-bold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100/70 px-3.5 py-2 rounded-xl transition-all shadow-sm"
+                      >
+                        Khóa Tài Khoản
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => updateStatusMutation.mutate({ id: user.id, status: 'ACTIVE', isActive: true })}
+                        className="text-xs font-bold text-emerald-600 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100/70 px-3.5 py-2 rounded-xl transition-all shadow-sm"
+                      >
+                        Mở Khóa
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

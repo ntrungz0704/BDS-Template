@@ -245,6 +245,21 @@ const GALLERY_ITEMS: GalleryItem[] = [
 ];
 
 export default function MinimalTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
+  const COLORS = {
+    primary: dynamicTheme?.primaryColor || '#1A1A2E',
+    secondary: dynamicTheme?.secondaryColor || '#E8E8E8',
+    gold: dynamicTheme?.accentColor || '#C8A96E',
+    bg: dynamicTheme?.backgroundColor || '#FFFFFF',
+    bgAlt: dynamicTheme?.surfaceColor || '#F9F9F9',
+    text: dynamicTheme?.textColor || '#111111',
+    textLight: dynamicTheme?.textMutedColor || '#666666',
+    border: dynamicTheme?.borderColor || '#EAEAEA'
+  };
+
+  const FONTS = {
+    heading: dynamicTheme?.fontHeading ? `'${dynamicTheme.fontHeading}', Georgia, serif` : "'DM Serif Display', Georgia, serif",
+    body: dynamicTheme?.fontBody ? `'${dynamicTheme.fontBody}', system-ui, sans-serif` : "'DM Sans', system-ui, sans-serif"
+  };
   // Dynamic Posts Override & Shadowing Variable via globalThis reference
   const activePosts = posts && posts.length > 0
     ? posts.map((p, index) => ({
@@ -314,7 +329,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
+      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
     }
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -418,13 +433,22 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
   const renderHeader = () => (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b transition-all duration-300" style={{ borderColor: COLORS.border }}>
       <div className={`mx-auto px-6 h-24 flex items-center justify-between ${MAX_W}`}>
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('home')}>
-          <div className="w-8 h-8 flex items-center justify-center" style={{ backgroundColor: COLORS.primary, color: COLORS.bg }}>
-            <span className="font-bold text-lg" style={{ fontFamily: FONTS.heading }}>M</span>
+        <div className="flex items-center gap-2 cursor-pointer text-left" onClick={() => navigate('home')}>
+          <div className="w-8 h-8 flex items-center justify-center shrink-0" style={{ backgroundColor: COLORS.primary, color: COLORS.bg }}>
+            <span className="font-bold text-lg" style={{ fontFamily: FONTS.heading }}>
+              {(company?.name || 'M').charAt(0).toUpperCase()}
+            </span>
           </div>
-          <span className="text-2xl font-bold tracking-tight" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>
-            MINIMAL<span style={{ color: COLORS.gold }}>.</span>
-          </span>
+          <div>
+            <span className="text-xl sm:text-2xl font-bold tracking-tight uppercase block leading-none" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>
+              {company?.name || template?.name || 'MINIMAL'}
+            </span>
+            {company?.slogan && (
+              <span className="text-[10px] tracking-wider uppercase font-semibold block mt-1" style={{ color: COLORS.gold }}>
+                {company.slogan}
+              </span>
+            )}
+          </div>
         </div>
         
         {!isMobile ? (
@@ -548,22 +572,22 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
             <ul className="space-y-4 text-sm font-light">
               <li className="flex items-start gap-3">
                 <MapPin size={18} className="mt-0.5 shrink-0" style={{ color: COLORS.gold }} />
-                <span style={{ color: COLORS.textLight }}>Tầng 15, Tòa nhà Minimal, 123 Đường Tôn Đức Thắng, Quận 1, TP.HCM</span>
+                <span style={{ color: COLORS.textLight }}>{company?.address || company?.address || 'Tầng 15, Tòa nhà Minimal, 123 Đường Tôn Đức Thắng, Quận 1, TP.HCM'}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={18} className="shrink-0" style={{ color: COLORS.gold }} />
-                <span style={{ color: COLORS.textLight }}>0909 123 456</span>
+                <span style={{ color: COLORS.textLight }}>{company?.phone || company?.hotline || company?.phone || company?.hotline || '0909 123 456'}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={18} className="shrink-0" style={{ color: COLORS.gold }} />
-                <span style={{ color: COLORS.textLight }}>contact@minimal.vn</span>
+                <span style={{ color: COLORS.textLight }}>{company?.email || company?.email || 'contact@minimal.vn'}</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light" style={{ borderColor: COLORS.border }}>
-          <p style={{ color: COLORS.textLight }}>&copy; 2026 Minimal BĐS. All rights reserved.</p>
+          <p style={{ color: COLORS.textLight }}>&copy; 2026 {company?.name || 'Minimal BĐS'}. All rights reserved.</p>
           <div className="flex gap-6">
             <span className="cursor-pointer hover:underline" style={{ color: COLORS.textLight }}>Điều khoản bảo mật</span>
             <span className="cursor-pointer hover:underline" style={{ color: COLORS.textLight }}>Chính sách sử dụng</span>
@@ -1611,15 +1635,15 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
               <div className="space-y-8">
                 <div>
                   <h4 className="text-xs uppercase tracking-widest text-gray-400 mb-2 font-semibold">Văn phòng chính</h4>
-                  <p className="text-gray-800 font-light">Tầng 15, Tòa nhà Minimal, 123 Đường Tôn Đức Thắng, Quận 1, TP.HCM</p>
+                  <p className="text-gray-800 font-light">{company?.address || company?.address || 'Tầng 15, Tòa nhà Minimal, 123 Đường Tôn Đức Thắng, Quận 1, TP.HCM'}</p>
                 </div>
                 <div>
                   <h4 className="text-xs uppercase tracking-widest text-gray-400 mb-2 font-semibold">Điện thoại</h4>
-                  <p className="text-gray-800 font-light">0909 123 456</p>
+                  <p className="text-gray-800 font-light">{company?.phone || company?.hotline || company?.phone || company?.hotline || '0909 123 456'}</p>
                 </div>
                 <div>
                   <h4 className="text-xs uppercase tracking-widest text-gray-400 mb-2 font-semibold">Email</h4>
-                  <p className="text-gray-800 font-light">contact@minimal.vn</p>
+                  <p className="text-gray-800 font-light">{company?.email || company?.email || 'contact@minimal.vn'}</p>
                 </div>
                 <div>
                   <h4 className="text-xs uppercase tracking-widest text-gray-400 mb-2 font-semibold">Giờ làm việc</h4>

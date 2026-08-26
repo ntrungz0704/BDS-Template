@@ -246,6 +246,8 @@ const GALLERY_IMAGES = [
 ];
 
 export default function ListingMarketplace({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
+  const brandPrimary = dynamicTheme?.primaryColor || '#2563EB';
+  const brandAccent = dynamicTheme?.accentColor || '#60A5FA';
   // Dynamic Posts Override & Shadowing Variable via globalThis reference
   const activePosts = posts && posts.length > 0
     ? posts.map((p, index) => ({
@@ -314,7 +316,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
+      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
     }
   };
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -463,14 +465,21 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
     <header className="sticky top-0 w-full z-40 bg-[#020617]/90 backdrop-blur-md border-b border-white/10 transition-all duration-300">
       <div className={`${MAX_W} mx-auto px-4 h-20 flex items-center justify-between`}>
         {/* Logo */}
-        <div className="flex-shrink-0 cursor-pointer" onClick={() => navigateTo('home')}>
+        <div className="flex-shrink-0 cursor-pointer text-left" onClick={() => navigateTo('home')}>
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-tr from-[#38BDF8] to-[#818CF8] rounded-xl flex items-center justify-center shadow-lg shadow-sky-500/20">
+            <div className="w-10 h-10 bg-gradient-to-tr from-[#38BDF8] to-[#818CF8] rounded-xl flex items-center justify-center shadow-lg shadow-sky-500/20 shrink-0">
               <Building className="text-[#020617]" size={24} strokeWidth={2.5} />
             </div>
-            <span className="text-2xl font-bold font-['Plus_Jakarta_Sans'] text-white tracking-tight">
-              Platform<span className="text-[#38BDF8]">BDS</span>
-            </span>
+            <div>
+              <span className="text-xl sm:text-2xl font-bold font-['Plus_Jakarta_Sans'] text-white tracking-tight uppercase block leading-none">
+                {company?.name || template?.name || 'PlatformBDS'}
+              </span>
+              {company?.slogan && (
+                <span className="text-[10px] text-[#38BDF8] font-semibold tracking-wider uppercase block mt-1">
+                  {company.slogan}
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
@@ -1350,7 +1359,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
               </li>
               <li className="flex gap-3">
                 <Mail className="text-[#38BDF8] shrink-0" size={20}/>
-                <span>contact@platformbds.vn</span>
+                <span>{company?.email || company?.email || 'contact@platformbds.vn'}</span>
               </li>
             </ul>
           </div>

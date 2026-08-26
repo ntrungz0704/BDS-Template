@@ -371,3 +371,54 @@ export async function resolveDomain(req: Request, res: Response, next: NextFunct
     next(error);
   }
 }
+
+export async function getTenantStatus(req: Request, res: Response, next: NextFunction) {
+  const tenantId = req.tenantId;
+  if (!tenantId) {
+    return res.status(404).json({ success: false, error: { message: 'Tenant not found.' } });
+  }
+
+  try {
+    const tenant = await prisma.tenant.findUnique({
+      where: { id: tenantId },
+      select: {
+        status: true,
+        trialStatus: true,
+        trialEndAt: true,
+        subscription: {
+          select: {
+            status: true,
+            endDate: true,
+          },
+        },
+      },
+    });
+
+    if (!tenant) {
+      return res.status(404).json({ success: false, error: { message: 'Tenant not found.' } });
+    }
+
+    const now = new Date();
+    const hasActiveSubscription = tenant.subscription?.status === 'ACTIVE' 
+      && new Date(tenant.subscription.endDate) > now;
+    const trialExpired = tenant.trialStatus === 'EXPIRED' 
+      || (tenant.trialEndAt && new Date(tenant.trialEndAt) < now);
+    const isSuspended = tenant.status === 'SUSPENDED' || tenant.trialStatus === 'SUSPENDED';
+
+    const isAccessible = hasActiveSubscription || (!trialExpired && !isSuspended && tenant.trialStatus === 'ACTIVE');
+
+    return res.json({
+      success: true,
+      data: {
+        isAccessible,
+        status: tenant.status,
+        trialStatus: tenant.trialStatus,
+        trialEndAt: tenant.trialEndAt,
+        hasActiveSubscription,
+        isSuspended,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}

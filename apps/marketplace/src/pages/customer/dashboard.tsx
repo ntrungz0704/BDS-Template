@@ -9,10 +9,11 @@ import {
   User as UserIcon, ShoppingBag, Download, Heart, Settings, 
   Bell, FileText, LogOut, LayoutDashboard, CreditCard,
   Lock, Eye, AlertCircle, CheckCircle2, ChevronRight, ArrowLeft, Sparkles,
-  Info, Loader2, Check, X, ShieldAlert
+  Info, Loader2, Check, X, ShieldAlert, MapPin
 } from 'lucide-react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import { getProvinces, getDistricts, getWards, parseAddress, formatAddress } from '@repo/utils';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -20,7 +21,29 @@ export default function CustomerDashboard() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { user, orders, wishlists, isLoading, openAuthModal, logout, updateProfile, updatePassword } = useAuth();
+  // Initialize activeTab from URL query if available
   const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'downloads' | 'wishlist' | 'settings'>('dashboard');
+
+  useEffect(() => {
+    if (router.isReady && router.query.tab) {
+      const tabQuery = router.query.tab as string;
+      if (['dashboard', 'orders', 'downloads', 'wishlist', 'settings'].includes(tabQuery)) {
+        setActiveTab(tabQuery as any);
+      }
+    }
+  }, [router.isReady, router.query.tab]);
+
+  const handleTabChange = (tab: 'dashboard' | 'orders' | 'downloads' | 'wishlist' | 'settings') => {
+    setActiveTab(tab);
+    router.replace(
+      {
+        pathname: '/customer/dashboard',
+        query: { tab },
+      },
+      undefined,
+      { shallow: true }
+    );
+  };
 
   // Payment proof modal states
   const [selectedPaymentOrder, setSelectedPaymentOrder] = useState<any | null>(null);
@@ -38,8 +61,13 @@ export default function CustomerDashboard() {
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
+  const [selectedProvince, setSelectedProvince] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedWard, setSelectedWard] = useState('');
+  const [streetAddress, setStreetAddress] = useState('');
   const [companyName, setCompanyName] = useState('');
   const [taxCode, setTaxCode] = useState('');
+  const [profileSuccessMsg, setProfileSuccessMsg] = useState('');
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -53,22 +81,57 @@ export default function CustomerDashboard() {
     if (user) {
       setFullName(user.fullName || '');
       setPhone(user.phone || '');
-      setAddress(user.customerProfile?.address || '');
+      const rawAddr = user.customerProfile?.address || '';
+      setAddress(rawAddr);
+      const parsed = parseAddress(rawAddr);
+      setSelectedProvince(parsed.province);
+      setSelectedDistrict(parsed.district);
+      setSelectedWard(parsed.ward);
+      setStreetAddress(parsed.street);
       setCompanyName(user.customerProfile?.companyName || '');
       setTaxCode(user.customerProfile?.taxCode || '');
     }
   }, [user]);
 
-  const handleProfileUpdate = (e: React.FormEvent) => {
+  const handleProvinceChange = (prov: string) => {
+    setSelectedProvince(prov);
+    setSelectedDistrict('');
+    setSelectedWard('');
+    const full = formatAddress(streetAddress, '', '', prov);
+    setAddress(full);
+  };
+
+  const handleDistrictChange = (dist: string) => {
+    setSelectedDistrict(dist);
+    setSelectedWard('');
+    const full = formatAddress(streetAddress, '', dist, selectedProvince);
+    setAddress(full);
+  };
+
+  const handleWardChange = (ward: string) => {
+    setSelectedWard(ward);
+    const full = formatAddress(streetAddress, ward, selectedDistrict, selectedProvince);
+    setAddress(full);
+  };
+
+  const handleStreetChange = (st: string) => {
+    setStreetAddress(st);
+    const full = formatAddress(st, selectedWard, selectedDistrict, selectedProvince);
+    setAddress(full);
+  };
+
+  const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateProfile({
+    const full = formatAddress(streetAddress, selectedWard, selectedDistrict, selectedProvince);
+    await updateProfile({
       fullName,
       phone,
-      address,
+      address: full,
       companyName,
       taxCode,
     });
-    alert('Hồ sơ của bạn đã được cập nhật thành công!');
+    setProfileSuccessMsg('🎉 Hồ sơ của bạn đã được cập nhật thành công!');
+    setTimeout(() => setProfileSuccessMsg(''), 4000);
   };
 
   const handlePasswordUpdate = async (e: React.FormEvent) => {
@@ -120,18 +183,8 @@ export default function CustomerDashboard() {
     setTransactionCode(`FT${Date.now().toString().slice(-10)}`);
   };
 
-  const handleQuickApprove = async (id: string, version: number) => {
-    if (!confirm('Bạn có chắc chắn muốn duyệt nhanh đơn hàng thử nghiệm này? Website Tenant sẽ tự động được kích hoạt và nạp giao diện mẫu Luxury Gold!')) return;
-    try {
-      const res = await axios.post(`${API_URL}/api/marketplace/orders/${id}/quick-approve`, { version }, { withCredentials: true });
-      if (res.data.success) {
-        alert('Duyệt nhanh đơn hàng test thành công! Hãy chuyển sang port 3003 để xem website, hoặc truy cập CMS để quản lý.');
-        router.reload();
-      }
-    } catch (err: any) {
-      alert(err.response?.data?.error?.message || 'Có lỗi xảy ra khi duyệt nhanh.');
-    }
-  };
+  // ⛔ REMOVED: handleQuickApprove — route đã bị xóa vì lỗ hổng bảo mật
+  // Duyệt đơn hàng chỉ thực hiện qua Super Admin Panel (:3002)
 
   if (isLoading) {
     return (
@@ -174,19 +227,19 @@ export default function CustomerDashboard() {
               Vui lòng đăng nhập hoặc đăng ký tài khoản thành viên để quản lý đơn hàng mua template, tải source code và lưu mẫu website yêu thích.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <button
-                onClick={() => openAuthModal('login')}
-                className="px-8 py-3.5 bg-[#0F172A] hover:bg-[#1E293B] text-white font-bold rounded-xl text-sm transition-all shadow-md"
+              <Link
+                href="/login?redirect=/customer/dashboard"
+                className="px-8 py-3.5 bg-[#0F172A] hover:bg-[#1E293B] text-white font-bold rounded-xl text-sm transition-all shadow-md inline-flex items-center justify-center"
               >
                 Đăng Nhập Ngay
-              </button>
-              <button
-                onClick={() => openAuthModal('register')}
-                className="px-8 py-3.5 bg-[#C5A572] hover:bg-[#b09160] text-[#0F172A] font-extrabold rounded-xl text-sm transition-all shadow-md flex items-center justify-center gap-1.5"
+              </Link>
+              <Link
+                href="/register?redirect=/customer/dashboard"
+                className="px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm transition-all shadow-md flex items-center justify-center gap-1.5"
               >
                 <Sparkles className="w-4 h-4" />
-                Đăng Ký Thành Viên VIP
-              </button>
+                Đăng Ký Tài Khoản Mới
+              </Link>
             </div>
           </div>
         ) : (
@@ -208,7 +261,7 @@ export default function CustomerDashboard() {
               {/* Sidebar Menu Items */}
               <nav className="flex flex-col gap-1.5 text-xs font-semibold text-slate-600">
                 <button 
-                  onClick={() => setActiveTab('dashboard')}
+                  onClick={() => handleTabChange('dashboard')}
                   className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${activeTab === 'dashboard' ? 'bg-[#2563EB] text-white shadow-md' : 'hover:bg-slate-50'}`}
                 >
                   <div className="flex items-center gap-3">
@@ -218,7 +271,7 @@ export default function CustomerDashboard() {
                   <ChevronRight className="w-3.5 h-3.5 opacity-50" />
                 </button>
                 <button 
-                  onClick={() => setActiveTab('orders')}
+                  onClick={() => handleTabChange('orders')}
                   className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${activeTab === 'orders' ? 'bg-[#2563EB] text-white shadow-md' : 'hover:bg-slate-50'}`}
                 >
                   <div className="flex items-center gap-3">
@@ -230,7 +283,7 @@ export default function CustomerDashboard() {
                   </span>
                 </button>
                 <button 
-                  onClick={() => setActiveTab('downloads')}
+                  onClick={() => handleTabChange('downloads')}
                   className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${activeTab === 'downloads' ? 'bg-[#2563EB] text-white shadow-md' : 'hover:bg-slate-50'}`}
                 >
                   <div className="flex items-center gap-3">
@@ -240,7 +293,7 @@ export default function CustomerDashboard() {
                   <ChevronRight className="w-3.5 h-3.5 opacity-50" />
                 </button>
                 <button 
-                  onClick={() => setActiveTab('wishlist')}
+                  onClick={() => handleTabChange('wishlist')}
                   className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${activeTab === 'wishlist' ? 'bg-[#2563EB] text-white shadow-md' : 'hover:bg-slate-50'}`}
                 >
                   <div className="flex items-center gap-3">
@@ -252,7 +305,7 @@ export default function CustomerDashboard() {
                   </span>
                 </button>
                 <button 
-                  onClick={() => setActiveTab('settings')}
+                  onClick={() => handleTabChange('settings')}
                   className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${activeTab === 'settings' ? 'bg-[#2563EB] text-white shadow-md' : 'hover:bg-slate-50'}`}
                 >
                   <div className="flex items-center gap-3">
@@ -403,12 +456,6 @@ export default function CustomerDashboard() {
                                      >
                                        Xác nhận CK
                                      </button>
-                                     <button
-                                       onClick={() => handleQuickApprove(ord.id, ord.version)}
-                                       className="px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold transition-all text-[10px]"
-                                     >
-                                       Duyệt nhanh (Test)
-                                     </button>
                                    </div>
                                  )}
                                  {/* Đơn thuê SaaS đã duyệt → Nút đi CMS */}
@@ -426,7 +473,7 @@ export default function CustomerDashboard() {
                                  {/* Đơn đã duyệt → Hiển thị nút Tải source */}
                                  {ord.status === 'COMPLETED' && (
                                    <button
-                                     onClick={() => setActiveTab('downloads')}
+                                     onClick={() => handleTabChange('downloads')}
                                      className="text-indigo-600 hover:text-indigo-800 font-bold text-[10px] underline ml-2"
                                    >
                                      Tải source
@@ -436,12 +483,6 @@ export default function CustomerDashboard() {
                                  {ord.status === 'WAITING_CONFIRM' && (
                                    <div className="inline-flex items-center gap-2">
                                      <span className="text-amber-600 font-medium text-[10px]">Đang xử lý...</span>
-                                     <button
-                                       onClick={() => handleQuickApprove(ord.id, ord.version)}
-                                       className="px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold transition-all text-[10px]"
-                                     >
-                                       Duyệt nhanh (Test)
-                                     </button>
                                    </div>
                                  )}
                             </tr>
@@ -469,17 +510,26 @@ export default function CustomerDashboard() {
                     ) : (
                       orders.filter((o: any) => o.status === 'COMPLETED').map((ord: any) => (
                         <div key={ord.id} className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:border-slate-300 transition-all flex flex-col md:flex-row justify-between items-start md:items-center text-slate-950 gap-4 text-left">
-                          <div className="space-y-1">
+                          <div className="space-y-1.5">
                             <div className="flex items-center gap-2">
-                              <span className="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">SOURCE CODE v1.0</span>
-                              <span className="text-slate-400 text-xs font-mono">#{ord.orderNumber}</span>
+                              <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                                MÃ NGUỒN ĐỘC LẬP
+                              </span>
+                              <span className="text-slate-400 text-xs font-mono font-bold">#{ord.orderNumber}</span>
                             </div>
-                            <h4 className="text-sm font-bold text-slate-900">{ord.template?.name} - Full Next.js Monorepo Package</h4>
-                            <p className="text-xs text-slate-500 font-mono">Định dạng: ZIP | Dung lượng: 48.5 MB | Bao gồm: Frontend, Backend, API & Prisma Schema</p>
+                            <h4 className="text-base font-bold text-slate-900">
+                              {ord.template?.name || 'Mẫu Website BĐS'} — Gói Source Code Độc Lập
+                            </h4>
+                            <p className="text-xs text-slate-500 font-medium">
+                              Định dạng: <span className="font-mono font-bold text-slate-700">ZIP</span> | Công nghệ: <span className="font-bold text-slate-700">Next.js 15, React 19, Tailwind CSS</span>
+                            </p>
+                            <p className="text-[11px] text-blue-600 font-semibold">
+                              ✨ Kèm file <code className="bg-blue-50 px-1 py-0.5 rounded text-blue-700">website.config.ts</code> đổi chữ/hình trong 2 phút & file hướng dẫn <code className="bg-blue-50 px-1 py-0.5 rounded text-blue-700">HUONG_DAN_SUA_DOI.md</code> chi tiết.
+                            </p>
                           </div>
                           <button 
-                            onClick={() => window.open(`${API_URL}/api/marketplace/templates/${ord.template?.slug}/download`, '_blank')}
-                            className="h-[48px] bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold uppercase tracking-wider px-6 rounded-xl flex items-center gap-2 transition-all shadow-md shrink-0"
+                            onClick={() => window.open(`${API_URL}/api/marketplace/templates/${ord.template?.slug || ord.templateId || 'luxury-gold'}/download`, '_blank')}
+                            className="h-[48px] bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold uppercase tracking-wider px-6 rounded-xl flex items-center gap-2 transition-all shadow-md shrink-0 cursor-pointer"
                           >
                             <Download className="w-4 h-4 text-white" />
                             <span>Tải xuống ZIP</span>
@@ -522,7 +572,7 @@ export default function CustomerDashboard() {
                                 <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">{tpl.shortDescription}</p>
                               </div>
                               <div className="flex justify-between items-center border-t border-slate-100 pt-4 mt-4 text-xs font-bold font-mono text-slate-950">
-                                <span>{(tpl.priceBuy || 3900000).toLocaleString('vi-VN')} VNĐ</span>
+                                <span>{(tpl.priceBuy || 499000).toLocaleString('vi-VN')} VNĐ</span>
                                 <div className="flex gap-2">
                                   <Link href={`/demo/${tpl.slug}`} className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-[11px] font-sans font-bold transition-colors">
                                     Xem Demo
@@ -550,6 +600,13 @@ export default function CustomerDashboard() {
                       Thông Tin Hồ Sơ Cá Nhân
                     </h2>
                     <form onSubmit={handleProfileUpdate} className="space-y-4 text-xs">
+                      {profileSuccessMsg && (
+                        <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs font-bold text-emerald-700 flex items-center gap-2 animate-fadeIn shadow-sm">
+                          <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                          <span>{profileSuccessMsg}</span>
+                        </div>
+                      )}
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-slate-700 font-semibold mb-1.5">Họ và tên thành viên</label>
@@ -583,32 +640,97 @@ export default function CustomerDashboard() {
                           />
                         </div>
                         <div>
-                          <label className="block text-slate-700 font-semibold mb-1.5">Địa chỉ</label>
-                          <input 
-                            type="text" 
-                            value={address} 
-                            onChange={(e) => setAddress(e.target.value)}
-                            className="w-full h-[52px] border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-900 focus:outline-none focus:border-[#2563EB] transition-colors" 
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
                           <label className="block text-slate-700 font-semibold mb-1.5">Tên công ty xuất hóa đơn VAT</label>
                           <input 
                             type="text" 
                             value={companyName} 
                             onChange={(e) => setCompanyName(e.target.value)}
+                            placeholder="Công ty TNHH Bất Động Sản..."
                             className="w-full h-[52px] border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-900 focus:outline-none focus:border-[#2563EB] transition-colors" 
                           />
                         </div>
+                      </div>
+
+                      {/* Cascading Address Selectors */}
+                      <div className="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 space-y-3.5 mt-2">
+                        <div className="flex items-center gap-2 text-slate-800 font-bold text-xs mb-1">
+                          <MapPin className="w-4 h-4 text-[#2563EB]" />
+                          <span>Địa chỉ liên hệ & Bàn giao hồ sơ (Tỉnh / Thành phố ➡️ Quận / Huyện ➡️ Phường / Xã)</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          <div>
+                            <label className="block text-slate-600 font-semibold mb-1">Tỉnh / Thành phố *</label>
+                            <select
+                              value={selectedProvince}
+                              onChange={(e) => handleProvinceChange(e.target.value)}
+                              className="w-full h-[46px] border border-slate-200 bg-white rounded-xl px-3 text-slate-900 focus:outline-none focus:border-[#2563EB] transition-colors font-medium cursor-pointer"
+                            >
+                              <option value="">-- Chọn Tỉnh / TP --</option>
+                              {getProvinces().map((p) => (
+                                <option key={p} value={p}>{p}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block text-slate-600 font-semibold mb-1">Quận / Huyện *</label>
+                            <select
+                              value={selectedDistrict}
+                              onChange={(e) => handleDistrictChange(e.target.value)}
+                              disabled={!selectedProvince}
+                              className="w-full h-[46px] border border-slate-200 bg-white rounded-xl px-3 text-slate-900 focus:outline-none focus:border-[#2563EB] transition-colors disabled:bg-slate-100 disabled:text-slate-400 font-medium cursor-pointer"
+                            >
+                              <option value="">-- Chọn Quận / Huyện --</option>
+                              {getDistricts(selectedProvince).map((d) => (
+                                <option key={d} value={d}>{d}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block text-slate-600 font-semibold mb-1">Phường / Xã *</label>
+                            <select
+                              value={selectedWard}
+                              onChange={(e) => handleWardChange(e.target.value)}
+                              disabled={!selectedDistrict}
+                              className="w-full h-[46px] border border-slate-200 bg-white rounded-xl px-3 text-slate-900 focus:outline-none focus:border-[#2563EB] transition-colors disabled:bg-slate-100 disabled:text-slate-400 font-medium cursor-pointer"
+                            >
+                              <option value="">-- Chọn Phường / Xã --</option>
+                              {getWards(selectedProvince, selectedDistrict).map((w) => (
+                                <option key={w} value={w}>{w}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+
                         <div>
-                          <label className="block text-slate-700 font-semibold mb-1.5">Mã số thuế</label>
+                          <label className="block text-slate-600 font-semibold mb-1">Số nhà, tên đường / Tòa nhà chi tiết</label>
+                          <input
+                            type="text"
+                            value={streetAddress}
+                            onChange={(e) => handleStreetChange(e.target.value)}
+                            placeholder="Ví dụ: 68 Nguyễn Huệ, Tòa nhà Saigon Center..."
+                            className="w-full h-[46px] border border-slate-200 bg-white rounded-xl px-3 text-slate-900 focus:outline-none focus:border-[#2563EB] transition-colors"
+                          />
+                        </div>
+
+                        {address && (
+                          <div className="text-[11px] text-slate-600 bg-white p-3 rounded-xl border border-slate-200 flex items-center gap-2">
+                            <span className="font-bold text-slate-800 shrink-0">📍 Địa chỉ hoàn chỉnh:</span>
+                            <span className="text-slate-900 font-medium">{address}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-slate-700 font-semibold mb-1.5">Mã số thuế (nếu có)</label>
                           <input 
                             type="text" 
                             value={taxCode} 
                             onChange={(e) => setTaxCode(e.target.value)}
+                            placeholder="0312345678"
                             className="w-full h-[52px] border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-900 focus:outline-none focus:border-[#2563EB] transition-colors font-mono" 
                           />
                         </div>

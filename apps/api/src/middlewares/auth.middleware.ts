@@ -13,8 +13,10 @@ declare global {
 }
 
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {
-  // Đọc access token từ HttpOnly Cookie
-  const token = req.cookies?.access_token;
+  // Đọc access token từ HttpOnly Cookie hoặc Authorization Bearer Header
+  const authHeader = req.headers.authorization;
+  const bearerToken = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : null;
+  const token = req.cookies?.access_token || bearerToken;
 
   if (!token) {
     return res.status(401).json({

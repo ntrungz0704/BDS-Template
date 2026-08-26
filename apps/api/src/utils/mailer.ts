@@ -64,3 +64,56 @@ export async function sendWelcomeEmail(to: string, fullName: string, subdomain: 
     logger.error(`Lỗi gửi email chào mừng tới ${to}:`, error);
   }
 }
+
+export async function sendPasswordResetEmail(to: string, resetLink: string) {
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px;">
+      <h2 style="color: #4f46e5; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">Đặt lại mật khẩu</h2>
+      <p>Xin chào,</p>
+      <p>Bạn đã yêu cầu đặt lại mật khẩu. Vui lòng click vào link bên dưới để tạo mật khẩu mới:</p>
+      <div style="margin: 20px 0;">
+        <a href="${resetLink}" style="background-color: #4f46e5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Đặt lại mật khẩu</a>
+      </div>
+      <p>Link này sẽ hết hạn sau 1 giờ.</p>
+      <p>Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.</p>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM || '"PlatformBDS" <no-reply@platformbds.vn>',
+      to,
+      subject: 'Đặt lại mật khẩu - PlatformBDS',
+      html,
+    });
+    logger.info(`Đã gửi email đặt lại mật khẩu tới ${to}`);
+  } catch (error) {
+    logger.error(`Lỗi gửi email đặt lại mật khẩu tới ${to}:`, error);
+  }
+}
+
+export async function sendVerificationEmailAction(to: string, verifyLink: string) {
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px;">
+      <h2 style="color: #4f46e5; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">Xác thực Email</h2>
+      <p>Xin chào,</p>
+      <p>Cảm ơn bạn đã đăng ký tài khoản. Vui lòng click vào link bên dưới để xác thực email của bạn:</p>
+      <div style="margin: 20px 0;">
+        <a href="${verifyLink}" style="background-color: #4f46e5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Xác thực Email</a>
+      </div>
+      <p>Link này sẽ hết hạn sau 24 giờ.</p>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM || '"PlatformBDS" <no-reply@platformbds.vn>',
+      to,
+      subject: 'Xác thực Email - PlatformBDS',
+      html,
+    });
+    logger.info(`Đã gửi email xác thực tới ${to}`);
+  } catch (error) {
+    logger.error(`Lỗi gửi email xác thực tới ${to}:`, error);
+  }
+}

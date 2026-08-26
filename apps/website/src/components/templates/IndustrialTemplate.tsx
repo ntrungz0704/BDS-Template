@@ -161,6 +161,8 @@ interface TemplateProps {
 }
 
 export default function IndustrialTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
+  const brandPrimary = dynamicTheme?.primaryColor || '#1E3A8A';
+  const brandAccent = dynamicTheme?.accentColor || '#3B82F6';
   // Dynamic Posts Override & Shadowing Variable via globalThis reference
   const activePosts = posts && posts.length > 0
     ? posts.map((p, index) => ({
@@ -226,7 +228,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
     setActivePageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
+      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
     }
   };
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -270,11 +272,11 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
           <span className="flex items-center"><Globe className="w-4 h-4 mr-2 text-[#F59E0B]" /> Mạng lưới Toàn cầu</span>
         </div>
         <div className="flex items-center space-x-6">
-          <a href="tel:0901234567" className="flex items-center hover:text-white transition-colors">
-            <Phone className="w-4 h-4 mr-2 text-[#F59E0B]" /> +84 90 123 4567
+          <a href={`tel:${company?.phone || '0983312219'}`} className="flex items-center hover:text-white transition-colors">
+            <Phone className="w-4 h-4 mr-2 text-[#F59E0B]" /> {company?.phone || '+84 983 312 219'}
           </a>
-          <a href="mailto:b2b@platformbds.vn" className="flex items-center hover:text-white transition-colors">
-            <Mail className="w-4 h-4 mr-2 text-[#F59E0B]" /> b2b@platformbds.vn
+          <a href={`mailto:${company?.email || 'contact@platformbds.vn'}`} className="flex items-center hover:text-white transition-colors">
+            <Mail className="w-4 h-4 mr-2 text-[#F59E0B]" /> {company?.email || 'contact@platformbds.vn'}
           </a>
         </div>
       </div>
@@ -285,13 +287,17 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
     <header className="bg-[#0F172A] text-white sticky top-0 z-50 shadow-md">
       <div className={`${MAX_W} px-4 h-20 flex items-center justify-between`}>
         <div 
-          className="flex items-center cursor-pointer"
+          className="flex items-center cursor-pointer text-left"
           onClick={() => setActivePage('home')}
         >
-          <Factory className="w-8 h-8 text-[#F59E0B] mr-3" />
+          <Factory className="w-8 h-8 text-[#F59E0B] mr-3 shrink-0" />
           <div>
-            <h1 className="text-xl font-bold tracking-wider" style={{ fontFamily: fontHeading }}>PLATFORM<span className="text-[#F59E0B]">BDS</span></h1>
-            <p className="text-[10px] text-gray-400 tracking-[0.2em] uppercase">Industrial Real Estate</p>
+            <h1 className="text-xl font-bold tracking-wider uppercase" style={{ fontFamily: fontHeading }}>
+              {company?.name || template?.name || 'PLATFORMBDS'}
+            </h1>
+            <p className="text-[10px] text-gray-400 tracking-[0.2em] uppercase">
+              {company?.slogan || 'Industrial Real Estate'}
+            </p>
           </div>
         </div>
 
@@ -1167,11 +1173,11 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                 </div>
                 <div className="flex items-center">
                   <Phone className="w-6 h-6 mr-4 text-[#F59E0B]" />
-                  <span className="text-sm">+84 90 123 4567</span>
+                  <span className="text-sm">{company?.phone || company?.hotline || company?.phone || company?.hotline || '+84 90 123 4567'}</span>
                 </div>
                 <div className="flex items-center">
                   <Mail className="w-6 h-6 mr-4 text-[#F59E0B]" />
-                  <span className="text-sm">b2b@platformbds.vn</span>
+                  <span className="text-sm">{company?.email || company?.email || 'b2b@platformbds.vn'}</span>
                 </div>
               </div>
             </div>
@@ -1299,7 +1305,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               </li>
               <li className="flex items-center">
                 <Mail className="w-5 h-5 mr-3 text-[#1E40AF] flex-shrink-0" />
-                <span>invest@platformbds.vn</span>
+                <span>{company?.email || company?.email || 'invest@platformbds.vn'}</span>
               </li>
             </ul>
           </div>

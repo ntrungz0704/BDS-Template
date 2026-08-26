@@ -107,7 +107,24 @@ function formatPrice(amount: number) {
   return `${amount} triệu`;
 }
 
-// ─── Add Project Modal ────────────────────────────────────────────────────────
+import RichTextEditor from '../components/common/RichTextEditor';
+import ImageUploader from '../components/common/ImageUploader';
+import ItemPreviewModal from '../components/common/ItemPreviewModal';
+
+const POPULAR_AMENITIES = [
+  'Hồ bơi vô cực',
+  'Công viên ven sông',
+  'Bến du thuyền',
+  'Phòng Gym & Yoga',
+  'An ninh đa lớp 24/7',
+  'Sân chơi trẻ em',
+  'Trung tâm thương mại',
+  'Khu BBQ ngoài trời',
+  'Chỗ đậu xe thông minh',
+  'Sảnh đón 5 sao',
+];
+
+// ─── Add/Edit Project Modal (Low-Tech Friendly) ────────────────────────────────
 
 function ProjectModal({
   onClose,
@@ -118,38 +135,41 @@ function ProjectModal({
   onSave: (project: any) => void;
   project?: any | null;
 }) {
-  const [form, setForm] = useState<ProjectFormData>({
-    name: project?.name || '',
-    slug: project?.slug || '',
-    type: project?.type || 'Căn hộ',
-    address: project?.address || '',
-    description: project?.description || '',
-    priceFrom: project?.priceFrom ? String(project.priceFrom) : '',
-    priceTo: project?.priceTo ? String(project.priceTo) : '',
-    published: project?.status === 'published',
-    area: project?.area || '',
-    thumbnail: project?.thumbnail || '',
-  });
-  const [errors, setErrors] = useState<FormErrors>({});
+  const [name, setName] = useState(project?.name || '');
+  const [customSlug, setCustomSlug] = useState('');
+  const [type, setType] = useState<ProjectType>(project?.type || 'Căn hộ');
+  const [address, setAddress] = useState(project?.address || '');
+  const [description, setDescription] = useState(project?.description || '');
+  const [priceText, setPriceText] = useState(project?.priceText || (project?.priceFrom ? formatPrice(project.priceFrom) : ''));
+  const [priceFrom, setPriceFrom] = useState(project?.priceFrom ? String(project.priceFrom) : '');
+  const [priceTo, setPriceTo] = useState(project?.priceTo ? String(project.priceTo) : '');
+  const [area, setArea] = useState(project?.area || '');
+  const [thumbnail, setThumbnail] = useState(project?.thumbnail || '');
+  const [selectedAmenities, setSelectedAmenities] = useState<string[]>(
+    project?.amenities || ['Hồ bơi vô cực', 'An ninh đa lớp 24/7']
+  );
+  const [published, setPublished] = useState(project ? project.status === 'published' : true);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
-  const handleNameChange = (value: string) => {
-    setForm((prev) => ({
-      ...prev,
-      name: value,
-      slug: prev.slug === '' || prev.slug === slugify(prev.name) ? slugify(value) : prev.slug,
-    }));
-    if (errors.name) setErrors((e) => ({ ...e, name: undefined }));
+  const autoSlug = slugify(name || 'du-an-moi');
+  const finalSlug = customSlug.trim() ? slugify(customSlug) : (project?.slug || autoSlug);
+
+  const toggleAmenity = (item: string) => {
+    setSelectedAmenities((prev) =>
+      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
+    );
   };
 
   const validate = (): boolean => {
-    const errs: FormErrors = {};
-    if (!form.name.trim()) errs.name = 'Tên dự án không được để trống';
-    if (!form.slug.trim()) errs.slug = 'Slug không được để trống';
-    if (!form.address.trim()) errs.address = 'Địa chỉ không được để trống';
-    if (!form.description.trim()) errs.description = 'Mô tả ngắn không được để trống';
-    if (!form.priceFrom || isNaN(Number(form.priceFrom))) errs.priceFrom = 'Giá từ phải là số hợp lệ';
-    if (form.priceTo && isNaN(Number(form.priceTo))) errs.priceTo = 'Giá đến phải là số hợp lệ';
+    const errs: Record<string, string> = {};
+    if (!name.trim()) errs.name = 'Vui lòng nhập tên dự án.';
+    if (!address.trim()) errs.address = 'Vui lòng nhập địa chỉ dự án.';
+    if (priceFrom && priceTo && Number(priceTo) > 0 && Number(priceTo) < Number(priceFrom)) {
+      errs.priceTo = 'Giá đến phải lớn hơn hoặc bằng giá từ.';
+    }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -160,34 +180,36 @@ function ProjectModal({
     setSaving(true);
     const newProject: any = {
       id: project?.id || String(Date.now()),
-      name: form.name,
-      slug: form.slug,
-      type: form.type,
-      address: form.address,
-      description: form.description,
-      priceFrom: Number(form.priceFrom),
-      priceTo: form.priceTo ? Number(form.priceTo) : 0,
-      status: form.published ? 'published' : 'draft',
+      name: name.trim(),
+      slug: finalSlug,
+      type,
+      address: address.trim(),
+      description: description.trim() || `<p>${name}</p>`,
+      priceText: priceText.trim() || (priceFrom ? `${priceFrom} triệu` : 'Liên hệ'),
+      priceFrom: priceFrom ? Number(priceFrom) : 0,
+      priceTo: priceTo ? Number(priceTo) : 0,
+      area: area.trim(),
+      thumbnail: thumbnail.trim() || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+      amenities: selectedAmenities,
+      status: published ? 'published' : 'draft',
       featured: project?.featured || false,
-      thumbnail: form.thumbnail,
-      area: form.area,
       version: project?.version || 1,
     };
     onSave(newProject);
     setSaving(false);
   };
 
-  const inputCls = (error?: string) =>
-    `w-full px-3 py-2.5 rounded-xl border text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 transition-all ${
-      error
+  const inputCls = (errKey?: string) =>
+    `w-full px-3.5 py-2.5 rounded-xl border text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 transition-all ${
+      errKey && errors[errKey]
         ? 'border-red-300 focus:ring-red-200 bg-red-50'
         : 'border-slate-200 focus:ring-blue-200 focus:border-blue-400 bg-white'
     }`;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4">
+      <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-xs" onClick={onClose} />
+      <div className="relative bg-white sm:rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden max-h-screen sm:max-h-[92vh] flex flex-col h-full sm:h-auto">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0">
           <div className="flex items-center gap-2.5">
@@ -195,8 +217,8 @@ function ProjectModal({
               <Building2 className="w-4 h-4 text-blue-600" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-slate-900">Thêm Dự Án Mới</h2>
-              <p className="text-xs text-slate-500">Điền đầy đủ thông tin dự án bất động sản</p>
+              <h2 className="text-sm font-bold text-slate-900">{project ? 'Chỉnh Sửa Dự Án' : 'Thêm Dự Án Mới'}</h2>
+              <p className="text-xs text-slate-500">Nhập thông tin dự án dễ dàng, hệ thống sẽ tự động trình bày đẹp mắt</p>
             </div>
           </div>
           <button
@@ -209,17 +231,20 @@ function ProjectModal({
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4 overflow-y-auto flex-1">
-          {/* Name */}
+          {/* Project Name */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
               Tên Dự Án <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              value={form.name}
-              onChange={(e) => handleNameChange(e.target.value)}
-              placeholder="VD: Vinhomes Grand Park"
-              className={inputCls(errors.name)}
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                if (errors.name) setErrors((prev) => ({ ...prev, name: '' }));
+              }}
+              placeholder="VD: Căn hộ Duplex Golden Heritage, Biệt thự Đảo Royal..."
+              className={inputCls('name')}
             />
             {errors.name && (
               <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1">
@@ -228,45 +253,17 @@ function ProjectModal({
             )}
           </div>
 
-          {/* Slug */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-              Slug (URL) <span className="text-red-500">*</span>
-            </label>
-            <div className="flex items-center rounded-xl border border-slate-200 focus-within:ring-2 focus-within:ring-blue-200 focus-within:border-blue-400 overflow-hidden bg-white">
-              <span className="px-3 py-2.5 text-sm text-slate-400 bg-slate-50 border-r border-slate-200 shrink-0 select-none">
-                /du-an/
-              </span>
-              <input
-                type="text"
-                value={form.slug}
-                onChange={(e) =>
-                  setForm((p) => ({ ...p, slug: slugify(e.target.value) }))
-                }
-                placeholder="vinhomes-grand-park"
-                className={`flex-1 px-3 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none font-mono ${errors.slug ? 'bg-red-50' : 'bg-white'}`}
-              />
-            </div>
-            {errors.slug && (
-              <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1">
-                <AlertCircle className="w-3 h-3" /> {errors.slug}
-              </p>
-            )}
-          </div>
-
           {/* Type + Address */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                Loại Hình <span className="text-red-500">*</span>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Loại Hình BĐS <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <select
-                  value={form.type}
-                  onChange={(e) =>
-                    setForm((p) => ({ ...p, type: e.target.value as ProjectType }))
-                  }
-                  className="w-full appearance-none px-3 py-2.5 pr-8 rounded-xl border border-slate-200 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 bg-white"
+                  value={type}
+                  onChange={(e) => setType(e.target.value as ProjectType)}
+                  className="w-full appearance-none px-3.5 py-2.5 pr-8 rounded-xl border border-slate-200 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 bg-white"
                 >
                   {PROJECT_TYPES.map((t) => (
                     <option key={t} value={t}>
@@ -274,22 +271,22 @@ function ProjectModal({
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                Địa Chỉ <span className="text-red-500">*</span>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Địa Chỉ Dự Án <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                value={form.address}
+                value={address}
                 onChange={(e) => {
-                  setForm((p) => ({ ...p, address: e.target.value }));
-                  if (errors.address) setErrors((e2) => ({ ...e2, address: undefined }));
+                  setAddress(e.target.value);
+                  if (errors.address) setErrors((prev) => ({ ...prev, address: '' }));
                 }}
-                placeholder="Quận 9, TP. HCM"
-                className={inputCls(errors.address)}
+                placeholder="VD: Thủ Thiêm, TP. Thủ Đức, TP. HCM"
+                className={inputCls('address')}
               />
               {errors.address && (
                 <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1">
@@ -299,152 +296,194 @@ function ProjectModal({
             </div>
           </div>
 
-          {/* Description */}
+          {/* Image Uploader */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-              Mô Tả Ngắn <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              value={form.description}
-              onChange={(e) => {
-                setForm((p) => ({ ...p, description: e.target.value }));
-                if (errors.description) setErrors((e2) => ({ ...e2, description: undefined }));
-              }}
-              placeholder="Mô tả nổi bật của dự án..."
-              rows={3}
-              className={`${inputCls(errors.description)} resize-none`}
+            <ImageUploader
+              value={thumbnail}
+              onChange={setThumbnail}
+              label="Ảnh Đại Diện Dự Án"
+              hint="Kéo thả ảnh hoặc bấm chọn file (Khuyến nghị tỉ lệ 16:9, tối đa 10MB)"
             />
-            {errors.description && (
-              <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1">
-                <AlertCircle className="w-3 h-3" /> {errors.description}
-              </p>
-            )}
           </div>
 
-          {/* Price range */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                Giá Từ (triệu) <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="number"
-                min={0}
-                value={form.priceFrom}
-                onChange={(e) => {
-                  setForm((p) => ({ ...p, priceFrom: e.target.value }));
-                  if (errors.priceFrom) setErrors((e2) => ({ ...e2, priceFrom: undefined }));
-                }}
-                placeholder="2500"
-                className={inputCls(errors.priceFrom)}
-              />
-              {errors.priceFrom && (
-                <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" /> {errors.priceFrom}
-                </p>
-              )}
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                Giá Đến (triệu) <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="number"
-                min={0}
-                value={form.priceTo}
-                onChange={(e) => {
-                  setForm((p) => ({ ...p, priceTo: e.target.value }));
-                  if (errors.priceTo) setErrors((e2) => ({ ...e2, priceTo: undefined }));
-                }}
-                placeholder="6800"
-                className={inputCls(errors.priceTo)}
-              />
-              {errors.priceTo && (
-                <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" /> {errors.priceTo}
-                </p>
-              )}
-            </div>
+          {/* Visual Rich Text Description */}
+          <div>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              Mô Tả Chi Tiết Dự Án
+            </label>
+            <RichTextEditor
+              value={description}
+              onChange={setDescription}
+              placeholder="Soạn thảo thông tin thiết kế, view sông, tiện ích, chính sách bán hàng..."
+              minHeight="160px"
+            />
           </div>
 
-          {/* Area & Thumbnail */}
-          <div className="grid grid-cols-2 gap-3">
+          {/* Price & Area */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                Diện Tích (ví dụ: 120m² hoặc 120)
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Mức Giá Hiển Thị
               </label>
               <input
                 type="text"
-                value={form.area}
-                onChange={(e) => setForm((p) => ({ ...p, area: e.target.value }))}
-                placeholder="120m²"
+                value={priceText}
+                onChange={(e) => setPriceText(e.target.value)}
+                placeholder="VD: 62 tỷ, Từ 35 tỷ..."
                 className={inputCls()}
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                URL Ảnh Đại Diện
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Giá Từ (triệu VNĐ)
+              </label>
+              <input
+                type="number"
+                min={0}
+                value={priceFrom}
+                onChange={(e) => setPriceFrom(e.target.value)}
+                placeholder="VD: 35000"
+                className={inputCls()}
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Diện Tích (m²)
               </label>
               <input
                 type="text"
-                value={form.thumbnail}
-                onChange={(e) => setForm((p) => ({ ...p, thumbnail: e.target.value }))}
-                placeholder="https://images.unsplash.com/..."
+                value={area}
+                onChange={(e) => setArea(e.target.value)}
+                placeholder="VD: 180m² hoặc 240m²"
                 className={inputCls()}
               />
             </div>
           </div>
 
-          {/* Published toggle */}
+          {/* Amenities Selector */}
+          <div>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+              Tiện Ích Nổi Bật (Bấm chọn nhanh)
+            </label>
+            <div className="flex flex-wrap gap-1.5">
+              {POPULAR_AMENITIES.map((amenity) => {
+                const isSelected = selectedAmenities.includes(amenity);
+                return (
+                  <button
+                    key={amenity}
+                    type="button"
+                    onClick={() => toggleAmenity(amenity)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                      isSelected
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    {isSelected ? '✓ ' : '+ '}
+                    {amenity}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Published Toggle */}
           <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-slate-50 border border-slate-100">
             <div>
-              <p className="text-sm font-semibold text-slate-800">Xuất Bản Ngay</p>
-              <p className="text-xs text-slate-500">Dự án sẽ hiển thị công khai trên website</p>
+              <p className="text-sm font-bold text-slate-800">Hiển Thị Trên Website</p>
+              <p className="text-xs text-slate-500">Khách truy cập có thể tìm thấy dự án này trên trang web</p>
             </div>
             <button
               type="button"
-              onClick={() => setForm((p) => ({ ...p, published: !p.published }))}
+              onClick={() => setPublished((p) => !p)}
               className={`relative w-11 h-6 rounded-full transition-colors duration-200 shrink-0 ${
-                form.published ? 'bg-blue-600' : 'bg-slate-300'
+                published ? 'bg-blue-600' : 'bg-slate-300'
               }`}
             >
               <span
-                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200 ${
-                  form.published ? 'translate-x-5' : 'translate-x-0'
+                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-xs transition-transform duration-200 ${
+                  published ? 'translate-x-5' : 'translate-x-0'
                 }`}
               />
             </button>
           </div>
 
+          {/* Advanced URL Option */}
+          <div className="pt-1">
+            <button
+              type="button"
+              onClick={() => setShowAdvanced((v) => !v)}
+              className="text-xs font-semibold text-slate-400 hover:text-slate-600 transition-colors flex items-center gap-1"
+            >
+              <span>{showAdvanced ? '▼ Thu gọn tùy chọn nâng cao' : '▶ Tùy chọn nâng cao (Đường dẫn dự án)'}</span>
+            </button>
+            {showAdvanced && (
+              <div className="mt-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
+                <p className="text-slate-500">
+                  Đường dẫn dự án tự động: <code className="font-mono text-indigo-600 font-bold bg-white px-2 py-0.5 rounded border">/du-an/{finalSlug}</code>
+                </p>
+                <div>
+                  <label className="block text-[11px] font-medium text-slate-600 mb-1">
+                    Tự chỉnh đường dẫn (nếu muốn):
+                  </label>
+                  <input
+                    type="text"
+                    value={customSlug}
+                    onChange={(e) => setCustomSlug(e.target.value)}
+                    placeholder={autoSlug}
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-mono"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Actions */}
-          <div className="flex items-center gap-2 pt-2">
+          <div className="flex items-center gap-2 pt-3 border-t border-slate-100 shrink-0">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
+              className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
             >
               Hủy Bỏ
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowPreview(true)}
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-sm font-bold text-slate-700 transition-colors"
+            >
+              <Eye className="w-4 h-4 text-slate-500" />
+              Xem Trước
             </button>
             <button
               type="submit"
               disabled={saving}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-sm font-bold text-white transition-all shadow-md shadow-blue-600/25 disabled:opacity-60"
             >
-              {saving ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Đang lưu...
-                </>
-              ) : (
-                <>
-                  <Check className="w-4 h-4" />
-                  Thêm Dự Án
-                </>
-              )}
+              {saving ? 'Đang lưu...' : project ? 'Lưu Thay Đổi' : 'Lưu Dự Án'}
             </button>
           </div>
         </form>
       </div>
+
+      {showPreview && (
+        <ItemPreviewModal
+          isOpen={showPreview}
+          onClose={() => setShowPreview(false)}
+          type="project"
+          data={{
+            title: name || 'Tên Dự Án Mẫu',
+            type,
+            address: address || 'Địa chỉ dự án',
+            price: priceText || (priceFrom ? `Từ ${priceFrom} triệu` : 'Liên hệ báo giá'),
+            priceFrom,
+            area,
+            thumbnail,
+            description: description || '<p>Thông tin dự án đang cập nhật...</p>',
+            amenities: selectedAmenities,
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -456,11 +495,13 @@ function ProjectCard({
   onEdit,
   onToggleFeatured,
   onDelete,
+  domainSlug,
 }: {
   project: any;
   onEdit: () => void;
   onToggleFeatured: (id: string) => void;
   onDelete: (id: string) => void;
+  domainSlug?: string;
 }) {
   const [deleting, setDeleting] = useState(false);
 
@@ -472,12 +513,15 @@ function ProjectCard({
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow group">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow group flex flex-col justify-between">
       {/* Thumbnail */}
       <div className="relative h-44 overflow-hidden bg-slate-100">
         <img
           src={project.thumbnail}
           alt={project.name}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80';
+          }}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
 
@@ -527,9 +571,9 @@ function ProjectCard({
       </div>
 
       {/* Body */}
-      <div className="p-4">
+      <div className="p-4 flex-1">
         <span
-          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border mb-2 ${TYPE_COLORS[project.type]}`}
+          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border mb-2 ${TYPE_COLORS[project.type as ProjectType] || 'bg-slate-100 text-slate-700'}`}
         >
           {project.type}
         </span>
@@ -544,9 +588,9 @@ function ProjectCard({
         </p>
 
         <p className="text-sm font-bold text-blue-700">
-          {project.priceTo && project.priceTo > project.priceFrom
+          {project.priceText || (project.priceTo && project.priceTo > project.priceFrom
             ? `${formatPrice(project.priceFrom)} – ${formatPrice(project.priceTo)}`
-            : formatPrice(project.priceFrom)}
+            : project.priceFrom ? formatPrice(project.priceFrom) : 'Liên hệ')}
         </p>
 
         {project.progress !== undefined && (
@@ -575,11 +619,11 @@ function ProjectCard({
           Sửa
         </button>
         <a
-          href="/demo/luxury-gold"
+          href={`http://localhost:3003?tenant=${domainSlug || 'hoanggialand'}`}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
-          title="Xem trước"
+          title="Xem trên Website"
         >
           <Eye className="w-3.5 h-3.5" />
         </a>
@@ -629,19 +673,20 @@ export default function ProjectsManagerPage() {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
 
-  // Map backend data to frontend format (or use backend format directly)
+  // Map backend data to frontend format
   const projects = data?.map((p: any) => ({
     id: p.id,
     name: p.title || p.name,
     slug: p.slug,
-    type: p.type === 'APARTMENT' ? 'Căn hộ' : p.type === 'VILLA' ? 'Biệt thự' : 'Shophouse',
-    address: p.address || '',
-    description: p.description || '',
+    type: p.type === 'APARTMENT' ? 'Căn hộ' : p.type === 'VILLA' ? 'Biệt thự' : p.type === 'COMMERCIAL' || p.type === 'TOWNHOUSE' ? 'Shophouse' : 'Nghỉ dưỡng',
+    address: p.address || p.city || 'TP. Hồ Chí Minh',
+    description: p.description || p.shortDescription || '',
     priceFrom: p.priceFrom || 0,
     priceTo: p.priceTo || 0,
+    priceText: p.price || (p.priceFrom ? formatPrice(p.priceFrom) : 'Liên hệ'),
     status: p.published ? 'published' : 'draft',
     featured: p.featured || false,
-    thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80',
+    thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
     progress: p.progress,
   })) || [];
 
@@ -661,12 +706,13 @@ export default function ProjectsManagerPage() {
         status: 'SELLING', // Trạng thái bắt buộc bởi backend Zod schema
         address: project.address,
         description: project.description,
-        priceFrom: project.priceFrom,
-        priceTo: project.priceTo,
+        price: project.priceText || (project.priceFrom ? `${project.priceFrom} triệu` : 'Liên hệ'),
+        priceFrom: project.priceFrom ? Number(project.priceFrom) : undefined,
+        priceTo: project.priceTo ? Number(project.priceTo) : undefined,
         area: project.area,
         thumbnail: project.thumbnail,
         published: project.status === 'published',
-        version: project.version,
+        version: project.version || 1,
       };
 
       if (editingProject) {
@@ -674,7 +720,7 @@ export default function ProjectsManagerPage() {
       } else {
         await axios.post(`${API_URL}/api/cms/projects`, payload, { withCredentials: true });
       }
-      queryClient.invalidateQueries({ queryKey: ['cms_projects'] });
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
       setShowModal(false);
       setEditingProject(null);
     } catch (error) {
@@ -695,13 +741,14 @@ export default function ProjectsManagerPage() {
         description: rawProj.description || '',
         priceFrom: rawProj.priceFrom ? Number(rawProj.priceFrom) : undefined,
         priceTo: rawProj.priceTo ? Number(rawProj.priceTo) : undefined,
+        price: rawProj.price || 'Liên hệ',
         area: rawProj.area || '',
         thumbnail: rawProj.thumbnail || '',
         published: rawProj.published,
         featured: !rawProj.featured,
-        version: rawProj.version
+        version: rawProj.version || 1
       }, { withCredentials: true });
-      queryClient.invalidateQueries({ queryKey: ['cms_projects'] });
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
     } catch (error) {
       alert('Lỗi cập nhật dự án nổi bật');
     }
@@ -710,7 +757,7 @@ export default function ProjectsManagerPage() {
   const handleDelete = useCallback(async (id: string) => {
     try {
       await axios.delete(`${API_URL}/api/cms/projects/${id}`, { withCredentials: true });
-      queryClient.invalidateQueries({ queryKey: ['cms_projects'] });
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
     } catch (error) {
       alert('Lỗi xóa dự án');
     }

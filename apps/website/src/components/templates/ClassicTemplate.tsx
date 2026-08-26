@@ -292,6 +292,8 @@ const GALLERY_IMAGES: GalleryImage[] = [
 ];
 
 export default function ClassicTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
+  const brandPrimary = dynamicTheme?.primaryColor || '#854D0E';
+  const brandAccent = dynamicTheme?.accentColor || '#CA8A04';
   // Dynamic Posts Override & Shadowing Variable via globalThis reference
   const activePosts = posts && posts.length > 0
     ? posts.map((p, index) => ({
@@ -358,7 +360,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
     setPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
+      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
     }
   };
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -478,8 +480,15 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
     <header className="sticky top-0 z-40 transition-all shadow-sm" style={{ backgroundColor: C.bg, color: C.primary, borderBottom: `1px solid ${C.border}` }}>
       <div className={`${MAX_W} px-4`}>
         <div className="flex justify-between items-center h-24">
-          <div className="text-3xl font-bold cursor-pointer tracking-wider uppercase" style={fontHeading} onClick={() => navigate('home')}>
-            Heritage
+          <div className="cursor-pointer tracking-wider uppercase text-left" onClick={() => navigate('home')}>
+            <div className="text-xl sm:text-2xl font-bold" style={fontHeading}>
+              {company?.name || template?.name || 'Heritage Real Estate'}
+            </div>
+            {company?.slogan && (
+              <div className="text-[10px] tracking-[0.2em] font-medium uppercase opacity-75" style={fontBody}>
+                {company.slogan}
+              </div>
+            )}
           </div>
           {!isMobile && (
             <nav className="flex items-center space-x-8">
@@ -1421,7 +1430,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
                 <Mail className="mt-1 shrink-0" style={{ color: C.accent }} />
                 <div>
                   <h4 className="font-semibold text-lg mb-1" style={{ color: C.primary }}>Email Hỗ Trợ</h4>
-                  <p className="leading-relaxed text-stone-600 text-sm">contact@heritage-realestate.vn</p>
+                  <p className="leading-relaxed text-stone-600 text-sm">{company?.email || company?.email || 'contact@heritage-realestate.vn'}</p>
                 </div>
               </div>
             </div>
@@ -1563,9 +1572,9 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
             <div>
               <h4 className="text-white text-lg font-semibold mb-6 uppercase tracking-widest text-sm">Trụ Sở</h4>
               <ul className="space-y-4 text-sm">
-                <li className="flex gap-3"><MapPin size={18} className="shrink-0" /> <span>Tòa nhà Heritage, 123 Nguyễn Huệ, Quận 1, TP.HCM</span></li>
-                <li className="flex gap-3"><Phone size={18} className="shrink-0" /> <span>1800 8888</span></li>
-                <li className="flex gap-3"><Mail size={18} className="shrink-0" /> <span>contact@heritage-realestate.vn</span></li>
+                <li className="flex gap-3"><MapPin size={18} className="shrink-0" /> <span>{company?.address || company?.address || 'Tòa nhà Heritage, 123 Nguyễn Huệ, Quận 1, TP.HCM'}</span></li>
+                <li className="flex gap-3"><Phone size={18} className="shrink-0" /> <span>{company?.phone || company?.hotline || company?.phone || company?.hotline || '1800 8888'}</span></li>
+                <li className="flex gap-3"><Mail size={18} className="shrink-0" /> <span>{company?.email || company?.email || 'contact@heritage-realestate.vn'}</span></li>
               </ul>
             </div>
           </div>

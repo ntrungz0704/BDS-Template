@@ -233,6 +233,16 @@ export type WebhookDelivery = $Result.DefaultSelection<Prisma.$WebhookDeliveryPa
  * 
  */
 export type TenantMembership = $Result.DefaultSelection<Prisma.$TenantMembershipPayload>
+/**
+ * Model PasswordResetToken
+ * 
+ */
+export type PasswordResetToken = $Result.DefaultSelection<Prisma.$PasswordResetTokenPayload>
+/**
+ * Model EmailVerificationToken
+ * 
+ */
+export type EmailVerificationToken = $Result.DefaultSelection<Prisma.$EmailVerificationTokenPayload>
 
 /**
  * Enums
@@ -895,6 +905,26 @@ export class PrismaClient<
     * ```
     */
   get tenantMembership(): Prisma.TenantMembershipDelegate<ExtArgs>;
+
+  /**
+   * `prisma.passwordResetToken`: Exposes CRUD operations for the **PasswordResetToken** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PasswordResetTokens
+    * const passwordResetTokens = await prisma.passwordResetToken.findMany()
+    * ```
+    */
+  get passwordResetToken(): Prisma.PasswordResetTokenDelegate<ExtArgs>;
+
+  /**
+   * `prisma.emailVerificationToken`: Exposes CRUD operations for the **EmailVerificationToken** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmailVerificationTokens
+    * const emailVerificationTokens = await prisma.emailVerificationToken.findMany()
+    * ```
+    */
+  get emailVerificationToken(): Prisma.EmailVerificationTokenDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -1379,7 +1409,9 @@ export namespace Prisma {
     TenantApiKey: 'TenantApiKey',
     TenantWebhook: 'TenantWebhook',
     WebhookDelivery: 'WebhookDelivery',
-    TenantMembership: 'TenantMembership'
+    TenantMembership: 'TenantMembership',
+    PasswordResetToken: 'PasswordResetToken',
+    EmailVerificationToken: 'EmailVerificationToken'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1395,7 +1427,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "user" | "tenant" | "template" | "templateConfig" | "order" | "subscription" | "project" | "post" | "category" | "tag" | "banner" | "menu" | "menuItem" | "companyInfo" | "seoConfig" | "media" | "contactFormSubmission" | "demoSession" | "refreshToken" | "auditLog" | "customerProfile" | "wishlist" | "cart" | "cartItem" | "review" | "notification" | "templateDraft" | "templateVersion" | "tenantThemeSettings" | "tenantPage" | "tenantSection" | "contentVersion" | "tenantDomainSettings" | "mediaFolder" | "mediaAsset" | "mediaUsage" | "mediaRecycleBin" | "lead" | "leadNote" | "leadActivity" | "tenantApiKey" | "tenantWebhook" | "webhookDelivery" | "tenantMembership"
+      modelProps: "user" | "tenant" | "template" | "templateConfig" | "order" | "subscription" | "project" | "post" | "category" | "tag" | "banner" | "menu" | "menuItem" | "companyInfo" | "seoConfig" | "media" | "contactFormSubmission" | "demoSession" | "refreshToken" | "auditLog" | "customerProfile" | "wishlist" | "cart" | "cartItem" | "review" | "notification" | "templateDraft" | "templateVersion" | "tenantThemeSettings" | "tenantPage" | "tenantSection" | "contentVersion" | "tenantDomainSettings" | "mediaFolder" | "mediaAsset" | "mediaUsage" | "mediaRecycleBin" | "lead" | "leadNote" | "leadActivity" | "tenantApiKey" | "tenantWebhook" | "webhookDelivery" | "tenantMembership" | "passwordResetToken" | "emailVerificationToken"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -4479,6 +4511,146 @@ export namespace Prisma {
           }
         }
       }
+      PasswordResetToken: {
+        payload: Prisma.$PasswordResetTokenPayload<ExtArgs>
+        fields: Prisma.PasswordResetTokenFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PasswordResetTokenFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PasswordResetTokenFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+          }
+          findFirst: {
+            args: Prisma.PasswordResetTokenFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PasswordResetTokenFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+          }
+          findMany: {
+            args: Prisma.PasswordResetTokenFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>[]
+          }
+          create: {
+            args: Prisma.PasswordResetTokenCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+          }
+          createMany: {
+            args: Prisma.PasswordResetTokenCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PasswordResetTokenCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>[]
+          }
+          delete: {
+            args: Prisma.PasswordResetTokenDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+          }
+          update: {
+            args: Prisma.PasswordResetTokenUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+          }
+          deleteMany: {
+            args: Prisma.PasswordResetTokenDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PasswordResetTokenUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.PasswordResetTokenUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+          }
+          aggregate: {
+            args: Prisma.PasswordResetTokenAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePasswordResetToken>
+          }
+          groupBy: {
+            args: Prisma.PasswordResetTokenGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PasswordResetTokenGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PasswordResetTokenCountArgs<ExtArgs>
+            result: $Utils.Optional<PasswordResetTokenCountAggregateOutputType> | number
+          }
+        }
+      }
+      EmailVerificationToken: {
+        payload: Prisma.$EmailVerificationTokenPayload<ExtArgs>
+        fields: Prisma.EmailVerificationTokenFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EmailVerificationTokenFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailVerificationTokenPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EmailVerificationTokenFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailVerificationTokenPayload>
+          }
+          findFirst: {
+            args: Prisma.EmailVerificationTokenFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailVerificationTokenPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EmailVerificationTokenFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailVerificationTokenPayload>
+          }
+          findMany: {
+            args: Prisma.EmailVerificationTokenFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailVerificationTokenPayload>[]
+          }
+          create: {
+            args: Prisma.EmailVerificationTokenCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailVerificationTokenPayload>
+          }
+          createMany: {
+            args: Prisma.EmailVerificationTokenCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EmailVerificationTokenCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailVerificationTokenPayload>[]
+          }
+          delete: {
+            args: Prisma.EmailVerificationTokenDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailVerificationTokenPayload>
+          }
+          update: {
+            args: Prisma.EmailVerificationTokenUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailVerificationTokenPayload>
+          }
+          deleteMany: {
+            args: Prisma.EmailVerificationTokenDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EmailVerificationTokenUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.EmailVerificationTokenUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailVerificationTokenPayload>
+          }
+          aggregate: {
+            args: Prisma.EmailVerificationTokenAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEmailVerificationToken>
+          }
+          groupBy: {
+            args: Prisma.EmailVerificationTokenGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EmailVerificationTokenGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EmailVerificationTokenCountArgs<ExtArgs>
+            result: $Utils.Optional<EmailVerificationTokenCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -4646,6 +4818,8 @@ export namespace Prisma {
     reviews: number
     notifications: number
     memberships: number
+    passwordResetTokens: number
+    emailVerificationTokens: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4655,6 +4829,8 @@ export namespace Prisma {
     reviews?: boolean | UserCountOutputTypeCountReviewsArgs
     notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
     memberships?: boolean | UserCountOutputTypeCountMembershipsArgs
+    passwordResetTokens?: boolean | UserCountOutputTypeCountPasswordResetTokensArgs
+    emailVerificationTokens?: boolean | UserCountOutputTypeCountEmailVerificationTokensArgs
   }
 
   // Custom InputTypes
@@ -4708,6 +4884,20 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountMembershipsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TenantMembershipWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountPasswordResetTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PasswordResetTokenWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountEmailVerificationTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmailVerificationTokenWhereInput
   }
 
 
@@ -5207,6 +5397,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type TemplateVersionCountOutputType
+   */
+
+  export type TemplateVersionCountOutputType = {
+    tenants: number
+  }
+
+  export type TemplateVersionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenants?: boolean | TemplateVersionCountOutputTypeCountTenantsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * TemplateVersionCountOutputType without action
+   */
+  export type TemplateVersionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVersionCountOutputType
+     */
+    select?: TemplateVersionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * TemplateVersionCountOutputType without action
+   */
+  export type TemplateVersionCountOutputTypeCountTenantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TenantWhereInput
+  }
+
+
+  /**
    * Count Type TenantPageCountOutputType
    */
 
@@ -5668,6 +5889,8 @@ export namespace Prisma {
     reviews?: boolean | User$reviewsArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     memberships?: boolean | User$membershipsArgs<ExtArgs>
+    passwordResetTokens?: boolean | User$passwordResetTokensArgs<ExtArgs>
+    emailVerificationTokens?: boolean | User$emailVerificationTokensArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -5726,6 +5949,8 @@ export namespace Prisma {
     reviews?: boolean | User$reviewsArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     memberships?: boolean | User$membershipsArgs<ExtArgs>
+    passwordResetTokens?: boolean | User$passwordResetTokensArgs<ExtArgs>
+    emailVerificationTokens?: boolean | User$emailVerificationTokensArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5744,6 +5969,8 @@ export namespace Prisma {
       reviews: Prisma.$ReviewPayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
       memberships: Prisma.$TenantMembershipPayload<ExtArgs>[]
+      passwordResetTokens: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
+      emailVerificationTokens: Prisma.$EmailVerificationTokenPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6138,6 +6365,8 @@ export namespace Prisma {
     reviews<T extends User$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, User$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany"> | Null>
     notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany"> | Null>
     memberships<T extends User$membershipsArgs<ExtArgs> = {}>(args?: Subset<T, User$membershipsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TenantMembershipPayload<ExtArgs>, T, "findMany"> | Null>
+    passwordResetTokens<T extends User$passwordResetTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$passwordResetTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany"> | Null>
+    emailVerificationTokens<T extends User$emailVerificationTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$emailVerificationTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6669,6 +6898,46 @@ export namespace Prisma {
   }
 
   /**
+   * User.passwordResetTokens
+   */
+  export type User$passwordResetTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PasswordResetTokenInclude<ExtArgs> | null
+    where?: PasswordResetTokenWhereInput
+    orderBy?: PasswordResetTokenOrderByWithRelationInput | PasswordResetTokenOrderByWithRelationInput[]
+    cursor?: PasswordResetTokenWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PasswordResetTokenScalarFieldEnum | PasswordResetTokenScalarFieldEnum[]
+  }
+
+  /**
+   * User.emailVerificationTokens
+   */
+  export type User$emailVerificationTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailVerificationToken
+     */
+    select?: EmailVerificationTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailVerificationTokenInclude<ExtArgs> | null
+    where?: EmailVerificationTokenWhereInput
+    orderBy?: EmailVerificationTokenOrderByWithRelationInput | EmailVerificationTokenOrderByWithRelationInput[]
+    cursor?: EmailVerificationTokenWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EmailVerificationTokenScalarFieldEnum | EmailVerificationTokenScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6698,11 +6967,15 @@ export namespace Prisma {
   export type TenantAvgAggregateOutputType = {
     uploadUsedBytes: number | null
     version: number | null
+    trialSaveLimit: number | null
+    trialSaveCount: number | null
   }
 
   export type TenantSumAggregateOutputType = {
     uploadUsedBytes: bigint | null
     version: number | null
+    trialSaveLimit: number | null
+    trialSaveCount: number | null
   }
 
   export type TenantMinAggregateOutputType = {
@@ -6712,11 +6985,17 @@ export namespace Prisma {
     domain: string | null
     status: string | null
     templateId: string | null
+    templateVersionId: string | null
     activatedAt: Date | null
     expiresAt: Date | null
     onboardingCompletedAt: Date | null
     uploadUsedBytes: bigint | null
     version: number | null
+    trialStartAt: Date | null
+    trialEndAt: Date | null
+    trialSaveLimit: number | null
+    trialSaveCount: number | null
+    trialStatus: string | null
     deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -6729,11 +7008,17 @@ export namespace Prisma {
     domain: string | null
     status: string | null
     templateId: string | null
+    templateVersionId: string | null
     activatedAt: Date | null
     expiresAt: Date | null
     onboardingCompletedAt: Date | null
     uploadUsedBytes: bigint | null
     version: number | null
+    trialStartAt: Date | null
+    trialEndAt: Date | null
+    trialSaveLimit: number | null
+    trialSaveCount: number | null
+    trialStatus: string | null
     deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -6746,12 +7031,18 @@ export namespace Prisma {
     domain: number
     status: number
     templateId: number
+    templateVersionId: number
     themeOverrides: number
     activatedAt: number
     expiresAt: number
     onboardingCompletedAt: number
     uploadUsedBytes: number
     version: number
+    trialStartAt: number
+    trialEndAt: number
+    trialSaveLimit: number
+    trialSaveCount: number
+    trialStatus: number
     deletedAt: number
     createdAt: number
     updatedAt: number
@@ -6762,11 +7053,15 @@ export namespace Prisma {
   export type TenantAvgAggregateInputType = {
     uploadUsedBytes?: true
     version?: true
+    trialSaveLimit?: true
+    trialSaveCount?: true
   }
 
   export type TenantSumAggregateInputType = {
     uploadUsedBytes?: true
     version?: true
+    trialSaveLimit?: true
+    trialSaveCount?: true
   }
 
   export type TenantMinAggregateInputType = {
@@ -6776,11 +7071,17 @@ export namespace Prisma {
     domain?: true
     status?: true
     templateId?: true
+    templateVersionId?: true
     activatedAt?: true
     expiresAt?: true
     onboardingCompletedAt?: true
     uploadUsedBytes?: true
     version?: true
+    trialStartAt?: true
+    trialEndAt?: true
+    trialSaveLimit?: true
+    trialSaveCount?: true
+    trialStatus?: true
     deletedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -6793,11 +7094,17 @@ export namespace Prisma {
     domain?: true
     status?: true
     templateId?: true
+    templateVersionId?: true
     activatedAt?: true
     expiresAt?: true
     onboardingCompletedAt?: true
     uploadUsedBytes?: true
     version?: true
+    trialStartAt?: true
+    trialEndAt?: true
+    trialSaveLimit?: true
+    trialSaveCount?: true
+    trialStatus?: true
     deletedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -6810,12 +7117,18 @@ export namespace Prisma {
     domain?: true
     status?: true
     templateId?: true
+    templateVersionId?: true
     themeOverrides?: true
     activatedAt?: true
     expiresAt?: true
     onboardingCompletedAt?: true
     uploadUsedBytes?: true
     version?: true
+    trialStartAt?: true
+    trialEndAt?: true
+    trialSaveLimit?: true
+    trialSaveCount?: true
+    trialStatus?: true
     deletedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -6915,12 +7228,18 @@ export namespace Prisma {
     domain: string | null
     status: string
     templateId: string | null
+    templateVersionId: string | null
     themeOverrides: JsonValue | null
     activatedAt: Date | null
     expiresAt: Date | null
     onboardingCompletedAt: Date | null
     uploadUsedBytes: bigint
     version: number
+    trialStartAt: Date | null
+    trialEndAt: Date | null
+    trialSaveLimit: number
+    trialSaveCount: number
+    trialStatus: string | null
     deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -6952,16 +7271,23 @@ export namespace Prisma {
     domain?: boolean
     status?: boolean
     templateId?: boolean
+    templateVersionId?: boolean
     themeOverrides?: boolean
     activatedAt?: boolean
     expiresAt?: boolean
     onboardingCompletedAt?: boolean
     uploadUsedBytes?: boolean
     version?: boolean
+    trialStartAt?: boolean
+    trialEndAt?: boolean
+    trialSaveLimit?: boolean
+    trialSaveCount?: boolean
+    trialStatus?: boolean
     deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     template?: boolean | Tenant$templateArgs<ExtArgs>
+    templateVersion?: boolean | Tenant$templateVersionArgs<ExtArgs>
     users?: boolean | Tenant$usersArgs<ExtArgs>
     projects?: boolean | Tenant$projectsArgs<ExtArgs>
     posts?: boolean | Tenant$postsArgs<ExtArgs>
@@ -6995,16 +7321,23 @@ export namespace Prisma {
     domain?: boolean
     status?: boolean
     templateId?: boolean
+    templateVersionId?: boolean
     themeOverrides?: boolean
     activatedAt?: boolean
     expiresAt?: boolean
     onboardingCompletedAt?: boolean
     uploadUsedBytes?: boolean
     version?: boolean
+    trialStartAt?: boolean
+    trialEndAt?: boolean
+    trialSaveLimit?: boolean
+    trialSaveCount?: boolean
+    trialStatus?: boolean
     deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     template?: boolean | Tenant$templateArgs<ExtArgs>
+    templateVersion?: boolean | Tenant$templateVersionArgs<ExtArgs>
   }, ExtArgs["result"]["tenant"]>
 
   export type TenantSelectScalar = {
@@ -7014,12 +7347,18 @@ export namespace Prisma {
     domain?: boolean
     status?: boolean
     templateId?: boolean
+    templateVersionId?: boolean
     themeOverrides?: boolean
     activatedAt?: boolean
     expiresAt?: boolean
     onboardingCompletedAt?: boolean
     uploadUsedBytes?: boolean
     version?: boolean
+    trialStartAt?: boolean
+    trialEndAt?: boolean
+    trialSaveLimit?: boolean
+    trialSaveCount?: boolean
+    trialStatus?: boolean
     deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -7027,6 +7366,7 @@ export namespace Prisma {
 
   export type TenantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     template?: boolean | Tenant$templateArgs<ExtArgs>
+    templateVersion?: boolean | Tenant$templateVersionArgs<ExtArgs>
     users?: boolean | Tenant$usersArgs<ExtArgs>
     projects?: boolean | Tenant$projectsArgs<ExtArgs>
     posts?: boolean | Tenant$postsArgs<ExtArgs>
@@ -7054,12 +7394,14 @@ export namespace Prisma {
   }
   export type TenantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     template?: boolean | Tenant$templateArgs<ExtArgs>
+    templateVersion?: boolean | Tenant$templateVersionArgs<ExtArgs>
   }
 
   export type $TenantPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Tenant"
     objects: {
       template: Prisma.$TemplatePayload<ExtArgs> | null
+      templateVersion: Prisma.$TemplateVersionPayload<ExtArgs> | null
       users: Prisma.$UserPayload<ExtArgs>[]
       projects: Prisma.$ProjectPayload<ExtArgs>[]
       posts: Prisma.$PostPayload<ExtArgs>[]
@@ -7091,12 +7433,18 @@ export namespace Prisma {
       domain: string | null
       status: string
       templateId: string | null
+      templateVersionId: string | null
       themeOverrides: Prisma.JsonValue | null
       activatedAt: Date | null
       expiresAt: Date | null
       onboardingCompletedAt: Date | null
       uploadUsedBytes: bigint
       version: number
+      trialStartAt: Date | null
+      trialEndAt: Date | null
+      trialSaveLimit: number
+      trialSaveCount: number
+      trialStatus: string | null
       deletedAt: Date | null
       createdAt: Date
       updatedAt: Date
@@ -7465,6 +7813,7 @@ export namespace Prisma {
   export interface Prisma__TenantClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     template<T extends Tenant$templateArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$templateArgs<ExtArgs>>): Prisma__TemplateClient<$Result.GetResult<Prisma.$TemplatePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    templateVersion<T extends Tenant$templateVersionArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$templateVersionArgs<ExtArgs>>): Prisma__TemplateVersionClient<$Result.GetResult<Prisma.$TemplateVersionPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     users<T extends Tenant$usersArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany"> | Null>
     projects<T extends Tenant$projectsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany"> | Null>
     posts<T extends Tenant$postsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany"> | Null>
@@ -7523,12 +7872,18 @@ export namespace Prisma {
     readonly domain: FieldRef<"Tenant", 'String'>
     readonly status: FieldRef<"Tenant", 'String'>
     readonly templateId: FieldRef<"Tenant", 'String'>
+    readonly templateVersionId: FieldRef<"Tenant", 'String'>
     readonly themeOverrides: FieldRef<"Tenant", 'Json'>
     readonly activatedAt: FieldRef<"Tenant", 'DateTime'>
     readonly expiresAt: FieldRef<"Tenant", 'DateTime'>
     readonly onboardingCompletedAt: FieldRef<"Tenant", 'DateTime'>
     readonly uploadUsedBytes: FieldRef<"Tenant", 'BigInt'>
     readonly version: FieldRef<"Tenant", 'Int'>
+    readonly trialStartAt: FieldRef<"Tenant", 'DateTime'>
+    readonly trialEndAt: FieldRef<"Tenant", 'DateTime'>
+    readonly trialSaveLimit: FieldRef<"Tenant", 'Int'>
+    readonly trialSaveCount: FieldRef<"Tenant", 'Int'>
+    readonly trialStatus: FieldRef<"Tenant", 'String'>
     readonly deletedAt: FieldRef<"Tenant", 'DateTime'>
     readonly createdAt: FieldRef<"Tenant", 'DateTime'>
     readonly updatedAt: FieldRef<"Tenant", 'DateTime'>
@@ -7862,6 +8217,21 @@ export namespace Prisma {
      */
     include?: TemplateInclude<ExtArgs> | null
     where?: TemplateWhereInput
+  }
+
+  /**
+   * Tenant.templateVersion
+   */
+  export type Tenant$templateVersionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TemplateVersion
+     */
+    select?: TemplateVersionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TemplateVersionInclude<ExtArgs> | null
+    where?: TemplateVersionWhereInput
   }
 
   /**
@@ -8329,12 +8699,16 @@ export namespace Prisma {
   export type TemplateAvgAggregateOutputType = {
     priceBuy: number | null
     priceRentMonthly: number | null
+    priceRentYearly: number | null
+    priceBuySource: number | null
     sortOrder: number | null
   }
 
   export type TemplateSumAggregateOutputType = {
     priceBuy: number | null
     priceRentMonthly: number | null
+    priceRentYearly: number | null
+    priceBuySource: number | null
     sortOrder: number | null
   }
 
@@ -8347,6 +8721,8 @@ export namespace Prisma {
     thumbnail: string | null
     priceBuy: number | null
     priceRentMonthly: number | null
+    priceRentYearly: number | null
+    priceBuySource: number | null
     isActive: boolean | null
     sortOrder: number | null
     deletedAt: Date | null
@@ -8365,6 +8741,8 @@ export namespace Prisma {
     thumbnail: string | null
     priceBuy: number | null
     priceRentMonthly: number | null
+    priceRentYearly: number | null
+    priceBuySource: number | null
     isActive: boolean | null
     sortOrder: number | null
     deletedAt: Date | null
@@ -8385,6 +8763,8 @@ export namespace Prisma {
     features: number
     priceBuy: number
     priceRentMonthly: number
+    priceRentYearly: number
+    priceBuySource: number
     isActive: number
     sortOrder: number
     deletedAt: number
@@ -8399,12 +8779,16 @@ export namespace Prisma {
   export type TemplateAvgAggregateInputType = {
     priceBuy?: true
     priceRentMonthly?: true
+    priceRentYearly?: true
+    priceBuySource?: true
     sortOrder?: true
   }
 
   export type TemplateSumAggregateInputType = {
     priceBuy?: true
     priceRentMonthly?: true
+    priceRentYearly?: true
+    priceBuySource?: true
     sortOrder?: true
   }
 
@@ -8417,6 +8801,8 @@ export namespace Prisma {
     thumbnail?: true
     priceBuy?: true
     priceRentMonthly?: true
+    priceRentYearly?: true
+    priceBuySource?: true
     isActive?: true
     sortOrder?: true
     deletedAt?: true
@@ -8435,6 +8821,8 @@ export namespace Prisma {
     thumbnail?: true
     priceBuy?: true
     priceRentMonthly?: true
+    priceRentYearly?: true
+    priceBuySource?: true
     isActive?: true
     sortOrder?: true
     deletedAt?: true
@@ -8455,6 +8843,8 @@ export namespace Prisma {
     features?: true
     priceBuy?: true
     priceRentMonthly?: true
+    priceRentYearly?: true
+    priceBuySource?: true
     isActive?: true
     sortOrder?: true
     deletedAt?: true
@@ -8562,6 +8952,8 @@ export namespace Prisma {
     features: JsonValue | null
     priceBuy: number | null
     priceRentMonthly: number | null
+    priceRentYearly: number | null
+    priceBuySource: number | null
     isActive: boolean
     sortOrder: number
     deletedAt: Date | null
@@ -8601,6 +8993,8 @@ export namespace Prisma {
     features?: boolean
     priceBuy?: boolean
     priceRentMonthly?: boolean
+    priceRentYearly?: boolean
+    priceBuySource?: boolean
     isActive?: boolean
     sortOrder?: boolean
     deletedAt?: boolean
@@ -8631,6 +9025,8 @@ export namespace Prisma {
     features?: boolean
     priceBuy?: boolean
     priceRentMonthly?: boolean
+    priceRentYearly?: boolean
+    priceBuySource?: boolean
     isActive?: boolean
     sortOrder?: boolean
     deletedAt?: boolean
@@ -8651,6 +9047,8 @@ export namespace Prisma {
     features?: boolean
     priceBuy?: boolean
     priceRentMonthly?: boolean
+    priceRentYearly?: boolean
+    priceBuySource?: boolean
     isActive?: boolean
     sortOrder?: boolean
     deletedAt?: boolean
@@ -8698,6 +9096,8 @@ export namespace Prisma {
       features: Prisma.JsonValue | null
       priceBuy: number | null
       priceRentMonthly: number | null
+      priceRentYearly: number | null
+      priceBuySource: number | null
       isActive: boolean
       sortOrder: number
       deletedAt: Date | null
@@ -9117,6 +9517,8 @@ export namespace Prisma {
     readonly features: FieldRef<"Template", 'Json'>
     readonly priceBuy: FieldRef<"Template", 'Int'>
     readonly priceRentMonthly: FieldRef<"Template", 'Int'>
+    readonly priceRentYearly: FieldRef<"Template", 'Int'>
+    readonly priceBuySource: FieldRef<"Template", 'Int'>
     readonly isActive: FieldRef<"Template", 'Boolean'>
     readonly sortOrder: FieldRef<"Template", 'Int'>
     readonly deletedAt: FieldRef<"Template", 'DateTime'>
@@ -11760,6 +12162,8 @@ export namespace Prisma {
     startDate: Date | null
     endDate: Date | null
     cancelledAt: Date | null
+    billingPeriod: string | null
+    autoRenew: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -11774,6 +12178,8 @@ export namespace Prisma {
     startDate: Date | null
     endDate: Date | null
     cancelledAt: Date | null
+    billingPeriod: string | null
+    autoRenew: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -11788,6 +12194,8 @@ export namespace Prisma {
     startDate: number
     endDate: number
     cancelledAt: number
+    billingPeriod: number
+    autoRenew: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -11812,6 +12220,8 @@ export namespace Prisma {
     startDate?: true
     endDate?: true
     cancelledAt?: true
+    billingPeriod?: true
+    autoRenew?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -11826,6 +12236,8 @@ export namespace Prisma {
     startDate?: true
     endDate?: true
     cancelledAt?: true
+    billingPeriod?: true
+    autoRenew?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -11840,6 +12252,8 @@ export namespace Prisma {
     startDate?: true
     endDate?: true
     cancelledAt?: true
+    billingPeriod?: true
+    autoRenew?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -11941,6 +12355,8 @@ export namespace Prisma {
     startDate: Date
     endDate: Date
     cancelledAt: Date | null
+    billingPeriod: string
+    autoRenew: boolean
     createdAt: Date
     updatedAt: Date
     _count: SubscriptionCountAggregateOutputType | null
@@ -11974,6 +12390,8 @@ export namespace Prisma {
     startDate?: boolean
     endDate?: boolean
     cancelledAt?: boolean
+    billingPeriod?: boolean
+    autoRenew?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
@@ -11989,6 +12407,8 @@ export namespace Prisma {
     startDate?: boolean
     endDate?: boolean
     cancelledAt?: boolean
+    billingPeriod?: boolean
+    autoRenew?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
@@ -12004,6 +12424,8 @@ export namespace Prisma {
     startDate?: boolean
     endDate?: boolean
     cancelledAt?: boolean
+    billingPeriod?: boolean
+    autoRenew?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
@@ -12030,6 +12452,8 @@ export namespace Prisma {
       startDate: Date
       endDate: Date
       cancelledAt: Date | null
+      billingPeriod: string
+      autoRenew: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["subscription"]>
@@ -12435,6 +12859,8 @@ export namespace Prisma {
     readonly startDate: FieldRef<"Subscription", 'DateTime'>
     readonly endDate: FieldRef<"Subscription", 'DateTime'>
     readonly cancelledAt: FieldRef<"Subscription", 'DateTime'>
+    readonly billingPeriod: FieldRef<"Subscription", 'String'>
+    readonly autoRenew: FieldRef<"Subscription", 'Boolean'>
     readonly createdAt: FieldRef<"Subscription", 'DateTime'>
     readonly updatedAt: FieldRef<"Subscription", 'DateTime'>
   }
@@ -34692,6 +35118,8 @@ export namespace Prisma {
     publishedAt?: boolean
     publishedBy?: boolean
     template?: boolean | TemplateDefaultArgs<ExtArgs>
+    tenants?: boolean | TemplateVersion$tenantsArgs<ExtArgs>
+    _count?: boolean | TemplateVersionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["templateVersion"]>
 
   export type TemplateVersionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -34725,6 +35153,8 @@ export namespace Prisma {
 
   export type TemplateVersionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     template?: boolean | TemplateDefaultArgs<ExtArgs>
+    tenants?: boolean | TemplateVersion$tenantsArgs<ExtArgs>
+    _count?: boolean | TemplateVersionCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TemplateVersionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     template?: boolean | TemplateDefaultArgs<ExtArgs>
@@ -34734,6 +35164,7 @@ export namespace Prisma {
     name: "TemplateVersion"
     objects: {
       template: Prisma.$TemplatePayload<ExtArgs>
+      tenants: Prisma.$TenantPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -35112,6 +35543,7 @@ export namespace Prisma {
   export interface Prisma__TemplateVersionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     template<T extends TemplateDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TemplateDefaultArgs<ExtArgs>>): Prisma__TemplateClient<$Result.GetResult<Prisma.$TemplatePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    tenants<T extends TemplateVersion$tenantsArgs<ExtArgs> = {}>(args?: Subset<T, TemplateVersion$tenantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -35467,6 +35899,26 @@ export namespace Prisma {
      * Filter which TemplateVersions to delete
      */
     where?: TemplateVersionWhereInput
+  }
+
+  /**
+   * TemplateVersion.tenants
+   */
+  export type TemplateVersion$tenantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tenant
+     */
+    select?: TenantSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TenantInclude<ExtArgs> | null
+    where?: TenantWhereInput
+    orderBy?: TenantOrderByWithRelationInput | TenantOrderByWithRelationInput[]
+    cursor?: TenantWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TenantScalarFieldEnum | TenantScalarFieldEnum[]
   }
 
   /**
@@ -51305,6 +51757,11 @@ export namespace Prisma {
     tenantId: string | null
     role: string | null
     status: string | null
+    invitedBy: string | null
+    inviteStatus: string | null
+    inviteToken: string | null
+    inviteExpiresAt: Date | null
+    invitedEmail: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -51315,6 +51772,11 @@ export namespace Prisma {
     tenantId: string | null
     role: string | null
     status: string | null
+    invitedBy: string | null
+    inviteStatus: string | null
+    inviteToken: string | null
+    inviteExpiresAt: Date | null
+    invitedEmail: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -51325,6 +51787,11 @@ export namespace Prisma {
     tenantId: number
     role: number
     status: number
+    invitedBy: number
+    inviteStatus: number
+    inviteToken: number
+    inviteExpiresAt: number
+    invitedEmail: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -51337,6 +51804,11 @@ export namespace Prisma {
     tenantId?: true
     role?: true
     status?: true
+    invitedBy?: true
+    inviteStatus?: true
+    inviteToken?: true
+    inviteExpiresAt?: true
+    invitedEmail?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -51347,6 +51819,11 @@ export namespace Prisma {
     tenantId?: true
     role?: true
     status?: true
+    invitedBy?: true
+    inviteStatus?: true
+    inviteToken?: true
+    inviteExpiresAt?: true
+    invitedEmail?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -51357,6 +51834,11 @@ export namespace Prisma {
     tenantId?: true
     role?: true
     status?: true
+    invitedBy?: true
+    inviteStatus?: true
+    inviteToken?: true
+    inviteExpiresAt?: true
+    invitedEmail?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -51436,10 +51918,15 @@ export namespace Prisma {
 
   export type TenantMembershipGroupByOutputType = {
     id: string
-    userId: string
+    userId: string | null
     tenantId: string
     role: string
     status: string
+    invitedBy: string | null
+    inviteStatus: string
+    inviteToken: string | null
+    inviteExpiresAt: Date | null
+    invitedEmail: string | null
     createdAt: Date
     updatedAt: Date
     _count: TenantMembershipCountAggregateOutputType | null
@@ -51467,9 +51954,14 @@ export namespace Prisma {
     tenantId?: boolean
     role?: boolean
     status?: boolean
+    invitedBy?: boolean
+    inviteStatus?: boolean
+    inviteToken?: boolean
+    inviteExpiresAt?: boolean
+    invitedEmail?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user?: boolean | TenantMembership$userArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tenantMembership"]>
 
@@ -51479,9 +51971,14 @@ export namespace Prisma {
     tenantId?: boolean
     role?: boolean
     status?: boolean
+    invitedBy?: boolean
+    inviteStatus?: boolean
+    inviteToken?: boolean
+    inviteExpiresAt?: boolean
+    invitedEmail?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user?: boolean | TenantMembership$userArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tenantMembership"]>
 
@@ -51491,31 +51988,41 @@ export namespace Prisma {
     tenantId?: boolean
     role?: boolean
     status?: boolean
+    invitedBy?: boolean
+    inviteStatus?: boolean
+    inviteToken?: boolean
+    inviteExpiresAt?: boolean
+    invitedEmail?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
   export type TenantMembershipInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user?: boolean | TenantMembership$userArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
   }
   export type TenantMembershipIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    user?: boolean | TenantMembership$userArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
   }
 
   export type $TenantMembershipPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "TenantMembership"
     objects: {
-      user: Prisma.$UserPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs> | null
       tenant: Prisma.$TenantPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      userId: string
+      userId: string | null
       tenantId: string
       role: string
       status: string
+      invitedBy: string | null
+      inviteStatus: string
+      inviteToken: string | null
+      inviteExpiresAt: Date | null
+      invitedEmail: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["tenantMembership"]>
@@ -51882,7 +52389,7 @@ export namespace Prisma {
    */
   export interface Prisma__TenantMembershipClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    user<T extends TenantMembership$userArgs<ExtArgs> = {}>(args?: Subset<T, TenantMembership$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -51918,6 +52425,11 @@ export namespace Prisma {
     readonly tenantId: FieldRef<"TenantMembership", 'String'>
     readonly role: FieldRef<"TenantMembership", 'String'>
     readonly status: FieldRef<"TenantMembership", 'String'>
+    readonly invitedBy: FieldRef<"TenantMembership", 'String'>
+    readonly inviteStatus: FieldRef<"TenantMembership", 'String'>
+    readonly inviteToken: FieldRef<"TenantMembership", 'String'>
+    readonly inviteExpiresAt: FieldRef<"TenantMembership", 'DateTime'>
+    readonly invitedEmail: FieldRef<"TenantMembership", 'String'>
     readonly createdAt: FieldRef<"TenantMembership", 'DateTime'>
     readonly updatedAt: FieldRef<"TenantMembership", 'DateTime'>
   }
@@ -52238,6 +52750,21 @@ export namespace Prisma {
   }
 
   /**
+   * TenantMembership.user
+   */
+  export type TenantMembership$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
    * TenantMembership without action
    */
   export type TenantMembershipDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -52249,6 +52776,1896 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: TenantMembershipInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PasswordResetToken
+   */
+
+  export type AggregatePasswordResetToken = {
+    _count: PasswordResetTokenCountAggregateOutputType | null
+    _min: PasswordResetTokenMinAggregateOutputType | null
+    _max: PasswordResetTokenMaxAggregateOutputType | null
+  }
+
+  export type PasswordResetTokenMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    token: string | null
+    expiresAt: Date | null
+    usedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type PasswordResetTokenMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    token: string | null
+    expiresAt: Date | null
+    usedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type PasswordResetTokenCountAggregateOutputType = {
+    id: number
+    userId: number
+    token: number
+    expiresAt: number
+    usedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PasswordResetTokenMinAggregateInputType = {
+    id?: true
+    userId?: true
+    token?: true
+    expiresAt?: true
+    usedAt?: true
+    createdAt?: true
+  }
+
+  export type PasswordResetTokenMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    token?: true
+    expiresAt?: true
+    usedAt?: true
+    createdAt?: true
+  }
+
+  export type PasswordResetTokenCountAggregateInputType = {
+    id?: true
+    userId?: true
+    token?: true
+    expiresAt?: true
+    usedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PasswordResetTokenAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PasswordResetToken to aggregate.
+     */
+    where?: PasswordResetTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PasswordResetTokens to fetch.
+     */
+    orderBy?: PasswordResetTokenOrderByWithRelationInput | PasswordResetTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PasswordResetTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PasswordResetTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PasswordResetTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PasswordResetTokens
+    **/
+    _count?: true | PasswordResetTokenCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PasswordResetTokenMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PasswordResetTokenMaxAggregateInputType
+  }
+
+  export type GetPasswordResetTokenAggregateType<T extends PasswordResetTokenAggregateArgs> = {
+        [P in keyof T & keyof AggregatePasswordResetToken]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePasswordResetToken[P]>
+      : GetScalarType<T[P], AggregatePasswordResetToken[P]>
+  }
+
+
+
+
+  export type PasswordResetTokenGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PasswordResetTokenWhereInput
+    orderBy?: PasswordResetTokenOrderByWithAggregationInput | PasswordResetTokenOrderByWithAggregationInput[]
+    by: PasswordResetTokenScalarFieldEnum[] | PasswordResetTokenScalarFieldEnum
+    having?: PasswordResetTokenScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PasswordResetTokenCountAggregateInputType | true
+    _min?: PasswordResetTokenMinAggregateInputType
+    _max?: PasswordResetTokenMaxAggregateInputType
+  }
+
+  export type PasswordResetTokenGroupByOutputType = {
+    id: string
+    userId: string
+    token: string
+    expiresAt: Date
+    usedAt: Date | null
+    createdAt: Date
+    _count: PasswordResetTokenCountAggregateOutputType | null
+    _min: PasswordResetTokenMinAggregateOutputType | null
+    _max: PasswordResetTokenMaxAggregateOutputType | null
+  }
+
+  type GetPasswordResetTokenGroupByPayload<T extends PasswordResetTokenGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PasswordResetTokenGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PasswordResetTokenGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PasswordResetTokenGroupByOutputType[P]>
+            : GetScalarType<T[P], PasswordResetTokenGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PasswordResetTokenSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    token?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["passwordResetToken"]>
+
+  export type PasswordResetTokenSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    token?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["passwordResetToken"]>
+
+  export type PasswordResetTokenSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    token?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type PasswordResetTokenInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type PasswordResetTokenIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $PasswordResetTokenPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PasswordResetToken"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      token: string
+      expiresAt: Date
+      usedAt: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["passwordResetToken"]>
+    composites: {}
+  }
+
+  type PasswordResetTokenGetPayload<S extends boolean | null | undefined | PasswordResetTokenDefaultArgs> = $Result.GetResult<Prisma.$PasswordResetTokenPayload, S>
+
+  type PasswordResetTokenCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<PasswordResetTokenFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: PasswordResetTokenCountAggregateInputType | true
+    }
+
+  export interface PasswordResetTokenDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PasswordResetToken'], meta: { name: 'PasswordResetToken' } }
+    /**
+     * Find zero or one PasswordResetToken that matches the filter.
+     * @param {PasswordResetTokenFindUniqueArgs} args - Arguments to find a PasswordResetToken
+     * @example
+     * // Get one PasswordResetToken
+     * const passwordResetToken = await prisma.passwordResetToken.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PasswordResetTokenFindUniqueArgs>(args: SelectSubset<T, PasswordResetTokenFindUniqueArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one PasswordResetToken that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {PasswordResetTokenFindUniqueOrThrowArgs} args - Arguments to find a PasswordResetToken
+     * @example
+     * // Get one PasswordResetToken
+     * const passwordResetToken = await prisma.passwordResetToken.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PasswordResetTokenFindUniqueOrThrowArgs>(args: SelectSubset<T, PasswordResetTokenFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first PasswordResetToken that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PasswordResetTokenFindFirstArgs} args - Arguments to find a PasswordResetToken
+     * @example
+     * // Get one PasswordResetToken
+     * const passwordResetToken = await prisma.passwordResetToken.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PasswordResetTokenFindFirstArgs>(args?: SelectSubset<T, PasswordResetTokenFindFirstArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first PasswordResetToken that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PasswordResetTokenFindFirstOrThrowArgs} args - Arguments to find a PasswordResetToken
+     * @example
+     * // Get one PasswordResetToken
+     * const passwordResetToken = await prisma.passwordResetToken.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PasswordResetTokenFindFirstOrThrowArgs>(args?: SelectSubset<T, PasswordResetTokenFindFirstOrThrowArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more PasswordResetTokens that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PasswordResetTokenFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PasswordResetTokens
+     * const passwordResetTokens = await prisma.passwordResetToken.findMany()
+     * 
+     * // Get first 10 PasswordResetTokens
+     * const passwordResetTokens = await prisma.passwordResetToken.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const passwordResetTokenWithIdOnly = await prisma.passwordResetToken.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PasswordResetTokenFindManyArgs>(args?: SelectSubset<T, PasswordResetTokenFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a PasswordResetToken.
+     * @param {PasswordResetTokenCreateArgs} args - Arguments to create a PasswordResetToken.
+     * @example
+     * // Create one PasswordResetToken
+     * const PasswordResetToken = await prisma.passwordResetToken.create({
+     *   data: {
+     *     // ... data to create a PasswordResetToken
+     *   }
+     * })
+     * 
+     */
+    create<T extends PasswordResetTokenCreateArgs>(args: SelectSubset<T, PasswordResetTokenCreateArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many PasswordResetTokens.
+     * @param {PasswordResetTokenCreateManyArgs} args - Arguments to create many PasswordResetTokens.
+     * @example
+     * // Create many PasswordResetTokens
+     * const passwordResetToken = await prisma.passwordResetToken.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PasswordResetTokenCreateManyArgs>(args?: SelectSubset<T, PasswordResetTokenCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PasswordResetTokens and returns the data saved in the database.
+     * @param {PasswordResetTokenCreateManyAndReturnArgs} args - Arguments to create many PasswordResetTokens.
+     * @example
+     * // Create many PasswordResetTokens
+     * const passwordResetToken = await prisma.passwordResetToken.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PasswordResetTokens and only return the `id`
+     * const passwordResetTokenWithIdOnly = await prisma.passwordResetToken.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PasswordResetTokenCreateManyAndReturnArgs>(args?: SelectSubset<T, PasswordResetTokenCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a PasswordResetToken.
+     * @param {PasswordResetTokenDeleteArgs} args - Arguments to delete one PasswordResetToken.
+     * @example
+     * // Delete one PasswordResetToken
+     * const PasswordResetToken = await prisma.passwordResetToken.delete({
+     *   where: {
+     *     // ... filter to delete one PasswordResetToken
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PasswordResetTokenDeleteArgs>(args: SelectSubset<T, PasswordResetTokenDeleteArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one PasswordResetToken.
+     * @param {PasswordResetTokenUpdateArgs} args - Arguments to update one PasswordResetToken.
+     * @example
+     * // Update one PasswordResetToken
+     * const passwordResetToken = await prisma.passwordResetToken.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PasswordResetTokenUpdateArgs>(args: SelectSubset<T, PasswordResetTokenUpdateArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more PasswordResetTokens.
+     * @param {PasswordResetTokenDeleteManyArgs} args - Arguments to filter PasswordResetTokens to delete.
+     * @example
+     * // Delete a few PasswordResetTokens
+     * const { count } = await prisma.passwordResetToken.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PasswordResetTokenDeleteManyArgs>(args?: SelectSubset<T, PasswordResetTokenDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PasswordResetTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PasswordResetTokenUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PasswordResetTokens
+     * const passwordResetToken = await prisma.passwordResetToken.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PasswordResetTokenUpdateManyArgs>(args: SelectSubset<T, PasswordResetTokenUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one PasswordResetToken.
+     * @param {PasswordResetTokenUpsertArgs} args - Arguments to update or create a PasswordResetToken.
+     * @example
+     * // Update or create a PasswordResetToken
+     * const passwordResetToken = await prisma.passwordResetToken.upsert({
+     *   create: {
+     *     // ... data to create a PasswordResetToken
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PasswordResetToken we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PasswordResetTokenUpsertArgs>(args: SelectSubset<T, PasswordResetTokenUpsertArgs<ExtArgs>>): Prisma__PasswordResetTokenClient<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of PasswordResetTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PasswordResetTokenCountArgs} args - Arguments to filter PasswordResetTokens to count.
+     * @example
+     * // Count the number of PasswordResetTokens
+     * const count = await prisma.passwordResetToken.count({
+     *   where: {
+     *     // ... the filter for the PasswordResetTokens we want to count
+     *   }
+     * })
+    **/
+    count<T extends PasswordResetTokenCountArgs>(
+      args?: Subset<T, PasswordResetTokenCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PasswordResetTokenCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PasswordResetToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PasswordResetTokenAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PasswordResetTokenAggregateArgs>(args: Subset<T, PasswordResetTokenAggregateArgs>): Prisma.PrismaPromise<GetPasswordResetTokenAggregateType<T>>
+
+    /**
+     * Group by PasswordResetToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PasswordResetTokenGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PasswordResetTokenGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PasswordResetTokenGroupByArgs['orderBy'] }
+        : { orderBy?: PasswordResetTokenGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PasswordResetTokenGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPasswordResetTokenGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PasswordResetToken model
+   */
+  readonly fields: PasswordResetTokenFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PasswordResetToken.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PasswordResetTokenClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PasswordResetToken model
+   */ 
+  interface PasswordResetTokenFieldRefs {
+    readonly id: FieldRef<"PasswordResetToken", 'String'>
+    readonly userId: FieldRef<"PasswordResetToken", 'String'>
+    readonly token: FieldRef<"PasswordResetToken", 'String'>
+    readonly expiresAt: FieldRef<"PasswordResetToken", 'DateTime'>
+    readonly usedAt: FieldRef<"PasswordResetToken", 'DateTime'>
+    readonly createdAt: FieldRef<"PasswordResetToken", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PasswordResetToken findUnique
+   */
+  export type PasswordResetTokenFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PasswordResetTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which PasswordResetToken to fetch.
+     */
+    where: PasswordResetTokenWhereUniqueInput
+  }
+
+  /**
+   * PasswordResetToken findUniqueOrThrow
+   */
+  export type PasswordResetTokenFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PasswordResetTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which PasswordResetToken to fetch.
+     */
+    where: PasswordResetTokenWhereUniqueInput
+  }
+
+  /**
+   * PasswordResetToken findFirst
+   */
+  export type PasswordResetTokenFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PasswordResetTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which PasswordResetToken to fetch.
+     */
+    where?: PasswordResetTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PasswordResetTokens to fetch.
+     */
+    orderBy?: PasswordResetTokenOrderByWithRelationInput | PasswordResetTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PasswordResetTokens.
+     */
+    cursor?: PasswordResetTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PasswordResetTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PasswordResetTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PasswordResetTokens.
+     */
+    distinct?: PasswordResetTokenScalarFieldEnum | PasswordResetTokenScalarFieldEnum[]
+  }
+
+  /**
+   * PasswordResetToken findFirstOrThrow
+   */
+  export type PasswordResetTokenFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PasswordResetTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which PasswordResetToken to fetch.
+     */
+    where?: PasswordResetTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PasswordResetTokens to fetch.
+     */
+    orderBy?: PasswordResetTokenOrderByWithRelationInput | PasswordResetTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PasswordResetTokens.
+     */
+    cursor?: PasswordResetTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PasswordResetTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PasswordResetTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PasswordResetTokens.
+     */
+    distinct?: PasswordResetTokenScalarFieldEnum | PasswordResetTokenScalarFieldEnum[]
+  }
+
+  /**
+   * PasswordResetToken findMany
+   */
+  export type PasswordResetTokenFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PasswordResetTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which PasswordResetTokens to fetch.
+     */
+    where?: PasswordResetTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PasswordResetTokens to fetch.
+     */
+    orderBy?: PasswordResetTokenOrderByWithRelationInput | PasswordResetTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PasswordResetTokens.
+     */
+    cursor?: PasswordResetTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PasswordResetTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PasswordResetTokens.
+     */
+    skip?: number
+    distinct?: PasswordResetTokenScalarFieldEnum | PasswordResetTokenScalarFieldEnum[]
+  }
+
+  /**
+   * PasswordResetToken create
+   */
+  export type PasswordResetTokenCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PasswordResetTokenInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PasswordResetToken.
+     */
+    data: XOR<PasswordResetTokenCreateInput, PasswordResetTokenUncheckedCreateInput>
+  }
+
+  /**
+   * PasswordResetToken createMany
+   */
+  export type PasswordResetTokenCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PasswordResetTokens.
+     */
+    data: PasswordResetTokenCreateManyInput | PasswordResetTokenCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PasswordResetToken createManyAndReturn
+   */
+  export type PasswordResetTokenCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many PasswordResetTokens.
+     */
+    data: PasswordResetTokenCreateManyInput | PasswordResetTokenCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PasswordResetTokenIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PasswordResetToken update
+   */
+  export type PasswordResetTokenUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PasswordResetTokenInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PasswordResetToken.
+     */
+    data: XOR<PasswordResetTokenUpdateInput, PasswordResetTokenUncheckedUpdateInput>
+    /**
+     * Choose, which PasswordResetToken to update.
+     */
+    where: PasswordResetTokenWhereUniqueInput
+  }
+
+  /**
+   * PasswordResetToken updateMany
+   */
+  export type PasswordResetTokenUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PasswordResetTokens.
+     */
+    data: XOR<PasswordResetTokenUpdateManyMutationInput, PasswordResetTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which PasswordResetTokens to update
+     */
+    where?: PasswordResetTokenWhereInput
+  }
+
+  /**
+   * PasswordResetToken upsert
+   */
+  export type PasswordResetTokenUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PasswordResetTokenInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PasswordResetToken to update in case it exists.
+     */
+    where: PasswordResetTokenWhereUniqueInput
+    /**
+     * In case the PasswordResetToken found by the `where` argument doesn't exist, create a new PasswordResetToken with this data.
+     */
+    create: XOR<PasswordResetTokenCreateInput, PasswordResetTokenUncheckedCreateInput>
+    /**
+     * In case the PasswordResetToken was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PasswordResetTokenUpdateInput, PasswordResetTokenUncheckedUpdateInput>
+  }
+
+  /**
+   * PasswordResetToken delete
+   */
+  export type PasswordResetTokenDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PasswordResetTokenInclude<ExtArgs> | null
+    /**
+     * Filter which PasswordResetToken to delete.
+     */
+    where: PasswordResetTokenWhereUniqueInput
+  }
+
+  /**
+   * PasswordResetToken deleteMany
+   */
+  export type PasswordResetTokenDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PasswordResetTokens to delete
+     */
+    where?: PasswordResetTokenWhereInput
+  }
+
+  /**
+   * PasswordResetToken without action
+   */
+  export type PasswordResetTokenDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PasswordResetToken
+     */
+    select?: PasswordResetTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PasswordResetTokenInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EmailVerificationToken
+   */
+
+  export type AggregateEmailVerificationToken = {
+    _count: EmailVerificationTokenCountAggregateOutputType | null
+    _min: EmailVerificationTokenMinAggregateOutputType | null
+    _max: EmailVerificationTokenMaxAggregateOutputType | null
+  }
+
+  export type EmailVerificationTokenMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    token: string | null
+    expiresAt: Date | null
+    usedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type EmailVerificationTokenMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    token: string | null
+    expiresAt: Date | null
+    usedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type EmailVerificationTokenCountAggregateOutputType = {
+    id: number
+    userId: number
+    token: number
+    expiresAt: number
+    usedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type EmailVerificationTokenMinAggregateInputType = {
+    id?: true
+    userId?: true
+    token?: true
+    expiresAt?: true
+    usedAt?: true
+    createdAt?: true
+  }
+
+  export type EmailVerificationTokenMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    token?: true
+    expiresAt?: true
+    usedAt?: true
+    createdAt?: true
+  }
+
+  export type EmailVerificationTokenCountAggregateInputType = {
+    id?: true
+    userId?: true
+    token?: true
+    expiresAt?: true
+    usedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type EmailVerificationTokenAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmailVerificationToken to aggregate.
+     */
+    where?: EmailVerificationTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailVerificationTokens to fetch.
+     */
+    orderBy?: EmailVerificationTokenOrderByWithRelationInput | EmailVerificationTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EmailVerificationTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailVerificationTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailVerificationTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EmailVerificationTokens
+    **/
+    _count?: true | EmailVerificationTokenCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EmailVerificationTokenMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EmailVerificationTokenMaxAggregateInputType
+  }
+
+  export type GetEmailVerificationTokenAggregateType<T extends EmailVerificationTokenAggregateArgs> = {
+        [P in keyof T & keyof AggregateEmailVerificationToken]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEmailVerificationToken[P]>
+      : GetScalarType<T[P], AggregateEmailVerificationToken[P]>
+  }
+
+
+
+
+  export type EmailVerificationTokenGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmailVerificationTokenWhereInput
+    orderBy?: EmailVerificationTokenOrderByWithAggregationInput | EmailVerificationTokenOrderByWithAggregationInput[]
+    by: EmailVerificationTokenScalarFieldEnum[] | EmailVerificationTokenScalarFieldEnum
+    having?: EmailVerificationTokenScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EmailVerificationTokenCountAggregateInputType | true
+    _min?: EmailVerificationTokenMinAggregateInputType
+    _max?: EmailVerificationTokenMaxAggregateInputType
+  }
+
+  export type EmailVerificationTokenGroupByOutputType = {
+    id: string
+    userId: string
+    token: string
+    expiresAt: Date
+    usedAt: Date | null
+    createdAt: Date
+    _count: EmailVerificationTokenCountAggregateOutputType | null
+    _min: EmailVerificationTokenMinAggregateOutputType | null
+    _max: EmailVerificationTokenMaxAggregateOutputType | null
+  }
+
+  type GetEmailVerificationTokenGroupByPayload<T extends EmailVerificationTokenGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EmailVerificationTokenGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EmailVerificationTokenGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EmailVerificationTokenGroupByOutputType[P]>
+            : GetScalarType<T[P], EmailVerificationTokenGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EmailVerificationTokenSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    token?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["emailVerificationToken"]>
+
+  export type EmailVerificationTokenSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    token?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["emailVerificationToken"]>
+
+  export type EmailVerificationTokenSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    token?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type EmailVerificationTokenInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type EmailVerificationTokenIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $EmailVerificationTokenPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EmailVerificationToken"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      token: string
+      expiresAt: Date
+      usedAt: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["emailVerificationToken"]>
+    composites: {}
+  }
+
+  type EmailVerificationTokenGetPayload<S extends boolean | null | undefined | EmailVerificationTokenDefaultArgs> = $Result.GetResult<Prisma.$EmailVerificationTokenPayload, S>
+
+  type EmailVerificationTokenCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<EmailVerificationTokenFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: EmailVerificationTokenCountAggregateInputType | true
+    }
+
+  export interface EmailVerificationTokenDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmailVerificationToken'], meta: { name: 'EmailVerificationToken' } }
+    /**
+     * Find zero or one EmailVerificationToken that matches the filter.
+     * @param {EmailVerificationTokenFindUniqueArgs} args - Arguments to find a EmailVerificationToken
+     * @example
+     * // Get one EmailVerificationToken
+     * const emailVerificationToken = await prisma.emailVerificationToken.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EmailVerificationTokenFindUniqueArgs>(args: SelectSubset<T, EmailVerificationTokenFindUniqueArgs<ExtArgs>>): Prisma__EmailVerificationTokenClient<$Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one EmailVerificationToken that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {EmailVerificationTokenFindUniqueOrThrowArgs} args - Arguments to find a EmailVerificationToken
+     * @example
+     * // Get one EmailVerificationToken
+     * const emailVerificationToken = await prisma.emailVerificationToken.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EmailVerificationTokenFindUniqueOrThrowArgs>(args: SelectSubset<T, EmailVerificationTokenFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmailVerificationTokenClient<$Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first EmailVerificationToken that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailVerificationTokenFindFirstArgs} args - Arguments to find a EmailVerificationToken
+     * @example
+     * // Get one EmailVerificationToken
+     * const emailVerificationToken = await prisma.emailVerificationToken.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EmailVerificationTokenFindFirstArgs>(args?: SelectSubset<T, EmailVerificationTokenFindFirstArgs<ExtArgs>>): Prisma__EmailVerificationTokenClient<$Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first EmailVerificationToken that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailVerificationTokenFindFirstOrThrowArgs} args - Arguments to find a EmailVerificationToken
+     * @example
+     * // Get one EmailVerificationToken
+     * const emailVerificationToken = await prisma.emailVerificationToken.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EmailVerificationTokenFindFirstOrThrowArgs>(args?: SelectSubset<T, EmailVerificationTokenFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmailVerificationTokenClient<$Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more EmailVerificationTokens that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailVerificationTokenFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EmailVerificationTokens
+     * const emailVerificationTokens = await prisma.emailVerificationToken.findMany()
+     * 
+     * // Get first 10 EmailVerificationTokens
+     * const emailVerificationTokens = await prisma.emailVerificationToken.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const emailVerificationTokenWithIdOnly = await prisma.emailVerificationToken.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EmailVerificationTokenFindManyArgs>(args?: SelectSubset<T, EmailVerificationTokenFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a EmailVerificationToken.
+     * @param {EmailVerificationTokenCreateArgs} args - Arguments to create a EmailVerificationToken.
+     * @example
+     * // Create one EmailVerificationToken
+     * const EmailVerificationToken = await prisma.emailVerificationToken.create({
+     *   data: {
+     *     // ... data to create a EmailVerificationToken
+     *   }
+     * })
+     * 
+     */
+    create<T extends EmailVerificationTokenCreateArgs>(args: SelectSubset<T, EmailVerificationTokenCreateArgs<ExtArgs>>): Prisma__EmailVerificationTokenClient<$Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many EmailVerificationTokens.
+     * @param {EmailVerificationTokenCreateManyArgs} args - Arguments to create many EmailVerificationTokens.
+     * @example
+     * // Create many EmailVerificationTokens
+     * const emailVerificationToken = await prisma.emailVerificationToken.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EmailVerificationTokenCreateManyArgs>(args?: SelectSubset<T, EmailVerificationTokenCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EmailVerificationTokens and returns the data saved in the database.
+     * @param {EmailVerificationTokenCreateManyAndReturnArgs} args - Arguments to create many EmailVerificationTokens.
+     * @example
+     * // Create many EmailVerificationTokens
+     * const emailVerificationToken = await prisma.emailVerificationToken.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EmailVerificationTokens and only return the `id`
+     * const emailVerificationTokenWithIdOnly = await prisma.emailVerificationToken.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EmailVerificationTokenCreateManyAndReturnArgs>(args?: SelectSubset<T, EmailVerificationTokenCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a EmailVerificationToken.
+     * @param {EmailVerificationTokenDeleteArgs} args - Arguments to delete one EmailVerificationToken.
+     * @example
+     * // Delete one EmailVerificationToken
+     * const EmailVerificationToken = await prisma.emailVerificationToken.delete({
+     *   where: {
+     *     // ... filter to delete one EmailVerificationToken
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EmailVerificationTokenDeleteArgs>(args: SelectSubset<T, EmailVerificationTokenDeleteArgs<ExtArgs>>): Prisma__EmailVerificationTokenClient<$Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one EmailVerificationToken.
+     * @param {EmailVerificationTokenUpdateArgs} args - Arguments to update one EmailVerificationToken.
+     * @example
+     * // Update one EmailVerificationToken
+     * const emailVerificationToken = await prisma.emailVerificationToken.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EmailVerificationTokenUpdateArgs>(args: SelectSubset<T, EmailVerificationTokenUpdateArgs<ExtArgs>>): Prisma__EmailVerificationTokenClient<$Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more EmailVerificationTokens.
+     * @param {EmailVerificationTokenDeleteManyArgs} args - Arguments to filter EmailVerificationTokens to delete.
+     * @example
+     * // Delete a few EmailVerificationTokens
+     * const { count } = await prisma.emailVerificationToken.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EmailVerificationTokenDeleteManyArgs>(args?: SelectSubset<T, EmailVerificationTokenDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmailVerificationTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailVerificationTokenUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EmailVerificationTokens
+     * const emailVerificationToken = await prisma.emailVerificationToken.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EmailVerificationTokenUpdateManyArgs>(args: SelectSubset<T, EmailVerificationTokenUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one EmailVerificationToken.
+     * @param {EmailVerificationTokenUpsertArgs} args - Arguments to update or create a EmailVerificationToken.
+     * @example
+     * // Update or create a EmailVerificationToken
+     * const emailVerificationToken = await prisma.emailVerificationToken.upsert({
+     *   create: {
+     *     // ... data to create a EmailVerificationToken
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EmailVerificationToken we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EmailVerificationTokenUpsertArgs>(args: SelectSubset<T, EmailVerificationTokenUpsertArgs<ExtArgs>>): Prisma__EmailVerificationTokenClient<$Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of EmailVerificationTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailVerificationTokenCountArgs} args - Arguments to filter EmailVerificationTokens to count.
+     * @example
+     * // Count the number of EmailVerificationTokens
+     * const count = await prisma.emailVerificationToken.count({
+     *   where: {
+     *     // ... the filter for the EmailVerificationTokens we want to count
+     *   }
+     * })
+    **/
+    count<T extends EmailVerificationTokenCountArgs>(
+      args?: Subset<T, EmailVerificationTokenCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EmailVerificationTokenCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EmailVerificationToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailVerificationTokenAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EmailVerificationTokenAggregateArgs>(args: Subset<T, EmailVerificationTokenAggregateArgs>): Prisma.PrismaPromise<GetEmailVerificationTokenAggregateType<T>>
+
+    /**
+     * Group by EmailVerificationToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailVerificationTokenGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EmailVerificationTokenGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EmailVerificationTokenGroupByArgs['orderBy'] }
+        : { orderBy?: EmailVerificationTokenGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EmailVerificationTokenGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmailVerificationTokenGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EmailVerificationToken model
+   */
+  readonly fields: EmailVerificationTokenFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EmailVerificationToken.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EmailVerificationTokenClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EmailVerificationToken model
+   */ 
+  interface EmailVerificationTokenFieldRefs {
+    readonly id: FieldRef<"EmailVerificationToken", 'String'>
+    readonly userId: FieldRef<"EmailVerificationToken", 'String'>
+    readonly token: FieldRef<"EmailVerificationToken", 'String'>
+    readonly expiresAt: FieldRef<"EmailVerificationToken", 'DateTime'>
+    readonly usedAt: FieldRef<"EmailVerificationToken", 'DateTime'>
+    readonly createdAt: FieldRef<"EmailVerificationToken", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EmailVerificationToken findUnique
+   */
+  export type EmailVerificationTokenFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailVerificationToken
+     */
+    select?: EmailVerificationTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailVerificationTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailVerificationToken to fetch.
+     */
+    where: EmailVerificationTokenWhereUniqueInput
+  }
+
+  /**
+   * EmailVerificationToken findUniqueOrThrow
+   */
+  export type EmailVerificationTokenFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailVerificationToken
+     */
+    select?: EmailVerificationTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailVerificationTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailVerificationToken to fetch.
+     */
+    where: EmailVerificationTokenWhereUniqueInput
+  }
+
+  /**
+   * EmailVerificationToken findFirst
+   */
+  export type EmailVerificationTokenFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailVerificationToken
+     */
+    select?: EmailVerificationTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailVerificationTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailVerificationToken to fetch.
+     */
+    where?: EmailVerificationTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailVerificationTokens to fetch.
+     */
+    orderBy?: EmailVerificationTokenOrderByWithRelationInput | EmailVerificationTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmailVerificationTokens.
+     */
+    cursor?: EmailVerificationTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailVerificationTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailVerificationTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmailVerificationTokens.
+     */
+    distinct?: EmailVerificationTokenScalarFieldEnum | EmailVerificationTokenScalarFieldEnum[]
+  }
+
+  /**
+   * EmailVerificationToken findFirstOrThrow
+   */
+  export type EmailVerificationTokenFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailVerificationToken
+     */
+    select?: EmailVerificationTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailVerificationTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailVerificationToken to fetch.
+     */
+    where?: EmailVerificationTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailVerificationTokens to fetch.
+     */
+    orderBy?: EmailVerificationTokenOrderByWithRelationInput | EmailVerificationTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmailVerificationTokens.
+     */
+    cursor?: EmailVerificationTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailVerificationTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailVerificationTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmailVerificationTokens.
+     */
+    distinct?: EmailVerificationTokenScalarFieldEnum | EmailVerificationTokenScalarFieldEnum[]
+  }
+
+  /**
+   * EmailVerificationToken findMany
+   */
+  export type EmailVerificationTokenFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailVerificationToken
+     */
+    select?: EmailVerificationTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailVerificationTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailVerificationTokens to fetch.
+     */
+    where?: EmailVerificationTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailVerificationTokens to fetch.
+     */
+    orderBy?: EmailVerificationTokenOrderByWithRelationInput | EmailVerificationTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EmailVerificationTokens.
+     */
+    cursor?: EmailVerificationTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailVerificationTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailVerificationTokens.
+     */
+    skip?: number
+    distinct?: EmailVerificationTokenScalarFieldEnum | EmailVerificationTokenScalarFieldEnum[]
+  }
+
+  /**
+   * EmailVerificationToken create
+   */
+  export type EmailVerificationTokenCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailVerificationToken
+     */
+    select?: EmailVerificationTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailVerificationTokenInclude<ExtArgs> | null
+    /**
+     * The data needed to create a EmailVerificationToken.
+     */
+    data: XOR<EmailVerificationTokenCreateInput, EmailVerificationTokenUncheckedCreateInput>
+  }
+
+  /**
+   * EmailVerificationToken createMany
+   */
+  export type EmailVerificationTokenCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EmailVerificationTokens.
+     */
+    data: EmailVerificationTokenCreateManyInput | EmailVerificationTokenCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmailVerificationToken createManyAndReturn
+   */
+  export type EmailVerificationTokenCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailVerificationToken
+     */
+    select?: EmailVerificationTokenSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many EmailVerificationTokens.
+     */
+    data: EmailVerificationTokenCreateManyInput | EmailVerificationTokenCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailVerificationTokenIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmailVerificationToken update
+   */
+  export type EmailVerificationTokenUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailVerificationToken
+     */
+    select?: EmailVerificationTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailVerificationTokenInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EmailVerificationToken.
+     */
+    data: XOR<EmailVerificationTokenUpdateInput, EmailVerificationTokenUncheckedUpdateInput>
+    /**
+     * Choose, which EmailVerificationToken to update.
+     */
+    where: EmailVerificationTokenWhereUniqueInput
+  }
+
+  /**
+   * EmailVerificationToken updateMany
+   */
+  export type EmailVerificationTokenUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EmailVerificationTokens.
+     */
+    data: XOR<EmailVerificationTokenUpdateManyMutationInput, EmailVerificationTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which EmailVerificationTokens to update
+     */
+    where?: EmailVerificationTokenWhereInput
+  }
+
+  /**
+   * EmailVerificationToken upsert
+   */
+  export type EmailVerificationTokenUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailVerificationToken
+     */
+    select?: EmailVerificationTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailVerificationTokenInclude<ExtArgs> | null
+    /**
+     * The filter to search for the EmailVerificationToken to update in case it exists.
+     */
+    where: EmailVerificationTokenWhereUniqueInput
+    /**
+     * In case the EmailVerificationToken found by the `where` argument doesn't exist, create a new EmailVerificationToken with this data.
+     */
+    create: XOR<EmailVerificationTokenCreateInput, EmailVerificationTokenUncheckedCreateInput>
+    /**
+     * In case the EmailVerificationToken was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EmailVerificationTokenUpdateInput, EmailVerificationTokenUncheckedUpdateInput>
+  }
+
+  /**
+   * EmailVerificationToken delete
+   */
+  export type EmailVerificationTokenDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailVerificationToken
+     */
+    select?: EmailVerificationTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailVerificationTokenInclude<ExtArgs> | null
+    /**
+     * Filter which EmailVerificationToken to delete.
+     */
+    where: EmailVerificationTokenWhereUniqueInput
+  }
+
+  /**
+   * EmailVerificationToken deleteMany
+   */
+  export type EmailVerificationTokenDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmailVerificationTokens to delete
+     */
+    where?: EmailVerificationTokenWhereInput
+  }
+
+  /**
+   * EmailVerificationToken without action
+   */
+  export type EmailVerificationTokenDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailVerificationToken
+     */
+    select?: EmailVerificationTokenSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailVerificationTokenInclude<ExtArgs> | null
   }
 
 
@@ -52298,12 +54715,18 @@ export namespace Prisma {
     domain: 'domain',
     status: 'status',
     templateId: 'templateId',
+    templateVersionId: 'templateVersionId',
     themeOverrides: 'themeOverrides',
     activatedAt: 'activatedAt',
     expiresAt: 'expiresAt',
     onboardingCompletedAt: 'onboardingCompletedAt',
     uploadUsedBytes: 'uploadUsedBytes',
     version: 'version',
+    trialStartAt: 'trialStartAt',
+    trialEndAt: 'trialEndAt',
+    trialSaveLimit: 'trialSaveLimit',
+    trialSaveCount: 'trialSaveCount',
+    trialStatus: 'trialStatus',
     deletedAt: 'deletedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -52323,6 +54746,8 @@ export namespace Prisma {
     features: 'features',
     priceBuy: 'priceBuy',
     priceRentMonthly: 'priceRentMonthly',
+    priceRentYearly: 'priceRentYearly',
+    priceBuySource: 'priceBuySource',
     isActive: 'isActive',
     sortOrder: 'sortOrder',
     deletedAt: 'deletedAt',
@@ -52385,6 +54810,8 @@ export namespace Prisma {
     startDate: 'startDate',
     endDate: 'endDate',
     cancelledAt: 'cancelledAt',
+    billingPeriod: 'billingPeriod',
+    autoRenew: 'autoRenew',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -53047,11 +55474,40 @@ export namespace Prisma {
     tenantId: 'tenantId',
     role: 'role',
     status: 'status',
+    invitedBy: 'invitedBy',
+    inviteStatus: 'inviteStatus',
+    inviteToken: 'inviteToken',
+    inviteExpiresAt: 'inviteExpiresAt',
+    invitedEmail: 'invitedEmail',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type TenantMembershipScalarFieldEnum = (typeof TenantMembershipScalarFieldEnum)[keyof typeof TenantMembershipScalarFieldEnum]
+
+
+  export const PasswordResetTokenScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    token: 'token',
+    expiresAt: 'expiresAt',
+    usedAt: 'usedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
+
+
+  export const EmailVerificationTokenScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    token: 'token',
+    expiresAt: 'expiresAt',
+    usedAt: 'usedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type EmailVerificationTokenScalarFieldEnum = (typeof EmailVerificationTokenScalarFieldEnum)[keyof typeof EmailVerificationTokenScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -53310,6 +55766,8 @@ export namespace Prisma {
     reviews?: ReviewListRelationFilter
     notifications?: NotificationListRelationFilter
     memberships?: TenantMembershipListRelationFilter
+    passwordResetTokens?: PasswordResetTokenListRelationFilter
+    emailVerificationTokens?: EmailVerificationTokenListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -53341,6 +55799,8 @@ export namespace Prisma {
     reviews?: ReviewOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
     memberships?: TenantMembershipOrderByRelationAggregateInput
+    passwordResetTokens?: PasswordResetTokenOrderByRelationAggregateInput
+    emailVerificationTokens?: EmailVerificationTokenOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -53375,6 +55835,8 @@ export namespace Prisma {
     reviews?: ReviewListRelationFilter
     notifications?: NotificationListRelationFilter
     memberships?: TenantMembershipListRelationFilter
+    passwordResetTokens?: PasswordResetTokenListRelationFilter
+    emailVerificationTokens?: EmailVerificationTokenListRelationFilter
   }, "id" | "email" | "phone" | "username">
 
   export type UserOrderByWithAggregationInput = {
@@ -53437,16 +55899,23 @@ export namespace Prisma {
     domain?: StringNullableFilter<"Tenant"> | string | null
     status?: StringFilter<"Tenant"> | string
     templateId?: StringNullableFilter<"Tenant"> | string | null
+    templateVersionId?: StringNullableFilter<"Tenant"> | string | null
     themeOverrides?: JsonNullableFilter<"Tenant">
     activatedAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
     expiresAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
     onboardingCompletedAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
     uploadUsedBytes?: BigIntFilter<"Tenant"> | bigint | number
     version?: IntFilter<"Tenant"> | number
+    trialStartAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
+    trialEndAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
+    trialSaveLimit?: IntFilter<"Tenant"> | number
+    trialSaveCount?: IntFilter<"Tenant"> | number
+    trialStatus?: StringNullableFilter<"Tenant"> | string | null
     deletedAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
     createdAt?: DateTimeFilter<"Tenant"> | Date | string
     updatedAt?: DateTimeFilter<"Tenant"> | Date | string
     template?: XOR<TemplateNullableRelationFilter, TemplateWhereInput> | null
+    templateVersion?: XOR<TemplateVersionNullableRelationFilter, TemplateVersionWhereInput> | null
     users?: UserListRelationFilter
     projects?: ProjectListRelationFilter
     posts?: PostListRelationFilter
@@ -53479,16 +55948,23 @@ export namespace Prisma {
     domain?: SortOrderInput | SortOrder
     status?: SortOrder
     templateId?: SortOrderInput | SortOrder
+    templateVersionId?: SortOrderInput | SortOrder
     themeOverrides?: SortOrderInput | SortOrder
     activatedAt?: SortOrderInput | SortOrder
     expiresAt?: SortOrderInput | SortOrder
     onboardingCompletedAt?: SortOrderInput | SortOrder
     uploadUsedBytes?: SortOrder
     version?: SortOrder
+    trialStartAt?: SortOrderInput | SortOrder
+    trialEndAt?: SortOrderInput | SortOrder
+    trialSaveLimit?: SortOrder
+    trialSaveCount?: SortOrder
+    trialStatus?: SortOrderInput | SortOrder
     deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     template?: TemplateOrderByWithRelationInput
+    templateVersion?: TemplateVersionOrderByWithRelationInput
     users?: UserOrderByRelationAggregateInput
     projects?: ProjectOrderByRelationAggregateInput
     posts?: PostOrderByRelationAggregateInput
@@ -53524,16 +56000,23 @@ export namespace Prisma {
     name?: StringFilter<"Tenant"> | string
     status?: StringFilter<"Tenant"> | string
     templateId?: StringNullableFilter<"Tenant"> | string | null
+    templateVersionId?: StringNullableFilter<"Tenant"> | string | null
     themeOverrides?: JsonNullableFilter<"Tenant">
     activatedAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
     expiresAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
     onboardingCompletedAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
     uploadUsedBytes?: BigIntFilter<"Tenant"> | bigint | number
     version?: IntFilter<"Tenant"> | number
+    trialStartAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
+    trialEndAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
+    trialSaveLimit?: IntFilter<"Tenant"> | number
+    trialSaveCount?: IntFilter<"Tenant"> | number
+    trialStatus?: StringNullableFilter<"Tenant"> | string | null
     deletedAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
     createdAt?: DateTimeFilter<"Tenant"> | Date | string
     updatedAt?: DateTimeFilter<"Tenant"> | Date | string
     template?: XOR<TemplateNullableRelationFilter, TemplateWhereInput> | null
+    templateVersion?: XOR<TemplateVersionNullableRelationFilter, TemplateVersionWhereInput> | null
     users?: UserListRelationFilter
     projects?: ProjectListRelationFilter
     posts?: PostListRelationFilter
@@ -53566,12 +56049,18 @@ export namespace Prisma {
     domain?: SortOrderInput | SortOrder
     status?: SortOrder
     templateId?: SortOrderInput | SortOrder
+    templateVersionId?: SortOrderInput | SortOrder
     themeOverrides?: SortOrderInput | SortOrder
     activatedAt?: SortOrderInput | SortOrder
     expiresAt?: SortOrderInput | SortOrder
     onboardingCompletedAt?: SortOrderInput | SortOrder
     uploadUsedBytes?: SortOrder
     version?: SortOrder
+    trialStartAt?: SortOrderInput | SortOrder
+    trialEndAt?: SortOrderInput | SortOrder
+    trialSaveLimit?: SortOrder
+    trialSaveCount?: SortOrder
+    trialStatus?: SortOrderInput | SortOrder
     deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -53592,12 +56081,18 @@ export namespace Prisma {
     domain?: StringNullableWithAggregatesFilter<"Tenant"> | string | null
     status?: StringWithAggregatesFilter<"Tenant"> | string
     templateId?: StringNullableWithAggregatesFilter<"Tenant"> | string | null
+    templateVersionId?: StringNullableWithAggregatesFilter<"Tenant"> | string | null
     themeOverrides?: JsonNullableWithAggregatesFilter<"Tenant">
     activatedAt?: DateTimeNullableWithAggregatesFilter<"Tenant"> | Date | string | null
     expiresAt?: DateTimeNullableWithAggregatesFilter<"Tenant"> | Date | string | null
     onboardingCompletedAt?: DateTimeNullableWithAggregatesFilter<"Tenant"> | Date | string | null
     uploadUsedBytes?: BigIntWithAggregatesFilter<"Tenant"> | bigint | number
     version?: IntWithAggregatesFilter<"Tenant"> | number
+    trialStartAt?: DateTimeNullableWithAggregatesFilter<"Tenant"> | Date | string | null
+    trialEndAt?: DateTimeNullableWithAggregatesFilter<"Tenant"> | Date | string | null
+    trialSaveLimit?: IntWithAggregatesFilter<"Tenant"> | number
+    trialSaveCount?: IntWithAggregatesFilter<"Tenant"> | number
+    trialStatus?: StringNullableWithAggregatesFilter<"Tenant"> | string | null
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Tenant"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Tenant"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Tenant"> | Date | string
@@ -53617,6 +56112,8 @@ export namespace Prisma {
     features?: JsonNullableFilter<"Template">
     priceBuy?: IntNullableFilter<"Template"> | number | null
     priceRentMonthly?: IntNullableFilter<"Template"> | number | null
+    priceRentYearly?: IntNullableFilter<"Template"> | number | null
+    priceBuySource?: IntNullableFilter<"Template"> | number | null
     isActive?: BoolFilter<"Template"> | boolean
     sortOrder?: IntFilter<"Template"> | number
     deletedAt?: DateTimeNullableFilter<"Template"> | Date | string | null
@@ -53646,6 +56143,8 @@ export namespace Prisma {
     features?: SortOrderInput | SortOrder
     priceBuy?: SortOrderInput | SortOrder
     priceRentMonthly?: SortOrderInput | SortOrder
+    priceRentYearly?: SortOrderInput | SortOrder
+    priceBuySource?: SortOrderInput | SortOrder
     isActive?: SortOrder
     sortOrder?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -53678,6 +56177,8 @@ export namespace Prisma {
     features?: JsonNullableFilter<"Template">
     priceBuy?: IntNullableFilter<"Template"> | number | null
     priceRentMonthly?: IntNullableFilter<"Template"> | number | null
+    priceRentYearly?: IntNullableFilter<"Template"> | number | null
+    priceBuySource?: IntNullableFilter<"Template"> | number | null
     isActive?: BoolFilter<"Template"> | boolean
     sortOrder?: IntFilter<"Template"> | number
     deletedAt?: DateTimeNullableFilter<"Template"> | Date | string | null
@@ -53707,6 +56208,8 @@ export namespace Prisma {
     features?: SortOrderInput | SortOrder
     priceBuy?: SortOrderInput | SortOrder
     priceRentMonthly?: SortOrderInput | SortOrder
+    priceRentYearly?: SortOrderInput | SortOrder
+    priceBuySource?: SortOrderInput | SortOrder
     isActive?: SortOrder
     sortOrder?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -53735,6 +56238,8 @@ export namespace Prisma {
     features?: JsonNullableWithAggregatesFilter<"Template">
     priceBuy?: IntNullableWithAggregatesFilter<"Template"> | number | null
     priceRentMonthly?: IntNullableWithAggregatesFilter<"Template"> | number | null
+    priceRentYearly?: IntNullableWithAggregatesFilter<"Template"> | number | null
+    priceBuySource?: IntNullableWithAggregatesFilter<"Template"> | number | null
     isActive?: BoolWithAggregatesFilter<"Template"> | boolean
     sortOrder?: IntWithAggregatesFilter<"Template"> | number
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Template"> | Date | string | null
@@ -53959,6 +56464,8 @@ export namespace Prisma {
     startDate?: DateTimeFilter<"Subscription"> | Date | string
     endDate?: DateTimeFilter<"Subscription"> | Date | string
     cancelledAt?: DateTimeNullableFilter<"Subscription"> | Date | string | null
+    billingPeriod?: StringFilter<"Subscription"> | string
+    autoRenew?: BoolFilter<"Subscription"> | boolean
     createdAt?: DateTimeFilter<"Subscription"> | Date | string
     updatedAt?: DateTimeFilter<"Subscription"> | Date | string
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
@@ -53974,6 +56481,8 @@ export namespace Prisma {
     startDate?: SortOrder
     endDate?: SortOrder
     cancelledAt?: SortOrderInput | SortOrder
+    billingPeriod?: SortOrder
+    autoRenew?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     tenant?: TenantOrderByWithRelationInput
@@ -53992,6 +56501,8 @@ export namespace Prisma {
     startDate?: DateTimeFilter<"Subscription"> | Date | string
     endDate?: DateTimeFilter<"Subscription"> | Date | string
     cancelledAt?: DateTimeNullableFilter<"Subscription"> | Date | string | null
+    billingPeriod?: StringFilter<"Subscription"> | string
+    autoRenew?: BoolFilter<"Subscription"> | boolean
     createdAt?: DateTimeFilter<"Subscription"> | Date | string
     updatedAt?: DateTimeFilter<"Subscription"> | Date | string
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
@@ -54007,6 +56518,8 @@ export namespace Prisma {
     startDate?: SortOrder
     endDate?: SortOrder
     cancelledAt?: SortOrderInput | SortOrder
+    billingPeriod?: SortOrder
+    autoRenew?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: SubscriptionCountOrderByAggregateInput
@@ -54029,6 +56542,8 @@ export namespace Prisma {
     startDate?: DateTimeWithAggregatesFilter<"Subscription"> | Date | string
     endDate?: DateTimeWithAggregatesFilter<"Subscription"> | Date | string
     cancelledAt?: DateTimeNullableWithAggregatesFilter<"Subscription"> | Date | string | null
+    billingPeriod?: StringWithAggregatesFilter<"Subscription"> | string
+    autoRenew?: BoolWithAggregatesFilter<"Subscription"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Subscription"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Subscription"> | Date | string
   }
@@ -55872,6 +58387,7 @@ export namespace Prisma {
     publishedAt?: DateTimeFilter<"TemplateVersion"> | Date | string
     publishedBy?: StringNullableFilter<"TemplateVersion"> | string | null
     template?: XOR<TemplateRelationFilter, TemplateWhereInput>
+    tenants?: TenantListRelationFilter
   }
 
   export type TemplateVersionOrderByWithRelationInput = {
@@ -55887,6 +58403,7 @@ export namespace Prisma {
     publishedAt?: SortOrder
     publishedBy?: SortOrderInput | SortOrder
     template?: TemplateOrderByWithRelationInput
+    tenants?: TenantOrderByRelationAggregateInput
   }
 
   export type TemplateVersionWhereUniqueInput = Prisma.AtLeast<{
@@ -55906,6 +58423,7 @@ export namespace Prisma {
     publishedAt?: DateTimeFilter<"TemplateVersion"> | Date | string
     publishedBy?: StringNullableFilter<"TemplateVersion"> | string | null
     template?: XOR<TemplateRelationFilter, TemplateWhereInput>
+    tenants?: TenantListRelationFilter
   }, "id" | "templateId_version">
 
   export type TemplateVersionOrderByWithAggregationInput = {
@@ -57404,22 +59922,32 @@ export namespace Prisma {
     OR?: TenantMembershipWhereInput[]
     NOT?: TenantMembershipWhereInput | TenantMembershipWhereInput[]
     id?: StringFilter<"TenantMembership"> | string
-    userId?: StringFilter<"TenantMembership"> | string
+    userId?: StringNullableFilter<"TenantMembership"> | string | null
     tenantId?: StringFilter<"TenantMembership"> | string
     role?: StringFilter<"TenantMembership"> | string
     status?: StringFilter<"TenantMembership"> | string
+    invitedBy?: StringNullableFilter<"TenantMembership"> | string | null
+    inviteStatus?: StringFilter<"TenantMembership"> | string
+    inviteToken?: StringNullableFilter<"TenantMembership"> | string | null
+    inviteExpiresAt?: DateTimeNullableFilter<"TenantMembership"> | Date | string | null
+    invitedEmail?: StringNullableFilter<"TenantMembership"> | string | null
     createdAt?: DateTimeFilter<"TenantMembership"> | Date | string
     updatedAt?: DateTimeFilter<"TenantMembership"> | Date | string
-    user?: XOR<UserRelationFilter, UserWhereInput>
+    user?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
   }
 
   export type TenantMembershipOrderByWithRelationInput = {
     id?: SortOrder
-    userId?: SortOrder
+    userId?: SortOrderInput | SortOrder
     tenantId?: SortOrder
     role?: SortOrder
     status?: SortOrder
+    invitedBy?: SortOrderInput | SortOrder
+    inviteStatus?: SortOrder
+    inviteToken?: SortOrderInput | SortOrder
+    inviteExpiresAt?: SortOrderInput | SortOrder
+    invitedEmail?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -57428,26 +59956,36 @@ export namespace Prisma {
 
   export type TenantMembershipWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    inviteToken?: string
     userId_tenantId?: TenantMembershipUserIdTenantIdCompoundUniqueInput
     AND?: TenantMembershipWhereInput | TenantMembershipWhereInput[]
     OR?: TenantMembershipWhereInput[]
     NOT?: TenantMembershipWhereInput | TenantMembershipWhereInput[]
-    userId?: StringFilter<"TenantMembership"> | string
+    userId?: StringNullableFilter<"TenantMembership"> | string | null
     tenantId?: StringFilter<"TenantMembership"> | string
     role?: StringFilter<"TenantMembership"> | string
     status?: StringFilter<"TenantMembership"> | string
+    invitedBy?: StringNullableFilter<"TenantMembership"> | string | null
+    inviteStatus?: StringFilter<"TenantMembership"> | string
+    inviteExpiresAt?: DateTimeNullableFilter<"TenantMembership"> | Date | string | null
+    invitedEmail?: StringNullableFilter<"TenantMembership"> | string | null
     createdAt?: DateTimeFilter<"TenantMembership"> | Date | string
     updatedAt?: DateTimeFilter<"TenantMembership"> | Date | string
-    user?: XOR<UserRelationFilter, UserWhereInput>
+    user?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     tenant?: XOR<TenantRelationFilter, TenantWhereInput>
-  }, "id" | "userId_tenantId">
+  }, "id" | "inviteToken" | "userId_tenantId">
 
   export type TenantMembershipOrderByWithAggregationInput = {
     id?: SortOrder
-    userId?: SortOrder
+    userId?: SortOrderInput | SortOrder
     tenantId?: SortOrder
     role?: SortOrder
     status?: SortOrder
+    invitedBy?: SortOrderInput | SortOrder
+    inviteStatus?: SortOrder
+    inviteToken?: SortOrderInput | SortOrder
+    inviteExpiresAt?: SortOrderInput | SortOrder
+    invitedEmail?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: TenantMembershipCountOrderByAggregateInput
@@ -57460,12 +59998,137 @@ export namespace Prisma {
     OR?: TenantMembershipScalarWhereWithAggregatesInput[]
     NOT?: TenantMembershipScalarWhereWithAggregatesInput | TenantMembershipScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"TenantMembership"> | string
-    userId?: StringWithAggregatesFilter<"TenantMembership"> | string
+    userId?: StringNullableWithAggregatesFilter<"TenantMembership"> | string | null
     tenantId?: StringWithAggregatesFilter<"TenantMembership"> | string
     role?: StringWithAggregatesFilter<"TenantMembership"> | string
     status?: StringWithAggregatesFilter<"TenantMembership"> | string
+    invitedBy?: StringNullableWithAggregatesFilter<"TenantMembership"> | string | null
+    inviteStatus?: StringWithAggregatesFilter<"TenantMembership"> | string
+    inviteToken?: StringNullableWithAggregatesFilter<"TenantMembership"> | string | null
+    inviteExpiresAt?: DateTimeNullableWithAggregatesFilter<"TenantMembership"> | Date | string | null
+    invitedEmail?: StringNullableWithAggregatesFilter<"TenantMembership"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"TenantMembership"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"TenantMembership"> | Date | string
+  }
+
+  export type PasswordResetTokenWhereInput = {
+    AND?: PasswordResetTokenWhereInput | PasswordResetTokenWhereInput[]
+    OR?: PasswordResetTokenWhereInput[]
+    NOT?: PasswordResetTokenWhereInput | PasswordResetTokenWhereInput[]
+    id?: StringFilter<"PasswordResetToken"> | string
+    userId?: StringFilter<"PasswordResetToken"> | string
+    token?: StringFilter<"PasswordResetToken"> | string
+    expiresAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
+    usedAt?: DateTimeNullableFilter<"PasswordResetToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+  }
+
+  export type PasswordResetTokenOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    token?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type PasswordResetTokenWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    token?: string
+    AND?: PasswordResetTokenWhereInput | PasswordResetTokenWhereInput[]
+    OR?: PasswordResetTokenWhereInput[]
+    NOT?: PasswordResetTokenWhereInput | PasswordResetTokenWhereInput[]
+    userId?: StringFilter<"PasswordResetToken"> | string
+    expiresAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
+    usedAt?: DateTimeNullableFilter<"PasswordResetToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+  }, "id" | "token">
+
+  export type PasswordResetTokenOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    token?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: PasswordResetTokenCountOrderByAggregateInput
+    _max?: PasswordResetTokenMaxOrderByAggregateInput
+    _min?: PasswordResetTokenMinOrderByAggregateInput
+  }
+
+  export type PasswordResetTokenScalarWhereWithAggregatesInput = {
+    AND?: PasswordResetTokenScalarWhereWithAggregatesInput | PasswordResetTokenScalarWhereWithAggregatesInput[]
+    OR?: PasswordResetTokenScalarWhereWithAggregatesInput[]
+    NOT?: PasswordResetTokenScalarWhereWithAggregatesInput | PasswordResetTokenScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PasswordResetToken"> | string
+    userId?: StringWithAggregatesFilter<"PasswordResetToken"> | string
+    token?: StringWithAggregatesFilter<"PasswordResetToken"> | string
+    expiresAt?: DateTimeWithAggregatesFilter<"PasswordResetToken"> | Date | string
+    usedAt?: DateTimeNullableWithAggregatesFilter<"PasswordResetToken"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"PasswordResetToken"> | Date | string
+  }
+
+  export type EmailVerificationTokenWhereInput = {
+    AND?: EmailVerificationTokenWhereInput | EmailVerificationTokenWhereInput[]
+    OR?: EmailVerificationTokenWhereInput[]
+    NOT?: EmailVerificationTokenWhereInput | EmailVerificationTokenWhereInput[]
+    id?: StringFilter<"EmailVerificationToken"> | string
+    userId?: StringFilter<"EmailVerificationToken"> | string
+    token?: StringFilter<"EmailVerificationToken"> | string
+    expiresAt?: DateTimeFilter<"EmailVerificationToken"> | Date | string
+    usedAt?: DateTimeNullableFilter<"EmailVerificationToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"EmailVerificationToken"> | Date | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+  }
+
+  export type EmailVerificationTokenOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    token?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type EmailVerificationTokenWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    token?: string
+    AND?: EmailVerificationTokenWhereInput | EmailVerificationTokenWhereInput[]
+    OR?: EmailVerificationTokenWhereInput[]
+    NOT?: EmailVerificationTokenWhereInput | EmailVerificationTokenWhereInput[]
+    userId?: StringFilter<"EmailVerificationToken"> | string
+    expiresAt?: DateTimeFilter<"EmailVerificationToken"> | Date | string
+    usedAt?: DateTimeNullableFilter<"EmailVerificationToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"EmailVerificationToken"> | Date | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+  }, "id" | "token">
+
+  export type EmailVerificationTokenOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    token?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: EmailVerificationTokenCountOrderByAggregateInput
+    _max?: EmailVerificationTokenMaxOrderByAggregateInput
+    _min?: EmailVerificationTokenMinOrderByAggregateInput
+  }
+
+  export type EmailVerificationTokenScalarWhereWithAggregatesInput = {
+    AND?: EmailVerificationTokenScalarWhereWithAggregatesInput | EmailVerificationTokenScalarWhereWithAggregatesInput[]
+    OR?: EmailVerificationTokenScalarWhereWithAggregatesInput[]
+    NOT?: EmailVerificationTokenScalarWhereWithAggregatesInput | EmailVerificationTokenScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EmailVerificationToken"> | string
+    userId?: StringWithAggregatesFilter<"EmailVerificationToken"> | string
+    token?: StringWithAggregatesFilter<"EmailVerificationToken"> | string
+    expiresAt?: DateTimeWithAggregatesFilter<"EmailVerificationToken"> | Date | string
+    usedAt?: DateTimeNullableWithAggregatesFilter<"EmailVerificationToken"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"EmailVerificationToken"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -57496,6 +60159,8 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -57526,6 +60191,8 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -57556,6 +60223,8 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -57586,6 +60255,8 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -57665,10 +60336,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -57701,12 +60378,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -57747,10 +60430,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -57783,12 +60472,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57824,12 +60519,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -57847,6 +60548,11 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57859,12 +60565,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57881,6 +60593,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -57910,6 +60624,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -57939,6 +60655,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -57968,6 +60686,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -57997,6 +60717,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -58017,6 +60739,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -58037,6 +60761,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -58291,6 +61017,8 @@ export namespace Prisma {
     startDate: Date | string
     endDate: Date | string
     cancelledAt?: Date | string | null
+    billingPeriod?: string
+    autoRenew?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutSubscriptionInput
@@ -58306,6 +61034,8 @@ export namespace Prisma {
     startDate: Date | string
     endDate: Date | string
     cancelledAt?: Date | string | null
+    billingPeriod?: string
+    autoRenew?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -58319,6 +61049,8 @@ export namespace Prisma {
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billingPeriod?: StringFieldUpdateOperationsInput | string
+    autoRenew?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutSubscriptionNestedInput
@@ -58334,6 +61066,8 @@ export namespace Prisma {
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billingPeriod?: StringFieldUpdateOperationsInput | string
+    autoRenew?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -58348,6 +61082,8 @@ export namespace Prisma {
     startDate: Date | string
     endDate: Date | string
     cancelledAt?: Date | string | null
+    billingPeriod?: string
+    autoRenew?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -58361,6 +61097,8 @@ export namespace Prisma {
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billingPeriod?: StringFieldUpdateOperationsInput | string
+    autoRenew?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -58375,6 +61113,8 @@ export namespace Prisma {
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billingPeriod?: StringFieldUpdateOperationsInput | string
+    autoRenew?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -60413,6 +63153,7 @@ export namespace Prisma {
     publishedAt?: Date | string
     publishedBy?: string | null
     template: TemplateCreateNestedOneWithoutVersionsInput
+    tenants?: TenantCreateNestedManyWithoutTemplateVersionInput
   }
 
   export type TemplateVersionUncheckedCreateInput = {
@@ -60427,6 +63168,7 @@ export namespace Prisma {
     updateNotes?: string | null
     publishedAt?: Date | string
     publishedBy?: string | null
+    tenants?: TenantUncheckedCreateNestedManyWithoutTemplateVersionInput
   }
 
   export type TemplateVersionUpdateInput = {
@@ -60441,6 +63183,7 @@ export namespace Prisma {
     publishedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     publishedBy?: NullableStringFieldUpdateOperationsInput | string | null
     template?: TemplateUpdateOneRequiredWithoutVersionsNestedInput
+    tenants?: TenantUpdateManyWithoutTemplateVersionNestedInput
   }
 
   export type TemplateVersionUncheckedUpdateInput = {
@@ -60455,6 +63198,7 @@ export namespace Prisma {
     updateNotes?: NullableStringFieldUpdateOperationsInput | string | null
     publishedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     publishedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    tenants?: TenantUncheckedUpdateManyWithoutTemplateVersionNestedInput
   }
 
   export type TemplateVersionCreateManyInput = {
@@ -62168,18 +64912,28 @@ export namespace Prisma {
     id?: string
     role?: string
     status?: string
+    invitedBy?: string | null
+    inviteStatus?: string
+    inviteToken?: string | null
+    inviteExpiresAt?: Date | string | null
+    invitedEmail?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutMembershipsInput
+    user?: UserCreateNestedOneWithoutMembershipsInput
     tenant: TenantCreateNestedOneWithoutMembershipsInput
   }
 
   export type TenantMembershipUncheckedCreateInput = {
     id?: string
-    userId: string
+    userId?: string | null
     tenantId: string
     role?: string
     status?: string
+    invitedBy?: string | null
+    inviteStatus?: string
+    inviteToken?: string | null
+    inviteExpiresAt?: Date | string | null
+    invitedEmail?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -62188,28 +64942,43 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    invitedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteStatus?: StringFieldUpdateOperationsInput | string
+    inviteToken?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    invitedEmail?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutMembershipsNestedInput
+    user?: UserUpdateOneWithoutMembershipsNestedInput
     tenant?: TenantUpdateOneRequiredWithoutMembershipsNestedInput
   }
 
   export type TenantMembershipUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    invitedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteStatus?: StringFieldUpdateOperationsInput | string
+    inviteToken?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    invitedEmail?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TenantMembershipCreateManyInput = {
     id?: string
-    userId: string
+    userId?: string | null
     tenantId: string
     role?: string
     status?: string
+    invitedBy?: string | null
+    inviteStatus?: string
+    inviteToken?: string | null
+    inviteExpiresAt?: Date | string | null
+    invitedEmail?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -62218,18 +64987,152 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    invitedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteStatus?: StringFieldUpdateOperationsInput | string
+    inviteToken?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    invitedEmail?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TenantMembershipUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    invitedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteStatus?: StringFieldUpdateOperationsInput | string
+    inviteToken?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    invitedEmail?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PasswordResetTokenCreateInput = {
+    id?: string
+    token: string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutPasswordResetTokensInput
+  }
+
+  export type PasswordResetTokenUncheckedCreateInput = {
+    id?: string
+    userId: string
+    token: string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type PasswordResetTokenUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutPasswordResetTokensNestedInput
+  }
+
+  export type PasswordResetTokenUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PasswordResetTokenCreateManyInput = {
+    id?: string
+    userId: string
+    token: string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type PasswordResetTokenUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PasswordResetTokenUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailVerificationTokenCreateInput = {
+    id?: string
+    token: string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutEmailVerificationTokensInput
+  }
+
+  export type EmailVerificationTokenUncheckedCreateInput = {
+    id?: string
+    userId: string
+    token: string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type EmailVerificationTokenUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutEmailVerificationTokensNestedInput
+  }
+
+  export type EmailVerificationTokenUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailVerificationTokenCreateManyInput = {
+    id?: string
+    userId: string
+    token: string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type EmailVerificationTokenUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailVerificationTokenUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -62347,6 +65250,18 @@ export namespace Prisma {
     none?: TenantMembershipWhereInput
   }
 
+  export type PasswordResetTokenListRelationFilter = {
+    every?: PasswordResetTokenWhereInput
+    some?: PasswordResetTokenWhereInput
+    none?: PasswordResetTokenWhereInput
+  }
+
+  export type EmailVerificationTokenListRelationFilter = {
+    every?: EmailVerificationTokenWhereInput
+    some?: EmailVerificationTokenWhereInput
+    none?: EmailVerificationTokenWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -62373,6 +65288,14 @@ export namespace Prisma {
   }
 
   export type TenantMembershipOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PasswordResetTokenOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type EmailVerificationTokenOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -62571,6 +65494,11 @@ export namespace Prisma {
   export type TemplateNullableRelationFilter = {
     is?: TemplateWhereInput | null
     isNot?: TemplateWhereInput | null
+  }
+
+  export type TemplateVersionNullableRelationFilter = {
+    is?: TemplateVersionWhereInput | null
+    isNot?: TemplateVersionWhereInput | null
   }
 
   export type UserListRelationFilter = {
@@ -62775,12 +65703,18 @@ export namespace Prisma {
     domain?: SortOrder
     status?: SortOrder
     templateId?: SortOrder
+    templateVersionId?: SortOrder
     themeOverrides?: SortOrder
     activatedAt?: SortOrder
     expiresAt?: SortOrder
     onboardingCompletedAt?: SortOrder
     uploadUsedBytes?: SortOrder
     version?: SortOrder
+    trialStartAt?: SortOrder
+    trialEndAt?: SortOrder
+    trialSaveLimit?: SortOrder
+    trialSaveCount?: SortOrder
+    trialStatus?: SortOrder
     deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -62789,6 +65723,8 @@ export namespace Prisma {
   export type TenantAvgOrderByAggregateInput = {
     uploadUsedBytes?: SortOrder
     version?: SortOrder
+    trialSaveLimit?: SortOrder
+    trialSaveCount?: SortOrder
   }
 
   export type TenantMaxOrderByAggregateInput = {
@@ -62798,11 +65734,17 @@ export namespace Prisma {
     domain?: SortOrder
     status?: SortOrder
     templateId?: SortOrder
+    templateVersionId?: SortOrder
     activatedAt?: SortOrder
     expiresAt?: SortOrder
     onboardingCompletedAt?: SortOrder
     uploadUsedBytes?: SortOrder
     version?: SortOrder
+    trialStartAt?: SortOrder
+    trialEndAt?: SortOrder
+    trialSaveLimit?: SortOrder
+    trialSaveCount?: SortOrder
+    trialStatus?: SortOrder
     deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -62815,11 +65757,17 @@ export namespace Prisma {
     domain?: SortOrder
     status?: SortOrder
     templateId?: SortOrder
+    templateVersionId?: SortOrder
     activatedAt?: SortOrder
     expiresAt?: SortOrder
     onboardingCompletedAt?: SortOrder
     uploadUsedBytes?: SortOrder
     version?: SortOrder
+    trialStartAt?: SortOrder
+    trialEndAt?: SortOrder
+    trialSaveLimit?: SortOrder
+    trialSaveCount?: SortOrder
+    trialStatus?: SortOrder
     deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -62828,6 +65776,8 @@ export namespace Prisma {
   export type TenantSumOrderByAggregateInput = {
     uploadUsedBytes?: SortOrder
     version?: SortOrder
+    trialSaveLimit?: SortOrder
+    trialSaveCount?: SortOrder
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> = 
     | PatchUndefined<
@@ -62969,6 +65919,8 @@ export namespace Prisma {
     features?: SortOrder
     priceBuy?: SortOrder
     priceRentMonthly?: SortOrder
+    priceRentYearly?: SortOrder
+    priceBuySource?: SortOrder
     isActive?: SortOrder
     sortOrder?: SortOrder
     deletedAt?: SortOrder
@@ -62981,6 +65933,8 @@ export namespace Prisma {
   export type TemplateAvgOrderByAggregateInput = {
     priceBuy?: SortOrder
     priceRentMonthly?: SortOrder
+    priceRentYearly?: SortOrder
+    priceBuySource?: SortOrder
     sortOrder?: SortOrder
   }
 
@@ -62993,6 +65947,8 @@ export namespace Prisma {
     thumbnail?: SortOrder
     priceBuy?: SortOrder
     priceRentMonthly?: SortOrder
+    priceRentYearly?: SortOrder
+    priceBuySource?: SortOrder
     isActive?: SortOrder
     sortOrder?: SortOrder
     deletedAt?: SortOrder
@@ -63011,6 +65967,8 @@ export namespace Prisma {
     thumbnail?: SortOrder
     priceBuy?: SortOrder
     priceRentMonthly?: SortOrder
+    priceRentYearly?: SortOrder
+    priceBuySource?: SortOrder
     isActive?: SortOrder
     sortOrder?: SortOrder
     deletedAt?: SortOrder
@@ -63023,6 +65981,8 @@ export namespace Prisma {
   export type TemplateSumOrderByAggregateInput = {
     priceBuy?: SortOrder
     priceRentMonthly?: SortOrder
+    priceRentYearly?: SortOrder
+    priceBuySource?: SortOrder
     sortOrder?: SortOrder
   }
 
@@ -63232,6 +66192,8 @@ export namespace Prisma {
     startDate?: SortOrder
     endDate?: SortOrder
     cancelledAt?: SortOrder
+    billingPeriod?: SortOrder
+    autoRenew?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -63250,6 +66212,8 @@ export namespace Prisma {
     startDate?: SortOrder
     endDate?: SortOrder
     cancelledAt?: SortOrder
+    billingPeriod?: SortOrder
+    autoRenew?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -63264,6 +66228,8 @@ export namespace Prisma {
     startDate?: SortOrder
     endDate?: SortOrder
     cancelledAt?: SortOrder
+    billingPeriod?: SortOrder
+    autoRenew?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -65333,6 +68299,11 @@ export namespace Prisma {
     tenantId?: SortOrder
     role?: SortOrder
     status?: SortOrder
+    invitedBy?: SortOrder
+    inviteStatus?: SortOrder
+    inviteToken?: SortOrder
+    inviteExpiresAt?: SortOrder
+    invitedEmail?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -65343,6 +68314,11 @@ export namespace Prisma {
     tenantId?: SortOrder
     role?: SortOrder
     status?: SortOrder
+    invitedBy?: SortOrder
+    inviteStatus?: SortOrder
+    inviteToken?: SortOrder
+    inviteExpiresAt?: SortOrder
+    invitedEmail?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -65353,8 +68329,67 @@ export namespace Prisma {
     tenantId?: SortOrder
     role?: SortOrder
     status?: SortOrder
+    invitedBy?: SortOrder
+    inviteStatus?: SortOrder
+    inviteToken?: SortOrder
+    inviteExpiresAt?: SortOrder
+    invitedEmail?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type PasswordResetTokenCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    token?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PasswordResetTokenMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    token?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PasswordResetTokenMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    token?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EmailVerificationTokenCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    token?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EmailVerificationTokenMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    token?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EmailVerificationTokenMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    token?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type TenantCreateNestedOneWithoutUsersInput = {
@@ -65417,6 +68452,20 @@ export namespace Prisma {
     connect?: TenantMembershipWhereUniqueInput | TenantMembershipWhereUniqueInput[]
   }
 
+  export type PasswordResetTokenCreateNestedManyWithoutUserInput = {
+    create?: XOR<PasswordResetTokenCreateWithoutUserInput, PasswordResetTokenUncheckedCreateWithoutUserInput> | PasswordResetTokenCreateWithoutUserInput[] | PasswordResetTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PasswordResetTokenCreateOrConnectWithoutUserInput | PasswordResetTokenCreateOrConnectWithoutUserInput[]
+    createMany?: PasswordResetTokenCreateManyUserInputEnvelope
+    connect?: PasswordResetTokenWhereUniqueInput | PasswordResetTokenWhereUniqueInput[]
+  }
+
+  export type EmailVerificationTokenCreateNestedManyWithoutUserInput = {
+    create?: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput> | EmailVerificationTokenCreateWithoutUserInput[] | EmailVerificationTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmailVerificationTokenCreateOrConnectWithoutUserInput | EmailVerificationTokenCreateOrConnectWithoutUserInput[]
+    createMany?: EmailVerificationTokenCreateManyUserInputEnvelope
+    connect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+  }
+
   export type RefreshTokenUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput> | RefreshTokenCreateWithoutUserInput[] | RefreshTokenUncheckedCreateWithoutUserInput[]
     connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[]
@@ -65469,6 +68518,20 @@ export namespace Prisma {
     connectOrCreate?: TenantMembershipCreateOrConnectWithoutUserInput | TenantMembershipCreateOrConnectWithoutUserInput[]
     createMany?: TenantMembershipCreateManyUserInputEnvelope
     connect?: TenantMembershipWhereUniqueInput | TenantMembershipWhereUniqueInput[]
+  }
+
+  export type PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<PasswordResetTokenCreateWithoutUserInput, PasswordResetTokenUncheckedCreateWithoutUserInput> | PasswordResetTokenCreateWithoutUserInput[] | PasswordResetTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PasswordResetTokenCreateOrConnectWithoutUserInput | PasswordResetTokenCreateOrConnectWithoutUserInput[]
+    createMany?: PasswordResetTokenCreateManyUserInputEnvelope
+    connect?: PasswordResetTokenWhereUniqueInput | PasswordResetTokenWhereUniqueInput[]
+  }
+
+  export type EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput> | EmailVerificationTokenCreateWithoutUserInput[] | EmailVerificationTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmailVerificationTokenCreateOrConnectWithoutUserInput | EmailVerificationTokenCreateOrConnectWithoutUserInput[]
+    createMany?: EmailVerificationTokenCreateManyUserInputEnvelope
+    connect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -65609,6 +68672,34 @@ export namespace Prisma {
     deleteMany?: TenantMembershipScalarWhereInput | TenantMembershipScalarWhereInput[]
   }
 
+  export type PasswordResetTokenUpdateManyWithoutUserNestedInput = {
+    create?: XOR<PasswordResetTokenCreateWithoutUserInput, PasswordResetTokenUncheckedCreateWithoutUserInput> | PasswordResetTokenCreateWithoutUserInput[] | PasswordResetTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PasswordResetTokenCreateOrConnectWithoutUserInput | PasswordResetTokenCreateOrConnectWithoutUserInput[]
+    upsert?: PasswordResetTokenUpsertWithWhereUniqueWithoutUserInput | PasswordResetTokenUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: PasswordResetTokenCreateManyUserInputEnvelope
+    set?: PasswordResetTokenWhereUniqueInput | PasswordResetTokenWhereUniqueInput[]
+    disconnect?: PasswordResetTokenWhereUniqueInput | PasswordResetTokenWhereUniqueInput[]
+    delete?: PasswordResetTokenWhereUniqueInput | PasswordResetTokenWhereUniqueInput[]
+    connect?: PasswordResetTokenWhereUniqueInput | PasswordResetTokenWhereUniqueInput[]
+    update?: PasswordResetTokenUpdateWithWhereUniqueWithoutUserInput | PasswordResetTokenUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: PasswordResetTokenUpdateManyWithWhereWithoutUserInput | PasswordResetTokenUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: PasswordResetTokenScalarWhereInput | PasswordResetTokenScalarWhereInput[]
+  }
+
+  export type EmailVerificationTokenUpdateManyWithoutUserNestedInput = {
+    create?: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput> | EmailVerificationTokenCreateWithoutUserInput[] | EmailVerificationTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmailVerificationTokenCreateOrConnectWithoutUserInput | EmailVerificationTokenCreateOrConnectWithoutUserInput[]
+    upsert?: EmailVerificationTokenUpsertWithWhereUniqueWithoutUserInput | EmailVerificationTokenUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: EmailVerificationTokenCreateManyUserInputEnvelope
+    set?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+    disconnect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+    delete?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+    connect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+    update?: EmailVerificationTokenUpdateWithWhereUniqueWithoutUserInput | EmailVerificationTokenUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: EmailVerificationTokenUpdateManyWithWhereWithoutUserInput | EmailVerificationTokenUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: EmailVerificationTokenScalarWhereInput | EmailVerificationTokenScalarWhereInput[]
+  }
+
   export type RefreshTokenUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput> | RefreshTokenCreateWithoutUserInput[] | RefreshTokenUncheckedCreateWithoutUserInput[]
     connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[]
@@ -65713,10 +68804,44 @@ export namespace Prisma {
     deleteMany?: TenantMembershipScalarWhereInput | TenantMembershipScalarWhereInput[]
   }
 
+  export type PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<PasswordResetTokenCreateWithoutUserInput, PasswordResetTokenUncheckedCreateWithoutUserInput> | PasswordResetTokenCreateWithoutUserInput[] | PasswordResetTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PasswordResetTokenCreateOrConnectWithoutUserInput | PasswordResetTokenCreateOrConnectWithoutUserInput[]
+    upsert?: PasswordResetTokenUpsertWithWhereUniqueWithoutUserInput | PasswordResetTokenUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: PasswordResetTokenCreateManyUserInputEnvelope
+    set?: PasswordResetTokenWhereUniqueInput | PasswordResetTokenWhereUniqueInput[]
+    disconnect?: PasswordResetTokenWhereUniqueInput | PasswordResetTokenWhereUniqueInput[]
+    delete?: PasswordResetTokenWhereUniqueInput | PasswordResetTokenWhereUniqueInput[]
+    connect?: PasswordResetTokenWhereUniqueInput | PasswordResetTokenWhereUniqueInput[]
+    update?: PasswordResetTokenUpdateWithWhereUniqueWithoutUserInput | PasswordResetTokenUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: PasswordResetTokenUpdateManyWithWhereWithoutUserInput | PasswordResetTokenUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: PasswordResetTokenScalarWhereInput | PasswordResetTokenScalarWhereInput[]
+  }
+
+  export type EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput> | EmailVerificationTokenCreateWithoutUserInput[] | EmailVerificationTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmailVerificationTokenCreateOrConnectWithoutUserInput | EmailVerificationTokenCreateOrConnectWithoutUserInput[]
+    upsert?: EmailVerificationTokenUpsertWithWhereUniqueWithoutUserInput | EmailVerificationTokenUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: EmailVerificationTokenCreateManyUserInputEnvelope
+    set?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+    disconnect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+    delete?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+    connect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+    update?: EmailVerificationTokenUpdateWithWhereUniqueWithoutUserInput | EmailVerificationTokenUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: EmailVerificationTokenUpdateManyWithWhereWithoutUserInput | EmailVerificationTokenUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: EmailVerificationTokenScalarWhereInput | EmailVerificationTokenScalarWhereInput[]
+  }
+
   export type TemplateCreateNestedOneWithoutTenantsInput = {
     create?: XOR<TemplateCreateWithoutTenantsInput, TemplateUncheckedCreateWithoutTenantsInput>
     connectOrCreate?: TemplateCreateOrConnectWithoutTenantsInput
     connect?: TemplateWhereUniqueInput
+  }
+
+  export type TemplateVersionCreateNestedOneWithoutTenantsInput = {
+    create?: XOR<TemplateVersionCreateWithoutTenantsInput, TemplateVersionUncheckedCreateWithoutTenantsInput>
+    connectOrCreate?: TemplateVersionCreateOrConnectWithoutTenantsInput
+    connect?: TemplateVersionWhereUniqueInput
   }
 
   export type UserCreateNestedManyWithoutTenantInput = {
@@ -66055,6 +69180,16 @@ export namespace Prisma {
     delete?: TemplateWhereInput | boolean
     connect?: TemplateWhereUniqueInput
     update?: XOR<XOR<TemplateUpdateToOneWithWhereWithoutTenantsInput, TemplateUpdateWithoutTenantsInput>, TemplateUncheckedUpdateWithoutTenantsInput>
+  }
+
+  export type TemplateVersionUpdateOneWithoutTenantsNestedInput = {
+    create?: XOR<TemplateVersionCreateWithoutTenantsInput, TemplateVersionUncheckedCreateWithoutTenantsInput>
+    connectOrCreate?: TemplateVersionCreateOrConnectWithoutTenantsInput
+    upsert?: TemplateVersionUpsertWithoutTenantsInput
+    disconnect?: TemplateVersionWhereInput | boolean
+    delete?: TemplateVersionWhereInput | boolean
+    connect?: TemplateVersionWhereUniqueInput
+    update?: XOR<XOR<TemplateVersionUpdateToOneWithWhereWithoutTenantsInput, TemplateVersionUpdateWithoutTenantsInput>, TemplateVersionUncheckedUpdateWithoutTenantsInput>
   }
 
   export type UserUpdateManyWithoutTenantNestedInput = {
@@ -67793,12 +70928,54 @@ export namespace Prisma {
     connect?: TemplateWhereUniqueInput
   }
 
+  export type TenantCreateNestedManyWithoutTemplateVersionInput = {
+    create?: XOR<TenantCreateWithoutTemplateVersionInput, TenantUncheckedCreateWithoutTemplateVersionInput> | TenantCreateWithoutTemplateVersionInput[] | TenantUncheckedCreateWithoutTemplateVersionInput[]
+    connectOrCreate?: TenantCreateOrConnectWithoutTemplateVersionInput | TenantCreateOrConnectWithoutTemplateVersionInput[]
+    createMany?: TenantCreateManyTemplateVersionInputEnvelope
+    connect?: TenantWhereUniqueInput | TenantWhereUniqueInput[]
+  }
+
+  export type TenantUncheckedCreateNestedManyWithoutTemplateVersionInput = {
+    create?: XOR<TenantCreateWithoutTemplateVersionInput, TenantUncheckedCreateWithoutTemplateVersionInput> | TenantCreateWithoutTemplateVersionInput[] | TenantUncheckedCreateWithoutTemplateVersionInput[]
+    connectOrCreate?: TenantCreateOrConnectWithoutTemplateVersionInput | TenantCreateOrConnectWithoutTemplateVersionInput[]
+    createMany?: TenantCreateManyTemplateVersionInputEnvelope
+    connect?: TenantWhereUniqueInput | TenantWhereUniqueInput[]
+  }
+
   export type TemplateUpdateOneRequiredWithoutVersionsNestedInput = {
     create?: XOR<TemplateCreateWithoutVersionsInput, TemplateUncheckedCreateWithoutVersionsInput>
     connectOrCreate?: TemplateCreateOrConnectWithoutVersionsInput
     upsert?: TemplateUpsertWithoutVersionsInput
     connect?: TemplateWhereUniqueInput
     update?: XOR<XOR<TemplateUpdateToOneWithWhereWithoutVersionsInput, TemplateUpdateWithoutVersionsInput>, TemplateUncheckedUpdateWithoutVersionsInput>
+  }
+
+  export type TenantUpdateManyWithoutTemplateVersionNestedInput = {
+    create?: XOR<TenantCreateWithoutTemplateVersionInput, TenantUncheckedCreateWithoutTemplateVersionInput> | TenantCreateWithoutTemplateVersionInput[] | TenantUncheckedCreateWithoutTemplateVersionInput[]
+    connectOrCreate?: TenantCreateOrConnectWithoutTemplateVersionInput | TenantCreateOrConnectWithoutTemplateVersionInput[]
+    upsert?: TenantUpsertWithWhereUniqueWithoutTemplateVersionInput | TenantUpsertWithWhereUniqueWithoutTemplateVersionInput[]
+    createMany?: TenantCreateManyTemplateVersionInputEnvelope
+    set?: TenantWhereUniqueInput | TenantWhereUniqueInput[]
+    disconnect?: TenantWhereUniqueInput | TenantWhereUniqueInput[]
+    delete?: TenantWhereUniqueInput | TenantWhereUniqueInput[]
+    connect?: TenantWhereUniqueInput | TenantWhereUniqueInput[]
+    update?: TenantUpdateWithWhereUniqueWithoutTemplateVersionInput | TenantUpdateWithWhereUniqueWithoutTemplateVersionInput[]
+    updateMany?: TenantUpdateManyWithWhereWithoutTemplateVersionInput | TenantUpdateManyWithWhereWithoutTemplateVersionInput[]
+    deleteMany?: TenantScalarWhereInput | TenantScalarWhereInput[]
+  }
+
+  export type TenantUncheckedUpdateManyWithoutTemplateVersionNestedInput = {
+    create?: XOR<TenantCreateWithoutTemplateVersionInput, TenantUncheckedCreateWithoutTemplateVersionInput> | TenantCreateWithoutTemplateVersionInput[] | TenantUncheckedCreateWithoutTemplateVersionInput[]
+    connectOrCreate?: TenantCreateOrConnectWithoutTemplateVersionInput | TenantCreateOrConnectWithoutTemplateVersionInput[]
+    upsert?: TenantUpsertWithWhereUniqueWithoutTemplateVersionInput | TenantUpsertWithWhereUniqueWithoutTemplateVersionInput[]
+    createMany?: TenantCreateManyTemplateVersionInputEnvelope
+    set?: TenantWhereUniqueInput | TenantWhereUniqueInput[]
+    disconnect?: TenantWhereUniqueInput | TenantWhereUniqueInput[]
+    delete?: TenantWhereUniqueInput | TenantWhereUniqueInput[]
+    connect?: TenantWhereUniqueInput | TenantWhereUniqueInput[]
+    update?: TenantUpdateWithWhereUniqueWithoutTemplateVersionInput | TenantUpdateWithWhereUniqueWithoutTemplateVersionInput[]
+    updateMany?: TenantUpdateManyWithWhereWithoutTemplateVersionInput | TenantUpdateManyWithWhereWithoutTemplateVersionInput[]
+    deleteMany?: TenantScalarWhereInput | TenantScalarWhereInput[]
   }
 
   export type TenantCreateNestedOneWithoutThemeSettingsInput = {
@@ -68439,10 +71616,12 @@ export namespace Prisma {
     connect?: TenantWhereUniqueInput
   }
 
-  export type UserUpdateOneRequiredWithoutMembershipsNestedInput = {
+  export type UserUpdateOneWithoutMembershipsNestedInput = {
     create?: XOR<UserCreateWithoutMembershipsInput, UserUncheckedCreateWithoutMembershipsInput>
     connectOrCreate?: UserCreateOrConnectWithoutMembershipsInput
     upsert?: UserUpsertWithoutMembershipsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMembershipsInput, UserUpdateWithoutMembershipsInput>, UserUncheckedUpdateWithoutMembershipsInput>
   }
@@ -68453,6 +71632,34 @@ export namespace Prisma {
     upsert?: TenantUpsertWithoutMembershipsInput
     connect?: TenantWhereUniqueInput
     update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutMembershipsInput, TenantUpdateWithoutMembershipsInput>, TenantUncheckedUpdateWithoutMembershipsInput>
+  }
+
+  export type UserCreateNestedOneWithoutPasswordResetTokensInput = {
+    create?: XOR<UserCreateWithoutPasswordResetTokensInput, UserUncheckedCreateWithoutPasswordResetTokensInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPasswordResetTokensInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutPasswordResetTokensNestedInput = {
+    create?: XOR<UserCreateWithoutPasswordResetTokensInput, UserUncheckedCreateWithoutPasswordResetTokensInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPasswordResetTokensInput
+    upsert?: UserUpsertWithoutPasswordResetTokensInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPasswordResetTokensInput, UserUpdateWithoutPasswordResetTokensInput>, UserUncheckedUpdateWithoutPasswordResetTokensInput>
+  }
+
+  export type UserCreateNestedOneWithoutEmailVerificationTokensInput = {
+    create?: XOR<UserCreateWithoutEmailVerificationTokensInput, UserUncheckedCreateWithoutEmailVerificationTokensInput>
+    connectOrCreate?: UserCreateOrConnectWithoutEmailVerificationTokensInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutEmailVerificationTokensNestedInput = {
+    create?: XOR<UserCreateWithoutEmailVerificationTokensInput, UserUncheckedCreateWithoutEmailVerificationTokensInput>
+    connectOrCreate?: UserCreateOrConnectWithoutEmailVerificationTokensInput
+    upsert?: UserUpsertWithoutEmailVerificationTokensInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutEmailVerificationTokensInput, UserUpdateWithoutEmailVerificationTokensInput>, UserUncheckedUpdateWithoutEmailVerificationTokensInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -68884,10 +72091,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
     banners?: BannerCreateNestedManyWithoutTenantInput
@@ -68919,12 +72132,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -69147,6 +72366,11 @@ export namespace Prisma {
     id?: string
     role?: string
     status?: string
+    invitedBy?: string | null
+    inviteStatus?: string
+    inviteToken?: string | null
+    inviteExpiresAt?: Date | string | null
+    invitedEmail?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutMembershipsInput
@@ -69157,6 +72381,11 @@ export namespace Prisma {
     tenantId: string
     role?: string
     status?: string
+    invitedBy?: string | null
+    inviteStatus?: string
+    inviteToken?: string | null
+    inviteExpiresAt?: Date | string | null
+    invitedEmail?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -69168,6 +72397,58 @@ export namespace Prisma {
 
   export type TenantMembershipCreateManyUserInputEnvelope = {
     data: TenantMembershipCreateManyUserInput | TenantMembershipCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PasswordResetTokenCreateWithoutUserInput = {
+    id?: string
+    token: string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type PasswordResetTokenUncheckedCreateWithoutUserInput = {
+    id?: string
+    token: string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type PasswordResetTokenCreateOrConnectWithoutUserInput = {
+    where: PasswordResetTokenWhereUniqueInput
+    create: XOR<PasswordResetTokenCreateWithoutUserInput, PasswordResetTokenUncheckedCreateWithoutUserInput>
+  }
+
+  export type PasswordResetTokenCreateManyUserInputEnvelope = {
+    data: PasswordResetTokenCreateManyUserInput | PasswordResetTokenCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type EmailVerificationTokenCreateWithoutUserInput = {
+    id?: string
+    token: string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type EmailVerificationTokenUncheckedCreateWithoutUserInput = {
+    id?: string
+    token: string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type EmailVerificationTokenCreateOrConnectWithoutUserInput = {
+    where: EmailVerificationTokenWhereUniqueInput
+    create: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput>
+  }
+
+  export type EmailVerificationTokenCreateManyUserInputEnvelope = {
+    data: EmailVerificationTokenCreateManyUserInput | EmailVerificationTokenCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -69194,10 +72475,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
     banners?: BannerUpdateManyWithoutTenantNestedInput
@@ -69229,12 +72516,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -69485,12 +72778,73 @@ export namespace Prisma {
     OR?: TenantMembershipScalarWhereInput[]
     NOT?: TenantMembershipScalarWhereInput | TenantMembershipScalarWhereInput[]
     id?: StringFilter<"TenantMembership"> | string
-    userId?: StringFilter<"TenantMembership"> | string
+    userId?: StringNullableFilter<"TenantMembership"> | string | null
     tenantId?: StringFilter<"TenantMembership"> | string
     role?: StringFilter<"TenantMembership"> | string
     status?: StringFilter<"TenantMembership"> | string
+    invitedBy?: StringNullableFilter<"TenantMembership"> | string | null
+    inviteStatus?: StringFilter<"TenantMembership"> | string
+    inviteToken?: StringNullableFilter<"TenantMembership"> | string | null
+    inviteExpiresAt?: DateTimeNullableFilter<"TenantMembership"> | Date | string | null
+    invitedEmail?: StringNullableFilter<"TenantMembership"> | string | null
     createdAt?: DateTimeFilter<"TenantMembership"> | Date | string
     updatedAt?: DateTimeFilter<"TenantMembership"> | Date | string
+  }
+
+  export type PasswordResetTokenUpsertWithWhereUniqueWithoutUserInput = {
+    where: PasswordResetTokenWhereUniqueInput
+    update: XOR<PasswordResetTokenUpdateWithoutUserInput, PasswordResetTokenUncheckedUpdateWithoutUserInput>
+    create: XOR<PasswordResetTokenCreateWithoutUserInput, PasswordResetTokenUncheckedCreateWithoutUserInput>
+  }
+
+  export type PasswordResetTokenUpdateWithWhereUniqueWithoutUserInput = {
+    where: PasswordResetTokenWhereUniqueInput
+    data: XOR<PasswordResetTokenUpdateWithoutUserInput, PasswordResetTokenUncheckedUpdateWithoutUserInput>
+  }
+
+  export type PasswordResetTokenUpdateManyWithWhereWithoutUserInput = {
+    where: PasswordResetTokenScalarWhereInput
+    data: XOR<PasswordResetTokenUpdateManyMutationInput, PasswordResetTokenUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type PasswordResetTokenScalarWhereInput = {
+    AND?: PasswordResetTokenScalarWhereInput | PasswordResetTokenScalarWhereInput[]
+    OR?: PasswordResetTokenScalarWhereInput[]
+    NOT?: PasswordResetTokenScalarWhereInput | PasswordResetTokenScalarWhereInput[]
+    id?: StringFilter<"PasswordResetToken"> | string
+    userId?: StringFilter<"PasswordResetToken"> | string
+    token?: StringFilter<"PasswordResetToken"> | string
+    expiresAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
+    usedAt?: DateTimeNullableFilter<"PasswordResetToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
+  }
+
+  export type EmailVerificationTokenUpsertWithWhereUniqueWithoutUserInput = {
+    where: EmailVerificationTokenWhereUniqueInput
+    update: XOR<EmailVerificationTokenUpdateWithoutUserInput, EmailVerificationTokenUncheckedUpdateWithoutUserInput>
+    create: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput>
+  }
+
+  export type EmailVerificationTokenUpdateWithWhereUniqueWithoutUserInput = {
+    where: EmailVerificationTokenWhereUniqueInput
+    data: XOR<EmailVerificationTokenUpdateWithoutUserInput, EmailVerificationTokenUncheckedUpdateWithoutUserInput>
+  }
+
+  export type EmailVerificationTokenUpdateManyWithWhereWithoutUserInput = {
+    where: EmailVerificationTokenScalarWhereInput
+    data: XOR<EmailVerificationTokenUpdateManyMutationInput, EmailVerificationTokenUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type EmailVerificationTokenScalarWhereInput = {
+    AND?: EmailVerificationTokenScalarWhereInput | EmailVerificationTokenScalarWhereInput[]
+    OR?: EmailVerificationTokenScalarWhereInput[]
+    NOT?: EmailVerificationTokenScalarWhereInput | EmailVerificationTokenScalarWhereInput[]
+    id?: StringFilter<"EmailVerificationToken"> | string
+    userId?: StringFilter<"EmailVerificationToken"> | string
+    token?: StringFilter<"EmailVerificationToken"> | string
+    expiresAt?: DateTimeFilter<"EmailVerificationToken"> | Date | string
+    usedAt?: DateTimeNullableFilter<"EmailVerificationToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"EmailVerificationToken"> | Date | string
   }
 
   export type TemplateCreateWithoutTenantsInput = {
@@ -69504,6 +72858,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -69532,6 +72888,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -69552,6 +72910,39 @@ export namespace Prisma {
   export type TemplateCreateOrConnectWithoutTenantsInput = {
     where: TemplateWhereUniqueInput
     create: XOR<TemplateCreateWithoutTenantsInput, TemplateUncheckedCreateWithoutTenantsInput>
+  }
+
+  export type TemplateVersionCreateWithoutTenantsInput = {
+    id?: string
+    version: number
+    themeConfig?: NullableJsonNullValueInput | InputJsonValue
+    layoutConfig?: NullableJsonNullValueInput | InputJsonValue
+    featureFlags?: NullableJsonNullValueInput | InputJsonValue
+    components?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    updateNotes?: string | null
+    publishedAt?: Date | string
+    publishedBy?: string | null
+    template: TemplateCreateNestedOneWithoutVersionsInput
+  }
+
+  export type TemplateVersionUncheckedCreateWithoutTenantsInput = {
+    id?: string
+    templateId: string
+    version: number
+    themeConfig?: NullableJsonNullValueInput | InputJsonValue
+    layoutConfig?: NullableJsonNullValueInput | InputJsonValue
+    featureFlags?: NullableJsonNullValueInput | InputJsonValue
+    components?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    updateNotes?: string | null
+    publishedAt?: Date | string
+    publishedBy?: string | null
+  }
+
+  export type TemplateVersionCreateOrConnectWithoutTenantsInput = {
+    where: TemplateVersionWhereUniqueInput
+    create: XOR<TemplateVersionCreateWithoutTenantsInput, TemplateVersionUncheckedCreateWithoutTenantsInput>
   }
 
   export type UserCreateWithoutTenantInput = {
@@ -69581,6 +72972,8 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTenantInput = {
@@ -69610,6 +73003,8 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTenantInput = {
@@ -70191,6 +73586,8 @@ export namespace Prisma {
     startDate: Date | string
     endDate: Date | string
     cancelledAt?: Date | string | null
+    billingPeriod?: string
+    autoRenew?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -70204,6 +73601,8 @@ export namespace Prisma {
     startDate: Date | string
     endDate: Date | string
     cancelledAt?: Date | string | null
+    billingPeriod?: string
+    autoRenew?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -70535,16 +73934,26 @@ export namespace Prisma {
     id?: string
     role?: string
     status?: string
+    invitedBy?: string | null
+    inviteStatus?: string
+    inviteToken?: string | null
+    inviteExpiresAt?: Date | string | null
+    invitedEmail?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutMembershipsInput
+    user?: UserCreateNestedOneWithoutMembershipsInput
   }
 
   export type TenantMembershipUncheckedCreateWithoutTenantInput = {
     id?: string
-    userId: string
+    userId?: string | null
     role?: string
     status?: string
+    invitedBy?: string | null
+    inviteStatus?: string
+    inviteToken?: string | null
+    inviteExpiresAt?: Date | string | null
+    invitedEmail?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -70581,6 +73990,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70609,6 +74020,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70624,6 +74037,45 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutTemplateNestedInput
     draft?: TemplateDraftUncheckedUpdateOneWithoutTemplateNestedInput
     versions?: TemplateVersionUncheckedUpdateManyWithoutTemplateNestedInput
+  }
+
+  export type TemplateVersionUpsertWithoutTenantsInput = {
+    update: XOR<TemplateVersionUpdateWithoutTenantsInput, TemplateVersionUncheckedUpdateWithoutTenantsInput>
+    create: XOR<TemplateVersionCreateWithoutTenantsInput, TemplateVersionUncheckedCreateWithoutTenantsInput>
+    where?: TemplateVersionWhereInput
+  }
+
+  export type TemplateVersionUpdateToOneWithWhereWithoutTenantsInput = {
+    where?: TemplateVersionWhereInput
+    data: XOR<TemplateVersionUpdateWithoutTenantsInput, TemplateVersionUncheckedUpdateWithoutTenantsInput>
+  }
+
+  export type TemplateVersionUpdateWithoutTenantsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    themeConfig?: NullableJsonNullValueInput | InputJsonValue
+    layoutConfig?: NullableJsonNullValueInput | InputJsonValue
+    featureFlags?: NullableJsonNullValueInput | InputJsonValue
+    components?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    updateNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    publishedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    publishedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    template?: TemplateUpdateOneRequiredWithoutVersionsNestedInput
+  }
+
+  export type TemplateVersionUncheckedUpdateWithoutTenantsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    themeConfig?: NullableJsonNullValueInput | InputJsonValue
+    layoutConfig?: NullableJsonNullValueInput | InputJsonValue
+    featureFlags?: NullableJsonNullValueInput | InputJsonValue
+    components?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    updateNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    publishedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    publishedBy?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUpsertWithWhereUniqueWithoutTenantInput = {
@@ -71176,6 +74628,8 @@ export namespace Prisma {
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billingPeriod?: StringFieldUpdateOperationsInput | string
+    autoRenew?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -71189,6 +74643,8 @@ export namespace Prisma {
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billingPeriod?: StringFieldUpdateOperationsInput | string
+    autoRenew?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -71509,9 +74965,15 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -71543,12 +75005,18 @@ export namespace Prisma {
     slug: string
     domain?: string | null
     status?: string
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -71802,6 +75270,7 @@ export namespace Prisma {
     updateNotes?: string | null
     publishedAt?: Date | string
     publishedBy?: string | null
+    tenants?: TenantCreateNestedManyWithoutTemplateVersionInput
   }
 
   export type TemplateVersionUncheckedCreateWithoutTemplateInput = {
@@ -71815,6 +75284,7 @@ export namespace Prisma {
     updateNotes?: string | null
     publishedAt?: Date | string
     publishedBy?: string | null
+    tenants?: TenantUncheckedCreateNestedManyWithoutTemplateVersionInput
   }
 
   export type TemplateVersionCreateOrConnectWithoutTemplateInput = {
@@ -71853,12 +75323,18 @@ export namespace Prisma {
     domain?: StringNullableFilter<"Tenant"> | string | null
     status?: StringFilter<"Tenant"> | string
     templateId?: StringNullableFilter<"Tenant"> | string | null
+    templateVersionId?: StringNullableFilter<"Tenant"> | string | null
     themeOverrides?: JsonNullableFilter<"Tenant">
     activatedAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
     expiresAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
     onboardingCompletedAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
     uploadUsedBytes?: BigIntFilter<"Tenant"> | bigint | number
     version?: IntFilter<"Tenant"> | number
+    trialStartAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
+    trialEndAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
+    trialSaveLimit?: IntFilter<"Tenant"> | number
+    trialSaveCount?: IntFilter<"Tenant"> | number
+    trialStatus?: StringNullableFilter<"Tenant"> | string | null
     deletedAt?: DateTimeNullableFilter<"Tenant"> | Date | string | null
     createdAt?: DateTimeFilter<"Tenant"> | Date | string
     updatedAt?: DateTimeFilter<"Tenant"> | Date | string
@@ -72099,6 +75575,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -72127,6 +75605,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -72171,6 +75651,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -72199,6 +75681,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -72227,6 +75711,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -72255,6 +75741,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -72299,6 +75787,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -72327,6 +75817,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -72356,10 +75848,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -72391,12 +75889,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -72452,10 +75956,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -72487,12 +75997,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -72532,10 +76048,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
     banners?: BannerCreateNestedManyWithoutTenantInput
@@ -72567,12 +76089,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -72651,10 +76179,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
     banners?: BannerUpdateManyWithoutTenantNestedInput
@@ -72686,12 +76220,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -72747,10 +76287,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     banners?: BannerCreateNestedManyWithoutTenantInput
@@ -72782,12 +76328,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -72895,10 +76447,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     banners?: BannerUpdateManyWithoutTenantNestedInput
@@ -72930,12 +76488,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -73026,10 +76590,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -73061,12 +76631,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -73166,10 +76742,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -73201,12 +76783,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -73262,10 +76850,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -73297,12 +76891,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -73494,10 +77094,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -73529,12 +77135,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -73606,10 +77218,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -73641,12 +77259,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -73702,10 +77326,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -73737,12 +77367,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -73782,10 +77418,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -73817,12 +77459,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -73914,10 +77562,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -73949,12 +77603,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -74206,10 +77866,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -74241,12 +77907,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -74302,10 +77974,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -74337,12 +78015,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -74382,10 +78066,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -74417,12 +78107,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -74478,10 +78174,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -74513,12 +78215,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -74558,10 +78266,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -74593,12 +78307,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -74654,10 +78374,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -74689,12 +78415,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -74734,10 +78466,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -74769,12 +78507,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -74830,10 +78574,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -74865,12 +78615,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -74909,6 +78665,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -74937,6 +78695,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -74981,6 +78741,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75009,6 +78771,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75053,6 +78817,8 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -75082,6 +78848,8 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -75127,6 +78895,8 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -75156,6 +78926,8 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAuditLogsInput = {
@@ -75185,6 +78957,8 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -75214,6 +78988,8 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -75259,6 +79035,8 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -75288,6 +79066,8 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCustomerProfileInput = {
@@ -75317,6 +79097,8 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCustomerProfileInput = {
@@ -75346,6 +79128,8 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCustomerProfileInput = {
@@ -75391,6 +79175,8 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCustomerProfileInput = {
@@ -75420,6 +79206,8 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutWishlistsInput = {
@@ -75449,6 +79237,8 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWishlistsInput = {
@@ -75478,6 +79268,8 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWishlistsInput = {
@@ -75496,6 +79288,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -75524,6 +79318,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -75584,6 +79380,8 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWishlistsInput = {
@@ -75613,6 +79411,8 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TemplateUpsertWithoutWishlistsInput = {
@@ -75637,6 +79437,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75665,6 +79467,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75709,6 +79513,8 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCartInput = {
@@ -75738,6 +79544,8 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCartInput = {
@@ -75805,6 +79613,8 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCartInput = {
@@ -75834,6 +79644,8 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CartItemUpsertWithWhereUniqueWithoutCartInput = {
@@ -75882,6 +79694,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -75910,6 +79724,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -75979,6 +79795,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76007,6 +79825,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76051,6 +79871,8 @@ export namespace Prisma {
     cart?: CartCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReviewsInput = {
@@ -76080,6 +79902,8 @@ export namespace Prisma {
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReviewsInput = {
@@ -76098,6 +79922,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -76126,6 +79952,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -76186,6 +80014,8 @@ export namespace Prisma {
     cart?: CartUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReviewsInput = {
@@ -76215,6 +80045,8 @@ export namespace Prisma {
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TemplateUpsertWithoutReviewsInput = {
@@ -76239,6 +80071,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76267,6 +80101,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76311,6 +80147,8 @@ export namespace Prisma {
     cart?: CartCreateNestedOneWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -76340,6 +80178,8 @@ export namespace Prisma {
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     memberships?: TenantMembershipUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -76385,6 +80225,8 @@ export namespace Prisma {
     cart?: CartUpdateOneWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -76414,6 +80256,8 @@ export namespace Prisma {
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TemplateCreateWithoutDraftInput = {
@@ -76427,6 +80271,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -76455,6 +80301,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -76499,6 +80347,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76527,6 +80377,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76555,6 +80407,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -76583,6 +80437,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: number | null
     priceRentMonthly?: number | null
+    priceRentYearly?: number | null
+    priceBuySource?: number | null
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -76603,6 +80459,108 @@ export namespace Prisma {
   export type TemplateCreateOrConnectWithoutVersionsInput = {
     where: TemplateWhereUniqueInput
     create: XOR<TemplateCreateWithoutVersionsInput, TemplateUncheckedCreateWithoutVersionsInput>
+  }
+
+  export type TenantCreateWithoutTemplateVersionInput = {
+    id?: string
+    name: string
+    slug: string
+    domain?: string | null
+    status?: string
+    themeOverrides?: NullableJsonNullValueInput | InputJsonValue
+    activatedAt?: Date | string | null
+    expiresAt?: Date | string | null
+    onboardingCompletedAt?: Date | string | null
+    uploadUsedBytes?: bigint | number
+    version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    template?: TemplateCreateNestedOneWithoutTenantsInput
+    users?: UserCreateNestedManyWithoutTenantInput
+    projects?: ProjectCreateNestedManyWithoutTenantInput
+    posts?: PostCreateNestedManyWithoutTenantInput
+    banners?: BannerCreateNestedManyWithoutTenantInput
+    menus?: MenuCreateNestedManyWithoutTenantInput
+    categories?: CategoryCreateNestedManyWithoutTenantInput
+    tags?: TagCreateNestedManyWithoutTenantInput
+    media?: MediaCreateNestedManyWithoutTenantInput
+    mediaFolders?: MediaFolderCreateNestedManyWithoutTenantInput
+    mediaAssets?: MediaAssetCreateNestedManyWithoutTenantInput
+    recycleBin?: MediaRecycleBinCreateNestedManyWithoutTenantInput
+    contactFormSubmissions?: ContactFormSubmissionCreateNestedManyWithoutTenantInput
+    companyInfo?: CompanyInfoCreateNestedOneWithoutTenantInput
+    seoConfig?: SeoConfigCreateNestedOneWithoutTenantInput
+    subscription?: SubscriptionCreateNestedOneWithoutTenantInput
+    themeSettings?: TenantThemeSettingsCreateNestedOneWithoutTenantInput
+    pages?: TenantPageCreateNestedManyWithoutTenantInput
+    sections?: TenantSectionCreateNestedManyWithoutTenantInput
+    domainSettings?: TenantDomainSettingsCreateNestedOneWithoutTenantInput
+    leads?: LeadCreateNestedManyWithoutTenantInput
+    apiKeys?: TenantApiKeyCreateNestedManyWithoutTenantInput
+    webhooks?: TenantWebhookCreateNestedManyWithoutTenantInput
+    memberships?: TenantMembershipCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantUncheckedCreateWithoutTemplateVersionInput = {
+    id?: string
+    name: string
+    slug: string
+    domain?: string | null
+    status?: string
+    templateId?: string | null
+    themeOverrides?: NullableJsonNullValueInput | InputJsonValue
+    activatedAt?: Date | string | null
+    expiresAt?: Date | string | null
+    onboardingCompletedAt?: Date | string | null
+    uploadUsedBytes?: bigint | number
+    version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutTenantInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutTenantInput
+    posts?: PostUncheckedCreateNestedManyWithoutTenantInput
+    banners?: BannerUncheckedCreateNestedManyWithoutTenantInput
+    menus?: MenuUncheckedCreateNestedManyWithoutTenantInput
+    categories?: CategoryUncheckedCreateNestedManyWithoutTenantInput
+    tags?: TagUncheckedCreateNestedManyWithoutTenantInput
+    media?: MediaUncheckedCreateNestedManyWithoutTenantInput
+    mediaFolders?: MediaFolderUncheckedCreateNestedManyWithoutTenantInput
+    mediaAssets?: MediaAssetUncheckedCreateNestedManyWithoutTenantInput
+    recycleBin?: MediaRecycleBinUncheckedCreateNestedManyWithoutTenantInput
+    contactFormSubmissions?: ContactFormSubmissionUncheckedCreateNestedManyWithoutTenantInput
+    companyInfo?: CompanyInfoUncheckedCreateNestedOneWithoutTenantInput
+    seoConfig?: SeoConfigUncheckedCreateNestedOneWithoutTenantInput
+    subscription?: SubscriptionUncheckedCreateNestedOneWithoutTenantInput
+    themeSettings?: TenantThemeSettingsUncheckedCreateNestedOneWithoutTenantInput
+    pages?: TenantPageUncheckedCreateNestedManyWithoutTenantInput
+    sections?: TenantSectionUncheckedCreateNestedManyWithoutTenantInput
+    domainSettings?: TenantDomainSettingsUncheckedCreateNestedOneWithoutTenantInput
+    leads?: LeadUncheckedCreateNestedManyWithoutTenantInput
+    apiKeys?: TenantApiKeyUncheckedCreateNestedManyWithoutTenantInput
+    webhooks?: TenantWebhookUncheckedCreateNestedManyWithoutTenantInput
+    memberships?: TenantMembershipUncheckedCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantCreateOrConnectWithoutTemplateVersionInput = {
+    where: TenantWhereUniqueInput
+    create: XOR<TenantCreateWithoutTemplateVersionInput, TenantUncheckedCreateWithoutTemplateVersionInput>
+  }
+
+  export type TenantCreateManyTemplateVersionInputEnvelope = {
+    data: TenantCreateManyTemplateVersionInput | TenantCreateManyTemplateVersionInput[]
+    skipDuplicates?: boolean
   }
 
   export type TemplateUpsertWithoutVersionsInput = {
@@ -76627,6 +80585,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76655,6 +80615,8 @@ export namespace Prisma {
     features?: NullableJsonNullValueInput | InputJsonValue
     priceBuy?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
+    priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -76672,6 +80634,22 @@ export namespace Prisma {
     draft?: TemplateDraftUncheckedUpdateOneWithoutTemplateNestedInput
   }
 
+  export type TenantUpsertWithWhereUniqueWithoutTemplateVersionInput = {
+    where: TenantWhereUniqueInput
+    update: XOR<TenantUpdateWithoutTemplateVersionInput, TenantUncheckedUpdateWithoutTemplateVersionInput>
+    create: XOR<TenantCreateWithoutTemplateVersionInput, TenantUncheckedCreateWithoutTemplateVersionInput>
+  }
+
+  export type TenantUpdateWithWhereUniqueWithoutTemplateVersionInput = {
+    where: TenantWhereUniqueInput
+    data: XOR<TenantUpdateWithoutTemplateVersionInput, TenantUncheckedUpdateWithoutTemplateVersionInput>
+  }
+
+  export type TenantUpdateManyWithWhereWithoutTemplateVersionInput = {
+    where: TenantScalarWhereInput
+    data: XOR<TenantUpdateManyMutationInput, TenantUncheckedUpdateManyWithoutTemplateVersionInput>
+  }
+
   export type TenantCreateWithoutThemeSettingsInput = {
     id?: string
     name: string
@@ -76684,10 +80662,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -76719,12 +80703,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -76780,10 +80770,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -76815,12 +80811,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -76860,10 +80862,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -76895,12 +80903,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -76994,10 +81008,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -77029,12 +81049,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -77090,10 +81116,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -77125,12 +81157,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -77227,10 +81265,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -77262,12 +81306,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -77354,10 +81404,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -77389,12 +81445,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -77450,10 +81512,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -77485,12 +81553,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -77530,10 +81604,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -77565,12 +81645,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -77753,10 +81839,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -77788,12 +81880,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -77900,10 +81998,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -77935,12 +82039,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -78072,10 +82182,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -78107,12 +82223,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -78366,10 +82488,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -78401,12 +82529,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -78521,10 +82655,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -78556,12 +82696,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -78666,10 +82812,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -78701,12 +82853,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -78824,10 +82982,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -78859,12 +83023,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -79189,10 +83359,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -79224,12 +83400,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -79285,10 +83467,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -79320,12 +83508,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -79365,10 +83559,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -79400,12 +83600,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -79497,10 +83703,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -79532,12 +83744,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -79701,6 +83919,8 @@ export namespace Prisma {
     cart?: CartCreateNestedOneWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -79730,6 +83950,8 @@ export namespace Prisma {
     cart?: CartUncheckedCreateNestedOneWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -79749,10 +83971,16 @@ export namespace Prisma {
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     template?: TemplateCreateNestedOneWithoutTenantsInput
+    templateVersion?: TemplateVersionCreateNestedOneWithoutTenantsInput
     users?: UserCreateNestedManyWithoutTenantInput
     projects?: ProjectCreateNestedManyWithoutTenantInput
     posts?: PostCreateNestedManyWithoutTenantInput
@@ -79784,12 +84012,18 @@ export namespace Prisma {
     domain?: string | null
     status?: string
     templateId?: string | null
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -79860,6 +84094,8 @@ export namespace Prisma {
     cart?: CartUpdateOneWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -79889,6 +84125,8 @@ export namespace Prisma {
     cart?: CartUncheckedUpdateOneWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TenantUpsertWithoutMembershipsInput = {
@@ -79914,10 +84152,16 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneWithoutTenantsNestedInput
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -79949,12 +84193,18 @@ export namespace Prisma {
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -79980,6 +84230,286 @@ export namespace Prisma {
     leads?: LeadUncheckedUpdateManyWithoutTenantNestedInput
     apiKeys?: TenantApiKeyUncheckedUpdateManyWithoutTenantNestedInput
     webhooks?: TenantWebhookUncheckedUpdateManyWithoutTenantNestedInput
+  }
+
+  export type UserCreateWithoutPasswordResetTokensInput = {
+    id?: string
+    email: string
+    phone?: string | null
+    username?: string | null
+    passwordHash: string
+    fullName: string
+    avatar?: string | null
+    role?: $Enums.UserRole
+    isActive?: boolean
+    emailVerified?: Date | string | null
+    status?: string
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    createdBy?: string | null
+    updatedBy?: string | null
+    deletedBy?: string | null
+    tenant?: TenantCreateNestedOneWithoutUsersInput
+    refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    customerProfile?: CustomerProfileCreateNestedOneWithoutUserInput
+    wishlists?: WishlistCreateNestedManyWithoutUserInput
+    cart?: CartCreateNestedOneWithoutUserInput
+    reviews?: ReviewCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    memberships?: TenantMembershipCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
+    id?: string
+    email: string
+    phone?: string | null
+    username?: string | null
+    passwordHash: string
+    fullName: string
+    avatar?: string | null
+    role?: $Enums.UserRole
+    tenantId?: string | null
+    isActive?: boolean
+    emailVerified?: Date | string | null
+    status?: string
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    createdBy?: string | null
+    updatedBy?: string | null
+    deletedBy?: string | null
+    refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    customerProfile?: CustomerProfileUncheckedCreateNestedOneWithoutUserInput
+    wishlists?: WishlistUncheckedCreateNestedManyWithoutUserInput
+    cart?: CartUncheckedCreateNestedOneWithoutUserInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    memberships?: TenantMembershipUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutPasswordResetTokensInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPasswordResetTokensInput, UserUncheckedCreateWithoutPasswordResetTokensInput>
+  }
+
+  export type UserUpsertWithoutPasswordResetTokensInput = {
+    update: XOR<UserUpdateWithoutPasswordResetTokensInput, UserUncheckedUpdateWithoutPasswordResetTokensInput>
+    create: XOR<UserCreateWithoutPasswordResetTokensInput, UserUncheckedCreateWithoutPasswordResetTokensInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPasswordResetTokensInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPasswordResetTokensInput, UserUncheckedUpdateWithoutPasswordResetTokensInput>
+  }
+
+  export type UserUpdateWithoutPasswordResetTokensInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    tenant?: TenantUpdateOneWithoutUsersNestedInput
+    refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    customerProfile?: CustomerProfileUpdateOneWithoutUserNestedInput
+    wishlists?: WishlistUpdateManyWithoutUserNestedInput
+    cart?: CartUpdateOneWithoutUserNestedInput
+    reviews?: ReviewUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    memberships?: TenantMembershipUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    customerProfile?: CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
+    wishlists?: WishlistUncheckedUpdateManyWithoutUserNestedInput
+    cart?: CartUncheckedUpdateOneWithoutUserNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    memberships?: TenantMembershipUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutEmailVerificationTokensInput = {
+    id?: string
+    email: string
+    phone?: string | null
+    username?: string | null
+    passwordHash: string
+    fullName: string
+    avatar?: string | null
+    role?: $Enums.UserRole
+    isActive?: boolean
+    emailVerified?: Date | string | null
+    status?: string
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    createdBy?: string | null
+    updatedBy?: string | null
+    deletedBy?: string | null
+    tenant?: TenantCreateNestedOneWithoutUsersInput
+    refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    customerProfile?: CustomerProfileCreateNestedOneWithoutUserInput
+    wishlists?: WishlistCreateNestedManyWithoutUserInput
+    cart?: CartCreateNestedOneWithoutUserInput
+    reviews?: ReviewCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    memberships?: TenantMembershipCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutEmailVerificationTokensInput = {
+    id?: string
+    email: string
+    phone?: string | null
+    username?: string | null
+    passwordHash: string
+    fullName: string
+    avatar?: string | null
+    role?: $Enums.UserRole
+    tenantId?: string | null
+    isActive?: boolean
+    emailVerified?: Date | string | null
+    status?: string
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    createdBy?: string | null
+    updatedBy?: string | null
+    deletedBy?: string | null
+    refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    customerProfile?: CustomerProfileUncheckedCreateNestedOneWithoutUserInput
+    wishlists?: WishlistUncheckedCreateNestedManyWithoutUserInput
+    cart?: CartUncheckedCreateNestedOneWithoutUserInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    memberships?: TenantMembershipUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutEmailVerificationTokensInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutEmailVerificationTokensInput, UserUncheckedCreateWithoutEmailVerificationTokensInput>
+  }
+
+  export type UserUpsertWithoutEmailVerificationTokensInput = {
+    update: XOR<UserUpdateWithoutEmailVerificationTokensInput, UserUncheckedUpdateWithoutEmailVerificationTokensInput>
+    create: XOR<UserCreateWithoutEmailVerificationTokensInput, UserUncheckedCreateWithoutEmailVerificationTokensInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutEmailVerificationTokensInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutEmailVerificationTokensInput, UserUncheckedUpdateWithoutEmailVerificationTokensInput>
+  }
+
+  export type UserUpdateWithoutEmailVerificationTokensInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    tenant?: TenantUpdateOneWithoutUsersNestedInput
+    refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    customerProfile?: CustomerProfileUpdateOneWithoutUserNestedInput
+    wishlists?: WishlistUpdateManyWithoutUserNestedInput
+    cart?: CartUpdateOneWithoutUserNestedInput
+    reviews?: ReviewUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    memberships?: TenantMembershipUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutEmailVerificationTokensInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    customerProfile?: CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
+    wishlists?: WishlistUncheckedUpdateManyWithoutUserNestedInput
+    cart?: CartUncheckedUpdateOneWithoutUserNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    memberships?: TenantMembershipUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type RefreshTokenCreateManyUserInput = {
@@ -80033,8 +84563,29 @@ export namespace Prisma {
     tenantId: string
     role?: string
     status?: string
+    invitedBy?: string | null
+    inviteStatus?: string
+    inviteToken?: string | null
+    inviteExpiresAt?: Date | string | null
+    invitedEmail?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type PasswordResetTokenCreateManyUserInput = {
+    id?: string
+    token: string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type EmailVerificationTokenCreateManyUserInput = {
+    id?: string
+    token: string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    createdAt?: Date | string
   }
 
   export type RefreshTokenUpdateWithoutUserInput = {
@@ -80179,6 +84730,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    invitedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteStatus?: StringFieldUpdateOperationsInput | string
+    inviteToken?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    invitedEmail?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutMembershipsNestedInput
@@ -80189,6 +84745,11 @@ export namespace Prisma {
     tenantId?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    invitedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteStatus?: StringFieldUpdateOperationsInput | string
+    inviteToken?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    invitedEmail?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -80198,8 +84759,61 @@ export namespace Prisma {
     tenantId?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    invitedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteStatus?: StringFieldUpdateOperationsInput | string
+    inviteToken?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    invitedEmail?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PasswordResetTokenUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PasswordResetTokenUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PasswordResetTokenUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailVerificationTokenUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailVerificationTokenUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailVerificationTokenUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserCreateManyTenantInput = {
@@ -80482,9 +85096,14 @@ export namespace Prisma {
 
   export type TenantMembershipCreateManyTenantInput = {
     id?: string
-    userId: string
+    userId?: string | null
     role?: string
     status?: string
+    invitedBy?: string | null
+    inviteStatus?: string
+    inviteToken?: string | null
+    inviteExpiresAt?: Date | string | null
+    invitedEmail?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -80516,6 +85135,8 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTenantInput = {
@@ -80545,6 +85166,8 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     memberships?: TenantMembershipUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutTenantInput = {
@@ -81371,25 +85994,40 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    invitedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteStatus?: StringFieldUpdateOperationsInput | string
+    inviteToken?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    invitedEmail?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutMembershipsNestedInput
+    user?: UserUpdateOneWithoutMembershipsNestedInput
   }
 
   export type TenantMembershipUncheckedUpdateWithoutTenantInput = {
     id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    invitedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteStatus?: StringFieldUpdateOperationsInput | string
+    inviteToken?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    invitedEmail?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TenantMembershipUncheckedUpdateManyWithoutTenantInput = {
     id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    invitedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteStatus?: StringFieldUpdateOperationsInput | string
+    inviteToken?: NullableStringFieldUpdateOperationsInput | string | null
+    inviteExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    invitedEmail?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -81400,12 +86038,18 @@ export namespace Prisma {
     slug: string
     domain?: string | null
     status?: string
+    templateVersionId?: string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: Date | string | null
     expiresAt?: Date | string | null
     onboardingCompletedAt?: Date | string | null
     uploadUsedBytes?: bigint | number
     version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -81489,9 +86133,15 @@ export namespace Prisma {
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    templateVersion?: TemplateVersionUpdateOneWithoutTenantsNestedInput
     users?: UserUpdateManyWithoutTenantNestedInput
     projects?: ProjectUpdateManyWithoutTenantNestedInput
     posts?: PostUpdateManyWithoutTenantNestedInput
@@ -81523,12 +86173,18 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -81563,12 +86219,18 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     domain?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    templateVersionId?: NullableStringFieldUpdateOperationsInput | string | null
     themeOverrides?: NullableJsonNullValueInput | InputJsonValue
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
     version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -81744,6 +86406,7 @@ export namespace Prisma {
     updateNotes?: NullableStringFieldUpdateOperationsInput | string | null
     publishedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     publishedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    tenants?: TenantUpdateManyWithoutTemplateVersionNestedInput
   }
 
   export type TemplateVersionUncheckedUpdateWithoutTemplateInput = {
@@ -81757,6 +86420,7 @@ export namespace Prisma {
     updateNotes?: NullableStringFieldUpdateOperationsInput | string | null
     publishedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     publishedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    tenants?: TenantUncheckedUpdateManyWithoutTemplateVersionNestedInput
   }
 
   export type TemplateVersionUncheckedUpdateManyWithoutTemplateInput = {
@@ -82203,6 +86867,144 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TenantCreateManyTemplateVersionInput = {
+    id?: string
+    name: string
+    slug: string
+    domain?: string | null
+    status?: string
+    templateId?: string | null
+    themeOverrides?: NullableJsonNullValueInput | InputJsonValue
+    activatedAt?: Date | string | null
+    expiresAt?: Date | string | null
+    onboardingCompletedAt?: Date | string | null
+    uploadUsedBytes?: bigint | number
+    version?: number
+    trialStartAt?: Date | string | null
+    trialEndAt?: Date | string | null
+    trialSaveLimit?: number
+    trialSaveCount?: number
+    trialStatus?: string | null
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TenantUpdateWithoutTemplateVersionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    themeOverrides?: NullableJsonNullValueInput | InputJsonValue
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
+    version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    template?: TemplateUpdateOneWithoutTenantsNestedInput
+    users?: UserUpdateManyWithoutTenantNestedInput
+    projects?: ProjectUpdateManyWithoutTenantNestedInput
+    posts?: PostUpdateManyWithoutTenantNestedInput
+    banners?: BannerUpdateManyWithoutTenantNestedInput
+    menus?: MenuUpdateManyWithoutTenantNestedInput
+    categories?: CategoryUpdateManyWithoutTenantNestedInput
+    tags?: TagUpdateManyWithoutTenantNestedInput
+    media?: MediaUpdateManyWithoutTenantNestedInput
+    mediaFolders?: MediaFolderUpdateManyWithoutTenantNestedInput
+    mediaAssets?: MediaAssetUpdateManyWithoutTenantNestedInput
+    recycleBin?: MediaRecycleBinUpdateManyWithoutTenantNestedInput
+    contactFormSubmissions?: ContactFormSubmissionUpdateManyWithoutTenantNestedInput
+    companyInfo?: CompanyInfoUpdateOneWithoutTenantNestedInput
+    seoConfig?: SeoConfigUpdateOneWithoutTenantNestedInput
+    subscription?: SubscriptionUpdateOneWithoutTenantNestedInput
+    themeSettings?: TenantThemeSettingsUpdateOneWithoutTenantNestedInput
+    pages?: TenantPageUpdateManyWithoutTenantNestedInput
+    sections?: TenantSectionUpdateManyWithoutTenantNestedInput
+    domainSettings?: TenantDomainSettingsUpdateOneWithoutTenantNestedInput
+    leads?: LeadUpdateManyWithoutTenantNestedInput
+    apiKeys?: TenantApiKeyUpdateManyWithoutTenantNestedInput
+    webhooks?: TenantWebhookUpdateManyWithoutTenantNestedInput
+    memberships?: TenantMembershipUpdateManyWithoutTenantNestedInput
+  }
+
+  export type TenantUncheckedUpdateWithoutTemplateVersionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    themeOverrides?: NullableJsonNullValueInput | InputJsonValue
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
+    version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutTenantNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutTenantNestedInput
+    posts?: PostUncheckedUpdateManyWithoutTenantNestedInput
+    banners?: BannerUncheckedUpdateManyWithoutTenantNestedInput
+    menus?: MenuUncheckedUpdateManyWithoutTenantNestedInput
+    categories?: CategoryUncheckedUpdateManyWithoutTenantNestedInput
+    tags?: TagUncheckedUpdateManyWithoutTenantNestedInput
+    media?: MediaUncheckedUpdateManyWithoutTenantNestedInput
+    mediaFolders?: MediaFolderUncheckedUpdateManyWithoutTenantNestedInput
+    mediaAssets?: MediaAssetUncheckedUpdateManyWithoutTenantNestedInput
+    recycleBin?: MediaRecycleBinUncheckedUpdateManyWithoutTenantNestedInput
+    contactFormSubmissions?: ContactFormSubmissionUncheckedUpdateManyWithoutTenantNestedInput
+    companyInfo?: CompanyInfoUncheckedUpdateOneWithoutTenantNestedInput
+    seoConfig?: SeoConfigUncheckedUpdateOneWithoutTenantNestedInput
+    subscription?: SubscriptionUncheckedUpdateOneWithoutTenantNestedInput
+    themeSettings?: TenantThemeSettingsUncheckedUpdateOneWithoutTenantNestedInput
+    pages?: TenantPageUncheckedUpdateManyWithoutTenantNestedInput
+    sections?: TenantSectionUncheckedUpdateManyWithoutTenantNestedInput
+    domainSettings?: TenantDomainSettingsUncheckedUpdateOneWithoutTenantNestedInput
+    leads?: LeadUncheckedUpdateManyWithoutTenantNestedInput
+    apiKeys?: TenantApiKeyUncheckedUpdateManyWithoutTenantNestedInput
+    webhooks?: TenantWebhookUncheckedUpdateManyWithoutTenantNestedInput
+    memberships?: TenantMembershipUncheckedUpdateManyWithoutTenantNestedInput
+  }
+
+  export type TenantUncheckedUpdateManyWithoutTemplateVersionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    templateId?: NullableStringFieldUpdateOperationsInput | string | null
+    themeOverrides?: NullableJsonNullValueInput | InputJsonValue
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    uploadUsedBytes?: BigIntFieldUpdateOperationsInput | bigint | number
+    version?: IntFieldUpdateOperationsInput | number
+    trialStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialSaveLimit?: IntFieldUpdateOperationsInput | number
+    trialSaveCount?: IntFieldUpdateOperationsInput | number
+    trialStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type TenantSectionCreateManyPageInput = {
     id?: string
     tenantId: string
@@ -82621,6 +87423,10 @@ export namespace Prisma {
      */
     export type CartCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CartCountOutputTypeDefaultArgs<ExtArgs>
     /**
+     * @deprecated Use TemplateVersionCountOutputTypeDefaultArgs instead
+     */
+    export type TemplateVersionCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = TemplateVersionCountOutputTypeDefaultArgs<ExtArgs>
+    /**
      * @deprecated Use TenantPageCountOutputTypeDefaultArgs instead
      */
     export type TenantPageCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = TenantPageCountOutputTypeDefaultArgs<ExtArgs>
@@ -82816,6 +87622,14 @@ export namespace Prisma {
      * @deprecated Use TenantMembershipDefaultArgs instead
      */
     export type TenantMembershipArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = TenantMembershipDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use PasswordResetTokenDefaultArgs instead
+     */
+    export type PasswordResetTokenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = PasswordResetTokenDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use EmailVerificationTokenDefaultArgs instead
+     */
+    export type EmailVerificationTokenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = EmailVerificationTokenDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

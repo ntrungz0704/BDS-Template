@@ -412,6 +412,16 @@ const MOCK_GALLERY = [
 ];
 
 export default function AgencyTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
+  const COLORS = {
+    bg: dynamicTheme?.backgroundColor || '#FDF2F8', 
+    primary: dynamicTheme?.primaryColor || '#BE185D', 
+    accent: dynamicTheme?.accentColor || '#F43F5E', 
+    text: dynamicTheme?.textColor || '#111827',
+    textMuted: dynamicTheme?.textMutedColor || '#4B5563',
+    white: '#FFFFFF',
+    lightGray: '#F3F4F6',
+    lightPink: '#FCE7F3'
+  };
   // Dynamic Posts Override & Shadowing Variable via globalThis reference
   const activePosts = posts && posts.length > 0
     ? posts.map((p, index) => ({
@@ -480,7 +490,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
+      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
     }
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -587,15 +597,19 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
     >
       <div className={`${MAX_W} px-4 flex justify-between items-center`}>
         <div 
-          className="flex items-center gap-2 cursor-pointer"
+          className="flex items-center gap-2 cursor-pointer text-left"
           onClick={() => { setCurrentPage('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
         >
-          <div style={{ backgroundColor: COLORS.primary }} className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-xl">
-            T
+          <div style={{ backgroundColor: COLORS.primary }} className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-xl shrink-0">
+            {(company?.name || 'A').charAt(0).toUpperCase()}
           </div>
           <div>
-            <h1 style={{ color: COLORS.primary }} className="font-extrabold text-xl sm:text-2xl tracking-tight leading-none">TRUNG NGUYEN</h1>
-            <p style={{ color: COLORS.accent }} className="text-xs font-bold uppercase tracking-widest mt-1">Real Estate Expert</p>
+            <h1 style={{ color: COLORS.primary }} className="font-extrabold text-xl sm:text-2xl tracking-tight leading-none uppercase">
+              {company?.name || template?.name || 'TRUNG NGUYEN'}
+            </h1>
+            <p style={{ color: COLORS.accent }} className="text-xs font-bold uppercase tracking-widest mt-1">
+              {company?.slogan || 'Real Estate Expert'}
+            </p>
           </div>
         </div>
         
@@ -620,12 +634,12 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
         <div className="flex items-center gap-4">
           {!isSmall && (
             <a 
-              href="tel:0909123456" 
+              href={`tel:${company?.phone || '0983312219'}`} 
               style={{ backgroundColor: COLORS.accent }}
               className="hidden lg:flex items-center gap-2 text-white px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
             >
               <Phone className="w-5 h-5" />
-              0909.123.456
+              {company?.phone || '0983 312 219'}
             </a>
           )}
           {isSmall && (
@@ -1315,11 +1329,11 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
             </li>
             <li className="flex items-center gap-3">
               <Phone className="w-5 h-5 text-[#F43F5E] shrink-0" />
-              <span>0909.123.456</span>
+              <span>{company?.phone || company?.hotline || company?.phone || company?.hotline || '0909.123.456'}</span>
             </li>
             <li className="flex items-center gap-3">
               <MessageSquare className="w-5 h-5 text-[#F43F5E] shrink-0" />
-              <span>trungnguyen.realestate@gmail.com</span>
+              <span>{company?.email || company?.email || 'trungnguyen.realestate@gmail.com'}</span>
             </li>
           </ul>
         </div>
@@ -1871,7 +1885,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                     </div>
                     <div>
                       <h4 className="font-bold text-gray-800">Địa chỉ Email</h4>
-                      <p className="text-gray-500 text-sm mt-0.5">trungnguyen.realestate@gmail.com</p>
+                      <p className="text-gray-500 text-sm mt-0.5">{company?.email || company?.email || 'trungnguyen.realestate@gmail.com'}</p>
                     </div>
                   </li>
                 </ul>

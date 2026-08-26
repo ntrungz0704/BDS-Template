@@ -73,6 +73,10 @@ body {
   overflow-x: hidden;
 }
 
+nextjs-portal {
+  display: none !important;
+}
+
 /* ─── Typography Hierarchy ───────────────────────────── */
 @layer components {
   /* Hero: 900 weight */

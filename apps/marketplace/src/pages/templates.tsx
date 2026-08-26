@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
@@ -9,14 +10,24 @@ import { DESIGN_COLLECTIONS } from '../data/collectionsData';
 import { Search, Sparkles, CheckCircle2, SlidersHorizontal, Layers, Grid } from 'lucide-react';
 
 export default function TemplatesPage() {
+  const router = useRouter();
   const [selectedTemplate, setSelectedTemplate] = useState<Template | any | null>(null);
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc'>('featured');
-  const [viewMode, setViewMode] = useState<'grid' | 'family'>('family');
+  const [viewMode, setViewMode] = useState<'grid' | 'family'>('grid');
+
+  useEffect(() => {
+    if (router.isReady) {
+      const q = (router.query.search || router.query.q) as string;
+      if (q) {
+        setSearchQuery(q);
+      }
+    }
+  }, [router.isReady, router.query]);
 
   const categories = [
-    { id: 'all', label: '🌟 Tất cả 16 Mẫu Độc Quyền' },
+    { id: 'all', label: '🌟 Tất cả 16 Mẫu' },
     { id: 'luxury', label: '👑 Luxury & Villa' },
     { id: 'minimal', label: '⚡ Apple Minimal' },
     { id: 'corporate', label: '🏢 Corporate & Sàn' },
@@ -26,8 +37,8 @@ export default function TemplatesPage() {
     { id: 'eco', label: '🌿 Eco Living' },
     { id: 'classic', label: '📜 Classic Heritage' },
     { id: 'investment', label: '📈 Investment Pro' },
-    { id: 'agency', label: '🎯 Agency One-Page' },
-    { id: 'developer', label: '🌐 Mega Developer Portal' },
+    { id: 'agency', label: '🎯 Agency Ads' },
+    { id: 'developer', label: '🌐 Mega Portal' },
   ];
 
   const filteredTemplates = ALL_TEMPLATES.filter((tpl) => {
@@ -60,91 +71,91 @@ export default function TemplatesPage() {
     <>
       <Head>
         <title>Bộ Sưu Tập 16 Mẫu Website Bất Động Sản Chuyên Nghiệp | PLATFORMBDS</title>
-        <meta name="description" content="16 Mẫu website BĐS độc quyền theo kiến trúc Phase-2 Design Families: Luxury, Minimal, Corporate, Resort, Industrial, Villa, Eco, Classic, Investment, Agency, Developer." />
+        <meta name="description" content="16 Mẫu website BĐS độc quyền: Luxury, Minimal, Corporate, Resort, Industrial, Villa, Eco, Classic, Investment, Agency, Developer." />
       </Head>
 
       <Header 
         onSearch={(q) => setSearchQuery(q)} 
         onOpenConsultation={() => alert('Vui lòng liên hệ hotline 0919 006 030 để được tư vấn chọn mẫu!')} 
-        onOpenAuth={() => alert('Vui lòng đăng ký/đăng nhập tại trang chủ!')} 
+        onOpenAuth={() => { window.location.href = '/login'; }} 
       />
 
-      <main className="min-h-screen bg-[#F8FAFC] text-slate-900 pb-24 pt-12 px-5 sm:px-8">
+      <main className="min-h-screen bg-[#F8FAFC] text-slate-900 pb-24 pt-8 sm:pt-12 px-4 sm:px-8">
         <div className="max-w-[1280px] mx-auto">
           {/* Header Banner */}
-          <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-[11px] font-bold text-blue-600 uppercase tracking-widest mb-4 shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-blue-600" /> Phase 2 Architecture — Design Families & Scalability
+          <div className="text-center mb-8 sm:mb-10">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-bold text-blue-600 mb-3 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-blue-600" /> Kho Giao Diện BĐS Độc Quyền
             </span>
-            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight text-slate-900 mb-4">
-              Kho Giao Diện <span className="text-[#2563EB]">16 Mẫu Sản Phẩm Độc Lập</span>
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-slate-900 mb-3">
+              16 Mẫu Website <span className="text-[#2563EB]">Chuẩn SEO & Đẳng Cấp</span>
             </h1>
-            <p className="text-slate-600 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed font-medium">
-              Mỗi mẫu là một sản phẩm thương mại độc lập với <span className="text-[#2563EB] font-bold">ThemeConfig</span>, <span className="text-cyan-600 font-bold">LayoutConfig</span> và <span className="text-emerald-600 font-bold">Wireframe</span> hoàn toàn khác biệt. Khách hàng có thể trải nghiệm trực tiếp từng demo sống động trước khi lựa chọn.
+            <p className="text-slate-600 max-w-2xl mx-auto text-xs sm:text-sm leading-relaxed font-medium">
+              Mỗi mẫu được thiết kế riêng biệt cho từng phân khúc BĐS, tích hợp sẵn CMS quản trị tin đăng, form thu thập khách hàng (Leads) và tối ưu chuyển đổi cao.
             </p>
           </div>
 
           {/* Filter and Search Bar */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 mb-10 shadow-lg shadow-slate-100">
-            <div className="flex flex-col lg:flex-row gap-4 items-center justify-between mb-6">
+          <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 mb-8 shadow-sm">
+            <div className="flex flex-col lg:flex-row gap-3 items-center justify-between mb-4">
               {/* Search input */}
-              <div className="relative w-full lg:w-[420px]">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <div className="relative w-full lg:w-[380px]">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Tìm theo tên mẫu, phân khúc (luxury, villa, KCN)..."
+                  placeholder="Tìm kiếm mẫu, phân khúc (luxury, villa, shophouse)..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all font-medium shadow-inner"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all font-medium"
                 />
               </div>
 
               {/* View Mode & Sort selector */}
-              <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto justify-end">
+              <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
                 <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
                   <button
-                    onClick={() => setViewMode('family')}
-                    className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                      viewMode === 'family' ? 'bg-[#2563EB] text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    <Layers className="w-3.5 h-3.5" /> Theo Bộ Sưu Tập (Family)
-                  </button>
-                  <button
                     onClick={() => setViewMode('grid')}
-                    className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                       viewMode === 'grid' ? 'bg-[#2563EB] text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    <Grid className="w-3.5 h-3.5" /> Lưới Tất Cả
+                    <Grid className="w-3.5 h-3.5" /> Lưới xem nhanh
+                  </button>
+                  <button
+                    onClick={() => setViewMode('family')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                      viewMode === 'family' ? 'bg-[#2563EB] text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    <Layers className="w-3.5 h-3.5" /> Theo Bộ Sưu Tập
                   </button>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <SlidersHorizontal className="w-4 h-4 text-slate-500 shrink-0" />
+                <div className="flex items-center gap-1.5">
+                  <SlidersHorizontal className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                   <select
                     value={sortBy}
                     onChange={(e: any) => setSortBy(e.target.value)}
-                    className="bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500 font-bold shadow-sm"
+                    className="bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500 font-bold shadow-sm"
                   >
-                    <option value="featured">Nổi bật & Khuyên dùng</option>
-                    <option value="price-asc">Giá mua đứt: Thấp đến cao</option>
-                    <option value="price-desc">Giá mua đứt: Cao đến thấp</option>
+                    <option value="featured">Nổi bật nhất</option>
+                    <option value="price-asc">Giá: Thấp đến cao</option>
+                    <option value="price-desc">Giá: Cao đến thấp</option>
                   </select>
                 </div>
               </div>
             </div>
 
             {/* Categories pills */}
-            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100/80">
+            <div className="flex flex-wrap items-center gap-1.5 pt-3 border-t border-slate-100">
               {categories.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                     activeCategory === cat.id
-                      ? 'bg-[#2563EB] text-white shadow-md shadow-blue-500/25 scale-[1.02]'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 border border-slate-200/80'
+                      ? 'bg-[#2563EB] text-white shadow-sm shadow-blue-500/25 scale-[1.02]'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
                   }`}
                 >
                   {cat.label}
@@ -155,56 +166,60 @@ export default function TemplatesPage() {
 
           {/* Templates Display */}
           {filteredTemplates.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-3xl border border-slate-200 shadow-sm">
-              <p className="text-lg font-bold text-slate-800 mb-2">Không tìm thấy mẫu website nào phù hợp</p>
-              <p className="text-sm text-slate-500 mb-6">Hãy thử từ khóa khác hoặc chọn tất cả phân khúc</p>
+            <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm">
+              <p className="text-base font-bold text-slate-800 mb-1">Không tìm thấy mẫu website nào phù hợp</p>
+              <p className="text-xs text-slate-500 mb-4">Hãy thử từ khóa khác hoặc chọn tất cả phân khúc</p>
               <button
                 onClick={() => { setSearchQuery(''); setActiveCategory('all'); }}
-                className="px-6 py-2.5 bg-[#2563EB] text-white rounded-xl text-xs font-bold hover:bg-blue-600 transition-colors shadow-md shadow-blue-500/20"
+                className="px-5 py-2 bg-[#2563EB] text-white rounded-xl text-xs font-bold hover:bg-blue-600 transition-colors shadow-sm"
               >
                 Xem toàn bộ 16 mẫu
               </button>
             </div>
           ) : viewMode === 'family' && activeCategory === 'all' && searchQuery === '' ? (
             /* Family Architecture Grouped View */
-            <div className="space-y-12">
+            <div className="space-y-8">
               {DESIGN_COLLECTIONS.map((col) => {
                 const familyTemplates = filteredTemplates.filter(t => t.collectionSlug === col.collectionSlug);
                 if (familyTemplates.length === 0) return null;
                 return (
-                  <div key={col.id} className="bg-white border border-slate-200/80 rounded-[28px] p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                  <div key={col.id} className="bg-white border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                       {/* Left: Family Specifications & Story */}
-                      <div className="lg:col-span-5 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-100 pb-6 lg:pb-0 lg:pr-8">
+                      <div className="lg:col-span-5 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-100 pb-5 lg:pb-0 lg:pr-6">
                         <div>
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest bg-blue-50 text-blue-600 border border-blue-200">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-blue-50 text-blue-600 border border-blue-200">
                               {col.badge}
                             </span>
                           </div>
-                          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-3">{col.name}</h2>
-                          <p className="text-sm text-slate-600 leading-relaxed font-medium mb-6">{col.description}</p>
+                          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight mb-2">{col.name}</h2>
+                          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal mb-4">{col.description}</p>
                           
-                          <div className="space-y-3 bg-slate-50/80 border border-slate-200/80 rounded-2xl p-4 text-xs">
-                            <div>
-                              <span className="font-bold text-slate-900 block mb-0.5">🎨 Design Mood & UI Token:</span>
-                              <span className="text-slate-600">{col.designLanguage.mood}</span>
+                          <div className="space-y-2 bg-slate-50 rounded-xl p-3.5 text-xs border border-slate-100">
+                            <div className="flex items-center gap-2 text-slate-700 font-medium">
+                              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
+                              <span>Phong cách: <strong>{col.designLanguage.mood}</strong></span>
                             </div>
-                            <div className="pt-2 border-t border-slate-200/60 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-600">
-                              <div><span className="font-bold text-slate-800">Typography:</span> {col.typography.fontHeading}</div>
-                              <div><span className="font-bold text-slate-800">Grid:</span> {col.designLanguage.spacingSystem.split('—')[0]}</div>
+                            <div className="flex items-center gap-2 text-slate-700 font-medium">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0"></span>
+                              <span>Tối ưu chuẩn SEO & Tốc độ tải trang &lt; 1s</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-slate-700 font-medium">
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0"></span>
+                              <span>Tích hợp CMS quản trị & CRM thu thập Leads</span>
                             </div>
                           </div>
                         </div>
 
-                        <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                          <span>Khách hàng: <strong className="text-slate-800">{col.targetMarket.split(',')[0]}</strong></span>
-                          <span className="text-[#2563EB] font-bold">1 Sản phẩm Độc lập</span>
+                        <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                          <span>Phù hợp: <strong className="text-slate-800">{col.targetMarket.split(',')[0]}</strong></span>
+                          <span className="text-blue-600 font-bold">{familyTemplates.length} Mẫu thiết kế</span>
                         </div>
                       </div>
 
                       {/* Right: Template Cards in this Family */}
-                      <div className={`lg:col-span-7 grid ${familyTemplates.length > 1 ? 'grid-cols-1 md:grid-cols-2 gap-6' : 'grid-cols-1 max-w-xl mx-auto w-full'}`}>
+                      <div className={`lg:col-span-7 grid ${familyTemplates.length > 1 ? 'grid-cols-1 md:grid-cols-2 gap-4' : 'grid-cols-1 max-w-md mx-auto w-full'}`}>
                         {familyTemplates.map((template) => (
                           <div key={template.id} className="h-full">
                             <ProductCard
@@ -222,7 +237,7 @@ export default function TemplatesPage() {
             </div>
           ) : (
             /* Standard Grid View */
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredTemplates.map((template) => (
                 <div key={template.id} className="h-full">
                   <ProductCard

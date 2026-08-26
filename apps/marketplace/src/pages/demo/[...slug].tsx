@@ -16,9 +16,13 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import Link from 'next/link';
+import axios from 'axios';
 import { ALL_TEMPLATES } from '../../data/templatesData';
 import DemoRenderer from '../../components/demo/DemoRenderer';
 import PreviewToolbar, { ViewportType } from '../../components/demo/PreviewToolbar';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 // ─── Viewport configuration ──────────────────────────────────────────────────
 
@@ -95,6 +99,13 @@ export default function TemplateLiveDemoPage() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
+  const [session, setSession] = useState<{
+    token: string;
+    expiresAt: string;
+    saveCount: number;
+    expired: boolean;
+  } | null>(null);
+
   // Synchronize parent URL with iframe navigation (same-origin polling)
   useEffect(() => {
     if (viewport === 'desktop' || isEmbed) return;
@@ -117,21 +128,68 @@ export default function TemplateLiveDemoPage() {
     return () => clearInterval(interval);
   }, [viewport, isEmbed]);
 
-  // ── Early returns ────────────────────────────────────────────────────────
-
-  // Wait for router to be ready — prevents flash
-  if (!router.isReady || !slug) {
-    return <DemoLoadingSkeleton />;
-  }
-
-  // Resolve template (fallback to first template if slug not found)
-  const template =
-    ALL_TEMPLATES.find(
+  const template = React.useMemo(() => {
+    if (!templateSlug) return null;
+    return ALL_TEMPLATES.find(
       (t) =>
         t.slug === templateSlug ||
         t.id === templateSlug ||
         t.slug.toLowerCase() === String(templateSlug || '').toLowerCase()
     ) || ALL_TEMPLATES[0];
+  }, [templateSlug]);
+
+  useEffect(() => {
+    if (!router.isReady || !template || isEmbed) return;
+    
+    const fetchOrInitSession = async () => {
+      try {
+        const templateParam = template.slug || template.id;
+        const savedToken = localStorage.getItem(`demo_session_${templateParam}`) || localStorage.getItem(`demo_session_${template.id}`);
+        if (savedToken && savedToken !== 'local-demo-session') {
+          const res = await axios.get(`${API_URL}/api/demo/sessions/${savedToken}`, { withCredentials: true });
+          if (res.data?.success) {
+            setSession({
+              token: res.data.data.sessionToken || savedToken,
+              expiresAt: res.data.data.expiresAt,
+              saveCount: res.data.data.saveCount || 0,
+              expired: res.data.data.expired || false,
+            });
+            return;
+          }
+        }
+        
+        // Init session via API
+        const res = await axios.post(`${API_URL}/api/demo/sessions`, { templateId: templateParam }, { withCredentials: true });
+        if (res.data?.success) {
+          const { sessionToken, expiresAt } = res.data.data;
+          localStorage.setItem(`demo_session_${templateParam}`, sessionToken);
+          setSession({
+            token: sessionToken,
+            expiresAt,
+            saveCount: 0,
+            expired: false,
+          });
+        }
+      } catch (err) {
+        console.warn('Phiên demo backend không khả dụng, sử dụng phiên cục bộ:', err);
+        setSession({
+          token: 'local-demo-session',
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          saveCount: 0,
+          expired: false,
+        });
+      }
+    };
+    
+    fetchOrInitSession();
+  }, [router.isReady, template, isEmbed]);
+
+  // ── Early returns ────────────────────────────────────────────────────────
+
+  // Wait for router to be ready — prevents flash
+  if (!router.isReady || !slug || !template) {
+    return <DemoLoadingSkeleton />;
+  }
 
   // ── Embed mode (no toolbar, pure template) ────────────────────────────────
   // Used as iframe src for mobile/tablet viewport simulation
@@ -171,6 +229,36 @@ export default function TemplateLiveDemoPage() {
           isFullscreen ? 'fixed inset-0 z-[99998]' : 'min-h-screen'
         }`}
       >
+        {/* Banner session */}
+        {!isEmbed && session && !session.expired && (
+          <div className="bg-gradient-to-r from-amber-500 to-amber-700 text-white text-center py-1.5 px-4 text-xs font-medium flex justify-center items-center gap-4 shadow-sm z-50">
+            <span>🚀 Phiên dùng thử: còn {Math.max(0, Math.ceil((new Date(session.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))} ngày</span>
+            <span className="w-1 h-1 rounded-full bg-white/50"></span>
+            <span>Đã lưu {session.saveCount}/3 lần</span>
+          </div>
+        )}
+
+        {/* Expired Overlay */}
+        {!isEmbed && session?.expired && (
+          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[99999] flex flex-col items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center space-y-6">
+              <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900">Phiên dùng thử đã hết hạn</h2>
+              <p className="text-slate-600">Bạn đã dùng thử template này. Mua ngay để sở hữu vĩnh viễn và mở khóa toàn bộ tính năng!</p>
+              <button 
+                onClick={() => router.push(`/cart?template=${templateSlug}`)}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl transition-colors shadow-lg shadow-blue-500/30"
+              >
+                Mua ngay
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* ── Preview Toolbar ─────────────────────────────────────────────── */}
         <PreviewToolbar
           template={template}

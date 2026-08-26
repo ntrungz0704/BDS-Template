@@ -38,6 +38,7 @@ import {
   Cloud,
   AlertCircle,
 } from 'lucide-react';
+import { SYSTEM_CONFIG } from '@repo/config';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -347,7 +348,7 @@ export default function MediaLibraryPage() {
   };
 
   const usedMB = 48;
-  const totalMB = 500;
+  const totalMB = SYSTEM_CONFIG.UPLOAD_LIMIT_MB;
 
   const handleDelete = async (file: MediaFile) => {
     if (!confirm(`Xóa file "${file.name}"?`)) return;

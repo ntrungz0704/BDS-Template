@@ -276,7 +276,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
+      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
     }
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -390,11 +390,20 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-amber-100 shadow-sm transition-all duration-300">
       <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
         <div className="flex items-center justify-between h-20">
-          <div className="flex-shrink-0 cursor-pointer" onClick={() => setCurrentPage('home')}>
-            <h1 style={{ fontFamily: theme.fontHeading, color: theme.primary }} className="text-2xl font-bold tracking-tighter flex items-center gap-2">
-              <Store className="w-8 h-8" />
-              PlatformBDS<span style={{ color: theme.accent }}>.</span>
-            </h1>
+          <div className="flex-shrink-0 cursor-pointer text-left" onClick={() => setCurrentPage('home')}>
+            <div className="flex items-center gap-2">
+              <Store className="w-8 h-8 shrink-0" style={{ color: theme.primary }} />
+              <div>
+                <h1 style={{ fontFamily: theme.fontHeading, color: theme.primary }} className="text-xl sm:text-2xl font-bold tracking-tighter uppercase leading-none">
+                  {company?.name || template?.name || 'PlatformBDS'}
+                </h1>
+                {company?.slogan && (
+                  <p style={{ color: theme.accent }} className="text-[10px] font-semibold tracking-wider uppercase mt-1">
+                    {company.slogan}
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
           
           {!isMobile && (
@@ -415,14 +424,14 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
           )}
 
           <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setCurrentPage('contact')}
+            <a 
+              href={`tel:${company?.phone || '0983312219'}`}
               className="hidden sm:flex items-center gap-2 px-6 py-2.5 rounded-full text-white font-medium transition-all transform hover:scale-105"
               style={{ backgroundColor: theme.accent, fontFamily: theme.fontBody }}
             >
               <Phone size={18} />
-              <span>0909.888.999</span>
-            </button>
+              <span>{company?.phone || company?.hotline || '0983 312 219'}</span>
+            </a>
             {isMobile && (
               <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-gray-600">
                 {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -1367,14 +1376,14 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                     <Phone className="text-amber-400" size={24} />
                     <div>
                       <p className="text-sm text-amber-200">Hotline Tư Vấn</p>
-                      <p className="font-bold text-xl">0909.888.999</p>
+                      <p className="font-bold text-xl">{company?.phone || company?.hotline || company?.phone || company?.hotline || '0909.888.999'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
                     <Mail className="text-amber-400" size={24} />
                     <div>
                       <p className="text-sm text-amber-200">Email Hỗ Trợ</p>
-                      <p className="font-bold text-lg">sales@platformbds.com</p>
+                      <p className="font-bold text-lg">{company?.email || company?.email || 'sales@platformbds.com'}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -1537,7 +1546,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={18} className="text-amber-500 flex-shrink-0" />
-                <span>sales@platformbds.com</span>
+                <span>{company?.email || company?.email || 'sales@platformbds.com'}</span>
               </li>
             </ul>
           </div>

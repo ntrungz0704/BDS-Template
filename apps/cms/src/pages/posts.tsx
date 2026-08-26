@@ -112,7 +112,11 @@ function isThisMonth(iso: string) {
   return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
 }
 
-// ─── Write Post Modal ─────────────────────────────────────────────────────────
+import RichTextEditor from '../components/common/RichTextEditor';
+import ImageUploader from '../components/common/ImageUploader';
+import ItemPreviewModal from '../components/common/ItemPreviewModal';
+
+// ─── Write Post Modal (Low-Tech Friendly) ─────────────────────────────────────
 
 function WritePostModal({
   onClose,
@@ -123,34 +127,25 @@ function WritePostModal({
   onSave: (post: any) => void;
   post?: any | null;
 }) {
-  const [form, setForm] = useState<PostFormData>({
-    title: post?.title || '',
-    slug: post?.slug || '',
-    category: post?.category || CATEGORIES[0],
-    excerpt: post?.excerpt || '',
-    content: post?.content || '',
-    published: post?.status === 'published',
-    thumbnail: post?.thumbnail || '',
-  });
-  const [errors, setErrors] = useState<FormErrors>({});
+  const [title, setTitle] = useState(post?.title || '');
+  const [customSlug, setCustomSlug] = useState('');
+  const [category, setCategory] = useState(post?.category || CATEGORIES[0]);
+  const [excerpt, setExcerpt] = useState(post?.excerpt || '');
+  const [content, setContent] = useState(post?.content || '');
+  const [thumbnail, setThumbnail] = useState(post?.thumbnail || '');
+  const [published, setPublished] = useState(post ? post.status === 'published' : true);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
-  const handleTitleChange = (value: string) => {
-    setForm((prev) => ({
-      ...prev,
-      title: value,
-      slug: prev.slug === '' || prev.slug === slugify(prev.title) ? slugify(value) : prev.slug,
-    }));
-    if (errors.title) setErrors((e) => ({ ...e, title: undefined }));
-  };
+  const autoSlug = slugify(title || 'bai-viet-moi');
+  const finalSlug = customSlug.trim() ? slugify(customSlug) : (post?.slug || autoSlug);
 
   const validate = (): boolean => {
-    const errs: FormErrors = {};
-    if (!form.title.trim()) errs.title = 'Tiêu đề không được để trống';
-    if (!form.slug.trim()) errs.slug = 'Slug không được để trống';
-    if (!form.category) errs.category = 'Vui lòng chọn danh mục';
-    if (!form.excerpt.trim()) errs.excerpt = 'Tóm tắt không được để trống';
-    if (!form.content.trim()) errs.content = 'Nội dung không được để trống';
+    const errs: Record<string, string> = {};
+    if (!title.trim()) errs.title = 'Vui lòng nhập tiêu đề bài viết.';
+    if (!category) errs.category = 'Vui lòng chọn danh mục bài viết.';
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -161,30 +156,33 @@ function WritePostModal({
     setSaving(true);
     const newPost: any = {
       id: post?.id || String(Date.now()),
-      title: form.title,
-      slug: form.slug,
-      category: form.category,
-      author: 'Admin',
-      authorAvatar: 'AD',
-      publishedAt: new Date().toISOString().split('T')[0],
-      status: form.published ? 'published' : 'draft',
-      thumbnail: '',
+      title: title.trim(),
+      slug: finalSlug,
+      category,
+      author: post?.author || 'Ban Biên Tập',
+      authorAvatar: post?.authorAvatar || 'BT',
+      publishedAt: post?.publishedAt || new Date().toISOString().split('T')[0],
+      status: published ? 'published' : 'draft',
+      excerpt: excerpt.trim() || content.replace(/<[^>]*>?/gm, '').substring(0, 150),
+      content: content.trim() || `<p>${title}</p>`,
+      thumbnail: thumbnail.trim() || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+      version: post?.version || 1,
     };
     onSave(newPost);
     setSaving(false);
   };
 
-  const inputCls = (error?: string) =>
-    `w-full px-3 py-2.5 rounded-xl border text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 transition-all ${
-      error
+  const inputCls = (errKey?: string) =>
+    `w-full px-3.5 py-2.5 rounded-xl border text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 transition-all ${
+      errKey && errors[errKey]
         ? 'border-red-300 focus:ring-red-200 bg-red-50'
         : 'border-slate-200 focus:ring-blue-200 focus:border-blue-400 bg-white'
     }`;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4">
+      <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-xs" onClick={onClose} />
+      <div className="relative bg-white sm:rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden max-h-screen sm:max-h-[92vh] flex flex-col h-full sm:h-auto">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0">
           <div className="flex items-center gap-2.5">
@@ -192,8 +190,8 @@ function WritePostModal({
               <BookOpen className="w-4 h-4 text-blue-600" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-slate-900">Viết Bài Mới</h2>
-              <p className="text-xs text-slate-500">Tạo bài viết mới cho blog của bạn</p>
+              <h2 className="text-sm font-bold text-slate-900">{post ? 'Chỉnh Sửa Bài Viết' : 'Viết Bài Mới'}</h2>
+              <p className="text-xs text-slate-500">Soạn thảo bài viết, tin tức bất động sản dễ dàng</p>
             </div>
           </div>
           <button
@@ -208,15 +206,18 @@ function WritePostModal({
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4 overflow-y-auto flex-1">
           {/* Title */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-              Tiêu Đề <span className="text-red-500">*</span>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              Tiêu Đề Bài Viết <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              value={form.title}
-              onChange={(e) => handleTitleChange(e.target.value)}
-              placeholder="VD: Thị Trường BĐS 2026..."
-              className={inputCls(errors.title)}
+              value={title}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                if (errors.title) setErrors((prev) => ({ ...prev, title: '' }));
+              }}
+              placeholder="VD: Thị Trường BĐS Hạng Sang TP.HCM Năm 2026..."
+              className={inputCls('title')}
             />
             {errors.title && (
               <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1">
@@ -225,144 +226,155 @@ function WritePostModal({
             )}
           </div>
 
-          {/* Slug + Category */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                Slug (URL) <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={form.slug}
-                onChange={(e) => setForm((p) => ({ ...p, slug: slugify(e.target.value) }))}
-                placeholder="thi-truong-bds-2026"
-                className={`${inputCls(errors.slug)} font-mono`}
-              />
-              {errors.slug && (
-                <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" /> {errors.slug}
-                </p>
-              )}
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                Danh Mục <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <select
-                  value={form.category}
-                  onChange={(e) => setForm((p) => ({ ...p, category: e.target.value }))}
-                  className="w-full appearance-none px-3 py-2.5 pr-8 rounded-xl border border-slate-200 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 bg-white"
-                >
-                  {CATEGORIES.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
-                <ChevronDownIcon className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
-              </div>
+          {/* Category */}
+          <div>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              Danh Mục Bài Viết <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full appearance-none px-3.5 py-2.5 pr-8 rounded-xl border border-slate-200 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 bg-white"
+              >
+                {CATEGORIES.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+              <ChevronDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
             </div>
           </div>
 
           {/* Thumbnail */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-              URL Ảnh Đại Diện
-            </label>
-            <input
-              type="text"
-              value={form.thumbnail}
-              onChange={(e) => setForm((p) => ({ ...p, thumbnail: e.target.value }))}
-              placeholder="https://images.unsplash.com/..."
-              className={inputCls()}
+            <ImageUploader
+              value={thumbnail}
+              onChange={setThumbnail}
+              label="Ảnh Đại Diện Bài Viết"
+              hint="Kéo thả ảnh hoặc chọn từ máy tính (Tối đa 10MB)"
             />
           </div>
 
           {/* Excerpt */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-              Tóm Tắt <span className="text-red-500">*</span>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              Tóm Tắt Ngắn
             </label>
             <textarea
-              value={form.excerpt}
-              onChange={(e) => {
-                setForm((p) => ({ ...p, excerpt: e.target.value }));
-                if (errors.excerpt) setErrors((e2) => ({ ...e2, excerpt: undefined }));
-              }}
-              placeholder="Mô tả ngắn gọn nội dung bài viết (hiển thị trên danh sách blog)..."
+              value={excerpt}
+              onChange={(e) => setExcerpt(e.target.value)}
+              placeholder="Đoạn văn ngắn giới thiệu nội dung (hiển thị ngoài danh sách tin tức)..."
               rows={2}
-              className={`${inputCls(errors.excerpt)} resize-none`}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 resize-none bg-white"
             />
-            {errors.excerpt && (
-              <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1">
-                <AlertCircle className="w-3 h-3" /> {errors.excerpt}
-              </p>
-            )}
           </div>
 
-          {/* Content */}
+          {/* Visual Rich Text Editor */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-              Nội Dung <span className="text-red-500">*</span>
-              <span className="ml-1 text-slate-400 font-normal">(Markdown hỗ trợ)</span>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              Nội Dung Bài Viết
             </label>
-            <textarea
-              value={form.content}
-              onChange={(e) => {
-                setForm((p) => ({ ...p, content: e.target.value }));
-                if (errors.content) setErrors((e2) => ({ ...e2, content: undefined }));
-              }}
-              placeholder={`# Tiêu đề bài viết\n\nNhập nội dung bài viết tại đây...\n\n## Mục 1\n\nNội dung mục 1...`}
-              rows={8}
-              className={`${inputCls(errors.content)} font-mono text-xs resize-y`}
+            <RichTextEditor
+              value={content}
+              onChange={setContent}
+              placeholder="Soạn thảo nội dung bài viết chi tiết, chèn tiêu đề, in đậm, danh sách hoặc hình ảnh..."
+              minHeight="200px"
             />
-            {errors.content && (
-              <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1">
-                <AlertCircle className="w-3 h-3" /> {errors.content}
-              </p>
-            )}
           </div>
 
           {/* Published toggle */}
           <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-slate-50 border border-slate-100">
             <div>
-              <p className="text-sm font-semibold text-slate-800">Xuất Bản Ngay</p>
-              <p className="text-xs text-slate-500">Bài viết sẽ hiển thị công khai trên website</p>
+              <p className="text-sm font-bold text-slate-800">Hiển Thị Trên Website</p>
+              <p className="text-xs text-slate-500">Cho phép độc giả đọc bài viết này trên website của bạn</p>
             </div>
             <button
               type="button"
-              onClick={() => setForm((p) => ({ ...p, published: !p.published }))}
+              onClick={() => setPublished((p) => !p)}
               className={`relative w-11 h-6 rounded-full transition-colors duration-200 shrink-0 ${
-                form.published ? 'bg-blue-600' : 'bg-slate-300'
+                published ? 'bg-blue-600' : 'bg-slate-300'
               }`}
             >
               <span
-                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200 ${
-                  form.published ? 'translate-x-5' : 'translate-x-0'
+                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-xs transition-transform duration-200 ${
+                  published ? 'translate-x-5' : 'translate-x-0'
                 }`}
               />
             </button>
           </div>
 
-          {/* Actions */}
-          <button
-            type="submit"
-            disabled={saving}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-sm font-bold text-white transition-all shadow-md shadow-blue-600/25 disabled:opacity-60"
-          >
-            {saving ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Đang đăng bài...
-              </>
-            ) : (
-              <>
-                <Check className="w-4 h-4" />
-                {form.published ? 'Xuất Bản Bài Viết' : 'Lưu Nháp'}
-              </>
+          {/* Advanced URL */}
+          <div className="pt-1">
+            <button
+              type="button"
+              onClick={() => setShowAdvanced((v) => !v)}
+              className="text-xs font-semibold text-slate-400 hover:text-slate-600 transition-colors flex items-center gap-1"
+            >
+              <span>{showAdvanced ? '▼ Thu gọn tùy chọn nâng cao' : '▶ Tùy chọn nâng cao (Đường dẫn bài viết)'}</span>
+            </button>
+            {showAdvanced && (
+              <div className="mt-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
+                <p className="text-slate-500">
+                  Đường dẫn bài viết tự động: <code className="font-mono text-indigo-600 font-bold bg-white px-2 py-0.5 rounded border">/tin-tuc/{finalSlug}</code>
+                </p>
+                <div>
+                  <label className="block text-[11px] font-medium text-slate-600 mb-1">
+                    Tự chỉnh đường dẫn (nếu muốn):
+                  </label>
+                  <input
+                    type="text"
+                    value={customSlug}
+                    onChange={(e) => setCustomSlug(e.target.value)}
+                    placeholder={autoSlug}
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-mono"
+                  />
+                </div>
+              </div>
             )}
-          </button>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-2 pt-3 border-t border-slate-100 shrink-0">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
+            >
+              Hủy Bỏ
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowPreview(true)}
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-sm font-bold text-slate-700 transition-colors"
+            >
+              <Eye className="w-4 h-4 text-slate-500" />
+              Xem Trước
+            </button>
+            <button
+              type="submit"
+              disabled={saving}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-sm font-bold text-white transition-all shadow-md shadow-blue-600/25 disabled:opacity-60"
+            >
+              {saving ? 'Đang lưu...' : post ? 'Lưu Thay Đổi' : 'Lưu Bài Viết'}
+            </button>
+          </div>
         </form>
       </div>
+
+      {showPreview && (
+        <ItemPreviewModal
+          isOpen={showPreview}
+          onClose={() => setShowPreview(false)}
+          type="post"
+          data={{
+            title: title || 'Tiêu Đề Bài Viết Mẫu',
+            category,
+            thumbnail,
+            excerpt,
+            content: content || '<p>Nội dung bài viết chi tiết hiển thị ở đây...</p>',
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -405,11 +417,11 @@ export default function PostsManagerPage() {
     slug: p.slug,
     excerpt: p.summary || p.excerpt || '',
     category: p.category?.name || p.category || 'Tin Tức BĐS',
-    author: p.author?.fullName || 'Admin',
-    authorAvatar: p.author?.fullName?.substring(0, 2) || 'AD',
+    author: p.author?.fullName || 'Ban Biên Tập',
+    authorAvatar: p.author?.fullName?.substring(0, 2) || 'BT',
     publishedAt: p.publishedAt ? new Date(p.publishedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
     status: p.published ? 'published' : 'draft',
-    thumbnail: p.thumbnail || '',
+    thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80',
     content: p.content || '',
     version: p.version || 1,
   })) || [];
@@ -431,7 +443,7 @@ export default function PostsManagerPage() {
       } else {
         await axios.post(`${API_URL}/api/cms/posts`, payload, { withCredentials: true });
       }
-      queryClient.invalidateQueries({ queryKey: ['cms_posts'] });
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
       setShowModal(false);
       setEditingPost(null);
     } catch (error) {
@@ -444,7 +456,7 @@ export default function PostsManagerPage() {
     setDeletingId(post.id);
     try {
       await axios.delete(`${API_URL}/api/cms/posts/${post.id}`, { withCredentials: true });
-      queryClient.invalidateQueries({ queryKey: ['cms_posts'] });
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
     } catch (error) {
       alert('Lỗi xóa bài viết');
     } finally {
@@ -644,6 +656,9 @@ export default function PostsManagerPage() {
                       <img
                         src={post.thumbnail}
                         alt={post.title}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80';
+                        }}
                         className="w-10 h-10 rounded-lg object-cover shrink-0"
                       />
                     </td>
@@ -713,12 +728,15 @@ export default function PostsManagerPage() {
                         >
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
-                        <button
-                          title="Xem trước"
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                        <a
+                          href={`http://localhost:3003/posts/${post.slug}?tenant=${domainData?.subdomain || 'hoanggialand'}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Xem trên Website"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
                         >
                           <Eye className="w-3.5 h-3.5" />
-                        </button>
+                        </a>
                         <button
                           onClick={() => handleDelete(post)}
                           disabled={deletingId === post.id}

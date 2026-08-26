@@ -183,6 +183,8 @@ interface TemplateProps {
 }
 
 export default function PersonalAgentTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
+  const brandPrimary = dynamicTheme?.primaryColor || '#0284C7';
+  const brandAccent = dynamicTheme?.accentColor || '#38BDF8';
   // Dynamic Posts Override & Shadowing Variable via globalThis reference
   const activePosts = posts && posts.length > 0
     ? posts.map((p, index) => ({
@@ -251,7 +253,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
+      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
     }
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -303,11 +305,20 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
   const renderHeader = () => (
     <header className="sticky top-4 w-full z-50 px-4">
       <div className={`mx-auto bg-white/90 backdrop-blur-md shadow-lg rounded-full px-6 py-3 flex items-center justify-between ${MAX_W}`}>
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigateTo('home')}>
-          <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
-            T
+        <div className="flex items-center gap-2 cursor-pointer text-left" onClick={() => navigateTo('home')}>
+          <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl shrink-0">
+            {(company?.name || 'A').charAt(0).toUpperCase()}
           </div>
-          <span className="text-xl font-bold text-gray-900 tracking-tight">Trần Anh <span className="text-indigo-600">Tuấn</span></span>
+          <div>
+            <span className="text-xl font-bold text-gray-900 tracking-tight uppercase block">
+              {company?.name || template?.name || 'Trần Anh Tuấn'}
+            </span>
+            {company?.slogan && (
+              <span className="text-[10px] text-indigo-600 font-semibold tracking-wider uppercase block">
+                {company.slogan}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Desktop Nav */}
@@ -335,13 +346,13 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
         )}
 
         {!isMobile && !isTablet && (
-          <button 
-            onClick={() => navigateTo('contact')}
+          <a 
+            href={`tel:${company?.phone || '0983312219'}`}
             className="bg-indigo-600 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-indigo-700 transition-colors flex items-center gap-2"
           >
             <Phone size={16} />
-            090 123 4567
-          </button>
+            {company?.phone || '0983 312 219'}
+          </a>
         )}
 
         {(isMobile || isTablet) && (
@@ -372,13 +383,13 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               {item.label}
             </button>
           ))}
-          <button 
-            onClick={() => navigateTo('contact')}
+          <a 
+            href={`tel:${company?.phone || '0983312219'}`}
             className="w-full bg-indigo-600 text-white px-6 py-3 rounded-xl text-base font-medium mt-2 flex justify-center items-center gap-2"
           >
             <Phone size={18} />
-            Gọi ngay 090 123 4567
-          </button>
+            Gọi ngay {company?.phone || '0983 312 219'}
+          </a>
         </div>
       )}
     </header>
@@ -392,12 +403,14 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
           <div>
             <div className="flex items-center gap-2 mb-6">
               <div className="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                T
+                {(company?.name || 'A').charAt(0).toUpperCase()}
               </div>
-              <span className="text-2xl font-bold text-white tracking-tight">Trần Anh Tuấn</span>
+              <span className="text-2xl font-bold text-white tracking-tight uppercase">
+                {company?.name || 'Trần Anh Tuấn'}
+              </span>
             </div>
             <p className="text-gray-400 mb-6 text-sm leading-relaxed">
-              Chuyên gia tư vấn bất động sản cao cấp, mang đến giải pháp an cư và đầu tư sinh lời vượt trội cho khách hàng tại thị trường TP.HCM.
+              {company?.slogan || company?.description || 'Chuyên gia tư vấn bất động sản cao cấp, mang đến giải pháp an cư và đầu tư sinh lời vượt trội cho khách hàng.'}
             </p>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors">
@@ -446,19 +459,19 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <MapPin className="text-indigo-500 mt-1 flex-shrink-0" size={18} />
-                <span className="text-gray-400 text-sm">Tầng 12, Tòa nhà Bitexco, Số 2 Hải Triều, Bến Nghé, Quận 1, TP.HCM</span>
+                <span className="text-gray-400 text-sm">{company?.address || 'Tầng 12, Tòa nhà Bitexco, Số 2 Hải Triều, Bến Nghé, Quận 1, TP.HCM'}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="text-indigo-500 flex-shrink-0" size={18} />
-                <span className="text-gray-400 text-sm">090 123 4567</span>
+                <span className="text-gray-400 text-sm">{company?.phone || company?.hotline || '0983 312 219'}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="text-indigo-500 flex-shrink-0" size={18} />
-                <span className="text-gray-400 text-sm">tuan.tran@luxuryhomes.vn</span>
+                <span className="text-gray-400 text-sm">{company?.email || 'contact@platformbds.vn'}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Clock className="text-indigo-500 flex-shrink-0" size={18} />
-                <span className="text-gray-400 text-sm">T2 - CN: 8:00 - 20:00</span>
+                <span className="text-gray-400 text-sm">{company?.workingHours || 'T2 - CN: 8:00 - 20:00'}</span>
               </li>
             </ul>
           </div>
@@ -466,7 +479,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
 
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-500 text-sm text-center md:text-left">
-            &copy; 2024 Trần Anh Tuấn Real Estate. All rights reserved.
+            &copy; {new Date().getFullYear()} {company?.name || 'Personal Agent'}. All rights reserved.
           </p>
           <div className="flex gap-4">
             <span className="text-gray-500 text-sm hover:text-white cursor-pointer">Chính sách bảo mật</span>
@@ -954,7 +967,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   </div>
                   <div>
                     <p className="text-sm text-indigo-200">Gửi Email</p>
-                    <p className="font-bold text-lg">tuan.tran@luxuryhomes.vn</p>
+                    <p className="font-bold text-lg">{company?.email || company?.email || 'tuan.tran@luxuryhomes.vn'}</p>
                   </div>
                 </div>
               </div>
@@ -1611,7 +1624,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   </div>
                   <div className="flex items-center gap-4">
                     <Mail className="text-indigo-400 flex-shrink-0" size={20} />
-                    <p className="text-gray-300 text-sm">tuan.tran@luxuryhomes.vn</p>
+                    <p className="text-gray-300 text-sm">{company?.email || company?.email || 'tuan.tran@luxuryhomes.vn'}</p>
                   </div>
                   <div className="flex items-center gap-4">
                     <Clock className="text-indigo-400 flex-shrink-0" size={20} />

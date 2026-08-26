@@ -328,7 +328,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
+      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
     }
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -373,10 +373,10 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
 
   const colors = {
-    bg: '#FAFEFF',
-    primary: '#065A82',
-    accent: '#F59E0B',
-    dark: '#0A2540',
+    bg: dynamicTheme?.backgroundColor || '#FAFEFF',
+    primary: dynamicTheme?.primaryColor || '#065A82',
+    accent: dynamicTheme?.accentColor || '#F59E0B',
+    dark: dynamicTheme?.secondaryColor || '#0A2540',
     light: '#FFFFFF'
   };
 
@@ -503,11 +503,17 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
     <header className="absolute top-0 w-full z-50 transition-all duration-300 border-b border-white/20" style={{ backgroundColor: currentPage === 'home' ? 'transparent' : colors.primary }}>
       <div className={`${MAX_W} px-6 h-24 flex items-center justify-between`}>
         <div 
-          className="text-3xl font-bold text-white cursor-pointer" 
-          style={fontHead}
+          className="cursor-pointer text-left" 
           onClick={() => navigateTo('home')}
         >
-          Resort Paradise
+          <div className="text-2xl sm:text-3xl font-bold text-white tracking-wider uppercase" style={fontHead}>
+            {company?.name || template?.name || 'Resort Paradise'}
+          </div>
+          {company?.slogan && (
+            <div className="text-[10px] text-[#F59E0B] tracking-[0.2em] uppercase font-medium" style={fontBody}>
+              {company.slogan}
+            </div>
+          )}
         </div>
         
         {!isSmall ? (
@@ -552,8 +558,8 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
     <footer style={{ backgroundColor: colors.dark, color: '#e2e8f0' }} className="pt-20 pb-10">
       <div className={`${MAX_W} px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-16`}>
         <div>
-          <h3 className="text-2xl font-bold text-white mb-6" style={fontHead}>Resort Paradise</h3>
-          <p className="mb-6 opacity-80 leading-relaxed text-sm font-light">Tiên phong kiến tạo chuẩn mực sống sang trọng nơi thiên đường nghỉ dưỡng ven biển.</p>
+          <h3 className="text-2xl font-bold text-white mb-6" style={fontHead}>{company?.name || 'Resort Paradise'}</h3>
+          <p className="mb-6 opacity-80 leading-relaxed text-sm font-light">{company?.slogan || company?.description || 'Tiên phong kiến tạo chuẩn mực sống sang trọng nơi thiên đường nghỉ dưỡng ven biển.'}</p>
           <div className="flex space-x-4">
             <button className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all"><Facebook size={18} /></button>
             <button className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all"><Instagram size={18} /></button>
@@ -584,14 +590,14 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
         <div>
           <h4 className="text-sm font-bold text-white mb-6 uppercase tracking-wider">Liên Hệ</h4>
           <ul className="space-y-4 opacity-80 text-sm font-light">
-            <li className="flex items-start"><MapPin size={20} className="mr-3 text-[#F59E0B] shrink-0 mt-1" /> 123 Đường Ven Biển, Nha Trang, Việt Nam</li>
-            <li className="flex items-center"><Phone size={20} className="mr-3 text-[#F59E0B] shrink-0" /> 1900 8888 9999</li>
-            <li className="flex items-center"><Mail size={20} className="mr-3 text-[#F59E0B] shrink-0" /> contact@resortparadise.vn</li>
+            <li className="flex items-start"><MapPin size={20} className="mr-3 text-[#F59E0B] shrink-0 mt-1" /> {company?.address || '123 Đường Ven Biển, Nha Trang, Việt Nam'}</li>
+            <li className="flex items-center"><Phone size={20} className="mr-3 text-[#F59E0B] shrink-0" /> {company?.phone || company?.hotline || '1900 8888 9999'}</li>
+            <li className="flex items-center"><Mail size={20} className="mr-3 text-[#F59E0B] shrink-0" /> {company?.email || 'contact@resortparadise.vn'}</li>
           </ul>
         </div>
       </div>
       <div className="border-t border-white/10 pt-8 text-center opacity-60 text-sm font-light">
-        <p>© {new Date().getFullYear()} Resort Paradise. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} {company?.name || 'Resort Paradise'}. All rights reserved.</p>
       </div>
     </footer>
   );
@@ -1599,7 +1605,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
                   </div>
                   <div>
                     <h4 className="font-bold text-[#0A2540] mb-1">Email liên hệ</h4>
-                    <p className="text-gray-600 text-sm font-light">contact@resortparadise.vn</p>
+                    <p className="text-gray-600 text-sm font-light">{company?.email || company?.email || 'contact@resortparadise.vn'}</p>
                   </div>
                 </div>
               </div>

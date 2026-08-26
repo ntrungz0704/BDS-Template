@@ -37,7 +37,7 @@ export default function PublicProjectDetail({ company, project, tenantSlug, erro
       <header className="sticky top-0 z-40 bg-white border-b border-[#E5E0D8] px-8 py-4 shadow-sm">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <Link href="/" className="text-2xl font-extrabold tracking-wider" style={{ color: primaryColor }}>
-            {company.name.toUpperCase()}
+            {company?.name?.toUpperCase() || 'PLATFORMBDS'}
           </Link>
           <nav className="flex space-x-8 text-sm font-semibold text-[#1A1A2E]">
             <Link href="/" className="hover:opacity-80">Trang chủ</Link>
@@ -147,9 +147,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
     const [compRes, projRes] = await Promise.all([
-      axios.get(`http://localhost:5000/api/website/${tenantSlug}/company-info`),
-      axios.get(`http://localhost:5000/api/website/${tenantSlug}/projects/${slug}`),
+      axios.get(`${apiUrl}/api/website/${tenantSlug}/company-info`),
+      axios.get(`${apiUrl}/api/website/${tenantSlug}/projects/${slug}`),
     ]);
 
     return {

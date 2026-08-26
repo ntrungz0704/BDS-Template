@@ -294,7 +294,7 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
+      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
     }
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -389,11 +389,18 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
   const renderHeader = () => (
     <header style={{ backgroundColor: theme.bg, borderBottom: '1px solid #E5E7EB', position: 'sticky', top: 0, zIndex: 50, fontFamily: theme.bodyFont }}>
       <div className={`${MAX_W} mx-auto px-4 py-4 flex justify-between items-center`}>
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => handleNavClick('home')}>
-          <TreePine size={32} style={{ color: theme.primary }} />
-          <span style={{ fontFamily: theme.headingFont, fontWeight: 800, fontSize: '1.5rem', color: theme.primary, letterSpacing: '-0.5px' }}>
-            ĐấtNền<span style={{ color: theme.accent }}>GiaPhát</span>
-          </span>
+        <div className="flex items-center gap-2 cursor-pointer text-left" onClick={() => handleNavClick('home')}>
+          <TreePine size={32} style={{ color: theme.primary }} className="shrink-0" />
+          <div>
+            <span style={{ fontFamily: theme.headingFont, fontWeight: 800, fontSize: '1.4rem', color: theme.primary, letterSpacing: '-0.5px' }} className="uppercase block leading-none">
+              {company?.name || template?.name || 'Đất Nền Gia Phát'}
+            </span>
+            {company?.slogan && (
+              <span style={{ color: theme.accent, fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em' }} className="uppercase block mt-1">
+                {company.slogan}
+              </span>
+            )}
+          </div>
         </div>
         
         {!isMobile && !isTablet && (
@@ -420,13 +427,13 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
         )}
 
         {!isMobile && !isTablet && (
-          <button 
-            onClick={() => handleNavClick('contact')}
+          <a 
+            href={`tel:${company?.phone || '0983312219'}`}
             style={{ backgroundColor: theme.primary, color: 'white', padding: '0.6rem 1.5rem', borderRadius: '4px', fontWeight: 600, transition: 'background 0.3s' }} 
             className="hover:bg-green-800"
           >
-            Tư vấn đầu tư
-          </button>
+            {company?.phone || 'Tư vấn đầu tư'}
+          </a>
         )}
 
         {(isMobile || isTablet) && (
@@ -469,12 +476,12 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
           <div>
             <div className="flex items-center gap-2 mb-6">
               <TreePine size={32} style={{ color: theme.accent }} />
-              <span style={{ fontFamily: theme.headingFont, fontWeight: 800, fontSize: '1.5rem', color: 'white' }}>
-                ĐấtNền<span style={{ color: theme.accent }}>GiaPhát</span>
+              <span style={{ fontFamily: theme.headingFont, fontWeight: 800, fontSize: '1.5rem', color: 'white' }} className="uppercase">
+                {company?.name || 'Đất Nền Gia Phát'}
               </span>
             </div>
             <p style={{ color: '#9CA3AF', marginBottom: '1.5rem', lineHeight: 1.6 }}>
-              Đơn vị tiên phong cung cấp giải pháp đầu tư đất nền vùng ven, mang lại giá trị sinh lời bền vững và an toàn pháp lý cho mọi khách hàng.
+              {company?.slogan || company?.description || 'Đơn vị tiên phong cung cấp giải pháp đầu tư đất nền vùng ven, mang lại giá trị sinh lời bền vững và an toàn pháp lý cho mọi khách hàng.'}
             </p>
             <div className="flex gap-4">
               <div style={{ width: 40, height: 40, borderRadius: '50%', backgroundColor: '#374151', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -529,11 +536,11 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={20} style={{ color: theme.accent, flexShrink: 0 }} />
-                <span style={{ color: '#9CA3AF' }}>0909 123 456</span>
+                <span style={{ color: '#9CA3AF' }}>{company?.phone || company?.hotline || company?.phone || company?.hotline || '0909 123 456'}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={20} style={{ color: theme.accent, flexShrink: 0 }} />
-                <span style={{ color: '#9CA3AF' }}>info@datnengiaphat.com.vn</span>
+                <span style={{ color: '#9CA3AF' }}>{company?.email || company?.email || 'info@datnengiaphat.com.vn'}</span>
               </li>
             </ul>
           </div>

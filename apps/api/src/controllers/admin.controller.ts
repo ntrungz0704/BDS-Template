@@ -1,13 +1,28 @@
 import { Request, Response, NextFunction } from 'express';
+import { z } from 'zod';
 import { prisma, TemplateRegistry } from '@repo/database';
 import { TEMPLATE_CONFIGS } from '@repo/utils';
 import { logger } from '../index';
 import bcrypt from 'bcrypt';
 import { sendWelcomeEmail } from '../utils/mailer';
+import { BUSINESS_CONFIG } from '@repo/config';
+import { websiteProvisioningService } from '../services/website-provisioning.service';
 
 export async function getDashboardStats(req: Request, res: Response, next: NextFunction) {
   try {
     const totalTenants = await prisma.tenant.count({ where: { deletedAt: null } });
+    const activeTenants = await prisma.tenant.count({ where: { status: 'ACTIVE', deletedAt: null } });
+    const activeTrials = await prisma.tenant.count({ where: { trialStatus: 'ACTIVE', deletedAt: null } });
+    const expiringTrials = await prisma.tenant.count({
+      where: {
+        trialStatus: { in: ['ACTIVE', 'EXPIRING'] },
+        trialEndAt: { lte: new Date(Date.now() + 24 * 60 * 60 * 1000) },
+        deletedAt: null,
+      },
+    });
+    const expiredTrials = await prisma.tenant.count({ where: { trialStatus: 'EXPIRED', deletedAt: null } });
+    const activeSubscriptions = await prisma.subscription.count({ where: { status: 'ACTIVE' } });
+    const totalUsers = await prisma.user.count({ where: { deletedAt: null } });
     const totalOrders = await prisma.order.count();
     
     // Tính tổng doanh thu từ các đơn hàng đã thành công (COMPLETED)
@@ -25,6 +40,12 @@ export async function getDashboardStats(req: Request, res: Response, next: NextF
       success: true,
       data: {
         totalTenants,
+        activeTenants,
+        activeTrials,
+        expiringTrials,
+        expiredTrials,
+        activeSubscriptions,
+        totalUsers,
         totalOrders,
         totalRevenue: revenueSum._sum.amount || 0,
         recentOrders,
@@ -52,6 +73,11 @@ export async function getOrders(req: Request, res: Response, next: NextFunction)
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
+        include: {
+          template: {
+            select: { name: true, slug: true, thumbnail: true },
+          },
+        },
       }),
       prisma.order.count({ where }),
     ]);
@@ -157,13 +183,13 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
     }
 
     // 3. THỰC HIỆN KÍCH HOẠT DỊCH VỤ TRONG TRANSACTION BÊ TÔNG
-    const crypto = await import('crypto');
-    const tempPassword = crypto.randomBytes(12).toString('hex'); // 24-char hex password
-    const passwordHash = await bcrypt.hash(tempPassword, 12);
+    let tenantId: string | null = null;
+    let isNewUser = false;
+    let tempPassword = '';
+    let completedOrder: any = null;
 
     const result = await prisma.$transaction(async (tx: any) => {
-      // Cập nhật trạng thái đơn hàng thành COMPLETED
-      const completedOrder = await tx.order.update({
+      completedOrder = await tx.order.update({
         where: { id, version: order.version },
         data: {
           status: 'COMPLETED',
@@ -171,353 +197,80 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
           version: { increment: 1 },
         },
       });
-
-      let tenantId: string | null = null;
-      let isNewUser = false;
-
-      if (order.type === 'RENT' && order.subdomain) {
-        // Tạo Tenant
-        const tenant = await tx.tenant.create({
-          data: {
-            name: order.fullName + ' Office',
-            slug: order.subdomain.toLowerCase(),
-            templateId: order.templateId,
-            status: 'ACTIVE',
-            version: 10, // Default to version 1.0 (10)
-            activatedAt: new Date(),
-          },
-        });
-
-        tenantId = tenant.id;
-
-        // ✅ SỬA LỖI: Tìm user đã đăng ký trước đó theo email
-        // Không tạo User mới — chỉ UPDATE role và tenantId của user cũ
-        const existingUser = await tx.user.findUnique({
-          where: { email: order.email },
-        });
-
-        isNewUser = !existingUser;
-
-        let tenantOwner;
-        if (existingUser) {
-          // User đã có tài khoản -> Cập nhật lên TENANT_OWNER và gắn vào Tenant
-          tenantOwner = await tx.user.update({
-            where: { email: order.email },
-            data: {
-              role: 'TENANT_OWNER',
-              tenantId: tenant.id,
-              isActive: true,
-              emailVerified: existingUser.emailVerified || new Date(),
-            },
-          });
-        } else {
-          // Edge case: User chưa đăng ký (mua qua kênh khác) -> Tạo mới với temp password
-          tenantOwner = await tx.user.create({
-            data: {
-              email: order.email,
-              passwordHash,
-              fullName: order.fullName,
-              role: 'TENANT_OWNER',
-              isActive: true,
-              tenantId: tenant.id,
-              emailVerified: new Date(),
-            },
-          });
-        }
-
-        // Tạo TenantMembership liên kết User và Tenant mới
-        await tx.tenantMembership.create({
-          data: {
-            userId: tenantOwner.id,
-            tenantId: tenant.id,
-            role: 'OWNER',
-            status: 'ACTIVE',
-          },
-        });
-
-        // Đọc cấu hình mặc định từ TEMPLATE_CONFIGS dùng chung của 16 templates
-        const templateId = order.templateId || 'luxury-gold';
-        const templateConfig = TEMPLATE_CONFIGS[templateId] || TEMPLATE_CONFIGS['luxury-gold'];
-        const registryTemplate = TemplateRegistry.get(templateId) || TemplateRegistry.get('luxury-gold');
-
-        // Tạo CompanyInfo từ dữ liệu mẫu của template tương ứng
-        await tx.companyInfo.create({
-          data: {
-            tenantId: tenant.id,
-            name: templateConfig.projectName || tenant.name,
-            email: order.email,
-            phone: order.phone,
-            slogan: templateConfig.tagline || '',
-            description: templateConfig.heroSubtitle || '',
-            address: templateConfig.location?.highlights?.[0] || '68 Nguyễn Huệ, Quận 1, TP. HCM',
-            workingHours: '8h00 - 20h00',
-            aboutContent: templateConfig.location?.desc || '',
-          },
-        });
-
-        // Tạo các Projects mẫu đi kèm từ demoProjects hoặc fallback về floorPlans của template đó
-        const demoProjs = templateConfig.demoProjects || [];
-        if (demoProjs.length > 0) {
-          for (let k = 0; k < demoProjs.length; k++) {
-            const dp = demoProjs[k];
-            const typeStr = (dp.type || '').toLowerCase();
-            const projType = typeStr.includes('villa') || typeStr.includes('biệt') || typeStr.includes('mansion') ? 'VILLA' : 'APARTMENT';
-            
-            await tx.project.create({
-              data: {
-                tenantId: tenant.id,
-                title: dp.name || dp.title,
-                slug: `${templateId}-project-${k}`,
-                description: dp.desc || dp.description || dp.specs || '',
-                shortDescription: dp.specs || dp.type || '',
-                type: projType,
-                status: 'SELLING',
-                price: dp.price || dp.priceStr || 'Liên hệ',
-                priceFrom: dp.priceVal || dp.priceNum || 0,
-                area: dp.area || '—',
-                address: dp.location || dp.loc || 'Thành phố Hồ Chí Minh',
-                thumbnail: dp.img || dp.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
-                published: true,
-                sortOrder: k,
-              }
-            });
-          }
-        } else if (templateConfig.floorPlans && templateConfig.floorPlans.length > 0) {
-          for (let k = 0; k < templateConfig.floorPlans.length; k++) {
-            const plan = templateConfig.floorPlans[k];
-            await tx.project.create({
-              data: {
-                tenantId: tenant.id,
-                title: plan.name,
-                slug: `${templateId}-project-${k}`,
-                description: plan.specs,
-                shortDescription: plan.floor,
-                type: plan.floor.includes('Villas') || plan.floor.includes('Biệt') ? 'VILLA' : 'APARTMENT',
-                status: 'SELLING',
-                price: plan.price,
-                area: plan.area,
-                address: templateConfig.overview?.[1]?.value || 'Thành phố Hồ Chí Minh',
-                thumbnail: templateConfig.gallery?.[k % templateConfig.gallery.length] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
-                published: true,
-                sortOrder: k,
-              }
-            });
-          }
-        }
-
-        // Tạo các Tin tức/Bài viết mẫu tương thích với template để tránh bị trống phần Blog
-        const samplePosts = [
-          {
-            title: "Xu Hướng Bất Động Sản Siêu Sang Năm 2026: Định Nghĩa Mới Về Đẳng Cấp",
-            slug: `${templateId}-post-1`,
-            summary: "Phân tích các tiêu chuẩn mới của bất động sản hàng hiệu (Branded Residences) và dinh thự đảo compound khép kín tại các đô thị lớn.",
-            content: "<p>Thị trường bất động sản hạng sang và siêu sang tại Việt Nam đang ghi nhận những bước chuyển mình mạnh mẽ trong năm 2026. Khách hàng thuộc giới tinh hoa giờ đây không chỉ tìm kiếm một ngôi nhà có diện tích lớn, mà họ đòi hỏi những tiêu chuẩn sống khắt khe về sự riêng tư, công nghệ bảo mật và dịch vụ đặc quyền cá nhân hóa.</p>",
-            thumbnail: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600",
-          },
-          {
-            title: "Nghệ Thuật Thiết Kế Nội Thất Tân Cổ Điển Cho Căn Hộ Duplex Hoàng Gia",
-            slug: `${templateId}-post-2`,
-            summary: "Làm thế nào để phối hợp hài hòa giữa chất liệu đá Marble tự nhiên, kim loại dát vàng và ánh sáng pha lê phong cách châu Âu.",
-            content: "<p>Thiết kế nội thất phong cách tân cổ điển (Neoclassical) luôn là sự lựa chọn hàng đầu cho các không gian sống thông tầng rộng lớn như Duplex hay Penthouse. Phong cách này mang đến vẻ đẹp kiêu sa, quyền quý nhưng không quá nặng nề như phong cách cổ điển thuần túy.</p>",
-            thumbnail: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600",
-          }
-        ];
-
-        for (let k = 0; k < samplePosts.length; k++) {
-          const sp = samplePosts[k];
-          await tx.post.create({
-            data: {
-              tenantId: tenant.id,
-              title: sp.title,
-              slug: sp.slug,
-              summary: sp.summary,
-              content: sp.content,
-              thumbnail: sp.thumbnail,
-              published: true,
-              publishedAt: new Date(),
-            }
-          });
-        }
-
-        const defaultTheme = registryTemplate?.defaultConfig?.themeConfig || {
-          primaryColor: '#0B132B',
-          secondaryColor: '#1C2541',
-          accentColor: '#D4AF37',
-          backgroundColor: '#070C1E',
-          textColor: '#F3F4F6',
-          fontHeading: 'Playfair Display, serif',
-          fontBody: 'Plus Jakarta Sans, sans-serif',
-          borderRadius: '0px',
-          shadow: 'lg'
-        };
-
-        // Tạo Theme Settings từ mẫu mặc định
-        await tx.tenantThemeSettings.create({
-          data: {
-            tenantId: tenant.id,
-            primaryColor: defaultTheme.primaryColor,
-            secondaryColor: defaultTheme.secondaryColor,
-            accentColor: defaultTheme.accentColor,
-            backgroundColor: defaultTheme.backgroundColor,
-            textColor: defaultTheme.textColor || '#F3F4F6',
-            fontHeading: defaultTheme.fontHeading,
-            fontBody: defaultTheme.fontBody,
-            borderRadius: defaultTheme.borderRadius || '0px',
-            shadowStyle: defaultTheme.shadow === 'lg' ? 'hard' : 'soft',
-            darkMode: false,
-            buttonStyle: 'rounded',
-            animationsEnabled: true,
-          },
-        });
-
-        // Tạo default Pages & default Sections
-        const defaultPages = registryTemplate?.defaultConfig?.layoutConfig?.pages || [
-          {
-            slug: 'home',
-            name: 'Trang chủ',
-            sections: [
-              { id: 'hero', name: 'Hero Banner', type: 'hero', content: { title: 'Chào mừng quý khách', subtitle: 'Tìm kiếm không gian sống đẳng cấp.' } }
-            ]
-          }
-        ];
-
-        for (let i = 0; i < defaultPages.length; i++) {
-          const pageData = defaultPages[i];
-          const page = await tx.tenantPage.create({
-            data: {
-              tenantId: tenant.id,
-              slug: pageData.slug,
-              title: pageData.name,
-              description: `Trang ${pageData.name} của website bất động sản`,
-              isSystem: true,
-              published: true,
-              sortOrder: i
-            }
-          });
-
-          if (pageData.sections) {
-            for (let j = 0; j < pageData.sections.length; j++) {
-              const sec = pageData.sections[j];
-              await tx.tenantSection.create({
-                data: {
-                  tenantId: tenant.id,
-                  pageId: page.id,
-                  sectionKey: sec.id,
-                  label: sec.name,
-                  sortOrder: j,
-                  isVisible: true,
-                  content: sec.content || {},
-                  settings: sec.settings || {}
-                }
-              });
-            }
-          }
-        }
-
-        // Tạo Menu mặc định cho Website Tenant
-        const menu = await tx.menu.create({
-          data: {
-            tenantId: tenant.id,
-            name: 'Menu Chính',
-            location: 'header',
-            isActive: true,
-          },
-        });
-
-        await tx.menuItem.create({
-          data: {
-            menuId: menu.id,
-            label: 'Trang chủ',
-            url: '/',
-            sortOrder: 1,
-          },
-        });
-
-        // Tạo default Media Folder
-        await tx.mediaFolder.create({
-          data: {
-            tenantId: tenant.id,
-            name: 'Hình ảnh dự án',
-            slug: 'root',
-            sortOrder: 0
-          }
-        });
-
-        // Tạo default SEO & Google Analytics
-        await tx.seoConfig.create({
-          data: {
-            tenantId: tenant.id,
-            metaTitle: tenant.name,
-            metaDescription: `${tenant.name} - Hệ thống website bất động sản chuyên nghiệp.`,
-            enableSitemap: true,
-            googleAnalyticsId: 'G-XXXXXXXXXX', // Default analytics initialized
-          }
-        });
-
-        // Tạo Subdomain Settings
-        await tx.tenantDomainSettings.create({
-          data: {
-            tenantId: tenant.id,
-            subdomain: order.subdomain.toLowerCase(),
-            platformDomain: process.env.PLATFORM_DOMAIN || 'platformbds.vn',
-            customDomain: null,
-            dnsVerified: true, // Auto-verified for platform subdomain
-            sslStatus: 'ACTIVE' // Auto-active for platform subdomain
-          }
-        });
-
-        // Thời hạn subscription dựa trên plan được chọn
-        const PLAN_DURATION_DAYS: Record<string, number> = {
-          BASIC: 30,
-          STARTER: 30,
-          PRO: 30,
-          PROFESSIONAL: 365,
-          BUSINESS: 365,
-          ENTERPRISE: 365,
-        };
-        const durationDays = PLAN_DURATION_DAYS[order.plan || 'STARTER'] ?? 30;
-        const startDate = new Date();
-        const endDate = new Date();
-        endDate.setDate(endDate.getDate() + durationDays);
-
-        await tx.subscription.create({
-          data: {
-            tenantId: tenant.id,
-            orderId: order.id,
-            plan: order.plan || 'STARTER',
-            status: 'ACTIVE',
-            amount: order.amount,
-            startDate,
-            endDate,
-          },
-        });
-
-        // Ghi nhận tenantId ngược lại vào Order để tham chiếu lịch sử
-        await tx.order.update({
-          where: { id },
-          data: { tenantId: tenant.id },
-        });
-      }
-
-      return { completedOrder, tenantId, isNewUser };
+      return completedOrder;
     });
 
+    // 4. PROVISION WEBSITE cho khách hàng (cả BUY và RENT)
+    // Flow Zalo: Admin duyệt → tự động tạo website cho khách
+    const slugifyBrand = (text: string) => {
+      return (text || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/Đ/g, 'd')
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+    };
+
+    let candidateSubdomain = order.subdomain;
+    if (!candidateSubdomain || candidateSubdomain.trim() === '') {
+      const brandSlug = slugifyBrand(order.fullName || '');
+      candidateSubdomain = brandSlug ? `${brandSlug}-land` : `bds-${Date.now().toString().slice(-6)}`;
+    }
+
+    const cleanSubdomain = candidateSubdomain.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 30);
+    
+    let finalSubdomain = cleanSubdomain;
+    const existingSubdomain = await prisma.tenant.findUnique({ where: { slug: finalSubdomain } });
+    if (existingSubdomain) {
+      const crypto = require('crypto');
+      finalSubdomain = `${cleanSubdomain}-${crypto.randomBytes(2).toString('hex').toLowerCase()}`;
+    }
+
+    {
+      const existingUser = await prisma.user.findUnique({
+        where: { email: order.email },
+      });
+      isNewUser = !existingUser;
+
+      const provResult = await websiteProvisioningService.createWebsiteFromTemplate({
+        templateId: order.templateId,
+        customerId: order.userId || undefined,
+        customerEmail: order.email,
+        customerFullName: order.fullName,
+        customerPhone: order.phone,
+        websiteName: order.fullName + ' Real Estate',
+        slug: finalSubdomain,
+        plan: order.plan || 'STARTER',
+      });
+      
+      tenantId = provResult.tenant.id;
+      tempPassword = provResult.credentials.tempPassword;
+
+      await prisma.order.update({
+        where: { id },
+        data: { tenantId, subdomain: finalSubdomain },
+      });
+    }
+
     // Gửi email chào mừng ngoài block transaction để tránh rollback làm mất tính nhất quán email
-    if (result.tenantId) {
+    if (tenantId) {
       await sendWelcomeEmail(order.email, order.fullName, order.subdomain as string, tempPassword);
     }
 
-    logger.info(`Duyệt thành công đơn hàng: ${order.orderNumber}. Kích hoạt Tenant ID: ${result.tenantId || 'N/A'}`);
+    logger.info(`Duyệt thành công đơn hàng: ${order.orderNumber}. Kích hoạt Tenant ID: ${tenantId || 'N/A'}`);
 
     res.status(200).json({
       success: true,
       data: {
-        ...result.completedOrder,
+        ...completedOrder,
         credentials: {
           email: order.email,
           password: tempPassword,
           subdomain: order.subdomain,
-          isNewUser: result.isNewUser
+          isNewUser
         }
       },
     });
@@ -582,239 +335,38 @@ export async function createTenantManually(req: Request, res: Response, next: Ne
       return res.status(400).json({ success: false, message: `Subdomain [${subdomain}] đã được đăng ký bởi văn phòng khác.` });
     }
 
-    const crypto = await import('crypto');
-    const tempPassword = crypto.randomBytes(12).toString('hex');
-    const bcrypt = await import('bcrypt');
-    const passwordHash = await bcrypt.hash(tempPassword, 12);
-
-    const result = await prisma.$transaction(async (tx: any) => {
-      // 1. Create Tenant
-      const tenant = await tx.tenant.create({
-        data: {
-          name: fullName + ' Office',
-          slug: subdomain.toLowerCase(),
-          templateId: templateId || 'luxury-gold',
-          status: 'ACTIVE',
-          version: 10, // Default version 1.0 (10)
-          activatedAt: new Date(),
-        },
-      });
-
-      // 2. User Account (Update or Create)
-      const existingUser = await tx.user.findUnique({
-        where: { email },
-      });
-
-      let isNewUser = false;
-      let tenantOwner;
-
-      if (existingUser) {
-        tenantOwner = await tx.user.update({
-          where: { email },
-          data: {
-            role: 'TENANT_OWNER',
-            tenantId: tenant.id,
-            isActive: true,
-          },
-        });
-      } else {
-        isNewUser = true;
-        tenantOwner = await tx.user.create({
-          data: {
-            email,
-            passwordHash,
-            fullName,
-            role: 'TENANT_OWNER',
-            isActive: true,
-            tenantId: tenant.id,
-            emailVerified: new Date(),
-          },
-        });
-      }
-
-      // 3. Company Info Setup
-      const activeTemplateId = templateId || 'luxury-gold';
-      const templateConfig = TEMPLATE_CONFIGS[activeTemplateId] || TEMPLATE_CONFIGS['luxury-gold'];
-      const registryTemplate = TemplateRegistry.get(activeTemplateId) || TemplateRegistry.get('luxury-gold');
-
-      await tx.companyInfo.create({
-        data: {
-          tenantId: tenant.id,
-          name: templateConfig.projectName || tenant.name,
-          email,
-          phone,
-          slogan: templateConfig.tagline || '',
-          description: templateConfig.heroSubtitle || '',
-          address: templateConfig.location?.highlights?.[0] || '68 Nguyễn Huệ, Quận 1, TP. HCM',
-          workingHours: '8h00 - 20h00',
-          aboutContent: templateConfig.location?.desc || '',
-        },
-      });
-
-      // 4. Default Theme Settings
-      const defaultTheme = registryTemplate?.defaultConfig?.themeConfig || {
-        primaryColor: '#0B132B',
-        secondaryColor: '#1C2541',
-        accentColor: '#D4AF37',
-        backgroundColor: '#070C1E',
-        textColor: '#F3F4F6',
-        fontHeading: 'Playfair Display, serif',
-        fontBody: 'Plus Jakarta Sans, sans-serif',
-        borderRadius: '0px',
-        shadow: 'lg'
-      };
-
-      await tx.tenantThemeSettings.create({
-        data: {
-          tenantId: tenant.id,
-          primaryColor: defaultTheme.primaryColor,
-          secondaryColor: defaultTheme.secondaryColor,
-          accentColor: defaultTheme.accentColor,
-          backgroundColor: defaultTheme.backgroundColor,
-          textColor: defaultTheme.textColor || '#F3F4F6',
-          fontHeading: defaultTheme.fontHeading,
-          fontBody: defaultTheme.fontBody,
-          borderRadius: defaultTheme.borderRadius || '0px',
-          shadowStyle: defaultTheme.shadow === 'lg' ? 'hard' : 'soft',
-          darkMode: false,
-          buttonStyle: 'rounded',
-          animationsEnabled: true,
-        },
-      });
-
-      // 5. Default Pages & Sections
-      const defaultPages = registryTemplate?.defaultConfig?.layoutConfig?.pages || [
-        {
-          slug: 'home',
-          name: 'Trang chủ',
-          sections: [
-            { id: 'hero', name: 'Hero Banner', type: 'hero', content: { title: 'Chào mừng quý khách', subtitle: 'Tìm kiếm không gian sống đẳng cấp.' } }
-          ]
-        }
-      ];
-
-      for (let i = 0; i < defaultPages.length; i++) {
-        const pageData = defaultPages[i];
-        const page = await tx.tenantPage.create({
-          data: {
-            tenantId: tenant.id,
-            slug: pageData.slug,
-            title: pageData.name,
-            description: `Trang ${pageData.name} của website bất động sản`,
-            isSystem: true,
-            published: true,
-            sortOrder: i
-          }
-        });
-
-        if (pageData.sections) {
-          for (let j = 0; j < pageData.sections.length; j++) {
-            const sec = pageData.sections[j];
-            await tx.tenantSection.create({
-              data: {
-                tenantId: tenant.id,
-                pageId: page.id,
-                sectionKey: sec.id,
-                label: sec.name,
-                sortOrder: j,
-                isVisible: true,
-                content: sec.content || {},
-                settings: sec.settings || {}
-              }
-            });
-          }
-        }
-      }
-
-      // 6. Menu Setup
-      await tx.menu.create({
-        data: {
-          tenantId: tenant.id,
-          name: 'Menu Chính',
-          location: 'header',
-          isActive: true,
-        },
-      });
-
-      // 7. SEO Setup
-      await tx.seoConfig.create({
-        data: {
-          tenantId: tenant.id,
-          metaTitle: tenant.name,
-          metaDescription: `${tenant.name} - Hệ thống website bất động sản chuyên nghiệp.`,
-          enableSitemap: true,
-          googleAnalyticsId: 'G-XXXXXXXXXX',
-        }
-      });
-
-      // 8. Domain Settings Setup
-      await tx.tenantDomainSettings.create({
-        data: {
-          tenantId: tenant.id,
-          subdomain: subdomain.toLowerCase(),
-          platformDomain: process.env.PLATFORM_DOMAIN || 'platformbds.vn',
-          customDomain: null,
-          dnsVerified: true,
-          sslStatus: 'ACTIVE'
-        }
-      });
-
-      // 9. Subscription Setup
-      const PLAN_DURATION_DAYS: Record<string, number> = {
-        BASIC: 30,
-        STARTER: 30,
-        PRO: 30,
-        PROFESSIONAL: 365,
-        BUSINESS: 365,
-        ENTERPRISE: 365,
-      };
-      const durationDays = PLAN_DURATION_DAYS[plan || 'STARTER'] ?? 30;
-      const startDate = new Date();
-      const endDate = new Date();
-      endDate.setDate(endDate.getDate() + durationDays);
-
-      await tx.subscription.create({
-        data: {
-          tenantId: tenant.id,
-          plan: plan || 'STARTER',
-          status: 'ACTIVE',
-          amount: plan === 'PROFESSIONAL' || plan === 'BUSINESS' || plan === 'ENTERPRISE' ? 12000000 : 499000,
-          startDate,
-          endDate,
-        },
-      });
-
-      // 10. Projects Setup Fallback
-      const demoProjs = templateConfig.demoProjects || [];
-      if (demoProjs.length > 0) {
-        for (let k = 0; k < demoProjs.length; k++) {
-          const dp = demoProjs[k];
-          const typeStr = (dp.type || '').toLowerCase();
-          const projType = typeStr.includes('villa') || typeStr.includes('biệt') || typeStr.includes('mansion') ? 'VILLA' : 'APARTMENT';
-          
-          await tx.project.create({
-            data: {
-              tenantId: tenant.id,
-              title: dp.name || dp.title,
-              slug: `${activeTemplateId}-project-${k}`,
-              description: dp.desc || dp.description || dp.specs || '',
-              shortDescription: dp.specs || dp.type || '',
-              type: projType,
-              status: 'SELLING',
-              price: dp.price || dp.priceStr || 'Liên hệ',
-              priceFrom: dp.priceVal || dp.priceNum || 0,
-              area: dp.area || '—',
-              address: dp.location || dp.loc || 'Thành phố Hồ Chí Minh',
-              thumbnail: dp.img || dp.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
-              published: true,
-              sortOrder: k,
-            }
-          });
-        }
-      }
-
-      return { tenant, isNewUser };
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
     });
+    const isNewUser = !existingUser;
+
+    const provResult = await websiteProvisioningService.createWebsiteFromTemplate({
+      templateId: templateId || 'luxury-gold',
+      customerEmail: email,
+      customerFullName: fullName,
+      customerPhone: phone,
+      websiteName: fullName + ' Office',
+      slug: subdomain.toLowerCase(),
+      plan: plan || 'STARTER',
+    });
+
+    // Cập nhật trial parameters nếu cần thiết sau khi provision
+    const now = new Date();
+    const trialDurationDays = BUSINESS_CONFIG.TRIAL_DURATION_DAYS || 3;
+    const trialEndAt = new Date(now.getTime() + trialDurationDays * 24 * 60 * 60 * 1000);
+    
+    await prisma.tenant.update({
+      where: { id: provResult.tenant.id },
+      data: {
+        trialStartAt: now,
+        trialEndAt: trialEndAt,
+        trialSaveLimit: BUSINESS_CONFIG.TRIAL_SAVE_LIMIT || 3,
+        trialSaveCount: 0,
+        trialStatus: 'ACTIVE',
+      }
+    });
+
+    const tempPassword = provResult.credentials.tempPassword;
 
     // Send Welcome Email
     await sendWelcomeEmail(email, fullName, subdomain, tempPassword);
@@ -822,12 +374,12 @@ export async function createTenantManually(req: Request, res: Response, next: Ne
     res.status(201).json({
       success: true,
       data: {
-        tenant: result.tenant,
+        tenant: provResult.tenant,
         credentials: {
           email,
           password: tempPassword,
           subdomain,
-          isNewUser: result.isNewUser
+          isNewUser
         }
       }
     });
@@ -861,21 +413,37 @@ export async function getTenants(req: Request, res: Response, next: NextFunction
   }
 }
 
+const updateTenantStatusSchema = z.object({
+  status: z.enum(['ACTIVE', 'SUSPENDED', 'DELETED', 'PENDING', 'EXPIRED']),
+});
+
 export async function updateTenantStatus(req: Request, res: Response, next: NextFunction) {
   const { id } = req.params;
-  const { status } = req.body; // ACTIVE, SUSPENDED
 
   try {
+    const validated = updateTenantStatusSchema.safeParse(req.body);
+    if (!validated.success) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Trạng thái tenant không hợp lệ',
+          details: validated.error.flatten(),
+        },
+      });
+    }
+
+    const { status } = validated.data;
     const updated = await prisma.tenant.update({
       where: { id },
-      data: { status }
+      data: { status },
     });
 
     logger.info(`Admin đã cập nhật trạng thái Tenant ${updated.name} (Slug: ${updated.slug}) thành: ${status}`);
 
     res.status(200).json({
       success: true,
-      data: updated
+      data: updated,
     });
   } catch (error) {
     next(error);
@@ -896,32 +464,49 @@ export async function getUsers(req: Request, res: Response, next: NextFunction) 
         status: true,
         createdAt: true,
         tenant: {
-          select: { name: true, slug: true }
-        }
+          select: { name: true, slug: true },
+        },
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
 
     res.status(200).json({
       success: true,
-      data: users
+      data: users,
     });
   } catch (error) {
     next(error);
   }
 }
 
+const updateUserStatusSchema = z.object({
+  status: z.enum(['ACTIVE', 'BANNED', 'SUSPENDED', 'INACTIVE']).optional(),
+  isActive: z.boolean().optional(),
+});
+
 export async function updateUserStatus(req: Request, res: Response, next: NextFunction) {
   const { id } = req.params;
-  const { status, isActive } = req.body; // status: ACTIVE/BANNED, isActive: true/false
 
   try {
+    const validated = updateUserStatusSchema.safeParse(req.body);
+    if (!validated.success) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Trạng thái người dùng không hợp lệ',
+          details: validated.error.flatten(),
+        },
+      });
+    }
+
+    const { status, isActive } = validated.data;
     const updated = await prisma.user.update({
       where: { id },
-      data: { 
+      data: {
         ...(status && { status }),
-        ...(isActive !== undefined && { isActive })
-      }
+        ...(isActive !== undefined && { isActive }),
+      },
     });
 
     logger.info(`Admin đã cập nhật trạng thái người dùng ${updated.email} thành: status=${status}, isActive=${isActive}`);
@@ -932,8 +517,8 @@ export async function updateUserStatus(req: Request, res: Response, next: NextFu
         id: updated.id,
         email: updated.email,
         status: updated.status,
-        isActive: updated.isActive
-      }
+        isActive: updated.isActive,
+      },
     });
   } catch (error) {
     next(error);
@@ -968,6 +553,31 @@ export async function updateTemplateStatus(req: Request, res: Response, next: Ne
     });
 
     logger.info(`Admin đã cập nhật trạng thái hoạt động của mẫu ${updated.name} thành: ${isActive}`);
+
+    res.status(200).json({
+      success: true,
+      data: updated
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateTemplatePrice(req: Request, res: Response, next: NextFunction) {
+  const { id } = req.params;
+  const { priceBuy, priceBuySource, priceRentMonthly } = req.body;
+
+  try {
+    const updated = await prisma.template.update({
+      where: { id },
+      data: {
+        priceBuy: priceBuy !== undefined ? Number(priceBuy) : undefined,
+        priceBuySource: priceBuySource !== undefined ? Number(priceBuySource) : undefined,
+        priceRentMonthly: priceRentMonthly !== undefined ? Number(priceRentMonthly) : undefined,
+      }
+    });
+
+    logger.info(`Admin đã cập nhật giá của mẫu ${updated.name}: Bán ${priceBuy}, Gốc ${priceBuySource}`);
 
     res.status(200).json({
       success: true,
@@ -1489,6 +1099,395 @@ export async function repairUserTenants(req: Request, res: Response, next: NextF
       success: true,
       message: `Đã kiểm tra ${completedOrders.length} đơn hàng COMPLETED.`,
       data: { results },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// ── Customer Management (V2) ──────────────────────────────────────────────────
+
+export async function getCustomerDetail(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params;
+
+    // Find user
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        fullName: true,
+        phone: true,
+        role: true,
+        tenantId: true,
+        isActive: true,
+        status: true,
+        emailVerified: true,
+        lastLoginAt: true,
+        createdAt: true,
+        customerProfile: true,
+        memberships: {
+          include: {
+            tenant: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+                status: true,
+                templateId: true,
+                trialStartAt: true,
+                trialEndAt: true,
+                trialSaveLimit: true,
+                trialSaveCount: true,
+                trialStatus: true,
+                activatedAt: true,
+                onboardingCompletedAt: true,
+                subscription: {
+                  select: {
+                    id: true,
+                    plan: true,
+                    status: true,
+                    startDate: true,
+                    endDate: true,
+                    amount: true,
+                    billingPeriod: true,
+                  },
+                },
+                domainSettings: {
+                  select: {
+                    subdomain: true,
+                    customDomain: true,
+                    sslStatus: true,
+                    dnsVerified: true,
+                    plan: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NOT_FOUND', message: 'Không tìm thấy người dùng.' },
+      });
+    }
+
+    // Extract tenants from memberships into a flat array
+    const tenants = (user.memberships || [])
+      .map((m: any) => m.tenant)
+      .filter(Boolean);
+
+    // Get orders for this customer
+    const orders = await prisma.order.findMany({
+      where: { email: user.email },
+      include: {
+        template: {
+          select: { id: true, name: true, slug: true },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return res.json({
+      success: true,
+      data: {
+        customer: user,
+        tenants,
+        orders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function extendTrial(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params; // This is User ID from /customers/:id/extend-trial
+    const { days, extraDays, extraSaves = 0 } = req.body;
+    const daysToAdd = days || extraDays || 3;
+
+    // Find tenant via user's membership (since route uses User ID)
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        tenantId: true,
+        memberships: {
+          select: { tenantId: true },
+          take: 1,
+        },
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NOT_FOUND', message: 'Không tìm thấy người dùng.' },
+      });
+    }
+
+    const tenantId = user.tenantId || user.memberships?.[0]?.tenantId;
+    if (!tenantId) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NO_TENANT', message: 'Người dùng chưa có website nào.' },
+      });
+    }
+
+    const tenant = await prisma.tenant.findUnique({
+      where: { id: tenantId },
+      select: {
+        id: true,
+        trialEndAt: true,
+        trialSaveLimit: true,
+        trialStatus: true,
+      },
+    });
+
+    if (!tenant) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NOT_FOUND', message: 'Không tìm thấy website.' },
+      });
+    }
+
+    const now = new Date();
+    const currentEnd = tenant.trialEndAt ? new Date(tenant.trialEndAt) : now;
+    const baseDate = currentEnd > now ? currentEnd : now;
+    const newEndAt = new Date(baseDate.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+
+    const updated = await prisma.tenant.update({
+      where: { id: tenantId },
+      data: {
+        trialEndAt: newEndAt,
+        trialSaveLimit: { increment: extraSaves },
+        trialStatus: 'ACTIVE',
+      },
+      select: {
+        id: true,
+        trialStartAt: true,
+        trialEndAt: true,
+        trialSaveLimit: true,
+        trialSaveCount: true,
+        trialStatus: true,
+      },
+    });
+
+    logger.info(`[Admin] Trial extended for tenant ${tenantId} (user ${id}): +${daysToAdd} days, +${extraSaves} saves`);
+
+    return res.json({
+      success: true,
+      message: `Đã gia hạn thêm ${daysToAdd} ngày${extraSaves > 0 ? ` và ${extraSaves} lượt lưu` : ''}.`,
+      data: updated,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function resetCustomerPassword(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params;
+
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: { id: true, email: true, fullName: true },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NOT_FOUND', message: 'Không tìm thấy người dùng.' },
+      });
+    }
+
+    // Generate a random temporary password
+    const tempPassword = Math.random().toString(36).slice(-10) + 'A1!';
+    const passwordHash = await bcrypt.hash(tempPassword, 12);
+
+    await prisma.user.update({
+      where: { id },
+      data: { passwordHash },
+    });
+
+    // Revoke all refresh tokens for safety
+    await prisma.refreshToken.updateMany({
+      where: { userId: id, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+
+    logger.info(`[Admin] Password reset for user ${id} (${user.email})`);
+
+    return res.json({
+      success: true,
+      message: 'Mật khẩu đã được đặt lại.',
+      data: {
+        email: user.email,
+        temporaryPassword: tempPassword, // Only shown once in response
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function activateSubscription(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params; // User ID from /customers/:id/activate-subscription
+    const { plan = 'STARTER', amount = 0, orderId, months = 12 } = req.body;
+
+    // Find tenant via user's membership
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        tenantId: true,
+        memberships: {
+          select: { tenantId: true },
+          take: 1,
+        },
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NOT_FOUND', message: 'Không tìm thấy người dùng.' },
+      });
+    }
+
+    const tenantId = user.tenantId || user.memberships?.[0]?.tenantId;
+    if (!tenantId) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NO_TENANT', message: 'Người dùng chưa có website nào.' },
+      });
+    }
+
+    const tenant = await prisma.tenant.findUnique({
+      where: { id: tenantId },
+      select: { id: true, slug: true },
+    });
+
+    if (!tenant) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NOT_FOUND', message: 'Không tìm thấy website.' },
+      });
+    }
+
+    const now = new Date();
+    const endDate = new Date(now.getFullYear(), now.getMonth() + months, now.getDate());
+
+    // Upsert subscription (one per tenant)
+    const subscription = await prisma.subscription.upsert({
+      where: { tenantId },
+      create: {
+        tenantId,
+        orderId: orderId || null,
+        plan,
+        status: 'ACTIVE',
+        amount,
+        startDate: now,
+        endDate,
+        billingPeriod: 'YEARLY',
+      },
+      update: {
+        orderId: orderId || undefined,
+        plan,
+        status: 'ACTIVE',
+        amount,
+        startDate: now,
+        endDate,
+        billingPeriod: 'YEARLY',
+        cancelledAt: null,
+      },
+    });
+
+    // Update tenant: clear trial status since subscription is now active
+    await prisma.tenant.update({
+      where: { id: tenantId },
+      data: {
+        status: 'ACTIVE',
+        trialStatus: null,
+      },
+    });
+
+    logger.info(`[Admin] Subscription activated for tenant ${tenantId} (user ${id}): plan=${plan}, months=${months}`);
+
+    return res.json({
+      success: true,
+      message: `Đã kích hoạt gói ${plan} cho website ${tenant.slug}.`,
+      data: subscription,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function suspendCustomer(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params; // User ID from /customers/:id/suspend
+    const { suspended, reason } = req.body;
+
+    // Find user and their tenant
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        status: true,
+        tenantId: true,
+        memberships: {
+          select: { tenantId: true },
+          take: 1,
+        },
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NOT_FOUND', message: 'Không tìm thấy người dùng.' },
+      });
+    }
+
+    const tenantId = user.tenantId || user.memberships?.[0]?.tenantId;
+    const isSuspending = suspended !== false; // default to suspend
+
+    // Update user status
+    await prisma.user.update({
+      where: { id },
+      data: {
+        status: isSuspending ? 'BANNED' : 'ACTIVE',
+        isActive: !isSuspending,
+      },
+    });
+
+    // Update tenant status if exists
+    if (tenantId) {
+      await prisma.tenant.update({
+        where: { id: tenantId },
+        data: {
+          status: isSuspending ? 'SUSPENDED' : 'ACTIVE',
+          trialStatus: isSuspending ? 'SUSPENDED' : 'ACTIVE',
+        },
+      });
+    }
+
+    logger.info(`[Admin] User ${id} (${user.email}) ${isSuspending ? 'suspended' : 'unsuspended'}. Reason: ${reason || 'N/A'}`);
+
+    return res.json({
+      success: true,
+      message: isSuspending
+        ? `Đã tạm khóa tài khoản ${user.email} và website.`
+        : `Đã mở khóa tài khoản ${user.email} và website.`,
     });
   } catch (error) {
     next(error);

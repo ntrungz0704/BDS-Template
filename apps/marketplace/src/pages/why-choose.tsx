@@ -1,9 +1,9 @@
-import React from 'react';
+﻿import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { Trophy, Star, ArrowRight } from 'lucide-react';
+import { Trophy, Star, ArrowRight, CheckCircle2, ShieldCheck, Zap, PhoneCall } from 'lucide-react';
 
 export default function WhyChoosePage() {
   const pledges = [
@@ -15,11 +15,11 @@ export default function WhyChoosePage() {
     {
       id: "02",
       title: "Tốc Độ Tải Trang Siêu Tốc < 1s",
-      desc: "Tối ưu hóa hình ảnh SSD NVMe và mã nguồn Next.js 14 mới nhất. Đảm bảo trải nghiệm lướt mượt mà không bị giật lag trên mọi dòng điện thoại di động."
+      desc: "Tối ưu hóa hình ảnh SSD NVMe và mã nguồn Next.js mới nhất. Đảm bảo trải nghiệm lướt mượt mà không bị giật lag trên mọi dòng điện thoại di động."
     },
     {
       id: "03",
-      title: "Tích Hợp Sẵn Zalo OA & Hotline Gọi Nhanh",
+      title: "Tích Hợp Sẵn Zalo Official & Hotline Gọi Nhanh",
       desc: "Khách hàng truy cập chỉ cần bấm 1 chạm là kết nối ngay đến Zalo hoặc số điện thoại của bạn mà không phải copy số hay thao tác rườm rà."
     },
     {
@@ -60,138 +60,132 @@ export default function WhyChoosePage() {
   ];
 
   return (
-    <>
+    <div className="min-h-screen bg-slate-100/70 text-slate-900 flex flex-col font-sans">
       <Head>
         <title>Vì Sao Chọn PLATFORMBDS? 10 Cam Kết Vàng Cho Môi Giới | PLATFORMBDS</title>
         <meta name="description" content="Khám phá lý do 500+ sàn giao dịch và môi giới BĐS tin dùng nền tảng của chúng tôi để gia tăng uy tín và chốt giao dịch mỗi ngày." />
       </Head>
 
-      <Header 
-        onSearch={() => {}} 
-        onOpenConsultation={() => alert('Vui lòng gọi hotline 0919 006 030 để được tư vấn chi tiết!')} 
-        onOpenAuth={() => alert('Vui lòng đăng nhập tại trang chủ!')} 
-      />
+      <Header />
 
-      <main className="min-h-screen bg-[#F8FAFC] text-slate-900 pb-24 pt-12 px-5 sm:px-8">
-        <div className="max-w-[1280px] mx-auto">
-          {/* Hero Banner */}
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-[11px] font-bold text-blue-600 uppercase tracking-widest mb-4 shadow-sm">
-              <Trophy className="w-3.5 h-3.5 text-blue-600" /> Nền tảng chuyên biệt số 1 Việt Nam
+      <main className="flex-1 max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+        {/* Hero Banner */}
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-blue-50 border border-blue-200 text-xs font-semibold text-blue-700 uppercase tracking-wider mb-3">
+            <Trophy className="w-3.5 h-3.5 text-blue-600" /> Nền tảng chuyên biệt số 1 Việt Nam
+          </span>
+          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 mb-3">
+            Tại Sao 500+ Môi Giới & Sàn BĐS Chọn Chúng Tôi?
+          </h1>
+          <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+            Chúng tôi không phải công ty làm website đa ngành. Chúng tôi sinh ra từ thấu hiểu thị trường bất động sản thực chiến — mang lại công cụ đắc lực nhất giúp bạn thu hút lead chất lượng cao và xây dựng thương hiệu cá nhân vượt trội.
+          </p>
+        </div>
+
+        {/* Stats bar */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white border border-slate-200 rounded-lg p-6 mb-12 text-center shadow-sm">
+          <div>
+            <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-0.5">1.200+</p>
+            <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Website đã tạo</p>
+          </div>
+          <div>
+            <p className="text-2xl sm:text-3xl font-extrabold text-blue-600 mb-0.5">16+</p>
+            <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Mẫu độc quyền</p>
+          </div>
+          <div>
+            <p className="text-2xl sm:text-3xl font-extrabold text-emerald-600 mb-0.5">30 Giây</p>
+            <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Khởi tạo tự động</p>
+          </div>
+          <div>
+            <p className="text-2xl sm:text-3xl font-extrabold text-amber-500 mb-0.5">4.9 / 5.0</p>
+            <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Đánh giá hài lòng</p>
+          </div>
+        </div>
+
+        {/* 10 Golden Pledges Grid */}
+        <div className="mb-16">
+          <div className="text-center mb-10">
+            <h2 className="text-xl sm:text-3xl font-bold mb-2 text-slate-900">10 Cam Kết Vàng Về Chất Lượng Dịch Vụ</h2>
+            <p className="text-slate-600 text-xs sm:text-sm">Sự khác biệt rõ rệt giữa PlatformBDS và các dịch vụ thiết kế web thông thường.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {pledges.map((p, i) => (
+              <div 
+                key={i}
+                className="bg-white border border-slate-200 rounded-lg p-5 hover:border-slate-400 transition-colors flex items-start gap-4 shadow-sm"
+              >
+                <span className="text-lg font-black text-blue-600 font-mono shrink-0 bg-blue-50 px-2.5 py-1 rounded border border-blue-200">
+                  {p.id}
+                </span>
+                <div>
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 mb-1">{p.title}</h3>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{p.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Testimonial Section */}
+        <div className="bg-white border border-slate-200 rounded-lg p-6 sm:p-8 mb-16 shadow-sm">
+          <div className="text-center mb-8">
+            <span className="text-[11px] font-bold text-amber-700 uppercase tracking-wider bg-amber-50 px-2.5 py-1 rounded border border-amber-200">
+              💬 Ý Kiến Khách Hàng Thực Tế
             </span>
-            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight text-slate-900 mb-4">
-              Tại Sao <span className="text-[#2563EB]">500+ Môi Giới & Sàn BĐS</span> Chọn Chúng Tôi?
-            </h1>
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-medium">
-              Chúng tôi không phải công ty làm website đa ngành. Chúng tôi sinh ra từ thấu hiểu thị trường bất động sản thực chiến — mang lại công cụ đắc lực nhất giúp bạn thu hút lead chất lượng cao và xây dựng thương hiệu cá nhân vượt trội.
-            </p>
+            <h2 className="text-xl sm:text-2xl font-bold mt-2 text-slate-900">Được sự tin tưởng của các Giám đốc sàn & Môi giới hàng đầu</h2>
           </div>
 
-          {/* Stats bar */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 mb-20 text-center shadow-lg shadow-slate-100">
-            <div>
-              <p className="text-3xl sm:text-4xl font-black text-slate-900 mb-1">1.200+</p>
-              <p className="text-xs font-bold text-slate-500 uppercase">Website đã tạo</p>
-            </div>
-            <div>
-              <p className="text-3xl sm:text-4xl font-black text-[#2563EB] mb-1">12+</p>
-              <p className="text-xs font-bold text-slate-500 uppercase">Mẫu độc quyền</p>
-            </div>
-            <div>
-              <p className="text-3xl sm:text-4xl font-black text-emerald-600 mb-1">30 Giây</p>
-              <p className="text-xs font-bold text-slate-500 uppercase">Khởi tạo tự động</p>
-            </div>
-            <div>
-              <p className="text-3xl sm:text-4xl font-black text-amber-500 mb-1">4.9/5</p>
-              <p className="text-xs font-bold text-slate-500 uppercase">Đánh giá hài lòng</p>
-            </div>
-          </div>
-
-          {/* 10 Golden Pledges Grid */}
-          <div className="mb-24">
-            <div className="text-center mb-12">
-              <h2 className="text-2xl sm:text-4xl font-bold mb-3 text-slate-900">10 Cam Kết Vàng Về Chất Lượng Dịch Vụ</h2>
-              <p className="text-slate-600 text-sm font-medium">Sự khác biệt rõ rệt giữa PlatformBDS và các dịch vụ thiết kế web thông thường.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {pledges.map((p, i) => (
-                <div 
-                  key={i}
-                  className="bg-white border border-slate-200/80 rounded-3xl p-7 hover:border-blue-500/50 hover:shadow-lg transition-all duration-300 flex items-start gap-5 shadow-sm"
-                >
-                  <span className="text-2xl font-black text-[#2563EB] font-mono shrink-0 bg-blue-50 px-3.5 py-1.5 rounded-2xl border border-blue-100">
-                    {p.id}
-                  </span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { name:'Trần Thị Hoa', role:'Giám đốc Hoàng Gia Land', review:'Giao diện Luxury Gold cực kỳ ấn tượng. Khi gửi đường link cho khách hàng mua biệt thự Vinhomes, họ đánh giá uy tín của văn phòng lên hẳn một tầm cao mới.', rating:5 },
+              { name:'Nguyễn Minh Tuấn', role:'Môi giới tự do tại Hà Nội', review:'Trước đây mình tự mò làm web bằng Wordpress rất hay bị lỗi cache và chậm. Chuyển qua dịch vụ thiết kế Website của PlatformBDS vừa siêu nhanh vừa có Zalo gọi ngay.', rating:5 },
+              { name:'Lê Văn Đức', role:'Trưởng phòng Marketing, Sun Land', review:'Sự khác biệt lớn nhất là bộ CMS quản lý dự án rất nhàn. Anh em trong team ai cũng có thể tự đăng bài mà không cần phải gọi kỹ thuật hỗ trợ như trước nữa.', rating:5 },
+            ].map((t, i) => (
+              <div key={i} className="bg-slate-50 border border-slate-200 rounded-lg p-5 flex flex-col justify-between">
+                <div>
+                  <div className="flex gap-1 mb-3">
+                    {[1,2,3,4,5].map(s => <Star key={s} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />)}
+                  </div>
+                  <p className="text-xs text-slate-700 italic leading-relaxed mb-4">&ldquo;{t.review}&rdquo;</p>
+                </div>
+                <div className="border-t border-slate-200 pt-3 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center font-bold text-white text-xs shrink-0">
+                    {t.name.charAt(0)}
+                  </div>
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900 mb-2">{p.title}</h3>
-                    <p className="text-sm text-slate-600 leading-relaxed font-medium">{p.desc}</p>
+                    <p className="text-xs font-bold text-slate-900">{t.name}</p>
+                    <p className="text-[11px] text-slate-500">{t.role}</p>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
+        </div>
 
-          {/* Testimonial Section */}
-          <div className="bg-white border border-slate-200 rounded-3xl p-8 sm:p-12 mb-20 shadow-lg shadow-slate-100">
-            <div className="text-center mb-10">
-              <span className="text-xs font-bold text-amber-600 uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-                💬 Ý Kiến Khách Hàng Thực Tế
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-bold mt-3 text-slate-900">Được sự tin tưởng của các Giám đốc sàn & Sale top đầu</h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                { name:'Trần Thị Hoa', role:'Giám đốc Hoàng Gia Land', review:'Giao diện Luxury Gold cực kỳ ấn tượng. Khi gửi đường link cho khách hàng mua biệt thự Vinhomes, họ đánh giá uy tín của văn phòng lên hẳn một tầm cao mới.', rating:5 },
-                { name:'Nguyễn Minh Tuấn', role:'Môi giới tự do tại Hà Nội', review:'Trước đây mình tự mò làm web bằng Wordpress rất hay bị lỗi cache và chậm. Chuyển qua dịch vụ thiết kế Website của PlatformBDS vừa siêu nhanh vừa có Zalo OA gọi ngay.', rating:5 },
-                { name:'Lê Văn Đức', role:'Trưởng phòng Marketing, Sun Land', review:'Sự khác biệt lớn nhất là bộ CMS quản lý dự án rất nhàn. Anh em trong team ai cũng có thể tự đăng bài mà không cần phải gọi kỹ thuật hỗ trợ như trước nữa.', rating:5 },
-              ].map((t, i) => (
-                <div key={i} className="bg-slate-50 border border-slate-200/80 rounded-2xl p-6 flex flex-col justify-between">
-                  <div>
-                    <div className="flex gap-1 mb-4">
-                      {[1,2,3,4,5].map(s => <Star key={s} className="w-4 h-4 fill-amber-400 text-amber-400" />)}
-                    </div>
-                    <p className="text-xs sm:text-sm text-slate-700 italic leading-relaxed mb-6 font-medium">&ldquo;{t.review}&rdquo;</p>
-                  </div>
-                  <div className="border-t border-slate-200 pt-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#2563EB] flex items-center justify-center font-bold text-white text-sm shrink-0">
-                      {t.name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-slate-900">{t.name}</p>
-                      <p className="text-xs text-slate-500 font-semibold">{t.role}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Bottom CTA */}
-          <div className="text-center max-w-xl mx-auto bg-white border border-slate-200 rounded-3xl p-8 sm:p-10 shadow-lg">
-            <h3 className="text-2xl font-bold mb-3 text-slate-900">Trải nghiệm ngay 7 ngày miễn phí 0đ</h3>
-            <p className="text-slate-600 text-sm mb-8 font-medium">Không cần thẻ tín dụng, chọn mẫu ngay và sở hữu website trong 30 giây.</p>
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <Link
-                href="/templates"
-                className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-[#2563EB] hover:bg-blue-600 text-white font-bold text-sm transition-all shadow-md shadow-blue-500/20"
-              >
-                <span>Khám Phá 12 Mẫu Ngay</span>
-                <ArrowRight className="w-4 h-4 text-white" />
-              </Link>
-              <Link
-                href="/pricing"
-                className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm transition-all border border-slate-200"
-              >
-                <span>Xem Bảng Giá</span>
-              </Link>
-            </div>
+        {/* Bottom CTA */}
+        <div className="text-center max-w-xl mx-auto bg-white border border-slate-200 rounded-lg p-6 sm:p-8 shadow-sm">
+          <h3 className="text-xl font-bold mb-2 text-slate-900">Sở hữu website BĐS chuyên nghiệp ngay hôm nay</h3>
+          <p className="text-slate-600 text-xs sm:text-sm mb-6">Trải nghiệm 16 mẫu website độc quyền, kích hoạt và bàn giao trong 30 giây.</p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/templates"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm transition-colors shadow-sm"
+            >
+              <span>Khám Phá 16 Mẫu Ngay</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="/pricing"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs sm:text-sm transition-colors border border-slate-300"
+            >
+              <span>Xem Bảng Giá</span>
+            </Link>
           </div>
         </div>
       </main>
 
       <Footer />
-    </>
+    </div>
   );
 }

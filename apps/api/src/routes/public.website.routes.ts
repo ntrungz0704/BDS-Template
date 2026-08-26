@@ -9,9 +9,9 @@ import {
   getThemeSettings,
   getPageContent,
   resolveDomain,
+  getTenantStatus,
 } from '../controllers/public.website.controller';
 import { resolveTenantSlug } from '../middlewares/tenant.middleware';
-import { subscriptionMiddleware } from '../middlewares/subscription.middleware';
 import rateLimit from 'express-rate-limit';
 
 const router = Router();
@@ -39,7 +39,8 @@ router.get('/resolve-domain', resolveDomain);
 
 // Phân giải slug subdomain động cho tất cả các API public
 router.use('/:tenantSlug', resolveTenantSlug);
-router.use('/:tenantSlug', subscriptionMiddleware);
+
+router.get('/:tenantSlug/status', getTenantStatus);
 
 router.get('/:tenantSlug/company-info', getCompanyInfo);
 router.get('/:tenantSlug/projects', getPublicProjects);

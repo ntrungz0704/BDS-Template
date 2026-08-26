@@ -11,11 +11,13 @@
 import { Router } from 'express';
 import { completeTenantOnboarding, getOnboardingStatus } from '../controllers/tenant.onboarding.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
+import { checkTenantAccess } from '../middlewares/tenant.middleware';
 
 const router = Router();
 
-// All routes require a valid JWT
+// All routes require a valid JWT + tenant context
 router.use(authMiddleware);
+router.use(checkTenantAccess);
 
 router.post('/onboard', completeTenantOnboarding);
 router.get('/onboard/status', getOnboardingStatus);

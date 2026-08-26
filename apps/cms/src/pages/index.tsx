@@ -142,26 +142,25 @@ function DashboardStatCard({ card }: { card: StatCard }) {
   return (
     <Link
       href={card.href}
-      className="group relative bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden"
+      className="group bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md hover:border-slate-300 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between"
     >
-      <div className={`absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-br ${card.color} opacity-8 -mr-8 -mt-8 group-hover:opacity-15 transition-opacity`} />
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">{card.label}</p>
-          <p className="text-2xl font-black text-slate-900">{card.value}</p>
+          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">{card.label}</p>
+          <p className="text-3xl font-black text-slate-900">{card.value}</p>
           {card.change && (
             <p className={`text-xs mt-1 font-medium ${card.changeUp ? 'text-emerald-600' : 'text-slate-400'}`}>
               {card.change}
             </p>
           )}
         </div>
-        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${card.color} flex items-center justify-center text-white shadow-md shadow-black/15`}>
+        <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${card.color} flex items-center justify-center text-white shadow-md shadow-slate-200 group-hover:scale-105 transition-transform shrink-0`}>
           {card.icon}
         </div>
       </div>
-      <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-slate-400 group-hover:text-slate-600 transition-colors">
-        <span>Quản lý</span>
-        <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-500 group-hover:text-indigo-600 transition-colors">
+        <span>Quản lý chi tiết</span>
+        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
       </div>
     </Link>
   );
@@ -380,11 +379,13 @@ export default function CMSDashboard() {
   });
 
   const STAT_CARDS_DYNAMIC = [
-    { ...STAT_CARDS[0], value: projectsData !== undefined ? String(projectsData) : '—' },
-    { ...STAT_CARDS[1], value: postsData !== undefined ? String(postsData) : '—' },
-    { ...STAT_CARDS[2], value: mediaCount !== undefined ? String(mediaCount) : '—' },
-    { ...STAT_CARDS[3], value: formsCount !== undefined ? String(formsCount) : '—' },
+    { ...STAT_CARDS[0], value: projectsData !== undefined ? String(projectsData) : '0' },
+    { ...STAT_CARDS[1], value: postsData !== undefined ? String(postsData) : '0' },
+    { ...STAT_CARDS[2], value: mediaCount !== undefined ? String(mediaCount) : '0' },
+    { ...STAT_CARDS[3], value: formsCount !== undefined ? String(formsCount) : '0' },
   ];
+
+  const displayName = meData?.user?.fullName || meData?.fullName || 'Nguyễn Phạm Thành Trung';
 
   return (
     <CMSLayout
@@ -444,7 +445,7 @@ export default function CMSDashboard() {
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-white/50 mb-1">PlatformBDS CMS Builder</p>
-              <h1 className="text-2xl font-black mb-1">Xin chào, {meData?.fullName?.split(' ').pop() || 'Admin'}! 👋</h1>
+              <h1 className="text-2xl font-black mb-1">Xin chào, {displayName}! 👋</h1>
               <p className="text-sm text-white/60">Quản lý toàn bộ website bất động sản của bạn từ đây.</p>
             </div>
             <div className="flex items-center gap-3">

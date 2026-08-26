@@ -319,6 +319,8 @@ const MOCK_GALLERY: GalleryItem[] = [
 ];
 
 export default function VillaTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
+  const brandPrimary = dynamicTheme?.primaryColor || '#D97706';
+  const brandAccent = dynamicTheme?.accentColor || '#F59E0B';
   // Dynamic Posts Override & Shadowing Variable via globalThis reference
   const activePosts = posts && posts.length > 0
     ? posts.map((p, index) => ({
@@ -384,7 +386,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
     setActivePageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
+      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
     }
   };
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -522,11 +524,18 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
     <header className="sticky top-0 z-50 bg-[#FFFBEB] shadow-sm border-b border-[#F59E0B]/20">
       <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
         <div className="flex justify-between items-center h-20">
-          <div className="flex items-center cursor-pointer" onClick={() => navigateTo('home')}>
-            <Home className="h-8 w-8 text-[#92400E] mr-2" />
-            <span className="text-2xl font-bold text-[#92400E] font-serif tracking-wide">
-              {template.name.split(' ')[0]} <span className="text-[#F59E0B]">Villa</span>
-            </span>
+          <div className="flex items-center cursor-pointer text-left" onClick={() => navigateTo('home')}>
+            <Home className="h-8 w-8 text-[#92400E] mr-2 shrink-0" />
+            <div>
+              <span className="text-xl sm:text-2xl font-bold text-[#92400E] font-serif tracking-wide block uppercase">
+                {company?.name || template.name}
+              </span>
+              {company?.slogan && (
+                <span className="text-[10px] text-[#D97706] tracking-[0.15em] uppercase font-medium block">
+                  {company.slogan}
+                </span>
+              )}
+            </div>
           </div>
 
           {!isSmall ? (
@@ -577,19 +586,19 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
             <div className="flex items-center mb-6">
               <Home className="h-8 w-8 text-[#F59E0B] mr-2" />
               <span className="text-2xl font-bold font-serif text-white tracking-wide">
-                {template.name.split(' ')[0]} <span className="text-[#F59E0B]">Villa</span>
+                {company?.name || template.name}
               </span>
             </div>
             <p className="text-gray-300 leading-relaxed mb-6 text-sm">
-              Đẳng cấp sống thượng lưu với những kiệt tác biệt thự ven sông, mang đến không gian sống hoàn mỹ và đặc quyền vượt trội cho giới tinh hoa.
+              {company?.slogan || company?.description || 'Đẳng cấp sống thượng lưu với những kiệt tác biệt thự ven sông, mang đến không gian sống hoàn mỹ và đặc quyền vượt trội cho giới tinh hoa.'}
             </p>
             <div className="flex space-x-4">
-              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] transition-colors cursor-pointer">
+              <a href={`mailto:${company?.email || 'contact@platformbds.vn'}`} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] transition-colors cursor-pointer">
                 <Mail className="h-5 w-5 text-[#F59E0B]" />
-              </div>
-              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] transition-colors cursor-pointer">
+              </a>
+              <a href={`tel:${company?.phone || '0983312219'}`} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] transition-colors cursor-pointer">
                 <Phone className="h-5 w-5 text-[#F59E0B]" />
-              </div>
+              </a>
             </div>
           </div>
           
@@ -634,15 +643,15 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
             <ul className="space-y-4 text-gray-300 text-sm">
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 mr-3 text-[#F59E0B] mt-1 shrink-0" />
-                <span>123 Đại lộ Thượng Lưu, Quận 2, TP. Hồ Chí Minh</span>
+                <span>{company?.address || '123 Đại lộ Thượng Lưu, TP. Thủ Đức, TP. Hồ Chí Minh'}</span>
               </li>
               <li className="flex items-center">
                 <Phone className="h-5 w-5 mr-3 text-[#F59E0B] shrink-0" />
-                <span>0909 123 456 (24/7)</span>
+                <span>{company?.phone || company?.hotline || '0983 312 219'}</span>
               </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 mr-3 text-[#F59E0B] shrink-0" />
-                <span>contact@premiumvilla.vn</span>
+                <span>{company?.email || company?.email || 'contact@premiumvilla.vn'}</span>
               </li>
             </ul>
           </div>
@@ -1868,7 +1877,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                     </div>
                     <div>
                       <h4 className="font-bold text-lg mb-1">Hòm thư điện tử</h4>
-                      <p className="text-white/80 text-sm">contact@premiumvilla.vn</p>
+                      <p className="text-white/80 text-sm">{company?.email || company?.email || 'contact@premiumvilla.vn'}</p>
                     </div>
                   </div>
                 </div>

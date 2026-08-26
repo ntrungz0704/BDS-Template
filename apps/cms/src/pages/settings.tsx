@@ -426,7 +426,7 @@ export default function SettingsPage() {
                   ))}
                 </div>
                 <button className="mt-4 w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-bold rounded-xl hover:opacity-90 transition-opacity">
-                  Nâng Cấp Lên PRO — 299,000đ/tháng
+                  Nâng Cấp Gói PRO Vận Hành — 499,000đ/năm
                 </button>
               </div>
             </div>

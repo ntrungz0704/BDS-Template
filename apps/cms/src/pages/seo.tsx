@@ -8,7 +8,9 @@
  *   - Persistent Save button
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 import CMSLayout from '../components/layout/CMSLayout';
 import {
   Search,
@@ -51,13 +53,13 @@ interface SocialForm {
   twitterCardType: 'summary' | 'summary_large_image' | 'app' | 'player';
 }
 
-// ─── Defaults ─────────────────────────────────────────────────────────────────
+import ImageUploader from '../components/common/ImageUploader';
 
 const DEFAULT_BASIC: SeoBasicForm = {
-  metaTitle: 'My Tenant — Bất Động Sản Uy Tín Tại Việt Nam',
-  metaDescription: 'Chuyên cung cấp các dự án bất động sản cao cấp, uy tín tại Việt Nam. Tìm nhà đất, căn hộ, biệt thự phù hợp với ngân sách của bạn.',
+  metaTitle: 'Bất Động Sản Hoàng Gia — Không Gian Sống Thượng Lưu',
+  metaDescription: 'Bất Động Sản Hoàng Gia chuyên cung cấp các dự án bất động sản cao cấp, biệt thự ven sông, penthouse đắc địa tại TP. Hồ Chí Minh và toàn quốc.',
   ogImage: '',
-  robotsTxt: `User-agent: *\nAllow: /\n\nSitemap: https://mytenant.platformbds.vn/sitemap.xml`,
+  robotsTxt: `User-agent: *\nAllow: /\n\nSitemap: https://hoanggialand.platformbds.vn/sitemap.xml`,
   sitemapEnabled: true,
 };
 
@@ -67,8 +69,8 @@ const DEFAULT_ANALYTICS: AnalyticsForm = {
 };
 
 const DEFAULT_SOCIAL: SocialForm = {
-  ogTitle: 'My Tenant — Bất Động Sản Uy Tín',
-  ogDescription: 'Khám phá hàng trăm dự án bất động sản cao cấp trên toàn quốc.',
+  ogTitle: 'Bất Động Sản Hoàng Gia — Bất Động Sản Hạng Sang',
+  ogDescription: 'Khám phá bộ sưu tập bất động sản thượng lưu, biệt thự ven sông và penthouse độc bản.',
   ogImage: '',
   twitterCardType: 'summary_large_image',
 };
@@ -125,59 +127,11 @@ function Toggle({
         }`}
       >
         <span
-          className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200 ${
+          className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-xs transition-transform duration-200 ${
             value ? 'translate-x-5' : 'translate-x-0'
           }`}
         />
       </button>
-    </div>
-  );
-}
-
-// ─── Helper: Image Upload Placeholder ─────────────────────────────────────────
-
-function ImageUploadPlaceholder({
-  value,
-  onChange,
-  label,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  label: string;
-}) {
-  return (
-    <div>
-      <label className="block text-xs font-semibold text-slate-700 mb-1.5">{label}</label>
-      {value ? (
-        <div className="relative rounded-xl overflow-hidden border border-slate-200 bg-slate-100 aspect-[1200/630] max-h-48 flex items-center justify-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={value} alt="OG Preview" className="w-full h-full object-cover" />
-          <button
-            onClick={() => onChange('')}
-            className="absolute top-2 right-2 px-2 py-1 rounded-lg bg-red-500 text-white text-xs font-semibold hover:bg-red-600 transition-colors"
-          >
-            Xóa
-          </button>
-        </div>
-      ) : (
-        <div
-          className="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center bg-slate-50 hover:bg-slate-100/50 hover:border-blue-300 transition-colors cursor-pointer group"
-          onClick={() => {
-            const url = prompt('Nhập URL hình ảnh (1200×630px):');
-            if (url) onChange(url);
-          }}
-        >
-          <div className="w-12 h-12 rounded-xl bg-slate-200 group-hover:bg-blue-100 flex items-center justify-center mx-auto mb-3 transition-colors">
-            <ImageIcon className="w-5 h-5 text-slate-400 group-hover:text-blue-500" />
-          </div>
-          <p className="text-sm font-semibold text-slate-600 group-hover:text-blue-600 transition-colors">
-            Tải Lên Hình Ảnh
-          </p>
-          <p className="text-xs text-slate-400 mt-1">
-            Khuyến nghị: 1200 × 630px · PNG/JPG
-          </p>
-        </div>
-      )}
     </div>
   );
 }
@@ -255,11 +209,16 @@ function SeoBasicTab({
       </FormField>
 
       {/* OG Image */}
-      <ImageUploadPlaceholder
-        label="OG Image (Open Graph)"
-        value={form.ogImage}
-        onChange={(v) => onChange({ ogImage: v })}
-      />
+      <div>
+        <label className="block text-xs font-semibold text-slate-700 mb-1.5">Ảnh Đại Diện Chia Sẻ (OG Image - 1200×630px)</label>
+        <ImageUploader
+          value={form.ogImage}
+          onChange={(v) => onChange({ ogImage: v })}
+          folder="seo"
+          aspectRatio="1200 / 630"
+          placeholder="Kéo thả hoặc tải lên ảnh đại diện khi chia sẻ Facebook/Zalo..."
+        />
+      </div>
 
       {/* Sitemap toggle */}
       <Toggle
@@ -274,27 +233,27 @@ function SeoBasicTab({
         <textarea
           value={form.robotsTxt}
           onChange={(e) => onChange({ robotsTxt: e.target.value })}
-          rows={6}
+          rows={5}
           spellCheck={false}
-          className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-mono text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 resize-none bg-slate-950 text-emerald-400"
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-mono placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 resize-none bg-slate-900 text-emerald-400"
         />
       </FormField>
 
       {/* Google Preview */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
         <div className="flex items-center gap-2 mb-3">
-          <Eye className="w-4 h-4 text-slate-400" />
-          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Xem Trước Google</span>
+          <Eye className="w-4 h-4 text-blue-600" />
+          <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Xem Trước Hiển Thị Trên Google</span>
         </div>
-        <div className="space-y-0.5">
-          <div className="text-[13px] text-blue-700 font-medium truncate">
-            {form.metaTitle || 'Tiêu đề trang web của bạn'}
+        <div className="space-y-1 bg-slate-50 p-4 rounded-lg border border-slate-100">
+          <div className="text-[14px] text-blue-700 font-semibold truncate hover:underline cursor-pointer">
+            {form.metaTitle || 'Bất Động Sản Hoàng Gia — Không Gian Sống Thượng Lưu'}
           </div>
-          <div className="text-[11px] text-emerald-700">
-            https://mytenant.platformbds.vn
+          <div className="text-[12px] text-emerald-700 font-medium">
+            https://hoanggialand.platformbds.vn
           </div>
-          <div className="text-[12px] text-slate-600 line-clamp-2 leading-relaxed">
-            {form.metaDescription || 'Mô tả trang web hiển thị ở đây...'}
+          <div className="text-[13px] text-slate-600 line-clamp-2 leading-relaxed">
+            {form.metaDescription || 'Bất Động Sản Hoàng Gia chuyên cung cấp các dự án bất động sản cao cấp, biệt thự ven sông, penthouse đắc địa tại TP. Hồ Chí Minh và toàn quốc.'}
           </div>
         </div>
       </div>
@@ -503,11 +462,16 @@ function SocialTab({
             />
           </FormField>
 
-          <ImageUploadPlaceholder
-            label="OG Image"
-            value={form.ogImage}
-            onChange={(v) => onChange({ ogImage: v })}
-          />
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">Ảnh Đại Diện Mạng Xã Hội (OG Image)</label>
+            <ImageUploader
+              value={form.ogImage}
+              onChange={(v) => onChange({ ogImage: v })}
+              folder="seo"
+              aspectRatio="1200 / 630"
+              placeholder="Tải lên ảnh thumbnail khi chia sẻ link lên Facebook, Zalo, Twitter..."
+            />
+          </div>
         </div>
       </div>
 
@@ -551,21 +515,66 @@ function SocialTab({
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
 export default function SeoSettingsPage() {
+  const queryClient = useQueryClient();
+  
+  const { data: seoData, isLoading } = useQuery({
+    queryKey: ['cms_seo'],
+    queryFn: async () => {
+      const res = await axios.get(`${API_URL}/api/cms/builder/seo`, { withCredentials: true });
+      return res.data.data;
+    }
+  });
   const [activeTab, setActiveTab] = useState<SeoTab>('basic');
   const [basicForm, setBasicForm] = useState<SeoBasicForm>(DEFAULT_BASIC);
+  
+  useEffect(() => {
+    if (seoData) {
+      setBasicForm({
+        metaTitle: seoData.metaTitle || DEFAULT_BASIC.metaTitle,
+        metaDescription: seoData.metaDescription || DEFAULT_BASIC.metaDescription,
+        ogImage: seoData.ogImage || DEFAULT_BASIC.ogImage,
+        robotsTxt: seoData.robotsTxt || DEFAULT_BASIC.robotsTxt,
+        sitemapEnabled: seoData.enableSitemap !== undefined ? seoData.enableSitemap : DEFAULT_BASIC.sitemapEnabled,
+      });
+      setAnalyticsForm({
+        ga4MeasurementId: seoData.googleAnalyticsId || DEFAULT_ANALYTICS.ga4MeasurementId,
+        searchConsoleCode: seoData.googleSearchConsole || DEFAULT_ANALYTICS.searchConsoleCode,
+      });
+    }
+  }, [seoData]);
   const [analyticsForm, setAnalyticsForm] = useState<AnalyticsForm>(DEFAULT_ANALYTICS);
   const [socialForm, setSocialForm] = useState<SocialForm>(DEFAULT_SOCIAL);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  const updateMutation = useMutation({
+    mutationFn: async (payload: any) => {
+      await axios.put(`${API_URL}/api/cms/builder/seo`, payload, { withCredentials: true });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cms_seo'] });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    },
+    onError: () => {
+      alert('Lỗi lưu cài đặt SEO');
+    }
+  });
+
   const handleSave = async () => {
-    setSaving(true);
-    // TODO: PUT /api/cms/builder/seo
-    await new Promise((r) => setTimeout(r, 800));
-    setSaved(true);
-    setSaving(false);
-    setTimeout(() => setSaved(false), 3000);
+    const payload = {
+      metaTitle: basicForm.metaTitle,
+      metaDescription: basicForm.metaDescription,
+      ogImage: basicForm.ogImage,
+      robotsTxt: basicForm.robotsTxt,
+      enableSitemap: basicForm.sitemapEnabled,
+      googleAnalyticsId: analyticsForm.ga4MeasurementId,
+      googleSearchConsole: analyticsForm.searchConsoleCode
+    };
+    updateMutation.mutate(payload);
   };
 
   const TABS = [
@@ -606,14 +615,14 @@ export default function SeoSettingsPage() {
         {/* Persistent Save Button */}
         <button
           onClick={handleSave}
-          disabled={saving}
+          disabled={updateMutation.isPending}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all shrink-0 ${
             saved
               ? 'bg-emerald-600 hover:bg-emerald-700'
               : 'bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-600/25'
           } disabled:opacity-60`}
         >
-          {saving ? (
+          {updateMutation.isPending ? (
             <><Loader2 className="w-4 h-4 animate-spin" /> Đang lưu...</>
           ) : saved ? (
             <><Check className="w-4 h-4" /> Đã Lưu!</>

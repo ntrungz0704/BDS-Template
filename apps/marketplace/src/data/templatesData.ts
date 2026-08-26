@@ -425,7 +425,7 @@ export const ALL_TEMPLATES: Template[] = [
     accentColor: "#F59E0B",
     description: "Cấu trúc giao diện vững chãi, hiện đại dành cho khu công nghiệp, nhà xưởng và kho bãi lớn. Nhấn mạnh vào hạ tầng, kết nối giao thông và pháp lý đầu tư.",
     shortDescription: "Khu công nghiệp, nhà xưởng, kho bãi",
-    thumbnail: "https://images.unsplash.com/photo-1565610222536-ef125047559c?w=800",
+    thumbnail: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800",
     screenshots: [
       "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1200",
       "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1200",

@@ -90,7 +90,52 @@ const domainSchema = z.object({
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getTenantId(req: Request): string | null {
-  return req.tenantId || null;
+  return req.tenantId || req.user?.tenantId || null;
+}
+
+const PROTECTED_FIELDS = [
+  'platformCopyright',
+  'platformLicense',
+  'platformBranding',
+  'systemFooter',
+  'systemConfig',
+  'systemStatus',
+  'subscriptionStatus',
+  'trialStatus',
+  'trialStartAt',
+  'trialEndAt',
+  'trialSaveLimit',
+  'trialSaveCount',
+  'saveCount',
+  'templateMaster',
+  'templateId',
+  'templateVersion',
+  'ownerId',
+  'customerId',
+  'systemLinks',
+  'isLocked',
+];
+
+export function checkProtectedFields(body: any, role?: string): { violated: boolean; field?: string } {
+  if (role === 'SUPER_ADMIN') return { violated: false };
+  if (!body || typeof body !== 'object') return { violated: false };
+
+  // Recursive check for protected fields
+  function checkObject(obj: any): { violated: boolean; field?: string } {
+    if (!obj || typeof obj !== 'object') return { violated: false };
+    for (const key of Object.keys(obj)) {
+      if (PROTECTED_FIELDS.includes(key)) {
+        return { violated: true, field: key };
+      }
+      if (typeof obj[key] === 'object' && obj[key] !== null) {
+        const nested = checkObject(obj[key]);
+        if (nested.violated) return nested;
+      }
+    }
+    return { violated: false };
+  }
+
+  return checkObject(body);
 }
 
 function getUserId(req: Request): string {
@@ -136,6 +181,32 @@ async function saveVersion(
   });
 }
 
+/**
+ * Atomically increments the trial save counter for a tenant.
+ * Returns the updated count. Should be called after every successful CMS save operation.
+ * Only increments when the tenant is on an active trial (not when on a paid subscription).
+ */
+async function incrementTrialSaveCount(req: Request): Promise<{ newCount: number; limit: number } | null> {
+  const trialInfo = req.trialInfo;
+  
+  // Skip if not on trial or has active subscription
+  if (!trialInfo || !trialInfo.isOnTrial || trialInfo.hasActiveSubscription) {
+    return null;
+  }
+
+  const tenantId = getTenantId(req);
+  if (!tenantId) return null;
+
+  // Atomic increment to prevent race conditions
+  const updated = await prisma.tenant.update({
+    where: { id: tenantId },
+    data: { trialSaveCount: { increment: 1 } },
+    select: { trialSaveCount: true, trialSaveLimit: true },
+  });
+
+  return { newCount: updated.trialSaveCount, limit: updated.trialSaveLimit };
+}
+
 // ─── Theme Controllers ────────────────────────────────────────────────────────
 
 export async function getTheme(req: Request, res: Response, next: NextFunction) {
@@ -169,6 +240,17 @@ export async function updateTheme(req: Request, res: Response, next: NextFunctio
     });
   }
 
+  const protectedCheck = checkProtectedFields(req.body, req.user?.role);
+  if (protectedCheck.violated) {
+    return res.status(403).json({
+      success: false,
+      error: {
+        code: 'PROTECTED_FIELD_MODIFICATION_FORBIDDEN',
+        message: `Không được phép chỉnh sửa trường dữ liệu hệ thống (${protectedCheck.field}).`,
+      },
+    });
+  }
+
   const parsed = themeSchema.safeParse(req.body);
   if (!parsed.success) {
     console.error('[CMS Builder] theme validation failed:', JSON.stringify(parsed.error.flatten(), null, 2));
@@ -191,8 +273,21 @@ export async function updateTheme(req: Request, res: Response, next: NextFunctio
       update: { ...parsed.data },
     });
 
+    // Increment trial save counter if on trial
+    const saveResult = await incrementTrialSaveCount(req);
+    
     logger.info(`[CMS Builder] Theme updated for tenant: ${tenantId}`);
-    return res.json({ success: true, data: theme });
+    return res.json({ 
+      success: true, 
+      data: theme,
+      ...(saveResult && {
+        trialSave: {
+          saveCount: saveResult.newCount,
+          saveLimit: saveResult.limit,
+          remaining: Math.max(0, saveResult.limit - saveResult.newCount),
+        }
+      })
+    });
   } catch (err) {
     next(err);
   }
@@ -444,6 +539,17 @@ export async function createPage(req: Request, res: Response, next: NextFunction
   const tenantId = getTenantId(req);
   if (!tenantId) return res.status(400).json({ success: false, error: { code: 'MISSING_TENANT', message: 'Không tìm thấy Tenant.' } });
 
+  const protectedCheck = checkProtectedFields(req.body, req.user?.role);
+  if (protectedCheck.violated) {
+    return res.status(403).json({
+      success: false,
+      error: {
+        code: 'PROTECTED_FIELD_MODIFICATION_FORBIDDEN',
+        message: `Không được phép chỉnh sửa trường dữ liệu hệ thống (${protectedCheck.field}).`,
+      },
+    });
+  }
+
   const parsed = pageCreateSchema.safeParse(req.body);
   if (!parsed.success) {
     return res.status(422).json({
@@ -486,6 +592,17 @@ export async function getPage(req: Request, res: Response, next: NextFunction) {
 export async function updatePage(req: Request, res: Response, next: NextFunction) {
   const tenantId = getTenantId(req);
   if (!tenantId) return res.status(400).json({ success: false, error: { code: 'MISSING_TENANT', message: 'Không tìm thấy Tenant.' } });
+
+  const protectedCheck = checkProtectedFields(req.body, req.user?.role);
+  if (protectedCheck.violated) {
+    return res.status(403).json({
+      success: false,
+      error: {
+        code: 'PROTECTED_FIELD_MODIFICATION_FORBIDDEN',
+        message: `Không được phép chỉnh sửa trường dữ liệu hệ thống (${protectedCheck.field}).`,
+      },
+    });
+  }
 
   const parsed = pageUpdateSchema.safeParse(req.body);
   if (!parsed.success) {
@@ -609,6 +726,17 @@ export async function updateSection(req: Request, res: Response, next: NextFunct
     });
   }
 
+  const protectedCheck = checkProtectedFields(req.body, req.user?.role);
+  if (protectedCheck.violated) {
+    return res.status(403).json({
+      success: false,
+      error: {
+        code: 'PROTECTED_FIELD_MODIFICATION_FORBIDDEN',
+        message: `Không được phép chỉnh sửa trường dữ liệu hệ thống (${protectedCheck.field}).`,
+      },
+    });
+  }
+
   const parsed = sectionUpdateSchema.safeParse(req.body);
   if (!parsed.success) {
     return res.status(422).json({
@@ -636,7 +764,20 @@ export async function updateSection(req: Request, res: Response, next: NextFunct
         version: { increment: 1 },
       },
     });
-    return res.json({ success: true, data: updated });
+    // Increment trial save counter if on trial
+    const saveResult = await incrementTrialSaveCount(req);
+    
+    return res.json({ 
+      success: true, 
+      data: updated,
+      ...(saveResult && {
+        trialSave: {
+          saveCount: saveResult.newCount,
+          saveLimit: saveResult.limit,
+          remaining: Math.max(0, saveResult.limit - saveResult.newCount),
+        }
+      })
+    });
   } catch (err) {
     next(err);
   }
@@ -790,8 +931,18 @@ export async function getDomainSettings(req: Request, res: Response, next: NextF
   if (!tenantId) return res.status(400).json({ success: false, error: { code: 'MISSING_TENANT', message: 'Không tìm thấy Tenant.' } });
 
   try {
-    const domain = await prisma.tenantDomainSettings.findUnique({ where: { tenantId } });
-    return res.json({ success: true, data: domain });
+    const [domain, tenant] = await Promise.all([
+      prisma.tenantDomainSettings.findUnique({ where: { tenantId } }),
+      prisma.tenant.findUnique({ where: { id: tenantId }, select: { slug: true, name: true } })
+    ]);
+    return res.json({
+      success: true,
+      data: {
+        ...(domain || {}),
+        subdomain: tenant?.slug || '',
+        tenantName: tenant?.name || '',
+      }
+    });
   } catch (err) {
     next(err);
   }
@@ -810,7 +961,42 @@ export async function updateDomainSettings(req: Request, res: Response, next: Ne
   }
 
   try {
-    // Check if custom domain is already taken by another tenant
+    // 1. If subdomain update requested, validate and update tenant slug
+    const requestedSubdomain = (req.body.subdomain as string | undefined)?.toLowerCase().trim();
+    if (requestedSubdomain) {
+      const subdomainRegex = /^[a-z0-9](-?[a-z0-9])*$/;
+      if (!subdomainRegex.test(requestedSubdomain)) {
+        return res.status(400).json({
+          success: false,
+          error: { code: 'INVALID_SUBDOMAIN', message: 'Subdomain chỉ được chứa chữ cái thường, số và dấu gạch ngang (không có khoảng trắng).' },
+        });
+      }
+
+      const reserved = ['www', 'admin', 'cms', 'api', 'app', 'marketplace', 'mail', 'static', 'support'];
+      if (reserved.includes(requestedSubdomain)) {
+        return res.status(400).json({
+          success: false,
+          error: { code: 'RESERVED_SUBDOMAIN', message: 'Tên subdomain này thuộc danh mục bảo lưu của hệ thống.' },
+        });
+      }
+
+      const existingTenant = await prisma.tenant.findFirst({
+        where: { slug: requestedSubdomain, id: { not: tenantId } },
+      });
+      if (existingTenant) {
+        return res.status(409).json({
+          success: false,
+          error: { code: 'SUBDOMAIN_TAKEN', message: 'Subdomain này đã có người đăng ký, vui lòng chọn tên khác.' },
+        });
+      }
+
+      await prisma.tenant.update({
+        where: { id: tenantId },
+        data: { slug: requestedSubdomain },
+      });
+    }
+
+    // 2. Check if custom domain is already taken by another tenant
     if (parsed.data.customDomain) {
       const existing = await prisma.tenantDomainSettings.findFirst({
         where: { customDomain: parsed.data.customDomain, tenantId: { not: tenantId } },
@@ -823,11 +1009,16 @@ export async function updateDomainSettings(req: Request, res: Response, next: Ne
       }
     }
 
-    const domain = await prisma.tenantDomainSettings.update({
+    const domain = await prisma.tenantDomainSettings.upsert({
       where: { tenantId },
-      data: {
+      create: {
+        tenantId,
         customDomain: parsed.data.customDomain || null,
-        // Reset SSL/DNS status when domain changes
+        sslStatus: parsed.data.customDomain ? 'PENDING' : 'ACTIVE',
+        dnsVerified: false,
+      },
+      update: {
+        customDomain: parsed.data.customDomain || null,
         sslStatus: parsed.data.customDomain ? 'PENDING' : 'ACTIVE',
         dnsVerified: false,
         dnsVerifiedAt: null,
@@ -835,7 +1026,7 @@ export async function updateDomainSettings(req: Request, res: Response, next: Ne
     });
 
     logger.info(`[CMS Builder] Domain settings updated for tenant: ${tenantId}`);
-    return res.json({ success: true, data: domain });
+    return res.json({ success: true, data: { ...domain, subdomain: requestedSubdomain } });
   } catch (err) {
     next(err);
   }
@@ -848,20 +1039,47 @@ export async function updateDomainSettings(req: Request, res: Response, next: Ne
 export async function getSubscription(req: Request, res: Response, next: NextFunction) {
   const tenantId = req.tenantId!;
   try {
-    const subscription = await prisma.subscription.findFirst({
-      where: { tenantId, status: 'ACTIVE' },
-      orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
-        plan: true,
-        status: true,
-        startDate: true,
-        endDate: true,
-        amount: true,
+    // Fetch subscription and trial info together
+    const [subscription, tenant] = await Promise.all([
+      prisma.subscription.findFirst({
+        where: { tenantId, status: 'ACTIVE' },
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          plan: true,
+          status: true,
+          startDate: true,
+          endDate: true,
+          amount: true,
+          billingPeriod: true,
+        },
+      }),
+      prisma.tenant.findUnique({
+        where: { id: tenantId },
+        select: {
+          trialStartAt: true,
+          trialEndAt: true,
+          trialSaveLimit: true,
+          trialSaveCount: true,
+          trialStatus: true,
+        },
+      }),
+    ]);
+
+    return res.json({
+      success: true,
+      data: {
+        subscription: subscription || null,
+        trial: tenant ? {
+          status: tenant.trialStatus,
+          startAt: tenant.trialStartAt,
+          endAt: tenant.trialEndAt,
+          saveCount: tenant.trialSaveCount,
+          saveLimit: tenant.trialSaveLimit,
+          remainingSaves: Math.max(0, tenant.trialSaveLimit - tenant.trialSaveCount),
+        } : null,
       },
     });
-
-    return res.json({ success: true, data: subscription || null });
   } catch (err) {
     next(err);
   }
@@ -1227,6 +1445,17 @@ export async function updateCompanyInfo(req: Request, res: Response, next: NextF
   const tenantId = getTenantId(req);
   if (!tenantId) return res.status(400).json({ success: false, error: { code: 'MISSING_TENANT', message: 'Không tìm thấy Tenant.' } });
 
+  const protectedCheck = checkProtectedFields(req.body, req.user?.role);
+  if (protectedCheck.violated) {
+    return res.status(403).json({
+      success: false,
+      error: {
+        code: 'PROTECTED_FIELD_MODIFICATION_FORBIDDEN',
+        message: `Không được phép chỉnh sửa trường dữ liệu hệ thống (${protectedCheck.field}).`,
+      },
+    });
+  }
+
   const parsed = companyInfoSchema.safeParse(req.body);
   if (!parsed.success) {
     return res.status(422).json({
@@ -1245,6 +1474,54 @@ export async function updateCompanyInfo(req: Request, res: Response, next: NextF
 
     logger.info(`[CMS Builder] CompanyInfo updated for tenant: ${tenantId}`);
     return res.json({ success: true, data: mapToFrontendFields(info) });
+  } catch (err) {
+    next(err);
+  }
+}
+
+// ─── SEO Controllers ─────────────────────────────────────────────────────────
+
+const seoSchema = z.object({
+  metaTitle: z.string().optional().nullable(),
+  metaDescription: z.string().optional().nullable(),
+  ogImage: z.string().optional().nullable(),
+  googleAnalyticsId: z.string().optional().nullable(),
+  googleSearchConsole: z.string().optional().nullable(),
+  robotsTxt: z.string().optional().nullable(),
+  enableSitemap: z.boolean().optional(),
+});
+
+export async function getSeoConfig(req: Request, res: Response, next: NextFunction) {
+  const tenantId = getTenantId(req);
+  if (!tenantId) return res.status(400).json({ success: false, error: { code: 'MISSING_TENANT', message: 'Không tìm thấy Tenant.' } });
+
+  try {
+    const seo = await prisma.seoConfig.findUnique({ where: { tenantId } });
+    return res.json({ success: true, data: seo || {} });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function updateSeoConfig(req: Request, res: Response, next: NextFunction) {
+  const tenantId = getTenantId(req);
+  if (!tenantId) return res.status(400).json({ success: false, error: { code: 'MISSING_TENANT', message: 'Không tìm thấy Tenant.' } });
+
+  const parsed = seoSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(422).json({
+      success: false,
+      error: { code: 'VALIDATION_ERROR', message: 'Dữ liệu không hợp lệ.', details: parsed.error.flatten() },
+    });
+  }
+
+  try {
+    const seo = await prisma.seoConfig.upsert({
+      where: { tenantId },
+      create: { tenantId, ...parsed.data },
+      update: { ...parsed.data },
+    });
+    return res.json({ success: true, data: seo });
   } catch (err) {
     next(err);
   }

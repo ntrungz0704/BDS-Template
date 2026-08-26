@@ -151,12 +151,18 @@ exports.Prisma.TenantScalarFieldEnum = {
   domain: 'domain',
   status: 'status',
   templateId: 'templateId',
+  templateVersionId: 'templateVersionId',
   themeOverrides: 'themeOverrides',
   activatedAt: 'activatedAt',
   expiresAt: 'expiresAt',
   onboardingCompletedAt: 'onboardingCompletedAt',
   uploadUsedBytes: 'uploadUsedBytes',
   version: 'version',
+  trialStartAt: 'trialStartAt',
+  trialEndAt: 'trialEndAt',
+  trialSaveLimit: 'trialSaveLimit',
+  trialSaveCount: 'trialSaveCount',
+  trialStatus: 'trialStatus',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -173,6 +179,8 @@ exports.Prisma.TemplateScalarFieldEnum = {
   features: 'features',
   priceBuy: 'priceBuy',
   priceRentMonthly: 'priceRentMonthly',
+  priceRentYearly: 'priceRentYearly',
+  priceBuySource: 'priceBuySource',
   isActive: 'isActive',
   sortOrder: 'sortOrder',
   deletedAt: 'deletedAt',
@@ -226,6 +234,8 @@ exports.Prisma.SubscriptionScalarFieldEnum = {
   startDate: 'startDate',
   endDate: 'endDate',
   cancelledAt: 'cancelledAt',
+  billingPeriod: 'billingPeriod',
+  autoRenew: 'autoRenew',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -774,8 +784,31 @@ exports.Prisma.TenantMembershipScalarFieldEnum = {
   tenantId: 'tenantId',
   role: 'role',
   status: 'status',
+  invitedBy: 'invitedBy',
+  inviteStatus: 'inviteStatus',
+  inviteToken: 'inviteToken',
+  inviteExpiresAt: 'inviteExpiresAt',
+  invitedEmail: 'invitedEmail',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.EmailVerificationTokenScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -903,7 +936,9 @@ exports.Prisma.ModelName = {
   TenantApiKey: 'TenantApiKey',
   TenantWebhook: 'TenantWebhook',
   WebhookDelivery: 'WebhookDelivery',
-  TenantMembership: 'TenantMembership'
+  TenantMembership: 'TenantMembership',
+  PasswordResetToken: 'PasswordResetToken',
+  EmailVerificationToken: 'EmailVerificationToken'
 };
 
 /**

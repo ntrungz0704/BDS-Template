@@ -271,7 +271,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
+      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
     }
   };
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -421,8 +421,12 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             <TrendingUp size={isMobile ? 20 : 24} />
           </div>
           <div>
-            <h1 style={{ color: colors.primary }} className="font-bold text-lg md:text-xl leading-none tracking-tight">InvestPro</h1>
-            <span className="text-[9px] md:text-[10px] text-gray-500 font-bold tracking-widest uppercase">Capital & Partners</span>
+            <h1 style={{ color: colors.primary }} className="font-bold text-lg md:text-xl leading-none tracking-tight uppercase">
+              {company?.name || template?.name || 'InvestPro'}
+            </h1>
+            <span className="text-[9px] md:text-[10px] text-gray-500 font-bold tracking-widest uppercase">
+              {company?.slogan || 'Capital & Partners'}
+            </span>
           </div>
         </div>
 
@@ -448,9 +452,9 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
         </nav>
 
         <div className="hidden lg:flex items-center gap-4">
-          <button className="text-sm font-bold text-gray-700 hover:text-[#1E40AF] flex items-center gap-2 transition-colors">
-            <Phone size={16} /> 1900 6868
-          </button>
+          <a href={`tel:${company?.phone || '0983312219'}`} className="text-sm font-bold text-gray-700 hover:text-[#1E40AF] flex items-center gap-2 transition-colors">
+            <Phone size={16} /> {company?.phone || '0983 312 219'}
+          </a>
           <button 
             onClick={() => navigateTo('contact')}
             style={{ backgroundColor: colors.primary }} 
@@ -507,12 +511,12 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <TrendingUp size={24} />
             </div>
             <div>
-              <h2 className="font-bold text-xl leading-none tracking-tight">InvestPro</h2>
-              <span className="text-[10px] text-gray-400 font-bold tracking-widest uppercase">Capital & Partners</span>
+              <h2 className="font-bold text-xl leading-none tracking-tight uppercase">{company?.name || 'InvestPro'}</h2>
+              <span className="text-[10px] text-gray-400 font-bold tracking-widest uppercase">{company?.slogan || 'Capital & Partners'}</span>
             </div>
           </div>
           <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-            Đơn vị tư vấn và quản lý danh mục đầu tư bất động sản hàng đầu, mang đến giải pháp sinh lời bền vững và an toàn cho nhà đầu tư chuyên nghiệp.
+            {company?.slogan || company?.description || 'Đơn vị tư vấn và quản lý danh mục đầu tư bất động sản hàng đầu, mang đến giải pháp sinh lời bền vững và an toàn cho nhà đầu tư chuyên nghiệp.'}
           </p>
           <div className="flex space-x-4">
             {['Facebook', 'LinkedIn', 'YouTube'].map((social) => (
@@ -562,7 +566,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             </li>
             <li className="flex items-center gap-3">
               <Mail size={18} className="text-[#10B981] shrink-0" />
-              <span>invest@investpro.com.vn</span>
+              <span>{company?.email || company?.email || 'invest@investpro.com.vn'}</span>
             </li>
           </ul>
         </div>

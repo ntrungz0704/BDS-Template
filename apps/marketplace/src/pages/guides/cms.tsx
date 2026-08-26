@@ -1,135 +1,153 @@
-import React from 'react';
+﻿import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { ArrowLeft, BookOpen, Plus, Image as ImageIcon, Globe, Key } from 'lucide-react';
+import { ArrowLeft, BookOpen, Plus, Image as ImageIcon, Globe, Key, CheckCircle2, ArrowRight } from 'lucide-react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
 export default function CMSGuidePage() {
   return (
-    <div className="flex flex-col min-h-screen bg-[#F8FAFC] text-[#0F172A] antialiased font-sans">
+    <div className="flex flex-col min-h-screen bg-slate-100/70 text-slate-900 antialiased font-sans">
       <Head>
-        <title>Hướng Dẫn Quản Trị Hệ Thống CMS Website BĐS - PlatformBDS</title>
+        <title>Hướng Dẫn Quản Trị Hệ Thống CMS Website BĐS | PLATFORMBDS</title>
         <meta name="description" content="Hướng dẫn sử dụng hệ thống quản trị CMS để đăng bài dự án bất động sản, chỉnh sửa thông tin giao diện và kết nối domain tại PlatformBDS" />
       </Head>
 
-      <Header 
-        onSearch={() => {}} 
-        onOpenConsultation={() => alert('Đội ngũ tư vấn sẽ liên hệ bạn qua hotline 0919 006 030!')} 
-        onOpenAuth={() => {}}
-      />
+      <Header />
 
-      <main className="flex-grow max-w-[1280px] w-full mx-auto px-6 py-[120px]">
+      <main className="flex-grow max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
         {/* Breadcrumbs / Header */}
-        <div className="max-w-[700px] mb-12 space-y-4 animate-fade-up">
-          <Link href="/" className="inline-flex items-center gap-2 text-xs font-bold text-[#64748B] hover:text-[#2563EB] transition-colors mb-4">
-            <ArrowLeft className="w-4 h-4" />
+        <div className="max-w-[800px] mb-8">
+          <Link href="/" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors mb-3">
+            <ArrowLeft className="w-3.5 h-3.5" />
             <span>Quay lại Trang chủ</span>
           </Link>
-          <span className="text-xs font-semibold uppercase tracking-widest text-[#F59E0B] bg-amber-50 px-3.5 py-1 rounded-full border border-amber-100/50 inline-block">HƯỚNG DẪN VẬN HÀNH</span>
-          <h1 className="text-slate-900 tracking-tight leading-[1.15] text-[56px] font-bold">
-            Quản Trị Giao Diện <br />
-            <span className="text-[#2563EB]">Sàn BĐS Siêu Đơn Giản</span>
+          <div>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded border border-blue-200 inline-block mb-2">
+              HƯỚNG DẪN VẬN HÀNH
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            Quản Trị Website & CMS BĐS Siêu Đơn Giản
           </h1>
-          <p className="text-[#64748B] text-[16px] font-medium leading-[1.7]">
-            Bạn không cần biết code. Hệ thống CMS của chúng tôi được tối ưu hóa trực quan tuyệt đối, giúp bạn đăng tải thông tin nhà đất chỉ trong 1 phút.
+          <p className="text-slate-600 text-xs sm:text-sm mt-1.5 leading-relaxed">
+            Bạn không cần biết lập trình hay kỹ thuật phức tạp. Hệ thống CMS của PlatformBDS được tối ưu hóa trực quan, giúp bạn cập nhật dự án, bảng giá và bài viết chỉ trong 1 phút.
           </p>
         </div>
 
         {/* 2 Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start animate-fade-up">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Sticky navigation */}
-          <aside className="lg:col-span-4 bg-white border border-slate-100 p-8 rounded-[24px] shadow-sm space-y-6 sticky top-28 font-sans">
-            <h3 className="text-[24px] font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-[#2563EB]" />
-              <span>Các Mục Hướng Dẫn</span>
+          <aside className="lg:col-span-4 bg-white border border-slate-200 p-6 rounded-lg shadow-sm space-y-4 lg:sticky lg:top-24 font-sans">
+            <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-blue-600" />
+              <span>Nội Dung Hướng Dẫn</span>
             </h3>
-            <ul className="space-y-4 text-xs font-semibold">
+            <ul className="space-y-2 text-xs font-medium">
               <li>
-                <a href="#quickstart" className="block text-[#2563EB] hover:text-[#1D4ED8] transition-colors">
-                  1. Khởi tạo Website trong 30s
+                <a href="#quickstart" className="block text-blue-600 hover:underline">
+                  1. Khởi tạo & Kích hoạt Website trong 30s
                 </a>
               </li>
               <li>
-                <a href="#projects" className="block text-slate-600 hover:text-[#2563EB] transition-colors">
-                  2. Đăng tin dự án và sản phẩm
+                <a href="#projects" className="block text-slate-700 hover:text-blue-600">
+                  2. Đăng tin dự án và sản phẩm BĐS
                 </a>
               </li>
               <li>
-                <a href="#media" className="block text-slate-600 hover:text-[#2563EB] transition-colors">
-                  3. Quản lý hình ảnh và banner
+                <a href="#media" className="block text-slate-700 hover:text-blue-600">
+                  3. Quản lý hình ảnh và banner trình chiếu
                 </a>
               </li>
               <li>
-                <a href="#domain" className="block text-slate-600 hover:text-[#2563EB] transition-colors">
-                  4. Kết nối tên miền riêng
+                <a href="#leads" className="block text-slate-700 hover:text-blue-600">
+                  4. Thu thập và quản lý khách hàng tiềm năng (Leads)
+                </a>
+              </li>
+              <li>
+                <a href="#domain" className="block text-slate-700 hover:text-blue-600">
+                  5. Cấu hình tên miền riêng (.vn / .com)
                 </a>
               </li>
             </ul>
+
+            <div className="pt-3 border-t border-slate-100">
+              <Link
+                href="/templates"
+                className="w-full py-2 px-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-md transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+              >
+                <span>Khám phá 16 Mẫu Website</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </aside>
 
-          {/* Right Contents */}
-          <article className="lg:col-span-8 bg-white border border-slate-100 p-8 md:p-10 rounded-[24px] shadow-sm space-y-12 font-sans text-[16px] leading-[1.7] text-left">
-            {/* Sec 1 */}
-            <section id="quickstart" className="space-y-4">
-              <h2 className="text-[32px] font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-                <Key className="w-6 h-6 text-[#2563EB]" />
+          {/* Right Main Content */}
+          <div className="lg:col-span-8 bg-white border border-slate-200 p-6 sm:p-8 rounded-lg shadow-sm space-y-8 font-sans text-xs sm:text-sm leading-relaxed">
+            {/* 1. Quickstart */}
+            <section id="quickstart" className="space-y-3">
+              <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2">
+                <Key className="w-4 h-4 text-blue-600" />
                 <span>1. Khởi tạo Website trong 30s</span>
               </h2>
-              <p className="text-[#64748B] font-medium leading-[1.7]">
-                Sau khi bấm **Đăng ký sở hữu** giao diện tại PlatformBDS, bạn sẽ nhận được thông tin đăng nhập trang CMS quản trị và link subdomain tạm thời dạng `tên-thương-hiệu.myplatform.com` qua email/Zalo của mình.
+              <p className="text-slate-600">
+                Sau khi hoàn tất đăng ký tài khoản trên PlatformBDS, hệ thống tự động khởi tạo cho bạn một website demo riêng biệt. Bạn có thể đăng nhập vào trang CMS Quản Trị bằng tài khoản của mình bất cứ lúc nào.
               </p>
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 text-[14px] text-[#64748B] leading-[1.7]">
-                <strong>💡 Lưu ý quan trọng:</strong> Vui lòng lưu thông tin mật khẩu đăng nhập CMS của bạn ở nơi bảo mật. Bạn có thể thay đổi lại mật khẩu trong bảng điều khiển thành viên.
+              <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-md text-xs text-slate-700 space-y-1">
+                <p>✅ Truy cập nhanh CMS: <strong className="text-blue-600 font-mono">http://localhost:3001</strong> (hoặc subdomain của bạn)</p>
+                <p>✅ Đăng nhập bằng Email & Mật khẩu bạn đã tạo trên Marketplace.</p>
               </div>
             </section>
 
-            {/* Sec 2 */}
-            <section id="projects" className="space-y-4">
-              <h2 className="text-[32px] font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-                <Plus className="w-6 h-6 text-[#2563EB]" />
-                <span>2. Đăng tin dự án và sản phẩm</span>
+            {/* 2. Projects */}
+            <section id="projects" className="space-y-3">
+              <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2">
+                <Plus className="w-4 h-4 text-blue-600" />
+                <span>2. Đăng tin dự án và sản phẩm BĐS</span>
               </h2>
-              <p className="text-[#64748B] font-medium leading-[1.7]">
-                Để thêm bài viết giới thiệu biệt thự, căn hộ chung cư mới phân phối:
+              <p className="text-slate-600">
+                Tại menu bên trái của CMS, nhấn chọn <strong>"Dự án"</strong> hoặc <strong>"Sản phẩm"</strong> ➔ bấm <strong>"Thêm mới"</strong>.
               </p>
-              <ol className="list-decimal pl-5 space-y-2.5 text-[#64748B] font-medium">
-                <li>Truy cập vào menu <strong>Quản lý sản phẩm</strong> trong thanh điều hướng bên trái CMS.</li>
-                <li>Bấm chọn nút <strong>Thêm dự án mới</strong> ở góc trên bên phải.</li>
-                <li>Điền đầy đủ thông tin chi tiết: Tiêu đề sản phẩm, mô tả tổng quan, vị trí, diện tích, giá bán, tiện ích nội ngoại khu.</li>
-                <li>Click chọn thẻ <strong>Tự động tối ưu SEO</strong> giúp Google index nhanh bài viết.</li>
-              </ol>
-            </section>
-
-            {/* Sec 3 */}
-            <section id="media" className="space-y-4">
-              <h2 className="text-[32px] font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-                <ImageIcon className="w-6 h-6 text-[#2563EB]" />
-                <span>3. Quản lý hình ảnh và banner</span>
-              </h2>
-              <p className="text-[#64748B] font-medium leading-[1.7]">
-                Ảnh chụp tiện ích thực tế và sơ đồ mặt bằng (floor plan) là chìa khóa để thu hút khách hàng liên hệ:
-              </p>
-              <ul className="list-disc pl-5 space-y-2 text-[#64748B] font-medium">
-                <li>Sử dụng chức năng kéo thả ảnh tại khung tải lên (hỗ trợ định dạng `.png`, `.jpg`, `.webp`).</li>
-                <li>Nên tối ưu dung lượng ảnh dưới 1.5MB để đảm bảo website load siêu mượt và chuẩn chỉ SEO.</li>
+              <ul className="list-disc pl-5 space-y-1 text-slate-600">
+                <li>Nhập tên dự án, vị trí, chủ đầu tư, diện tích và mức giá.</li>
+                <li>Tải lên hình ảnh sắc nét hoặc chọn từ thư viện media.</li>
+                <li>Hệ thống tự động đồng bộ ra giao diện người dùng ngay lập tức.</li>
               </ul>
             </section>
 
-            {/* Sec 4 */}
-            <section id="domain" className="space-y-4">
-              <h2 className="text-[32px] font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-                <Globe className="w-6 h-6 text-[#2563EB]" />
-                <span>4. Kết nối tên miền riêng</span>
+            {/* 3. Media */}
+            <section id="media" className="space-y-3">
+              <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2">
+                <ImageIcon className="w-4 h-4 text-blue-600" />
+                <span>3. Quản lý hình ảnh và banner</span>
               </h2>
-              <p className="text-[#64748B] font-medium leading-[1.7]">
-                Đối với các đại lý hoặc cá nhân sử dụng gói **Professional / Business**, bạn có thể trỏ tên miền chính thức của mình:
-              </p>
-              <p className="text-[#64748B] font-medium leading-[1.7]">
-                Vào nhà cung cấp domain (Mắt Bão, Pavietnam, Cloudflare...) cấu hình bản ghi **CNAME** trỏ về địa chỉ `cname.myplatform.com`. Sau đó gửi thông tin domain cho bộ phận hỗ trợ của PlatformBDS để kích hoạt kết nối SSL bảo mật miễn phí.
+              <p className="text-slate-600">
+                Trình quản lý Media cho phép bạn kéo thả nhiều hình ảnh cùng một lúc, tự động nén dung lượng WebP chuẩn SEO giúp website tải siêu nhanh dưới 1 giây.
               </p>
             </section>
-          </article>
+
+            {/* 4. Leads */}
+            <section id="leads" className="space-y-3">
+              <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>4. Quản lý khách hàng tiềm năng (Leads)</span>
+              </h2>
+              <p className="text-slate-600">
+                Mỗi khi có khách hàng để lại thông tin trên form liên hệ của website, thông báo sẽ được gửi ngay đến bạn và lưu trữ an toàn trong mục <strong>"Khách hàng & Leads"</strong> của CMS.
+              </p>
+            </section>
+
+            {/* 5. Domain */}
+            <section id="domain" className="space-y-3">
+              <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2">
+                <Globe className="w-4 h-4 text-purple-600" />
+                <span>5. Cấu hình tên miền riêng</span>
+              </h2>
+              <p className="text-slate-600">
+                Bạn có thể trỏ tên miền cá nhân (ví dụ: <code className="bg-slate-100 px-1 py-0.5 rounded text-slate-800">tuannhadat.vn</code>) vào website thông qua bản ghi DNS CNAME hoặc liên hệ đội ngũ kỹ thuật <a href="mailto:ntrungz0704@gmail.com" className="text-blue-600 hover:underline font-semibold">ntrungz0704@gmail.com</a> / Hotline <strong className="text-slate-900 font-mono">0919 006 030</strong> để được hỗ trợ trỏ tên miền miễn phí!
+              </p>
+            </section>
+          </div>
         </div>
       </main>
 

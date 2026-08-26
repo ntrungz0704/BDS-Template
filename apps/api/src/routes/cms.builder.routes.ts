@@ -31,9 +31,9 @@ import { Router } from 'express';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/role.middleware';
 import { checkTenantAccess } from '../middlewares/tenant.middleware';
-import { subscriptionMiddleware } from '../middlewares/subscription.middleware';
+import { checkTrialOrSubscription, enforceSaveQuota } from '../middlewares/trial.middleware';
 import { csrfMiddleware } from '../middlewares/csrf.middleware';
-import {
+import { 
   getTheme,
   updateTheme,
   resetThemeToDefault,
@@ -61,7 +61,9 @@ import {
   rollbackTenantUpdate,
   getCompanyInfo,
   updateCompanyInfo,
-} from '../controllers/cms.builder.controller';
+  getSeoConfig,
+  updateSeoConfig
+ } from '../controllers/cms.builder.controller';
 
 const router = Router();
 
@@ -69,7 +71,8 @@ const router = Router();
 router.use(authMiddleware);
 router.use(requireRole(['TENANT_OWNER', 'EDITOR']));
 router.use(checkTenantAccess);
-router.use(subscriptionMiddleware);
+router.use(checkTrialOrSubscription);
+router.use(enforceSaveQuota);
 
 // ── Theme Settings ──────────────────────────────────────────────────────
 router.get('/theme', getTheme);
@@ -97,6 +100,10 @@ router.delete('/sections/:id', csrfMiddleware, deleteSection);
 router.get('/versions/:entityType/:entityId', getVersionHistory);
 router.post('/versions/restore', csrfMiddleware, restoreVersion);
 
+// ── SEO Settings ────────────────────────────────────────────────────────
+router.get('/seo', getSeoConfig);
+router.put('/seo', csrfMiddleware, updateSeoConfig);
+
 // ── Domain Settings ─────────────────────────────────────────────────────
 router.get('/domain', getDomainSettings);
 router.put('/domain', csrfMiddleware, updateDomainSettings);
@@ -116,5 +123,13 @@ router.get('/upgrade/check', checkTenantUpdate);
 router.get('/upgrade/preview', previewTenantUpdate);
 router.post('/upgrade/apply', csrfMiddleware, applyTenantUpdate);
 router.post('/upgrade/rollback', csrfMiddleware, rollbackTenantUpdate);
+
+// ── Guard against template access ───────────────────────────────────────
+router.all('/templates*', (req, res) => {
+  res.status(403).json({
+    success: false,
+    message: 'Forbidden: CMS customers cannot access global templates endpoints.'
+  });
+});
 
 export default router;

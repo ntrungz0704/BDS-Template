@@ -14,7 +14,9 @@
  * Once all steps are done, redirect to CMS Dashboard.
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import {
   Building2,
@@ -387,7 +389,24 @@ function Step4({ data, onLaunch, launching }: { data: OnboardingData; onLaunch: 
 
 // ─── Main Wizard ──────────────────────────────────────────────────────────────
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
 export default function OnboardingPage() {
+  const router = useRouter();
+  useEffect(() => {
+    // Check onboarding status
+    const checkStatus = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/tenants/onboard/status`, { withCredentials: true });
+        if (res.data?.data?.isComplete) {
+          router.replace('/');
+        }
+      } catch (err) {
+        console.error('Lỗi kiểm tra status onboarding:', err);
+      }
+    };
+    checkStatus();
+  }, [router]);
   const [step, setStep] = useState<Step>(1);
   const [launching, setLaunching] = useState(false);
   const [data, setData] = useState<OnboardingData>({
@@ -422,11 +441,10 @@ export default function OnboardingPage() {
   const handleLaunch = useCallback(async () => {
     setLaunching(true);
     try {
-      // TODO: POST /api/tenants/onboard with data
-      await new Promise((r) => setTimeout(r, 2500));
-      // Redirect to CMS dashboard
+      await axios.post(`${API_URL}/api/tenants/onboard`, data, { withCredentials: true });
       window.location.href = '/';
-    } catch (err) {
+    } catch (err: any) {
+      alert(err.response?.data?.error?.message || 'Lỗi khởi tạo website');
       setLaunching(false);
     }
   }, [data]);

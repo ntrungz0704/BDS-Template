@@ -1,6 +1,10 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -10,6 +14,57 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children, title, subtitle }: AdminLayoutProps) {
   const router = useRouter();
+  const [adminUser, setAdminUser] = useState<any>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  // Live query orders to show badge counter in sidebar
+  const { data: liveOrdersRes } = useQuery({
+    queryKey: ['adminLayoutOrders'],
+    queryFn: async () => {
+      const res = await axios.get(`${API_URL}/api/admin/orders?limit=50`, {
+        withCredentials: true,
+      });
+      return res.data;
+    },
+    refetchInterval: 3000,
+    enabled: !checkingAuth,
+  });
+
+  const pendingCount = (liveOrdersRes?.data || []).filter(
+    (o: any) => o.status === 'PENDING' || o.status === 'WAITING_CONFIRM' || o.status === 'PENDING_SUBDOMAIN_CONFLICT' || o.status === 'AWAITING_MANUAL_REVIEW'
+  ).length;
+
+  useEffect(() => {
+    let isMounted = true;
+    const checkAdmin = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/auth/me`, {
+          withCredentials: true,
+          timeout: 4000,
+        });
+        const user = res.data?.data?.user;
+        if (!user || user.role !== 'SUPER_ADMIN') {
+          router.replace('/login');
+          return;
+        }
+        if (isMounted) {
+          setAdminUser(user);
+          setCheckingAuth(false);
+        }
+      } catch (err) {
+        router.replace('/login');
+      }
+    };
+    checkAdmin();
+    return () => { isMounted = false; };
+  }, [router]);
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true });
+    } catch {}
+    router.push('/login');
+  };
 
   const menuItems = [
     {
@@ -31,7 +86,16 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
       ),
     },
     {
-      name: 'Khách thuê (Tenants)',
+      name: 'Khách hàng',
+      href: '/customers',
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      ),
+    },
+    {
+      name: 'Website Khách Hàng',
       href: '/tenants',
       icon: (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -57,7 +121,25 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
         </svg>
       ),
     },
+    {
+      name: 'Template Studio',
+      href: '/studio?id=template-luxury-gold',
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+      ),
+    },
   ];
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center text-white">
+        <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-sm font-bold text-slate-300">Đang kiểm tra quyền Super Admin...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-800 font-sans antialiased">
@@ -80,18 +162,26 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
         <nav className="flex-1 px-4 py-6 space-y-1.5">
           {menuItems.map((item) => {
             const isActive = router.pathname === item.href;
+            const isOrdersMenu = item.href === '/orders';
             return (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
                   isActive
                     ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10'
                     : 'hover:bg-slate-800 hover:text-white text-slate-400'
                 }`}
               >
-                {item.icon}
-                <span>{item.name}</span>
+                <div className="flex items-center gap-3.5">
+                  {item.icon}
+                  <span>{item.name}</span>
+                </div>
+                {isOrdersMenu && pendingCount > 0 && (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500 text-slate-950 animate-bounce shadow-xs">
+                    {pendingCount}
+                  </span>
+                )}
               </Link>
             );
           })}
@@ -100,12 +190,12 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
         {/* User Info / Profile at Bottom */}
         <div className="p-6 border-t border-slate-800 bg-slate-950/40">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center font-bold text-sm text-slate-200">
-              AD
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-sm text-white shadow-md">
+              {adminUser?.fullName ? adminUser.fullName.slice(0, 2).toUpperCase() : 'AD'}
             </div>
-            <div>
-              <span className="text-sm font-bold text-white block">Quản Trị Viên</span>
-              <span className="text-[10px] text-slate-500 block">admin@platformbds.vn</span>
+            <div className="min-w-0">
+              <span className="text-sm font-bold text-white block truncate">{adminUser?.fullName || 'Quản Trị Viên'}</span>
+              <span className="text-[10px] text-slate-400 block truncate">{adminUser?.email || 'admin@platformbds.vn'}</span>
             </div>
           </div>
         </div>
@@ -123,11 +213,7 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
           <div className="flex items-center gap-4">
             <div className="h-8 w-px bg-slate-200"></div>
             <button
-              onClick={() => {
-                // Clear cookies & logout
-                document.cookie = "csrf_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                router.push('/login');
-              }}
+              onClick={handleLogout}
               className="text-xs font-bold text-slate-500 hover:text-rose-600 transition-all flex items-center gap-1.5"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

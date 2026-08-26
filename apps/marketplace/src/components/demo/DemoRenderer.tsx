@@ -985,7 +985,7 @@ function getTemplateConfig(slug: string, template: Template): RealEstateConfig {
       { label: 'Vị trí trọng điểm', value: 'Trung tâm hành chính mới - TP. Thủ Đức, Hồ Chí Minh' },
       { label: 'Đơn vị quản lý vận hành', value: 'CBRE Premium Management Services' },
       { label: 'Mật độ xây dựng cảnh quan', value: 'Chỉ 22% (78% dành cho hồ nước & tiện ích xanh)' },
-      { label: 'Mức giá tham khảo', value: `${new Intl.NumberFormat('vi-VN').format(template.priceBuy || 5900000)} VNĐ / Gói Source` },
+      { label: 'Mức giá tham khảo', value: `${new Intl.NumberFormat('vi-VN').format(template.priceBuy || 499000)} VNĐ / Trọn Gói` },
     ],
     location: {
       title: 'Vị Trí Vàng Tâm Điểm Kết Nối Hạ Tầng Đô Thị',

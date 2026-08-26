@@ -1,6 +1,19 @@
 import dotenv from 'dotenv';
 import path from 'path';
-dotenv.config({ path: path.join(process.cwd(), '../../.env') });
+import fs from 'fs';
+
+const envPaths = [
+  path.resolve(process.cwd(), '.env'),
+  path.resolve(process.cwd(), '../.env'),
+  path.resolve(process.cwd(), '../../.env'),
+  path.resolve(__dirname, '../../.env'),
+  path.resolve(__dirname, '../../../.env'),
+];
+for (const p of envPaths) {
+  if (fs.existsSync(p)) {
+    dotenv.config({ path: p });
+  }
+}
 
 // Enforce JWT secret security check for production environment
 if (process.env.NODE_ENV === 'production') {
@@ -97,27 +110,40 @@ app.use(
 );
 
 // 3. Cấu hình CORS Whitelist
-const allowedOrigins = [
-  'http://localhost:3000', // Marketplace
-  'http://localhost:3001', // CMS
-  'http://localhost:3002', // Admin
-  'http://localhost:3003', // Website Tenant
-];
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',')
+  : [
+      'http://localhost:3000', // Marketplace
+      'http://localhost:3001', // CMS
+      'http://localhost:3002', // Admin
+      'http://localhost:3003', // Website Tenant
+    ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
       // Cho phép requests không có origin (ví dụ: mobile apps, curl, postman)
       if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.myplatform.com')) {
+      if (
+        allowedOrigins.indexOf(origin) !== -1 ||
+        origin.endsWith('.platformbds.vn') ||
+        origin === 'https://platformbds.vn' ||
+        origin === 'https://www.platformbds.vn'
+      ) {
         callback(null, true);
       } else {
-        callback(new Error('CORS Policy: Origin không được phép truy cập.'));
+        // Cho phép custom domain của tenant (tra cứu từ DB sẽ được thêm sau)
+        // Tạm thời cho phép trong development
+        if (process.env.NODE_ENV !== 'production') {
+          callback(null, true);
+        } else {
+          callback(new Error('CORS Policy: Origin không được phép truy cập.'));
+        }
       }
     },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-tenant-id', 'X-CSRF-Token'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-tenant-id', 'X-CSRF-Token', 'x-csrf-token'],
   })
 );
 
@@ -184,6 +210,9 @@ import publicWebsiteRoutes from './routes/public.website.routes';
 import cmsBuilderRoutes from './routes/cms.builder.routes';
 import tenantRoutes from './routes/tenant.routes';
 import leadRoutes from './routes/lead.routes';
+import demoRoutes from './routes/demo.routes';
+import membershipRoutes from './routes/membership.routes';
+import sourceRoutes from './routes/source.routes';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/marketplace', marketplaceRoutes);
@@ -193,9 +222,12 @@ app.use('/api/cms/media', mediaRoutes);
 app.use('/api/cms/forms', formCmsRoutes);
 app.use('/api/cms/builder', cmsBuilderRoutes);
 app.use('/api/cms/leads', leadRoutes);
+app.use('/api/cms/members', membershipRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/website', publicWebsiteRoutes);
 app.use('/api/tenants', tenantRoutes);
+app.use('/api/demo', demoRoutes);
+app.use('/api/source', sourceRoutes);
 
 // 8. Test route để kiểm tra server hoạt động
 app.get('/api', (req, res) => {

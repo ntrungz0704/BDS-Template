@@ -11,6 +11,7 @@ import {
   updateUserStatus,
   getTemplates,
   updateTemplateStatus,
+  updateTemplatePrice,
   getTemplateDraft,
   updateTemplateDraft,
   publishTemplateDraft,
@@ -20,6 +21,11 @@ import {
   compareTemplateVersions,
   migrateTenantsToLatest,
   repairUserTenants,
+  getCustomerDetail,
+  extendTrial,
+  resetCustomerPassword,
+  activateSubscription,
+  suspendCustomer,
 } from '../controllers/admin.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/role.middleware';
@@ -48,6 +54,7 @@ router.put('/users/:id/status', csrfMiddleware, updateUserStatus);
 
 router.get('/templates', getTemplates);
 router.put('/templates/:id/status', csrfMiddleware, updateTemplateStatus);
+router.put('/templates/:id/price', csrfMiddleware, updateTemplatePrice);
 
 // Template Studio Endpoints
 router.get('/templates/:id/draft', getTemplateDraft);
@@ -63,6 +70,13 @@ router.post('/templates/:id/migrate-tenants', csrfMiddleware, migrateTenantsToLa
 
 // ── Maintenance / Dev Tools ─────────────────────────────────────────────────
 // Repair: Fix user roles & tenantId for users with completed orders
-router.post('/repair/user-tenants', repairUserTenants);
+router.post('/repair/user-tenants', csrfMiddleware, repairUserTenants);
+
+// ── Customer Management (V2) ────────────────────────────────────────────────
+router.get('/customers/:id', getCustomerDetail);
+router.post('/customers/:id/extend-trial', csrfMiddleware, extendTrial);
+router.post('/customers/:id/reset-password', csrfMiddleware, resetCustomerPassword);
+router.post('/customers/:id/activate-subscription', csrfMiddleware, activateSubscription);
+router.post('/customers/:id/suspend', csrfMiddleware, suspendCustomer);
 
 export default router;

@@ -66,6 +66,14 @@ export interface CartItem {
   note?: string;
 }
 
+export interface ToastInfo {
+  id: string;
+  message: string;
+  type?: 'success' | 'error' | 'info';
+  actionLabel?: string;
+  onAction?: () => void;
+}
+
 interface AuthContextType {
   user: User | null;
   orders: Order[];
@@ -74,6 +82,9 @@ interface AuthContextType {
   isAuthModalOpen: boolean;
   authTab: 'login' | 'register';
   isLoading: boolean;
+  toast: ToastInfo | null;
+  showToast: (message: string, type?: 'success' | 'error' | 'info', action?: { label: string; onClick: () => void }) => void;
+  hideToast: () => void;
   openAuthModal: (tab?: 'login' | 'register') => void;
   closeAuthModal: () => void;
   login: (email: string, password: string) => Promise<boolean>;
@@ -84,27 +95,13 @@ interface AuthContextType {
   addOrder: (order: { template: OrderTemplateInfo; type: 'BUY' | 'RENT'; amount: number; subdomain?: string; note?: string }) => Order;
   toggleWishlist: (template: any) => void;
   isWishlisted: (templateSlug: string) => boolean;
-  addToCart: (template: any, type: 'BUY' | 'RENT', subdomain?: string, note?: string) => void;
+  addToCart: (template: any, type?: 'BUY' | 'RENT', subdomain?: string, note?: string) => void;
   removeFromCart: (templateId: string) => void;
   updateCartItem: (templateId: string, updates: Partial<CartItem>) => void;
   clearCart: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-const INITIAL_ADMIN_USER: User = {
-  id: 'usr-admin-vip-01',
-  fullName: 'Admin PlatformBDS',
-  email: 'admin@platformbds.vn',
-  phone: '0919006030',
-  avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
-  role: 'SUPER_ADMIN',
-  customerProfile: {
-    address: 'Diamond Plaza, 34 Lê Duẩn, Quận 1, TP Hồ Chí Minh',
-    companyName: 'PlatformBDS Corp',
-    taxCode: '0316524982',
-  },
-};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -114,6 +111,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authTab, setAuthTab] = useState<'login' | 'register'>('login');
   const [isLoading, setIsLoading] = useState(true);
+  const [toast, setToast] = useState<ToastInfo | null>(null);
+
+  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success', action?: { label: string; onClick: () => void }) => {
+    const id = `toast-${Date.now()}`;
+    setToast({
+      id,
+      message,
+      type,
+      actionLabel: action?.label,
+      onAction: action?.onClick,
+    });
+  };
+
+  const hideToast = () => {
+    setToast(null);
+  };
 
   useEffect(() => {
     const initAuth = async () => {
@@ -162,22 +175,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         }
 
+        const savedToken = localStorage.getItem('platformbds_token');
+        if (savedToken) {
+          axios.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`;
+        }
+
         try {
           const res = await axios.get(`${API_URL}/api/auth/me`, {
             withCredentials: true,
-            timeout: 2500,
+            timeout: 3000,
           });
           if (res?.data?.data?.user) {
             const apiUser = res.data.data.user;
+            const apiOrders = res.data.data.orders || [];
+            const apiWishlists = res.data.data.user?.wishlists || [];
+
             setUser(apiUser);
+            setOrders(apiOrders);
+            setWishlists(apiWishlists);
+
             localStorage.setItem('platformbds_user_v3', JSON.stringify(apiUser));
-          }
-          if (res?.data?.data?.orders && Array.isArray(res.data.data.orders) && res.data.data.orders.length > 0) {
-            setOrders(res.data.data.orders);
-            localStorage.setItem('platformbds_orders_v3', JSON.stringify(res.data.data.orders));
+            localStorage.setItem('platformbds_orders_v3', JSON.stringify(apiOrders));
+            localStorage.setItem('platformbds_wishlist_v3', JSON.stringify(apiWishlists));
+          } else {
+            setUser(null);
+            setOrders([]);
+            localStorage.removeItem('platformbds_user_v3');
+            localStorage.removeItem('platformbds_orders_v3');
+            localStorage.removeItem('platformbds_token');
+            delete axios.defaults.headers.common['Authorization'];
           }
         } catch (err) {
-          // Backend API offline or session expired. Using local customer state.
+          // Backend API offline or session expired
+          setUser(null);
+          setOrders([]);
+          localStorage.removeItem('platformbds_user_v3');
+          localStorage.removeItem('platformbds_orders_v3');
         }
       }
       setIsLoading(false);
@@ -187,8 +220,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const openAuthModal = (tab: 'login' | 'register' = 'login') => {
-    setAuthTab(tab);
-    setIsAuthModalOpen(true);
+    setIsAuthModalOpen(false);
+    if (typeof window !== 'undefined') {
+      window.location.href = tab === 'register' ? '/register' : '/login';
+    }
   };
 
   const closeAuthModal = () => {
@@ -199,75 +234,64 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const res = await axios.post(`${API_URL}/api/auth/login`, { email, password }, {
         withCredentials: true,
-        timeout: 3000,
+        timeout: 5000,
       });
       if (res?.data?.data?.user || res?.data?.user) {
         const loggedUser = res.data?.data?.user || res.data?.user;
+        const accessToken = res.data?.data?.accessToken;
+        
+        if (accessToken) {
+          localStorage.setItem('platformbds_token', accessToken);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+        }
+        
         setUser(loggedUser);
         localStorage.setItem('platformbds_user_v3', JSON.stringify(loggedUser));
+
+        // Fetch fresh user profile & orders for this exact user
+        try {
+          const meRes = await axios.get(`${API_URL}/api/auth/me`, {
+            withCredentials: true,
+            timeout: 3000,
+          });
+          if (meRes?.data?.data?.user) {
+            const freshUser = meRes.data.data.user;
+            const freshOrders = meRes.data.data.orders || [];
+            const freshWishlists = meRes.data.data.user?.wishlists || [];
+
+            setUser(freshUser);
+            setOrders(freshOrders);
+            setWishlists(freshWishlists);
+
+            localStorage.setItem('platformbds_user_v3', JSON.stringify(freshUser));
+            localStorage.setItem('platformbds_orders_v3', JSON.stringify(freshOrders));
+            localStorage.setItem('platformbds_wishlist_v3', JSON.stringify(freshWishlists));
+          }
+        } catch (e) {
+          setOrders([]);
+          localStorage.setItem('platformbds_orders_v3', JSON.stringify([]));
+        }
+
         setIsAuthModalOpen(false);
         return true;
       }
     } catch (err: any) {
-      console.warn('Backend login failed or unreachable, performing seamless local verification/login.');
+      const msg = err?.response?.data?.error?.message || err?.message;
+      throw new Error(msg || 'Đăng nhập không thành công. Vui lòng kiểm tra lại.');
     }
-
-    const cleanEmail = email.trim().toLowerCase();
-    let targetUser: User = {
-      id: `usr-${Date.now()}`,
-      email: cleanEmail,
-      fullName: cleanEmail.includes('admin') ? 'Quản Trị Viên' : cleanEmail.split('@')[0].toUpperCase(),
-      phone: '0919006030',
-      role: cleanEmail.includes('admin') ? 'SUPER_ADMIN' : 'CUSTOMER',
-      customerProfile: {
-        address: 'Diamond Plaza, 34 Lê Duẩn, Quận 1, TP Hồ Chí Minh',
-        companyName: 'PlatformBDS Member Corp',
-        taxCode: '0316524982',
-      },
-    };
-
-    if (cleanEmail === 'admin@platformbds.vn' || cleanEmail.includes('admin')) {
-      targetUser = {
-        id: 'usr-admin-vip-01',
-        email: cleanEmail,
-        fullName: 'Admin PlatformBDS',
-        phone: '0988123456',
-        role: 'SUPER_ADMIN',
-      };
-    }
-
-    setUser(targetUser);
-    localStorage.setItem('platformbds_user_v3', JSON.stringify(targetUser));
-    setIsAuthModalOpen(false);
-    return true;
+    return false;
   };
 
   const register = async (data: { fullName: string; email: string; phone?: string; password: string }): Promise<boolean> => {
     try {
-      await axios.post(`${API_URL}/api/auth/register`, data, {
-        timeout: 3000,
+      const res = await axios.post(`${API_URL}/api/auth/register`, data, {
+        timeout: 5000,
       });
+      return res.data?.success ?? true;
     } catch (err: any) {
-      console.warn('Backend register failed or unreachable, saving local customer account.');
+      const serverMessage = err?.response?.data?.error?.message || err?.message;
+      throw new Error(serverMessage || 'Đăng ký không thành công. Vui lòng thử lại.');
     }
-
-    const newUser: User = {
-      id: `usr-${Date.now()}`,
-      fullName: data.fullName,
-      email: data.email.trim().toLowerCase(),
-      phone: data.phone || '0919006030',
-      role: 'CUSTOMER',
-      customerProfile: {
-        address: 'Chưa cập nhật',
-        companyName: 'Chưa cập nhật',
-        taxCode: 'Chưa cập nhật',
-      },
-    };
-
-    setUser(newUser);
-    localStorage.setItem('platformbds_user_v3', JSON.stringify(newUser));
-    setIsAuthModalOpen(false);
-    return true;
   };
 
   const logout = async () => {
@@ -279,11 +303,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (e) {}
 
     setUser(null);
-    localStorage.removeItem('platformbds_user_v3');
+    setOrders([]);
+    setWishlists([]);
+    setCart([]);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('platformbds_user_v3');
+      localStorage.removeItem('platformbds_orders_v3');
+      localStorage.removeItem('platformbds_wishlist_v3');
+      localStorage.removeItem('platformbds_cart_v3');
+      localStorage.removeItem('platformbds_token');
+      delete axios.defaults.headers.common['Authorization'];
+    }
   };
 
-  const updateProfile = (profile: { fullName: string; phone: string; address: string; companyName: string; taxCode: string }) => {
+  const updateProfile = async (profile: { fullName: string; phone: string; address: string; companyName: string; taxCode: string }) => {
     if (!user) return;
+    try {
+      const res = await axios.put(`${API_URL}/api/auth/profile`, profile, {
+        withCredentials: true,
+        timeout: 5000,
+      });
+      if (res.data?.data?.user) {
+        const updatedUser = res.data.data.user;
+        setUser(updatedUser);
+        localStorage.setItem('platformbds_user_v3', JSON.stringify(updatedUser));
+        return;
+      }
+    } catch (err) {
+      console.warn('API profile update failed, updating local state.');
+    }
+
     const updatedUser: User = {
       ...user,
       fullName: profile.fullName,
@@ -299,7 +348,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const updatePassword = async (oldPassword: string, newPassword: string): Promise<boolean> => {
-    return true;
+    try {
+      // Verify old password by attempting login
+      await axios.post(`${API_URL}/api/auth/login`, { email: user?.email, password: oldPassword }, { withCredentials: true });
+      
+      // Use direct-reset to set new password
+      const res = await axios.post(`${API_URL}/api/password/direct-reset-password`, {
+        email: user?.email,
+        phone: user?.phone || '',
+        newPassword,
+      });
+      
+      if (res.data?.success) {
+        return true;
+      }
+      throw new Error(res.data?.error?.message || 'Đổi mật khẩu thất bại.');
+    } catch (err: any) {
+      const msg = err?.response?.data?.error?.message || err?.message || 'Mật khẩu cũ không đúng hoặc đổi mật khẩu thất bại.';
+      throw new Error(msg);
+    }
   };
 
   const addOrder = (orderInfo: { template: OrderTemplateInfo; type: 'BUY' | 'RENT'; amount: number; subdomain?: string; note?: string }): Order => {
@@ -337,6 +404,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const toggleWishlist = (template: any) => {
+    if (!user) {
+      openAuthModal('login');
+      return;
+    }
     const slug = template.slug;
     const exists = wishlists.some((w) => w.template.slug === slug);
     let nextWishlist: WishlistItem[];
@@ -351,7 +422,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           slug: template.slug,
           shortDescription: template.shortDescription || template.description || '',
           thumbnail: template.thumbnail || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
-          priceBuy: template.priceBuy || 3900000,
+          priceBuy: template.priceBuy || 499000,
           collectionSlug: template.collectionSlug,
         },
       };
@@ -367,31 +438,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return wishlists.some((w) => w.template.slug === templateSlug);
   };
 
-  const addToCart = (template: any, type: 'BUY' | 'RENT', subdomain?: string, note?: string) => {
-    const exists = cart.some(item => item.template.slug === template.slug);
+  const addToCart = (template: any, type: 'BUY' | 'RENT' = 'BUY', subdomain?: string, note?: string) => {
+    const slug = template.slug || template.id;
+    const exists = cart.some(item => item.template.slug === slug || item.template.id === template.id);
     if (exists) {
-      alert('Sản phẩm này đã có trong giỏ hàng!');
+      showToast(`Mẫu "${template.name}" đã có trong giỏ hàng!`, 'info', {
+        label: 'Xem giỏ hàng',
+        onClick: () => {
+          if (typeof window !== 'undefined') window.location.href = '/cart';
+        },
+      });
       return;
     }
+
     const newItem: CartItem = {
       template: {
-        id: template.id || template.slug,
+        id: template.id || slug,
         name: template.name,
-        slug: template.slug,
-        thumbnail: template.thumbnail || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
-        priceBuy: template.priceBuy || 3900000,
-        priceRentMonthly: template.priceRentMonthly || 299000,
+        slug: slug,
+        thumbnail: template.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+        priceBuy: template.priceBuy || 499000,
+        priceRentMonthly: template.priceRentMonthly || 199000,
       },
-      type,
+      type: type || 'BUY',
       subdomain: subdomain || '',
       note: note || '',
     };
-    const newCart = [...cart, newItem];
+
+    const newCart = [newItem, ...cart];
     setCart(newCart);
     if (typeof window !== 'undefined') {
       localStorage.setItem('platformbds_cart_v3', JSON.stringify(newCart));
     }
-    alert('Đã thêm sản phẩm vào giỏ hàng!');
+
+    showToast(`Đã thêm "${template.name}" vào giỏ hàng!`, 'success', {
+      label: 'Xem giỏ hàng',
+      onClick: () => {
+        if (typeof window !== 'undefined') window.location.href = '/cart';
+      },
+    });
   };
 
   const removeFromCart = (templateId: string) => {
@@ -400,6 +485,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (typeof window !== 'undefined') {
       localStorage.setItem('platformbds_cart_v3', JSON.stringify(newCart));
     }
+    showToast('Đã xóa mẫu khỏi giỏ hàng', 'info');
   };
 
   const updateCartItem = (templateId: string, updates: Partial<CartItem>) => {
@@ -432,6 +518,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthModalOpen,
         authTab,
         isLoading,
+        toast,
+        showToast,
+        hideToast,
         openAuthModal,
         closeAuthModal,
         login,
@@ -460,3 +549,4 @@ export function useAuth(): AuthContextType {
   }
   return context;
 }
+

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, MessageSquare, ChevronUp } from 'lucide-react';
+import { Phone, ChevronUp } from 'lucide-react';
+import ZaloIcon from './icons/ZaloIcon';
 
 export default function FloatingButtons() {
   const [showScroll, setShowScroll] = useState(false);
@@ -17,16 +18,16 @@ export default function FloatingButtons() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 flex flex-col gap-3.5 z-50">
-      {/* 1. Zalo Button (Fake Messenger/Chat Icon) */}
+    <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
+      {/* 1. Official Zalo Button */}
       <a
         href="https://zalo.me/0919006030"
         target="_blank"
         rel="noopener noreferrer"
-        className="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg flex items-center justify-center transition-transform hover:scale-110"
-        title="Chat Zalo"
+        className="w-12 h-12 rounded-full bg-[#0068FF] overflow-hidden shadow-lg shadow-blue-600/40 flex items-center justify-center transition-transform hover:scale-110 group p-2"
+        title="Chat Zalo CSKH (0919 006 030)"
       >
-        <MessageSquare className="w-5 h-5 fill-current" />
+        <ZaloIcon className="w-full h-full" />
       </a>
 
       {/* 2. Hotline Call Button */}

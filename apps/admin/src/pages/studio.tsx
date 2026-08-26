@@ -24,6 +24,36 @@ interface PageConfig {
   sections: Section[];
 }
 
+const DEFAULT_PAGES: PageConfig[] = [
+  {
+    slug: 'home',
+    name: 'Trang Chủ',
+    sections: [
+      { id: 'hero', name: 'Hero Banner', type: 'hero', content: { title: 'DINH THỰ HOÀNG GIA BÊN DÒNG SÔNG NGỌC', subtitle: 'Kiệt tác kiến trúc Ý độc tôn dành cho giới tinh hoa' } },
+      { id: 'stats', name: 'Thông Số Nổi Bật', type: 'stats', content: { title: 'QUY MÔ VÀ ĐẲNG CẤP', subtitle: 'Tổng diện tích 25ha | 18 Biệt thự siêu sang | Bến du thuyền riêng' } },
+      { id: 'about', name: 'Giới Thiệu Dự Án', type: 'about', content: { title: 'TỔNG QUAN DỰ ÁN', description: 'Được quy hoạch đồng bộ với tiêu chuẩn quốc tế và quản lý vận hành 5 sao.' } },
+      { id: 'projects', name: 'Sản Phẩm Mở Bán', type: 'projects', content: { title: 'DANH MỤC BIỆT THỰ & DINH THỰ' } },
+      { id: 'amenities', name: 'Tiện Ích 5 Sao', type: 'amenities', content: { title: 'HỆ THỐNG TIỆN ÍCH ĐẶC QUYỀN' } },
+      { id: 'contact', name: 'Form Đăng Ký Tư Vấn', type: 'contact', content: { title: 'NHẬN BẢNG GIÁ VÀ THAM QUAN' } }
+    ]
+  },
+  {
+    slug: 'about',
+    name: 'Giới Thiệu',
+    sections: [
+      { id: 'about-hero', name: 'Banner Giới Thiệu', type: 'hero', content: { title: 'VỀ CHỦ ĐẦU TƯ' } },
+      { id: 'about-details', name: 'Tầm Nhìn & Sứ Mệnh', type: 'about', content: { title: 'TẦM NHÌN PHÁT TRIỂN' } }
+    ]
+  },
+  {
+    slug: 'contact',
+    name: 'Liên Hệ',
+    sections: [
+      { id: 'contact-main', name: 'Thông Tin & Bản Đồ', type: 'contact', content: { title: 'LIÊN HỆ PHÒNG KINH DOANH' } }
+    ]
+  }
+];
+
 export default function TemplateStudio() {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -57,7 +87,7 @@ export default function TemplateStudio() {
   });
 
   const [layoutConfig, setLayoutConfig] = useState<{ pages: PageConfig[] }>({
-    pages: []
+    pages: DEFAULT_PAGES
   });
 
   const [featureFlags, setFeatureFlags] = useState({
@@ -126,7 +156,9 @@ export default function TemplateStudio() {
   useEffect(() => {
     if (draftRes) {
       if (draftRes.themeConfig) setThemeConfig(draftRes.themeConfig);
-      if (draftRes.layoutConfig) setLayoutConfig(draftRes.layoutConfig);
+      if (draftRes.layoutConfig?.pages && draftRes.layoutConfig.pages.length > 0) {
+        setLayoutConfig(draftRes.layoutConfig);
+      }
       if (draftRes.featureFlags) setFeatureFlags(draftRes.featureFlags);
       if (draftRes.components) setComponents(draftRes.components);
     }

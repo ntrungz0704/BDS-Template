@@ -53,7 +53,7 @@ export default function AdminTenants() {
       setPlan('STARTER');
     },
     onError: (error: any) => {
-      alert(error.response?.data?.error?.message || error.response?.data?.message || 'Có lỗi xảy ra khi tạo khách thuê.');
+      alert(error.response?.data?.error?.message || error.response?.data?.message || 'Có lỗi xảy ra khi tạo website.');
     },
   });
 
@@ -118,7 +118,7 @@ export default function AdminTenants() {
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <span className="text-sm font-bold text-slate-500">Đang tải danh sách khách thuê...</span>
+          <span className="text-sm font-bold text-slate-500">Đang tải danh sách Website...</span>
         </div>
       </div>
     );
@@ -127,7 +127,7 @@ export default function AdminTenants() {
   const tenants = tenantsRes?.data || [];
 
   return (
-    <AdminLayout title="Quản Lý Khách Thuê (Tenants)" subtitle="Kích hoạt, tạm ngưng hoạt động các website bất động sản hoặc tạo nhanh khách thuê mới.">
+    <AdminLayout title="Quản Lý Website Khách Hàng" subtitle="Tạo website mới từ Template, kích hoạt, tạm ngưng hoặc quản lý website bất động sản của khách hàng.">
       {/* Header action button */}
       <div className="mb-6 flex justify-end">
         <button
@@ -137,7 +137,7 @@ export default function AdminTenants() {
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
           </svg>
-          Tạo Khách Thuê Mới
+          Tạo Website Mới
         </button>
       </div>
 
@@ -146,45 +146,73 @@ export default function AdminTenants() {
         <table className="w-full border-collapse text-left text-sm text-slate-700">
           <thead className="bg-slate-50/50 text-xs font-bold text-slate-400 border-b border-slate-100">
             <tr>
-              <th className="px-8 py-4">Tên Website / Văn phòng</th>
-              <th className="px-8 py-4">Subdomain (SaaS)</th>
-              <th className="px-8 py-4">Mẫu giao diện</th>
-              <th className="px-8 py-4">Ngày kích hoạt</th>
-              <th className="px-8 py-4">Trạng thái</th>
-              <th className="px-8 py-4 text-right">Hành động</th>
+              <th className="px-6 py-4">Tên Website</th>
+              <th className="px-6 py-4">Subdomain</th>
+              <th className="px-6 py-4">Template</th>
+              <th className="px-6 py-4">Version</th>
+              <th className="px-6 py-4">Chủ sở hữu</th>
+              <th className="px-6 py-4">Dùng thử / Thời hạn</th>
+              <th className="px-6 py-4">Trạng thái</th>
+              <th className="px-6 py-4 text-right">Hành động</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
             {tenants.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-8 py-12 text-center text-slate-400 font-semibold">Chưa có website nào được khởi tạo.</td>
+                <td colSpan={8} className="px-8 py-12 text-center text-slate-400 font-semibold">Chưa có website nào được khởi tạo.</td>
               </tr>
             ) : (
               tenants.map((tenant: any) => (
                 <tr key={tenant.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="px-8 py-4 font-bold text-slate-800">{tenant.name}</td>
-                  <td className="px-8 py-4">
+                  <td className="px-6 py-4">
+                    <div className="font-bold text-slate-900">{tenant.name}</div>
+                    <div className="text-[10px] text-slate-400 font-medium font-mono">ID: {tenant.id.slice(0, 8)}...</div>
+                  </td>
+                  <td className="px-6 py-4">
                     <a
-                      href={`http://${tenant.slug}.localhost:3003`}
+                      href={`http://localhost:3003?tenant=${tenant.slug}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-xs font-mono font-bold text-indigo-600 hover:underline"
                     >
-                      {tenant.slug}
+                      {tenant.slug}.platformbds.vn
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
                     </a>
                   </td>
-                  <td className="px-8 py-4">
-                    <span className="bg-slate-100 border border-slate-200 text-slate-600 px-2.5 py-1 rounded-md text-xs font-bold">
-                      {tenant.templateId || 'N/A'}
+                  <td className="px-6 py-4">
+                    <span className="bg-slate-100 border border-slate-200 text-slate-700 px-2.5 py-1 rounded-lg text-xs font-bold font-mono">
+                      {tenant.templateId || 'luxury-gold'}
                     </span>
                   </td>
-                  <td className="px-8 py-4 text-slate-500 font-semibold">
-                    {tenant.activatedAt ? new Date(tenant.activatedAt).toLocaleDateString('vi-VN') : 'Chưa kích hoạt'}
+                  <td className="px-6 py-4">
+                    <span className="text-xs font-mono font-bold text-slate-500">
+                      v{tenant.version ? (tenant.version / 10).toFixed(1) : '1.0'}
+                    </span>
                   </td>
-                  <td className="px-8 py-4">
+                  <td className="px-6 py-4">
+                    <div className="text-xs font-bold text-slate-700">{tenant.users?.[0]?.fullName || '—'}</div>
+                    <div className="text-[10px] text-slate-400 font-medium">{tenant.users?.[0]?.email || ''}</div>
+                  </td>
+                  <td className="px-6 py-4 text-xs font-medium">
+                    {tenant.trialStatus ? (
+                      <div>
+                        <span className="text-amber-600 font-bold block">Trial ({tenant.trialSaveCount || 0}/3 lượt lưu)</span>
+                        <span className="text-slate-400 text-[10px]">
+                          {tenant.trialEndAt ? `Hết hạn: ${new Date(tenant.trialEndAt).toLocaleDateString('vi-VN')}` : 'Đang dùng thử'}
+                        </span>
+                      </div>
+                    ) : (
+                      <div>
+                        <span className="text-emerald-600 font-bold block">Gói Thuê Năm</span>
+                        <span className="text-slate-400 text-[10px]">
+                          {tenant.activatedAt ? `Kích hoạt: ${new Date(tenant.activatedAt).toLocaleDateString('vi-VN')}` : 'Hoạt động'}
+                        </span>
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
                     <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
                       tenant.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-rose-50 text-rose-700 border border-rose-100'
                     }`}>
@@ -192,22 +220,42 @@ export default function AdminTenants() {
                       {tenant.status === 'ACTIVE' ? 'Hoạt động' : 'Tạm khóa'}
                     </span>
                   </td>
-                  <td className="px-8 py-4 text-right">
-                    {tenant.status === 'ACTIVE' ? (
-                      <button
-                        onClick={() => updateStatusMutation.mutate({ id: tenant.id, status: 'SUSPENDED' })}
-                        className="text-xs font-bold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100/70 px-3.5 py-2 rounded-xl transition-all shadow-sm"
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <a
+                        href={`http://localhost:3003?tenant=${tenant.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-all"
+                        title="Xem Website công khai"
                       >
-                        Khóa Website
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => updateStatusMutation.mutate({ id: tenant.id, status: 'ACTIVE' })}
-                        className="text-xs font-bold text-emerald-600 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100/70 px-3.5 py-2 rounded-xl transition-all shadow-sm"
+                        Xem Web
+                      </a>
+                      <a
+                        href="http://localhost:3001"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg transition-all"
+                        title="Mở Customer CMS"
                       >
-                        Mở Website
-                      </button>
-                    )}
+                        Vào CMS
+                      </a>
+                      {tenant.status === 'ACTIVE' ? (
+                        <button
+                          onClick={() => updateStatusMutation.mutate({ id: tenant.id, status: 'SUSPENDED' })}
+                          className="text-xs font-bold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100/70 px-2.5 py-1.5 rounded-lg transition-all"
+                        >
+                          Khóa
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => updateStatusMutation.mutate({ id: tenant.id, status: 'ACTIVE' })}
+                          className="text-xs font-bold text-emerald-600 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100/70 px-2.5 py-1.5 rounded-lg transition-all"
+                        >
+                          Mở
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))
@@ -226,7 +274,7 @@ export default function AdminTenants() {
             >
               ✕
             </button>
-            <h3 className="text-lg font-extrabold text-slate-855 mb-6 uppercase tracking-wider">Tạo Khách Thuê Mới Thủ Công</h3>
+            <h3 className="text-lg font-extrabold text-slate-855 mb-6 uppercase tracking-wider">Tạo Website Mới Từ Template</h3>
             
             <form onSubmit={handleCreateSubmit} className="space-y-4">
               <div>

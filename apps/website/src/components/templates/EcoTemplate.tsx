@@ -303,6 +303,8 @@ const CORE_VALUES = [
 ];
 
 export default function EcoTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
+  const brandPrimary = dynamicTheme?.primaryColor || '#15803D';
+  const brandAccent = dynamicTheme?.accentColor || '#22C55E';
   // Dynamic Posts Override & Shadowing Variable via globalThis reference
   const activePosts = posts && posts.length > 0
     ? posts.map((p, index) => ({
@@ -371,7 +373,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
+      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
     }
   };
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
@@ -417,7 +419,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
   const isMobile = viewport === 'mobile';
   const isSmall = isMobile || viewport === 'tablet';
 
-  const getPageHref = (page: string) => `/demo/${template.slug}${page === 'home' ? '' : '/' + page}`;
+  const getPageHref = (page: string) => page === 'home' ? '/' : '?page=' + page;
 
   const navLinks = [
     { label: 'Trang chủ', page: 'home' },
@@ -479,11 +481,20 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
   const renderNav = () => (
     <nav className="sticky top-0 z-40 shadow-sm transition-all duration-300" style={{ backgroundColor: t.headerBg }}>
       <div className={`${MAX_W} mx-auto px-4 md:px-8 flex justify-between items-center h-20`}>
-        <button onClick={() => { setCurrentPage('home'); resetFilters(); }} className="flex items-center gap-2.5 group">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center transition-colors" style={{ backgroundColor: t.primary }}>
+        <button onClick={() => { setCurrentPage('home'); resetFilters(); }} className="flex items-center gap-2.5 group text-left">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center transition-colors shrink-0" style={{ backgroundColor: t.primary }}>
             <Leaf className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-black tracking-tight" style={{ color: t.heading }}>{template.name || 'ECO LIVING'}</span>
+          <div>
+            <span className="text-xl font-black tracking-tight block uppercase" style={{ color: t.heading }}>
+              {company?.name || template.name || 'ECO LIVING'}
+            </span>
+            {company?.slogan && (
+              <span className="text-[10px] tracking-wider uppercase font-semibold block opacity-75" style={{ color: t.text }}>
+                {company.slogan}
+              </span>
+            )}
+          </div>
         </button>
 
         {!isSmall ? (
@@ -850,10 +861,10 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                   <Phone className="w-5 h-5" /> <span>1800 1234 (Miễn phí)</span>
                 </div>
                 <div className="flex items-center gap-3" style={{ color: t.accent }}>
-                  <Mail className="w-5 h-5" /> <span>hello@ecoliving.vn</span>
+                  <Mail className="w-5 h-5" /> <span>{company?.email || company?.email || 'hello@ecoliving.vn'}</span>
                 </div>
                 <div className="flex items-center gap-3" style={{ color: t.accent }}>
-                  <MapPin className="w-5 h-5" /> <span>Tầng 12, Vinhomes Center, 208 Giảng Võ, Hà Nội</span>
+                  <MapPin className="w-5 h-5" /> <span>{company?.address || company?.address || 'Tầng 12, Vinhomes Center, 208 Giảng Võ, Hà Nội'}</span>
                 </div>
               </div>
             </div>
@@ -1389,7 +1400,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
             <h2 className="text-2xl font-black mb-6" style={{ color: t.heading }}>Hệ Thống Văn Phòng</h2>
             {[
               { icon: Phone, label: 'Hotline Chăm sóc khách hàng', val: '1800 1234 (Miễn phí 24/7)' },
-              { icon: Mail, label: 'Email Hỗ trợ pháp lý & thông tin', val: 'hello@ecoliving.vn' },
+              { icon: Mail, label: 'Email Hỗ trợ pháp lý & thông tin', val: company?.email || 'hello@ecoliving.vn' },
               { icon: MapPin, label: 'Văn phòng giao dịch Hà Nội', val: 'Tầng 12, Vinhomes Center, 208 Giảng Võ, Ba Đình' },
               { icon: MapPin, label: 'Văn phòng giao dịch TP. Hồ Chí Minh', val: 'Tầng 8, Saigon Center, 65 Lê Lợi, Quận 1' },
             ].map((item, i) => (

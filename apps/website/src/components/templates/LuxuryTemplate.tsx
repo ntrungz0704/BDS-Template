@@ -469,7 +469,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
+      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
     }
   };
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
@@ -505,7 +505,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
   const isTablet = viewport === 'tablet';
   const isSmall = isMobile || isTablet;
 
-  const getPageHref = (page: string) => `/demo/${template.slug}${page === 'home' ? '' : '/' + page}`;
+  const getPageHref = (page: string) => page === 'home' ? '/' : '?page=' + page;
   const projectName = company?.name || template.name || "LUMIÈRE";
 
   const handlePageChange = (page: string, e: React.MouseEvent) => {
@@ -530,28 +530,28 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
   const renderNav = () => (
     <nav className="sticky top-0 w-full z-50" style={{ backgroundColor: 'rgba(10,10,15,0.92)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(201,168,76,0.15)' }}>
-      <div className={`${MAX_W} mx-auto px-4 md:px-8 flex justify-between items-center h-20`}>
+      <div className={`${MAX_W} mx-auto px-4 md:px-8 flex justify-between items-center h-20 gap-4`}>
         {/* Logo */}
-        <Link href={getPageHref('home')} onClick={(e) => handlePageChange('home', e)} className="flex items-center gap-3 group">
-          <Crown className="w-7 h-7 group-hover:scale-110 transition-transform" style={{ color: GOLD }} />
+        <Link href={getPageHref('home')} onClick={(e) => handlePageChange('home', e)} className="flex items-center gap-3 group shrink-0">
+          <Crown className="w-7 h-7 group-hover:scale-110 transition-transform shrink-0" style={{ color: GOLD }} />
           <div>
-            <div className="text-lg tracking-[0.25em] uppercase font-light text-white" style={{ fontFamily: FONT_HEADING }}>{projectName}</div>
-            <div className="text-[9px] tracking-[0.3em] uppercase" style={{ color: GOLD }}>Luxury Real Estate</div>
+            <div className="text-base sm:text-lg tracking-[0.15em] uppercase font-light text-white whitespace-nowrap" style={{ fontFamily: FONT_HEADING }}>{projectName}</div>
+            <div className="text-[9px] tracking-[0.25em] uppercase whitespace-nowrap" style={{ color: GOLD }}>{company?.slogan || 'Luxury Real Estate'}</div>
           </div>
         </Link>
 
         {/* Desktop Nav */}
         {!isSmall && (
-          <div className="flex items-center gap-8 text-[11px] tracking-[0.15em] uppercase font-medium" style={{ color: '#9A9AA8', fontFamily: FONT_BODY }}>
+          <div className="flex items-center gap-3 md:gap-4 lg:gap-6 xl:gap-7 text-[11px] tracking-[0.08em] uppercase font-medium whitespace-nowrap" style={{ color: '#9A9AA8', fontFamily: FONT_BODY }}>
             {navItems.map(item => (
               <Link key={item.page} href={getPageHref(item.page)}
                 onClick={(e) => handlePageChange(item.page, e)}
-                className={`hover:text-white transition-colors pb-1 ${currentPage === item.page ? 'text-white border-b' : ''}`}
+                className={`hover:text-white transition-colors pb-1 whitespace-nowrap ${currentPage === item.page ? 'text-white border-b' : ''}`}
                 style={currentPage === item.page ? { borderColor: GOLD } : {}}>
                 {item.label}
               </Link>
             ))}
-            <GoldButton onClick={(e) => handlePageChange('contact', e)} className="ml-4 py-2.5 px-6 text-[10px]" style={{ color: DARK }}>
+            <GoldButton onClick={(e) => handlePageChange('contact', e)} className="ml-2 lg:ml-3 py-2 px-4 lg:px-5 text-[10px] whitespace-nowrap shrink-0" style={{ color: DARK }}>
               VIP Concierge
             </GoldButton>
           </div>
@@ -605,7 +605,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       {/* ── HERO ── */}
       <section className="relative h-screen min-h-[700px] flex items-end justify-start overflow-hidden" style={{ backgroundColor: DARK }}>
         <div className="absolute inset-0">
-          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }}             src="https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=1920&q=90"
+          <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}             src="https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=1920&q=90"
             alt="Luxury Villa"
             className="w-full h-full object-cover"
             style={{ opacity: 0.55 }}
@@ -764,7 +764,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             {PROJECTS.slice(0, 6).map(project => (
               <div key={project.id} onClick={() => setSelectedProject(project)} className="group relative overflow-hidden cursor-pointer" style={{ border: '1px solid rgba(201,168,76,0.15)' }}>
                 <div className="relative overflow-hidden aspect-[4/3]">
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={project.img} alt={project.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={project.img} alt={project.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,10,15,0.95) 0%, rgba(10,10,15,0) 60%)' }} />
                   <span className="absolute top-4 right-4 text-[10px] px-3 py-1 tracking-widest font-semibold text-black"
                     style={{ backgroundColor: GOLD, fontFamily: FONT_BODY }}>
@@ -819,7 +819,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
               <GoldButton onClick={(e) => handlePageChange('about', e)}>Tìm hiểu thêm <ArrowRight className="w-4 h-4" /></GoldButton>
             </div>
             <div className={`${isSmall ? 'order-first' : ''} relative`}>
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=900&q=80" alt="About" className="w-full h-[500px] object-cover" style={{ border: `1px solid rgba(201,168,76,0.2)` }} />
+              <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=900&q=80" alt="About" className="w-full h-[500px] object-cover" style={{ border: `1px solid rgba(201,168,76,0.2)` }} />
               <div className="absolute -bottom-6 -left-6 p-6 hidden md:block" style={{ backgroundColor: GOLD }}>
                 <div className="text-3xl font-light mb-1" style={{ color: DARK, fontFamily: FONT_HEADING }}>18+</div>
                 <div className="text-xs uppercase tracking-widest" style={{ color: DARK, fontFamily: FONT_BODY }}>Năm kinh nghiệm</div>
@@ -858,7 +858,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           {/* Active floor */}
           {FLOOR_PLANS[activeFloor] && (
             <div className={`grid ${isSmall ? 'grid-cols-1' : 'grid-cols-2'} gap-12 items-center`}>
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={FLOOR_PLANS[activeFloor].img} alt={FLOOR_PLANS[activeFloor].label} className="w-full h-[400px] object-cover" style={{ border: `1px solid rgba(201,168,76,0.2)` }} />
+              <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={FLOOR_PLANS[activeFloor].img} alt={FLOOR_PLANS[activeFloor].label} className="w-full h-[400px] object-cover" style={{ border: `1px solid rgba(201,168,76,0.2)` }} />
               <div>
                 <div className="text-xs uppercase tracking-widest mb-3" style={{ color: GOLD, fontFamily: FONT_BODY }}>{FLOOR_PLANS[activeFloor].label}</div>
                 <h3 className="text-3xl font-light text-white mb-4" style={{ fontFamily: FONT_HEADING }}>{FLOOR_PLANS[activeFloor].desc}</h3>
@@ -951,7 +951,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 </div>
                 <p className="text-base font-light leading-relaxed mb-8 italic" style={{ color: '#D0D0E0', fontFamily: FONT_HEADING }}>&ldquo;{t.text}&rdquo;</p>
                 <div className="flex items-center gap-4">
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={t.img} alt={t.name} className="w-12 h-12 rounded-full object-cover" style={{ border: `2px solid ${GOLD}` }} />
+                  <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={t.img} alt={t.name} className="w-12 h-12 rounded-full object-cover" style={{ border: `2px solid ${GOLD}` }} />
                   <div>
                     <div className="text-sm font-semibold text-white" style={{ fontFamily: FONT_BODY }}>{t.name}</div>
                     <div className="text-xs" style={{ color: MUTED, fontFamily: FONT_BODY }}>{t.title}</div>
@@ -1009,7 +1009,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             {NEWS.slice(0, 3).map((n) => (
               <article key={n.id} onClick={() => setSelectedArticle(n)} className="group cursor-pointer">
                 <div className="overflow-hidden mb-5" style={{ border: `1px solid rgba(201,168,76,0.1)` }}>
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={n.img} alt={n.title} className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={n.img} alt={n.title} className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
                 <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: GOLD, fontFamily: FONT_BODY }}>{n.category} · {n.date}</div>
                 <h3 className="text-base font-light text-white leading-snug mb-3 group-hover:text-[#E8C97E] transition-colors" style={{ fontFamily: FONT_HEADING }}>{n.title}</h3>
@@ -1067,7 +1067,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       {/* ── CONTACT CTA ── */}
       <section className="py-28 md:py-36 text-center relative overflow-hidden" style={{ backgroundColor: DARK2 }}>
         <div className="absolute inset-0 opacity-10">
-          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1920&q=80" alt="" className="w-full h-full object-cover" />
+          <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1920&q=80" alt="" className="w-full h-full object-cover" />
         </div>
         <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, ${DARK2}, rgba(18,18,26,0.95))` }} />
         <div className="relative z-10 max-w-2xl mx-auto px-4">
@@ -1315,7 +1315,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                   style={{ border: `1px solid rgba(201,168,76,0.12)`, backgroundColor: 'rgba(255,255,255,0.01)' }}
                 >
                   <div className="overflow-hidden aspect-[4/3] relative">
-                    <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={p.img} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={p.img} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,10,15,0.9) 0%, rgba(10,10,15,0) 50%)' }} />
                     <span className="absolute top-3 right-3 px-3 py-1 text-[10px] uppercase tracking-widest text-black" style={{ backgroundColor: GOLD, fontFamily: FONT_BODY }}>{p.tag}</span>
                   </div>
@@ -1407,7 +1407,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 return (
                   <div key={item.year} className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div className="overflow-hidden aspect-video md:aspect-square border border-zinc-800">
-                      <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.img} alt={item.title} className="w-full h-full object-cover animate-fade-in" />
+                      <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={item.img} alt={item.title} className="w-full h-full object-cover animate-fade-in" />
                     </div>
                     <div>
                       <span className="text-xs uppercase tracking-widest animate-fade-in" style={{ color: GOLD, fontFamily: FONT_BODY }}>Năm {item.year}</span>
@@ -1444,7 +1444,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             ].map((l, i) => (
               <div key={i} className="text-center group p-6 border border-zinc-900 bg-zinc-950/20">
                 <div className="relative inline-block mb-6 overflow-hidden rounded-full">
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={l.img} alt={l.name} className="w-32 h-32 rounded-full object-cover mx-auto group-hover:scale-105 transition-transform duration-500" style={{ border: `2px solid ${GOLD}` }} />
+                  <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={l.img} alt={l.name} className="w-32 h-32 rounded-full object-cover mx-auto group-hover:scale-105 transition-transform duration-500" style={{ border: `2px solid ${GOLD}` }} />
                 </div>
                 <h3 className="text-lg font-light text-white mb-1" style={{ fontFamily: FONT_HEADING }}>{l.name}</h3>
                 <div className="text-xs uppercase tracking-widest mb-4 font-semibold" style={{ color: GOLD, fontFamily: FONT_BODY }}>{l.title}</div>
@@ -1500,7 +1500,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 className="group overflow-hidden aspect-[4/3] cursor-pointer relative"
                 style={{ border: `1px solid rgba(201,168,76,0.1)` }}
               >
-                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }}                   src={img.url}
+                <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}                   src={img.url}
                   alt={img.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 group-hover:opacity-90"
                 />
@@ -1687,7 +1687,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 >
                   <div>
                     <div className="overflow-hidden aspect-video">
-                      <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }}                         src={n.img}
+                      <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}                         src={n.img}
                         alt={n.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
@@ -1728,10 +1728,25 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
               <span className="text-xl tracking-[0.2em] uppercase font-light text-white" style={{ fontFamily: FONT_HEADING }}>{projectName}</span>
             </div>
             <p className="text-sm font-light leading-relaxed mb-6 text-zinc-400" style={{ fontFamily: FONT_BODY }}>
-              18 năm kiến tạo những không gian sống đỉnh cao, nơi nghệ thuật gặp gỡ sự hoàn mỹ.
+              {company?.description || company?.slogan || '18 năm kiến tạo những không gian sống đỉnh cao, nơi nghệ thuật gặp gỡ sự hoàn mỹ.'}
             </p>
             <div className="flex gap-4">
-              {[Facebook, Youtube, Instagram].map((Icon, i) => (
+              {company?.facebook && (
+                <a href={company.facebook} target="_blank" rel="noreferrer" className="w-9 h-9 flex items-center justify-center transition-all border border-zinc-800 hover:border-[#C9A84C]" style={{ backgroundColor: 'transparent' }}>
+                  <Facebook className="w-4 h-4" style={{ color: MUTED }} />
+                </a>
+              )}
+              {company?.youtube && (
+                <a href={company.youtube} target="_blank" rel="noreferrer" className="w-9 h-9 flex items-center justify-center transition-all border border-zinc-800 hover:border-[#C9A84C]" style={{ backgroundColor: 'transparent' }}>
+                  <Youtube className="w-4 h-4" style={{ color: MUTED }} />
+                </a>
+              )}
+              {company?.zalo && (
+                <a href={`https://zalo.me/${company.zalo}`} target="_blank" rel="noreferrer" className="px-2 h-9 flex items-center justify-center text-xs font-bold transition-all border border-zinc-800 hover:border-[#C9A84C]" style={{ color: MUTED, backgroundColor: 'transparent' }}>
+                  Zalo
+                </a>
+              )}
+              {!company?.facebook && !company?.youtube && !company?.zalo && [Facebook, Youtube, Instagram].map((Icon, i) => (
                 <button key={i} className="w-9 h-9 flex items-center justify-center transition-all border border-zinc-800 hover:border-[#C9A84C]" style={{ backgroundColor: 'transparent' }}>
                   <Icon className="w-4 h-4" style={{ color: MUTED }} />
                 </button>
@@ -1791,9 +1806,9 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           <div>
             <div className="text-xs uppercase tracking-widest mb-6" style={{ color: GOLD, fontFamily: FONT_BODY }}>Liên Hệ</div>
             <div className="space-y-4 text-sm font-light" style={{ color: MUTED, fontFamily: FONT_BODY }}>
-              <div className="flex items-start gap-3"><Phone className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: GOLD }} /><span>+84 28 3333 8888</span></div>
-              <div className="flex items-start gap-3"><Mail className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: GOLD }} /><span>concierge@lumiere.vn</span></div>
-              <div className="flex items-start gap-3"><MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: GOLD }} /><span>1 Lê Duẩn, Quận 1, TP.HCM</span></div>
+              <div className="flex items-start gap-3"><Phone className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: GOLD }} /><span>{company?.phone || company?.hotline || '+84 28 3333 8888'}</span></div>
+              <div className="flex items-start gap-3"><Mail className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: GOLD }} /><span>{company?.email || 'concierge@lumiere.vn'}</span></div>
+              <div className="flex items-start gap-3"><MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: GOLD }} /><span>{company?.address || '1 Lê Duẩn, Quận 1, TP.HCM'}</span></div>
             </div>
           </div>
         </div>
@@ -1839,7 +1854,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             {FLOOR_PLANS.map((fp, idx) => (
               <div key={fp.id} className={`flex flex-col ${!isSmall && idx % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row'} gap-16 items-center`}>
                 <div className="w-full md:w-1/2">
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={fp.img} alt={fp.label} className="w-full h-[400px] object-cover" style={{ border: `1px solid rgba(201,168,76,0.15)` }} />
+                  <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={fp.img} alt={fp.label} className="w-full h-[400px] object-cover" style={{ border: `1px solid rgba(201,168,76,0.15)` }} />
                 </div>
                 <div className="w-full md:w-1/2">
                   <div className="text-xs uppercase tracking-widest mb-3" style={{ color: GOLD, fontFamily: FONT_BODY }}>{fp.label}</div>
@@ -1910,7 +1925,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
             {/* Left Side: Image */}
             <div className="w-full md:w-1/2 relative min-h-[300px] md:min-h-full">
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }}                 src={selectedProject.img}
+              <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}                 src={selectedProject.img}
                 alt={selectedProject.name}
                 className="absolute inset-0 w-full h-full object-cover"
               />
@@ -1996,7 +2011,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             {/* Modal Content Scrollable container */}
             <div className="overflow-y-auto p-6 md:p-8">
               <div className="aspect-video w-full overflow-hidden mb-6 border border-zinc-800">
-                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
+                <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
               </div>
               
               <div className="text-xs uppercase tracking-widest mb-2" style={{ color: GOLD, fontFamily: FONT_BODY }}>
@@ -2026,7 +2041,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             <X className="w-5 h-5" />
           </button>
           <div className="relative max-w-5xl max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
-            <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }}               src={selectedGalleryImg}
+            <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}               src={selectedGalleryImg}
               alt="Gallery Extended"
               className="max-w-full max-h-[85vh] object-contain border border-[#C9A84C]"
             />

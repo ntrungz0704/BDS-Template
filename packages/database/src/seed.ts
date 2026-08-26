@@ -75,8 +75,9 @@ async function main() {
       slug: 'luxury-gold',
       description: 'Giao diện phong cách hoàng gia, quý phái dành cho dự án cao cấp và biệt thự.',
       shortDescription: 'Phong cách Luxury Gold hoàng gia',
-      priceBuy: 3900000,
-      priceRentMonthly: 399000,
+      priceBuy: 499000,
+      priceBuySource: 799000,
+      priceRentMonthly: 199000,
       isActive: true,
       sortOrder: 1,
     },
@@ -107,7 +108,7 @@ async function main() {
 
   // 3. Tạo Super Admin hệ thống
   console.log('Tạo tài khoản Super Admin...');
-  const adminPasswordHash = await bcrypt.hash('123456', 10);
+  const adminPasswordHash = await bcrypt.hash('adminsuper@123456', 10);
   await prisma.user.create({
     data: {
       email: 'admin@platformbds.vn',

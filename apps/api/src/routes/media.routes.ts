@@ -7,7 +7,10 @@ import { checkTenantAccess } from '../middlewares/tenant.middleware';
 import { subscriptionMiddleware } from '../middlewares/subscription.middleware';
 
 const router = Router();
-const upload = multer({ storage: multer.memoryStorage() }); // We use memory storage to process via Sharp before saving
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 50 * 1024 * 1024 }, // [P0-FIX] Max 50MB to prevent DoS/OOM
+});
 
 router.use(authMiddleware);
 router.use(requireRole(['TENANT_OWNER', 'EDITOR']));
@@ -16,6 +19,7 @@ router.use(subscriptionMiddleware);
 
 router.post('/upload', upload.single('file'), uploadMedia);
 router.get('/', getMedia);
+router.get('/assets', getMedia);
 router.delete('/:id', deleteMedia);
 router.post('/folder', createFolder);
 

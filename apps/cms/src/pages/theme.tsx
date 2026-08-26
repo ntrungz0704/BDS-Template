@@ -147,18 +147,19 @@ function ColorField({
         <p className="text-sm font-semibold text-slate-800">{label}</p>
         {description && <p className="text-xs text-slate-500">{description}</p>}
       </div>
-      <div className="flex items-center gap-2.5">
-        <span className="text-xs font-mono text-slate-500 hidden sm:block">{value.toUpperCase()}</span>
-        <div className="relative">
+      <div className="flex items-center gap-2">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-24 px-2 py-1 text-xs font-mono border border-slate-200 rounded-lg text-slate-700 uppercase focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <div className="relative w-8 h-8 rounded-lg border border-slate-200 shadow-sm overflow-hidden shrink-0 cursor-pointer">
           <input
             type="color"
-            value={value}
+            value={value?.startsWith('#') && value.length === 7 ? value : '#C5A572'}
             onChange={(e) => onChange(e.target.value)}
-            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-          />
-          <div
-            className="w-9 h-9 rounded-lg border-2 border-slate-200 shadow-sm cursor-pointer hover:scale-105 transition-transform"
-            style={{ backgroundColor: value }}
+            className="absolute -inset-2 w-12 h-12 cursor-pointer border-0 p-0"
           />
         </div>
       </div>
@@ -353,8 +354,11 @@ function ThemePreviewPanel({
           >
             <div className="relative aspect-[16/10] bg-slate-900">
               <img
-                src={firstProject?.thumbnail || 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400'}
+                src={firstProject?.thumbnail || 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80'}
                 alt="Project Thumbnail"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80';
+                }}
                 className="w-full h-full object-cover"
               />
               <span

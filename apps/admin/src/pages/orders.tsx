@@ -1,28 +1,72 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import Link from 'next/link';
 import AdminLayout from '../components/AdminLayout';
+import { formatVND } from '@repo/utils';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
+// Web Audio API beep chime for new orders
+function playOrderAlertSound() {
+  if (typeof window === 'undefined') return;
+  try {
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+    osc.frequency.setValueAtTime(880, ctx.currentTime + 0.1); // A5
+    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.35);
+  } catch {}
+}
 
 export default function AdminOrders() {
   const queryClient = useQueryClient();
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
+  const [approvalResult, setApprovalResult] = useState<any | null>(null);
   const [rejectNotes, setRejectNotes] = useState('');
+  const [activeFilter, setActiveFilter] = useState<'ALL' | 'PENDING' | 'COMPLETED' | 'REJECTED'>('ALL');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+  const prevPendingCountRef = useRef<number>(0);
 
-  // 1. Query danh sách đơn hàng chờ duyệt và đã hoàn thành
-  const { data: ordersRes, isLoading } = useQuery({
+  // 1. Query danh sách đơn hàng với Realtime Polling mỗi 3 giây
+  const { data: ordersRes, isLoading, dataUpdatedAt } = useQuery({
     queryKey: ['adminOrders'],
     queryFn: async () => {
-      const res = await axios.get(`${API_URL}/api/admin/orders`, {
+      const res = await axios.get(`${API_URL}/api/admin/orders?limit=100`, {
         withCredentials: true,
       });
       return res.data;
     },
+    refetchInterval: 3000, // Real-time polling 3s
   });
 
-  // 2. Mutation phê duyệt đơn hàng
+  const orders: any[] = ordersRes?.data || [];
+
+  // Tính số lượng theo trạng thái
+  const pendingOrders = orders.filter(
+    (o) => o.status === 'PENDING' || o.status === 'WAITING_CONFIRM' || o.status === 'PENDING_SUBDOMAIN_CONFLICT' || o.status === 'AWAITING_MANUAL_REVIEW'
+  );
+  const completedOrders = orders.filter((o) => o.status === 'COMPLETED');
+  const rejectedOrders = orders.filter((o) => o.status === 'REJECTED');
+
+  // Âm thanh thông báo khi có đơn hàng mới
+  useEffect(() => {
+    if (pendingOrders.length > prevPendingCountRef.current && prevPendingCountRef.current !== 0) {
+      playOrderAlertSound();
+    }
+    prevPendingCountRef.current = pendingOrders.length;
+  }, [pendingOrders.length]);
+
+  // 2. Mutation phê duyệt đơn hàng & Kích hoạt website
   const approveMutation = useMutation({
     mutationFn: async ({ id, version }: { id: string; version: number }) => {
       const csrfToken = document.cookie
@@ -41,27 +85,20 @@ export default function AdminOrders() {
       return res.data;
     },
     onSuccess: (res) => {
+      setSelectedOrder(null);
+      queryClient.invalidateQueries({ queryKey: ['adminOrders'] });
+      queryClient.invalidateQueries({ queryKey: ['adminStats'] });
+
       if (res.data?.status === 'PENDING_SUBDOMAIN_CONFLICT' || res.meta?.conflict) {
         alert('Phát hiện trùng lặp subdomain. Đơn hàng chuyển sang hàng chờ xử lý đổi slug.');
       } else {
         const creds = res.data?.credentials;
         if (creds) {
-          alert(
-            `Đã phê duyệt đơn hàng & tự động khởi tạo Tenant Website thành công!\n\n` +
-            `THÔNG TIN BÀN GIAO CHO KHÁCH HÀNG:\n` +
-            `-----------------------------------\n` +
-            `- Tên miền website: http://${creds.subdomain}.localhost:3003\n` +
-            `- Quản trị website (CMS): http://localhost:3001\n` +
-            `- Email đăng nhập: ${creds.email}\n` +
-            `- Mật khẩu tạm thời: ${creds.password}\n\n` +
-            `👉 Hãy COPY thông tin này gửi cho khách hàng qua Zalo!`
-          );
+          setApprovalResult(creds);
         } else {
-          alert('Đã phê duyệt đơn hàng & tự động khởi tạo Tenant Website thành công!');
+          alert('Đã phê duyệt đơn hàng & kích hoạt website thành công!');
         }
       }
-      setSelectedOrder(null);
-      queryClient.invalidateQueries({ queryKey: ['adminOrders'] });
     },
     onError: (error: any) => {
       alert(error.response?.data?.error?.message || 'Có lỗi xảy ra khi duyệt đơn hàng.');
@@ -87,188 +124,566 @@ export default function AdminOrders() {
       return res.data;
     },
     onSuccess: () => {
-      alert('Đã từ chối đơn hàng thành công.');
+      alert('Đã từ chối đơn hàng.');
       setSelectedOrder(null);
       setRejectNotes('');
       queryClient.invalidateQueries({ queryKey: ['adminOrders'] });
+      queryClient.invalidateQueries({ queryKey: ['adminStats'] });
     },
     onError: (error: any) => {
       alert(error.response?.data?.error?.message || 'Có lỗi xảy ra khi từ chối đơn hàng.');
     },
   });
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <div className="flex flex-col items-center gap-3">
-          <svg className="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <span className="text-sm font-bold text-slate-500">Đang tải danh sách đơn hàng...</span>
-        </div>
-      </div>
-    );
-  }
+  // Copy helper
+  const handleCopy = (text: string, label: string) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedField(label);
+      setTimeout(() => setCopiedField(null), 2000);
+    }
+  };
 
-  const orders = ordersRes?.data || [];
+  // Filter & Search
+  const filteredOrders = orders.filter((order) => {
+    // Tab filter
+    if (activeFilter === 'PENDING') {
+      if (order.status !== 'PENDING' && order.status !== 'WAITING_CONFIRM' && order.status !== 'PENDING_SUBDOMAIN_CONFLICT' && order.status !== 'AWAITING_MANUAL_REVIEW') {
+        return false;
+      }
+    } else if (activeFilter === 'COMPLETED') {
+      if (order.status !== 'COMPLETED') return false;
+    } else if (activeFilter === 'REJECTED') {
+      if (order.status !== 'REJECTED') return false;
+    }
+
+    // Search filter
+    if (!searchTerm) return true;
+    const term = searchTerm.toLowerCase();
+    return (
+      order.orderNumber?.toLowerCase().includes(term) ||
+      order.fullName?.toLowerCase().includes(term) ||
+      order.phone?.toLowerCase().includes(term) ||
+      order.email?.toLowerCase().includes(term) ||
+      order.subdomain?.toLowerCase().includes(term) ||
+      order.template?.name?.toLowerCase().includes(term)
+    );
+  });
+
+  const isPendingStatus = (status: string) => {
+    return status === 'PENDING' || status === 'WAITING_CONFIRM' || status === 'PENDING_SUBDOMAIN_CONFLICT' || status === 'AWAITING_MANUAL_REVIEW';
+  };
 
   return (
-    <AdminLayout title="Duyệt Đơn Hàng & Kích Hoạt" subtitle="Kiểm tra thông tin giao dịch chuyển khoản, ảnh hóa đơn chuyển tiền của khách hàng.">
-      {/* Table */}
-      <div className="rounded-2xl bg-white shadow-sm border border-slate-100 overflow-hidden mb-10">
-        <table className="w-full border-collapse text-left text-sm text-slate-700">
-          <thead className="bg-slate-50/50 text-xs font-bold text-slate-400 border-b border-slate-100">
-            <tr>
-              <th className="px-8 py-4">Mã đơn hàng</th>
-              <th className="px-8 py-4">Khách hàng</th>
-              <th className="px-8 py-4">Subdomain yêu cầu</th>
-              <th className="px-8 py-4">Số tiền</th>
-              <th className="px-8 py-4">Trạng thái</th>
-              <th className="px-8 py-4">Mã giao dịch</th>
-              <th className="px-8 py-4 text-right">Hành động</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {orders.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="px-8 py-12 text-center text-slate-400 font-semibold">Không có đơn hàng nào cần duyệt.</td>
-              </tr>
-            ) : (
-              orders.map((order: any) => (
-                <tr key={order.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="px-8 py-4 font-mono font-bold text-slate-800">{order.orderNumber}</td>
-                  <td className="px-8 py-4">
-                    <div>
-                      <div className="font-bold text-slate-800">{order.fullName}</div>
-                      <div className="text-xs text-slate-400 font-semibold">{order.phone}</div>
-                    </div>
-                  </td>
-                  <td className="px-8 py-4 font-bold text-xs tracking-wide text-slate-500">
-                    {order.subdomain ? (
-                      <span className="bg-indigo-50 text-indigo-700 border border-indigo-100/50 px-2.5 py-1 rounded-md text-xs font-mono">
-                        {order.subdomain}
-                      </span>
-                    ) : (
-                      <span className="text-slate-400 font-normal italic">Mua Source (Không)</span>
-                    )}
-                  </td>
-                  <td className="px-8 py-4 font-extrabold text-slate-800">
-                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.amount)}
-                  </td>
-                  <td className="px-8 py-4">
-                    <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
-                      order.status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
-                      order.status === 'WAITING_CONFIRM' ? 'bg-amber-50 text-amber-700 border border-amber-100' :
-                      order.status === 'PENDING' ? 'bg-slate-100 text-slate-600' : 'bg-rose-50 text-rose-700 border border-rose-100'
-                    }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${
-                        order.status === 'COMPLETED' ? 'bg-emerald-500' :
-                        order.status === 'WAITING_CONFIRM' ? 'bg-amber-500' :
-                        order.status === 'PENDING' ? 'bg-slate-400' : 'bg-rose-500'
-                      }`}></span>
-                      {order.status === 'COMPLETED' ? 'Hoàn thành' :
-                       order.status === 'WAITING_CONFIRM' ? 'Chờ duyệt' :
-                       order.status === 'PENDING' ? 'Mới' : 'Từ chối'}
-                    </span>
-                  </td>
-                  <td className="px-8 py-4 font-mono text-xs font-bold text-slate-500">{order.transactionCode || '—'}</td>
-                  <td className="px-8 py-4 text-right">
-                    {order.status === 'WAITING_CONFIRM' ? (
-                      <button
-                        onClick={() => setSelectedOrder(order)}
-                        className="text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100/70 px-4 py-2 rounded-xl transition-all shadow-sm"
-                      >
-                        Xem & Xét Duyệt
-                      </button>
-                    ) : (
-                      <span className="text-xs text-slate-400 font-semibold">Đã xử lý</span>
-                    )}
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+    <AdminLayout
+      title="Duyệt Đơn Hàng & Kích Hoạt"
+      subtitle="Quản lý và kích hoạt website tự động cho khách hàng. Hệ thống đồng bộ thời gian thực (Real-time)."
+    >
+      {/* Live Polling Status Indicator */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 bg-white p-4 rounded-2xl border border-slate-100 shadow-xs">
+        <div className="flex items-center gap-3">
+          <span className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+          </span>
+          <span className="text-xs font-bold text-slate-700">
+            Realtime Live: Tự động cập nhật mỗi 3s
+          </span>
+          {dataUpdatedAt && (
+            <span className="text-[11px] text-slate-400 font-mono">
+              (Lần cập nhật cuối: {new Date(dataUpdatedAt).toLocaleTimeString('vi-VN')})
+            </span>
+          )}
+        </div>
+
+        {pendingOrders.length > 0 && (
+          <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-800 px-3.5 py-1.5 rounded-xl text-xs font-bold animate-pulse">
+            <span>⚡ Có {pendingOrders.length} đơn hàng đang chờ bạn duyệt!</span>
+          </div>
+        )}
       </div>
 
-      {/* Modal Xét Duyệt Chi Tiết */}
+      {/* Filter Tabs & Search Bar */}
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-6">
+        {/* Tabs */}
+        <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200/60 shrink-0 overflow-x-auto">
+          <button
+            onClick={() => setActiveFilter('ALL')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+              activeFilter === 'ALL'
+                ? 'bg-white text-indigo-600 shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <span>Tất cả đơn</span>
+            <span className="px-2 py-0.5 rounded-full text-[10px] bg-slate-200/70 text-slate-700 font-mono">
+              {orders.length}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveFilter('PENDING')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+              activeFilter === 'PENDING'
+                ? 'bg-amber-500 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <span>Chờ duyệt</span>
+            {pendingOrders.length > 0 ? (
+              <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-600 text-white font-mono font-bold animate-pulse">
+                {pendingOrders.length}
+              </span>
+            ) : (
+              <span className="px-2 py-0.5 rounded-full text-[10px] bg-slate-200/70 text-slate-700 font-mono">
+                0
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => setActiveFilter('COMPLETED')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+              activeFilter === 'COMPLETED'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <span>Đã duyệt / Hoàn thành</span>
+            <span className="px-2 py-0.5 rounded-full text-[10px] bg-slate-200/70 text-slate-700 font-mono">
+              {completedOrders.length}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveFilter('REJECTED')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+              activeFilter === 'REJECTED'
+                ? 'bg-rose-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <span>Từ chối</span>
+            <span className="px-2 py-0.5 rounded-full text-[10px] bg-slate-200/70 text-slate-700 font-mono">
+              {rejectedOrders.length}
+            </span>
+          </button>
+        </div>
+
+        {/* Search Input */}
+        <div className="relative w-full md:w-80">
+          <input
+            type="text"
+            placeholder="Tìm theo mã đơn, SĐT, tên, email..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all shadow-2xs"
+          />
+          <svg className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Orders Table */}
+      <div className="rounded-2xl bg-white shadow-sm border border-slate-100 overflow-hidden mb-10">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left text-sm text-slate-700">
+            <thead className="bg-slate-50/70 text-[11px] uppercase tracking-wider font-bold text-slate-400 border-b border-slate-100">
+              <tr>
+                <th className="px-6 py-4">Mã đơn hàng</th>
+                <th className="px-6 py-4">Khách hàng</th>
+                <th className="px-6 py-4">Mẫu Website</th>
+                <th className="px-6 py-4">Subdomain / Loại</th>
+                <th className="px-6 py-4">Số tiền</th>
+                <th className="px-6 py-4">Trạng thái</th>
+                <th className="px-6 py-4 text-right">Hành động</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-xs">
+              {isLoading ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-12 text-center text-slate-400 font-semibold">
+                    Đang tải dữ liệu đơn hàng...
+                  </td>
+                </tr>
+              ) : filteredOrders.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-16 text-center text-slate-400 font-semibold">
+                    {searchTerm ? 'Không tìm thấy đơn hàng nào khớp với tìm kiếm.' : 'Không có đơn hàng nào trong mục này.'}
+                  </td>
+                </tr>
+              ) : (
+                filteredOrders.map((order: any) => {
+                  const isPending = isPendingStatus(order.status);
+                  return (
+                    <tr key={order.id} className="hover:bg-slate-50/60 transition-colors">
+                      {/* Mã đơn */}
+                      <td className="px-6 py-4">
+                        <span className="font-mono font-bold text-slate-900 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200/80">
+                          #{order.orderNumber}
+                        </span>
+                        <div className="text-[10px] text-slate-400 mt-1 font-mono">
+                          {order.createdAt ? new Date(order.createdAt).toLocaleString('vi-VN') : ''}
+                        </div>
+                      </td>
+
+                      {/* Khách hàng */}
+                      <td className="px-6 py-4">
+                        <div className="font-bold text-slate-900">{order.fullName || 'Khách hàng'}</div>
+                        <div className="text-slate-500 font-mono mt-0.5">{order.phone || '—'}</div>
+                        <div className="text-[11px] text-slate-400 truncate max-w-[180px]">{order.email}</div>
+                      </td>
+
+                      {/* Mẫu Website */}
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200/60">
+                          {order.template?.name || order.templateId || 'Mẫu Mặc Định'}
+                        </span>
+                      </td>
+
+                      {/* Subdomain / Loại */}
+                      <td className="px-6 py-4">
+                        {order.subdomain ? (
+                          <div className="space-y-1">
+                            <span className="bg-indigo-50 text-indigo-700 border border-indigo-100 px-2.5 py-0.5 rounded-md text-xs font-mono font-bold">
+                              {order.subdomain}.platformbds.vn
+                            </span>
+                            <span className="text-[10px] text-slate-400 block font-semibold">
+                              {order.type === 'BUY' ? 'Mua Đứt' : 'Thuê SaaS'}
+                            </span>
+                          </div>
+                        ) : (
+                          <div>
+                            <span className="text-slate-600 font-semibold bg-slate-100 px-2 py-0.5 rounded text-xs">
+                              {order.type === 'BUY' ? 'Mua Full Source' : 'Gói Tiêu Chuẩn'}
+                            </span>
+                            <span className="text-[10px] text-slate-400 block mt-0.5 italic">Auto cấp Subdomain</span>
+                          </div>
+                        )}
+                      </td>
+
+                      {/* Số tiền */}
+                      <td className="px-6 py-4 font-black text-slate-900 text-sm">
+                        {formatVND(order.amount)}
+                      </td>
+
+                      {/* Trạng thái */}
+                      <td className="px-6 py-4">
+                        <span
+                          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
+                            order.status === 'COMPLETED'
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              : isPending
+                              ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                              : 'bg-rose-50 text-rose-700 border border-rose-200'
+                          }`}
+                        >
+                          <span
+                            className={`w-2 h-2 rounded-full ${
+                              order.status === 'COMPLETED'
+                                ? 'bg-emerald-500'
+                                : isPending
+                                ? 'bg-amber-500 animate-ping'
+                                : 'bg-rose-500'
+                            }`}
+                          ></span>
+                          {order.status === 'COMPLETED'
+                            ? 'Đã duyệt / Hoàn thành'
+                            : order.status === 'WAITING_CONFIRM'
+                            ? 'Chờ xác nhận Zalo'
+                            : order.status === 'PENDING'
+                            ? 'Đơn mới chờ duyệt'
+                            : order.status === 'PENDING_SUBDOMAIN_CONFLICT'
+                            ? 'Trùng Subdomain'
+                            : 'Đã từ chối'}
+                        </span>
+                      </td>
+
+                      {/* Hành động */}
+                      <td className="px-6 py-4 text-right">
+                        {isPending ? (
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => setSelectedOrder(order)}
+                              className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition-all shadow-sm flex items-center gap-1"
+                            >
+                              <span>Duyệt Đơn</span>
+                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                            </button>
+                            <button
+                              onClick={() => {
+                                setSelectedOrder(order);
+                              }}
+                              className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all"
+                            >
+                              Chi tiết
+                            </button>
+                          </div>
+                        ) : order.status === 'COMPLETED' ? (
+                          <div className="flex items-center justify-end gap-2">
+                            <a
+                              href={`http://localhost:3003?tenant=${order.subdomain || order.tenantId || 'hoanggialand'}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-xl text-xs transition-all border border-emerald-200 flex items-center gap-1"
+                            >
+                              <span>Xem Web</span>
+                              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </a>
+                            <button
+                              onClick={() => setSelectedOrder(order)}
+                              className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all"
+                            >
+                              Xem Lại
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setSelectedOrder(order)}
+                            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl text-xs transition-all"
+                          >
+                            Xem Lý Do
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          MODAL XÉT DUYỆT / XEM CHI TIẾT ĐƠN HÀNG
+          ═══════════════════════════════════════════════════════════════════════ */}
       {selectedOrder && (
-        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
+        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
           <div className="bg-white rounded-3xl max-w-2xl w-full p-8 shadow-2xl border border-slate-200/50 max-h-[90vh] overflow-y-auto relative animate-scale-in">
             <button
               onClick={() => setSelectedOrder(null)}
-              className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center transition-all text-lg"
+              className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center transition-all text-lg font-bold"
             >
               ✕
             </button>
-            <h2 className="text-lg font-extrabold text-slate-855 mb-6 uppercase tracking-wider">Xét Duyệt Đơn Hàng: {selectedOrder.orderNumber}</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-              <div>
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Minh chứng chuyển khoản</h3>
-                {selectedOrder.billImageUrl ? (
-                  <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-inner bg-slate-50 p-2">
-                    <img
-                      src={selectedOrder.billImageUrl}
-                      alt="Biên lai thanh toán"
-                      className="w-full h-auto max-h-[300px] rounded-xl object-contain"
-                    />
-                  </div>
-                ) : (
-                  <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 py-24 text-center text-xs font-bold text-slate-400">
-                    Khách hàng chưa tải ảnh hóa đơn.
-                  </div>
-                )}
+            <div className="flex items-center gap-2 mb-2">
+              <span className="bg-indigo-100 text-indigo-700 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full">
+                Chi Tiết Đơn Hàng
+              </span>
+              <span className="text-xs text-slate-400 font-mono">#{selectedOrder.orderNumber}</span>
+            </div>
+
+            <h2 className="text-xl font-black text-slate-900 mb-6">
+              Xét Duyệt Đơn #{selectedOrder.orderNumber}
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              {/* Thông tin đơn hàng */}
+              <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200/70 space-y-3 text-xs">
+                <div>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Họ Tên Khách Hàng</span>
+                  <p className="font-extrabold text-slate-900 text-sm mt-0.5">{selectedOrder.fullName}</p>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Số Điện Thoại</span>
+                  <p className="font-mono font-bold text-slate-800 mt-0.5">{selectedOrder.phone || '—'}</p>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Email Đăng Nhập</span>
+                  <p className="font-mono font-bold text-slate-800 mt-0.5">{selectedOrder.email}</p>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Ghi Chú Đơn Hàng</span>
+                  <p className="text-slate-600 italic mt-0.5">{selectedOrder.note || 'Không có ghi chú'}</p>
+                </div>
               </div>
 
-              <div className="space-y-4">
+              {/* Thông tin mẫu & thanh toán */}
+              <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200/70 space-y-3 text-xs">
                 <div>
-                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Khách hàng</span>
-                  <p className="font-extrabold text-slate-800 mt-1">{selectedOrder.fullName}</p>
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Mã giao dịch ngân hàng</span>
-                  <p className="font-mono font-bold text-sm text-slate-800 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg inline-block mt-1">{selectedOrder.transactionCode || 'Không nạp'}</p>
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Số tiền thanh toán</span>
-                  <p className="text-2xl font-extrabold text-slate-855 mt-1">
-                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(selectedOrder.amount)}
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Mẫu Website Đã Chọn</span>
+                  <p className="font-extrabold text-indigo-700 text-sm mt-0.5">
+                    {selectedOrder.template?.name || selectedOrder.templateId || 'Luxury Gold'}
                   </p>
                 </div>
-
-                <div className="pt-4 border-t border-slate-100">
-                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Ghi chú từ chối (nếu có)</label>
-                  <textarea
-                    value={rejectNotes}
-                    onChange={(e) => setRejectNotes(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-indigo-500 focus:outline-none transition-all placeholder:text-slate-400"
-                    placeholder="Mã giao dịch sai, tiền chưa nổi..."
-                    rows={3}
-                  />
+                <div>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Tổng Tiền Thanh Toán</span>
+                  <p className="text-xl font-black text-emerald-600 mt-0.5">
+                    {formatVND(selectedOrder.amount)}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Subdomain Yêu Cầu</span>
+                  <p className="font-mono font-bold text-slate-800 mt-0.5">
+                    {selectedOrder.subdomain 
+                      ? `${selectedOrder.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'platformbds.vn'}`
+                      : 'Tự động tạo từ tên khách hàng'}
+                  </p>
+                  {selectedOrder.status === 'COMPLETED' && selectedOrder.tenantId && (
+                    <p className="text-[10px] text-emerald-600 mt-1 font-bold">✓ Subdomain đã được kích hoạt</p>
+                  )}
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Mã Giao Dịch Ngân Hàng</span>
+                  <p className="font-mono font-bold text-slate-700 mt-0.5">{selectedOrder.transactionCode || 'Chưa cung cấp'}</p>
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 border-t border-slate-100 pt-5">
+            {/* Ghi chú từ chối nếu có */}
+            {isPendingStatus(selectedOrder.status) && (
+              <div className="mb-6">
+                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+                  Lý do từ chối (nếu không duyệt)
+                </label>
+                <textarea
+                  value={rejectNotes}
+                  onChange={(e) => setRejectNotes(e.target.value)}
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-xs focus:border-indigo-500 focus:outline-none transition-all placeholder:text-slate-400"
+                  placeholder="Nhập lý do từ chối đơn hàng (ví dụ: chưa nhận được chuyển khoản, trùng thông tin...)"
+                  rows={2}
+                />
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row justify-end gap-3 border-t border-slate-100 pt-5">
               <button
                 onClick={() => setSelectedOrder(null)}
                 className="px-5 py-2.5 border border-slate-300 text-slate-600 font-bold text-xs rounded-xl hover:bg-slate-50 transition-all"
               >
-                Hủy bỏ
+                Đóng
               </button>
+
+              {isPendingStatus(selectedOrder.status) && (
+                <>
+                  <button
+                    disabled={rejectMutation.isPending || approveMutation.isPending}
+                    onClick={() =>
+                      rejectMutation.mutate({
+                        id: selectedOrder.id,
+                        version: selectedOrder.version || 1,
+                        notes: rejectNotes,
+                      })
+                    }
+                    className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl transition-all shadow-md disabled:opacity-50"
+                  >
+                    {rejectMutation.isPending ? 'Đang từ chối...' : 'Từ Chối Đơn'}
+                  </button>
+
+                  <button
+                    disabled={approveMutation.isPending || rejectMutation.isPending}
+                    onClick={() =>
+                      approveMutation.mutate({
+                        id: selectedOrder.id,
+                        version: selectedOrder.version || 1,
+                      })
+                    }
+                    className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-all shadow-md disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {approveMutation.isPending ? (
+                      <span>Đang kích hoạt website...</span>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>Duyệt & Tự Động Tạo Website</span>
+                      </>
+                    )}
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          MODAL THÔNG BÁO BÀN GIAO WEBSITE THÀNH CÔNG CHO ADMIN COPY QUA ZALO
+          ═══════════════════════════════════════════════════════════════════════ */}
+      {approvalResult && (
+        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-md animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-xl w-full p-8 shadow-2xl border border-emerald-200 relative animate-scale-in text-center">
+            <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-4 border-2 border-emerald-200">
+              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+
+            <h3 className="text-xl font-black text-slate-900">
+              Website Đã Kích Hoạt Thành Công!
+            </h3>
+            <p className="text-xs text-slate-500 mt-1">
+              Hệ thống đã tự động cấu hình Tenant và tài khoản CMS cho khách hàng. Hãy sao chép thông tin bàn giao dưới đây gửi cho khách:
+            </p>
+
+            <div className="my-6 p-5 bg-slate-50 rounded-2xl border border-slate-200 text-left text-xs font-mono space-y-3">
+              <div>
+                <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Website công khai:</span>
+                <a
+                  href={`http://localhost:3003?tenant=${approvalResult.subdomain}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-600 font-bold hover:underline"
+                >
+                  http://{approvalResult.subdomain}.platformbds.vn
+                </a>
+              </div>
+
+              <div>
+                <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Trang quản trị CMS:</span>
+                <a
+                  href="http://localhost:3001"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-indigo-600 font-bold hover:underline"
+                >
+                  http://localhost:3001
+                </a>
+              </div>
+
+              <div>
+                <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Email đăng nhập:</span>
+                <span className="font-bold text-slate-800">{approvalResult.email}</span>
+              </div>
+
+              <div>
+                <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Mật khẩu tạm:</span>
+                <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  {approvalResult.tempPassword || approvalResult.password || '123456'}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
               <button
-                onClick={() => rejectMutation.mutate({ id: selectedOrder.id, version: selectedOrder.version, notes: rejectNotes })}
-                className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-rose-600/10"
+                onClick={() => {
+                  const info = `🎉 CHÚC MỪNG! WEBSITE CỦA BẠN ĐÃ KÍCH HOẠT THÀNH CÔNG TRÊN PLATFORMBDS:\n\n` +
+                    `- Website công khai: http://${approvalResult.subdomain}.platformbds.vn\n` +
+                    `- Quản trị website (CMS): http://localhost:3001\n` +
+                    `- Email đăng nhập: ${approvalResult.email}\n` +
+                    `- Mật khẩu đăng nhập: ${approvalResult.tempPassword || approvalResult.password || '123456'}\n\n` +
+                    `👉 Bạn hãy đăng nhập vào CMS để đổi thông tin và đăng tải dự án ngay!`;
+                  handleCopy(info, 'ALL_INFO');
+                }}
+                className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md"
               >
-                Từ Chối Giao Dịch
+                {copiedField === 'ALL_INFO' ? '✓ Đã Sao Chép Toàn Bộ' : '📋 Sao Chép Thông Tin Gửi Zalo'}
               </button>
+
               <button
-                onClick={() => approveMutation.mutate({ id: selectedOrder.id, version: selectedOrder.version })}
-                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-indigo-600/10"
+                onClick={() => setApprovalResult(null)}
+                className="px-6 py-3 border border-slate-300 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-50 transition-all"
               >
-                Phê Duyệt & Kích Hoạt
+                Đóng
               </button>
             </div>
           </div>
