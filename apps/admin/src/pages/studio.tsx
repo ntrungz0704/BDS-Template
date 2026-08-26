@@ -885,7 +885,7 @@ export default function TemplateStudio() {
                                     archiveMutation.mutate(v.id);
                                   }
                                 }}
-                                className="flex-1 text-center py-1 bg-white border border-red-100 text-red-650 text-[10px] font-bold rounded hover:bg-red-50"
+                                className="flex-1 text-center py-1 bg-white border border-red-100 text-red-600 text-[10px] font-bold rounded hover:bg-red-50"
                               >
                                 Archive
                               </button>
@@ -1046,7 +1046,7 @@ export default function TemplateStudio() {
             <div className="flex justify-end pt-2 border-t">
               <button
                 onClick={() => setShowCompareModal(false)}
-                className="px-5 py-2 bg-slate-900 hover:bg-slate-850 text-white text-xs font-bold rounded-xl shadow"
+                className="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow"
               >
                 Đóng hộp thoại
               </button>

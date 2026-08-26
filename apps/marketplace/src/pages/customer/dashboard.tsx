@@ -461,7 +461,7 @@ export default function CustomerDashboard() {
                                  {/* Đơn thuê SaaS đã duyệt → Nút đi CMS */}
                                  {ord.type === 'RENT' && ord.status === 'COMPLETED' && (
                                    <a
-                                     href={`http://localhost:3001?redirect=/`}
+                                     href={`${process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}?redirect=/`}
                                      target="_blank"
                                      rel="noopener noreferrer"
                                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all text-[10px] mr-2"

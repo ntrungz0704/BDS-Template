@@ -258,7 +258,7 @@ export default function CustomerDetailPage() {
                   </div>
                   <div className="flex items-center justify-end">
                     <a
-                      href={`http://${t.slug}.localhost:3003`}
+                      href={`http://${t.slug}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'localhost:3003'}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-3 py-2 bg-white border border-slate-300 hover:border-indigo-500 text-slate-700 text-xs font-bold rounded-xl transition-all shadow-sm"

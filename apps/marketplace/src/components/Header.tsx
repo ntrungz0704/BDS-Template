@@ -219,7 +219,7 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
 
                       {user.role === 'SUPER_ADMIN' ? (
                         <a
-                          href="http://localhost:3002"
+                          href={process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3002'}
                           target="_blank"
                           rel="noreferrer"
                           className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors font-bold"
@@ -229,7 +229,7 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
                         </a>
                       ) : (
                         <a
-                          href="http://localhost:3001"
+                          href={process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
                           target="_blank"
                           rel="noreferrer"
                           className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors font-bold"
@@ -548,7 +548,7 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
               </Link>
 
               <a
-                href={user.role === 'SUPER_ADMIN' ? 'http://localhost:3002' : 'http://localhost:3001'}
+                href={user.role === 'SUPER_ADMIN' ? (process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3002') : (process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001')}
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-2 py-2 px-3 rounded-md text-xs font-bold text-indigo-700 bg-indigo-50"

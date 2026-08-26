@@ -729,7 +729,7 @@ export default function PostsManagerPage() {
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
                         <a
-                          href={`http://localhost:3003/posts/${post.slug}?tenant=${domainData?.subdomain || 'hoanggialand'}`}
+                          href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'http://localhost:3003'}/posts/${post.slug}?tenant=${domainData?.subdomain || 'hoanggialand'}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           title="Xem trên Website"

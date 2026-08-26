@@ -280,8 +280,8 @@ export default function CustomersPage() {
                   </div>
 
                   <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs font-mono space-y-2 select-all">
-                    <div><strong>Website:</strong> {createdCredentials.websiteUrl || `http://${createdCredentials.subdomain}.localhost:3003`}</div>
-                    <div><strong>Quản trị CMS:</strong> {createdCredentials.cmsUrl || 'http://localhost:3001'}</div>
+                    <div><strong>Website:</strong> {createdCredentials.websiteUrl || `http://${createdCredentials.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'platformbds.vn'}`}</div>
+                    <div><strong>Quản trị CMS:</strong> {createdCredentials.cmsUrl || process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}</div>
                     <div><strong>Email:</strong> {createdCredentials.email}</div>
                     <div><strong>Mật khẩu tạm:</strong> {createdCredentials.password}</div>
                   </div>
@@ -289,7 +289,7 @@ export default function CustomersPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => {
-                        const info = `THÔNG TIN BÀN GIAO WEBSITE:\n- Website: ${createdCredentials.websiteUrl || `http://${createdCredentials.subdomain}.localhost:3003`}\n- Quản trị CMS: ${createdCredentials.cmsUrl || 'http://localhost:3001'}\n- Email: ${createdCredentials.email}\n- Mật khẩu: ${createdCredentials.password}`;
+                        const info = `THÔNG TIN BÀN GIAO WEBSITE:\n- Website: ${createdCredentials.websiteUrl || `http://${createdCredentials.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'platformbds.vn'}`}\n- Quản trị CMS: ${createdCredentials.cmsUrl || process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}\n- Email: ${createdCredentials.email}\n- Mật khẩu: ${createdCredentials.password}`;
                         navigator.clipboard.writeText(info);
                         alert('Đã copy thông tin bàn giao vào clipboard!');
                       }}

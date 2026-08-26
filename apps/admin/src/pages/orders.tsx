@@ -425,7 +425,7 @@ export default function AdminOrders() {
                         ) : order.status === 'COMPLETED' ? (
                           <div className="flex items-center justify-end gap-2">
                             <a
-                              href={`http://localhost:3003?tenant=${order.subdomain || order.tenantId || 'hoanggialand'}`}
+                              href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'http://localhost:3003'}?tenant=${order.subdomain || order.tenantId || 'hoanggialand'}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-xl text-xs transition-all border border-emerald-200 flex items-center gap-1"
@@ -629,24 +629,24 @@ export default function AdminOrders() {
               <div>
                 <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Website công khai:</span>
                 <a
-                  href={`http://localhost:3003?tenant=${approvalResult.subdomain}`}
+                  href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'http://localhost:3003'}?tenant=${approvalResult.subdomain}`}
                   target="_blank"
                   rel="noreferrer"
                   className="text-blue-600 font-bold hover:underline"
                 >
-                  http://{approvalResult.subdomain}.platformbds.vn
+                  http://{approvalResult.subdomain}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'platformbds.vn'}
                 </a>
               </div>
 
               <div>
                 <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Trang quản trị CMS:</span>
                 <a
-                  href="http://localhost:3001"
+                  href={process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
                   target="_blank"
                   rel="noreferrer"
                   className="text-indigo-600 font-bold hover:underline"
                 >
-                  http://localhost:3001
+                  {process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
                 </a>
               </div>
 
@@ -667,8 +667,8 @@ export default function AdminOrders() {
               <button
                 onClick={() => {
                   const info = `🎉 CHÚC MỪNG! WEBSITE CỦA BẠN ĐÃ KÍCH HOẠT THÀNH CÔNG TRÊN PLATFORMBDS:\n\n` +
-                    `- Website công khai: http://${approvalResult.subdomain}.platformbds.vn\n` +
-                    `- Quản trị website (CMS): http://localhost:3001\n` +
+                    `- Website công khai: http://${approvalResult.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'platformbds.vn'}\n` +
+                    `- Quản trị website (CMS): ${process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}\n` +
                     `- Email đăng nhập: ${approvalResult.email}\n` +
                     `- Mật khẩu đăng nhập: ${approvalResult.tempPassword || approvalResult.password || '123456'}\n\n` +
                     `👉 Bạn hãy đăng nhập vào CMS để đổi thông tin và đăng tải dự án ngay!`;
