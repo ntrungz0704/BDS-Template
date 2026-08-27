@@ -9,6 +9,7 @@ import {
   Clock, Map, Award, Users, Plus
 } from 'lucide-react';
 import { MAX_W } from '../design-system';
+import { FacebookIcon, LinkedinIcon, YoutubeIcon, ZaloIcon } from '../../icons/SocialIcons';
 
 interface TemplateProps {
   template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
@@ -454,12 +455,19 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
           <p className="text-gray-400 text-sm mb-6 leading-relaxed">
             Đơn vị tư vấn và quản lý danh mục đầu tư bất động sản hàng đầu, mang đến giải pháp sinh lời bền vững và an toàn cho nhà đầu tư chuyên nghiệp.
           </p>
-          <div className="flex space-x-4">
-            {['Facebook', 'LinkedIn', 'YouTube'].map((social) => (
-              <a key={social} href="#" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-[#1E40AF] hover:text-white transition-colors text-xs font-bold">
-                {social.charAt(0)}
-              </a>
-            ))}
+          <div className="flex space-x-3">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors">
+              <FacebookIcon className="w-4 h-4" />
+            </a>
+            <a href="https://zalo.me/0919006030" target="_blank" rel="noopener noreferrer" title="Zalo" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-[#0068FF] hover:text-white transition-colors p-1.5">
+              <ZaloIcon className="w-full h-full" />
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" title="LinkedIn" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-blue-700 hover:text-white transition-colors">
+              <LinkedinIcon className="w-4 h-4" />
+            </a>
+            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" title="YouTube" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-red-600 hover:text-white transition-colors">
+              <YoutubeIcon className="w-4 h-4" />
+            </a>
           </div>
         </div>
 

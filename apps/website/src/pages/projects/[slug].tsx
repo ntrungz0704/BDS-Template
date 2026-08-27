@@ -3,34 +3,46 @@ import { GetServerSideProps } from 'next';
 import axios from 'axios';
 import Head from 'next/head';
 import Link from 'next/link';
+import { demoProjects } from '../../utils/demoData';
+import { themeToCSS, themeToGoogleFontsUrl } from '../../utils/themeUtils';
 
 interface ProjectDetailProps {
   company: any;
-  project: any;
+  project?: any;
+  projectSlug: string;
   tenantSlug: string;
+  theme?: any;
   error?: string;
 }
 
-export default function PublicProjectDetail({ company, project, tenantSlug, error }: ProjectDetailProps) {
-  if (error || !project) {
+export default function PublicProjectDetail({ company, project: apiProject, projectSlug, tenantSlug, theme, error }: ProjectDetailProps) {
+  const project = apiProject || demoProjects.find((p) => p.slug === projectSlug) || demoProjects[0];
+
+  if (!project) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-600">Lỗi kết nối dự án</h1>
           <p className="text-gray-500 mt-2">{error || 'Không tìm thấy dự án bất động sản yêu cầu.'}</p>
-          <Link href="/" className="mt-4 inline-block text-sm text-[#C5A572] hover:underline">Về trang chủ</Link>
+          <Link href={`/?tenant=${tenantSlug}`} className="mt-4 inline-block text-sm hover:underline" style={{ color: theme?.primaryColor || '#C5A572' }}>Về trang chủ</Link>
         </div>
       </div>
     );
   }
 
-  const primaryColor = company.tenant?.colorTheme === 'gold' ? '#C5A572' : '#16213E';
+  const primaryColor = theme?.primaryColor || '#C5A572';
 
   return (
-    <div className="min-h-screen bg-[#F8F6F3]">
+    <div className="min-h-screen" style={{ backgroundColor: theme?.backgroundColor || '#F8F6F3' }}>
       <Head>
-        <title>{project.title} | {company.name}</title>
-        <meta name="description" content={project.shortDescription} />
+        <title>{project.title} | {company?.name || 'Bất Động Sản'}</title>
+        <meta name="description" content={project.shortDescription || project.description || ''} />
+        {theme && (
+          <>
+            <style id="tenant-theme" dangerouslySetInnerHTML={{ __html: themeToCSS(theme) }} />
+            <link href={themeToGoogleFontsUrl(theme)} rel="stylesheet" />
+          </>
+        )}
       </Head>
 
       {/* Header */}
@@ -102,7 +114,9 @@ export default function PublicProjectDetail({ company, project, tenantSlug, erro
                   <label className="block text-xs font-semibold text-[#1A1A2E] mb-2">Họ & tên</label>
                   <input
                     type="text"
-                    className="w-full rounded-lg border border-[#E5E0D8] px-3 py-2 text-sm focus:border-[#C5A572] focus:outline-none"
+                    className="w-full rounded-lg border border-[#E5E0D8] px-3 py-2 text-sm focus:outline-none"
+                    onFocus={(e) => e.currentTarget.style.borderColor = primaryColor}
+                    onBlur={(e) => e.currentTarget.style.borderColor = ''}
                     placeholder="Nguyễn Văn A"
                     required
                   />
@@ -111,7 +125,9 @@ export default function PublicProjectDetail({ company, project, tenantSlug, erro
                   <label className="block text-xs font-semibold text-[#1A1A2E] mb-2">Số điện thoại</label>
                   <input
                     type="tel"
-                    className="w-full rounded-lg border border-[#E5E0D8] px-3 py-2 text-sm focus:border-[#C5A572] focus:outline-none"
+                    className="w-full rounded-lg border border-[#E5E0D8] px-3 py-2 text-sm focus:outline-none"
+                    onFocus={(e) => e.currentTarget.style.borderColor = primaryColor}
+                    onBlur={(e) => e.currentTarget.style.borderColor = ''}
                     placeholder="0901234567"
                     required
                   />
@@ -148,24 +164,34 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-    const [compRes, projRes] = await Promise.all([
-      axios.get(`${apiUrl}/api/website/${tenantSlug}/company-info`),
-      axios.get(`${apiUrl}/api/website/${tenantSlug}/projects/${slug}`),
+    const [compRes, projRes, themeRes] = await Promise.allSettled([
+      axios.get(`${apiUrl}/api/website/${tenantSlug}/company-info`, { timeout: 3000 }),
+      axios.get(`${apiUrl}/api/website/${tenantSlug}/projects/${slug}`, { timeout: 3000 }),
+      axios.get(`${apiUrl}/api/website/${tenantSlug}/theme`, { timeout: 3000 }),
     ]);
+
+    const company = compRes.status === 'fulfilled' ? compRes.value.data.data : null;
+    const project = projRes.status === 'fulfilled' ? projRes.value.data.data : null;
+    const theme = themeRes.status === 'fulfilled' ? themeRes.value.data.data : null;
+    const fallback = { name: tenantSlug.toUpperCase().replace(/-/g, ' ') + ' LAND', phone: '0983 312 219', email: `contact@${tenantSlug}.vn` };
 
     return {
       props: {
-        company: compRes.data.data,
-        project: projRes.data.data,
+        company: company || fallback,
+        project: project || null,
+        projectSlug: slug,
         tenantSlug,
+        theme: theme || null,
       },
     };
   } catch (error: any) {
     return {
       props: {
-        company: null,
+        company: { name: tenantSlug.toUpperCase().replace(/-/g, ' ') + ' LAND', phone: '0983 312 219', email: `contact@${tenantSlug}.vn` },
         project: null,
+        projectSlug: slug,
         tenantSlug,
+        theme: null,
         error: 'Không thể tải chi tiết dự án. Vui lòng kiểm tra lại đường dẫn.',
       },
     };

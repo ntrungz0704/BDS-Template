@@ -16,7 +16,7 @@ import Footer from '../components/Footer';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 export default function CartPage() {
-  const { cart, removeFromCart, clearCart, user, openAuthModal, showToast } = useAuth();
+  const { cart, removeFromCart, clearCart, user, openAuthModal, showToast, isPurchased } = useAuth();
   const router = useRouter();
 
   // Form states
@@ -73,15 +73,19 @@ export default function CartPage() {
       return;
     }
 
-    // Require user login / registration
-    if (!user) {
-      showToast('Vui lòng Đăng nhập hoặc Đăng ký tài khoản để hoàn tất đơn hàng!', 'info');
-      router.push('/login?redirect=/cart');
+    if (!fullName || fullName.trim().length < 2) {
+      showToast('Vui lòng nhập Họ và tên (tối thiểu 2 ký tự).', 'error');
       return;
     }
 
-    if (!fullName || !email || !phone) {
-      showToast('Vui lòng điền đầy đủ Họ tên, Email và Số điện thoại liên hệ.', 'error');
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      showToast('Vui lòng nhập Email hợp lệ (VD: ten@gmail.com).', 'error');
+      return;
+    }
+
+    const phoneClean = phone.replace(/\s/g, '');
+    if (!phoneClean || !/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
+      showToast('Số điện thoại phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.', 'error');
       return;
     }
 
@@ -90,17 +94,18 @@ export default function CartPage() {
       
       // Submit orders in sequence with per-item notes
       for (const item of cart) {
-        const id = item.template?.id || item.template?.slug;
+        // Always prioritize template slug (e.g. "minimal-white") over internal mock id
+        const tplIdentifier = item.template?.slug || item.template?.id || 'luxury-gold';
         const price = getItemPrice(item);
         let selectedAddons = [];
-        if (includeMaintenance[id]) {
+        if (includeMaintenance[item.template?.id || item.template?.slug]) {
           selectedAddons.push("Gói Bảo trì website (+299.000đ/năm)");
         }
-        if (includeHosting[id]) {
+        if (includeHosting[item.template?.id || item.template?.slug]) {
           selectedAddons.push("Gói Hosting & Domain (+499.000đ/năm)");
         }
 
-        const itemSpecificNote = itemNotes[id]?.trim();
+        const itemSpecificNote = itemNotes[item.template?.id || item.template?.slug]?.trim();
         const addonNote = selectedAddons.length > 0 ? ` [Kèm thêm: ${selectedAddons.join(', ')}]` : '';
         
         let noteParts = [];
@@ -111,12 +116,12 @@ export default function CartPage() {
         const fullOrderNote = noteParts.join(' | ');
 
         const payload = {
-          templateId: id,
+          templateId: tplIdentifier,
           type: 'BUY',
           amount: price,
-          fullName,
-          email,
-          phone,
+          fullName: fullName.trim(),
+          email: email.trim(),
+          phone: phoneClean,
           subdomain: desiredSubdomain?.trim() || undefined,
           note: fullOrderNote,
         };
@@ -139,13 +144,14 @@ export default function CartPage() {
         
         router.push(`/checkout/success?orderNumber=${firstOrder.orderNumber}&zalo=${encodeURIComponent(zaloUrl)}`);
       } else {
-        router.push('/customer/dashboard?tab=orders');
+        router.push('/templates');
       }
 
     } catch (err: any) {
       showToast(err.response?.data?.error?.message || 'Có lỗi xảy ra khi gửi đơn hàng. Vui lòng thử lại.', 'error');
     }
   };
+
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(amount);
@@ -162,7 +168,7 @@ export default function CartPage() {
   return (
     <>
       <Head>
-        <title>Giỏ hàng của bạn | PLATFORMBDS</title>
+        <title>Giỏ hàng của bạn | TEMPLATES BDS</title>
       </Head>
 
       <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
@@ -227,9 +233,33 @@ export default function CartPage() {
                 {cart.map((item) => {
                   const id = item.template?.id || item.template?.slug;
                   const itemPrice = getItemPrice(item);
+                  const owned = isPurchased(item.template?.slug || id);
 
                   return (
-                    <div key={item.template?.slug || id} className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col gap-4 justify-between">
+                    <div key={item.template?.slug || id} className={`bg-white border ${owned ? 'border-emerald-300 ring-2 ring-emerald-500/20' : 'border-slate-200'} rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col gap-4 justify-between`}>
+                      {owned && (
+                        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-emerald-800">
+                          <div className="flex items-center gap-2 font-bold">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                            <span>Bạn đã mua và sở hữu mẫu này trọn đời. Không cần thanh toán lại!</span>
+                          </div>
+                          <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                            <a
+                              href={process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
+                              className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-all text-center"
+                            >
+                              Vào CMS Quản trị
+                            </a>
+                            <button
+                              type="button"
+                              onClick={() => removeFromCart(id)}
+                              className="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 hover:text-rose-600 hover:border-rose-300 rounded-lg transition-all font-semibold"
+                            >
+                              Xóa khỏi giỏ
+                            </button>
+                          </div>
+                        </div>
+                      )}
                       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between border-b border-slate-100 pb-4">
                         <div className="flex gap-3.5 items-center">
                           <img 
@@ -240,8 +270,8 @@ export default function CartPage() {
                           <div>
                             <h3 className="font-bold text-slate-900 text-sm">{item.template?.name}</h3>
                             <div className="flex items-center gap-2 mt-1">
-                              <span className="text-[10px] bg-blue-50 text-blue-600 font-bold px-2 py-0.5 rounded uppercase tracking-wider border border-blue-200">
-                                Bàn giao trọn gói / 1 Năm
+                              <span className={`text-[10px] ${owned ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-blue-50 text-blue-600 border-blue-200'} font-bold px-2 py-0.5 rounded uppercase tracking-wider border`}>
+                                {owned ? 'ĐÃ SỞ HỮU TRỌN ĐỜI' : 'Bàn giao trọn gói / 1 Năm'}
                               </span>
                             </div>
                           </div>
@@ -416,14 +446,14 @@ export default function CartPage() {
                           className="w-full pl-9 pr-32 py-2 border border-slate-300 rounded-xl text-xs font-semibold focus:border-blue-500 focus:outline-none font-mono"
                         />
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400 text-[11px] font-bold font-mono">
-                          .platformbds.vn
+                          .aireviewbds.com
                         </div>
                       </div>
                       <p className="text-[10px] text-slate-500 mt-1">
                         {desiredSubdomain ? (
-                          <>Đường dẫn website: <strong className="text-blue-600 font-mono">https://{desiredSubdomain}.platformbds.vn</strong></>
+                          <>Đường dẫn website: <strong className="text-blue-600 font-mono">https://{desiredSubdomain}.aireviewbds.com</strong></>
                         ) : (
-                          <>Để trống hệ thống sẽ tự sinh tên sang trọng từ Họ tên của bạn (VD: <span className="font-mono text-slate-700">thanhtrung-land.platformbds.vn</span>)</>
+                          <>Để trống hệ thống sẽ tự sinh tên sang trọng từ Họ tên của bạn (VD: <span className="font-mono text-slate-700">thanhtrung-land.aireviewbds.com</span>)</>
                         )}
                       </p>
                     </div>

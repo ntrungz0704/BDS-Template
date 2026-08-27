@@ -330,7 +330,7 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
           </div>
           {!collapsed && (
             <div className="min-w-0">
-              <div className="text-sm font-black text-white tracking-tight">PlatformBDS</div>
+              <div className="text-sm font-black text-white tracking-tight">TEMPLATES BDS</div>
               <div className="text-[10px] text-white/40 font-medium uppercase tracking-wider">Website của tôi</div>
             </div>
           )}
@@ -502,17 +502,101 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
             <PanelLeft className="w-5 h-5" />
           </button>
 
-          {/* Website Switcher */}
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors">
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-              <span className="text-sm font-bold text-slate-800">{tenantName}</span>
-              <ChevronDown className="w-4 h-4 text-slate-500 ml-1" />
+          {/* Website Switcher in Top Header */}
+          <div className="relative flex items-center gap-2">
+            <button
+              onClick={() => setSwitcherOpen((v) => !v)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 transition-all shadow-xs"
+            >
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-100 animate-pulse"></span>
+              <span className="text-sm font-bold text-slate-800 truncate max-w-[180px] sm:max-w-[280px]">{tenantName}</span>
+              {userTenants && userTenants.length > 1 && (
+                <span className="text-[10px] bg-blue-100 text-blue-700 font-extrabold px-1.5 py-0.5 rounded-md">
+                  {userTenants.length} web
+                </span>
+              )}
+              <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${switcherOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            <div className="hidden lg:flex items-center text-xs text-slate-500 font-medium ml-1">
+              <Globe className="w-3.5 h-3.5 mr-1 text-slate-400" />
+              <span className="truncate max-w-[220px]">{tenantSlug}.platformbds.vn</span>
             </div>
-            <div className="hidden md:flex items-center text-xs text-slate-500 font-medium ml-2">
-              <Globe className="w-3.5 h-3.5 mr-1" />
-              {tenantSlug}.platformbds.vn
-            </div>
+
+            {/* Top Switcher Dropdown Modal */}
+            {switcherOpen && userTenants && userTenants.length > 0 && (
+              <>
+                <div 
+                  className="fixed inset-0 z-40" 
+                  onClick={() => setSwitcherOpen(false)} 
+                />
+                <div className="absolute top-full left-0 mt-2 w-80 sm:w-96 bg-white border border-slate-200 rounded-2xl shadow-2xl z-50 overflow-hidden animate-fadeIn p-2">
+                  <div className="px-3 py-2 border-b border-slate-100 flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-black text-slate-800 uppercase tracking-wide">Website Của Bạn ({userTenants.length})</div>
+                      <div className="text-[11px] text-slate-400">Chọn website bạn muốn quản lý nội dung</div>
+                    </div>
+                    <span className="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">
+                      Sở hữu trọn đời
+                    </span>
+                  </div>
+
+                  <div className="py-1 max-h-72 overflow-y-auto space-y-1">
+                    {userTenants.map((t: any) => {
+                      const isCurrent = t.id === domainData?.tenantId;
+                      return (
+                        <div
+                          key={t.id}
+                          onClick={() => {
+                            setSwitcherOpen(false);
+                            if (!isCurrent) {
+                              switchMutation.mutate(t.id);
+                            }
+                          }}
+                          className={`p-3 rounded-xl cursor-pointer transition-all border ${
+                            isCurrent
+                              ? 'bg-blue-50/80 border-blue-200 ring-2 ring-blue-500/20'
+                              : 'bg-white hover:bg-slate-50 border-slate-100 hover:border-slate-200'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-1.5">
+                                <span className={`text-xs font-bold truncate ${isCurrent ? 'text-blue-900' : 'text-slate-800'}`}>{t.name}</span>
+                                {isCurrent && (
+                                  <span className="text-[9px] bg-blue-600 text-white font-black px-1.5 py-0.2 rounded uppercase">
+                                    Đang Quản Trị
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1">
+                                <Globe className="w-3 h-3 text-slate-400 shrink-0" />
+                                <span className="truncate">{t.slug}.platformbds.vn</span>
+                              </div>
+                            </div>
+                            <span className="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded-md shrink-0 uppercase border border-slate-200">
+                              {t.templateSlug || 'TEMPLATE'}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-100">
+                    <a
+                      href={`${process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'http://localhost:3000'}/templates`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-sm"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Mua Thêm Template / Mở Website Mới</span>
+                    </a>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Right actions */}

@@ -305,14 +305,19 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
   const isMobile = viewport === 'mobile';
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
 
+  const brandPrimary = dynamicTheme?.primaryColor || '#B45309';
+  const brandAccent = dynamicTheme?.accentColor || '#F59E0B';
+
   const theme = {
-    bg: '#FFFBF0',
-    primary: '#B45309',
-    accent: '#F59E0B',
-    text: '#1F2937',
-    textLight: '#4B5563',
-    fontHeading: '"Syne", sans-serif',
-    fontBody: '"DM Sans", sans-serif'
+    bg: dynamicTheme?.backgroundColor || '#FFFBF0',
+    primary: brandPrimary,
+    accent: brandAccent,
+    text: dynamicTheme?.textColor || '#1F2937',
+    textLight: dynamicTheme?.textMutedColor || '#4B5563',
+    surface: dynamicTheme?.surfaceColor || '#FFFFFF',
+    border: dynamicTheme?.borderColor || '#FDE68A',
+    fontHeading: dynamicTheme?.fontHeading ? `'${dynamicTheme.fontHeading}', sans-serif` : '"Syne", sans-serif',
+    fontBody: dynamicTheme?.fontBody ? `'${dynamicTheme.fontBody}', sans-serif` : '"DM Sans", sans-serif'
   };
 
   const navLinks = [

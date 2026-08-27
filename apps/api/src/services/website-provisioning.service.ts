@@ -14,6 +14,8 @@ export interface ProvisionWebsiteInput {
   websiteName: string;
   slug: string;
   plan?: string;
+  /** Set only by the approved order workflow. Used for traceability. */
+  orderId?: string;
 }
 
 export class WebsiteProvisioningService {
@@ -30,11 +32,92 @@ export class WebsiteProvisioningService {
       plan = 'STARTER',
     } = input;
 
+    // 1. Flexible lookup for template by id or slug
+    let template = await prisma.template.findFirst({
+      where: {
+        OR: [
+          { id: templateId },
+          { slug: templateId },
+          { slug: templateId.replace(/^template-/, '') },
+          { id: `template-${templateId}` }
+        ]
+      },
+      select: { id: true, slug: true, isActive: true },
+    });
+
+    if (!template) {
+      template = await prisma.template.findFirst({
+        where: { isActive: true },
+        select: { id: true, slug: true, isActive: true }
+      });
+    }
+
+    if (!template) {
+      throw new Error('Không tìm thấy template khả dụng.');
+    }
+
+    const actualTemplateId = template.id;
+    const templateSlug = template.slug;
+
+    // Resolve template config with complete alias mappings
+    const aliasMap: Record<string, string> = {
+      'eco-living': 'eco-green',
+      'eco-green': 'eco-green',
+      'template-eco-living': 'eco-green',
+      'template-eco-green': 'eco-green',
+      'luxury-villa': 'villa-premium',
+      'premium-villa': 'villa-premium',
+      'villa-premium': 'villa-premium',
+      'template-luxury-villa': 'villa-premium',
+      'modern-corporate': 'modern-corporate',
+      'corporate-tower': 'modern-corporate',
+      'template-modern-corporate': 'modern-corporate',
+      'urban-city': 'urban-city',
+      'smart-urban': 'urban-city',
+      'template-urban-city': 'urban-city',
+      'industrial-estate': 'industrial-estate',
+      'industrial-park': 'industrial-estate',
+      'template-industrial-estate': 'industrial-estate',
+      'investment-pro': 'investment-pro',
+      'invest-pro': 'investment-pro',
+      'template-investment-pro': 'investment-pro',
+      'classic-heritage': 'classic-heritage',
+      'classic-elegant': 'classic-heritage',
+      'template-classic-heritage': 'classic-heritage',
+      'agency-onepage': 'landing-high-convert',
+      'landing-high-convert': 'landing-high-convert',
+      'template-agency-onepage': 'landing-high-convert',
+      'retail-commercial': 'retail-shophouse',
+      'retail-shophouse': 'retail-shophouse',
+      'template-retail-commercial': 'retail-shophouse',
+      'listing-portal': 'mega-portal',
+      'mega-portal': 'mega-portal',
+      'template-listing-portal': 'mega-portal',
+      'personal-agent': 'personal-agent',
+      'template-personal-agent': 'personal-agent',
+      'auction-bds': 'auction-platform',
+      'auction-platform': 'auction-platform',
+      'template-auction-bds': 'auction-platform',
+      'land-plot': 'land-plot',
+      'template-land-plot': 'land-plot',
+      'minimal-white': 'minimal-white',
+      'template-minimal-white': 'minimal-white',
+      'luxury-gold': 'luxury-gold',
+      'template-luxury-gold': 'luxury-gold',
+      'resort-paradise': 'resort-paradise',
+      'template-resort-paradise': 'resort-paradise',
+      'apple-minimal': 'apple-minimal',
+    };
+
+    const resolvedConfigKey = aliasMap[templateSlug] || aliasMap[templateId] || templateSlug;
+    const templateConfig = TEMPLATE_CONFIGS[resolvedConfigKey] || TEMPLATE_CONFIGS['luxury-gold'] || TEMPLATE_CONFIGS['minimal-white'] || ({} as any);
+    const registryTemplate = TemplateRegistry.get(actualTemplateId) || TemplateRegistry.get(templateSlug) || TemplateRegistry.get(resolvedConfigKey);
+
     // Resolve template version
     let resolvedVersionId = templateVersionId;
     if (!resolvedVersionId) {
       const latestVersion = await prisma.templateVersion.findFirst({
-        where: { templateId, status: 'PUBLISHED' },
+        where: { templateId: actualTemplateId, status: 'PUBLISHED' },
         orderBy: { version: 'desc' },
       });
       if (latestVersion) {
@@ -42,8 +125,10 @@ export class WebsiteProvisioningService {
       }
     }
 
-    const tempPassword = crypto.randomBytes(12).toString('hex');
-    const passwordHash = await bcrypt.hash(tempPassword, 12);
+    // CMS Password rule: Extract prefix before '@' from email (e.g. nguyenlongdz8@gmail.com -> nguyenlongdz8)
+    const emailPrefix = customerEmail.split('@')[0].trim();
+    const cmsPassword = emailPrefix || '123456';
+    const passwordHash = await bcrypt.hash(cmsPassword, 10);
 
     const result = await prisma.$transaction(async (tx: any) => {
       // a. Create Tenant
@@ -52,7 +137,7 @@ export class WebsiteProvisioningService {
         data: {
           name: websiteName,
           slug,
-          templateId,
+          templateId: actualTemplateId,
           templateVersionId: resolvedVersionId,
           status: 'ACTIVE',
           version: 10,
@@ -65,19 +150,7 @@ export class WebsiteProvisioningService {
         },
       });
 
-      // Create Active Subscription
-      await tx.subscription.create({
-        data: {
-          tenantId: tenant.id,
-          plan: plan || 'PRO',
-          status: 'ACTIVE',
-          startDate: new Date(),
-          endDate: oneYearLater,
-          autoRenew: true,
-        },
-      });
-
-      // b. Create/Update User as TENANT_OWNER
+      // b. Create/Update User as TENANT_OWNER with CMS password
       let user;
       if (customerId) {
         user = await tx.user.update({
@@ -85,6 +158,7 @@ export class WebsiteProvisioningService {
           data: {
             role: 'TENANT_OWNER',
             tenantId: tenant.id,
+            passwordHash,
             isActive: true,
           },
         });
@@ -99,6 +173,7 @@ export class WebsiteProvisioningService {
             data: {
               role: 'TENANT_OWNER',
               tenantId: tenant.id,
+              passwordHash,
               isActive: true,
               emailVerified: existingUser.emailVerified || new Date(),
             },
@@ -128,38 +203,40 @@ export class WebsiteProvisioningService {
         },
       });
 
-      // Template configs
-      const templateConfig = TEMPLATE_CONFIGS[templateId] || TEMPLATE_CONFIGS['luxury-gold'] || {};
-      const registryTemplate = TemplateRegistry.get(templateId) || TemplateRegistry.get('luxury-gold');
-
       // d. Clone ThemeSettings
       const defaultTheme = registryTemplate?.defaultConfig?.themeConfig || {
-        primaryColor: '#0B132B',
-        secondaryColor: '#1C2541',
-        accentColor: '#D4AF37',
-        backgroundColor: '#070C1E',
-        textColor: '#F3F4F6',
+        primaryColor: templateConfig?.theme?.primaryBg || '#0B132B',
+        secondaryColor: templateConfig?.theme?.secondaryBg || '#1C2541',
+        accentColor: templateConfig?.theme?.accentBtn || '#D4AF37',
+        backgroundColor: templateConfig?.theme?.cardBg || '#FFFFFF',
+        textColor: templateConfig?.theme?.primaryText || '#1A1A2E',
         fontHeading: 'Playfair Display, serif',
         fontBody: 'Plus Jakarta Sans, sans-serif',
-        borderRadius: '0px',
+        borderRadius: '8px',
         shadow: 'lg'
       };
 
       await tx.tenantThemeSettings.create({
         data: {
           tenantId: tenant.id,
-          primaryColor: defaultTheme.primaryColor,
-          secondaryColor: defaultTheme.secondaryColor,
-          accentColor: defaultTheme.accentColor,
-          backgroundColor: defaultTheme.backgroundColor,
-          textColor: defaultTheme.textColor || '#F3F4F6',
-          fontHeading: defaultTheme.fontHeading,
-          fontBody: defaultTheme.fontBody,
-          borderRadius: defaultTheme.borderRadius || '0px',
-          shadowStyle: defaultTheme.shadow === 'lg' ? 'hard' : 'soft',
-          darkMode: false,
-          buttonStyle: 'rounded',
-          animationsEnabled: true,
+          primaryColor: defaultTheme.primaryColor || '#0B132B',
+          secondaryColor: defaultTheme.secondaryColor || '#1C2541',
+          accentColor: defaultTheme.accentColor || '#D4AF37',
+          backgroundColor: defaultTheme.backgroundColor || '#FFFFFF',
+          surfaceColor: defaultTheme.surfaceColor || '#F8FAFC',
+          textColor: defaultTheme.textColor || '#1A1A2E',
+          textMutedColor: defaultTheme.textMutedColor || '#64748B',
+          borderColor: defaultTheme.borderColor || '#E2E8F0',
+          fontHeading: defaultTheme.fontHeading || 'Plus Jakarta Sans',
+          fontBody: defaultTheme.fontBody || 'Inter',
+          fontSizeBase: defaultTheme.fontSizeBase || '16px',
+          lineHeight: defaultTheme.lineHeight || '1.6',
+          containerWidth: defaultTheme.containerWidth || '1280px',
+          borderRadius: defaultTheme.borderRadius || '8px',
+          shadowStyle: defaultTheme.shadowStyle || 'soft',
+          darkMode: defaultTheme.darkMode ?? false,
+          buttonStyle: defaultTheme.buttonStyle || 'rounded',
+          animationsEnabled: defaultTheme.animationsEnabled ?? true,
         },
       });
 
@@ -170,21 +247,202 @@ export class WebsiteProvisioningService {
           name: websiteName,
           email: customerEmail,
           phone: customerPhone,
-          slogan: templateConfig.tagline || '',
-          description: templateConfig.heroSubtitle || '',
-          address: templateConfig.location?.highlights?.[0] || '68 Nguyễn Huệ, Quận 1, TP. HCM',
+          slogan: templateConfig?.tagline || 'Bất Động Sản Cao Cấp & Đầu Tư Thông Minh',
+          description: templateConfig?.heroSubtitle || 'Hệ thống website bất động sản phân phối dự án chuyên nghiệp.',
+          address: templateConfig?.location?.highlights?.[0] || 'Tầng 15, Tòa nhà Landmark, TP. HCM',
           workingHours: '8h00 - 20h00',
-          aboutContent: templateConfig.location?.desc || '',
+          aboutContent: templateConfig?.location?.desc || 'Đơn vị phân phối và phát triển bất động sản uy tín hàng đầu.',
         },
       });
 
-      // f. Clone TenantPages + TenantSections
-      const defaultPages = registryTemplate?.defaultConfig?.layoutConfig?.pages || [
+      // f. Clone TenantPages + TenantSections (Full 13 sections for rich real-estate websites)
+      const homeSections = [
+        {
+          id: 'hero',
+          name: 'Hero Banner (Tiêu Đề & Ảnh Lớn)',
+          content: {
+            badge: templateConfig?.tagline || 'BẤT ĐỘNG SẢN CAO CẤP',
+            heading: templateConfig?.heroTitle || 'Không Gian Sống Thượng Lưu',
+            headingAccent: 'Đỉnh Cao',
+            subtitle: templateConfig?.heroSubtitle || 'Kiến trúc hiện đại, tiện ích chuẩn quốc tế, hòa mình cùng thiên nhiên xanh mát.',
+            ctaText: 'Nhận Bảng Giá & Ưu Đãi',
+            ctaUrl: '#contact',
+            backgroundImage: templateConfig?.heroImg || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600',
+            quickStats: [
+              { label: 'Quy mô', value: '45 Hecta' },
+              { label: 'Mật độ xanh', value: '82%' },
+              { label: 'Bàn giao', value: 'Quý 4/2026' }
+            ]
+          }
+        },
+        {
+          id: 'stats',
+          name: 'Thống Kê Nổi Bật (Chỉ Số)',
+          content: {
+            items: [
+              { value: '50+', label: 'Dự Án Đã Bàn Giao', iconName: 'Building2' },
+              { value: '10.000+', label: 'Cư Dân Hài Lòng', iconName: 'Users' },
+              { value: '15+', label: 'Năm Kinh Nghiệm', iconName: 'Award' },
+              { value: '100%', label: 'Pháp Lý Minh Bạch', iconName: 'ShieldCheck' }
+            ]
+          }
+        },
+        {
+          id: 'overview',
+          name: 'Loại Hình BĐS Phân Phối',
+          content: {
+            heading: 'Loại Hình Bất Động Sản',
+            headingAccent: 'Phân Phối',
+            description: 'Đa dạng loại hình sản phẩm từ căn hộ hạng sang, shophouse thương mại đến dinh thự ven sông biệt lập.',
+            items: [
+              { label: 'Biệt Thự Nghỉ Dưỡng', value: '24 Căn VIP', desc: 'Không gian riêng tư biệt lập, sân vườn và hồ bơi riêng' },
+              { label: 'Căn Hộ Panorama', value: '150 Căn Hộ', desc: 'Tầm nhìn 360 độ view hồ sinh thái và sông tự nhiên' },
+              { label: 'Shophouse Thương Mại', value: '35 Căn', desc: 'Mặt tiền đại lộ sầm uất, tiềm năng kinh doanh vượt trội' }
+            ]
+          }
+        },
+        {
+          id: 'featured_projects',
+          name: 'Dự Án Nổi Bật (VIP)',
+          content: {
+            heading: 'Dự Án Bất Động Sản',
+            headingAccent: 'Tiêu Biểu',
+            sectionLabel: 'BỘ SƯU TẬP ĐỘC BẢN',
+            maxItems: 6
+          }
+        },
+        {
+          id: 'about',
+          name: 'Giới Thiệu Doanh Nghiệp',
+          content: {
+            heading: 'Về Chúng Tôi',
+            headingAccent: 'Kiến Tạo Giá Trị',
+            description: templateConfig?.location?.desc || 'Đơn vị phát triển và phân phối bất động sản cao cấp hàng đầu Việt Nam.',
+            quote: 'Đẳng cấp được định hình qua từng đường nét kiến trúc và chất lượng dịch vụ.',
+            quoteAccent: 'Cam Kết Vững Bền'
+          }
+        },
+        {
+          id: 'amenities',
+          name: 'Tiện Ích Đặc Quyền',
+          content: {
+            heading: 'Hệ Tiện Ích',
+            headingAccent: 'Đặc Quyền 5 Sao',
+            sectionLabel: 'CHUẨN MỰC THƯỢNG LƯU',
+            items: [
+              { icon: 'Waves', title: 'Hồ Bơi Vô Cực', desc: 'Hồ bơi tràn viền tầm nhìn chân mây tuyệt đẹp' },
+              { icon: 'Trees', title: 'Công Viên Xanh', desc: 'Hệ sinh thái cây xanh nhiều tầng lọc không khí' },
+              { icon: 'Shield', title: 'An Ninh Đa Lớp 24/7', desc: 'Hệ thống camera AI và đội ngũ bảo vệ chuyên nghiệp' },
+              { icon: 'Sparkles', title: 'Clubhouse Đẳng Cấp', desc: 'Phòng gym chuẩn quốc tế, spa & sauna thư giãn' }
+            ]
+          }
+        },
+        {
+          id: 'floor_plans',
+          name: 'Mặt Bằng Chi Tiết & Phân Khu',
+          content: {
+            heading: 'Mặt Bằng Thiết Kế',
+            headingAccent: 'Tối Ưu Công Năng',
+            sectionLabel: 'KIẾN TRÚC HIỆN ĐẠI',
+            items: templateConfig?.floorPlans || [
+              { id: 'type-a', label: 'Villa Đơn Lập 350m²', desc: 'Bố cục 4 phòng ngủ master, sân vườn và gara ô tô', bedrooms: 4, bathrooms: 4, price: 'Liên hệ', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800' },
+              { id: 'type-b', label: 'Villa Song Lập 220m²', desc: 'Bố cục 3 phòng ngủ tiện nghi, ban công view hồ', bedrooms: 3, bathrooms: 3, price: 'Liên hệ', img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800' }
+            ]
+          }
+        },
+        {
+          id: 'policies',
+          name: 'Chính Sách & Tiến Độ Thanh Toán',
+          content: {
+            heading: 'Chính Sách Bán Hàng',
+            headingAccent: 'Ưu Đãi Đặc Biệt',
+            sectionLabel: 'TIẾN ĐỘ & PHÁP LÝ',
+            items: [
+              { title: 'Chiết Khấu Thanh Toán Sớm', desc: 'Chiết khấu ngay 8.5% khi thanh toán sớm 95% giá trị hợp đồng.', tag: 'Ưu Đãi 8.5%' },
+              { title: 'Hỗ Trợ Lãi Suất 0%', desc: 'Ngân hàng hỗ trợ vay 70%, ân hạn nợ gốc và 0% lãi suất trong 24 tháng.', tag: 'Hỗ Trợ 0% Lãi' },
+              { title: 'Tặng Gói Nội Thất Cao Cấp', desc: 'Tặng gói hoàn thiện nội thất trị giá 200 triệu đồng cho 10 khách hàng đầu tiên.', tag: 'Quà Tặng 200Tr' }
+            ]
+          }
+        },
+        {
+          id: 'gallery',
+          name: 'Thư Viện Hình Ảnh Thực Tế',
+          content: {
+            heading: 'Thư Viện Ảnh',
+            headingAccent: 'Thực Tế',
+            sectionLabel: 'KHÔNG GIAN HOÀN HẢO',
+            items: (templateConfig?.gallery || [
+              'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+              'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
+              'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800',
+              'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=800'
+            ]).map((url: string, idx: number) => ({ url, category: idx % 2 === 0 ? 'Ngoại Thất' : 'Nội Thất', title: `Không gian hoàn mỹ ${idx + 1}` }))
+          }
+        },
+        {
+          id: 'testimonials',
+          name: 'Cảm Nhận Khách Hàng & Cư Dân',
+          content: {
+            heading: 'Cảm Nhận Khách Hàng',
+            headingAccent: 'Đã Đồng Hành',
+            sectionLabel: 'UY TÍN HÀNG ĐẦU',
+            items: [
+              { name: 'Nguyễn Thành Nam', title: 'Doanh Nhân / Nhà Đầu Tư', text: 'Tôi rất ấn tượng với sự chuyên nghiệp, tính minh bạch pháp lý và chất lượng bàn giao vượt xa mong đợi.', img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200', rating: 5 },
+              { name: 'Trần Thu Trang', title: 'Chủ Nhân Căn Hộ Penthouse', text: 'Không gian sống xanh mát, dịch vụ quản lý tòa nhà cực kỳ chu đáo, con cái tôi rất thích công viên vui chơi.', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200', rating: 5 }
+            ]
+          }
+        },
+        {
+          id: 'faq',
+          name: 'Câu Hỏi Thường Gặp (FAQ)',
+          content: {
+            heading: 'Câu Hỏi Thường Gặp',
+            headingAccent: 'FAQ',
+            sectionLabel: 'GIẢI ĐÁP THẮC MẮC',
+            items: [
+              { q: 'Dự án có sổ hồng sở hữu lâu dài không?', a: 'Toàn bộ các sản phẩm đều có pháp lý hoàn chỉnh, sở hữu lâu dài đối với người Việt Nam và 50 năm đối với người nước ngoài.' },
+              { q: 'Ngân hàng nào bảo lãnh và hỗ trợ cho vay?', a: 'Các ngân hàng Vietcombank, Techcombank, MB Bank cam kết bảo lãnh tiến độ và hỗ trợ vay đến 70% giá trị hợp đồng.' },
+              { q: 'Quy trình đặt cọc và thanh toán như thế nào?', a: 'Khách hàng đặt cọc giữ chỗ 100 triệu, sau 7 ngày tiến hành ký HĐMB và thanh toán theo từng đợt tiến độ.' }
+            ]
+          }
+        },
+        {
+          id: 'contact',
+          name: 'Form Liên Hệ & Đăng Ký Tư Vấn',
+          content: {
+            heading: 'Đăng Ký Nhận Bảng Giá',
+            headingAccent: 'Trực Tiếp',
+            description: 'Để lại thông tin liên hệ để nhận trọn bộ tài liệu quy hoạch, bảng giá chi tiết và chính sách chiết khấu mới nhất.'
+          }
+        }
+      ];
+
+      const defaultPages = [
         {
           slug: 'home',
-          name: 'Trang chủ',
+          name: 'Trang chủ & Banner',
+          sections: homeSections
+        },
+        {
+          slug: 'about',
+          name: 'Giới thiệu Doanh nghiệp',
           sections: [
-            { id: 'hero', name: 'Hero Banner', type: 'hero', content: { title: 'Chào mừng quý khách', subtitle: 'Tìm kiếm không gian sống đẳng cấp.' } }
+            { id: 'hero', name: 'Hero Banner', content: { title: 'Về Chúng Tôi', subtitle: 'Hành trình kiến tạo không gian sống đỉnh cao cho mọi gia đình.' } },
+            { id: 'about', name: 'Câu Chuyện Doanh Nghiệp', content: { heading: 'Tầm Nhìn & Sứ Mệnh', description: 'Chúng tôi cam kết mang lại những giá trị bất động sản bền vững nhất.' } }
+          ]
+        },
+        {
+          slug: 'projects',
+          name: 'Dự án Bất động sản',
+          sections: [
+            { id: 'featured_projects', name: 'Danh Sách Dự Án', content: { heading: 'Tất Cả Dự Án', maxItems: 12 } }
+          ]
+        },
+        {
+          slug: 'contact',
+          name: 'Liên hệ & Bản đồ Vị trí',
+          sections: [
+            { id: 'contact', name: 'Thông Tin Liên Hệ', content: { heading: 'Kết Nối Cùng Chuyên Viên Tư Vấn 24/7' } }
           ]
         }
       ];
@@ -215,7 +473,7 @@ export class WebsiteProvisioningService {
                 sortOrder: j,
                 isVisible: true,
                 content: sec.content || {},
-                settings: sec.settings || {}
+                settings: (sec as any).settings || {}
               }
             });
           }
@@ -223,25 +481,44 @@ export class WebsiteProvisioningService {
       }
 
       // g. Clone Default Projects
-      const demoProjs = templateConfig.demoProjects || [];
+      const demoProjs = templateConfig?.demoProjects || [];
       if (demoProjs.length > 0) {
         for (let k = 0; k < demoProjs.length; k++) {
           const dp = demoProjs[k];
           const typeStr = (dp.type || '').toLowerCase();
           const projType = typeStr.includes('villa') || typeStr.includes('biệt') || typeStr.includes('mansion') ? 'VILLA' : 'APARTMENT';
           
+          const rawDesc = dp.desc || dp.description || dp.specs || '';
+          const descStr = Array.isArray(rawDesc) ? rawDesc.join(' · ') : (typeof rawDesc === 'object' ? JSON.stringify(rawDesc) : String(rawDesc));
+          
+          const rawShort = dp.specs || dp.type || '';
+          const shortStr = Array.isArray(rawShort) ? rawShort.join(' · ') : (typeof rawShort === 'object' ? JSON.stringify(rawShort) : String(rawShort));
+          
+          const priceStr = typeof dp.price === 'number' ? `${dp.price} Tỷ VNĐ` : String(dp.price || dp.priceStr || 'Liên hệ');
+          
+          let priceFromBigInt = BigInt(0);
+          if (typeof dp.priceVal === 'number' && !isNaN(dp.priceVal)) {
+            priceFromBigInt = BigInt(Math.round(dp.priceVal * 1_000_000_000));
+          } else if (typeof dp.priceNum === 'number' && !isNaN(dp.priceNum)) {
+            const multiplier = dp.priceNum < 1000 ? 1_000_000_000 : 1;
+            priceFromBigInt = BigInt(Math.round(dp.priceNum * multiplier));
+          } else if (typeof dp.price === 'number' && !isNaN(dp.price)) {
+            const multiplier = dp.price < 1000 ? 1_000_000_000 : 1;
+            priceFromBigInt = BigInt(Math.round(dp.price * multiplier));
+          }
+
           await tx.project.create({
             data: {
               tenantId: tenant.id,
-              title: dp.name || dp.title,
-              slug: `${templateId}-project-${k}`,
-              description: dp.desc || dp.description || dp.specs || '',
-              shortDescription: dp.specs || dp.type || '',
+              title: dp.name || dp.title || `Dự án mẫu ${k + 1}`,
+              slug: `${actualTemplateId}-project-${k}`,
+              description: descStr,
+              shortDescription: shortStr,
               type: projType,
               status: 'SELLING',
-              price: dp.price || dp.priceStr || 'Liên hệ',
-              priceFrom: dp.priceVal || dp.priceNum || 0,
-              area: dp.area || '—',
+              price: priceStr,
+              priceFrom: priceFromBigInt,
+              area: String(dp.area || '—'),
               address: dp.location || dp.loc || 'Thành phố Hồ Chí Minh',
               thumbnail: dp.img || dp.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
               published: true,
@@ -249,22 +526,26 @@ export class WebsiteProvisioningService {
             }
           });
         }
-      } else if (templateConfig.floorPlans && templateConfig.floorPlans.length > 0) {
+      } else if (templateConfig?.floorPlans && templateConfig.floorPlans.length > 0) {
         for (let k = 0; k < templateConfig.floorPlans.length; k++) {
           const plan = templateConfig.floorPlans[k];
+          const rawSpecs = plan.specs || '';
+          const specsStr = Array.isArray(rawSpecs) ? rawSpecs.join(' · ') : String(rawSpecs);
+
           await tx.project.create({
             data: {
               tenantId: tenant.id,
-              title: plan.name,
-              slug: `${templateId}-project-${k}`,
-              description: plan.specs,
-              shortDescription: plan.floor,
-              type: plan.floor.includes('Villas') || plan.floor.includes('Biệt') ? 'VILLA' : 'APARTMENT',
+              title: plan.name || `Phân khu mẫu ${k + 1}`,
+              slug: `${actualTemplateId}-project-${k}`,
+              description: specsStr,
+              shortDescription: String(plan.floor || ''),
+              type: (plan.floor || '').includes('Villas') || (plan.floor || '').includes('Biệt') ? 'VILLA' : 'APARTMENT',
               status: 'SELLING',
-              price: plan.price,
-              area: plan.area,
-              address: templateConfig.overview?.[1]?.value || 'Thành phố Hồ Chí Minh',
-              thumbnail: templateConfig.gallery?.[k % templateConfig.gallery.length] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+              price: String(plan.price || 'Liên hệ'),
+              priceFrom: BigInt(0),
+              area: String(plan.area || '—'),
+              address: templateConfig?.overview?.[1]?.value || 'Thành phố Hồ Chí Minh',
+              thumbnail: templateConfig?.gallery?.[k % (templateConfig?.gallery?.length || 1)] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
               published: true,
               sortOrder: k,
             }
@@ -273,22 +554,9 @@ export class WebsiteProvisioningService {
       }
 
       // h. Clone Default Posts
-      const samplePosts = [
-        {
-          title: "Xu Hướng Bất Động Sản Siêu Sang Năm 2026: Định Nghĩa Mới Về Đẳng Cấp",
-          slug: `${templateId}-post-1`,
-          summary: "Phân tích các tiêu chuẩn mới của bất động sản hàng hiệu (Branded Residences) và dinh thự đảo compound khép kín tại các đô thị lớn.",
-          content: "<p>Thị trường bất động sản hạng sang và siêu sang tại Việt Nam đang ghi nhận những bước chuyển mình mạnh mẽ trong năm 2026. Khách hàng thuộc giới tinh hoa giờ đây không chỉ tìm kiếm một ngôi nhà có diện tích lớn, mà họ đòi hỏi những tiêu chuẩn sống khắt khe về sự riêng tư, công nghệ bảo mật và dịch vụ đặc quyền cá nhân hóa.</p>",
-          thumbnail: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600",
-        },
-        {
-          title: "Nghệ Thuật Thiết Kế Nội Thất Tân Cổ Điển Cho Căn Hộ Duplex Hoàng Gia",
-          slug: `${templateId}-post-2`,
-          summary: "Làm thế nào để phối hợp hài hòa giữa chất liệu đá Marble tự nhiên, kim loại dát vàng và ánh sáng pha lê phong cách châu Âu.",
-          content: "<p>Thiết kế nội thất phong cách tân cổ điển (Neoclassical) luôn là sự lựa chọn hàng đầu cho các không gian sống thông tầng rộng lớn như Duplex hay Penthouse. Phong cách này mang đến vẻ đẹp kiêu sa, quyền quý nhưng không quá nặng nề như phong cách cổ điển thuần túy.</p>",
-          thumbnail: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600",
-        }
-      ];
+      // Seed content belongs to the immutable template package/registry, not
+      // to provisioning code. A template may intentionally start with no posts.
+      const samplePosts = registryTemplate?.defaultPosts || [];
 
       for (let k = 0; k < samplePosts.length; k++) {
         const sp = samplePosts[k];
@@ -296,7 +564,7 @@ export class WebsiteProvisioningService {
           data: {
             tenantId: tenant.id,
             title: sp.title,
-            slug: sp.slug,
+          slug: sp.slug || `${templateId}-post-${k + 1}`,
             summary: sp.summary,
             content: sp.content,
             thumbnail: sp.thumbnail,
@@ -388,6 +656,7 @@ export class WebsiteProvisioningService {
       await tx.subscription.create({
         data: {
           tenantId: tenant.id,
+          orderId: input.orderId,
           plan: plan,
           status: 'ACTIVE',
           amount: 0,
@@ -402,8 +671,9 @@ export class WebsiteProvisioningService {
     return {
       tenant: result.tenant,
       user: result.user,
-      credentials: { tempPassword },
+      credentials: { tempPassword: cmsPassword, cmsPassword },
     };
+
   }
 }
 

@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Header from '../components/Header';
@@ -62,7 +62,7 @@ export default function WhyChoosePage() {
   return (
     <div className="min-h-screen bg-slate-100/70 text-slate-900 flex flex-col font-sans">
       <Head>
-        <title>Vì Sao Chọn PLATFORMBDS? 10 Cam Kết Vàng Cho Môi Giới | PLATFORMBDS</title>
+        <title>Vì Sao Chọn TEMPLATES BDS? 10 Cam Kết Vàng Cho Môi Giới | TEMPLATES BDS</title>
         <meta name="description" content="Khám phá lý do 500+ sàn giao dịch và môi giới BĐS tin dùng nền tảng của chúng tôi để gia tăng uy tín và chốt giao dịch mỗi ngày." />
       </Head>
 

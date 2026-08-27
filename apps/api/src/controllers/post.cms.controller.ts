@@ -10,9 +10,10 @@ const postSchema = z.object({
   summary: z.string().optional(),
   thumbnail: z.string().optional(),
   categoryId: z.string().optional(),
-  published: z.coerce.boolean().optional().default(false),
+  published: z.coerce.boolean().optional().default(true),
   tagNames: z.array(z.string()).optional().default([]),
 });
+
 
 export async function getPosts(req: Request, res: Response, next: NextFunction) {
   const tenantId = req.tenantId;

@@ -4,6 +4,7 @@ import {
   getTemplateDetail,
   checkSubdomain,
   createOrder,
+  createContactSubmission,
   uploadPaymentProof,
   getMarketplaceStats,
   downloadTemplateSource,
@@ -27,6 +28,7 @@ router.get('/stats', getMarketplaceStats);
 
 // API gửi đơn hàng (cho phép guest checkout — không bắt buộc auth)
 router.post('/orders', createOrder);
+router.post('/contact', createContactSubmission);
 
 // API lịch sử đơn hàng của khách (yêu cầu đăng nhập)
 router.get('/orders/my-orders', authMiddleware, getMyOrders);

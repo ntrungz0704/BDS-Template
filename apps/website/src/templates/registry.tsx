@@ -56,17 +56,10 @@ class WebsiteTemplateRegistry {
     this.templates.set(def.id.toLowerCase(), def);
   }
 
-  public static get(idOrSlug: string): TemplateDefinition {
-    const rawKey = (idOrSlug || 'luxury-gold').toLowerCase();
+  public static get(idOrSlug: string): TemplateDefinition | undefined {
+    const rawKey = idOrSlug.toLowerCase();
     const cleanKey = rawKey.replace(/^template-/, '');
-    return this.templates.get(rawKey) || this.templates.get(cleanKey) || this.templates.get('luxury-gold') || {
-      id: 'template-luxury-gold',
-      slug: 'luxury-gold',
-      name: 'Luxury Gold',
-      category: 'luxury',
-      version: '1.0.0',
-      component: LuxuryTemplate,
-    };
+    return this.templates.get(rawKey) || this.templates.get(cleanKey);
   }
 
   public static list(): TemplateDefinition[] {

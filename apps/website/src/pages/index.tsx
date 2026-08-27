@@ -103,7 +103,7 @@ export default function TenantHome({ company, theme, pageContent, projects, post
   }
 
   // Đọc template slug thực tế từ thông tin tenant trả về từ API
-  const templateSlug = company?.tenant?.template?.slug || company?.tenant?.templateId || 'luxury-gold';
+  const templateSlug = company?.tenant?.template?.slug || company?.tenant?.templateId;
 
   return (
     <>
@@ -123,6 +123,7 @@ export default function TenantHome({ company, theme, pageContent, projects, post
         projects={projects} 
         posts={posts} 
         initialPage={initialPage}
+        pageContent={pageContent}
       />
     </>
   );
@@ -133,36 +134,49 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let tenantSlug = (context.req.headers['x-tenant-slug'] as string) || '';
   const initialPage = (context.query.page as string) || 'home';
   
-  if (!tenantSlug || tenantSlug === 'localhost:3003' || tenantSlug === 'localhost') {
-    const isDev = process.env.NODE_ENV !== 'production';
-    if (isDev) {
-      tenantSlug = (context.query.tenant as string) || 'hoanggialand';
-    } else {
-      tenantSlug = '_notfound';
-    }
+  if (!tenantSlug || tenantSlug === '_notfound' || tenantSlug === 'localhost:3003' || tenantSlug === 'localhost') {
+    tenantSlug = (context.query.tenant as string) 
+      || (context.req.cookies['tenant_slug'] as string) 
+      || 'nguyen-pham-thanh-trung-land';
   }
+
 
   try {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
     const [compRes, themeRes, pageRes, projRes, postRes, statusRes] = await Promise.all([
-      axios.get(`${API_URL}/api/website/${tenantSlug}/company-info`),
-      axios.get(`${API_URL}/api/website/${tenantSlug}/theme`),
-      axios.get(`${API_URL}/api/website/${tenantSlug}/pages/home`),
-      axios.get(`${API_URL}/api/website/${tenantSlug}/projects?limit=6`),
-      axios.get(`${API_URL}/api/website/${tenantSlug}/posts?limit=3`),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/company-info`).catch(() => ({ data: { data: null } })),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/theme`).catch(() => ({ data: { data: null } })),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/pages/home`).catch(() => ({ data: { data: null } })),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/projects?limit=6`).catch(() => ({ data: { data: [] } })),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/posts?limit=3`).catch(() => ({ data: { data: [] } })),
       axios.get(`${API_URL}/api/website/${tenantSlug}/status`).catch(() => ({ data: { data: { isAccessible: true } } })),
     ]);
+
+    if (!compRes.data?.data) {
+      return {
+        props: {
+          company: null,
+          theme: null,
+          pageContent: null,
+          projects: [],
+          posts: [],
+          tenantSlug,
+          initialPage,
+          error: `Website với tên miền hoặc mã '${tenantSlug}' chưa tồn tại hoặc chưa được kích hoạt.`,
+        },
+      };
+    }
 
     return {
       props: {
         company: compRes.data.data,
-        theme: themeRes.data.data,
-        pageContent: pageRes.data.data,
-        projects: projRes.data.data,
-        posts: postRes.data.data,
+        theme: themeRes.data?.data || null,
+        pageContent: pageRes.data?.data || null,
+        projects: projRes.data?.data || [],
+        posts: postRes.data?.data || [],
         tenantSlug,
         initialPage,
-        tenantStatus: statusRes.data.data,
+        tenantStatus: statusRes.data?.data || { isAccessible: true },
       },
     };
   } catch (error: any) {
@@ -181,3 +195,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 };
+

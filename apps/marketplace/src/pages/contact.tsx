@@ -19,6 +19,8 @@ export default function ContactPage() {
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const getPackageName = (pkg: string) => {
     switch (pkg) {
@@ -36,34 +38,73 @@ export default function ContactPage() {
     return found ? found.name : slug;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.fullName.trim() || !formData.phone.trim()) {
-      showToast('Vui lòng nhập họ tên và số điện thoại liên hệ!', 'error');
-      return;
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    if (!formData.fullName.trim() || formData.fullName.trim().length < 2) {
+      newErrors.fullName = 'Họ và tên tối thiểu 2 ký tự.';
     }
-    
-    setSubmitted(true);
-    showToast('Đã gửi thông tin tư vấn thành công! Vui lòng bấm nút Zalo bên dưới để liên hệ trực tiếp.', 'success');
-    
-    // Lưu vào clipboard để khách tiện gửi
-    const templateName = getTemplateName(formData.selectedTemplateSlug);
-    const packageName = getPackageName(formData.packageInterest);
-    const zaloMsg = `Xin chào PlatformBDS! Tôi tên là ${formData.fullName} (SĐT: ${formData.phone}). Tôi đăng ký tư vấn mẫu website "${templateName}" và gói dịch vụ "${packageName}".${formData.message ? ` Ghi chú: ${formData.message}` : ''}`;
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText(zaloMsg).catch(() => {});
+    const phoneClean = formData.phone.replace(/\s/g, '');
+    if (!phoneClean || !/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
+      newErrors.phone = 'SĐT phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.';
+    }
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Định dạng email không hợp lệ (VD: ten@gmail.com).';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setLoading(true);
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const phoneClean = formData.phone.replace(/\s/g, '');
+      const res = await fetch(`${API_URL}/api/marketplace/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: formData.fullName.trim(),
+          phone: phoneClean,
+          email: formData.email.trim(),
+          selectedTemplate: formData.selectedTemplateSlug,
+          packageInterest: getPackageName(formData.packageInterest),
+          message: formData.message.trim(),
+        }),
+      });
+      const result = await res.json();
+      if (res.ok && result.success) {
+        setSubmitted(true);
+        showToast('Đã gửi yêu cầu tư vấn thành công! Đội ngũ sẽ liên hệ bạn sớm nhất.', 'success');
+        // Copy Zalo message to clipboard
+        const templateName = getTemplateName(formData.selectedTemplateSlug);
+        const packageName = getPackageName(formData.packageInterest);
+        const zaloMsg = `Xin chào TEMPLATES BDS! Tôi tên là ${formData.fullName} (SĐT: ${formData.phone}). Tôi đăng ký tư vấn mẫu website "${templateName}" và gói dịch vụ "${packageName}".${formData.message ? ` Ghi chú: ${formData.message}` : ''}`;
+        if (typeof navigator !== 'undefined' && navigator.clipboard) {
+          navigator.clipboard.writeText(zaloMsg).catch(() => {});
+        }
+      } else {
+        const msg = result.error?.details?.[0]?.message || result.error?.message || 'Gửi yêu cầu thất bại.';
+        showToast(msg, 'error');
+      }
+    } catch (err) {
+      showToast('Lỗi kết nối server. Vui lòng thử lại hoặc gọi trực tiếp Hotline.', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
   const templateName = getTemplateName(formData.selectedTemplateSlug);
   const packageName = getPackageName(formData.packageInterest);
-  const zaloMsg = `Xin chào PlatformBDS! Tôi tên là ${formData.fullName} (SĐT: ${formData.phone}). Tôi đăng ký tư vấn mẫu website "${templateName}" và gói dịch vụ "${packageName}".${formData.message ? ` Ghi chú: ${formData.message}` : ''}`;
+  const zaloMsg = `Xin chào TEMPLATES BDS! Tôi tên là ${formData.fullName} (SĐT: ${formData.phone}). Tôi đăng ký tư vấn mẫu website "${templateName}" và gói dịch vụ "${packageName}".${formData.message ? ` Ghi chú: ${formData.message}` : ''}`;
 
   return (
     <>
       <Head>
-        <title>Liên Hệ & Tư Vấn Kỹ Thuật Trực Tiếp | PLATFORMBDS</title>
-        <meta name="description" content="Kết nối trực tiếp với đội ngũ chuyên gia của PlatformBDS qua Hotline, Zalo VIP để được tư vấn chọn mẫu website phù hợp nhất." />
+        <title>Liên Hệ & Tư Vấn Kỹ Thuật Trực Tiếp | TEMPLATES BDS</title>
+        <meta name="description" content="Kết nối trực tiếp với đội ngũ chuyên gia của TEMPLATES BDS qua Hotline, Zalo VIP để được tư vấn chọn mẫu website phù hợp nhất." />
       </Head>
 
       <div className="min-h-screen bg-slate-100/70 flex flex-col font-sans">
@@ -76,7 +117,7 @@ export default function ContactPage() {
               <Phone className="w-3.5 h-3.5 text-blue-600" /> Hỗ Trợ Khách Hàng 24/7
             </span>
             <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 mb-3">
-              Liên Hệ Đội Ngũ PlatformBDS
+              Liên Hệ Đội Ngũ TEMPLATES BDS
             </h1>
             <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
               Bạn cần tư vấn chọn mẫu website phù hợp với phân khúc dự án hoặc muốn triển khai giải pháp riêng? Hãy gửi yêu cầu cho chúng tôi hoặc gọi trực tiếp Hotline Zalo.
@@ -198,9 +239,10 @@ export default function ContactPage() {
                         required
                         placeholder="VD: Nguyễn Văn Tuấn"
                         value={formData.fullName}
-                        onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                        className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-md text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-colors"
+                        onChange={(e) => { setFormData({ ...formData, fullName: e.target.value }); setErrors((prev) => ({ ...prev, fullName: '' })); }}
+                        className={`w-full px-3.5 py-2 bg-white border rounded-md text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 transition-colors ${errors.fullName ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-300' : 'border-slate-300 focus:border-slate-900 focus:ring-slate-900'}`}
                       />
+                      {errors.fullName && <p className="text-[11px] text-rose-500 mt-1 font-medium">{errors.fullName}</p>}
                     </div>
 
                     <div>
@@ -212,9 +254,10 @@ export default function ContactPage() {
                         required
                         placeholder="VD: 0919 006 030"
                         value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-md text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-colors"
+                        onChange={(e) => { setFormData({ ...formData, phone: e.target.value }); setErrors((prev) => ({ ...prev, phone: '' })); }}
+                        className={`w-full px-3.5 py-2 bg-white border rounded-md text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 transition-colors ${errors.phone ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-300' : 'border-slate-300 focus:border-slate-900 focus:ring-slate-900'}`}
                       />
+                      {errors.phone && <p className="text-[11px] text-rose-500 mt-1 font-medium">{errors.phone}</p>}
                     </div>
                   </div>
 
@@ -269,10 +312,11 @@ export default function ContactPage() {
 
                   <button
                     type="submit"
-                    className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm rounded-md transition-colors shadow-sm flex items-center justify-center gap-2 mt-2"
+                    disabled={loading}
+                    className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm rounded-md transition-colors shadow-sm flex items-center justify-center gap-2 mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     <Send className="w-4 h-4" />
-                    <span>Gửi Yêu Cầu & Nhận Tư Vấn Ngay</span>
+                    <span>{loading ? 'Đang gửi...' : 'Gửi Yêu Cầu & Nhận Tư Vấn Ngay'}</span>
                   </button>
                 </form>
               )}

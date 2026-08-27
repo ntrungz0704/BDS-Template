@@ -8,9 +8,11 @@ import DetailsModal from '../components/DetailsModal';
 import { ALL_TEMPLATES, Template } from '../data/templatesData';
 import { DESIGN_COLLECTIONS } from '../data/collectionsData';
 import { Search, Sparkles, CheckCircle2, SlidersHorizontal, Layers, Grid } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export default function TemplatesPage() {
   const router = useRouter();
+  const { addToCart } = useAuth();
   const [selectedTemplate, setSelectedTemplate] = useState<Template | any | null>(null);
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -70,14 +72,14 @@ export default function TemplatesPage() {
   return (
     <>
       <Head>
-        <title>Bộ Sưu Tập 16 Mẫu Website Bất Động Sản Chuyên Nghiệp | PLATFORMBDS</title>
+        <title>Bộ Sưu Tập 16 Mẫu Website Bất Động Sản Chuyên Nghiệp | TEMPLATES BDS</title>
         <meta name="description" content="16 Mẫu website BĐS độc quyền: Luxury, Minimal, Corporate, Resort, Industrial, Villa, Eco, Classic, Investment, Agency, Developer." />
       </Head>
 
       <Header 
         onSearch={(q) => setSearchQuery(q)} 
-        onOpenConsultation={() => alert('Vui lòng liên hệ hotline 0919 006 030 để được tư vấn chọn mẫu!')} 
-        onOpenAuth={() => { window.location.href = '/login'; }} 
+        onOpenConsultation={() => router.push('/contact')} 
+        onOpenAuth={() => router.push('/login')} 
       />
 
       <main className="min-h-screen bg-[#F8FAFC] text-slate-900 pb-24 pt-8 sm:pt-12 px-4 sm:px-8">
@@ -99,7 +101,7 @@ export default function TemplatesPage() {
           <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 mb-8 shadow-sm">
             <div className="flex flex-col lg:flex-row gap-3 items-center justify-between mb-4">
               {/* Search input */}
-              <div className="relative w-full lg:w-[380px]">
+              <form onSubmit={(e) => { e.preventDefault(); }} className="relative w-full lg:w-[380px]">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
@@ -108,7 +110,7 @@ export default function TemplatesPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all font-medium"
                 />
-              </div>
+              </form>
 
               {/* View Mode & Sort selector */}
               <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
@@ -173,8 +175,9 @@ export default function TemplatesPage() {
                 onClick={() => { setSearchQuery(''); setActiveCategory('all'); }}
                 className="px-5 py-2 bg-[#2563EB] text-white rounded-xl text-xs font-bold hover:bg-blue-600 transition-colors shadow-sm"
               >
-                Xem toàn bộ 16 mẫu
+                Xem toàn bộ 17 mẫu
               </button>
+
             </div>
           ) : viewMode === 'family' && activeCategory === 'all' && searchQuery === '' ? (
             /* Family Architecture Grouped View */
@@ -282,9 +285,10 @@ export default function TemplatesPage() {
         <DetailsModal
           template={selectedTemplate}
           onClose={() => setSelectedTemplate(null)}
-          onSelect={(tpl) => {
+          onSelect={(tpl, defaultType) => {
             setSelectedTemplate(null);
-            alert(`Bạn đã chọn ${tpl.name}. Đội ngũ PlatformBDS sẽ liên hệ ngay!`);
+            addToCart(tpl, defaultType || 'BUY');
+            router.push('/cart');
           }}
         />
       )}

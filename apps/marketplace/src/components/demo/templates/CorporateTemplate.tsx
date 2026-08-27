@@ -10,6 +10,7 @@ import {
   Instagram, Youtube
 } from 'lucide-react';
 import { MAX_W } from '../design-system';
+import { FacebookIcon, LinkedinIcon, YoutubeIcon, ZaloIcon } from '../../icons/SocialIcons';
 
 interface TemplateProps {
   template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
@@ -32,6 +33,8 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [homeSubmitted, setHomeSubmitted] = useState(false);
+  const [contactSubmitted, setContactSubmitted] = useState(false);
 
   const isMobile = viewport === 'mobile';
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
@@ -685,26 +688,67 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             </div>
             <div className="flex-1 w-full bg-white p-8 rounded shadow-2xl">
               <h4 className="text-2xl font-bold mb-6" style={{ color: colors.text }}>Gửi Yêu Cầu</h4>
-              <form className="space-y-4">
-                <div>
-                  <input type="text" placeholder="Họ và tên / Doanh nghiệp" className="w-full border p-3 rounded focus:outline-none focus:border-blue-800" style={{ borderColor: colors.border, color: colors.text }} />
+              {homeSubmitted ? (
+                <div className="p-6 bg-emerald-50 border border-emerald-200 rounded text-center text-emerald-800">
+                  <div className="font-bold text-lg mb-1">✓ Đã Gửi Yêu Cầu Thành Công!</div>
+                  <p className="text-xs text-emerald-600">Đội ngũ chuyên viên của VinaCorp sẽ liên hệ lại qua SĐT trong vòng 15 phút.</p>
+                  <button onClick={() => setHomeSubmitted(false)} className="mt-4 text-xs font-bold text-blue-800 underline">Gửi yêu cầu khác</button>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <input type="text" placeholder="Số điện thoại" className="w-full border p-3 rounded focus:outline-none focus:border-blue-800" style={{ borderColor: colors.border, color: colors.text }} />
-                  <input type="email" placeholder="Email" className="w-full border p-3 rounded focus:outline-none focus:border-blue-800" style={{ borderColor: colors.border, color: colors.text }} />
-                </div>
-                <div>
-                  <select className="w-full border p-3 rounded focus:outline-none focus:border-blue-800" style={{ borderColor: colors.border, color: colors.text }}>
-                    <option>Quan tâm: Mua Dự án Thương mại</option>
-                    <option>Quan tâm: Thuê Văn phòng</option>
-                    <option>Quan tâm: Hợp tác Đầu tư</option>
-                  </select>
-                </div>
-                <button type="button" className="w-full py-4 font-bold text-white uppercase tracking-wider transition-opacity hover:opacity-90" style={{ backgroundColor: colors.header }}>
-                  Gửi Thông Tin
-                </button>
-              </form>
+              ) : (
+                <form 
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    const form = e.currentTarget;
+                    const name = (form.elements[0] as HTMLInputElement).value;
+                    const phone = (form.elements[1] as HTMLInputElement).value;
+                    const email = (form.elements[2] as HTMLInputElement).value;
+                    const interest = (form.elements[3] as HTMLSelectElement).value;
+                    
+                    const phoneClean = phone.replace(/\s/g, '');
+                    if (!/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
+                      alert('Số điện thoại phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.');
+                      return;
+                    }
+                    try {
+                      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+                      await fetch(`${API_URL}/api/marketplace/contact`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          fullName: name.trim() || 'Doanh nghiệp',
+                          phone: phoneClean,
+                          email: email.trim(),
+                          selectedTemplate: 'modern-corporate',
+                          packageInterest: interest || 'Tư vấn Corporate',
+                          message: 'Đăng ký tư vấn từ trang chủ Modern Corporate',
+                        }),
+                      });
+                    } catch (err) {}
+                    setHomeSubmitted(true);
+                  }}
+                  className="space-y-4"
+                >
+                  <div>
+                    <input required type="text" placeholder="Họ và tên / Doanh nghiệp *" className="w-full border p-3 rounded focus:outline-none focus:border-blue-800" style={{ borderColor: colors.border, color: colors.text }} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <input required type="tel" placeholder="Số điện thoại *" className="w-full border p-3 rounded focus:outline-none focus:border-blue-800" style={{ borderColor: colors.border, color: colors.text }} />
+                    <input required type="email" placeholder="Email *" className="w-full border p-3 rounded focus:outline-none focus:border-blue-800" style={{ borderColor: colors.border, color: colors.text }} />
+                  </div>
+                  <div>
+                    <select className="w-full border p-3 rounded focus:outline-none focus:border-blue-800" style={{ borderColor: colors.border, color: colors.text }}>
+                      <option>Quan tâm: Mua Dự án Thương mại</option>
+                      <option>Quan tâm: Thuê Văn phòng</option>
+                      <option>Quan tâm: Hợp tác Đầu tư</option>
+                    </select>
+                  </div>
+                  <button type="submit" className="w-full py-4 font-bold text-white uppercase tracking-wider transition-opacity hover:opacity-90 rounded" style={{ backgroundColor: colors.header }}>
+                    Gửi Thông Tin
+                  </button>
+                </form>
+              )}
             </div>
+
           </div>
         </div>
       </section>
@@ -803,13 +847,55 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           </div>
           <div className="bg-gray-50 p-8 rounded border">
             <h3 className="text-2xl font-bold mb-6">Gửi Tin Nhắn</h3>
-            <form className="space-y-4">
-              <input type="text" placeholder="Họ Tên" className="w-full p-3 border rounded" />
-              <input type="email" placeholder="Email" className="w-full p-3 border rounded" />
-              <textarea placeholder="Nội dung" rows={4} className="w-full p-3 border rounded"></textarea>
-              <button className="px-8 py-3 bg-blue-900 text-white font-bold w-full rounded">GỬI LIÊN HỆ</button>
-            </form>
+            {contactSubmitted ? (
+              <div className="p-6 bg-emerald-50 border border-emerald-200 rounded text-center text-emerald-800">
+                <div className="font-bold text-lg mb-1">✓ Tin Nhắn Đã Được Gửi!</div>
+                <p className="text-xs text-emerald-600">Chúng tôi sẽ phản hồi lại bạn trong thời gian sớm nhất.</p>
+                <button onClick={() => setContactSubmitted(false)} className="mt-4 text-xs font-bold text-blue-800 underline">Gửi tin nhắn khác</button>
+              </div>
+            ) : (
+              <form 
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  const form = e.currentTarget;
+                  const name = (form.elements[0] as HTMLInputElement).value;
+                  const phone = (form.elements[1] as HTMLInputElement).value;
+                  const email = (form.elements[2] as HTMLInputElement).value;
+                  const msg = (form.elements[3] as HTMLTextAreaElement).value;
+
+                  const phoneClean = phone.replace(/\s/g, '');
+                  if (!/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
+                    alert('Số điện thoại phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.');
+                    return;
+                  }
+                  try {
+                    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+                    await fetch(`${API_URL}/api/marketplace/contact`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        fullName: name.trim() || 'Khách liên hệ',
+                        phone: phoneClean,
+                        email: email.trim(),
+                        selectedTemplate: 'modern-corporate',
+                        packageInterest: 'Liên hệ từ trang Contact Modern Corporate',
+                        message: msg?.trim() || 'Tin nhắn liên hệ',
+                      }),
+                    });
+                  } catch (err) {}
+                  setContactSubmitted(true);
+                }}
+                className="space-y-4"
+              >
+                <input required type="text" placeholder="Họ Tên *" className="w-full p-3 border rounded focus:outline-none focus:border-blue-800" />
+                <input required type="tel" placeholder="Số điện thoại *" className="w-full p-3 border rounded focus:outline-none focus:border-blue-800" />
+                <input required type="email" placeholder="Email *" className="w-full p-3 border rounded focus:outline-none focus:border-blue-800" />
+                <textarea placeholder="Nội dung" rows={4} className="w-full p-3 border rounded focus:outline-none focus:border-blue-800"></textarea>
+                <button type="submit" className="px-8 py-3 bg-blue-900 text-white font-bold w-full rounded hover:bg-blue-800 transition-colors">GỬI LIÊN HỆ</button>
+              </form>
+            )}
           </div>
+
         </div>
       </div>
     </div>
@@ -847,11 +933,19 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
               VinaCorp - Khẳng định vị thế nhà phát triển bất động sản thương mại và công nghiệp hàng đầu khu vực, mang lại giá trị bền vững cho đối tác và cộng đồng.
             </p>
-            <div className="flex space-x-4">
-              <div className="p-2 bg-white/5 rounded-full hover:bg-white/20 cursor-pointer transition-colors"><Facebook size={18} /></div>
-              <div className="p-2 bg-white/5 rounded-full hover:bg-white/20 cursor-pointer transition-colors"><Linkedin size={18} /></div>
-              <div className="p-2 bg-white/5 rounded-full hover:bg-white/20 cursor-pointer transition-colors"><Twitter size={18} /></div>
-              <div className="p-2 bg-white/5 rounded-full hover:bg-white/20 cursor-pointer transition-colors"><Youtube size={18} /></div>
+            <div className="flex items-center space-x-3">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook" className="p-2.5 bg-white/5 rounded-full hover:bg-blue-600 text-white transition-colors">
+                <FacebookIcon className="w-4 h-4" />
+              </a>
+              <a href="https://zalo.me/0919006030" target="_blank" rel="noopener noreferrer" title="Zalo" className="p-2 bg-white/5 rounded-full hover:bg-[#0068FF] text-white transition-colors">
+                <ZaloIcon className="w-5 h-5" />
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" title="LinkedIn" className="p-2.5 bg-white/5 rounded-full hover:bg-blue-700 text-white transition-colors">
+                <LinkedinIcon className="w-4 h-4" />
+              </a>
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" title="YouTube" className="p-2.5 bg-white/5 rounded-full hover:bg-red-600 text-white transition-colors">
+                <YoutubeIcon className="w-4 h-4" />
+              </a>
             </div>
           </div>
           
@@ -880,17 +974,23 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           <div>
             <h4 className="text-lg font-bold mb-6" style={{ color: colors.surface }}>Liên Hệ Trụ Sở</h4>
             <ul className="space-y-4 text-gray-400 text-sm">
-              <li className="flex items-start space-x-3">
-                <MapPin size={18} className="shrink-0 mt-0.5" style={{ color: colors.accent }} />
-                <span>Tòa nhà VinaCorp Center, 72 Lê Thánh Tôn, Bến Nghé, Quận 1, TP. HCM</span>
+              <li>
+                <a href="https://maps.google.com/?q=72+Le+Thanh+Ton+Ben+Nghe+Quan+1+TPHCM" target="_blank" rel="noopener noreferrer" className="flex items-start space-x-3 hover:text-white transition-colors">
+                  <MapPin size={18} className="shrink-0 mt-0.5" style={{ color: colors.accent }} />
+                  <span>Tòa nhà VinaCorp Center, 72 Lê Thánh Tôn, Bến Nghé, Quận 1, TP. HCM</span>
+                </a>
               </li>
-              <li className="flex items-center space-x-3">
-                <Phone size={18} className="shrink-0" style={{ color: colors.accent }} />
-                <span>+84 (0) 24 3828 9999</span>
+              <li>
+                <a href="tel:0919006030" className="flex items-center space-x-3 hover:text-white transition-colors">
+                  <Phone size={18} className="shrink-0" style={{ color: colors.accent }} />
+                  <span className="whitespace-nowrap">0919 006 030 (Tổng Đài)</span>
+                </a>
               </li>
-              <li className="flex items-center space-x-3">
-                <Mail size={18} className="shrink-0" style={{ color: colors.accent }} />
-                <span>contact@vinacorporate.vn</span>
+              <li>
+                <a href="mailto:contact@vinacorporate.vn" className="flex items-center space-x-3 hover:text-white transition-colors">
+                  <Mail size={18} className="shrink-0" style={{ color: colors.accent }} />
+                  <span>contact@vinacorporate.vn</span>
+                </a>
               </li>
             </ul>
           </div>

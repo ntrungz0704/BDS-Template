@@ -116,12 +116,15 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
       });
     }
 
-    if (order.status !== 'WAITING_CONFIRM' && order.status !== 'PENDING') {
+    const isPending = order.status === 'WAITING_CONFIRM' || order.status === 'PENDING';
+    const isUnprovisionedCompleted = order.status === 'COMPLETED' && !order.tenantId && order.type !== 'BUY_SOURCE';
+
+    if (!isPending && !isUnprovisionedCompleted) {
       return res.status(400).json({
         success: false,
         error: {
           code: 'ORDER_NOT_WAITING',
-          message: 'Đơn hàng này không còn ở trạng thái chờ xác nhận thanh toán hoặc chưa đặt hàng.',
+          message: 'Đơn hàng này không còn ở trạng thái chờ xác nhận thanh toán hoặc đã được kích hoạt hoàn tất.',
         },
       });
     }
@@ -131,7 +134,7 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
       const subdomain = order.subdomain.toLowerCase().trim();
 
       // Chặn slug hệ thống
-      const reservedSlugs = ['www', 'admin', 'cms', 'api', 'app', 'marketplace', 'mail', 'static', 'assets', 'support'];
+      const reservedSlugs = ['www', 'admin', 'cms', 'api', 'app', 'marketplace', 'templates', 'template', 'themes', 'mail', 'static', 'assets', 'support'];
       if (reservedSlugs.includes(subdomain)) {
         return res.status(400).json({
           success: false,
@@ -182,26 +185,35 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
       }
     }
 
-    // 3. THỰC HIỆN KÍCH HOẠT DỊCH VỤ TRONG TRANSACTION BÊ TÔNG
+    // 3. THỰC HIỆN KÍCH HOẠT DỊCH VỤ TRONG TRANSACTION
     let tenantId: string | null = null;
     let isNewUser = false;
     let tempPassword = '';
     let completedOrder: any = null;
 
-    const result = await prisma.$transaction(async (tx: any) => {
-      completedOrder = await tx.order.update({
-        where: { id, version: order.version },
-        data: {
-          status: 'COMPLETED',
-          paidAt: new Date(),
-          version: { increment: 1 },
-        },
-      });
-      return completedOrder;
+    // Atomically claim approval before provisioning
+    const claim = await prisma.order.updateMany({
+      where: { id, version: order.version },
+      data: { status: 'COMPLETED', paidAt: order.paidAt || new Date(), version: { increment: 1 } },
     });
+    if (claim.count !== 1 && !isUnprovisionedCompleted) {
+      return res.status(409).json({
+        success: false,
+        error: { code: 'ORDER_ALREADY_PROCESSED', message: 'Đơn hàng đang được xử lý hoặc đã được duyệt.' },
+      });
+    }
+    completedOrder = await prisma.order.findUnique({ where: { id } });
+
+    // A source-code purchase grants a download entitlement only.
+    if (order.type === 'BUY_SOURCE') {
+      return res.status(200).json({
+        success: true,
+        data: completedOrder,
+        meta: { entitlement: 'SOURCE_DOWNLOAD' },
+      });
+    }
 
     // 4. PROVISION WEBSITE cho khách hàng (cả BUY và RENT)
-    // Flow Zalo: Admin duyệt → tự động tạo website cho khách
     const slugifyBrand = (text: string) => {
       return (text || '')
         .normalize('NFD')
@@ -229,35 +241,41 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
       finalSubdomain = `${cleanSubdomain}-${crypto.randomBytes(2).toString('hex').toLowerCase()}`;
     }
 
-    {
-      const existingUser = await prisma.user.findUnique({
-        where: { email: order.email },
-      });
-      isNewUser = !existingUser;
+    let cmsPassword = order.email ? order.email.split('@')[0] : '123456';
 
-      const provResult = await websiteProvisioningService.createWebsiteFromTemplate({
-        templateId: order.templateId,
-        customerId: order.userId || undefined,
-        customerEmail: order.email,
-        customerFullName: order.fullName,
-        customerPhone: order.phone,
-        websiteName: order.fullName + ' Real Estate',
-        slug: finalSubdomain,
-        plan: order.plan || 'STARTER',
-      });
-      
-      tenantId = provResult.tenant.id;
-      tempPassword = provResult.credentials.tempPassword;
+    const existingUser = await prisma.user.findUnique({
+      where: { email: order.email },
+    });
+    isNewUser = !existingUser;
 
-      await prisma.order.update({
-        where: { id },
-        data: { tenantId, subdomain: finalSubdomain },
-      });
-    }
+    const provResult = await websiteProvisioningService.createWebsiteFromTemplate({
+      templateId: order.templateId,
+      customerId: order.userId || undefined,
+      customerEmail: order.email,
+      customerFullName: order.fullName,
+      customerPhone: order.phone,
+      websiteName: order.fullName + ' Real Estate',
+      slug: finalSubdomain,
+      plan: order.plan || 'STARTER',
+      orderId: order.id,
+    });
+    
+    tenantId = provResult.tenant.id;
+    tempPassword = provResult.credentials.tempPassword;
+    cmsPassword = provResult.credentials.cmsPassword || cmsPassword;
 
-    // Gửi email chào mừng ngoài block transaction để tránh rollback làm mất tính nhất quán email
+    await prisma.order.update({
+      where: { id },
+      data: { tenantId, subdomain: finalSubdomain },
+    });
+
+    // Gửi email chào mừng ngoài block transaction
     if (tenantId) {
-      await sendWelcomeEmail(order.email, order.fullName, order.subdomain as string, tempPassword);
+      try {
+        await sendWelcomeEmail(order.email, order.fullName, finalSubdomain, tempPassword);
+      } catch (mailErr) {
+        logger.warn(`Không gửi được email chào mừng: ${(mailErr as Error).message}`);
+      }
     }
 
     logger.info(`Duyệt thành công đơn hàng: ${order.orderNumber}. Kích hoạt Tenant ID: ${tenantId || 'N/A'}`);
@@ -266,14 +284,20 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
       success: true,
       data: {
         ...completedOrder,
+        tenantId,
+        subdomain: finalSubdomain,
         credentials: {
           email: order.email,
-          password: tempPassword,
-          subdomain: order.subdomain,
+          password: cmsPassword,
+          subdomain: finalSubdomain,
+          tenantSlug: finalSubdomain,
           isNewUser
         }
       },
     });
+
+
+
   } catch (error) {
     next(error);
   }

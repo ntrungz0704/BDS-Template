@@ -142,9 +142,9 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
       <div className="w-full bg-[#0F172A] text-white min-h-[40px] py-1 flex items-center px-4 sm:px-6 border-b border-slate-800 text-xs">
         <div className="max-w-[1440px] w-full mx-auto flex justify-between items-center gap-3">
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-[#C5A572] tracking-wider">REAL ESTATE TEMPLATE</span>
+            <span className="font-extrabold text-[#C5A572] tracking-wider">TEMPLATES BĐS</span>
             <span className="text-slate-500 hidden sm:inline">|</span>
-            <span className="text-slate-400 hidden sm:inline">Sàn giao dịch website BĐS số 1 Việt Nam</span>
+            <span className="text-slate-400 hidden sm:inline">Kho mẫu website Bất Động Sản cao cấp</span>
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4">
@@ -291,9 +291,9 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
       }`}>
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 flex justify-between items-center gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span className="text-xl md:text-2xl font-black tracking-wider text-[#0F172A] font-sans">
-              PLATFORM<span className="text-[#2563EB]">BDS</span>
+          <Link href="/" className="flex items-center gap-2 shrink-0 group">
+            <span className="text-xl md:text-2xl font-black tracking-wider text-[#0F172A] font-sans flex items-center gap-1">
+              TEMPLATES<span className="text-[#2563EB]">BDS</span>
             </span>
           </Link>
 
@@ -453,7 +453,7 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
       {mobileMenuOpen && (
         <div className="lg:hidden w-full bg-white border-b border-slate-100 px-6 py-4 flex flex-col gap-3 text-body font-medium text-slate-800 animate-fadeIn">
           {/* Mobile Search Box */}
-          <div className="relative w-full">
+          <form onSubmit={handleSearchSubmit} className="relative w-full">
             <input
               type="text"
               placeholder="Tìm kiếm mẫu website..."
@@ -462,12 +462,12 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
               className="w-full bg-slate-50 border border-slate-200 rounded-md pl-3 pr-8 py-2 text-xs focus:outline-none focus:border-slate-900 font-medium"
             />
             <button
-              onClick={handleSearchSubmit}
+              type="submit"
               className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
             >
               <Search className="w-4 h-4" />
             </button>
-          </div>
+          </form>
 
           {/* Mobile real-time search results with Highlighting */}
           {searchQuery.trim().length > 0 && (

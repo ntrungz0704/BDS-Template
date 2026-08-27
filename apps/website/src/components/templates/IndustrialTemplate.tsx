@@ -7,6 +7,7 @@ import {
   Zap, Truck, Scale, ChevronRight, BarChart3, Filter, Award, Activity, Box, Maximize
 } from 'lucide-react';
 import { MAX_W } from '../design-system';
+import { FacebookIcon, LinkedinIcon, YoutubeIcon, ZaloIcon } from '../icons/SocialIcons';
 
 const PROJECTS_DATA = [
   {
@@ -268,15 +269,15 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
     <div className="bg-[#0F172A] text-gray-300 py-2 border-b border-gray-800 text-sm hidden md:block">
       <div className={`${MAX_W} px-4 flex justify-between items-center`}>
         <div className="flex items-center space-x-6">
-          <span className="flex items-center"><Award className="w-4 h-4 mr-2 text-[#F59E0B]" /> ISO 9001:2015 Certified</span>
-          <span className="flex items-center"><Globe className="w-4 h-4 mr-2 text-[#F59E0B]" /> Mạng lưới Toàn cầu</span>
+          <span className="flex items-center"><Award className="w-4 h-4 mr-2" style={{ color: brandAccent }} /> ISO 9001:2015 Certified</span>
+          <span className="flex items-center"><Globe className="w-4 h-4 mr-2" style={{ color: brandAccent }} /> Mạng lưới Toàn cầu</span>
         </div>
         <div className="flex items-center space-x-6">
           <a href={`tel:${company?.phone || '0983312219'}`} className="flex items-center hover:text-white transition-colors">
-            <Phone className="w-4 h-4 mr-2 text-[#F59E0B]" /> {company?.phone || '+84 983 312 219'}
+            <Phone className="w-4 h-4 mr-2" style={{ color: brandAccent }} /> {company?.phone || '+84 983 312 219'}
           </a>
           <a href={`mailto:${company?.email || 'contact@platformbds.vn'}`} className="flex items-center hover:text-white transition-colors">
-            <Mail className="w-4 h-4 mr-2 text-[#F59E0B]" /> {company?.email || 'contact@platformbds.vn'}
+            <Mail className="w-4 h-4 mr-2" style={{ color: brandAccent }} /> {company?.email || 'contact@platformbds.vn'}
           </a>
         </div>
       </div>
@@ -290,7 +291,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
           className="flex items-center cursor-pointer text-left"
           onClick={() => setActivePage('home')}
         >
-          <Factory className="w-8 h-8 text-[#F59E0B] mr-3 shrink-0" />
+          <Factory className="w-8 h-8 mr-3 shrink-0" style={{ color: brandAccent }} />
           <div>
             <h1 className="text-xl font-bold tracking-wider uppercase" style={{ fontFamily: fontHeading }}>
               {company?.name || template?.name || 'PLATFORMBDS'}
@@ -307,10 +308,10 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               <button
                 key={link.id}
                 onClick={() => setActivePage(link.id)}
-                className={`text-sm font-bold tracking-wider hover:text-[#F59E0B] transition-colors ${
-                  activePage === link.id ? 'text-[#F59E0B]' : 'text-gray-200'
+                className={`text-sm font-bold tracking-wider transition-colors ${
+                  activePage === link.id ? '' : 'text-gray-200 hover:opacity-80'
                 }`}
-                style={{ fontFamily: fontBody }}
+                style={{ fontFamily: fontBody, color: activePage === link.id ? brandAccent : undefined }}
               >
                 {link.label}
               </button>
@@ -333,7 +334,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                 setIsMenuOpen(false);
               }}
               className="block w-full text-left py-3 text-white font-bold border-b border-gray-800"
-              style={{ fontFamily: fontBody }}
+              style={{ fontFamily: fontBody, color: activePage === link.id ? brandAccent : undefined }}
             >
               {link.label}
             </button>
@@ -357,7 +358,10 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
         </div>
         <div className={`${MAX_W} px-4 relative z-10 text-white w-full`}>
           <div className="max-w-3xl">
-            <div className="inline-flex items-center px-4 py-2 bg-[#F59E0B]/10 border border-[#F59E0B]/30 rounded text-[#F59E0B] font-bold text-sm mb-6">
+            <div 
+              className="inline-flex items-center px-4 py-2 rounded font-bold text-sm mb-6"
+              style={{ backgroundColor: `${brandAccent}1A`, border: `1px solid ${brandAccent}4D`, color: brandAccent }}
+            >
               <Zap className="w-4 h-4 mr-2" />
               BẤT ĐỘNG SẢN CÔNG NGHIỆP HÀNG ĐẦU VIỆT NAM
             </div>
@@ -365,13 +369,16 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               className="text-4xl md:text-6xl font-bold leading-tight mb-6"
               style={{ fontFamily: fontHeading }}
             >
-              KIẾN TẠO HẠ TẦNG <br/><span className="text-[#1E40AF] drop-shadow-md text-transparent bg-clip-text bg-gradient-to-r from-[#1E40AF] to-[#3B82F6]">PHÁT TRIỂN BỀN VỮNG</span>
+              KIẾN TẠO HẠ TẦNG <br/><span className="drop-shadow-md text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, ${brandPrimary}, ${brandAccent})` }}>PHÁT TRIỂN BỀN VỮNG</span>
             </h2>
             <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl leading-relaxed" style={{ fontFamily: fontBody }}>
               Cung cấp giải pháp không gian công nghiệp toàn diện: kho bãi, nhà xưởng xây sẵn và đất công nghiệp với vị trí chiến lược, kết nối giao thương quốc tế.
             </p>
             <div className="flex flex-wrap gap-4">
-              <button className="bg-[#1E40AF] hover:bg-[#1E3A8A] text-white px-8 py-4 font-bold transition-colors flex items-center uppercase tracking-wider">
+              <button 
+                className="text-white px-8 py-4 font-bold transition-opacity hover:opacity-90 flex items-center uppercase tracking-wider"
+                style={{ backgroundColor: brandPrimary }}
+              >
                 Tìm Hiểu Các Khu CN <ArrowRight className="ml-2 w-5 h-5" />
               </button>
               <button className="bg-transparent border-2 border-white hover:bg-white hover:text-[#0F172A] px-8 py-4 font-bold transition-all uppercase tracking-wider">
@@ -385,23 +392,23 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
       {/* 4. QUICK SEARCH */}
       <section className="bg-gray-100 py-8 border-b border-gray-200">
         <div className={`${MAX_W} px-4`}>
-          <div className="bg-white p-6 shadow-lg rounded-sm -mt-24 relative z-20 border-t-4 border-[#1E40AF]">
+          <div className="bg-white p-6 shadow-lg rounded-sm -mt-24 relative z-20 border-t-4" style={{ borderTopColor: brandPrimary }}>
             <h3 className="font-bold text-[#0F172A] mb-4 text-lg flex items-center" style={{ fontFamily: fontHeading }}>
-              <Filter className="w-5 h-5 mr-2 text-[#F59E0B]" /> BỘ LỌC TÌM KIẾM NHANH B2B
+              <Filter className="w-5 h-5 mr-2" style={{ color: brandAccent }} /> BỘ LỌC TÌM KIẾM NHANH B2B
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <select className="w-full p-3 border border-gray-300 focus:outline-none focus:border-[#1E40AF] bg-gray-50">
+              <select className="w-full p-3 border border-gray-300 focus:outline-none bg-gray-50">
                 <option>Loại hình BĐS</option>
                 <option>Đất công nghiệp</option>
                 <option>Nhà xưởng xây sẵn</option>
                 <option>Kho vận logistics</option>
               </select>
-              <select className="w-full p-3 border border-gray-300 focus:outline-none focus:border-[#1E40AF] bg-gray-50">
+              <select className="w-full p-3 border border-gray-300 focus:outline-none bg-gray-50">
                 <option>Vùng kinh tế</option>
                 <option>Miền Nam (Bình Dương, Đồng Nai)</option>
                 <option>Miền Bắc (Bắc Ninh, Hải Phòng)</option>
               </select>
-              <select className="w-full p-3 border border-gray-300 focus:outline-none focus:border-[#1E40AF] bg-gray-50">
+              <select className="w-full p-3 border border-gray-300 focus:outline-none bg-gray-50">
                 <option>Diện tích</option>
                 <option>Dưới 10,000 m2</option>
                 <option>10,000 - 50,000 m2</option>
@@ -416,23 +423,23 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
       </section>
 
       {/* 5. STATS BAR */}
-      <section className="bg-[#1E40AF] text-white py-12">
+      <section className="text-white py-12" style={{ backgroundColor: brandPrimary }}>
         <div className={`${MAX_W} px-4`}>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-[#3B82F6]/50">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-white/20">
             <div>
-              <div className="text-4xl md:text-5xl font-black text-[#F59E0B] mb-2" style={{ fontFamily: fontHeading }}>15+</div>
+              <div className="text-4xl md:text-5xl font-black mb-2" style={{ fontFamily: fontHeading, color: brandAccent }}>15+</div>
               <div className="text-sm uppercase tracking-wider font-bold text-gray-200">Khu Công Nghiệp</div>
             </div>
             <div>
-              <div className="text-4xl md:text-5xl font-black text-[#F59E0B] mb-2" style={{ fontFamily: fontHeading }}>5M+</div>
+              <div className="text-4xl md:text-5xl font-black mb-2" style={{ fontFamily: fontHeading, color: brandAccent }}>5M+</div>
               <div className="text-sm uppercase tracking-wider font-bold text-gray-200">m² Quỹ Đất</div>
             </div>
             <div>
-              <div className="text-4xl md:text-5xl font-black text-[#F59E0B] mb-2" style={{ fontFamily: fontHeading }}>200+</div>
+              <div className="text-4xl md:text-5xl font-black mb-2" style={{ fontFamily: fontHeading, color: brandAccent }}>200+</div>
               <div className="text-sm uppercase tracking-wider font-bold text-gray-200">Đối Tác FDI</div>
             </div>
             <div>
-              <div className="text-4xl md:text-5xl font-black text-[#F59E0B] mb-2" style={{ fontFamily: fontHeading }}>98%</div>
+              <div className="text-4xl md:text-5xl font-black mb-2" style={{ fontFamily: fontHeading, color: brandAccent }}>98%</div>
               <div className="text-sm uppercase tracking-wider font-bold text-gray-200">Tỷ Lệ Lấp Đầy</div>
             </div>
           </div>
@@ -444,14 +451,14 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
         <div className={`${MAX_W} px-4`}>
           <div className="flex justify-between items-end mb-12">
             <div>
-              <h4 className="text-[#F59E0B] font-bold uppercase tracking-widest mb-2 flex items-center">
+              <h4 className="font-bold uppercase tracking-widest mb-2 flex items-center" style={{ color: brandAccent }}>
                 <Activity className="w-5 h-5 mr-2" /> Dự Án Trọng Điểm
               </h4>
               <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A]" style={{ fontFamily: fontHeading }}>
                 CỤM CÔNG NGHIỆP NỔI BẬT
               </h2>
             </div>
-            <button className="hidden md:flex text-[#1E40AF] font-bold items-center hover:text-[#0F172A] transition-colors uppercase">
+            <button className="hidden md:flex font-bold items-center hover:opacity-80 transition-opacity uppercase" style={{ color: brandPrimary }}>
               Xem tất cả dự án <ArrowRight className="ml-2 w-5 h-5" />
             </button>
           </div>
@@ -471,19 +478,19 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                 tags: ["Công nghiệp nặng", "Khí tự nhiên"], area: "1,046 ha"
               }
             ].map((prop, idx) => (
-              <div key={idx} className="bg-white shadow-lg group overflow-hidden border border-gray-200 hover:border-[#1E40AF] transition-colors">
+              <div key={idx} className="bg-white shadow-lg group overflow-hidden border border-gray-200 transition-colors">
                 <div className="relative h-64 overflow-hidden">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={prop.img} alt={prop.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute top-4 right-4 bg-[#F59E0B] text-[#0F172A] text-xs font-black px-3 py-1 uppercase tracking-wider">
+                  <div className="absolute top-4 right-4 text-[#0F172A] text-xs font-black px-3 py-1 uppercase tracking-wider" style={{ backgroundColor: brandAccent }}>
                     {prop.area}
                   </div>
                 </div>
                 <div className="p-6">
-                  <h3 className="text-xl font-bold text-[#0F172A] mb-2 group-hover:text-[#1E40AF] transition-colors" style={{ fontFamily: fontHeading }}>
+                  <h3 className="text-xl font-bold text-[#0F172A] mb-2 transition-colors" style={{ fontFamily: fontHeading }}>
                     {prop.title}
                   </h3>
                   <div className="flex items-center text-gray-600 mb-4 text-sm font-medium">
-                    <MapPin className="w-4 h-4 mr-1 text-[#1E40AF]" /> {prop.loc}
+                    <MapPin className="w-4 h-4 mr-1" style={{ color: brandPrimary }} /> {prop.loc}
                   </div>
                   <div className="flex gap-2 mb-6">
                     {prop.tags.map(tag => (
@@ -493,7 +500,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                     ))}
                   </div>
                   <div className="border-t border-gray-100 pt-4">
-                    <button className="text-[#1E40AF] font-bold text-sm uppercase flex items-center hover:text-[#F59E0B] transition-colors w-full justify-between">
+                    <button className="font-bold text-sm uppercase flex items-center transition-colors w-full justify-between hover:opacity-80" style={{ color: brandPrimary }}>
                       Xem Chi Tiết Quy Hoạch <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -516,13 +523,13 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { title: "Đất Công Nghiệp", desc: "Đã có hạ tầng hoàn chỉnh", icon: <MapPin className="w-8 h-8 text-[#1E40AF] mb-4" /> },
-              { title: "Nhà Xưởng Xây Sẵn", desc: "RBF tiêu chuẩn quốc tế", icon: <Factory className="w-8 h-8 text-[#1E40AF] mb-4" /> },
-              { title: "Kho Vận Logistics", desc: "Kết nối cảng biển, sân bay", icon: <Warehouse className="w-8 h-8 text-[#1E40AF] mb-4" /> },
-              { title: "Văn Phòng Điều Hành", desc: "Tích hợp trong khu công nghiệp", icon: <Building2 className="w-8 h-8 text-[#1E40AF] mb-4" /> }
+              { title: "Đất Công Nghiệp", desc: "Đã có hạ tầng hoàn chỉnh", icon: <MapPin className="w-8 h-8 mb-4" style={{ color: brandPrimary }} /> },
+              { title: "Nhà Xưởng Xây Sẵn", desc: "RBF tiêu chuẩn quốc tế", icon: <Factory className="w-8 h-8 mb-4" style={{ color: brandPrimary }} /> },
+              { title: "Kho Vận Logistics", desc: "Kết nối cảng biển, sân bay", icon: <Warehouse className="w-8 h-8 mb-4" style={{ color: brandPrimary }} /> },
+              { title: "Văn Phòng Điều Hành", desc: "Tích hợp trong khu công nghiệp", icon: <Building2 className="w-8 h-8 mb-4" style={{ color: brandPrimary }} /> }
             ].map((type, idx) => (
               <div key={idx} className="bg-gray-50 border border-gray-200 p-8 text-center hover:bg-[#0F172A] hover:text-white group transition-all duration-300">
-                <div className="flex justify-center group-hover:text-[#F59E0B] transition-colors">
+                <div className="flex justify-center transition-colors">
                   {type.icon}
                 </div>
                 <h3 className="text-lg font-bold mb-2 group-hover:text-white text-[#0F172A]" style={{ fontFamily: fontHeading }}>{type.title}</h3>
@@ -544,7 +551,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               <p className="text-gray-400 mb-8 leading-relaxed">
                 Chúng tôi cung cấp hệ sinh thái công nghiệp hoàn chỉnh, giúp doanh nghiệp tiết kiệm chi phí vận hành và tối ưu hóa chuỗi cung ứng.
               </p>
-              <button className="bg-[#F59E0B] text-[#0F172A] px-6 py-3 font-bold uppercase hover:bg-white transition-colors">
+              <button className="text-[#0F172A] px-6 py-3 font-bold uppercase hover:bg-white transition-colors" style={{ backgroundColor: brandAccent }}>
                 Tải Hồ Sơ Năng Lực (PDF)
               </button>
             </div>
@@ -558,7 +565,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                 { title: "Quy Hoạch Cụm", desc: "Phân khu chuyên biệt theo ngành nghề, tránh ô nhiễm chéo.", icon: <Box /> },
               ].map((adv, idx) => (
                 <div key={idx} className="flex">
-                  <div className="mr-4 mt-1 text-[#F59E0B]">
+                  <div className="mr-4 mt-1" style={{ color: brandAccent }}>
                     {adv.icon}
                   </div>
                   <div>
@@ -579,14 +586,14 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
             <div className="lg:w-1/2">
               <div className="relative">
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1200&q=80" alt="About Us" className="w-full h-auto shadow-xl" />
-                <div className="absolute -bottom-8 -right-8 bg-[#1E40AF] p-8 text-white hidden md:block">
-                  <div className="text-4xl font-bold mb-2 text-[#F59E0B]" style={{ fontFamily: fontHeading }}>25+</div>
+                <div className="absolute -bottom-8 -right-8 p-8 text-white hidden md:block" style={{ backgroundColor: brandPrimary }}>
+                  <div className="text-4xl font-bold mb-2" style={{ fontFamily: fontHeading, color: brandAccent }}>25+</div>
                   <div className="font-bold uppercase tracking-wider text-sm">Năm Kinh Nghiệm<br/>Phát Triển KCN</div>
                 </div>
               </div>
             </div>
             <div className="lg:w-1/2 lg:pl-12">
-              <h4 className="text-[#F59E0B] font-bold uppercase tracking-widest mb-4">Câu Chuyện Của Chúng Tôi</h4>
+              <h4 className="font-bold uppercase tracking-widest mb-4" style={{ color: brandAccent }}>Câu Chuyện Của Chúng Tôi</h4>
               <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-6" style={{ fontFamily: fontHeading }}>
                 ĐỐI TÁC TIN CẬY CỦA CÁC NHÀ ĐẦU TƯ TOÀN CẦU
               </h2>
@@ -596,7 +603,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               <ul className="space-y-4 mb-8">
                 {["Tiêu chuẩn ESG quốc tế", "Dịch vụ hỗ trợ đầu tư trọn gói (One-stop service)", "Quản lý vận hành khu chuyên nghiệp"].map((item, i) => (
                   <li key={i} className="flex items-center text-gray-700 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-[#1E40AF] mr-3" /> {item}
+                    <CheckCircle2 className="w-5 h-5 mr-3" style={{ color: brandPrimary }} /> {item}
                   </li>
                 ))}
               </ul>
@@ -621,22 +628,22 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
           <div className="bg-white p-4 shadow-md border border-gray-300">
             {/* Placeholder for Master plan image - using a schematic aesthetic */}
             <div className="bg-[#1e293b] w-full h-[500px] relative flex items-center justify-center overflow-hidden border border-gray-800">
-              <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#3B82F6 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
-              <div className="text-center z-10 p-8 bg-[#0F172A]/80 backdrop-blur border border-[#1E40AF]">
-                <Maximize className="w-12 h-12 text-[#F59E0B] mx-auto mb-4" />
+              <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `radial-gradient(${brandAccent} 1px, transparent 1px)`, backgroundSize: '20px 20px' }}></div>
+              <div className="text-center z-10 p-8 bg-[#0F172A]/80 backdrop-blur border" style={{ borderColor: brandPrimary }}>
+                <Maximize className="w-12 h-12 mx-auto mb-4" style={{ color: brandAccent }} />
                 <h3 className="text-2xl text-white font-bold mb-2">MASTER PLAN INTERACTIVE VIEW</h3>
                 <p className="text-gray-400 mb-6">Interactive GIS Map is available in the desktop version.</p>
-                <button className="bg-[#1E40AF] text-white px-6 py-2 font-bold hover:bg-[#F59E0B] hover:text-[#0F172A] transition-colors">
+                <button className="text-white px-6 py-2 font-bold hover:opacity-90 transition-opacity" style={{ backgroundColor: brandPrimary }}>
                   VIEW FULL SCREEN
                 </button>
               </div>
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 text-center text-sm font-bold border-t border-gray-200 pt-4">
-              <div><span className="text-[#1E40AF]">65%</span> Đất Công Nghiệp</div>
+              <div><span style={{ color: brandPrimary }}>65%</span> Đất Công Nghiệp</div>
               <div><span className="text-green-600">15%</span> Cây Xanh Mặt Nước</div>
               <div><span className="text-gray-600">10%</span> Giao Thông</div>
-              <div><span className="text-[#F59E0B]">10%</span> Dịch Vụ & Hạ Tầng</div>
+              <div><span style={{ color: brandAccent }}>10%</span> Dịch Vụ & Hạ Tầng</div>
             </div>
           </div>
         </div>
@@ -666,7 +673,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
             <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: fontHeading }}>
               THƯ VIỆN CƠ SỞ VẬT CHẤT
             </h2>
-            <button className="text-[#F59E0B] font-bold uppercase tracking-wider hover:text-white transition-colors">
+            <button className="font-bold uppercase tracking-wider hover:text-white transition-colors" style={{ color: brandAccent }}>
               Xem Toàn Bộ Ảnh
             </button>
           </div>
@@ -686,7 +693,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
       <section className="py-20 bg-gray-50">
         <div className={`${MAX_W} px-4`}>
           <div className="text-center mb-12">
-            <h4 className="text-[#1E40AF] font-bold uppercase tracking-widest mb-2">Thị Trường BĐS Công Nghiệp</h4>
+            <h4 className="font-bold uppercase tracking-widest mb-2" style={{ color: brandPrimary }}>Thị Trường BĐS Công Nghiệp</h4>
             <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A]" style={{ fontFamily: fontHeading }}>
               TIN TỨC & BÁO CÁO MỚI NHẤT
             </h2>
@@ -713,16 +720,16 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               <div key={idx} className="bg-white border border-gray-200 group">
                 <div className="relative h-56 overflow-hidden">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={news.img} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute top-0 left-0 bg-[#1E40AF] text-white px-3 py-1 text-xs font-bold uppercase">
+                  <div className="absolute top-0 left-0 text-white px-3 py-1 text-xs font-bold uppercase" style={{ backgroundColor: brandPrimary }}>
                     {news.cat}
                   </div>
                 </div>
                 <div className="p-6">
                   <div className="text-gray-500 text-sm mb-3 font-medium">{news.date}</div>
-                  <h3 className="text-lg font-bold text-[#0F172A] mb-4 group-hover:text-[#1E40AF] transition-colors leading-snug" style={{ fontFamily: fontHeading }}>
+                  <h3 className="text-lg font-bold text-[#0F172A] mb-4 transition-colors leading-snug" style={{ fontFamily: fontHeading }}>
                     {news.title}
                   </h3>
-                  <button className="text-[#0F172A] font-bold text-sm uppercase flex items-center hover:text-[#F59E0B] transition-colors">
+                  <button className="text-[#0F172A] font-bold text-sm uppercase flex items-center hover:opacity-80 transition-opacity" style={{ color: brandPrimary }}>
                     Đọc Bài Viết <ArrowRight className="w-4 h-4 ml-1" />
                   </button>
                 </div>
@@ -767,7 +774,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
       </section>
 
       {/* 15. CONTACT CTA */}
-      <section className="py-20 bg-[#1E40AF] relative overflow-hidden">
+      <section className="py-20 relative overflow-hidden" style={{ backgroundColor: brandPrimary }}>
         <div className="absolute inset-0 bg-[#0F172A] opacity-90 transform -skew-y-3 scale-110"></div>
         <div className={`${MAX_W} px-4 relative z-10`}>
           <div className="bg-white p-8 md:p-12 shadow-2xl max-w-4xl mx-auto flex flex-col md:flex-row gap-12">
@@ -777,14 +784,14 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               
               <div className="space-y-6">
                 <div className="flex items-center text-[#0F172A] font-bold">
-                  <Phone className="w-6 h-6 mr-4 text-[#1E40AF]" />
+                  <Phone className="w-6 h-6 mr-4" style={{ color: brandPrimary }} />
                   <div>
                     <div className="text-xs text-gray-500 uppercase">Hotline 24/7</div>
                     +84 90 123 4567
                   </div>
                 </div>
                 <div className="flex items-center text-[#0F172A] font-bold">
-                  <Mail className="w-6 h-6 mr-4 text-[#1E40AF]" />
+                  <Mail className="w-6 h-6 mr-4" style={{ color: brandPrimary }} />
                   <div>
                     <div className="text-xs text-gray-500 uppercase">Email</div>
                     b2b@platformbds.vn
@@ -795,18 +802,18 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
             
             <div className="md:w-1/2">
               <form className="space-y-4">
-                <input type="text" placeholder="Tên Doanh Nghiệp / Người liên hệ *" className="w-full p-4 border border-gray-300 focus:border-[#1E40AF] focus:ring-1 focus:ring-[#1E40AF] outline-none" />
+                <input type="text" placeholder="Tên Doanh Nghiệp / Người liên hệ *" className="w-full p-4 border border-gray-300 outline-none" />
                 <div className="grid grid-cols-2 gap-4">
-                  <input type="tel" placeholder="Số điện thoại *" className="w-full p-4 border border-gray-300 focus:border-[#1E40AF] outline-none" />
-                  <input type="email" placeholder="Email *" className="w-full p-4 border border-gray-300 focus:border-[#1E40AF] outline-none" />
+                  <input type="tel" placeholder="Số điện thoại *" className="w-full p-4 border border-gray-300 outline-none" />
+                  <input type="email" placeholder="Email *" className="w-full p-4 border border-gray-300 outline-none" />
                 </div>
-                <select className="w-full p-4 border border-gray-300 focus:border-[#1E40AF] outline-none text-gray-600">
+                <select className="w-full p-4 border border-gray-300 outline-none text-gray-600">
                   <option>Nhu cầu của bạn (Kho, Xưởng, Đất...)</option>
                   <option>Thuê đất công nghiệp</option>
                   <option>Thuê xưởng xây sẵn</option>
                   <option>Kho logistics</option>
                 </select>
-                <button type="button" className="w-full bg-[#0F172A] text-white font-bold p-4 uppercase tracking-widest hover:bg-[#F59E0B] hover:text-[#0F172A] transition-colors">
+                <button type="button" className="w-full text-white font-bold p-4 uppercase tracking-widest transition-opacity hover:opacity-90" style={{ backgroundColor: brandPrimary }}>
                   Gửi Yêu Cầu
                 </button>
               </form>
@@ -818,12 +825,12 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
       {/* 16. NEWSLETTER */}
       <section className="py-16 bg-gray-50 border-t border-gray-200">
         <div className={`${MAX_W} px-4 text-center`}>
-          <BarChart3 className="w-12 h-12 text-[#1E40AF] mx-auto mb-4" />
+          <BarChart3 className="w-12 h-12 mx-auto mb-4" style={{ color: brandPrimary }} />
           <h3 className="text-2xl font-bold text-[#0F172A] mb-2" style={{ fontFamily: fontHeading }}>NHẬN BÁO CÁO THỊ TRƯỜNG</h3>
           <p className="text-gray-600 mb-6 max-w-lg mx-auto">Đăng ký email để nhận báo cáo phân tích bất động sản công nghiệp hàng quý từ đội ngũ chuyên gia của chúng tôi.</p>
           <div className="flex flex-col sm:flex-row justify-center max-w-md mx-auto">
-            <input type="email" placeholder="Nhập email doanh nghiệp..." className="px-4 py-3 border border-gray-300 w-full focus:outline-none focus:border-[#1E40AF]" />
-            <button className="bg-[#1E40AF] text-white px-6 py-3 font-bold uppercase whitespace-nowrap hover:bg-[#0F172A] transition-colors mt-2 sm:mt-0">
+            <input type="email" placeholder="Nhập email doanh nghiệp..." className="px-4 py-3 border border-gray-300 w-full outline-none" />
+            <button className="text-white px-6 py-3 font-bold uppercase whitespace-nowrap transition-opacity hover:opacity-90 mt-2 sm:mt-0" style={{ backgroundColor: brandPrimary }}>
               Đăng Ký
             </button>
           </div>
@@ -851,7 +858,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
           </div>
           
           {/* SEARCH FILTER BOX */}
-          <div className="bg-white p-6 shadow-md mb-8 border-t-4 border-[#1E40AF]">
+          <div className="bg-white p-6 shadow-md mb-8 border-t-4" style={{ borderTopColor: brandPrimary }}>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-xs font-bold text-gray-500 mb-1">Tên dự án / Vị trí</label>
@@ -860,7 +867,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                   value={searchProjectQuery}
                   onChange={(e) => setSearchProjectQuery(e.target.value)}
                   placeholder="Gõ từ khóa..." 
-                  className="w-full p-3 border border-gray-300 focus:outline-none focus:border-[#1E40AF] bg-gray-50 text-gray-800 rounded-sm" 
+                  className="w-full p-3 border border-gray-300 focus:outline-none bg-gray-50 text-gray-800 rounded-sm" 
                 />
               </div>
               <div>
@@ -868,7 +875,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                 <select 
                   value={filterProjectType}
                   onChange={(e) => setFilterProjectType(e.target.value)}
-                  className="w-full p-3 border border-gray-300 focus:outline-none focus:border-[#1E40AF] bg-gray-50 text-gray-800 rounded-sm"
+                  className="w-full p-3 border border-gray-300 focus:outline-none bg-gray-50 text-gray-800 rounded-sm"
                 >
                   <option>Tất cả loại hình</option>
                   <option>Đất công nghiệp</option>
@@ -881,7 +888,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                 <select 
                   value={filterProjectRegion}
                   onChange={(e) => setFilterProjectRegion(e.target.value)}
-                  className="w-full p-3 border border-gray-300 focus:outline-none focus:border-[#1E40AF] bg-gray-50 text-gray-800 rounded-sm"
+                  className="w-full p-3 border border-gray-300 focus:outline-none bg-gray-50 text-gray-800 rounded-sm"
                 >
                   <option>Mọi khu vực</option>
                   <option>Miền Bắc</option>
@@ -891,7 +898,8 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               <div className="flex items-end">
                 <button 
                   onClick={() => {}}
-                  className="w-full bg-[#1E40AF] text-white font-bold p-3.5 hover:bg-[#0F172A] transition-colors flex justify-center items-center rounded-sm"
+                  className="w-full text-white font-bold p-3.5 hover:opacity-90 transition-opacity flex justify-center items-center rounded-sm"
+                  style={{ backgroundColor: brandPrimary }}
                 >
                   <Search className="w-5 h-5 mr-2" /> TÌM KIẾM ({filtered.length})
                 </button>
@@ -909,7 +917,8 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                   setFilterProjectType('Tất cả loại hình');
                   setFilterProjectRegion('Mọi khu vực');
                 }}
-                className="mt-4 text-[#1E40AF] font-bold hover:underline"
+                className="mt-4 font-bold hover:underline"
+                style={{ color: brandPrimary }}
               >
                 Reset bộ lọc
               </button>
@@ -917,21 +926,21 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {filtered.map((prop) => (
-                <div key={prop.id} className="bg-white shadow-lg group overflow-hidden border border-gray-200 hover:border-[#1E40AF] transition-all flex flex-col justify-between rounded-sm">
+                <div key={prop.id} className="bg-white shadow-lg group overflow-hidden border border-gray-200 transition-all flex flex-col justify-between rounded-sm">
                   <div>
                     <div className="relative h-56 overflow-hidden">
                       <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={prop.img} alt={prop.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                      <div className="absolute top-4 right-4 bg-[#F59E0B] text-[#0F172A] text-xs font-black px-3 py-1 uppercase tracking-wider">
+                      <div className="absolute top-4 right-4 text-[#0F172A] text-xs font-black px-3 py-1 uppercase tracking-wider" style={{ backgroundColor: brandAccent }}>
                         {prop.area}
                       </div>
                     </div>
                     <div className="p-6">
-                      <h3 className="text-xl font-bold text-[#0F172A] mb-2 group-hover:text-[#1E40AF] transition-colors" style={{ fontFamily: fontHeading }}>{prop.title}</h3>
+                      <h3 className="text-xl font-bold text-[#0F172A] mb-2 transition-colors" style={{ fontFamily: fontHeading }}>{prop.title}</h3>
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center text-gray-600 text-sm font-medium">
-                          <MapPin className="w-4 h-4 mr-1 text-[#1E40AF]" /> {prop.loc} ({prop.region})
+                          <MapPin className="w-4 h-4 mr-1" style={{ color: brandPrimary }} /> {prop.loc} ({prop.region})
                         </div>
-                        <div className="font-bold text-[#1E40AF]">{prop.price}</div>
+                        <div className="font-bold" style={{ color: brandPrimary }}>{prop.price}</div>
                       </div>
                       <p className="text-sm text-gray-500 line-clamp-3 mb-6">{prop.desc}</p>
                       <div className="flex gap-2 mb-6 flex-wrap">
@@ -944,7 +953,8 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                   <div className="px-6 pb-6">
                     <button 
                       onClick={() => setSelectedProject(prop)}
-                      className="bg-[#0F172A] text-white font-bold text-sm uppercase px-4 py-3 w-full hover:bg-[#F59E0B] hover:text-[#0F172A] transition-colors"
+                      className="text-white font-bold text-sm uppercase px-4 py-3 w-full hover:opacity-90 transition-opacity"
+                      style={{ backgroundColor: brandPrimary }}
                     >
                       Chi Tiết Dự Án
                     </button>
@@ -976,11 +986,11 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
             <p className="text-gray-600 mb-4 leading-relaxed">Chúng tôi hướng đến việc trở thành nhà phát triển bất động sản công nghiệp hàng đầu khu vực, cung cấp các giải pháp không gian nhà máy thông minh, thân thiện với môi trường và tối ưu hóa chi phí.</p>
             <p className="text-gray-600 mb-6 leading-relaxed">Với hơn 25 năm kinh nghiệm, chúng tôi tự hào mang đến môi trường sinh thái công nghiệp hoàn thiện, giúp các doanh nghiệp tập trung tối đa vào sản xuất và kinh doanh.</p>
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-gray-50 border-l-4 border-[#1E40AF]">
+              <div className="p-4 bg-gray-50 border-l-4" style={{ borderLeftColor: brandPrimary }}>
                 <h4 className="font-bold text-xl text-[#0F172A]">25+</h4>
                 <p className="text-sm text-gray-500">Năm Kinh Nghiệm</p>
               </div>
-              <div className="p-4 bg-gray-50 border-l-4 border-[#F59E0B]">
+              <div className="p-4 bg-gray-50 border-l-4" style={{ borderLeftColor: brandAccent }}>
                 <h4 className="font-bold text-xl text-[#0F172A]">200+</h4>
                 <p className="text-sm text-gray-500">Khách Hàng FDI</p>
               </div>
@@ -994,7 +1004,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {MILESTONE_DATA.map((stone, idx) => (
               <div key={idx} className="bg-gray-50 p-6 rounded border border-gray-200 relative">
-                <div className="text-3xl font-black text-[#1E40AF] mb-2">{stone.year}</div>
+                <div className="text-3xl font-black mb-2" style={{ color: brandPrimary }}>{stone.year}</div>
                 <h4 className="font-bold text-lg text-[#0F172A] mb-2">{stone.title}</h4>
                 <p className="text-sm text-gray-500 leading-relaxed">{stone.desc}</p>
               </div>
@@ -1014,7 +1024,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               ].map((val, idx) => (
                 <div key={idx} className="bg-white p-8 rounded shadow-sm border border-gray-150">
                   <h4 className="font-bold text-lg text-[#0F172A] mb-3 flex items-center">
-                    <CheckCircle2 className="w-5 h-5 text-[#F59E0B] mr-2" /> {val.title}
+                    <CheckCircle2 className="w-5 h-5 mr-2" style={{ color: brandAccent }} /> {val.title}
                   </h4>
                   <p className="text-sm text-gray-500 leading-relaxed">{val.desc}</p>
                 </div>
@@ -1031,7 +1041,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               <div key={idx} className="text-center group bg-white border border-gray-200 p-6 rounded shadow-sm hover:shadow-md transition-shadow">
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={leader.img} alt={leader.name} className="w-32 h-32 rounded-full mx-auto object-cover mb-4 group-hover:scale-105 transition-transform" />
                 <h4 className="font-bold text-lg text-[#0F172A]">{leader.name}</h4>
-                <p className="text-sm text-[#1E40AF] font-semibold mb-2">{leader.role}</p>
+                <p className="text-sm font-semibold mb-2" style={{ color: brandPrimary }}>{leader.role}</p>
                 <p className="text-xs text-gray-500 leading-relaxed">{leader.bio}</p>
               </div>
             ))}
@@ -1059,11 +1069,12 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                 <button 
                   key={tab}
                   onClick={() => setSelectedGalleryTab(tab)}
-                  className={`px-4 py-2 font-bold rounded text-sm transition-all ${
-                    selectedGalleryTab === tab 
-                      ? 'bg-[#1E40AF] text-white shadow' 
-                      : 'bg-white border border-gray-300 text-gray-600 hover:bg-gray-100'
-                  }`}
+                  className="px-4 py-2 font-bold rounded text-sm transition-all"
+                  style={{ 
+                    backgroundColor: selectedGalleryTab === tab ? brandPrimary : '#ffffff',
+                    color: selectedGalleryTab === tab ? '#ffffff' : '#4B5563',
+                    border: selectedGalleryTab === tab ? `1px solid ${brandPrimary}` : '1px solid #D1D5DB'
+                  }}
                 >
                   {tab}
                 </button>
@@ -1081,7 +1092,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex flex-col justify-end p-4">
                   <Maximize className="text-white opacity-0 group-hover:opacity-100 w-6 h-6 absolute top-4 right-4" />
-                  <span className="text-white font-bold text-xs uppercase bg-[#F59E0B] px-2 py-0.5 self-start mb-1 rounded">{item.cat}</span>
+                  <span className="text-white font-bold text-xs uppercase px-2 py-0.5 self-start mb-1 rounded" style={{ backgroundColor: brandAccent }}>{item.cat}</span>
                   <h4 className="text-white font-bold text-sm truncate opacity-0 group-hover:opacity-100 transition-opacity duration-300">{item.title}</h4>
                 </div>
               </div>
@@ -1131,12 +1142,12 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                   <div className="flex flex-col justify-between">
                     <div>
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-[#1E40AF] font-bold text-xs bg-blue-100 px-2.5 py-0.5 rounded">{news.cat}</span>
+                        <span className="font-bold text-xs px-2.5 py-0.5 rounded" style={{ backgroundColor: `${brandPrimary}20`, color: brandPrimary }}>{news.cat}</span>
                         <span className="text-gray-500 text-xs font-semibold">{news.date}</span>
                       </div>
                       <h3 
                         onClick={() => setSelectedArticle(news)}
-                        className="text-lg font-bold text-[#0F172A] hover:text-[#1E40AF] cursor-pointer line-clamp-2"
+                        className="text-lg font-bold text-[#0F172A] hover:opacity-80 cursor-pointer line-clamp-2"
                       >
                         {news.title}
                       </h3>
@@ -1144,7 +1155,8 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                     </div>
                     <button 
                       onClick={() => setSelectedArticle(news)}
-                      className="text-[#1E40AF] font-bold text-sm uppercase flex items-center hover:text-[#F59E0B] transition-colors mt-4 self-start"
+                      className="font-bold text-sm uppercase flex items-center hover:opacity-80 transition-opacity mt-4 self-start"
+                      style={{ color: brandPrimary }}
                     >
                       Đọc Bài Viết <ArrowRight className="w-4 h-4 ml-1" />
                     </button>
@@ -1164,19 +1176,19 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
         <div className={`${MAX_W} px-4`}>
           <div className="bg-white shadow-xl max-w-5xl mx-auto flex flex-col md:flex-row overflow-hidden border border-gray-200 rounded">
             <div className="md:w-1/3 bg-[#0F172A] text-white p-10 flex flex-col justify-center">
-              <h3 className="text-2xl font-bold mb-6 text-[#F59E0B]">THÔNG TIN LIÊN HỆ</h3>
+              <h3 className="text-2xl font-bold mb-6" style={{ color: brandAccent }}>THÔNG TIN LIÊN HỆ</h3>
               <p className="mb-8 text-gray-300 text-sm leading-relaxed">Hãy liên hệ với bộ phận CSKH B2B để nhận thông tin chi tiết và bản vẽ quy hoạch 1/500 dự án.</p>
               <div className="space-y-6">
                 <div className="flex items-start">
-                  <MapPin className="w-6 h-6 mr-4 text-[#F59E0B] flex-shrink-0 mt-0.5" />
+                  <MapPin className="w-6 h-6 mr-4 flex-shrink-0 mt-0.5" style={{ color: brandAccent }} />
                   <span className="text-sm">Tầng 15, Tòa nhà Bitexco Financial Tower, Số 2 Hải Triều, Q.1, TP.HCM</span>
                 </div>
                 <div className="flex items-center">
-                  <Phone className="w-6 h-6 mr-4 text-[#F59E0B]" />
+                  <Phone className="w-6 h-6 mr-4" style={{ color: brandAccent }} />
                   <span className="text-sm">{company?.phone || company?.hotline || company?.phone || company?.hotline || '+84 90 123 4567'}</span>
                 </div>
                 <div className="flex items-center">
-                  <Mail className="w-6 h-6 mr-4 text-[#F59E0B]" />
+                  <Mail className="w-6 h-6 mr-4" style={{ color: brandAccent }} />
                   <span className="text-sm">{company?.email || company?.email || 'b2b@platformbds.vn'}</span>
                 </div>
               </div>
@@ -1190,7 +1202,8 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                   <p className="text-gray-600 mb-6 font-medium">Chuyên viên tư vấn B2B sẽ phản hồi thông tin chi tiết đến bạn trong vòng 2 giờ làm việc.</p>
                   <button 
                     onClick={() => setContactSubmitted(false)}
-                    className="bg-[#1E40AF] text-white font-bold px-6 py-2.5 rounded hover:bg-[#0F172A] transition-colors"
+                    className="text-white font-bold px-6 py-2.5 rounded hover:opacity-90 transition-opacity"
+                    style={{ backgroundColor: brandPrimary }}
                   >
                     Gửi yêu cầu khác
                   </button>
@@ -1206,21 +1219,21 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                     }}
                   >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <input type="text" placeholder="Họ và Tên *" required className="w-full p-3 border border-gray-300 focus:border-[#1E40AF] outline-none text-gray-800 bg-gray-50 rounded" />
-                      <input type="text" placeholder="Tên Doanh Nghiệp *" required className="w-full p-3 border border-gray-300 focus:border-[#1E40AF] outline-none text-gray-800 bg-gray-50 rounded" />
+                      <input type="text" placeholder="Họ và Tên *" required className="w-full p-3 border border-gray-300 outline-none text-gray-800 bg-gray-50 rounded" />
+                      <input type="text" placeholder="Tên Doanh Nghiệp *" required className="w-full p-3 border border-gray-300 outline-none text-gray-800 bg-gray-50 rounded" />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <input type="tel" placeholder="Số Điện Thoại *" required className="w-full p-3 border border-gray-300 focus:border-[#1E40AF] outline-none text-gray-800 bg-gray-50 rounded" />
-                      <input type="email" placeholder="Email *" required className="w-full p-3 border border-gray-300 focus:border-[#1E40AF] outline-none text-gray-800 bg-gray-50 rounded" />
+                      <input type="tel" placeholder="Số Điện Thoại *" required className="w-full p-3 border border-gray-300 outline-none text-gray-800 bg-gray-50 rounded" />
+                      <input type="email" placeholder="Email *" required className="w-full p-3 border border-gray-300 outline-none text-gray-800 bg-gray-50 rounded" />
                     </div>
-                    <select required className="w-full p-3 border border-gray-300 focus:border-[#1E40AF] outline-none text-gray-800 bg-gray-50 rounded">
+                    <select required className="w-full p-3 border border-gray-300 outline-none text-gray-800 bg-gray-50 rounded">
                       <option value="">Chọn loại hình bạn quan tâm *</option>
                       <option>Thuê xưởng xây sẵn (RBF)</option>
                       <option>Thuê đất công nghiệp có hạ tầng</option>
                       <option>Kho Logistics chuyên dụng</option>
                     </select>
-                    <textarea placeholder="Nội dung yêu cầu chi tiết (vị trí cần thuê, diện tích, công suất điện mong muốn...)..." rows={4} className="w-full p-3 border border-gray-300 focus:border-[#1E40AF] outline-none text-gray-800 bg-gray-50 rounded"></textarea>
-                    <button type="submit" className="bg-[#1E40AF] text-white px-8 py-3.5 font-bold hover:bg-[#F59E0B] hover:text-[#0F172A] transition-colors uppercase tracking-widest w-full md:w-auto rounded-sm">
+                    <textarea placeholder="Nội dung yêu cầu chi tiết (vị trí cần thuê, diện tích, công suất điện mong muốn...)..." rows={4} className="w-full p-3 border border-gray-300 outline-none text-gray-800 bg-gray-50 rounded"></textarea>
+                    <button type="submit" className="text-white px-8 py-3.5 font-bold hover:opacity-90 transition-opacity uppercase tracking-widest w-full md:w-auto rounded-sm" style={{ backgroundColor: brandPrimary }}>
                       Gửi Yêu Cầu
                     </button>
                   </form>
@@ -1258,54 +1271,71 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
         <div className={`${MAX_W} px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12`}>
           <div>
             <div className="flex items-center mb-6">
-              <Factory className="w-8 h-8 text-[#F59E0B] mr-3" />
+              <Factory className="w-8 h-8 mr-3" style={{ color: brandAccent }} />
               <div>
-                <h1 className="text-xl font-bold tracking-wider text-white" style={{ fontFamily: fontHeading }}>PLATFORM<span className="text-[#F59E0B]">BDS</span></h1>
+                <h1 className="text-xl font-bold tracking-wider text-white" style={{ fontFamily: fontHeading }}>PLATFORM<span style={{ color: brandAccent }}>BDS</span></h1>
               </div>
             </div>
-            <p className="mb-6 leading-relaxed">Nhà phát triển bất động sản công nghiệp uy tín, cung cấp giải pháp không gian tối ưu cho doanh nghiệp FDI tại Việt Nam.</p>
-            <div className="flex space-x-4">
-              <div className="w-10 h-10 bg-gray-800 flex items-center justify-center hover:bg-[#1E40AF] hover:text-white transition-colors cursor-pointer text-white">IN</div>
-              <div className="w-10 h-10 bg-gray-800 flex items-center justify-center hover:bg-[#1E40AF] hover:text-white transition-colors cursor-pointer text-white">FB</div>
-              <div className="w-10 h-10 bg-gray-800 flex items-center justify-center hover:bg-[#1E40AF] hover:text-white transition-colors cursor-pointer text-white">YT</div>
+            <p className="mb-6 leading-relaxed">
+              {company?.slogan || company?.description || 'Nhà phát triển bất động sản công nghiệp uy tín, cung cấp giải pháp không gian tối ưu cho doanh nghiệp FDI tại Việt Nam.'}
+            </p>
+            <div className="flex items-center gap-3">
+              <a href={company?.socialLinks?.facebook || "https://facebook.com"} target="_blank" rel="noopener noreferrer" title="Facebook" className="w-10 h-10 bg-gray-800 flex items-center justify-center hover:bg-blue-600 text-white transition-colors cursor-pointer rounded-lg">
+                <FacebookIcon className="w-4 h-4" />
+              </a>
+              <a href={`https://zalo.me/${company?.phone || '0919006030'}`} target="_blank" rel="noopener noreferrer" title="Zalo" className="w-10 h-10 bg-gray-800 flex items-center justify-center hover:bg-[#0068FF] text-white transition-colors cursor-pointer rounded-lg p-2">
+                <ZaloIcon className="w-full h-full" />
+              </a>
+              <a href={company?.socialLinks?.linkedin || "https://linkedin.com"} target="_blank" rel="noopener noreferrer" title="LinkedIn" className="w-10 h-10 bg-gray-800 flex items-center justify-center hover:bg-blue-700 text-white transition-colors cursor-pointer rounded-lg">
+                <LinkedinIcon className="w-4 h-4" />
+              </a>
+              <a href={company?.socialLinks?.youtube || "https://youtube.com"} target="_blank" rel="noopener noreferrer" title="YouTube" className="w-10 h-10 bg-gray-800 flex items-center justify-center hover:bg-red-600 text-white transition-colors cursor-pointer rounded-lg">
+                <YoutubeIcon className="w-4 h-4" />
+              </a>
             </div>
           </div>
           
           <div>
             <h4 className="text-white font-bold uppercase tracking-widest mb-6" style={{ fontFamily: fontHeading }}>DỊCH VỤ B2B</h4>
             <ul className="space-y-3">
-              <li><button onClick={() => { setActivePage('projects'); setFilterProjectType('Đất công nghiệp'); }} className="hover:text-[#F59E0B] transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-2" /> Cho Thuê Đất Công Nghiệp</button></li>
-              <li><button onClick={() => { setActivePage('projects'); setFilterProjectType('Nhà xưởng'); }} className="hover:text-[#F59E0B] transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-2" /> Nhà Xưởng Xây Sẵn (RBF)</button></li>
-              <li><button onClick={() => { setActivePage('projects'); setFilterProjectType('Kho bãi'); }} className="hover:text-[#F59E0B] transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-2" /> Kho Vận Logistics</button></li>
-              <li><button onClick={() => setActivePage('contact')} className="hover:text-[#F59E0B] transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-2" /> Dịch Vụ Tư Vấn Pháp Lý IRC/ERC</button></li>
-              <li><button onClick={() => setActivePage('about')} className="hover:text-[#F59E0B] transition-colors flex items-center"><ChevronRight className="w-4 h-4 mr-2" /> Quản Lý Hạ Tầng KCN</button></li>
+              <li><button onClick={() => { setActivePage('projects'); setFilterProjectType('Đất công nghiệp'); }} className="hover:opacity-80 transition-opacity flex items-center"><ChevronRight className="w-4 h-4 mr-2" style={{ color: brandAccent }} /> Cho Thuê Đất Công Nghiệp</button></li>
+              <li><button onClick={() => { setActivePage('projects'); setFilterProjectType('Nhà xưởng'); }} className="hover:opacity-80 transition-opacity flex items-center"><ChevronRight className="w-4 h-4 mr-2" style={{ color: brandAccent }} /> Nhà Xưởng Xây Sẵn (RBF)</button></li>
+              <li><button onClick={() => { setActivePage('projects'); setFilterProjectType('Kho bãi'); }} className="hover:opacity-80 transition-opacity flex items-center"><ChevronRight className="w-4 h-4 mr-2" style={{ color: brandAccent }} /> Kho Vận Logistics</button></li>
+              <li><button onClick={() => setActivePage('contact')} className="hover:opacity-80 transition-opacity flex items-center"><ChevronRight className="w-4 h-4 mr-2" style={{ color: brandAccent }} /> Dịch Vụ Tư Vấn Pháp Lý IRC/ERC</button></li>
+              <li><button onClick={() => setActivePage('about')} className="hover:opacity-80 transition-opacity flex items-center"><ChevronRight className="w-4 h-4 mr-2" style={{ color: brandAccent }} /> Quản Lý Hạ Tầng KCN</button></li>
             </ul>
           </div>
           
           <div>
             <h4 className="text-white font-bold uppercase tracking-widest mb-6" style={{ fontFamily: fontHeading }}>DỰ ÁN NỔI BẬT</h4>
             <ul className="space-y-3">
-              <li><button onClick={() => { setActivePage('projects'); setSearchProjectQuery('VSIP'); }} className="hover:text-[#F59E0B] transition-colors flex items-center text-left"><ChevronRight className="w-4 h-4 mr-2" /> VSIP Bình Dương</button></li>
-              <li><button onClick={() => { setActivePage('projects'); setSearchProjectQuery('Nam Đình Vũ'); }} className="hover:text-[#F59E0B] transition-colors flex items-center text-left"><ChevronRight className="w-4 h-4 mr-2" /> KCN Nam Đình Vũ - Hải Phòng</button></li>
-              <li><button onClick={() => { setActivePage('projects'); setSearchProjectQuery('Phú Mỹ'); }} className="hover:text-[#F59E0B] transition-colors flex items-center text-left"><ChevronRight className="w-4 h-4 mr-2" /> KCN Phú Mỹ - Vũng Tàu</button></li>
-              <li><button onClick={() => { setActivePage('projects'); setSearchProjectQuery('AMATA'); }} className="hover:text-[#F59E0B] transition-colors flex items-center text-left"><ChevronRight className="w-4 h-4 mr-2" /> KCN AMATA - Đồng Nai</button></li>
+              <li><button onClick={() => { setActivePage('projects'); setSearchProjectQuery('VSIP'); }} className="hover:opacity-80 transition-opacity flex items-center text-left"><ChevronRight className="w-4 h-4 mr-2" style={{ color: brandAccent }} /> VSIP Bình Dương</button></li>
+              <li><button onClick={() => { setActivePage('projects'); setSearchProjectQuery('Nam Đình Vũ'); }} className="hover:opacity-80 transition-opacity flex items-center text-left"><ChevronRight className="w-4 h-4 mr-2" style={{ color: brandAccent }} /> KCN Nam Đình Vũ - Hải Phòng</button></li>
+              <li><button onClick={() => { setActivePage('projects'); setSearchProjectQuery('Phú Mỹ'); }} className="hover:opacity-80 transition-opacity flex items-center text-left"><ChevronRight className="w-4 h-4 mr-2" style={{ color: brandAccent }} /> KCN Phú Mỹ - Vũng Tàu</button></li>
+              <li><button onClick={() => { setActivePage('projects'); setSearchProjectQuery('AMATA'); }} className="hover:opacity-80 transition-opacity flex items-center text-left"><ChevronRight className="w-4 h-4 mr-2" style={{ color: brandAccent }} /> KCN AMATA - Đồng Nai</button></li>
             </ul>
           </div>
           
           <div>
             <h4 className="text-white font-bold uppercase tracking-widest mb-6" style={{ fontFamily: fontHeading }}>LIÊN HỆ TRỤ SỞ</h4>
             <ul className="space-y-4">
-              <li className="flex items-start">
-                <MapPin className="w-5 h-5 mr-3 text-[#1E40AF] flex-shrink-0 mt-0.5" />
-                <span>Tầng 15, Tòa nhà Bitexco Financial Tower, Số 2 Hải Triều, Q.1, TP.HCM</span>
+              <li>
+                <a href={`https://maps.google.com/?q=${encodeURIComponent(company?.address || 'Tầng 15, Tòa nhà Bitexco Financial Tower, Số 2 Hải Triều, Q.1, TP.HCM')}`} target="_blank" rel="noopener noreferrer" className="flex items-start hover:text-white transition-colors">
+                  <MapPin className="w-5 h-5 mr-3 flex-shrink-0 mt-0.5" style={{ color: brandPrimary }} />
+                  <span>{company?.address || 'Tầng 15, Tòa nhà Bitexco Financial Tower, Số 2 Hải Triều, Q.1, TP.HCM'}</span>
+                </a>
               </li>
-              <li className="flex items-center">
-                <Phone className="w-5 h-5 mr-3 text-[#1E40AF] flex-shrink-0" />
-                <span>+84 90 123 4567 (Hotline Đầu Tư)</span>
+              <li>
+                <a href={`tel:${(company?.phone || '0919006030').replace(/\s/g, '')}`} className="flex items-center hover:text-white transition-colors">
+                  <Phone className="w-5 h-5 mr-3 flex-shrink-0" style={{ color: brandPrimary }} />
+                  <span className="whitespace-nowrap">{company?.phone || '0919 006 030 (Hotline Đầu Tư)'}</span>
+                </a>
               </li>
-              <li className="flex items-center">
-                <Mail className="w-5 h-5 mr-3 text-[#1E40AF] flex-shrink-0" />
-                <span>{company?.email || company?.email || 'invest@platformbds.vn'}</span>
+              <li>
+                <a href={`mailto:${company?.email || 'invest@aireviewbds.com'}`} className="flex items-center hover:text-white transition-colors">
+                  <Mail className="w-5 h-5 mr-3 flex-shrink-0" style={{ color: brandPrimary }} />
+                  <span>{company?.email || 'invest@aireviewbds.com'}</span>
+                </a>
               </li>
             </ul>
           </div>
@@ -1330,7 +1360,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedProject.img} alt={selectedProject.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
               <div className="absolute bottom-6 left-6 text-white pr-10">
-                <span className="bg-[#F59E0B] text-[#0F172A] text-xs font-black px-2.5 py-1 uppercase rounded mb-2 inline-block">
+                <span className="text-[#0F172A] text-xs font-black px-2.5 py-1 uppercase rounded mb-2 inline-block" style={{ backgroundColor: brandAccent }}>
                   {selectedProject.type}
                 </span>
                 <h3 className="text-2xl font-bold">{selectedProject.title}</h3>
@@ -1338,9 +1368,9 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
             </div>
             <div className="p-8">
               <div className="flex flex-wrap gap-6 mb-6 pb-6 border-b border-gray-200 text-sm font-semibold text-gray-600">
-                <span className="flex items-center"><MapPin className="w-4 h-4 mr-2 text-[#1E40AF]" /> {selectedProject.loc}</span>
+                <span className="flex items-center"><MapPin className="w-4 h-4 mr-2" style={{ color: brandPrimary }} /> {selectedProject.loc}</span>
                 <span>Quy mô: {selectedProject.area}</span>
-                <span className="text-[#1E40AF]">{selectedProject.price}</span>
+                <span style={{ color: brandPrimary }}>{selectedProject.price}</span>
               </div>
 
               <h4 className="font-bold text-lg mb-2 text-[#0F172A]">MÔ TẢ CHI TIẾT</h4>
@@ -1367,7 +1397,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               </div>
 
               <div className="bg-[#0F172A] text-white p-6 rounded text-center">
-                <h4 className="font-bold text-lg mb-2 text-[#F59E0B]">ĐĂNG KÝ NHẬN BÁO GIÁ DỰ ÁN</h4>
+                <h4 className="font-bold text-lg mb-2" style={{ color: brandAccent }}>ĐĂNG KÝ NHẬN BÁO GIÁ DỰ ÁN</h4>
                 <p className="text-xs text-gray-400 mb-4">Để lại email, chúng tôi sẽ gửi tài liệu quy hoạch & bảng báo giá chi tiết trong vòng 1 giờ.</p>
                 <form 
                   onSubmit={(e) => { 
@@ -1378,7 +1408,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                   className="flex flex-col sm:flex-row gap-2"
                 >
                   <input type="email" placeholder="Email doanh nghiệp của bạn..." required className="flex-grow p-3 rounded text-gray-800 text-sm focus:outline-none" />
-                  <button type="submit" className="bg-[#1E40AF] px-6 py-3 font-bold text-sm uppercase hover:bg-[#F59E0B] hover:text-[#0F172A] transition-colors rounded">Đăng Ký</button>
+                  <button type="submit" className="text-white px-6 py-3 font-bold text-sm uppercase hover:opacity-90 transition-opacity rounded" style={{ backgroundColor: brandPrimary }}>Đăng Ký</button>
                 </form>
               </div>
             </div>
@@ -1392,7 +1422,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
           className="fixed inset-0 bg-black bg-opacity-90 z-[99999] flex items-center justify-center p-4 cursor-pointer"
           onClick={() => setSelectedGalleryImg(null)}
         >
-          <button className="absolute top-4 right-4 text-white hover:text-[#F59E0B]">
+          <button className="absolute top-4 right-4 text-white hover:opacity-80">
             <X className="w-8 h-8" />
           </button>
           <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedGalleryImg} alt="Lightbox Preview" className="max-w-full max-h-[85vh] object-contain rounded" />
@@ -1411,7 +1441,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
             </button>
             <div className="p-8">
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-[#1E40AF] font-bold text-xs bg-blue-100 px-2.5 py-0.5 rounded">{selectedArticle.cat}</span>
+                <span className="font-bold text-xs px-2.5 py-0.5 rounded" style={{ backgroundColor: `${brandPrimary}20`, color: brandPrimary }}>{selectedArticle.cat}</span>
                 <span className="text-gray-500 text-xs font-semibold">{selectedArticle.date}</span>
               </div>
               <h2 className="text-2xl md:text-3xl font-bold text-[#0F172A] mb-6 leading-tight" style={{ fontFamily: fontHeading }}>{selectedArticle.title}</h2>
@@ -1425,6 +1455,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
           </div>
         </div>
       )}
+
     </div>
   );
 }

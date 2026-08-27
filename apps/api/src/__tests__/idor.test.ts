@@ -13,6 +13,7 @@ describe('Multi-Tenant IDOR Isolation Test', () => {
   let tokenA: string;
   let tokenB: string;
   let projectB: any;
+  let templateId: string;
 
   beforeAll(async () => {
     // 1. Clean up old test tenants
@@ -29,12 +30,19 @@ describe('Multi-Tenant IDOR Isolation Test', () => {
       await prisma.tenant.delete({ where: { id: oldB.id } });
     }
 
-    // 2. Create Tenant A & Tenant B
+    // 2. Create an immutable template fixture, then Tenant A & Tenant B.
+    // The test must not depend on a separately seeded development database.
+    const template = await prisma.template.upsert({
+      where: { slug: 'luxury-gold' },
+      update: { isActive: true },
+      create: { name: 'Luxury Gold', slug: 'luxury-gold', isActive: true },
+    });
+    templateId = template.id;
     tenantA = await prisma.tenant.create({
-      data: { name: 'Tenant A Jest', slug: 'tenant-a-jest', status: 'ACTIVE', templateId: 'template-1' }
+      data: { name: 'Tenant A Jest', slug: 'tenant-a-jest', status: 'ACTIVE', templateId }
     });
     tenantB = await prisma.tenant.create({
-      data: { name: 'Tenant B Jest', slug: 'tenant-b-jest', status: 'ACTIVE', templateId: 'template-1' }
+      data: { name: 'Tenant B Jest', slug: 'tenant-b-jest', status: 'ACTIVE', templateId }
     });
 
     // 3. Create Users

@@ -34,18 +34,10 @@ export async function resolveTenantSlug(req: Request, res: Response, next: NextF
     });
 
     if (!tenant) {
-      if (process.env.NODE_ENV === 'production') {
-        return res.status(404).json({
-          success: false,
-          error: {
-            code: 'TENANT_NOT_FOUND',
-            message: 'Website không tồn tại.',
-          },
-        });
-      }
-      // Dev fallback only
-      req.tenantId = `mock-id-${slug}`;
-      return next();
+      return res.status(404).json({
+        success: false,
+        error: { code: 'TENANT_NOT_FOUND', message: 'Website không tồn tại.' },
+      });
     }
 
     // 3. Ghi vào cache
@@ -57,19 +49,11 @@ export async function resolveTenantSlug(req: Request, res: Response, next: NextF
     req.tenantId = tenant.id;
     tenantStorage.run(tenant.id, () => next());
   } catch (error) {
-    if (process.env.NODE_ENV === 'production') {
-      console.error(`[Error] Database connection failed for tenant resolution: ${(error as Error).message}`);
-      return res.status(503).json({
-        success: false,
-        error: {
-          code: 'SERVICE_UNAVAILABLE',
-          message: 'Hệ thống đang bảo trì. Vui lòng thử lại sau.',
-        },
-      });
-    }
-    console.warn(`[Warning] Database connection failed. Falling back to mock tenant resolution for slug: ${slug}`);
-    req.tenantId = `mock-id-${slug}`;
-    tenantStorage.run(`mock-id-${slug}`, () => next());
+    console.error(`[Error] Database connection failed for tenant resolution: ${(error as Error).message}`);
+    return res.status(503).json({
+      success: false,
+      error: { code: 'SERVICE_UNAVAILABLE', message: 'Hệ thống đang bảo trì. Vui lòng thử lại sau.' },
+    });
   }
 }
 
@@ -101,48 +85,14 @@ export async function checkTenantAccess(req: Request, res: Response, next: NextF
     return tenantStorage.run(targetTenantId, () => next());
   }
 
-  // 2. Với User thường: Lấy tenantId từ JWT hoặc fallback tìm trong DB
-  let tenantId = user.tenantId;
-
-  if (!tenantId) {
-    // Tìm trong DB xem user đã được cấp Tenant sau khi duyệt đơn chưa
-    const dbUser = await prisma.user.findUnique({
-      where: { id: user.userId },
-      select: { tenantId: true },
-    });
-
-    if (dbUser?.tenantId) {
-      tenantId = dbUser.tenantId;
-    } else {
-      // Tìm qua bảng tenant_memberships
-      const membership = await prisma.tenantMembership.findFirst({
-        where: { userId: user.userId, status: 'ACTIVE' },
-        select: { tenantId: true },
-        orderBy: { createdAt: 'desc' },
-      });
-      if (membership?.tenantId) {
-        tenantId = membership.tenantId;
-      }
-    }
-  }
-
-  if (!tenantId) {
-    // Nếu vẫn chưa có tenant, tìm xem có tenant nào mới tạo theo email của user không
-    const emailTenant = await prisma.tenant.findFirst({
-      where: {
-        OR: [
-          { users: { some: { email: user.email } } },
-          { memberships: { some: { user: { email: user.email } } } },
-        ],
-        deletedAt: null,
-      },
-      select: { id: true },
-      orderBy: { createdAt: 'desc' },
-    });
-    if (emailTenant) {
-      tenantId = emailTenant.id;
-    }
-  }
+  // Resolve from the database for every CMS request.  A signed JWT may be
+  // stale after membership has been revoked, so it must not decide tenancy.
+  const membership = await prisma.tenantMembership.findFirst({
+    where: { userId: user.userId, status: 'ACTIVE' },
+    select: { tenantId: true },
+    orderBy: { createdAt: 'desc' },
+  });
+  const tenantId = membership?.tenantId;
 
   if (!tenantId) {
     return res.status(403).json({

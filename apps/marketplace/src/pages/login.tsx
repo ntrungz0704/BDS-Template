@@ -69,8 +69,7 @@ export default function LoginPage() {
   return (
     <>
       <Head>
-        <title>Đăng nhập tài khoản | PLATFORMBDS</title>
-        <meta name="description" content="Đăng nhập tài khoản PlatformBDS để quản lý website BĐS, source code và thông tin đơn hàng." />
+        <title>Đăng Nhập | TEMPLATES BDS</title>
       </Head>
 
       <div className="min-h-screen bg-slate-100/70 flex flex-col font-sans">
@@ -82,7 +81,7 @@ export default function LoginPage() {
             <div className="px-6 pt-8 pb-4 text-center border-b border-slate-100">
               <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 mb-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>Hệ thống quản trị PlatformBDS</span>
+                <span>Hệ thống quản trị TEMPLATES BDS</span>
               </div>
               <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                 Đăng Nhập

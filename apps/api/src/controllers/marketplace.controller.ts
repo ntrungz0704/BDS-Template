@@ -13,10 +13,10 @@ import { TemplatePackagingService } from '../services/template-packaging.service
 // ?nh nghia schemas Zod validation
 const createOrderSchema = z.object({
   templateId: z.string().min(1, 'ID Template khng du?c d? tr?ng.'),
-  type: z.enum(['BUY', 'RENT']),
-  fullName: z.string().min(2, 'H? v� t�n t?i thi?u ph?i c� 2 k� t?.'),
-  email: z.string().email('�?nh d?ng email kh�ng h?p l?.'),
-  phone: z.string().min(10, 'S? di?n tho?i t?i thi?u ph?i t? 10 s?.'),
+  type: z.enum(['BUY', 'RENT', 'BUY_SOURCE']),
+  fullName: z.string().min(2, 'H? v tn t?i thi?u ph?i c 2 k t?.'),
+  email: z.string().email('Định dạng email không hợp lệ.'),
+  phone: z.string().regex(/^(0|\+84)[0-9]{9,10}$/, 'SĐT phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.'),
   subdomain: z.string().optional(),
   note: z.string().optional(),
 });
@@ -26,8 +26,9 @@ const uploadPaymentSchema = z.object({
   billImageUrl: z.string().url('URL ?nh ha don khng h?p l?.'),
 });
 
-// Mock data templates dùng khi DB offline
-const MOCK_TEMPLATES = [
+// Legacy development catalog. Marketplace endpoints intentionally never use
+// it: purchasable templates must always come from the database.
+const LEGACY_MOCK_TEMPLATES = [
   { id: 'mock-1', name: 'Luxury Gold Style', slug: 'luxury-gold', shortDescription: 'Giao diện sang trọng phong cách vàng cao cấp', description: 'Website BĐS cao cấp với tông màu vàng sang trọng, phù hợp cho dự án hạng A.', thumbnail: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'luxury', tags: ['luxury', 'gold', 'premium'], isActive: true, sortOrder: 1, isFeatured: true, templateConfig: null },
   { id: 'mock-2', name: 'Minimal White Style', slug: 'minimal-white', shortDescription: 'Thiết kế tối giản, hiện đại, sạch sẽ', description: 'Website BĐS với thiết kế tối giản, trắng tinh tế, phù hợp thương hiệu hiện đại.', thumbnail: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'minimal', tags: ['minimal', 'white', 'modern'], isActive: true, sortOrder: 2, isFeatured: true, templateConfig: null },
   { id: 'mock-3', name: 'Modern Corporate Style', slug: 'modern-corporate', shortDescription: 'Phong cách doanh nghiệp chuyên nghiệp', description: 'Giao diện doanh nghiệp BĐS chuyên nghiệp, uy tín, phù hợp văn phòng môi giới lớn.', thumbnail: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'corporate', tags: ['corporate', 'professional', 'blue'], isActive: true, sortOrder: 3, isFeatured: false, templateConfig: null },
@@ -49,11 +50,7 @@ export async function getTemplates(req: Request, res: Response, next: NextFuncti
     const search = req.query.q as string || '';
     const skip = (page - 1) * limit;
 
-    let templates: any[] = [];
-    let total = 0;
-
-    try {
-      const where: any = {
+    const where: any = {
         isActive: true,
         ...(search && {
           OR: [
@@ -63,21 +60,10 @@ export async function getTemplates(req: Request, res: Response, next: NextFuncti
         }),
       };
 
-      const [dbTemplates, dbTotal] = await prisma.$transaction([
+    const [templates, total] = await prisma.$transaction([
         prisma.template.findMany({ where, skip, take: limit, orderBy: { sortOrder: 'asc' } }),
         prisma.template.count({ where }),
       ]);
-
-      templates = dbTemplates;
-      total = dbTotal;
-    } catch (err) {
-      console.warn('[Warning] DB offline in getTemplates. Returning mock catalog.');
-      const filtered = search
-        ? MOCK_TEMPLATES.filter(t => t.name.toLowerCase().includes(search.toLowerCase()) || t.shortDescription.toLowerCase().includes(search.toLowerCase()))
-        : MOCK_TEMPLATES;
-      templates = filtered.slice(skip, skip + limit);
-      total = filtered.length;
-    }
 
     res.status(200).json({
       success: true,
@@ -93,17 +79,10 @@ export async function getTemplateDetail(req: Request, res: Response, next: NextF
   const { slug } = req.params;
 
   try {
-    let template: any = null;
-
-    try {
-      template = await prisma.template.findUnique({
+    const template = await prisma.template.findUnique({
         where: { slug, isActive: true },
         include: { templateConfig: true },
       });
-    } catch (err) {
-      console.warn('[Warning] DB offline in getTemplateDetail. Returning mock template.');
-      template = MOCK_TEMPLATES.find(t => t.slug === slug) || null;
-    }
 
     if (!template) {
       return res.status(404).json({
@@ -119,7 +98,7 @@ export async function getTemplateDetail(req: Request, res: Response, next: NextF
 }
 
 export async function checkSubdomain(req: Request, res: Response, next: NextFunction) {
-  const slug = req.query.slug as string;
+  const slug = (req.query.slug || req.query.subdomain) as string;
 
   if (!slug) {
     return res.status(400).json({
@@ -169,20 +148,24 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
   try {
     const data = createOrderSchema.parse(req.body);
 
-    // 1. Kiểm tra template tồn tại (tìm theo ID, Slug hoặc Fallback mẫu đầu tiên)
+    // 1. The selected template lookup (flexible by id, slug, or normalized slug)
+    const cleanSlug = data.templateId.replace(/^template-/, '').toLowerCase();
     let template = await prisma.template.findFirst({
       where: {
         OR: [
           { id: data.templateId },
+          { id: `template-${cleanSlug}` },
           { slug: data.templateId },
-          { slug: data.templateId.replace(/^template-/, '') },
+          { slug: cleanSlug },
         ],
       },
     });
 
+    // Fallback: if template record not found yet in DB, pick the first active template
     if (!template) {
       template = await prisma.template.findFirst({
-        orderBy: { createdAt: 'asc' },
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' },
       });
     }
 
@@ -191,10 +174,11 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
         success: false,
         error: {
           code: 'TEMPLATE_NOT_FOUND',
-          message: 'Hệ thống chưa có mẫu website nào.',
+          message: 'Hệ thống chưa có mẫu website nào được kích hoạt. Vui lòng liên hệ Admin.',
         },
       });
     }
+
 
     // 2. N?u l don thu (RENT), chu?n ha subdomain
     let normalizedSubdomain = '';
@@ -226,19 +210,22 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
     }
 
     // 3. Tính toán số tiền thanh toán tương ứng
-    const amount = data.type === 'BUY' 
-      ? (template.priceBuy || 499000) 
-      : (template.priceRentMonthly || 199000);
+    const amount = data.type === 'BUY'
+      ? template.priceBuy
+      : data.type === 'BUY_SOURCE'
+        ? template.priceBuySource
+        : template.priceRentMonthly;
+    if (amount == null) {
+      return res.status(409).json({ success: false, error: { code: 'PRICE_UNAVAILABLE', message: 'Sản phẩm chưa được cấu hình giá.' } });
+    }
 
     // 4. Sinh m don hng duy nh?t ORD-YYYYMMDD-XXXX
     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
     const randomHex = crypto.randomBytes(2).toString('hex').toUpperCase();
     const orderNumber = `ORD-${dateStr}-${randomHex}`;
 
-    let order: any = null;
-    try {
-      // 5. T?o don h�ng PENDING trong DB
-      order = await prisma.order.create({
+    // 5. Persist the order. A failed database must never become a fake order.
+    const order = await prisma.order.create({
         data: {
           orderNumber,
           fullName: data.fullName,
@@ -253,24 +240,22 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
           userId: (req as any).user?.userId || null,
         },
       });
-      logger.info(`�� t?o don h�ng m?i trong DB: ${orderNumber} - S? ti?n: ${amount} VN�`);
-    } catch (err) {
-      console.warn(`[Warning] Database connection failed during order creation. Returning mock order details.`);
-      order = {
-        id: `mock-ord-id-${randomHex}`,
-        orderNumber,
-        fullName: data.fullName,
-        email: data.email,
-        phone: data.phone,
-        type: data.type,
-        status: 'PENDING',
-        templateId: data.templateId,
-        amount,
-        subdomain: normalizedSubdomain || null,
-        note: data.note,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
+    logger.info(`Đã tạo đơn hàng ${orderNumber} - ${amount} VNĐ`);
+
+    // Tạo thông báo cho tất cả SUPER_ADMIN
+    try {
+      const admins = await prisma.user.findMany({ where: { role: 'SUPER_ADMIN', isActive: true } });
+      if (admins.length > 0) {
+        await prisma.notification.createMany({
+          data: admins.map((admin: any) => ({
+            userId: admin.id,
+            title: `📦 Đơn hàng mới #${orderNumber}`,
+            content: `${data.fullName} (${data.phone}) vừa đặt ${data.type === 'BUY' ? 'mua' : 'thuê'} template "${template.name}". Số tiền: ${amount?.toLocaleString('vi-VN')}đ.`,
+          })),
+        });
+      }
+    } catch (notifErr) {
+      logger.warn(`Không thể tạo notification cho admin: ${(notifErr as Error).message}`);
     }
 
     res.status(201).json({
@@ -765,3 +750,84 @@ export async function getMyOrders(req: Request, res: Response, next: NextFunctio
   }
 }
 
+const contactSubmissionSchema = z.object({
+  fullName: z.string().min(2, 'Họ và tên tối thiểu 2 ký tự.'),
+  phone: z.string().regex(/^(0|\+84)[0-9]{9,10}$/, 'SĐT phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.'),
+  email: z.string().email('Định dạng email không hợp lệ.').optional().or(z.literal('')),
+  selectedTemplate: z.string().optional(),
+  packageInterest: z.string().optional(),
+  message: z.string().optional(),
+});
+
+export async function createContactSubmission(req: Request, res: Response, next: NextFunction) {
+  try {
+    const data = contactSubmissionSchema.parse(req.body);
+
+    // Tạo đơn hàng/liên hệ với type CONTACT
+    const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const randomHex = crypto.randomBytes(2).toString('hex').toUpperCase();
+    const orderNumber = `CTT-${dateStr}-${randomHex}`;
+
+    // Tìm template nếu có
+    let templateId: string | null = null;
+    let templateName = data.selectedTemplate || 'Chưa chọn';
+    if (data.selectedTemplate) {
+      const tpl = await prisma.template.findFirst({
+        where: { OR: [{ slug: data.selectedTemplate }, { name: data.selectedTemplate }] },
+      });
+      if (tpl) {
+        templateId = tpl.id;
+        templateName = tpl.name;
+      }
+    }
+
+    const order = await prisma.order.create({
+      data: {
+        orderNumber,
+        fullName: data.fullName,
+        email: data.email || '',
+        phone: data.phone,
+        type: 'BUY',
+        status: 'PENDING',
+        templateId: templateId || (await prisma.template.findFirst({ where: { isActive: true } }))?.id || '',
+        amount: 0,
+        note: `[LIÊN HỆ TƯ VẤN] Gói: ${data.packageInterest || 'Chưa chọn'}. ${data.message || ''}`.trim(),
+      },
+    });
+
+    // Tạo thông báo cho tất cả SUPER_ADMIN
+    try {
+      const admins = await prisma.user.findMany({ where: { role: 'SUPER_ADMIN', isActive: true } });
+      if (admins.length > 0) {
+        await prisma.notification.createMany({
+          data: admins.map((admin: any) => ({
+            userId: admin.id,
+            title: '📩 Yêu cầu tư vấn mới',
+            content: `${data.fullName} (${data.phone}) quan tâm template "${templateName}"${data.packageInterest ? `, gói: ${data.packageInterest}` : ''}. Liên hệ ngay!`,
+          })),
+        });
+      }
+    } catch (notifErr) {
+      logger.warn(`Không thể tạo notification: ${(notifErr as Error).message}`);
+    }
+
+    logger.info(`Liên hệ tư vấn ${orderNumber} - ${data.fullName} (${data.phone})`);
+
+    res.status(201).json({
+      success: true,
+      data: { orderNumber: order.orderNumber, message: 'Yêu cầu tư vấn đã được ghi nhận. Đội ngũ sẽ liên hệ bạn sớm nhất.' },
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Dữ liệu không hợp lệ.',
+          details: error.errors,
+        },
+      });
+    }
+    next(error);
+  }
+}

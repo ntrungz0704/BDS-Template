@@ -72,11 +72,11 @@ export default function Footer() {
           <div className="lg:col-span-2 flex flex-col gap-4">
             <div>
               <span className="text-2xl font-black tracking-tight">
-                <span className="text-[#2563EB]">PLATFORM</span>
+                <span className="text-[#2563EB]">TEMPLATES</span>
                 <span className="text-white">BDS</span>
               </span>
               <p className="mt-3 text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[320px]">
-                Nền tảng cung cấp giải pháp website bất động sản chuyên nghiệp số 1 Việt Nam. Tối ưu chuyển đổi, chuẩn SEO và tích hợp hệ thống CMS quản trị đa kênh.
+                Kho mẫu website bất động sản cao cấp số 1 Việt Nam. Tối ưu chuyển đổi, chuẩn SEO và tích hợp hệ thống CMS quản trị đa kênh.
               </p>
             </div>
 
@@ -162,7 +162,7 @@ export default function Footer() {
         {/* ── Bottom bar ── */}
         <div className="mt-10 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <p>
-            © {new Date().getFullYear()} PLATFORMBDS. Toàn bộ bản quyền được bảo lưu.
+            © {new Date().getFullYear()} TEMPLATES BDS. Toàn bộ bản quyền được bảo lưu.
           </p>
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1.5">

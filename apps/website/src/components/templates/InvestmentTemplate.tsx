@@ -9,6 +9,7 @@ import {
   Clock, Map, Award, Users, Plus
 } from 'lucide-react';
 import { MAX_W } from '../design-system';
+import { FacebookIcon, LinkedinIcon, YoutubeIcon, ZaloIcon } from '../icons/SocialIcons';
 
 interface TemplateProps {
   template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, any> };
@@ -359,11 +360,14 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
 
   const isMobile = viewport === 'mobile';
   
+  const brandPrimary = dynamicTheme?.primaryColor || '#1E40AF';
+  const brandAccent = dynamicTheme?.accentColor || '#10B981';
+
   const colors = {
-    bg: '#EFF6FF',
-    primary: '#1E40AF',
-    accent: '#10B981',
-    text: '#1F2937',
+    bg: dynamicTheme?.backgroundColor || '#EFF6FF',
+    primary: brandPrimary,
+    accent: brandAccent,
+    text: dynamicTheme?.textColor || '#1F2937',
     textMuted: '#4B5563',
     white: '#FFFFFF',
     border: '#E5E7EB'
@@ -403,11 +407,11 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
     <div style={{ backgroundColor: '#0f172a' }} className="text-white text-xs py-1.5 overflow-hidden whitespace-nowrap hidden md:block border-b border-gray-800">
       <div className="flex w-max px-4">
         <div className="flex gap-8 px-4">
-          <span><span className="font-bold text-gray-400 mr-1">VnIndex:</span> 1,245.30 <span className="text-[#10B981] ml-1">▲ 12.4 (1.01%)</span></span>
+          <span><span className="font-bold text-gray-400 mr-1">VnIndex:</span> 1,245.30 <span style={{ color: brandAccent }} className="ml-1">▲ 12.4 (1.01%)</span></span>
           <span><span className="font-bold text-gray-400 mr-1">Lãi suất HĐ:</span> 4.5% - 5.5%/năm</span>
           <span><span className="font-bold text-gray-400 mr-1">SJC (Mua-Bán):</span> 79.5M - 81.5M/lượng <span className="text-rose-400 ml-1">▼ 0.2M</span></span>
-          <span><span className="font-bold text-gray-400 mr-1">Tỷ giá USD/VND:</span> 25,230 <span className="text-[#10B981] ml-1">▲ 15</span></span>
-          <span><span className="font-bold text-gray-400 mr-1">Dự án Alpha:</span> Đang mở bán <span className="text-[#10B981] ml-1">Cam kết LN 12%/năm</span></span>
+          <span><span className="font-bold text-gray-400 mr-1">Tỷ giá USD/VND:</span> 25,230 <span style={{ color: brandAccent }} className="ml-1">▲ 15</span></span>
+          <span><span className="font-bold text-gray-400 mr-1">Dự án Alpha:</span> Đang mở bán <span style={{ color: brandAccent }} className="ml-1">Cam kết LN 12%/năm</span></span>
         </div>
       </div>
     </div>
@@ -417,11 +421,11 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
       <div className={`${MAX_W} mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between`}>
         <div className="flex items-center gap-2 cursor-pointer group" onClick={() => navigateTo('home')}>
-          <div style={{ backgroundColor: colors.primary }} className="p-1.5 md:p-2 rounded-lg text-white group-hover:bg-blue-800 transition-colors">
+          <div style={{ backgroundColor: brandPrimary }} className="p-1.5 md:p-2 rounded-lg text-white group-hover:opacity-90 transition-opacity">
             <TrendingUp size={isMobile ? 20 : 24} />
           </div>
           <div>
-            <h1 style={{ color: colors.primary }} className="font-bold text-lg md:text-xl leading-none tracking-tight uppercase">
+            <h1 style={{ color: brandPrimary }} className="font-bold text-lg md:text-xl leading-none tracking-tight uppercase">
               {company?.name || template?.name || 'InvestPro'}
             </h1>
             <span className="text-[9px] md:text-[10px] text-gray-500 font-bold tracking-widest uppercase">
@@ -442,8 +446,9 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             <button
               key={item.id}
               onClick={() => navigateTo(item.id)}
-              className={`text-[13px] xl:text-sm font-semibold transition-colors hover:text-[#10B981] uppercase tracking-wide
-                ${currentPage === item.id ? 'text-[#10B981] border-b-2 border-[#10B981] py-1' : 'text-gray-600'}
+              style={currentPage === item.id ? { color: brandAccent, borderColor: brandAccent } : undefined}
+              className={`text-[13px] xl:text-sm font-semibold transition-colors uppercase tracking-wide
+                ${currentPage === item.id ? 'border-b-2 py-1' : 'text-gray-600 hover:opacity-80'}
               `}
             >
               {item.label}
@@ -452,13 +457,13 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
         </nav>
 
         <div className="hidden lg:flex items-center gap-4">
-          <a href={`tel:${company?.phone || '0983312219'}`} className="text-sm font-bold text-gray-700 hover:text-[#1E40AF] flex items-center gap-2 transition-colors">
+          <a href={`tel:${company?.phone || '0983312219'}`} className="text-sm font-bold text-gray-700 hover:opacity-80 flex items-center gap-2 transition-opacity">
             <Phone size={16} /> {company?.phone || '0983 312 219'}
           </a>
           <button 
             onClick={() => navigateTo('contact')}
-            style={{ backgroundColor: colors.primary }} 
-            className="text-white px-5 py-2.5 rounded text-sm font-semibold hover:bg-blue-800 transition-all shadow-md hover:shadow-lg flex items-center gap-2"
+            style={{ backgroundColor: brandPrimary }} 
+            className="text-white px-5 py-2.5 rounded text-sm font-semibold hover:opacity-90 transition-all shadow-md flex items-center gap-2"
           >
             Đăng ký tư vấn <ArrowRight size={16} />
           </button>
@@ -483,7 +488,8 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             <button
               key={item.id}
               onClick={() => navigateTo(item.id)}
-              className={`text-left text-sm font-bold py-4 px-6 border-b border-gray-50 uppercase tracking-wide ${currentPage === item.id ? 'text-[#10B981] bg-gray-50' : 'text-gray-700'}`}
+              style={currentPage === item.id ? { color: brandAccent } : undefined}
+              className={`text-left text-sm font-bold py-4 px-6 border-b border-gray-50 uppercase tracking-wide ${currentPage === item.id ? 'bg-gray-50' : 'text-gray-700'}`}
             >
               {item.label}
             </button>
@@ -491,7 +497,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
           <div className="p-6 bg-gray-50">
             <button 
               onClick={() => navigateTo('contact')}
-              style={{ backgroundColor: colors.primary }} 
+              style={{ backgroundColor: brandPrimary }} 
               className="text-white px-5 py-3 rounded text-sm font-bold w-full flex items-center justify-center gap-2 shadow-md"
             >
               Đăng ký tư vấn ngay <ArrowRight size={16} />
@@ -503,11 +509,11 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
   );
 
   const renderFooter = () => (
-    <footer className="bg-slate-900 text-white pt-16 pb-8 border-t-4 border-[#1E40AF]">
+    <footer style={{ borderTopColor: brandPrimary }} className="bg-slate-900 text-white pt-16 pb-8 border-t-4">
       <div className={`${MAX_W} mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12`}>
         <div>
           <div className="flex items-center gap-2 mb-6">
-            <div style={{ backgroundColor: colors.primary }} className="p-2 rounded-lg text-white">
+            <div style={{ backgroundColor: brandPrimary }} className="p-2 rounded-lg text-white">
               <TrendingUp size={24} />
             </div>
             <div>
@@ -518,12 +524,19 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
           <p className="text-gray-400 text-sm mb-6 leading-relaxed">
             {company?.slogan || company?.description || 'Đơn vị tư vấn và quản lý danh mục đầu tư bất động sản hàng đầu, mang đến giải pháp sinh lời bền vững và an toàn cho nhà đầu tư chuyên nghiệp.'}
           </p>
-          <div className="flex space-x-4">
-            {['Facebook', 'LinkedIn', 'YouTube'].map((social) => (
-              <a key={social} href="#" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-[#1E40AF] hover:text-white transition-colors text-xs font-bold">
-                {social.charAt(0)}
-              </a>
-            ))}
+          <div className="flex space-x-3">
+            <a href={company?.socialLinks?.facebook || "https://facebook.com"} target="_blank" rel="noopener noreferrer" title="Facebook" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors">
+              <FacebookIcon className="w-4 h-4" />
+            </a>
+            <a href={`https://zalo.me/${company?.phone || '0919006030'}`} target="_blank" rel="noopener noreferrer" title="Zalo" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-[#0068FF] hover:text-white transition-colors p-1.5">
+              <ZaloIcon className="w-full h-full" />
+            </a>
+            <a href={company?.socialLinks?.linkedin || "https://linkedin.com"} target="_blank" rel="noopener noreferrer" title="LinkedIn" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-blue-700 hover:text-white transition-colors">
+              <LinkedinIcon className="w-4 h-4" />
+            </a>
+            <a href={company?.socialLinks?.youtube || "https://youtube.com"} target="_blank" rel="noopener noreferrer" title="YouTube" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-red-600 hover:text-white transition-colors">
+              <YoutubeIcon className="w-4 h-4" />
+            </a>
           </div>
         </div>
 
@@ -532,8 +545,8 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
           <ul className="space-y-3">
             {['BĐS Thương mại', 'BĐS Nghỉ dưỡng', 'BĐS Công nghiệp', 'Căn hộ Hạng sang', 'Quản lý tài sản'].map(item => (
               <li key={item}>
-                <a href="#" className="text-gray-400 hover:text-[#10B981] text-sm transition-colors flex items-center gap-2">
-                  <ChevronRight size={14} /> {item}
+                <a href="#" className="text-gray-400 hover:opacity-80 text-sm transition-opacity flex items-center gap-2">
+                  <ChevronRight size={14} style={{ color: brandAccent }} /> {item}
                 </a>
               </li>
             ))}
@@ -557,16 +570,16 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
           <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-wider">Trụ sở chính</h4>
           <ul className="space-y-4 text-sm text-gray-400">
             <li className="flex items-start gap-3">
-              <MapPin size={18} className="text-[#10B981] shrink-0 mt-0.5" />
+              <MapPin size={18} style={{ color: brandAccent }} className="shrink-0 mt-0.5" />
               <span>Tầng 45, Tòa nhà Bitexco Financial Tower, Số 2 Hải Triều, Q1, TP.HCM</span>
             </li>
             <li className="flex items-center gap-3">
-              <Phone size={18} className="text-[#10B981] shrink-0" />
-              <span>1900 6868 (Hotline Tư vấn 24/7)</span>
+              <Phone size={18} style={{ color: brandAccent }} className="shrink-0" />
+              <span>{company?.phone || company?.hotline || '1900 6868'} (Hotline Tư vấn 24/7)</span>
             </li>
             <li className="flex items-center gap-3">
-              <Mail size={18} className="text-[#10B981] shrink-0" />
-              <span>{company?.email || company?.email || 'invest@investpro.com.vn'}</span>
+              <Mail size={18} style={{ color: brandAccent }} className="shrink-0" />
+              <span>{company?.email || 'invest@investpro.com.vn'}</span>
             </li>
           </ul>
         </div>
@@ -574,12 +587,12 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
       
       <div className={`${MAX_W} mx-auto px-4 sm:px-6 pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4`}>
         <p className="text-gray-500 text-xs text-center md:text-left">
-          &copy; {new Date().getFullYear()} InvestPro Capital & Partners. Tất cả quyền được bảo lưu. <br className="md:hidden" />Bản quyền thuộc về nền tảng BDS.
+          &copy; {new Date().getFullYear()} {company?.name || 'InvestPro Capital & Partners'}. Tất cả quyền được bảo lưu. <br className="md:hidden" />Bản quyền thuộc về nền tảng BDS.
         </p>
         <div className="flex items-center gap-2 text-gray-500 text-xs">
           <span>Phiên bản v2.4.0</span>
           <span>|</span>
-          <span className="flex items-center gap-1"><Shield size={12} className="text-[#10B981]" /> Cổng bảo mật SSL 256-bit</span>
+          <span className="flex items-center gap-1"><Shield size={12} style={{ color: brandAccent }} /> Cổng bảo mật SSL 256-bit</span>
         </div>
       </div>
     </footer>
@@ -604,7 +617,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
               Đầu tư thông minh, <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Sinh lời bền vững</span>
+              <span style={{ color: brandAccent }}>Sinh lời bền vững</span>
             </h1>
             
             <p className="text-gray-300 text-lg md:text-xl max-w-xl leading-relaxed">
@@ -612,7 +625,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <button onClick={() => navigateTo('projects')} style={{ backgroundColor: colors.primary }} className="px-8 py-4 rounded-md font-bold text-white hover:bg-blue-800 transition-colors shadow-lg flex items-center justify-center gap-2">
+              <button onClick={() => navigateTo('projects')} style={{ backgroundColor: brandPrimary }} className="px-8 py-4 rounded-md font-bold text-white hover:opacity-90 transition-opacity shadow-lg flex items-center justify-center gap-2">
                 Khám phá danh mục <ArrowRight size={18} />
               </button>
               <button onClick={() => navigateTo('news')} className="px-8 py-4 rounded-md font-bold text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors flex items-center justify-center gap-2">
@@ -627,7 +640,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 <h3 className="font-bold text-lg">Hiệu suất Quỹ InvestPro</h3>
                 <div className="flex gap-2">
                   <span className="px-2 py-1 bg-slate-700 rounded text-xs">1M</span>
-                  <span className="px-2 py-1 bg-blue-600 rounded text-xs font-bold">1Y</span>
+                  <span style={{ backgroundColor: brandPrimary }} className="px-2 py-1 rounded text-xs font-bold">1Y</span>
                   <span className="px-2 py-1 bg-slate-700 rounded text-xs">ALL</span>
                 </div>
               </div>
@@ -636,18 +649,18 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
                   <p className="text-gray-400 text-xs mb-1">Tổng tài sản quản lý</p>
                   <p className="text-2xl font-bold font-mono">15.2K Tỷ</p>
-                  <p className="text-emerald-400 text-xs flex items-center mt-1"><TrendingUp size={12} className="mr-1"/> +18.4% YoY</p>
+                  <p style={{ color: brandAccent }} className="text-xs flex items-center mt-1"><TrendingUp size={12} className="mr-1"/> +18.4% YoY</p>
                 </div>
                 <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
                   <p className="text-gray-400 text-xs mb-1">Lợi nhuận trung bình</p>
-                  <p className="text-2xl font-bold font-mono text-emerald-400">14.5%<span className="text-sm">/năm</span></p>
-                  <p className="text-emerald-400 text-xs flex items-center mt-1"><TrendingUp size={12} className="mr-1"/> Vượt thị trường</p>
+                  <p style={{ color: brandAccent }} className="text-2xl font-bold font-mono">14.5%<span className="text-sm">/năm</span></p>
+                  <p style={{ color: brandAccent }} className="text-xs flex items-center mt-1"><TrendingUp size={12} className="mr-1"/> Vượt thị trường</p>
                 </div>
               </div>
               
               <div className="h-32 w-full flex items-end gap-2">
                 {[40, 50, 45, 60, 75, 65, 80, 95, 85, 100].map((height, i) => (
-                  <div key={i} className="flex-1 bg-gradient-to-t from-blue-900 to-blue-500 rounded-t-sm" style={{ height: `${height}%`, opacity: 0.8 + (i * 0.02) }}></div>
+                  <div key={i} className="flex-1 bg-gradient-to-t from-slate-900 to-slate-600 rounded-t-sm" style={{ height: `${height}%`, opacity: 0.8 + (i * 0.02) }}></div>
                 ))}
               </div>
             </div>
@@ -664,7 +677,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <select 
                 value={homeFilterType}
                 onChange={(e) => setHomeFilterType(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-[#1E40AF] focus:border-[#1E40AF] block p-3 font-medium outline-none"
+                className="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 block p-3 font-medium outline-none"
               >
                 <option value="all">Tất cả loại hình</option>
                 <option value="Căn hộ Hạng Sang">Căn hộ Hạng Sang</option>
@@ -678,7 +691,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <select 
                 value={homeFilterBudget}
                 onChange={(e) => setHomeFilterBudget(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-[#1E40AF] focus:border-[#1E40AF] block p-3 font-medium outline-none"
+                className="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 block p-3 font-medium outline-none"
               >
                 <option value="all">Mọi mức vốn</option>
                 <option value="under-5">Dưới 5 tỷ</option>
@@ -691,7 +704,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <select 
                 value={homeFilterRoi}
                 onChange={(e) => setHomeFilterRoi(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-[#1E40AF] focus:border-[#1E40AF] block p-3 font-medium outline-none"
+                className="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 block p-3 font-medium outline-none"
               >
                 <option value="all">Mọi mức ROI</option>
                 <option value="under-12">Dưới 12% / năm</option>
@@ -701,8 +714,8 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             </div>
             <button 
               onClick={handleHomeSearch}
-              style={{ backgroundColor: colors.primary }} 
-              className="w-full text-white font-bold p-3 rounded-lg shadow-md hover:bg-blue-800 transition-colors flex items-center justify-center gap-2 text-sm md:text-base h-11"
+              style={{ backgroundColor: brandPrimary }} 
+              className="w-full text-white font-bold p-3 rounded-lg shadow-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2 text-sm md:text-base h-11"
             >
               <Search size={18} /> Phân Tích Danh Mục
             </button>
@@ -728,9 +741,9 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <div key={i} className="bg-gray-50 border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-shadow">
                 <div className="flex justify-between items-start mb-4">
                   <div className="p-3 bg-white rounded-lg shadow-sm">
-                    <stat.icon size={24} color={colors.primary} />
+                    <stat.icon size={24} color={brandPrimary} />
                   </div>
-                  <span className="flex items-center text-emerald-600 text-sm font-bold bg-emerald-50 px-2 py-1 rounded">
+                  <span style={{ color: brandAccent }} className="flex items-center text-sm font-bold px-2 py-1 rounded">
                     <TrendingUp size={14} className="mr-1" /> {stat.trend}
                   </span>
                 </div>
@@ -751,10 +764,10 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
         <div className={`${MAX_W} mx-auto px-4 sm:px-6`}>
           <div className="flex justify-between items-end mb-10">
             <div>
-              <span className="text-[#1E40AF] font-bold text-sm tracking-wider uppercase mb-2 block">Cơ Hội Đầu Tư</span>
+              <span style={{ color: brandPrimary }} className="font-bold text-sm tracking-wider uppercase mb-2 block">Cơ Hội Đầu Tư</span>
               <h2 className="text-3xl font-bold text-gray-900">Danh Mục Bất Động Sản Nổi Bật</h2>
             </div>
-            <button className="hidden md:flex items-center text-[#1E40AF] font-bold hover:underline" onClick={() => navigateTo('projects')}>
+            <button style={{ color: brandPrimary }} className="hidden md:flex items-center font-bold hover:underline" onClick={() => navigateTo('projects')}>
               Xem toàn bộ danh mục <ArrowRight size={16} className="ml-1" />
             </button>
           </div>
@@ -767,7 +780,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all group flex flex-col h-full border border-gray-100 cursor-pointer"
               >
                 <div className="relative h-48 overflow-hidden">
-                  <div className="absolute top-3 right-3 z-10 bg-[#10B981] text-white text-xs font-bold px-2 py-1 rounded">
+                  <div style={{ backgroundColor: brandAccent }} className="absolute top-3 right-3 z-10 text-white text-xs font-bold px-2 py-1 rounded">
                     ROI {project.expectedRoi}
                   </div>
                   <div className="absolute top-3 left-3 z-10 bg-black/60 backdrop-blur text-white text-xs font-medium px-2 py-1 rounded">
@@ -780,14 +793,14 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 pt-12">
                     <p className="text-white font-medium text-sm flex items-center gap-1">
-                      <MapPin size={14} className="text-[#10B981]"/> {project.location}
+                      <MapPin size={14} style={{ color: brandAccent }}/> {project.location}
                     </p>
                   </div>
                 </div>
                 <div className="p-5 flex-grow flex flex-col justify-between">
                   <div>
                     <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-1">{project.type}</p>
-                    <h3 className="font-bold text-lg text-gray-900 mb-3 group-hover:text-[#1E40AF] transition-colors">{project.title}</h3>
+                    <h3 className="font-bold text-lg text-gray-900 mb-3 group-hover:opacity-80 transition-opacity">{project.title}</h3>
                     
                     <div className="flex flex-wrap gap-2 mb-4">
                       {project.tags.slice(0, 2).map(tag => (
@@ -799,9 +812,12 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                   <div className="pt-4 border-t border-gray-100 flex justify-between items-center">
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Vốn tối thiểu</p>
-                      <p className="font-bold text-[#1E40AF]">{project.minInvest}</p>
+                      <p style={{ color: brandPrimary }} className="font-bold">{project.minInvest}</p>
                     </div>
-                    <button className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#1E40AF] group-hover:bg-[#1E40AF] group-hover:text-white transition-colors">
+                    <button 
+                      style={{ backgroundColor: brandPrimary + '15', color: brandPrimary }}
+                      className="w-10 h-10 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
+                    >
                       <ArrowUpRight size={18} />
                     </button>
                   </div>
@@ -809,7 +825,11 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               </div>
             ))}
           </div>
-          <button className="mt-8 w-full md:hidden py-3 rounded-lg border-2 border-[#1E40AF] text-[#1E40AF] font-bold" onClick={() => navigateTo('projects')}>
+          <button 
+            style={{ borderColor: brandPrimary, color: brandPrimary }}
+            className="mt-8 w-full md:hidden py-3 rounded-lg border-2 font-bold" 
+            onClick={() => navigateTo('projects')}
+          >
             Xem toàn bộ danh mục
           </button>
         </div>
@@ -828,7 +848,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <thead>
                 <tr className="bg-gray-50">
                   <th className="p-4 border-b border-gray-200 font-bold text-gray-700 w-1/4">Tiêu chí</th>
-                  <th className="p-4 border-b border-gray-200 font-bold text-[#1E40AF] w-1/4 bg-blue-50/50">Bất Động Sản</th>
+                  <th style={{ color: brandPrimary }} className="p-4 border-b border-gray-200 font-bold w-1/4 bg-blue-50/50">Bất Động Sản</th>
                   <th className="p-4 border-b border-gray-200 font-bold text-gray-700 w-1/4">Chứng Khoán</th>
                   <th className="p-4 border-b border-gray-200 font-bold text-gray-700 w-1/4">Vàng / Gửi Tiết Kiệm</th>
                 </tr>
@@ -843,8 +863,8 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 ].map((row, i) => (
                   <tr key={i} className="hover:bg-gray-50 transition-colors">
                     <td className="p-4 border-b border-gray-100 font-semibold text-gray-700">{row.label}</td>
-                    <td className="p-4 border-b border-gray-100 font-bold text-[#1E40AF] bg-blue-50/50 flex items-center gap-2">
-                      <CheckCircle2 size={16} className="text-[#10B981]" /> {row.bds}
+                    <td style={{ color: brandPrimary }} className="p-4 border-b border-gray-100 font-bold bg-blue-50/50 flex items-center gap-2">
+                      <CheckCircle2 size={16} style={{ color: brandAccent }} /> {row.bds}
                     </td>
                     <td className="p-4 border-b border-gray-100 text-gray-600">{row.stock}</td>
                     <td className="p-4 border-b border-gray-100 text-gray-600">{row.gold}</td>
@@ -870,7 +890,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               />
               <div className="absolute bottom-8 -right-8 bg-white p-6 rounded-xl shadow-xl z-20 border border-gray-100 hidden md:block">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-[#1E40AF]">
+                  <div style={{ backgroundColor: brandPrimary + '15', color: brandPrimary }} className="w-16 h-16 rounded-full flex items-center justify-center">
                     <Award size={32} />
                   </div>
                   <div>
@@ -882,7 +902,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             </div>
             
             <div className="lg:w-1/2 space-y-6">
-              <span className="text-[#1E40AF] font-bold text-sm tracking-wider uppercase mb-2 block">Về InvestPro</span>
+              <span style={{ color: brandPrimary }} className="font-bold text-sm tracking-wider uppercase mb-2 block">Về InvestPro</span>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
                 Đối tác tin cậy trong quản lý gia sản & đầu tư BĐS
               </h2>
@@ -898,7 +918,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                   'Bảo mật thông tin khách hàng tuyệt đối'
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <div className="mt-1 bg-emerald-100 p-1 rounded text-[#10B981]">
+                    <div style={{ backgroundColor: brandAccent + '20', color: brandAccent }} className="mt-1 p-1 rounded">
                       <Check size={16} strokeWidth={3} />
                     </div>
                     <span className="font-semibold text-gray-800">{item}</span>
@@ -907,7 +927,11 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               </ul>
               
               <div className="pt-6">
-                <button className="bg-[#1E40AF] text-white px-8 py-3.5 rounded-lg font-bold shadow-lg shadow-blue-900/30 hover:bg-blue-800 transition-colors" onClick={() => navigateTo('about')}>
+                <button 
+                  style={{ backgroundColor: brandPrimary }} 
+                  className="text-white px-8 py-3.5 rounded-lg font-bold shadow-lg hover:opacity-90 transition-opacity" 
+                  onClick={() => navigateTo('about')}
+                >
                   Tìm hiểu thêm về chúng tôi
                 </button>
               </div>
@@ -931,9 +955,9 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               { icon: Landmark, title: 'Đòn Bẩy Tài Chính', desc: 'Sử dụng vốn ngân hàng một cách thông minh để tối ưu hóa tỷ suất lợi nhuận ròng (ROE).' },
               { icon: Briefcase, title: 'Đa Dạng Danh Mục', desc: 'Giảm thiểu rủi ro cho danh mục đầu tư tổng thể nhờ tính tương quan thấp với chứng khoán.' }
             ].map((feature, i) => (
-              <div key={i} className="bg-slate-800 p-8 rounded-xl border border-slate-700 hover:border-blue-500 transition-colors group">
-                <div className="w-14 h-14 bg-blue-900/50 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <feature.icon size={28} className="text-blue-400" />
+              <div key={i} className="bg-slate-800 p-8 rounded-xl border border-slate-700 hover:border-slate-500 transition-colors group">
+                <div style={{ backgroundColor: brandPrimary + '30' }} className="w-14 h-14 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <feature.icon size={28} style={{ color: brandAccent }} />
                 </div>
                 <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
                 <p className="text-gray-400 leading-relaxed text-sm">{feature.desc}</p>
@@ -948,7 +972,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
         <div className={`${MAX_W} mx-auto px-4 sm:px-6`}>
           <div className="bg-blue-50 rounded-3xl p-8 md:p-12 border border-blue-100 flex flex-col lg:flex-row gap-12 items-center">
             <div className="lg:w-1/2 w-full space-y-6">
-              <span className="text-[#1E40AF] font-bold text-sm tracking-wider uppercase mb-2 block">Công cụ phân tích độc quyền</span>
+              <span style={{ color: brandPrimary }} className="font-bold text-sm tracking-wider uppercase mb-2 block">Công cụ phân tích độc quyền</span>
               <h2 className="text-3xl font-bold text-gray-900 leading-tight">Tính Toán Lợi Nhuận Dòng Tiền & Tăng Giá Trị</h2>
               <p className="text-gray-600 text-sm leading-relaxed">
                 Nhập các thông số cơ bản của dự án bất động sản để tính toán nhanh Tỷ suất sinh lời từ tiền thuê và tổng lợi nhuận dự kiến bao gồm cả tăng trưởng vốn đất dài hạn.
@@ -958,14 +982,14 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 <div>
                   <div className="flex justify-between mb-2">
                     <label className="font-semibold text-gray-700 text-sm">Giá trị Bất động sản mua vào</label>
-                    <span className="font-bold text-[#1E40AF]">{calcPrice.toFixed(1)} Tỷ VNĐ</span>
+                    <span style={{ color: brandPrimary }} className="font-bold">{calcPrice.toFixed(1)} Tỷ VNĐ</span>
                   </div>
                   <input 
                     type="range" 
                     min="1" max="50" step="0.5"
                     value={calcPrice}
                     onChange={(e) => setCalcPrice(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#1E40AF]"
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                   />
                   <div className="flex justify-between text-[10px] text-gray-400 mt-1">
                     <span>1 Tỷ</span>
@@ -977,14 +1001,14 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 <div>
                   <div className="flex justify-between mb-2">
                     <label className="font-semibold text-gray-700 text-sm">Tiền thuê dự kiến hàng tháng</label>
-                    <span className="font-bold text-[#1E40AF]">{calcMonthlyRent} Triệu / tháng</span>
+                    <span style={{ color: brandPrimary }} className="font-bold">{calcMonthlyRent} Triệu / tháng</span>
                   </div>
                   <input 
                     type="range" 
                     min="5" max="200" step="5"
                     value={calcMonthlyRent}
                     onChange={(e) => setCalcMonthlyRent(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#1E40AF]"
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                   />
                   <div className="flex justify-between text-[10px] text-gray-400 mt-1">
                     <span>5 Tr</span>
@@ -996,14 +1020,14 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 <div>
                   <div className="flex justify-between mb-2">
                     <label className="font-semibold text-gray-700 text-sm">Tốc độ tăng giá đất trung bình năm</label>
-                    <span className="font-bold text-[#1E40AF]">{calcAppreciation}% / năm</span>
+                    <span style={{ color: brandPrimary }} className="font-bold">{calcAppreciation}% / năm</span>
                   </div>
                   <input 
                     type="range" 
                     min="0" max="25" step="1"
                     value={calcAppreciation}
                     onChange={(e) => setCalcAppreciation(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#1E40AF]"
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                   />
                   <div className="flex justify-between text-[10px] text-gray-400 mt-1">
                     <span>0% (Cố định)</span>
@@ -1015,14 +1039,14 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 <div>
                   <div className="flex justify-between mb-2">
                     <label className="font-semibold text-gray-700 text-sm">Thời gian nắm giữ tài sản</label>
-                    <span className="font-bold text-[#1E40AF]">{calcYears} Năm</span>
+                    <span style={{ color: brandPrimary }} className="font-bold">{calcYears} Năm</span>
                   </div>
                   <input 
                     type="range" 
                     min="1" max="15" step="1"
                     value={calcYears}
                     onChange={(e) => setCalcYears(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#1E40AF]"
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                   />
                   <div className="flex justify-between text-[10px] text-gray-400 mt-1">
                     <span>1 Năm</span>
@@ -1035,7 +1059,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             
             <div className="lg:w-1/2 w-full">
               <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100 w-full relative overflow-hidden space-y-6">
-                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#1E40AF] to-[#10B981]"></div>
+                <div style={{ backgroundColor: brandPrimary }} className="absolute top-0 left-0 w-full h-2"></div>
                 
                 <h3 className="text-center font-bold text-gray-500 uppercase tracking-wider text-xs">Phân tích hiệu suất đầu tư dự kiến</h3>
                 
@@ -1045,7 +1069,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                     {totalReturn.toFixed(2)}
                     <span className="text-xl text-gray-500 ml-1">Tỷ VNĐ</span>
                   </p>
-                  <p className="text-emerald-600 font-bold text-sm flex items-center justify-center gap-1.5">
+                  <p style={{ color: brandAccent }} className="font-bold text-sm flex items-center justify-center gap-1.5">
                     <TrendingUp size={16} /> 
                     Tương đương ROI: {totalRoiPercent.toFixed(1)}%
                   </p>
@@ -1060,7 +1084,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                   </div>
                   <div className="p-4 bg-gray-50 rounded-xl">
                     <span className="text-gray-500 text-xs font-semibold block mb-1">Tổng tiền thuê thu được</span>
-                    <span className="font-bold text-[#1E40AF] text-lg">
+                    <span style={{ color: brandPrimary }} className="font-bold text-lg">
                       {totalRentalIncome.toFixed(2)} Tỷ VNĐ
                     </span>
                   </div>
@@ -1072,7 +1096,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                   </div>
                   <div className="p-4 bg-emerald-50 rounded-xl">
                     <span className="text-emerald-800 text-xs font-semibold block mb-1">Mức tăng trưởng giá đất</span>
-                    <span className="font-bold text-emerald-600 text-lg">
+                    <span style={{ color: brandAccent }} className="font-bold text-lg">
                       {capitalGain.toFixed(2)} Tỷ VNĐ
                     </span>
                   </div>
@@ -1083,7 +1107,8 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                     setContactMessage(`Tôi đã dùng bảng tính ROI và muốn nhận bảng phân tích chi tiết dòng tiền cho BĐS giá ${calcPrice} Tỷ VNĐ, thuê ${calcMonthlyRent} Triệu/tháng.`);
                     navigateTo('contact');
                   }}
-                  className="w-full bg-[#1E40AF] text-white py-4 rounded-xl font-bold shadow-lg hover:bg-blue-800 transition-colors flex items-center justify-center gap-2"
+                  style={{ backgroundColor: brandPrimary }}
+                  className="w-full text-white py-4 rounded-xl font-bold shadow-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
                 >
                   <Calculator size={20} /> Nhận Báo Cáo Dòng Tiền Chi Tiết
                 </button>
@@ -1101,7 +1126,11 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <h2 className="text-3xl font-bold text-gray-900">Hình Ảnh Thực Tế</h2>
               <p className="text-gray-500 mt-2">Các dự án đã bàn giao và đi vào vận hành mang lại dòng tiền thực tế.</p>
             </div>
-            <button className="hidden md:block border-2 border-[#1E40AF] text-[#1E40AF] px-6 py-2 rounded font-bold hover:bg-blue-50 transition-colors" onClick={() => navigateTo('gallery')}>
+            <button 
+              style={{ borderColor: brandPrimary, color: brandPrimary }}
+              className="hidden md:block border-2 px-6 py-2 rounded font-bold hover:bg-blue-50 transition-colors" 
+              onClick={() => navigateTo('gallery')}
+            >
               Xem tất cả
             </button>
           </div>
@@ -1129,7 +1158,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
       <section className="py-20 bg-white border-t border-gray-150">
         <div className={`${MAX_W} mx-auto px-4 sm:px-6`}>
           <div className="text-center mb-16">
-            <span className="text-[#10B981] font-bold tracking-wider uppercase text-sm mb-2 block">Thành tựu</span>
+            <span style={{ color: brandAccent }} className="font-bold tracking-wider uppercase text-sm mb-2 block">Thành tựu</span>
             <h2 className="text-3xl font-bold text-gray-900">Hành trình kiến tạo tài sản</h2>
           </div>
           
@@ -1167,7 +1196,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             <div>
               <h2 className="text-3xl font-bold text-gray-900">Báo Cáo & Phân Tích Mới Nhất</h2>
             </div>
-            <button className="hidden md:flex items-center text-[#1E40AF] font-bold hover:underline" onClick={() => navigateTo('news')}>
+            <button style={{ color: brandPrimary }} className="hidden md:flex items-center font-bold hover:underline" onClick={() => navigateTo('news')}>
               Xem tất cả bản tin <ArrowRight size={16} className="ml-1" />
             </button>
           </div>
@@ -1182,19 +1211,19 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 <div>
                   <div className="h-48 overflow-hidden relative">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={news.img} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="News"/>
-                    <span className="absolute top-3 left-3 bg-blue-600 text-white text-xs font-bold px-2 py-0.5 rounded">{news.tag}</span>
+                    <span style={{ backgroundColor: brandPrimary }} className="absolute top-3 left-3 text-white text-xs font-bold px-2.5 py-1 rounded">{news.tag}</span>
                   </div>
                   <div className="p-5">
                     <div className="flex items-center justify-between mb-3 text-xs text-gray-400">
                       <span className="font-semibold text-gray-500">{news.author}</span>
                       <span className="flex items-center gap-1"><Clock size={12}/> {news.date}</span>
                     </div>
-                    <h3 className="font-bold text-gray-900 text-base mb-2 line-clamp-2 group-hover:text-[#1E40AF] transition-colors">{news.title}</h3>
+                    <h3 className="font-bold text-gray-900 text-base mb-2 line-clamp-2 group-hover:opacity-80 transition-opacity">{news.title}</h3>
                     <p className="text-gray-500 text-xs line-clamp-2 mb-3">{news.excerpt}</p>
                   </div>
                 </div>
                 <div className="p-5 pt-0">
-                  <span className="text-[#10B981] font-semibold text-xs flex items-center">Đọc tiếp <ArrowRight size={14} className="ml-1"/></span>
+                  <span style={{ color: brandAccent }} className="font-semibold text-xs flex items-center">Đọc tiếp <ArrowRight size={14} className="ml-1"/></span>
                 </div>
               </div>
             ))}
@@ -1220,7 +1249,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                     onClick={() => setActiveFaq(activeFaq === i ? null : i)}
                   >
                     {faq.q}
-                    {activeFaq === i ? <ChevronDown size={20} className="text-[#1E40AF]" /> : <ChevronRight size={20} className="text-gray-400" />}
+                    {activeFaq === i ? <ChevronDown size={20} style={{ color: brandPrimary }} /> : <ChevronRight size={20} className="text-gray-400" />}
                   </button>
                   {activeFaq === i && (
                     <div className="p-5 pt-0 text-gray-600 leading-relaxed border-t border-gray-100 text-sm">
@@ -1238,7 +1267,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
       <section className="py-20 relative bg-slate-900">
         <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80')] bg-cover bg-center"></div>
         <div className={`${MAX_W} mx-auto px-4 sm:px-6 relative z-10`}>
-          <div className="bg-gradient-to-br from-[#1E40AF] to-blue-900 rounded-3xl p-8 md:p-16 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-12">
+          <div style={{ backgroundColor: brandPrimary }} className="rounded-3xl p-8 md:p-16 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-12">
             <div className="lg:w-1/2 text-white">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Nhận tư vấn chiến lược 1:1</h2>
               <p className="text-blue-100 text-lg mb-8">Chuyên gia của chúng tôi sẽ thiết kế lộ trình đầu tư riêng biệt dựa trên nguồn vốn và mục tiêu của bạn.</p>
@@ -1258,7 +1287,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                   </div>
                   <h3 className="text-xl font-bold">Đăng ký thành công!</h3>
                   <p className="text-gray-600 text-sm">Cố vấn của chúng tôi sẽ liên hệ với bạn trong vòng 15 phút tới.</p>
-                  <button onClick={handleResetContact} className="text-sm text-blue-600 font-bold hover:underline">Gửi yêu cầu mới</button>
+                  <button onClick={handleResetContact} style={{ color: brandPrimary }} className="text-sm font-bold hover:underline">Gửi yêu cầu mới</button>
                 </div>
               ) : (
                 <>
@@ -1269,7 +1298,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                       placeholder="Họ và tên" 
                       value={contactName}
                       onChange={e => setContactName(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3.5 focus:ring-2 focus:ring-[#1E40AF] outline-none text-sm" 
+                      className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3.5 focus:ring-2 focus:ring-sky-500 outline-none text-sm" 
                       required
                     />
                     <div className="grid grid-cols-2 gap-4">
@@ -1278,7 +1307,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                         placeholder="Số điện thoại" 
                         value={contactPhone}
                         onChange={e => setContactPhone(e.target.value)}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3.5 focus:ring-2 focus:ring-[#1E40AF] outline-none text-sm" 
+                        className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3.5 focus:ring-2 focus:ring-sky-500 outline-none text-sm" 
                         required
                       />
                       <input 
@@ -1286,20 +1315,20 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                         placeholder="Email (Tùy chọn)" 
                         value={contactEmail}
                         onChange={e => setContactEmail(e.target.value)}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3.5 focus:ring-2 focus:ring-[#1E40AF] outline-none text-sm" 
+                        className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3.5 focus:ring-2 focus:ring-sky-500 outline-none text-sm" 
                       />
                     </div>
                     <select 
                       value={contactBudget} 
                       onChange={e => setContactBudget(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3.5 focus:ring-2 focus:ring-[#1E40AF] outline-none text-sm text-gray-500"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3.5 focus:ring-2 focus:ring-sky-500 outline-none text-sm text-gray-500"
                     >
                       <option value="Mức vốn dự kiến">Mức vốn dự kiến</option>
                       <option value="Dưới 3 tỷ">Dưới 3 tỷ</option>
                       <option value="3 - 10 tỷ">3 - 10 tỷ</option>
                       <option value="Trên 10 tỷ">Trên 10 tỷ</option>
                     </select>
-                    <button type="submit" style={{ backgroundColor: colors.primary }} className="w-full hover:bg-blue-800 text-white font-bold py-4 rounded-lg shadow-md transition-colors text-base mt-2">
+                    <button type="submit" style={{ backgroundColor: brandPrimary }} className="w-full hover:opacity-90 text-white font-bold py-4 rounded-lg shadow-md transition-opacity text-base mt-2">
                       Yêu Cầu Chuyên Gia Gọi Lại
                     </button>
                     <p className="text-xs text-center text-gray-400 mt-4">Thông tin của bạn được bảo mật tuyệt đối theo chuẩn ISO 27001.</p>
@@ -1317,8 +1346,8 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
     <div className="bg-gray-50 min-h-screen py-12">
       <div className={`${MAX_W} mx-auto px-4 sm:px-6`}>
         <div className="text-center mb-12">
-          <span className="text-[#10B981] font-bold text-sm tracking-wider uppercase mb-2 block">Cơ hội đầu tư</span>
-          <h1 className="text-4xl font-bold text-[#1E40AF] mb-4">Danh Mục Đầu Tư Phân Bổ</h1>
+          <span style={{ color: brandAccent }} className="font-bold text-sm tracking-wider uppercase mb-2 block">Cơ hội đầu tư</span>
+          <h1 style={{ color: brandPrimary }} className="text-4xl font-bold mb-4">Danh Mục Đầu Tư Phân Bổ</h1>
           <p className="text-gray-600 max-w-2xl mx-auto">Tất cả dự án đều đã qua quy trình thẩm định 3 lớp khắt khe từ chuyên gia tài chính và pháp lý.</p>
         </div>
         
@@ -1332,7 +1361,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 placeholder="Tìm kiếm dự án, địa điểm, từ khóa..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-11 pr-4 focus:ring-2 focus:ring-[#1E40AF] outline-none text-sm transition-all"
+                className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-sky-500 outline-none text-sm transition-all"
               />
             </div>
             
@@ -1358,7 +1387,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <select 
                 value={filterLocation}
                 onChange={(e) => setFilterLocation(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-lg focus:ring-2 focus:ring-[#1E40AF] p-3 font-semibold outline-none"
+                className="w-full bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 p-3 font-semibold outline-none"
               >
                 <option value="all">Tất cả khu vực</option>
                 <option value="Quận 1">Quận 1, TP.HCM</option>
@@ -1375,7 +1404,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-lg focus:ring-2 focus:ring-[#1E40AF] p-3 font-semibold outline-none"
+                className="w-full bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 p-3 font-semibold outline-none"
               >
                 <option value="all">Tất cả loại hình</option>
                 <option value="Căn hộ Hạng Sang">Căn hộ Hạng Sang</option>
@@ -1392,7 +1421,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <select
                 value={filterRoi}
                 onChange={(e) => setFilterRoi(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-lg focus:ring-2 focus:ring-[#1E40AF] p-3 font-semibold outline-none"
+                className="w-full bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 p-3 font-semibold outline-none"
               >
                 <option value="all">Mọi mức ROI</option>
                 <option value="under-12">Dưới 12% / năm</option>
@@ -1406,7 +1435,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <select
                 value={filterBudget}
                 onChange={(e) => setFilterBudget(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-lg focus:ring-2 focus:ring-[#1E40AF] p-3 font-semibold outline-none"
+                className="w-full bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 p-3 font-semibold outline-none"
               >
                 <option value="all">Mọi mức vốn</option>
                 <option value="under-5">Dưới 5 Tỷ</option>
@@ -1430,8 +1459,8 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 setFilterRoi('all');
                 setFilterBudget('all');
               }}
-              style={{ backgroundColor: colors.primary }}
-              className="text-white px-6 py-2.5 rounded-lg font-semibold shadow hover:bg-blue-800 transition-colors text-sm"
+              style={{ backgroundColor: brandPrimary }}
+              className="text-white px-6 py-2.5 rounded-lg font-semibold shadow hover:opacity-90 transition-opacity text-sm"
             >
               Đặt lại bộ lọc
             </button>
@@ -1446,13 +1475,13 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               >
                 <div className="relative h-48 overflow-hidden bg-gray-100">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
-                  <div className="absolute top-3 right-3 bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded">ROI: {project.expectedRoi}</div>
+                  <div style={{ backgroundColor: brandAccent }} className="absolute top-3 right-3 text-white text-xs font-bold px-2 py-1 rounded">ROI: {project.expectedRoi}</div>
                   <div className="absolute top-3 left-3 bg-black/60 text-white text-xs font-medium px-2 py-1 rounded">{project.status}</div>
                 </div>
                 <div className="p-5 flex-grow flex flex-col justify-between">
                   <div>
                     <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block mb-1">{project.type}</span>
-                    <h3 className="font-bold text-lg text-gray-900 mb-2 group-hover:text-[#1E40AF] transition-colors">{project.title}</h3>
+                    <h3 className="font-bold text-lg text-gray-900 mb-2 group-hover:opacity-80 transition-opacity">{project.title}</h3>
                     <p className="text-gray-500 text-sm mb-4 flex items-center gap-1"><MapPin size={14} className="text-gray-400"/> {project.location}</p>
                     <div className="flex flex-wrap gap-1.5 mb-4">
                       {project.tags.map(tag => (
@@ -1463,9 +1492,9 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                   <div className="mt-auto border-t border-gray-100 pt-4 flex justify-between items-center">
                     <div>
                       <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">Vốn tối thiểu</p>
-                      <p className="font-bold text-[#1E40AF]">{project.minInvest}</p>
+                      <p style={{ color: brandPrimary }} className="font-bold">{project.minInvest}</p>
                     </div>
-                    <button className="text-sm font-semibold text-[#10B981] flex items-center gap-1 hover:underline">
+                    <button style={{ color: brandAccent }} className="text-sm font-semibold flex items-center gap-1 hover:underline">
                       Chi tiết <ChevronRight size={14}/>
                     </button>
                   </div>
@@ -1484,7 +1513,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
       <div className="bg-slate-900 text-white py-20 relative">
         <div className="absolute inset-0 opacity-15 bg-[url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80')] bg-cover bg-center"></div>
         <div className={`${MAX_W} mx-auto px-4 sm:px-6 text-center relative z-10`}>
-          <span className="text-[#10B981] font-bold text-sm tracking-wider uppercase mb-3 block">Hồ Sơ Năng Lực</span>
+          <span style={{ color: brandAccent }} className="font-bold text-sm tracking-wider uppercase mb-3 block">Hồ Sơ Năng Lực</span>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">Kiến Tạo Tương Lai Gia Sản</h1>
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
             Chúng tôi kết hợp sự nhạy bén của thị trường với kỷ luật tài chính nghiêm ngặt để bảo vệ và phát triển tài sản bền vững cho khách hàng.
@@ -1496,7 +1525,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
       <div className={`${MAX_W} mx-auto px-4 sm:px-6 py-20 border-b border-gray-100`}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
-            <span className="text-[#1E40AF] font-bold text-sm tracking-wider uppercase">Tầm nhìn & Sứ mệnh</span>
+            <span style={{ color: brandPrimary }} className="font-bold text-sm tracking-wider uppercase">Tầm nhìn & Sứ mệnh</span>
             <h2 className="text-3xl font-bold text-gray-900 leading-tight">Định hướng thị trường bằng dữ liệu và sự minh bạch</h2>
             <p className="text-gray-600 leading-relaxed">
               Không chạy theo tâm lý đám đông hay các cơn sốt đất ảo, InvestPro đưa ra quyết định dựa trên số liệu vĩ mô, quy hoạch hạ tầng chính thống và biên an toàn tài chính. Chúng tôi tin rằng, thành công trong đầu tư bất động sản không đến từ việc suy đoán may rủi, mà đến từ việc mua đúng thời điểm, định giá đúng và quản trị rủi ro hiệu quả.
@@ -1516,7 +1545,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
       <div className="bg-gray-50 py-20 border-b border-gray-100">
         <div className={`${MAX_W} mx-auto px-4 sm:px-6`}>
           <div className="text-center mb-16">
-            <span className="text-[#1E40AF] font-bold text-sm tracking-wider uppercase mb-2 block">Giá trị cốt lõi</span>
+            <span style={{ color: brandPrimary }} className="font-bold text-sm tracking-wider uppercase mb-2 block">Giá trị cốt lõi</span>
             <h2 className="text-3xl font-bold text-gray-900">Chuẩn mực của sự chuyên nghiệp</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -1526,7 +1555,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               { icon: Users, title: 'Khách Hàng Là Trọng Tâm', desc: 'Thiết kế danh mục đầu tư may đo riêng biệt phù hợp với năng lực tài chính, khẩu vị rủi ro và kỳ vọng dòng tiền của từng gia đình.' }
             ].map((value, i) => (
               <div key={i} className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                <div className="w-12 h-12 bg-blue-50 text-[#1E40AF] rounded-lg flex items-center justify-center mb-6">
+                <div style={{ backgroundColor: brandPrimary + '15', color: brandPrimary }} className="w-12 h-12 rounded-lg flex items-center justify-center mb-6">
                   <value.icon size={24} />
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 mb-3">{value.title}</h3>
@@ -1540,7 +1569,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
       {/* Timeline Milestones */}
       <div className={`${MAX_W} mx-auto px-4 sm:px-6 py-20 border-b border-gray-100`}>
         <div className="text-center mb-16">
-          <span className="text-[#1E40AF] font-bold text-sm tracking-wider uppercase mb-2 block">Chặng đường phát triển</span>
+          <span style={{ color: brandPrimary }} className="font-bold text-sm tracking-wider uppercase mb-2 block">Chặng đường phát triển</span>
           <h2 className="text-3xl font-bold text-gray-900">Cột mốc lịch sử đáng nhớ</h2>
         </div>
         <div className="relative border-l-2 border-blue-200 max-w-3xl mx-auto pl-8 space-y-12">
@@ -1552,9 +1581,9 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             { year: '2026', title: 'Đạt mốc 15.200 Tỷ AUM', desc: 'Khẳng định vị thế hàng đầu Việt Nam trong lĩnh vực phân tích và tư vấn đầu tư BĐS chuyên nghiệp.' }
           ].map((milestone, i) => (
             <div key={i} className="relative">
-              <div className="absolute -left-[41px] top-1.5 w-6 h-6 bg-white border-4 border-[#1E40AF] rounded-full flex items-center justify-center"></div>
+              <div style={{ borderColor: brandPrimary }} className="absolute -left-[41px] top-1.5 w-6 h-6 bg-white border-4 rounded-full flex items-center justify-center"></div>
               <div>
-                <span className="inline-block bg-blue-100 text-[#1E40AF] text-xs font-bold px-2.5 py-1 rounded-full mb-2">{milestone.year}</span>
+                <span style={{ backgroundColor: brandPrimary + '15', color: brandPrimary }} className="inline-block text-xs font-bold px-2.5 py-1 rounded-full mb-2">{milestone.year}</span>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">{milestone.title}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{milestone.desc}</p>
               </div>
@@ -1566,7 +1595,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
       {/* Leadership Team */}
       <div className={`${MAX_W} mx-auto px-4 sm:px-6 py-20`}>
         <div className="text-center mb-16">
-          <span className="text-[#1E40AF] font-bold text-sm tracking-wider uppercase mb-2 block">Đội ngũ lãnh đạo</span>
+          <span style={{ color: brandPrimary }} className="font-bold text-sm tracking-wider uppercase mb-2 block">Đội ngũ lãnh đạo</span>
           <h2 className="text-3xl font-bold text-gray-900">Ban Điều Hành Chuyên Gia</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -1602,7 +1631,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               </div>
               <div className="p-5 flex-grow flex flex-col">
                 <h3 className="font-bold text-gray-900 text-lg mb-1">{leader.name}</h3>
-                <p className="text-sm font-semibold text-[#1E40AF] mb-3">{leader.role}</p>
+                <p style={{ color: brandPrimary }} className="text-sm font-semibold mb-3">{leader.role}</p>
                 <p className="text-xs text-gray-500 leading-relaxed mt-auto">{leader.bio}</p>
               </div>
             </div>
@@ -1621,8 +1650,8 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
       <div className={`bg-[#EFF6FF] min-h-screen py-12`}>
         <div className={`${MAX_W} mx-auto px-4 sm:px-6`}>
           <div className="text-center mb-12">
-            <span className="text-[#10B981] font-bold text-sm tracking-wider uppercase mb-2 block">Thư viện dự án</span>
-            <h1 className="text-3xl md:text-4xl font-bold text-[#1E40AF] mb-4">Thư Viện Tài Sản Thực Tế</h1>
+            <span style={{ color: brandAccent }} className="font-bold text-sm tracking-wider uppercase mb-2 block">Thư viện dự án</span>
+            <h1 style={{ color: brandPrimary }} className="text-3xl md:text-4xl font-bold mb-4">Thư Viện Tài Sản Thực Tế</h1>
             <p className="text-gray-600 max-w-2xl mx-auto">Hình ảnh thực tế từ các tài sản đã được InvestPro thẩm định, vận hành và phân phối.</p>
           </div>
 
@@ -1638,9 +1667,10 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <button 
                 key={tab.id} 
                 onClick={() => setSelectedGalleryTab(tab.id)}
+                style={selectedGalleryTab === tab.id ? { backgroundColor: brandPrimary, borderColor: brandPrimary } : undefined}
                 className={`px-5 py-2.5 rounded-full font-semibold whitespace-nowrap text-sm border transition-colors
                   ${selectedGalleryTab === tab.id 
-                    ? 'bg-[#1E40AF] text-white border-[#1E40AF]' 
+                    ? 'text-white' 
                     : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
                   }
                 `}
@@ -1670,7 +1700,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                   />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
                     <p className="text-white font-bold text-sm leading-tight">{img.title}</p>
-                    <p className="text-[#10B981] font-semibold text-xs uppercase tracking-wider mt-1">{
+                    <p style={{ color: brandAccent }} className="font-semibold text-xs uppercase tracking-wider mt-1">{
                       img.type === 'commercial' ? 'Thương mại' :
                       img.type === 'apartment' ? 'Căn hộ' :
                       img.type === 'resort' ? 'Nghỉ dưỡng' :
@@ -1697,8 +1727,8 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
       <div className="min-h-screen bg-gray-50 py-12">
         <div className={`${MAX_W} mx-auto px-4 sm:px-6`}>
           <div className="text-center mb-12">
-            <span className="text-[#10B981] font-bold text-sm tracking-wider uppercase mb-2 block">Báo cáo & Nhận định</span>
-            <h1 className="text-3xl md:text-4xl font-bold text-[#1E40AF] mb-4">Báo Cáo & Phân Tích Thị Trường</h1>
+            <span style={{ color: brandAccent }} className="font-bold text-sm tracking-wider uppercase mb-2 block">Báo cáo & Nhận định</span>
+            <h1 style={{ color: brandPrimary }} className="text-3xl md:text-4xl font-bold mb-4">Báo Cáo & Phân Tích Thị Trường</h1>
             <p className="text-gray-600 max-w-2xl mx-auto">Cung cấp báo cáo chuyên sâu, dữ liệu giao dịch thực tế và xu hướng vĩ mô hàng tuần.</p>
           </div>
 
@@ -1710,7 +1740,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               placeholder="Tìm kiếm bài viết, chủ đề vĩ mô..."
               value={searchNewsQuery}
               onChange={(e) => setSearchNewsQuery(e.target.value)}
-              className="w-full bg-white border border-gray-200 rounded-lg py-3 pl-10 pr-4 focus:ring-2 focus:ring-[#1E40AF] outline-none text-sm shadow-sm"
+              className="w-full bg-white border border-gray-200 rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-sky-500 outline-none text-sm shadow-sm"
             />
             {searchNewsQuery && (
               <button 
@@ -1737,7 +1767,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 >
                   <div className="h-48 overflow-hidden relative">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={news.img} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={news.title}/>
-                    <span className="absolute top-3 left-3 bg-[#1E40AF] text-white text-xs font-bold px-2.5 py-1 rounded">
+                    <span style={{ backgroundColor: brandPrimary }} className="absolute top-3 left-3 text-white text-xs font-bold px-2.5 py-1 rounded">
                       {news.tag}
                     </span>
                   </div>
@@ -1747,10 +1777,10 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                         <span className="font-semibold text-gray-500">{news.author}</span>
                         <span className="flex items-center gap-1"><Clock size={12}/> {news.date}</span>
                       </div>
-                      <h3 className="font-bold text-gray-900 text-lg mb-3 line-clamp-2 group-hover:text-[#1E40AF] transition-colors">{news.title}</h3>
+                      <h3 className="font-bold text-gray-900 text-lg mb-3 line-clamp-2 group-hover:opacity-80 transition-opacity">{news.title}</h3>
                       <p className="text-gray-500 text-sm mb-4 line-clamp-3">{news.excerpt}</p>
                     </div>
-                    <span className="text-[#10B981] font-semibold text-sm flex items-center group-hover:translate-x-1 transition-transform">
+                    <span style={{ color: brandAccent }} className="font-semibold text-sm flex items-center group-hover:translate-x-1 transition-transform">
                       Đọc tiếp <ArrowRight size={14} className="ml-1"/>
                     </span>
                   </div>
@@ -1765,17 +1795,17 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
 
   const renderContactSuccess = () => (
     <div className="text-center py-12 px-6 bg-white rounded-2xl border border-gray-100 shadow-xl max-w-md mx-auto space-y-6">
-      <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center text-[#10B981] mx-auto">
+      <div style={{ backgroundColor: brandAccent + '20', color: brandAccent }} className="w-16 h-16 rounded-full flex items-center justify-center mx-auto">
         <CheckCircle2 size={36} />
       </div>
       <h3 className="text-2xl font-bold text-gray-900">Đăng ký thành công!</h3>
       <p className="text-gray-600 text-sm leading-relaxed">
-        Cảm ơn bạn <strong className="text-gray-900">{contactName}</strong> đã gửi yêu cầu tư vấn. Cố vấn của InvestPro sẽ liên hệ hỗ trợ bạn qua số điện thoại <strong className="text-gray-900">{contactPhone}</strong> trong vòng 15 phút.
+        Cảm ơn bạn <strong className="text-gray-900">{contactName}</strong> đã gửi yêu cầu tư vấn. Cố vấn của {company?.name || 'InvestPro'} sẽ liên hệ hỗ trợ bạn qua số điện thoại <strong className="text-gray-900">{contactPhone}</strong> trong vòng 15 phút.
       </p>
       <button 
         onClick={handleResetContact} 
-        style={{ backgroundColor: colors.primary }}
-        className="w-full text-white font-bold py-3.5 rounded-lg shadow-md hover:bg-blue-800 transition-colors text-sm"
+        style={{ backgroundColor: brandPrimary }}
+        className="w-full text-white font-bold py-3.5 rounded-lg shadow-md hover:opacity-90 transition-opacity text-sm"
       >
         Gửi yêu cầu khác
       </button>
@@ -1786,8 +1816,8 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
     <div className="min-h-screen bg-white py-12">
       <div className={`${MAX_W} mx-auto px-4 sm:px-6`}>
         <div className="text-center mb-16">
-          <span className="text-[#10B981] font-bold text-sm tracking-wider uppercase mb-2 block">Liên hệ</span>
-          <h1 className="text-3xl md:text-4xl font-bold text-[#1E40AF] mb-4">Kết Nối Với Cố Vấn Đầu Tư</h1>
+          <span style={{ color: brandAccent }} className="font-bold text-sm tracking-wider uppercase mb-2 block">Liên hệ</span>
+          <h1 style={{ color: brandPrimary }} className="text-3xl md:text-4xl font-bold mb-4">Kết Nối Với Cố Vấn Đầu Tư</h1>
           <p className="text-gray-600 max-w-2xl mx-auto">Đội ngũ phân tích của chúng tôi sẽ liên hệ trong vòng 15 phút để hỗ trợ cấu trúc danh mục đầu tư riêng cho bạn.</p>
         </div>
 
@@ -1798,24 +1828,24 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             
             <div className="space-y-6 pt-4">
               <div className="flex items-start gap-4">
-                <div className="p-3.5 bg-blue-50 text-[#1E40AF] rounded-xl shrink-0"><MapPin size={24}/></div>
+                <div style={{ backgroundColor: brandPrimary + '15', color: brandPrimary }} className="p-3.5 rounded-xl shrink-0"><MapPin size={24}/></div>
                 <div>
                   <h4 className="font-bold text-gray-900">Trụ sở chính TP.HCM</h4>
                   <p className="text-gray-500 mt-1 text-sm leading-relaxed">Tầng 45, Tòa nhà Bitexco Financial Tower, Số 2 Hải Triều, Quận 1, TP.HCM</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <div className="p-3.5 bg-blue-50 text-[#1E40AF] rounded-xl shrink-0"><Phone size={24}/></div>
+                <div style={{ backgroundColor: brandPrimary + '15', color: brandPrimary }} className="p-3.5 rounded-xl shrink-0"><Phone size={24}/></div>
                 <div>
                   <h4 className="font-bold text-gray-900">Tổng đài Tư vấn 24/7</h4>
-                  <p className="text-gray-500 mt-1 text-sm">1900 6868 (Hotline chính thức) | 0900 123 456 (Zalo/Viber)</p>
+                  <p className="text-gray-500 mt-1 text-sm">{company?.phone || company?.hotline || '1900 6868'} (Hotline chính thức)</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <div className="p-3.5 bg-blue-50 text-[#1E40AF] rounded-xl shrink-0"><Mail size={24}/></div>
+                <div style={{ backgroundColor: brandPrimary + '15', color: brandPrimary }} className="p-3.5 rounded-xl shrink-0"><Mail size={24}/></div>
                 <div>
                   <h4 className="font-bold text-gray-900">Hòm thư điện tử</h4>
-                  <p className="text-gray-500 mt-1 text-sm">invest@investpro.com.vn | contact@investpro.com.vn</p>
+                  <p className="text-gray-500 mt-1 text-sm">{company?.email || 'invest@investpro.com.vn'}</p>
                 </div>
               </div>
             </div>
@@ -1833,7 +1863,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                       placeholder="Nhập họ và tên..." 
                       value={contactName}
                       onChange={(e) => setContactName(e.target.value)}
-                      className="w-full bg-white border border-gray-200 rounded-lg p-3.5 focus:ring-2 focus:ring-[#1E40AF] outline-none text-sm" 
+                      className="w-full bg-white border border-gray-200 rounded-lg p-3.5 focus:outline-none focus:ring-2 focus:ring-sky-500 outline-none text-sm" 
                       required
                     />
                   </div>
@@ -1845,7 +1875,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                         placeholder="Nhập số điện thoại..." 
                         value={contactPhone}
                         onChange={(e) => setContactPhone(e.target.value)}
-                        className="w-full bg-white border border-gray-200 rounded-lg p-3.5 focus:ring-2 focus:ring-[#1E40AF] outline-none text-sm" 
+                        className="w-full bg-white border border-gray-200 rounded-lg p-3.5 focus:outline-none focus:ring-2 focus:ring-sky-500 outline-none text-sm" 
                         required
                       />
                     </div>
@@ -1856,7 +1886,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                         placeholder="Nhập địa chỉ email..." 
                         value={contactEmail}
                         onChange={(e) => setContactEmail(e.target.value)}
-                        className="w-full bg-white border border-gray-200 rounded-lg p-3.5 focus:ring-2 focus:ring-[#1E40AF] outline-none text-sm" 
+                        className="w-full bg-white border border-gray-200 rounded-lg p-3.5 focus:outline-none focus:ring-2 focus:ring-sky-500 outline-none text-sm" 
                       />
                     </div>
                   </div>
@@ -1865,7 +1895,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                     <select 
                       value={contactBudget}
                       onChange={(e) => setContactBudget(e.target.value)}
-                      className="w-full bg-white border border-gray-200 rounded-lg p-3.5 focus:ring-2 focus:ring-[#1E40AF] outline-none text-sm text-gray-700 font-medium"
+                      className="w-full bg-white border border-gray-200 rounded-lg p-3.5 focus:outline-none focus:ring-2 focus:ring-sky-500 outline-none text-sm text-gray-700 font-medium"
                     >
                       <option value="Mức vốn dự kiến">Mức vốn dự kiến</option>
                       <option value="Dưới 3 tỷ">Dưới 3 tỷ</option>
@@ -1880,13 +1910,13 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                       rows={4} 
                       value={contactMessage}
                       onChange={(e) => setContactMessage(e.target.value)}
-                      className="w-full bg-white border border-gray-200 rounded-lg p-3.5 focus:ring-2 focus:ring-[#1E40AF] outline-none text-sm"
+                      className="w-full bg-white border border-gray-200 rounded-lg p-3.5 focus:outline-none focus:ring-2 focus:ring-sky-500 outline-none text-sm"
                     ></textarea>
                   </div>
                   <button 
                     type="submit" 
-                    style={{ backgroundColor: colors.primary }}
-                    className="w-full text-white font-bold py-4 rounded-lg shadow-md hover:bg-blue-800 transition-colors text-base mt-2 flex items-center justify-center gap-2"
+                    style={{ backgroundColor: brandPrimary }}
+                    className="w-full text-white font-bold py-4 rounded-lg shadow-md hover:opacity-90 transition-opacity text-base mt-2 flex items-center justify-center gap-2"
                   >
                     Gửi Yêu Cầu Chuyên Gia Gọi Lại
                   </button>
@@ -1929,11 +1959,11 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedProject.image} alt={selectedProject.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 to-transparent flex items-end p-6">
                 <div>
-                  <span className="bg-[#10B981] text-white text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider mb-2 inline-block">
+                  <span style={{ backgroundColor: brandAccent }} className="text-white text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider mb-2 inline-block">
                     ROI {selectedProject.expectedRoi}
                   </span>
                   <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">{selectedProject.title}</h2>
-                  <p className="text-emerald-400 font-semibold flex items-center gap-1"><MapPin size={16}/> {selectedProject.location}</p>
+                  <p style={{ color: brandAccent }} className="font-semibold flex items-center gap-1"><MapPin size={16}/> {selectedProject.location}</p>
                 </div>
               </div>
             </div>
@@ -1942,7 +1972,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pb-6 border-b border-gray-100">
                 <div className="bg-gray-50 p-3 rounded-lg text-center">
                   <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Vốn tối thiểu</p>
-                  <p className="text-sm font-bold text-[#1E40AF]">{selectedProject.minInvest}</p>
+                  <p style={{ color: brandPrimary }} className="text-sm font-bold">{selectedProject.minInvest}</p>
                 </div>
                 <div className="bg-gray-50 p-3 rounded-lg text-center">
                   <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Loại hình</p>
@@ -1954,18 +1984,18 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 </div>
                 <div className="bg-gray-50 p-3 rounded-lg text-center">
                   <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Đơn giá m2</p>
-                  <p className="text-sm font-bold text-[#10B981]">{selectedProject.price}</p>
+                  <p style={{ color: brandAccent }} className="text-sm font-bold">{selectedProject.price}</p>
                 </div>
               </div>
               
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-bold text-gray-900 flex items-center gap-1.5 mb-2"><Info size={18} className="text-[#1E40AF]"/> Mô tả chi tiết</h4>
+                  <h4 className="font-bold text-gray-900 flex items-center gap-1.5 mb-2"><Info size={18} style={{ color: brandPrimary }}/> Mô tả chi tiết</h4>
                   <p className="text-gray-600 text-sm leading-relaxed">{selectedProject.description}</p>
                 </div>
                 
                 <div>
-                  <h4 className="font-bold text-gray-900 flex items-center gap-1.5 mb-2"><CheckCircle2 size={18} className="text-[#10B981]"/> Thông số bàn giao</h4>
+                  <h4 className="font-bold text-gray-900 flex items-center gap-1.5 mb-2"><CheckCircle2 size={18} style={{ color: brandAccent }}/> Thông số bàn giao</h4>
                   <p className="text-gray-600 text-sm leading-relaxed">{selectedProject.specification}</p>
                 </div>
               </div>
@@ -1977,8 +2007,8 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                     setSelectedProject(null);
                     navigateTo('contact');
                   }}
-                  style={{ backgroundColor: colors.primary }}
-                  className="flex-grow text-white font-bold py-3.5 rounded-lg text-center hover:bg-blue-800 transition-colors shadow-md flex items-center justify-center gap-2 text-sm"
+                  style={{ backgroundColor: brandPrimary }}
+                  className="flex-grow text-white font-bold py-3.5 rounded-lg text-center hover:opacity-90 transition-opacity shadow-md flex items-center justify-center gap-2 text-sm"
                 >
                   <Phone size={18} /> Đăng Ký Tư Vấn Chi Tiết
                 </button>
@@ -2007,7 +2037,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             
             <div className="h-48 sm:h-64 bg-gray-200 relative">
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
-              <div className="absolute top-4 left-4 bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded">
+              <div style={{ backgroundColor: brandPrimary }} className="absolute top-4 left-4 text-white text-xs font-bold px-2.5 py-1 rounded">
                 {selectedArticle.tag}
               </div>
             </div>
@@ -2021,7 +2051,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">{selectedArticle.title}</h2>
               
-              <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line font-medium italic border-l-4 border-[#1E40AF] pl-4 py-1">
+              <p style={{ borderLeftColor: brandPrimary }} className="text-gray-700 text-sm leading-relaxed whitespace-pre-line font-medium italic border-l-4 pl-4 py-1">
                 {selectedArticle.excerpt}
               </p>
               
@@ -2032,8 +2062,8 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <div className="pt-6 border-t border-gray-100 flex justify-end">
                 <button 
                   onClick={() => setSelectedArticle(null)}
-                  style={{ backgroundColor: colors.primary }}
-                  className="text-white px-6 py-2.5 rounded-lg font-bold hover:bg-blue-800 transition-colors text-sm"
+                  style={{ backgroundColor: brandPrimary }}
+                  className="text-white px-6 py-2.5 rounded-lg font-bold hover:opacity-90 transition-opacity text-sm"
                 >
                   Đóng Đọc Bản Tin
                 </button>

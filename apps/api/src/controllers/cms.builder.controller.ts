@@ -972,7 +972,7 @@ export async function updateDomainSettings(req: Request, res: Response, next: Ne
         });
       }
 
-      const reserved = ['www', 'admin', 'cms', 'api', 'app', 'marketplace', 'mail', 'static', 'support'];
+      const reserved = ['www', 'admin', 'cms', 'api', 'app', 'marketplace', 'templates', 'template', 'themes', 'mail', 'static', 'assets', 'support'];
       if (reserved.includes(requestedSubdomain)) {
         return res.status(400).json({
           success: false,

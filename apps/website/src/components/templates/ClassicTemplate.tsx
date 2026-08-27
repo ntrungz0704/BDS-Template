@@ -294,6 +294,16 @@ const GALLERY_IMAGES: GalleryImage[] = [
 export default function ClassicTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
   const brandPrimary = dynamicTheme?.primaryColor || '#854D0E';
   const brandAccent = dynamicTheme?.accentColor || '#CA8A04';
+  const C = {
+    bg: dynamicTheme?.backgroundColor || '#FDF6F0',
+    primary: brandPrimary,
+    accent: brandAccent,
+    text: dynamicTheme?.textColor || '#3b1906',
+    muted: '#8b6954',
+    border: '#e8d5c0',
+    white: '#ffffff',
+    dark: dynamicTheme?.surfaceColor || '#1f0902'
+  };
   // Dynamic Posts Override & Shadowing Variable via globalThis reference
   const activePosts = posts && posts.length > 0
     ? posts.map((p, index) => ({
@@ -392,6 +402,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
   const [contactName, setContactName] = useState('');
   const [contactPhone, setContactPhone] = useState('');
   const [contactEmail, setContactEmail] = useState('');
+  const [contactVillaType, setContactVillaType] = useState('Biệt Thự Đơn Lập Ven Sông');
   const [contactMessage, setContactMessage] = useState('');
 
   // About interactive section states
@@ -1026,12 +1037,12 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
                   </div>
                   <div className="absolute bottom-4 left-4 flex gap-2">
                     <span className="px-3 py-1 text-[10px] uppercase tracking-widest bg-stone-900 text-white font-semibold">{villa.tag}</span>
-                    <span className="px-3 py-1 text-[10px] uppercase tracking-widest bg-amber-700 text-white font-semibold">{villa.location}</span>
+                    <span className="px-3 py-1 text-[10px] uppercase tracking-widest text-white font-semibold" style={{ backgroundColor: C.primary }}>{villa.location}</span>
                   </div>
                 </div>
                 <div className="p-8">
                   <h3 className="text-3xl mb-4 group-hover:text-amber-800 transition-colors" style={{ ...fontHeading, color: C.primary }}>{villa.title}</h3>
-                  <p className="text-xs uppercase tracking-widest mb-4 opacity-75 font-semibold text-amber-900">{villa.type}</p>
+                  <p className="text-xs uppercase tracking-widest mb-4 opacity-75 font-semibold" style={{ color: C.primary }}>{villa.type}</p>
                   <p className="mb-6 line-clamp-2 leading-relaxed text-sm" style={{ color: C.muted }}>{villa.description}</p>
                   <div className="grid grid-cols-3 gap-4 pt-6 border-t text-center" style={{ borderColor: C.border }}>
                     <div>
@@ -1247,7 +1258,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
                 </div>
               )}
               {aboutActiveTab === 'services' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div className="grid grid-grid-cols-1 md:grid-cols-2 gap-8 items-center">
                   <div>
                     <h4 className="text-2xl mb-4" style={{ ...fontHeading, color: C.primary }}>Bảo Chứng Chất Lượng Cuộc Sống Thượng Lưu</h4>
                     <p className="text-sm leading-relaxed text-stone-600 mb-4">
@@ -1274,7 +1285,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
                   </div>
                   <div className="p-6">
                     <h4 className="text-xl font-bold mb-1" style={{ ...fontHeading, color: C.primary }}>{leader.name}</h4>
-                    <p className="text-xs uppercase tracking-widest text-amber-700 font-semibold mb-4">{leader.role}</p>
+                    <p className="text-xs uppercase tracking-widest font-semibold mb-4" style={{ color: C.accent }}>{leader.role}</p>
                     <p className="text-sm text-stone-500 leading-relaxed border-t pt-4" style={{ borderColor: C.border }}>{leader.bio}</p>
                   </div>
                 </div>
@@ -1379,7 +1390,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={post.img} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={post.title} />
                 </div>
                 <div className="p-6 flex-grow flex flex-col">
-                  <p className="text-xs uppercase tracking-widest mb-3 font-semibold text-amber-700">{post.category} • {post.date}</p>
+                  <p className="text-xs uppercase tracking-widest mb-3 font-semibold" style={{ color: C.accent }}>{post.category} • {post.date}</p>
                   <h3 className="text-xl mb-3 group-hover:underline leading-tight flex-grow" style={{ ...fontHeading, color: C.primary }}>{post.title}</h3>
                   <p className="text-sm line-clamp-3 leading-relaxed mb-4 text-stone-500">{post.summary}</p>
                   <span className="text-xs uppercase tracking-widest font-semibold border-b pb-1 self-start hover:text-amber-800 transition-colors" style={{ color: C.primary, borderColor: C.accent }}>Đọc bài viết</span>
@@ -1438,7 +1449,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
           <div className="lg:w-1/2 bg-white p-8 md:p-12 border shadow-lg" style={{ borderColor: C.border }}>
             {contactSubmitted ? (
               <div className="text-center py-12">
-                <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-6 text-amber-700">
+                <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-6" style={{ color: C.primary }}>
                   <Award size={36} />
                 </div>
                 <h3 className="text-3xl mb-4" style={{ ...fontHeading, color: C.primary }}>Gửi Yêu Cầu Thành Công</h3>
@@ -1454,69 +1465,84 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
                     setContactEmail('');
                     setContactMessage('');
                   }}
-                  className="px-8 py-3 uppercase tracking-widest text-xs font-semibold bg-stone-900 text-white hover:opacity-90 transition-opacity"
+                  className="px-8 py-3 uppercase tracking-widest text-xs font-semibold text-white transition-opacity hover:opacity-90"
+                  style={{ backgroundColor: C.primary }}
                 >
-                  Gửi Thông Tin Khác
+                  Gửi Yêu Cầu Khác
                 </button>
               </div>
             ) : (
-              <>
-                <h3 className="text-2xl mb-8" style={{ ...fontHeading, color: C.primary }}>Gửi Yêu Cầu Tư Vấn</h3>
-                <form className="space-y-6" onSubmit={handleContactSubmit}>
+              <form onSubmit={handleContactSubmit} className="space-y-6">
+                <div>
+                  <label className="block text-xs uppercase tracking-wider mb-2 font-medium" style={{ color: C.muted }}>Họ và Tên (*)</label>
+                  <input 
+                    type="text" 
+                    required 
+                    value={contactName}
+                    onChange={(e) => setContactName(e.target.value)}
+                    placeholder="Nguyễn Văn A" 
+                    className="w-full p-4 border bg-stone-50 outline-none text-sm transition-colors"
+                    style={{ borderColor: C.border }}
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs uppercase tracking-widest mb-2 font-semibold" style={{ color: C.muted }}>Họ & Tên *</label>
+                    <label className="block text-xs uppercase tracking-wider mb-2 font-medium" style={{ color: C.muted }}>Số Điện Thoại (*)</label>
                     <input 
-                      type="text" 
+                      type="tel" 
                       required 
-                      value={contactName}
-                      onChange={(e) => setContactName(e.target.value)}
-                      className="w-full p-4 border bg-transparent outline-none focus:border-black transition-colors" 
-                      style={{ borderColor: C.border }} 
+                      value={contactPhone}
+                      onChange={(e) => setContactPhone(e.target.value)}
+                      placeholder="0912 345 678" 
+                      className="w-full p-4 border bg-stone-50 outline-none text-sm transition-colors"
+                      style={{ borderColor: C.border }}
                     />
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-xs uppercase tracking-widest mb-2 font-semibold" style={{ color: C.muted }}>Số Điện Thoại *</label>
-                      <input 
-                        type="tel" 
-                        required 
-                        value={contactPhone}
-                        onChange={(e) => setContactPhone(e.target.value)}
-                        className="w-full p-4 border bg-transparent outline-none focus:border-black transition-colors" 
-                        style={{ borderColor: C.border }} 
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs uppercase tracking-widest mb-2 font-semibold" style={{ color: C.muted }}>Email</label>
-                      <input 
-                        type="email" 
-                        value={contactEmail}
-                        onChange={(e) => setContactEmail(e.target.value)}
-                        className="w-full p-4 border bg-transparent outline-none focus:border-black transition-colors" 
-                        style={{ borderColor: C.border }} 
-                      />
-                    </div>
-                  </div>
                   <div>
-                    <label className="block text-xs uppercase tracking-widest mb-2 font-semibold" style={{ color: C.muted }}>Nội Dung Quan Tâm</label>
-                    <textarea 
-                      rows={4} 
-                      value={contactMessage}
-                      onChange={(e) => setContactMessage(e.target.value)}
-                      className="w-full p-4 border bg-transparent outline-none focus:border-black transition-colors resize-none" 
-                      style={{ borderColor: C.border }} 
-                      placeholder="Tôi muốn nhận thông tin báo giá dự án..."
-                    ></textarea>
+                    <label className="block text-xs uppercase tracking-wider mb-2 font-medium" style={{ color: C.muted }}>Email</label>
+                    <input 
+                      type="email" 
+                      value={contactEmail}
+                      onChange={(e) => setContactEmail(e.target.value)}
+                      placeholder="email@example.com" 
+                      className="w-full p-4 border bg-stone-50 outline-none text-sm transition-colors"
+                      style={{ borderColor: C.border }}
+                    />
                   </div>
-                  <button 
-                    type="submit"
-                    className="w-full py-4 uppercase tracking-widest text-sm font-semibold hover:opacity-90 transition-opacity mt-4" 
-                    style={{ backgroundColor: C.primary, color: C.white }}
+                </div>
+                <div>
+                  <label className="block text-xs uppercase tracking-wider mb-2 font-medium" style={{ color: C.muted }}>Loại Biệt Thự Quan Tâm</label>
+                  <select 
+                    value={contactVillaType}
+                    onChange={(e) => setContactVillaType(e.target.value)}
+                    className="w-full p-4 border bg-stone-50 outline-none text-sm cursor-pointer"
+                    style={{ borderColor: C.border, color: C.primary }}
                   >
-                    Gửi Thông Tin
-                  </button>
-                </form>
-              </>
+                    <option value="Biệt Thự Đơn Lập Ven Sông">Biệt Thự Đơn Lập Ven Sông</option>
+                    <option value="Biệt Thự Song Lập Vườn">Biệt Thự Song Lập Vườn</option>
+                    <option value="Dinh Thự Hoàng Gia Heritage">Dinh Thự Hoàng Gia Heritage</option>
+                    <option value="Shophouse Thương Mại">Shophouse Thương Mại</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs uppercase tracking-wider mb-2 font-medium" style={{ color: C.muted }}>Nội Dung Tin Nhắn</label>
+                  <textarea 
+                    rows={4} 
+                    value={contactMessage}
+                    onChange={(e) => setContactMessage(e.target.value)}
+                    placeholder="Quý khách có yêu cầu cụ thể nào về thời gian tham quan hoặc chính sách bán hàng..." 
+                    className="w-full p-4 border bg-stone-50 outline-none text-sm transition-colors resize-none"
+                    style={{ borderColor: C.border }}
+                  ></textarea>
+                </div>
+                <button 
+                  type="submit" 
+                  className="w-full py-4 uppercase tracking-widest text-xs font-semibold text-white transition-opacity hover:opacity-90 mt-4"
+                  style={{ backgroundColor: C.primary }}
+                >
+                  Gửi Thông Tin Yêu Cầu
+                </button>
+              </form>
             )}
           </div>
         </div>
@@ -1524,10 +1550,59 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
     </div>
   );
 
+  const renderFooter = () => (
+    <footer style={{ backgroundColor: C.dark, color: 'rgba(255,255,255,0.7)', ...fontBody }} className="pt-24 pb-12">
+      <div className={`${MAX_W} px-4`}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+          <div>
+            <h3 className="text-3xl font-bold mb-6 text-white uppercase tracking-wider" style={fontHeading}>
+              {company?.name || 'Heritage'}
+            </h3>
+            <p className="mb-6 leading-relaxed text-sm">
+              Đơn vị tiên phong kiến tạo những bất động sản hạng sang mang đậm dấu ấn di sản và nghệ thuật kiến trúc vượt thời gian.
+            </p>
+            <div className="flex gap-4">
+              <a href="#" className="hover:text-white transition-colors" aria-label="Facebook"><Facebook size={20} /></a>
+              <a href="#" className="hover:text-white transition-colors" aria-label="Instagram"><Instagram size={20} /></a>
+              <a href="#" className="hover:text-white transition-colors" aria-label="Youtube"><Youtube size={20} /></a>
+            </div>
+          </div>
+          <div>
+            <h4 className="text-white text-lg font-semibold mb-6 uppercase tracking-widest text-sm">Liên Kết</h4>
+            <ul className="space-y-3 text-sm">
+              <li><button onClick={() => navigate('about')} className="hover:text-white transition-colors">Về Chúng Tôi</button></li>
+              <li><button onClick={() => navigate('projects')} className="hover:text-white transition-colors">Bộ Sưu Tập</button></li>
+              <li><button onClick={() => navigate('news')} className="hover:text-white transition-colors">Tạp Chí</button></li>
+              <li><button onClick={() => navigate('contact')} className="hover:text-white transition-colors">Liên Hệ</button></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-white text-lg font-semibold mb-6 uppercase tracking-widest text-sm">Dự Án Nổi Bật</h4>
+            <ul className="space-y-3 text-sm">
+              <li><button onClick={() => { setFilterStyle('Biệt Thự Đơn Lập'); navigate('projects'); }} className="hover:text-white transition-colors text-left block">The Royal Heritage</button></li>
+              <li><button onClick={() => { setFilterStyle('Dinh Thự'); navigate('projects'); }} className="hover:text-white transition-colors text-left block">Classic Manor Tây Hồ</button></li>
+              <li><button onClick={() => { setFilterStyle('Biệt Thự Song Lập'); navigate('projects'); }} className="hover:text-white transition-colors text-left block">Indochine Residence</button></li>
+              <li><button onClick={() => { setFilterLocation('Ven Sông'); navigate('projects'); }} className="hover:text-white transition-colors text-left block">Heritage Valley</button></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-white text-lg font-semibold mb-6 uppercase tracking-widest text-sm">Trụ Sở</h4>
+            <ul className="space-y-4 text-sm">
+              <li className="flex gap-3"><MapPin size={18} className="shrink-0" /> <span>{company?.address || 'Tòa nhà Heritage, 123 Nguyễn Huệ, Quận 1, TP.HCM'}</span></li>
+              <li className="flex gap-3"><Phone size={18} className="shrink-0" /> <span>{company?.phone || company?.hotline || '1800 8888'}</span></li>
+              <li className="flex gap-3"><Mail size={18} className="shrink-0" /> <span>{company?.email || 'contact@heritage-realestate.vn'}</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+
   return (
-    <div className="min-h-screen flex flex-col w-full relative" style={{ backgroundColor: C.bg }}>
+    <div className="font-sans antialiased">
       {renderHeader()}
-      <main className="flex-grow">
+
+      <main>
         {page === 'home' && renderHome()}
         {page === 'projects' && renderProjects()}
         {page === 'about' && renderAbout()}
@@ -1535,58 +1610,8 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
         {page === 'news' && renderNews()}
         {page === 'contact' && renderContact()}
       </main>
-      
-      {/* FOOTER */}
-      <footer style={{ backgroundColor: '#1f0902', color: 'rgba(255,255,255,0.7)', ...fontBody }} className="pt-24 pb-12">
-        <div className={`${MAX_W} px-4`}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-            <div>
-              <h3 className="text-3xl font-bold mb-6 text-white uppercase tracking-wider" style={fontHeading}>Heritage</h3>
-              <p className="mb-6 leading-relaxed text-sm">
-                Đơn vị tiên phong kiến tạo những bất động sản hạng sang mang đậm dấu ấn di sản và nghệ thuật kiến trúc vượt thời gian.
-              </p>
-              <div className="flex gap-4">
-                <a href="#" className="hover:text-white transition-colors" aria-label="Facebook"><Facebook size={20} /></a>
-                <a href="#" className="hover:text-white transition-colors" aria-label="Instagram"><Instagram size={20} /></a>
-                <a href="#" className="hover:text-white transition-colors" aria-label="Youtube"><Youtube size={20} /></a>
-              </div>
-            </div>
-            <div>
-              <h4 className="text-white text-lg font-semibold mb-6 uppercase tracking-widest text-sm">Liên Kết</h4>
-              <ul className="space-y-3 text-sm">
-                <li><button onClick={() => navigate('about')} className="hover:text-white transition-colors">Về Chúng Tôi</button></li>
-                <li><button onClick={() => navigate('projects')} className="hover:text-white transition-colors">Bộ Sưu Tập</button></li>
-                <li><button onClick={() => navigate('news')} className="hover:text-white transition-colors">Tạp Chí</button></li>
-                <li><button onClick={() => navigate('contact')} className="hover:text-white transition-colors">Liên Hệ</button></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white text-lg font-semibold mb-6 uppercase tracking-widest text-sm">Dự Án Nổi Bật</h4>
-              <ul className="space-y-3 text-sm">
-                <li><button onClick={() => { setFilterStyle('Biệt Thự Đơn Lập'); navigate('projects'); }} className="hover:text-white transition-colors text-left block">The Royal Heritage</button></li>
-                <li><button onClick={() => { setFilterStyle('Dinh Thự'); navigate('projects'); }} className="hover:text-white transition-colors text-left block">Classic Manor Tây Hồ</button></li>
-                <li><button onClick={() => { setFilterStyle('Biệt Thự Song Lập'); navigate('projects'); }} className="hover:text-white transition-colors text-left block">Indochine Residence</button></li>
-                <li><button onClick={() => { setFilterLocation('Ven Sông'); navigate('projects'); }} className="hover:text-white transition-colors text-left block">Heritage Valley</button></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white text-lg font-semibold mb-6 uppercase tracking-widest text-sm">Trụ Sở</h4>
-              <ul className="space-y-4 text-sm">
-                <li className="flex gap-3"><MapPin size={18} className="shrink-0" /> <span>{company?.address || company?.address || 'Tòa nhà Heritage, 123 Nguyễn Huệ, Quận 1, TP.HCM'}</span></li>
-                <li className="flex gap-3"><Phone size={18} className="shrink-0" /> <span>{company?.phone || company?.hotline || company?.phone || company?.hotline || '1800 8888'}</span></li>
-                <li className="flex gap-3"><Mail size={18} className="shrink-0" /> <span>{company?.email || company?.email || 'contact@heritage-realestate.vn'}</span></li>
-              </ul>
-            </div>
-          </div>
-          <div className="pt-8 border-t border-white/10 text-sm text-center flex flex-col md:flex-row justify-between items-center gap-4">
-            <p>&copy; {new Date().getFullYear()} Heritage Real Estate. All rights reserved.</p>
-            <div className="flex gap-6 text-xs">
-              <a href="#" className="hover:text-white transition-colors">Điều khoản dịch vụ</a>
-              <a href="#" className="hover:text-white transition-colors">Chính sách bảo mật</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+
+      {renderFooter()}
 
       {/* SELECTED VILLA DETAILS MODAL */}
       {selectedVilla && (
@@ -1605,7 +1630,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedVilla.img} alt={selectedVilla.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-stone-950/20 to-transparent" />
               <div className="absolute bottom-6 left-6 text-white">
-                <span className="px-3 py-1 bg-amber-700 text-xs font-bold uppercase tracking-widest">{selectedVilla.tag}</span>
+                <span className="px-3 py-1 text-xs font-bold uppercase tracking-widest" style={{ backgroundColor: C.primary }}>{selectedVilla.tag}</span>
                 <h2 className="text-4xl mt-3 font-semibold" style={fontHeading}>{selectedVilla.title}</h2>
                 <p className="text-sm opacity-90 mt-1">{selectedVilla.type} • {selectedVilla.location}</p>
               </div>
@@ -1644,7 +1669,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
                   <div className="space-y-3 text-xs">
                     <div className="flex justify-between">
                       <span className="text-stone-500">Mức giá:</span>
-                      <span className="font-bold text-amber-900">{selectedVilla.priceStr}</span>
+                      <span className="font-bold" style={{ color: C.primary }}>{selectedVilla.priceStr}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-stone-500">Diện tích:</span>
@@ -1675,7 +1700,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
                   <ul className="space-y-1.5 text-xs text-stone-600">
                     {selectedVilla.amenities.map((amenity, i) => (
                       <li key={i} className="flex items-center gap-2">
-                        <Check size={14} className="text-amber-700" />
+                        <Check size={14} style={{ color: C.primary }} />
                         <span>{amenity}</span>
                       </li>
                     ))}

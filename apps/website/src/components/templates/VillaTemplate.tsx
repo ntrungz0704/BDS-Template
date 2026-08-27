@@ -9,6 +9,7 @@ import {
   ChevronLeft, Clock, Filter, RefreshCw, Compass
 } from 'lucide-react';
 import { MAX_W } from '../design-system';
+import { FacebookIcon, YoutubeIcon, LinkedinIcon, ZaloIcon } from '../icons/SocialIcons';
 
 interface TemplateProps {
   template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, any> };
@@ -319,8 +320,10 @@ const MOCK_GALLERY: GalleryItem[] = [
 ];
 
 export default function VillaTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
-  const brandPrimary = dynamicTheme?.primaryColor || '#D97706';
+  const brandPrimary = dynamicTheme?.primaryColor || '#92400E';
   const brandAccent = dynamicTheme?.accentColor || '#F59E0B';
+  const brandBg = dynamicTheme?.backgroundColor || '#FFFBEB';
+  const brandDark = '#29170a';
   // Dynamic Posts Override & Shadowing Variable via globalThis reference
   const activePosts = posts && posts.length > 0
     ? posts.map((p, index) => ({
@@ -493,9 +496,23 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
   // Contact submission
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!contactName || !contactPhone) {
-      alert("Vui lòng điền họ tên và số điện thoại liên hệ!");
+    const phoneClean = contactPhone.replace(/\s/g, '');
+    if (!phoneClean || !/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
+      alert('Số điện thoại phải từ 10-11 số (VD: 0919006030 hoặc +84919006030).');
       return;
+    }
+    if (!contactName.trim()) {
+      alert("Vui lòng điền họ tên liên hệ!");
+      return;
+    }
+    if (typeof (globalThis as any).submitContactForm === 'function') {
+      (globalThis as any).submitContactForm({
+        fullName: contactName,
+        phone: phoneClean,
+        email: contactEmail || undefined,
+        message: contactMessage || 'Yêu cầu tư vấn biệt thự cao cấp',
+        source: 'website_contact_form',
+      }).catch(() => {});
     }
     setContactSubmitted(true);
   };
@@ -506,9 +523,11 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
         <button
           key={page}
           onClick={() => navigateTo(page)}
-          className={`capitalize text-sm font-medium transition-colors pb-1 ${
-            activePage === page ? 'text-[#92400E] border-b-2 border-[#92400E]' : 'text-gray-600 hover:text-[#92400E]'
-          }`}
+          className="capitalize text-sm font-medium transition-colors pb-1"
+          style={{ 
+            color: activePage === page ? brandPrimary : '#4B5563',
+            borderBottom: activePage === page ? `2px solid ${brandPrimary}` : '2px solid transparent'
+          }}
         >
           {page === 'home' ? 'Trang chủ' : 
            page === 'projects' ? 'Biệt thự' : 
@@ -521,17 +540,17 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
   );
 
   const Header = () => (
-    <header className="sticky top-0 z-50 bg-[#FFFBEB] shadow-sm border-b border-[#F59E0B]/20">
+    <header className="sticky top-0 z-50 shadow-sm border-b" style={{ backgroundColor: brandBg, borderBottomColor: `${brandAccent}33` }}>
       <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center cursor-pointer text-left" onClick={() => navigateTo('home')}>
-            <Home className="h-8 w-8 text-[#92400E] mr-2 shrink-0" />
+            <Home className="h-8 w-8 mr-2 shrink-0" style={{ color: brandPrimary }} />
             <div>
-              <span className="text-xl sm:text-2xl font-bold text-[#92400E] font-serif tracking-wide block uppercase">
+              <span className="text-xl sm:text-2xl font-bold font-serif tracking-wide block uppercase" style={{ color: brandPrimary }}>
                 {company?.name || template.name}
               </span>
               {company?.slogan && (
-                <span className="text-[10px] text-[#D97706] tracking-[0.15em] uppercase font-medium block">
+                <span className="text-[10px] tracking-[0.15em] uppercase font-medium block" style={{ color: brandAccent }}>
                   {company.slogan}
                 </span>
               )}
@@ -548,12 +567,13 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
             {!isSmall ? (
               <button 
                 onClick={() => navigateTo('contact')}
-                className="bg-[#F59E0B] text-white px-6 py-2.5 rounded-full font-medium hover:bg-[#92400E] transition-colors shadow-md text-sm"
+                className="text-white px-6 py-2.5 rounded-full font-medium transition-opacity hover:opacity-90 shadow-md text-sm"
+                style={{ backgroundColor: brandAccent }}
               >
                 Tư Vấn Ngay
               </button>
             ) : (
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-[#92400E] p-2">
+              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2" style={{ color: brandPrimary }}>
                 {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
             )}
@@ -563,12 +583,13 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
       
       {/* Mobile Menu */}
       {isSmall && mobileMenuOpen && (
-        <div className="bg-[#FFFBEB] border-t border-[#F59E0B]/20 absolute w-full left-0 shadow-lg z-50">
+        <div className="border-t absolute w-full left-0 shadow-lg z-50" style={{ backgroundColor: brandBg, borderTopColor: `${brandAccent}33` }}>
           <div className="flex flex-col space-y-4 p-6">
             <NavLinks />
             <button 
               onClick={() => { setMobileMenuOpen(false); navigateTo('contact'); }}
-              className="bg-[#F59E0B] text-white px-6 py-3 rounded-full font-medium text-center w-full mt-4 text-sm"
+              className="text-white px-6 py-3 rounded-full font-medium text-center w-full mt-4 text-sm shadow-md"
+              style={{ backgroundColor: brandAccent }}
             >
               Nhận Tư Vấn
             </button>
@@ -579,12 +600,12 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
   );
 
   const Footer = () => (
-    <footer className="bg-[#29170a] text-white pt-20 pb-10">
+    <footer className="text-white pt-20 pb-10" style={{ backgroundColor: brandDark }}>
       <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div>
             <div className="flex items-center mb-6">
-              <Home className="h-8 w-8 text-[#F59E0B] mr-2" />
+              <Home className="h-8 w-8 mr-2" style={{ color: brandAccent }} />
               <span className="text-2xl font-bold font-serif text-white tracking-wide">
                 {company?.name || template.name}
               </span>
@@ -593,11 +614,11 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
               {company?.slogan || company?.description || 'Đẳng cấp sống thượng lưu với những kiệt tác biệt thự ven sông, mang đến không gian sống hoàn mỹ và đặc quyền vượt trội cho giới tinh hoa.'}
             </p>
             <div className="flex space-x-4">
-              <a href={`mailto:${company?.email || 'contact@platformbds.vn'}`} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] transition-colors cursor-pointer">
-                <Mail className="h-5 w-5 text-[#F59E0B]" />
+              <a href={`mailto:${company?.email || 'contact@platformbds.vn'}`} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:opacity-80 transition-opacity cursor-pointer">
+                <Mail className="h-5 w-5" style={{ color: brandAccent }} />
               </a>
-              <a href={`tel:${company?.phone || '0983312219'}`} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] transition-colors cursor-pointer">
-                <Phone className="h-5 w-5 text-[#F59E0B]" />
+              <a href={`tel:${company?.phone || '0983312219'}`} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:opacity-80 transition-opacity cursor-pointer">
+                <Phone className="h-5 w-5" style={{ color: brandAccent }} />
               </a>
             </div>
           </div>
@@ -605,17 +626,17 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
           <div>
             <h4 className="text-xl font-serif mb-6 border-b border-white/20 pb-3 font-semibold">Dòng Sản Phẩm</h4>
             <ul className="space-y-3 text-gray-300 text-sm">
-              <li onClick={() => { setFilterType('Đơn lập'); navigateTo('projects'); }} className="hover:text-[#F59E0B] cursor-pointer transition-colors flex items-center">
-                <ChevronRight className="h-4 w-4 mr-2 text-[#F59E0B]" /> Biệt thự đơn lập
+              <li onClick={() => { setFilterType('Đơn lập'); navigateTo('projects'); }} className="hover:text-white cursor-pointer transition-colors flex items-center">
+                <ChevronRight className="h-4 w-4 mr-2" style={{ color: brandAccent }} /> Biệt thự đơn lập
               </li>
-              <li onClick={() => { setFilterType('Song lập'); navigateTo('projects'); }} className="hover:text-[#F59E0B] cursor-pointer transition-colors flex items-center">
-                <ChevronRight className="h-4 w-4 mr-2 text-[#F59E0B]" /> Biệt thự song lập
+              <li onClick={() => { setFilterType('Song lập'); navigateTo('projects'); }} className="hover:text-white cursor-pointer transition-colors flex items-center">
+                <ChevronRight className="h-4 w-4 mr-2" style={{ color: brandAccent }} /> Biệt thự song lập
               </li>
-              <li onClick={() => { setFilterType('Đơn lập'); navigateTo('projects'); }} className="hover:text-[#F59E0B] cursor-pointer transition-colors flex items-center">
-                <ChevronRight className="h-4 w-4 mr-2 text-[#F59E0B]" /> Dinh thự ven sông
+              <li onClick={() => { setFilterType('Đơn lập'); navigateTo('projects'); }} className="hover:text-white cursor-pointer transition-colors flex items-center">
+                <ChevronRight className="h-4 w-4 mr-2" style={{ color: brandAccent }} /> Dinh thự ven sông
               </li>
-              <li onClick={() => navigateTo('about')} className="hover:text-[#F59E0B] cursor-pointer transition-colors flex items-center">
-                <ChevronRight className="h-4 w-4 mr-2 text-[#F59E0B]" /> Tiện ích nội khu
+              <li onClick={() => navigateTo('about')} className="hover:text-white cursor-pointer transition-colors flex items-center">
+                <ChevronRight className="h-4 w-4 mr-2" style={{ color: brandAccent }} /> Tiện ích nội khu
               </li>
             </ul>
           </div>
@@ -623,17 +644,17 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
           <div>
             <h4 className="text-xl font-serif mb-6 border-b border-white/20 pb-3 font-semibold">Liên Kết Nhanh</h4>
             <ul className="space-y-3 text-gray-300 text-sm">
-              <li className="hover:text-[#F59E0B] cursor-pointer transition-colors flex items-center" onClick={() => navigateTo('about')}>
-                <ChevronRight className="h-4 w-4 mr-2 text-[#F59E0B]" /> Câu chuyện thương hiệu
+              <li className="hover:text-white cursor-pointer transition-colors flex items-center" onClick={() => navigateTo('about')}>
+                <ChevronRight className="h-4 w-4 mr-2" style={{ color: brandAccent }} /> Câu chuyện thương hiệu
               </li>
-              <li className="hover:text-[#F59E0B] cursor-pointer transition-colors flex items-center" onClick={() => navigateTo('gallery')}>
-                <ChevronRight className="h-4 w-4 mr-2 text-[#F59E0B]" /> Thư viện hình ảnh
+              <li className="hover:text-white cursor-pointer transition-colors flex items-center" onClick={() => navigateTo('gallery')}>
+                <ChevronRight className="h-4 w-4 mr-2" style={{ color: brandAccent }} /> Thư viện hình ảnh
               </li>
-              <li className="hover:text-[#F59E0B] cursor-pointer transition-colors flex items-center" onClick={() => navigateTo('news')}>
-                <ChevronRight className="h-4 w-4 mr-2 text-[#F59E0B]" /> Tin tức & Sự kiện
+              <li className="hover:text-white cursor-pointer transition-colors flex items-center" onClick={() => navigateTo('news')}>
+                <ChevronRight className="h-4 w-4 mr-2" style={{ color: brandAccent }} /> Tin tức & Sự kiện
               </li>
-              <li className="hover:text-[#F59E0B] cursor-pointer transition-colors flex items-center" onClick={() => navigateTo('contact')}>
-                <ChevronRight className="h-4 w-4 mr-2 text-[#F59E0B]" /> Thông tin liên hệ
+              <li className="hover:text-white cursor-pointer transition-colors flex items-center" onClick={() => navigateTo('contact')}>
+                <ChevronRight className="h-4 w-4 mr-2" style={{ color: brandAccent }} /> Thông tin liên hệ
               </li>
             </ul>
           </div>
@@ -642,15 +663,15 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
             <h4 className="text-xl font-serif mb-6 border-b border-white/20 pb-3 font-semibold">Thông Tin Liên Hệ</h4>
             <ul className="space-y-4 text-gray-300 text-sm">
               <li className="flex items-start">
-                <MapPin className="h-5 w-5 mr-3 text-[#F59E0B] mt-1 shrink-0" />
+                <MapPin className="h-5 w-5 mr-3 mt-1 shrink-0" style={{ color: brandAccent }} />
                 <span>{company?.address || '123 Đại lộ Thượng Lưu, TP. Thủ Đức, TP. Hồ Chí Minh'}</span>
               </li>
               <li className="flex items-center">
-                <Phone className="h-5 w-5 mr-3 text-[#F59E0B] shrink-0" />
+                <Phone className="h-5 w-5 mr-3 shrink-0" style={{ color: brandAccent }} />
                 <span>{company?.phone || company?.hotline || '0983 312 219'}</span>
               </li>
               <li className="flex items-center">
-                <Mail className="h-5 w-5 mr-3 text-[#F59E0B] shrink-0" />
+                <Mail className="h-5 w-5 mr-3 shrink-0" style={{ color: brandAccent }} />
                 <span>{company?.email || company?.email || 'contact@premiumvilla.vn'}</span>
               </li>
             </ul>
@@ -672,16 +693,19 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
     return (
       <div className="bg-[#FAFAFA]">
         {/* HERO: Split layout */}
-        <section className="relative bg-[#FFFBEB]">
+        <section className="relative" style={{ backgroundColor: brandBg }}>
           <div className={`${MAX_W} mx-auto`}>
             <div className="flex flex-col lg:flex-row min-h-[85vh]">
               <div className="lg:w-1/2 flex flex-col justify-center px-4 sm:px-6 lg:px-8 py-16 lg:py-0 relative z-10">
-                <div className="inline-block px-4 py-1.5 rounded-full bg-[#F59E0B]/10 text-[#92400E] font-medium text-sm mb-6 border border-[#F59E0B]/20 self-start">
+                <div 
+                  className="inline-block px-4 py-1.5 rounded-full font-medium text-sm mb-6 self-start border"
+                  style={{ backgroundColor: `${brandAccent}1A`, color: brandPrimary, borderColor: `${brandAccent}33` }}
+                >
                   🌟 Tuyệt tác biệt thự ven sông
                 </div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#92400E] font-bold leading-tight mb-6">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold leading-tight mb-6" style={{ color: brandPrimary }}>
                   Chuẩn Mực Sống <br/>
-                  <span className="text-[#F59E0B]">Hoàng Gia</span> Mới
+                  <span style={{ color: brandAccent }}>Hoàng Gia</span> Mới
                 </h1>
                 <p className="text-lg text-gray-700 mb-8 max-w-lg leading-relaxed">
                   Trải nghiệm cuộc sống thượng lưu đích thực với bộ sưu tập biệt thự phiên bản giới hạn, nơi tinh hoa kiến trúc hòa quyện cùng thiên nhiên xanh mát.
@@ -689,27 +713,29 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 <div className="flex flex-col sm:flex-row gap-4">
                   <button 
                     onClick={() => navigateTo('projects')}
-                    className="bg-[#92400E] text-white px-8 py-4 rounded-full font-medium hover:bg-[#78350f] transition-all flex items-center justify-center shadow-lg hover:shadow-xl"
+                    className="text-white px-8 py-4 rounded-full font-medium hover:opacity-90 transition-all flex items-center justify-center shadow-lg hover:shadow-xl"
+                    style={{ backgroundColor: brandPrimary }}
                   >
                     Khám Phá Ngay
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </button>
                   <button 
                     onClick={() => navigateTo('contact')}
-                    className="bg-white text-[#92400E] border-2 border-[#92400E] px-8 py-4 rounded-full font-medium hover:bg-[#FFFBEB] transition-all flex items-center justify-center"
+                    className="bg-white border-2 px-8 py-4 rounded-full font-medium transition-all flex items-center justify-center hover:opacity-90"
+                    style={{ color: brandPrimary, borderColor: brandPrimary }}
                   >
                     Nhận Tư Vấn
                   </button>
                 </div>
                 
-                <div className="mt-12 flex items-center gap-8 border-t border-[#F59E0B]/20 pt-8">
+                <div className="mt-12 flex items-center gap-8 border-t pt-8" style={{ borderTopColor: `${brandAccent}33` }}>
                   <div>
-                    <div className="text-3xl font-bold text-[#92400E] font-serif">150+</div>
+                    <div className="text-3xl font-bold font-serif" style={{ color: brandPrimary }}>150+</div>
                     <div className="text-sm text-gray-600 mt-1">Biệt thự giới hạn</div>
                   </div>
-                  <div className="w-px h-12 bg-[#F59E0B]/20"></div>
+                  <div className="w-px h-12" style={{ backgroundColor: `${brandAccent}33` }}></div>
                   <div>
-                    <div className="text-3xl font-bold text-[#92400E] font-serif">45ha</div>
+                    <div className="text-3xl font-bold font-serif" style={{ color: brandPrimary }}>45ha</div>
                     <div className="text-sm text-gray-600 mt-1">Tổng diện tích</div>
                   </div>
                 </div>
@@ -721,16 +747,16 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                     alt="Luxury Mansion" 
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#FFFBEB] to-transparent lg:w-1/3"></div>
+                  <div className="absolute inset-0 lg:w-1/3" style={{ background: `linear-gradient(to right, ${brandBg}, transparent)` }}></div>
                 </div>
                 {/* Floating badge */}
                 <div className="absolute bottom-8 right-8 bg-white/90 backdrop-blur p-4 rounded-2xl shadow-xl flex items-center gap-4 border border-gray-200">
-                  <div className="w-12 h-12 rounded-full bg-[#F59E0B] flex items-center justify-center text-white">
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: brandAccent }}>
                     <Award className="h-6 w-6" />
                   </div>
                   <div>
                     <p className="text-xs text-gray-500 font-medium">Bàn giao</p>
-                    <p className="text-lg font-bold text-[#92400E] font-serif">Quý 4/2026</p>
+                    <p className="text-lg font-bold font-serif" style={{ color: brandPrimary }}>Quý 4/2026</p>
                   </div>
                 </div>
               </div>
@@ -747,7 +773,8 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 <select 
                   value={filterType}
                   onChange={(e) => setFilterType(e.target.value)}
-                  className="w-full border-0 border-b-2 border-gray-200 focus:border-[#F59E0B] focus:ring-0 pb-2 text-[#92400E] font-medium bg-transparent outline-none cursor-pointer"
+                  className="w-full border-0 border-b-2 border-gray-200 focus:ring-0 pb-2 font-medium bg-transparent outline-none cursor-pointer"
+                  style={{ color: brandPrimary }}
                 >
                   <option value="Tất cả">Tất cả loại hình</option>
                   <option value="Đơn lập">Biệt thự đơn lập</option>
@@ -759,7 +786,8 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 <select 
                   value={filterArea}
                   onChange={(e) => setFilterArea(e.target.value)}
-                  className="w-full border-0 border-b-2 border-gray-200 focus:border-[#F59E0B] focus:ring-0 pb-2 text-[#92400E] font-medium bg-transparent outline-none cursor-pointer"
+                  className="w-full border-0 border-b-2 border-gray-200 focus:ring-0 pb-2 font-medium bg-transparent outline-none cursor-pointer"
+                  style={{ color: brandPrimary }}
                 >
                   <option value="Tất cả">Tất cả diện tích</option>
                   <option value="200m² - 300m²">200m² - 300m²</option>
@@ -772,7 +800,8 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 <select 
                   value={filterPrice}
                   onChange={(e) => setFilterPrice(e.target.value)}
-                  className="w-full border-0 border-b-2 border-gray-200 focus:border-[#F59E0B] focus:ring-0 pb-2 text-[#92400E] font-medium bg-transparent outline-none cursor-pointer"
+                  className="w-full border-0 border-b-2 border-gray-200 focus:ring-0 pb-2 font-medium bg-transparent outline-none cursor-pointer"
+                  style={{ color: brandPrimary }}
                 >
                   <option value="Tất cả">Tất cả mức giá</option>
                   <option value="Dưới 40 tỷ">Dưới 40 Tỷ</option>
@@ -782,7 +811,8 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
               </div>
               <button 
                 onClick={handleHomeSearch}
-                className="bg-[#F59E0B] hover:bg-[#92400E] text-white rounded-xl py-4 transition-colors flex items-center justify-center font-medium h-full mt-auto"
+                className="text-white rounded-xl py-4 hover:opacity-90 transition-opacity flex items-center justify-center font-medium h-full mt-auto shadow-md"
+                style={{ backgroundColor: brandAccent }}
               >
                 <Search className="h-5 w-5 mr-2" />
                 Tìm Kiếm
@@ -795,8 +825,8 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
         <section className="py-24 bg-[#FAFAFA]">
           <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-sm font-bold text-[#F59E0B] tracking-widest uppercase mb-3">Bộ sưu tập giới hạn</h2>
-              <h3 className="text-3xl md:text-4xl font-serif font-bold text-[#92400E] mb-6">Kiệt Tác Biệt Thự nổi bật</h3>
+              <h2 className="text-sm font-bold tracking-widest uppercase mb-3" style={{ color: brandAccent }}>Bộ sưu tập giới hạn</h2>
+              <h3 className="text-3xl md:text-4xl font-serif font-bold mb-6" style={{ color: brandPrimary }}>Kiệt Tác Biệt Thự nổi bật</h3>
               <p className="text-gray-600">Những tuyệt tác kiến trúc được chăm chút tỉ mỉ đến từng chi tiết, mang đến không gian sống hoàn hảo và đẳng cấp cho chủ nhân.</p>
             </div>
 
@@ -809,7 +839,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 >
                   <div className="relative h-64 overflow-hidden shrink-0">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={villa.img} alt={villa.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                    <div className="absolute top-4 right-4 bg-[#92400E] text-white px-3 py-1 rounded-full text-xs font-semibold shadow-md">
+                    <div className="absolute top-4 right-4 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-md" style={{ backgroundColor: brandPrimary }}>
                       {villa.type}
                     </div>
                     <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 to-transparent p-4">
@@ -818,22 +848,22 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                   </div>
                   <div className="p-6 flex flex-col flex-grow justify-between">
                     <div>
-                      <h4 className="text-xl font-bold text-[#92400E] mb-2 font-serif group-hover:text-[#F59E0B] transition-colors">{villa.name}</h4>
+                      <h4 className="text-xl font-bold mb-2 font-serif transition-colors" style={{ color: brandPrimary }}>{villa.name}</h4>
                       <p className="text-gray-500 text-sm mb-4 flex items-center">
-                        <MapPin className="h-4 w-4 mr-1 text-[#F59E0B]" /> {villa.location}
+                        <MapPin className="h-4 w-4 mr-1" style={{ color: brandAccent }} /> {villa.location}
                       </p>
                     </div>
                     <div className="grid grid-cols-3 gap-4 border-t border-gray-100 pt-4 mt-4 text-center" style={{ contentVisibility: 'auto' }}>
                       <div className="flex flex-col items-center">
-                        <Square className="h-5 w-5 text-[#F59E0B] mb-1" />
+                        <Square className="h-5 w-5 mb-1" style={{ color: brandAccent }} />
                         <span className="text-sm font-medium text-gray-700">{villa.area}</span>
                       </div>
                       <div className="flex flex-col items-center border-l border-r border-gray-100">
-                        <Bed className="h-5 w-5 text-[#F59E0B] mb-1" />
+                        <Bed className="h-5 w-5 mb-1" style={{ color: brandAccent }} />
                         <span className="text-sm font-medium text-gray-700">{villa.beds} PN</span>
                       </div>
                       <div className="flex flex-col items-center">
-                        <Bath className="h-5 w-5 text-[#F59E0B] mb-1" />
+                        <Bath className="h-5 w-5 mb-1" style={{ color: brandAccent }} />
                         <span className="text-sm font-medium text-gray-700">{villa.baths} WC</span>
                       </div>
                     </div>
@@ -842,7 +872,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
               ))}
             </div>
             <div className="text-center mt-12">
-              <button onClick={() => navigateTo('projects')} className="text-[#92400E] font-medium hover:text-[#F59E0B] inline-flex items-center gap-1">
+              <button onClick={() => navigateTo('projects')} className="font-medium hover:opacity-80 inline-flex items-center gap-1" style={{ color: brandPrimary }}>
                 Xem tất cả biệt thự <ArrowRight className="ml-2 h-5 w-5" />
               </button>
             </div>
@@ -850,12 +880,12 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
         </section>
 
         {/* VILLA TYPES */}
-        <section className="py-24 bg-[#FFFBEB]">
+        <section className="py-24" style={{ backgroundColor: brandBg }}>
           <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
             <div className="flex flex-col lg:flex-row gap-16 items-center">
               <div className="lg:w-1/2">
-                <h2 className="text-sm font-bold text-[#F59E0B] tracking-widest uppercase mb-3">Đa dạng lựa chọn</h2>
-                <h3 className="text-3xl md:text-4xl font-serif font-bold text-[#92400E] mb-6">Loại Hình Sản Phẩm</h3>
+                <h2 className="text-sm font-bold tracking-widest uppercase mb-3" style={{ color: brandAccent }}>Đa dạng lựa chọn</h2>
+                <h3 className="text-3xl md:text-4xl font-serif font-bold mb-6" style={{ color: brandPrimary }}>Loại Hình Sản Phẩm</h3>
                 <p className="text-gray-700 mb-8 leading-relaxed text-sm">
                   Thiết kế theo phong cách Tân cổ điển sang trọng, mỗi căn biệt thự là một tác phẩm nghệ thuật độc bản, khẳng định vị thế của gia chủ.
                 </p>
@@ -868,13 +898,13 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                     <div 
                       key={idx} 
                       onClick={() => { setFilterType(type.typeVal); navigateTo('projects'); }}
-                      className="flex gap-4 p-4 rounded-xl hover:bg-white transition-colors cursor-pointer group border border-transparent hover:border-[#F59E0B]/20 hover:shadow-md"
+                      className="flex gap-4 p-4 rounded-xl hover:bg-white transition-colors cursor-pointer group border border-transparent hover:shadow-md"
                     >
                       <div className="w-24 h-24 rounded-lg overflow-hidden shrink-0">
                         <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={type.img} alt={type.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
                       </div>
                       <div>
-                        <h4 className="text-lg font-bold text-[#92400E] mb-1 font-serif">{type.title}</h4>
+                        <h4 className="text-lg font-bold mb-1 font-serif" style={{ color: brandPrimary }}>{type.title}</h4>
                         <p className="text-xs text-gray-600 leading-relaxed">{type.desc}</p>
                       </div>
                     </div>
@@ -883,9 +913,9 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
               </div>
               <div className="lg:w-1/2 w-full h-[600px] rounded-2xl overflow-hidden shadow-2xl relative">
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80" alt="Villa exterior" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-[#92400E]/20"></div>
+                <div className="absolute inset-0" style={{ backgroundColor: `${brandPrimary}33` }}></div>
                 <div className="absolute bottom-8 left-8 right-8 bg-white/95 backdrop-blur p-6 rounded-xl shadow-xl">
-                  <h4 className="text-xl font-serif font-bold text-[#92400E] mb-2">Đặc quyền tinh hoa</h4>
+                  <h4 className="text-xl font-serif font-bold mb-2" style={{ color: brandPrimary }}>Đặc quyền tinh hoa</h4>
                   <p className="text-gray-600 text-sm">Thiết kế thông minh tối ưu ánh sáng tự nhiên, vật liệu bàn giao cao cấp nhập khẩu từ Châu Âu.</p>
                 </div>
               </div>
@@ -897,8 +927,8 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
         <section className="py-24 bg-white">
           <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-sm font-bold text-[#F59E0B] tracking-widest uppercase mb-3">Mặt bằng chi tiết</h2>
-              <h3 className="text-3xl md:text-4xl font-serif font-bold text-[#92400E] mb-6">Thiết Kế Hoàn Mỹ</h3>
+              <h2 className="text-sm font-bold tracking-widest uppercase mb-3" style={{ color: brandAccent }}>Mặt bằng chi tiết</h2>
+              <h3 className="text-3xl md:text-4xl font-serif font-bold mb-6" style={{ color: brandPrimary }}>Thiết Kế Hoàn Mỹ</h3>
             </div>
 
             <div className="flex justify-center space-x-2 md:space-x-8 mb-12 border-b border-gray-200">
@@ -906,9 +936,11 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 <button 
                   key={idx}
                   onClick={() => setActiveFloorPlan(idx)}
-                  className={`pb-4 px-4 font-medium transition-colors border-b-2 ${
-                    activeFloorPlan === idx ? 'border-[#92400E] text-[#92400E]' : 'border-transparent text-gray-500 hover:text-[#F59E0B]'
-                  }`}
+                  className="pb-4 px-4 font-medium transition-colors border-b-2"
+                  style={{ 
+                    borderColor: activeFloorPlan === idx ? brandPrimary : 'transparent',
+                    color: activeFloorPlan === idx ? brandPrimary : '#6B7280'
+                  }}
                 >
                   {floor}
                 </button>
@@ -924,7 +956,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 />
               </div>
               <div>
-                <h4 className="text-2xl font-serif font-bold text-[#92400E] mb-4">
+                <h4 className="text-2xl font-serif font-bold mb-4" style={{ color: brandPrimary }}>
                   {['Mặt Bằng Tầng 1 (Trệt)', 'Mặt Bằng Tầng 2', 'Mặt Bằng Tầng 3', 'Mặt Bằng Tầng Mái'][activeFloorPlan]}
                 </h4>
                 <p className="text-gray-600 mb-8 text-sm leading-relaxed">
@@ -937,15 +969,16 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                     "Gara ô tô (Đỗ 2 xe)",
                     "Sân vườn bao quanh"
                   ].map((item, i) => (
-                    <li key={i} className="flex items-center text-gray-700 bg-[#FFFBEB] p-4 rounded-lg border border-[#F59E0B]/20 text-sm">
-                      <CheckCircle className="h-5 w-5 text-[#F59E0B] mr-3" />
+                    <li key={i} className="flex items-center text-gray-700 p-4 rounded-lg border text-sm" style={{ backgroundColor: brandBg, borderColor: `${brandAccent}33` }}>
+                      <CheckCircle className="h-5 w-5 mr-3" style={{ color: brandAccent }} />
                       {item}
                     </li>
                   ))}
                 </ul>
                 <button 
                   onClick={() => navigateTo('contact')}
-                  className="mt-8 bg-white border border-[#92400E] text-[#92400E] px-8 py-3 rounded-full font-medium hover:bg-[#92400E] hover:text-white transition-colors w-full sm:w-auto text-sm shadow-sm"
+                  className="mt-8 bg-white border px-8 py-3 rounded-full font-medium hover:opacity-90 transition-opacity w-full sm:w-auto text-sm shadow-sm"
+                  style={{ borderColor: brandPrimary, color: brandPrimary }}
                 >
                   Đăng Ký Xem Mặt Bằng Thực Tế
                 </button>
@@ -955,7 +988,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
         </section>
 
         {/* ABOUT & WHY VILLA */}
-        <section className="py-24 bg-[#92400E] text-white" style={{ contentVisibility: 'auto' }}>
+        <section className="py-24 text-white" style={{ backgroundColor: brandPrimary, contentVisibility: 'auto' }}>
           <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
               <div>
@@ -966,7 +999,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 />
               </div>
               <div>
-                <h2 className="text-sm font-bold text-[#F59E0B] tracking-widest uppercase mb-3">Chủ đầu tư uy tín</h2>
+                <h2 className="text-sm font-bold tracking-widest uppercase mb-3" style={{ color: brandAccent }}>Chủ đầu tư uy tín</h2>
                 <h3 className="text-3xl md:text-4xl font-serif font-bold text-white mb-6">Dấu Ấn Chạm Thời Gian</h3>
                 <p className="text-white/80 mb-6 leading-relaxed text-lg">
                   Với hơn 15 năm kinh nghiệm kiến tạo các khu đô thị cao cấp, chúng tôi không chỉ xây dựng những ngôi nhà, mà còn kiến tạo một biểu tượng sống đích thực cho giới tinh hoa.
@@ -978,7 +1011,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://ui-avatars.com/api/?name=Tran+Quang+C&background=F59E0B&color=fff" alt="CEO" className="w-16 h-16 rounded-full border-2 border-white" />
                   <div>
                     <h4 className="font-bold text-lg font-serif">Trần Quang C.</h4>
-                    <p className="text-[#F59E0B] text-sm">Tổng Giám Đốc</p>
+                    <p className="text-sm" style={{ color: brandAccent }}>Tổng Giám Đốc</p>
                   </div>
                 </div>
               </div>
@@ -996,7 +1029,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                   { icon: Heart, title: "Cộng Đồng Tinh Hoa", desc: "Hàng xóm đẳng cấp, môi trường sống văn minh và an toàn tuyệt đối." },
                 ].map((feature, idx) => (
                   <div key={idx} className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
-                    <div className="w-14 h-14 bg-[#F59E0B] rounded-xl flex items-center justify-center mb-6">
+                    <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: brandAccent }}>
                       <feature.icon className="h-7 w-7 text-white" />
                     </div>
                     <h4 className="text-xl font-bold mb-3 font-serif">{feature.title}</h4>
@@ -1012,8 +1045,8 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
         <section className="py-24 bg-white" style={{ contentVisibility: 'auto' }}>
           <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-sm font-bold text-[#F59E0B] tracking-widest uppercase mb-3">Đặc quyền sống</h2>
-              <h3 className="text-3xl md:text-4xl font-serif font-bold text-[#92400E] mb-6">Tiện Ích Nội Khu Đẳng Cấp 5 Sao</h3>
+              <h2 className="text-sm font-bold tracking-widest uppercase mb-3" style={{ color: brandAccent }}>Đặc quyền sống</h2>
+              <h3 className="text-3xl md:text-4xl font-serif font-bold mb-6" style={{ color: brandPrimary }}>Tiện Ích Nội Khu Đẳng Cấp 5 Sao</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -1025,12 +1058,12 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 { icon: ShieldCheck, title: "An Ninh Đa Lớp", desc: "Hệ thống camera và bảo vệ tuần tra 24/7." },
                 { icon: Heart, title: "Spa & Chăm Sóc Sức Khỏe", desc: "Dịch vụ thư giãn và phục hồi sức khỏe chuyên sâu." },
               ].map((amenity, idx) => (
-                <div key={idx} className="flex gap-4 p-6 bg-[#FAFAFA] rounded-xl border border-gray-100 hover:border-[#F59E0B]/30 hover:shadow-lg transition-all">
-                  <div className="w-12 h-12 bg-[#FFFBEB] rounded-full flex items-center justify-center shrink-0">
-                    <amenity.icon className="h-6 w-6 text-[#F59E0B]" />
+                <div key={idx} className="flex gap-4 p-6 bg-[#FAFAFA] rounded-xl border border-gray-100 hover:shadow-lg transition-all">
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: brandBg }}>
+                    <amenity.icon className="h-6 w-6" style={{ color: brandAccent }} />
                   </div>
                   <div>
-                    <h4 className="text-lg font-bold text-[#92400E] mb-2 font-serif">{amenity.title}</h4>
+                    <h4 className="text-lg font-bold mb-2 font-serif" style={{ color: brandPrimary }}>{amenity.title}</h4>
                     <p className="text-gray-600 text-sm leading-relaxed">{amenity.desc}</p>
                   </div>
                 </div>
@@ -1040,7 +1073,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
         </section>
 
         {/* STATS */}
-        <section className="py-20 bg-[#F59E0B]">
+        <section className="py-20" style={{ backgroundColor: brandAccent }}>
           <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               {[
@@ -1051,7 +1084,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
               ].map((stat, idx) => (
                 <div key={idx}>
                   <div className="text-4xl md:text-5xl font-bold text-white mb-2 font-serif">
-                    {stat.number}<span className="text-[#92400E]">{stat.unit}</span>
+                    {stat.number}<span style={{ color: brandPrimary }}>{stat.unit}</span>
                   </div>
                   <div className="text-white/90 font-medium uppercase tracking-wide text-xs">{stat.label}</div>
                 </div>
@@ -1065,10 +1098,10 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
           <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
             <div className="flex justify-between items-end mb-12">
               <div>
-                <h2 className="text-sm font-bold text-[#F59E0B] tracking-widest uppercase mb-3">Góc nhìn chân thực</h2>
-                <h3 className="text-3xl md:text-4xl font-serif font-bold text-[#92400E]">Thư Viện Hình Ảnh</h3>
+                <h2 className="text-sm font-bold tracking-widest uppercase mb-3" style={{ color: brandAccent }}>Góc nhìn chân thực</h2>
+                <h3 className="text-3xl md:text-4xl font-serif font-bold" style={{ color: brandPrimary }}>Thư Viện Hình Ảnh</h3>
               </div>
-              <button onClick={() => navigateTo('gallery')} className="hidden sm:flex text-[#92400E] font-medium hover:text-[#F59E0B] items-center gap-1">
+              <button onClick={() => navigateTo('gallery')} className="hidden sm:flex font-medium hover:opacity-80 items-center gap-1" style={{ color: brandPrimary }}>
                 Xem thêm <ArrowRight className="ml-2 h-5 w-5" />
               </button>
             </div>
@@ -1103,18 +1136,18 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
               </div>
             </div>
             
-            <button onClick={() => navigateTo('gallery')} className="sm:hidden mt-8 text-[#92400E] font-medium w-full text-center hover:text-[#F59E0B] flex justify-center items-center gap-1">
+            <button onClick={() => navigateTo('gallery')} className="sm:hidden mt-8 font-medium w-full text-center hover:opacity-80 flex justify-center items-center gap-1" style={{ color: brandPrimary }}>
               Xem tất cả hình ảnh <ArrowRight className="ml-2 h-5 w-5" />
             </button>
           </div>
         </section>
 
         {/* TESTIMONIALS */}
-        <section className="py-24 bg-[#FFFBEB]">
+        <section className="py-24" style={{ backgroundColor: brandBg }}>
           <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-sm font-bold text-[#F59E0B] tracking-widest uppercase mb-3">Đánh giá từ cộng đồng</h2>
-              <h3 className="text-3xl md:text-4xl font-serif font-bold text-[#92400E]">Tiếng Nói Của Cư Dân</h3>
+              <h2 className="text-sm font-bold tracking-widest uppercase mb-3" style={{ color: brandAccent }}>Đánh giá từ cộng đồng</h2>
+              <h3 className="text-3xl md:text-4xl font-serif font-bold" style={{ color: brandPrimary }}>Tiếng Nói Của Cư Dân</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -1123,20 +1156,20 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 { name: "Chị Lan Ngọc", role: "Cư dân", quote: "Thiết kế biệt thự rất thông minh, đón gió tự nhiên. Các tiện ích nội khu như hồ bơi và công viên cực kỳ được chăm chút." },
                 { name: "Anh Quốc Bảo", role: "Nhà đầu tư", quote: "Pháp lý rõ ràng, chủ đầu tư uy tín. Đây không chỉ là nơi an cư lý tưởng mà còn là tài sản tích lũy giá trị vững bền cho thế hệ sau." },
               ].map((testi, idx) => (
-                <div key={idx} className="bg-white p-8 rounded-2xl shadow-sm border border-[#F59E0B]/20 relative">
-                  <div className="absolute top-8 right-8 text-[#F59E0B]/20">
+                <div key={idx} className="bg-white p-8 rounded-2xl shadow-sm border relative" style={{ borderColor: `${brandAccent}33` }}>
+                  <div className="absolute top-8 right-8" style={{ color: `${brandAccent}33` }}>
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M14.017 21v-7.391c0-5.714 4.026-6.59 4.026-6.59l.867 5.215s-2.023-.42-2.023 1.954v1.812h4.113v5h-7.006zm-10.017 0v-7.391c0-5.714 4.026-6.59 4.026-6.59l.867 5.215s-2.023-.42-2.023 1.954v1.812h4.113v5h-7.006z"/></svg>
                   </div>
                   <div className="flex space-x-1 mb-6" style={{ contentVisibility: 'auto' }}>
-                    {[1,2,3,4,5].map(i => <Star key={i} className="h-4 w-4 text-[#F59E0B] fill-current" />)}
+                    {[1,2,3,4,5].map(i => <Star key={i} className="h-4 w-4 fill-current" style={{ color: brandAccent }} />)}
                   </div>
                   <p className="text-gray-600 mb-8 italic text-sm">&ldquo;{testi.quote}&rdquo;</p>
                   <div className="flex items-center">
-                    <div className="w-12 h-12 bg-[#92400E]/10 rounded-full flex items-center justify-center mr-4" style={{ contentVisibility: 'auto' }}>
-                      <User className="h-6 w-6 text-[#92400E]" />
+                    <div className="w-12 h-12 rounded-full flex items-center justify-center mr-4" style={{ backgroundColor: `${brandPrimary}1A`, contentVisibility: 'auto' }}>
+                      <User className="h-6 w-6" style={{ color: brandPrimary }} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-[#92400E] font-serif">{testi.name}</h4>
+                      <h4 className="font-bold font-serif" style={{ color: brandPrimary }}>{testi.name}</h4>
                       <p className="text-xs text-gray-500">{testi.role}</p>
                     </div>
                   </div>
@@ -1150,7 +1183,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
         <section className="py-24 bg-white" style={{ contentVisibility: 'auto' }}>
           <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <h3 className="text-3xl md:text-4xl font-serif font-bold text-[#92400E] mb-6">Tiến Độ Dự Án</h3>
+              <h3 className="text-3xl md:text-4xl font-serif font-bold mb-6" style={{ color: brandPrimary }}>Tiến Độ Dự Án</h3>
             </div>
             
             <div className="max-w-4xl mx-auto relative">
@@ -1166,11 +1199,14 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 ].map((item, idx) => (
                   <div key={idx} className={`relative flex flex-col md:flex-row gap-8 ${idx % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
                     <div className="absolute left-0 md:left-1/2 w-8 h-8 rounded-full border-4 border-white md:-translate-x-1/2 mt-1 z-10 flex items-center justify-center bg-white shadow">
-                      {item.done ? <div className="w-3 h-3 bg-[#92400E] rounded-full"></div> : <div className="w-3 h-3 bg-gray-300 rounded-full"></div>}
+                      {item.done ? <div className="w-3 h-3 rounded-full" style={{ backgroundColor: brandPrimary }}></div> : <div className="w-3 h-3 bg-gray-300 rounded-full"></div>}
                     </div>
                     
                     <div className={`ml-12 md:ml-0 md:w-1/2 ${idx % 2 === 0 ? 'md:pl-12' : 'md:pr-12 md:text-right'}`}>
-                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold mb-3 ${item.done ? 'bg-[#92400E]/10 text-[#92400E]' : 'bg-gray-100 text-gray-500'}`}>
+                      <span 
+                        className={`inline-block px-3 py-1 rounded-full text-xs font-bold mb-3 ${item.done ? '' : 'bg-gray-100 text-gray-500'}`}
+                        style={item.done ? { backgroundColor: `${brandPrimary}1A`, color: brandPrimary } : {}}
+                      >
                         {item.date}
                       </span>
                       <h4 className="text-xl font-bold text-gray-900 mb-2 font-serif">{item.title}</h4>
@@ -1188,10 +1224,10 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
           <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
             <div className="flex justify-between items-end mb-12">
               <div>
-                <h2 className="text-sm font-bold text-[#F59E0B] tracking-widest uppercase mb-3">Cập nhật mới nhất</h2>
-                <h3 className="text-3xl md:text-4xl font-serif font-bold text-[#92400E]">Tin Tức & Sự Kiện</h3>
+                <h2 className="text-sm font-bold tracking-widest uppercase mb-3" style={{ color: brandAccent }}>Cập nhật mới nhất</h2>
+                <h3 className="text-3xl md:text-4xl font-serif font-bold" style={{ color: brandPrimary }}>Tin Tức & Sự Kiện</h3>
               </div>
-              <button onClick={() => navigateTo('news')} className="hidden sm:flex text-[#92400E] font-medium hover:text-[#F59E0B] items-center gap-1">
+              <button onClick={() => navigateTo('news')} className="hidden sm:flex font-medium hover:opacity-80 items-center gap-1" style={{ color: brandPrimary }}>
                 Xem tất cả <ArrowRight className="ml-2 h-5 w-5" />
               </button>
             </div>
@@ -1208,9 +1244,9 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                   </div>
                   <div className="p-6">
                     <div className="flex items-center text-sm text-gray-500 mb-3">
-                      <Calendar className="h-4 w-4 mr-2 text-[#F59E0B]" /> {news.date}
+                      <Calendar className="h-4 w-4 mr-2" style={{ color: brandAccent }} /> {news.date}
                     </div>
-                    <h4 className="text-lg font-bold text-[#92400E] mb-3 group-hover:text-[#F59E0B] transition-colors line-clamp-2 font-serif">{news.title}</h4>
+                    <h4 className="text-lg font-bold mb-3 transition-colors line-clamp-2 font-serif" style={{ color: brandPrimary }}>{news.title}</h4>
                     <p className="text-gray-600 text-xs line-clamp-2 leading-relaxed">{news.excerpt}</p>
                   </div>
                 </div>
@@ -1223,7 +1259,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
         <section className="py-24 bg-white" style={{ contentVisibility: 'auto' }}>
           <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl`}>
             <div className="text-center mb-16">
-              <h3 className="text-3xl md:text-4xl font-serif font-bold text-[#92400E] mb-6">Câu Hỏi Thường Gặp</h3>
+              <h3 className="text-3xl md:text-4xl font-serif font-bold mb-6" style={{ color: brandPrimary }}>Câu Hỏi Thường Gặp</h3>
             </div>
             
             <div className="space-y-4">
@@ -1236,10 +1272,10 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 <div key={idx} className="border border-gray-200 rounded-xl overflow-hidden shadow-sm" style={{ contentVisibility: 'auto' }}>
                   <button 
                     onClick={() => setFaqOpen(faqOpen === idx ? null : idx)}
-                    className="w-full flex justify-between items-center p-6 bg-gray-50 hover:bg-[#FFFBEB] transition-colors text-left"
+                    className="w-full flex justify-between items-center p-6 bg-gray-50 transition-colors text-left"
                   >
-                    <span className="font-bold text-[#92400E] text-sm sm:text-base">{faq.q}</span>
-                    <ChevronDown className={`h-5 w-5 text-[#F59E0B] transition-transform shrink-0 ${faqOpen === idx ? 'rotate-180' : ''}`} />
+                    <span className="font-bold text-sm sm:text-base" style={{ color: brandPrimary }}>{faq.q}</span>
+                    <ChevronDown className={`h-5 w-5 transition-transform shrink-0 ${faqOpen === idx ? 'rotate-180' : ''}`} style={{ color: brandAccent }} />
                   </button>
                   {faqOpen === idx && (
                     <div className="p-6 bg-white text-gray-600 border-t border-gray-200 text-sm leading-relaxed">
@@ -1255,7 +1291,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
         {/* CONTACT CTA */}
         <section className="py-0">
           <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
-            <div className="bg-[#92400E] rounded-3xl overflow-hidden shadow-2xl relative -mb-16 z-20">
+            <div className="rounded-3xl overflow-hidden shadow-2xl relative -mb-16 z-20" style={{ backgroundColor: brandPrimary }}>
               <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1000&q=80')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
               <div className="relative p-12 md:p-16 flex flex-col md:flex-row items-center justify-between">
                 <div className="md:w-2/3 text-center md:text-left mb-8 md:mb-0">
@@ -1265,7 +1301,8 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 <div className="md:w-1/3 flex flex-col sm:flex-row gap-4 w-full md:w-auto">
                   <button 
                     onClick={() => navigateTo('contact')}
-                    className="bg-[#F59E0B] text-white px-8 py-4 rounded-full font-bold hover:bg-white hover:text-[#92400E] transition-colors w-full shadow-lg text-sm"
+                    className="text-white px-8 py-4 rounded-full font-bold hover:opacity-90 transition-opacity w-full shadow-lg text-sm"
+                    style={{ backgroundColor: brandAccent }}
                   >
                     Đăng Ký Tham Quan
                   </button>
@@ -1276,14 +1313,14 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
         </section>
 
         {/* NEWSLETTER */}
-        <section className="pt-40 pb-24 bg-[#FFFBEB]" style={{ contentVisibility: 'auto' }}>
+        <section className="pt-40 pb-24" style={{ backgroundColor: brandBg, contentVisibility: 'auto' }}>
           <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-2xl`}>
-            <Mail className="h-12 w-12 mx-auto text-[#F59E0B] mb-6" />
-            <h3 className="text-2xl font-serif font-bold text-[#92400E] mb-4">Đăng Ký Nhận Thông Tin Mới Nhất</h3>
+            <Mail className="h-12 w-12 mx-auto mb-6" style={{ color: brandAccent }} />
+            <h3 className="text-2xl font-serif font-bold mb-4" style={{ color: brandPrimary }}>Đăng Ký Nhận Thông Tin Mới Nhất</h3>
             <p className="text-gray-600 mb-8 text-sm leading-relaxed">Trở thành những người đầu tiên nhận thông tin về các quỹ căn đẹp và chính sách ưu đãi đặc quyền.</p>
             <form onSubmit={(e) => { e.preventDefault(); alert("Đăng ký nhận brochure thành công!"); }} className="flex flex-col sm:flex-row gap-3">
-              <input type="email" required placeholder="Email của bạn..." className="flex-1 px-6 py-4 rounded-full border border-[#F59E0B]/30 focus:outline-none focus:border-[#92400E] bg-white text-sm" />
-              <button type="submit" className="bg-[#92400E] text-white px-8 py-4 rounded-full font-medium hover:bg-[#78350f] transition-colors text-sm font-semibold">
+              <input type="email" required placeholder="Email của bạn..." className="flex-1 px-6 py-4 rounded-full border focus:outline-none bg-white text-sm" style={{ borderColor: `${brandAccent}4D` }} />
+              <button type="submit" className="text-white px-8 py-4 rounded-full font-medium hover:opacity-90 transition-opacity text-sm font-semibold shadow-md" style={{ backgroundColor: brandPrimary }}>
                 Đăng Ký
               </button>
             </form>
@@ -1298,8 +1335,8 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
       <div className="pt-20 pb-32 min-h-screen bg-[#FAFAFA]">
         <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
           <div className="text-center mb-16 mt-12">
-            <span className="text-xs font-bold text-[#F59E0B] tracking-widest uppercase mb-3 block">Danh mục dự án</span>
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#92400E] mb-6">Danh Sách Biệt Thự</h1>
+            <span className="text-xs font-bold tracking-widest uppercase mb-3 block" style={{ color: brandAccent }}>Danh mục dự án</span>
+            <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6" style={{ color: brandPrimary }}>Danh Sách Biệt Thự</h1>
             <p className="text-gray-600 max-w-2xl mx-auto text-sm leading-relaxed">Tuyển tập những kiệt tác biệt thự có vị trí đẹp nhất, kiến trúc tân cổ điển hoàng gia, sẵn sàng chào đón những chủ nhân danh giá.</p>
           </div>
           
@@ -1314,7 +1351,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Tìm theo tên biệt thự, vị trí, đặc điểm..." 
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:border-[#F59E0B] focus:ring-1 focus:ring-[#F59E0B] outline-none text-gray-700 text-sm"
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl outline-none text-gray-700 text-sm focus:ring-1"
                 />
                 {searchQuery && (
                   <button 
@@ -1331,7 +1368,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 <select 
                   value={filterType} 
                   onChange={(e) => setFilterType(e.target.value)}
-                  className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-semibold focus:border-[#F59E0B] focus:ring-1 focus:ring-[#F59E0B] outline-none text-gray-700 bg-white cursor-pointer"
+                  className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-semibold outline-none text-gray-700 bg-white cursor-pointer"
                 >
                   <option value="Tất cả">Tất cả loại hình</option>
                   <option value="Đơn lập">Đơn lập</option>
@@ -1341,7 +1378,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 <select 
                   value={filterDirection} 
                   onChange={(e) => setFilterDirection(e.target.value)}
-                  className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-semibold focus:border-[#F59E0B] focus:ring-1 focus:ring-[#F59E0B] outline-none text-gray-700 bg-white cursor-pointer"
+                  className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-semibold outline-none text-gray-700 bg-white cursor-pointer"
                 >
                   <option value="Tất cả">Tất cả hướng</option>
                   <option value="Đông Nam">Đông Nam</option>
@@ -1355,7 +1392,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 <select 
                   value={filterPrice} 
                   onChange={(e) => setFilterPrice(e.target.value)}
-                  className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-semibold focus:border-[#F59E0B] focus:ring-1 focus:ring-[#F59E0B] outline-none text-gray-700 bg-white cursor-pointer"
+                  className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-semibold outline-none text-gray-700 bg-white cursor-pointer"
                 >
                   <option value="Tất cả">Tất cả giá</option>
                   <option value="Dưới 40 tỷ">Dưới 40 tỷ</option>
@@ -1366,7 +1403,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 <select 
                   value={filterArea} 
                   onChange={(e) => setFilterArea(e.target.value)}
-                  className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-semibold focus:border-[#F59E0B] focus:ring-1 focus:ring-[#F59E0B] outline-none text-gray-700 bg-white cursor-pointer"
+                  className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-semibold outline-none text-gray-700 bg-white cursor-pointer"
                 >
                   <option value="Tất cả">Tất cả diện tích</option>
                   <option value="200m² - 300m²">200m² - 300m²</option>
@@ -1390,11 +1427,11 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
               {(searchQuery || filterType !== 'Tất cả' || filterDirection !== 'Tất cả' || filterPrice !== 'Tất cả' || filterArea !== 'Tất cả') && (
                 <>
                   <span className="font-bold self-center text-gray-700">Đang lọc:</span>
-                  {searchQuery && <span className="bg-[#FFFBEB] text-[#92400E] border border-[#F59E0B]/20 px-2.5 py-0.5 rounded-full">&ldquo;{searchQuery}&rdquo;</span>}
-                  {filterType !== 'Tất cả' && <span className="bg-[#FFFBEB] text-[#92400E] border border-[#F59E0B]/20 px-2.5 py-0.5 rounded-full">{filterType}</span>}
-                  {filterDirection !== 'Tất cả' && <span className="bg-[#FFFBEB] text-[#92400E] border border-[#F59E0B]/20 px-2.5 py-0.5 rounded-full">Hướng: {filterDirection}</span>}
-                  {filterPrice !== 'Tất cả' && <span className="bg-[#FFFBEB] text-[#92400E] border border-[#F59E0B]/20 px-2.5 py-0.5 rounded-full">{filterPrice}</span>}
-                  {filterArea !== 'Tất cả' && <span className="bg-[#FFFBEB] text-[#92400E] border border-[#F59E0B]/20 px-2.5 py-0.5 rounded-full">DT: {filterArea}</span>}
+                  {searchQuery && <span className="px-2.5 py-0.5 rounded-full border" style={{ backgroundColor: brandBg, color: brandPrimary, borderColor: `${brandAccent}33` }}>&ldquo;{searchQuery}&rdquo;</span>}
+                  {filterType !== 'Tất cả' && <span className="px-2.5 py-0.5 rounded-full border" style={{ backgroundColor: brandBg, color: brandPrimary, borderColor: `${brandAccent}33` }}>{filterType}</span>}
+                  {filterDirection !== 'Tất cả' && <span className="px-2.5 py-0.5 rounded-full border" style={{ backgroundColor: brandBg, color: brandPrimary, borderColor: `${brandAccent}33` }}>Hướng: {filterDirection}</span>}
+                  {filterPrice !== 'Tất cả' && <span className="px-2.5 py-0.5 rounded-full border" style={{ backgroundColor: brandBg, color: brandPrimary, borderColor: `${brandAccent}33` }}>{filterPrice}</span>}
+                  {filterArea !== 'Tất cả' && <span className="px-2.5 py-0.5 rounded-full border" style={{ backgroundColor: brandBg, color: brandPrimary, borderColor: `${brandAccent}33` }}>DT: {filterArea}</span>}
                   <span className="text-gray-400 self-center ml-2">({filteredVillas.length} kết quả)</span>
                 </>
               )}
@@ -1412,23 +1449,23 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 >
                   <div className="h-64 overflow-hidden relative shrink-0">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={villa.img} alt={villa.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                    <div className="absolute top-4 left-4 bg-white/95 px-3 py-1 rounded-full text-xs font-bold text-[#92400E] shadow-md border border-[#F59E0B]/20">
+                    <div className="absolute top-4 left-4 bg-white/95 px-3 py-1 rounded-full text-xs font-bold shadow-md border" style={{ color: brandPrimary, borderColor: `${brandAccent}33` }}>
                       {villa.type}
                     </div>
-                    <div className="absolute bottom-4 right-4 bg-[#92400E] text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">
+                    <div className="absolute bottom-4 right-4 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md" style={{ backgroundColor: brandPrimary }}>
                       {villa.location}
                     </div>
                   </div>
                   <div className="p-6 flex flex-col flex-grow justify-between">
                     <div>
-                      <h4 className="text-xl font-bold text-[#92400E] mb-2 font-serif group-hover:text-[#F59E0B] transition-colors">{villa.name}</h4>
-                      <p className="text-[#F59E0B] font-bold text-xl mb-3">{villa.price}</p>
+                      <h4 className="text-xl font-bold mb-2 font-serif transition-colors" style={{ color: brandPrimary }}>{villa.name}</h4>
+                      <p className="font-bold text-xl mb-3" style={{ color: brandAccent }}>{villa.price}</p>
                       <p className="text-gray-600 text-xs leading-relaxed mb-6 line-clamp-2">{villa.description}</p>
                     </div>
                     <div className="flex justify-between text-gray-500 text-xs border-t border-gray-100 pt-4 mt-auto">
-                      <span className="flex items-center gap-1 font-semibold"><Square className="h-4 w-4 text-[#F59E0B] shrink-0" /> {villa.area}</span>
-                      <span className="flex items-center gap-1 font-semibold"><Bed className="h-4 w-4 text-[#F59E0B] shrink-0" /> {villa.beds} PN</span>
-                      <span className="flex items-center gap-1 font-semibold"><Compass className="h-4 w-4 text-[#F59E0B] shrink-0" /> {villa.direction}</span>
+                      <span className="flex items-center gap-1 font-semibold"><Square className="h-4 w-4 shrink-0" style={{ color: brandAccent }} /> {villa.area}</span>
+                      <span className="flex items-center gap-1 font-semibold"><Bed className="h-4 w-4 shrink-0" style={{ color: brandAccent }} /> {villa.beds} PN</span>
+                      <span className="flex items-center gap-1 font-semibold"><Compass className="h-4 w-4 shrink-0" style={{ color: brandAccent }} /> {villa.direction}</span>
                     </div>
                   </div>
                 </div>
@@ -1441,7 +1478,8 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
               <p className="text-gray-500 text-sm leading-relaxed mb-6">Chúng tôi không tìm thấy kết quả nào phù hợp với bộ lọc hiện tại của quý khách. Vui lòng thử đặt lại bộ lọc.</p>
               <button 
                 onClick={resetFilters}
-                className="bg-[#92400E] text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-[#78350f] transition-colors text-sm shadow-md"
+                className="text-white px-6 py-2.5 rounded-xl font-semibold hover:opacity-90 transition-opacity text-sm shadow-md"
+                style={{ backgroundColor: brandPrimary }}
               >
                 Đặt Lại Tất Cả Bộ Lọc
               </button>
@@ -1457,7 +1495,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
       <div className="pt-20 min-h-screen bg-white">
         {/* Hero banner */}
         <div className="h-[450px] relative flex items-center justify-center">
-          <div className="absolute inset-0 bg-[#92400E]"></div>
+          <div className="absolute inset-0" style={{ backgroundColor: brandPrimary }}></div>
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80')] bg-cover bg-center opacity-30 mix-blend-multiply"></div>
           <div className="relative z-10 text-center px-4 max-w-3xl">
             <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 text-white font-medium text-xs mb-4 uppercase tracking-widest border border-white/20">
@@ -1474,8 +1512,8 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
         <section className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8 py-24`}>
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <span className="text-xs font-bold text-[#F59E0B] tracking-widest uppercase mb-3 block">Định hướng phát triển</span>
-              <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#92400E] mb-6">Tầm Nhìn & Sứ Mệnh</h2>
+              <span className="text-xs font-bold tracking-widest uppercase mb-3 block" style={{ color: brandAccent }}>Định hướng phát triển</span>
+              <h2 className="text-3xl md:text-4xl font-serif font-bold mb-6" style={{ color: brandPrimary }}>Tầm Nhìn & Sứ Mệnh</h2>
               <p className="text-gray-600 mb-6 leading-relaxed text-sm">
                 Premium Villa Group không ngừng nỗ lực trở thành nhà phát triển bất động sản dòng biệt thự cao cấp hàng đầu Việt Nam. Chúng tôi không chỉ xây dựng những ngôi nhà, mà còn kiến tạo một chuẩn mực sống mới bền vững, an lành và trường tồn cùng thời gian.
               </p>
@@ -1483,13 +1521,13 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 Sứ mệnh của chúng tôi là đem lại sự hài lòng tối đa cho khách hàng bằng các sản phẩm chất lượng cao nhất, pháp lý minh bạch tuyệt đối và dịch vụ chăm sóc tận tâm.
               </p>
               <div className="grid grid-cols-2 gap-6">
-                <div className="bg-[#FFFBEB] p-6 rounded-xl border border-[#F59E0B]/20">
-                  <div className="text-4xl font-bold text-[#92400E] mb-1 font-serif">15+</div>
+                <div className="p-6 rounded-xl border" style={{ backgroundColor: brandBg, borderColor: `${brandAccent}33` }}>
+                  <div className="text-4xl font-bold mb-1 font-serif" style={{ color: brandPrimary }}>15+</div>
                   <div className="text-sm text-gray-700 font-bold">Năm Kinh Nghiệm</div>
                   <p className="text-xs text-gray-500 mt-1">Kiến tạo các khu compound cao cấp</p>
                 </div>
-                <div className="bg-[#FFFBEB] p-6 rounded-xl border border-[#F59E0B]/20">
-                  <div className="text-4xl font-bold text-[#92400E] mb-1 font-serif">6+</div>
+                <div className="p-6 rounded-xl border" style={{ backgroundColor: brandBg, borderColor: `${brandAccent}33` }}>
+                  <div className="text-4xl font-bold mb-1 font-serif" style={{ color: brandPrimary }}>6+</div>
                   <div className="text-sm text-gray-700 font-bold">Đại Dự Án Bàn Giao</div>
                   <p className="text-xs text-gray-500 mt-1">Đạt tỷ lệ lấp đầy cư dân 90%</p>
                 </div>
@@ -1512,8 +1550,8 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
         <section className="py-24 bg-[#FAFAFA] border-t border-b border-gray-100">
           <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="text-xs font-bold text-[#F59E0B] tracking-widest uppercase mb-3 block">Kim chỉ nam hoạt động</span>
-              <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#92400E]">Giá Trị Cốt Lõi</h2>
+              <span className="text-xs font-bold tracking-widest uppercase mb-3 block" style={{ color: brandAccent }}>Kim chỉ nam hoạt động</span>
+              <h2 className="text-3xl md:text-4xl font-serif font-bold" style={{ color: brandPrimary }}>Giá Trị Cốt Lõi</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {[
@@ -1522,11 +1560,11 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 { icon: Trees, title: "Môi Trường Xanh", desc: "Dành đến 70% diện tích cho cây xanh, mặt nước và không gian cộng đồng để phát triển sức khỏe toàn diện." },
                 { icon: Heart, title: "Đặc Quyền Tinh Hoa", desc: "Hệ thống dịch vụ 5 sao khép kín, bảo vệ đa lớp đảm bảo sự an tâm và riêng tư tuyệt đối cho cư dân." },
               ].map((value, idx) => (
-                <div key={idx} className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-[#F59E0B]/30 transition-all">
-                  <div className="w-12 h-12 bg-[#FFFBEB] rounded-xl flex items-center justify-center mb-6 border border-[#F59E0B]/20">
-                    <value.icon className="h-6 w-6 text-[#F59E0B]" />
+                <div key={idx} className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-all">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6 border" style={{ backgroundColor: brandBg, borderColor: `${brandAccent}33` }}>
+                    <value.icon className="h-6 w-6" style={{ color: brandAccent }} />
                   </div>
-                  <h3 className="text-lg font-bold text-[#92400E] mb-3 font-serif">{value.title}</h3>
+                  <h3 className="text-lg font-bold mb-3 font-serif" style={{ color: brandPrimary }}>{value.title}</h3>
                   <p className="text-gray-600 text-xs leading-relaxed">{value.desc}</p>
                 </div>
               ))}
@@ -1538,12 +1576,12 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
         <section className="py-24 bg-white" style={{ contentVisibility: 'auto' }}>
           <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
             <div className="text-center max-w-3xl mx-auto mb-20">
-              <span className="text-xs font-bold text-[#F59E0B] tracking-widest uppercase mb-3 block">Chặng đường phát triển</span>
-              <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#92400E]">Cột Mốc Lịch Sử</h2>
+              <span className="text-xs font-bold tracking-widest uppercase mb-3 block" style={{ color: brandAccent }}>Chặng đường phát triển</span>
+              <h2 className="text-3xl md:text-4xl font-serif font-bold" style={{ color: brandPrimary }}>Cột Mốc Lịch Sử</h2>
             </div>
             
             <div className="max-w-4xl mx-auto relative">
-              <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-[#F59E0B]/30 md:-translate-x-1/2"></div>
+              <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 md:-translate-x-1/2" style={{ backgroundColor: `${brandAccent}4D` }}></div>
               
               <div className="space-y-16">
                 {[
@@ -1555,12 +1593,12 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 ].map((milestone, idx) => (
                   <div key={idx} className={`relative flex flex-col md:flex-row gap-8 ${idx % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
                     {/* Badge / Year marker */}
-                    <div className="absolute left-0 md:left-1/2 w-9 h-9 rounded-full border-4 border-white md:-translate-x-1/2 mt-1 z-10 flex items-center justify-center bg-[#F59E0B] text-white text-xs font-bold shadow-md">
+                    <div className="absolute left-0 md:left-1/2 w-9 h-9 rounded-full border-4 border-white md:-translate-x-1/2 mt-1 z-10 flex items-center justify-center text-white text-xs font-bold shadow-md" style={{ backgroundColor: brandAccent }}>
                       {milestone.year.substring(2)}
                     </div>
                     
                     <div className={`ml-12 md:ml-0 md:w-1/2 ${idx % 2 === 0 ? 'md:pl-12' : 'md:pr-12 md:text-right'}`}>
-                      <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-[#FFFBEB] text-[#92400E] border border-[#F59E0B]/20 mb-3">
+                      <span className="inline-block px-3 py-1 rounded-full text-xs font-bold mb-3 border" style={{ backgroundColor: brandBg, color: brandPrimary, borderColor: `${brandAccent}33` }}>
                         Năm {milestone.year}
                       </span>
                       <h4 className="text-xl font-bold text-gray-900 mb-2 font-serif">{milestone.title}</h4>
@@ -1574,11 +1612,11 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
         </section>
 
         {/* Ban lãnh đạo */}
-        <section className="py-24 bg-[#FFFBEB] border-t border-[#F59E0B]/10" style={{ contentVisibility: 'auto' }}>
+        <section className="py-24 border-t" style={{ backgroundColor: brandBg, borderTopColor: `${brandAccent}1A`, contentVisibility: 'auto' }}>
           <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="text-xs font-bold text-[#F59E0B] tracking-widest uppercase mb-3 block">Người dẫn đường</span>
-              <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#92400E]">Ban Lãnh Đạo</h2>
+              <span className="text-xs font-bold tracking-widest uppercase mb-3 block" style={{ color: brandAccent }}>Người dẫn đường</span>
+              <h2 className="text-3xl md:text-4xl font-serif font-bold" style={{ color: brandPrimary }}>Ban Lãnh Đạo</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
@@ -1586,10 +1624,10 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 { name: "Nguyễn Hoàng M.", role: "Giám Đốc Thiết Kế (KTS)", avatar: "https://ui-avatars.com/api/?name=Nguyen+Hoang+M&background=F59E0B&color=fff&size=128", bio: "Tốt nghiệp Thạc sĩ Kiến trúc tại Paris, ông đã mang hơi thở Tân cổ điển Pháp lãng mạn vào từng đường nét thiết kế độc bản." },
                 { name: "Phạm Thanh H.", role: "Giám Đốc Vận Hành", avatar: "https://ui-avatars.com/api/?name=Pham+Thanh+H&background=92400E&color=fff&size=128", bio: "Cựu chuyên gia cao cấp tại Savills, chịu trách nhiệm xây dựng hệ thống tiện ích đặc quyền và quản lý vận hành chuẩn 5 sao." }
               ].map((leader, idx) => (
-                <div key={idx} className="bg-white rounded-2xl p-8 border border-[#F59E0B]/20 shadow-sm hover:shadow-xl transition-all text-center">
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={leader.avatar} alt={leader.name} className="w-24 h-24 rounded-full mx-auto mb-6 border-4 border-[#FFFBEB] shadow-inner" />
-                  <h3 className="text-xl font-bold text-[#92400E] font-serif">{leader.name}</h3>
-                  <p className="text-[#F59E0B] text-xs font-bold mb-4">{leader.role}</p>
+                <div key={idx} className="bg-white rounded-2xl p-8 border shadow-sm hover:shadow-xl transition-all text-center" style={{ borderColor: `${brandAccent}33` }}>
+                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={leader.avatar} alt={leader.name} className="w-24 h-24 rounded-full mx-auto mb-6 border-4 shadow-inner" style={{ borderColor: brandBg }} />
+                  <h3 className="text-xl font-bold font-serif" style={{ color: brandPrimary }}>{leader.name}</h3>
+                  <p className="text-xs font-bold mb-4" style={{ color: brandAccent }}>{leader.role}</p>
                   <p className="text-gray-600 text-xs leading-relaxed italic">&ldquo;{leader.bio}&rdquo;</p>
                 </div>
               ))}
@@ -1605,8 +1643,8 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
       <div className="pt-20 pb-32 min-h-screen bg-[#FAFAFA]">
         <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
           <div className="text-center mb-16 mt-12">
-            <span className="text-xs font-bold text-[#F59E0B] tracking-widest uppercase mb-3 block">Thư viện truyền thông</span>
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#92400E] mb-6">Thư Viện Hình Ảnh</h1>
+            <span className="text-xs font-bold tracking-widest uppercase mb-3 block" style={{ color: brandAccent }}>Thư viện truyền thông</span>
+            <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6" style={{ color: brandPrimary }}>Thư Viện Hình Ảnh</h1>
             <p className="text-gray-600 text-sm leading-relaxed max-w-2xl mx-auto">Khám phá chi tiết kiến trúc tân cổ điển nguy nga, thiết kế nội thất sang trọng cùng không gian cảnh quan ven sông tuyệt mỹ.</p>
           </div>
 
@@ -1616,11 +1654,12 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
               <button 
                 key={tab}
                 onClick={() => setSelectedGalleryTab(tab)}
-                className={`px-6 py-2 rounded-full font-medium transition-colors text-xs shrink-0 ${
-                  selectedGalleryTab === tab 
-                    ? 'bg-[#92400E] text-white shadow-md' 
-                    : 'bg-white text-gray-600 hover:bg-[#FFFBEB] hover:text-[#92400E] border border-gray-100'
-                }`}
+                className="px-6 py-2 rounded-full font-medium transition-colors text-xs shrink-0"
+                style={
+                  selectedGalleryTab === tab
+                    ? { backgroundColor: brandPrimary, color: '#ffffff' }
+                    : { backgroundColor: '#ffffff', color: '#4B5563', border: '1px solid #F3F4F6' }
+                }
               >
                 {tab}
               </button>
@@ -1637,12 +1676,12 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
               >
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6">
-                  <span className="bg-[#F59E0B] text-white text-[9px] font-bold px-2 py-0.5 rounded-full w-max uppercase tracking-wider mb-2">
+                  <span className="text-white text-[9px] font-bold px-2 py-0.5 rounded-full w-max uppercase tracking-wider mb-2" style={{ backgroundColor: brandAccent }}>
                     {item.category}
                   </span>
                   <h4 className="text-white font-bold text-base font-serif">{item.title}</h4>
                   <p className="text-gray-300 text-[10px] mt-1 flex items-center gap-1">
-                    <Camera className="h-3 w-3 text-[#F59E0B]" /> Click để phóng to ảnh
+                    <Camera className="h-3 w-3" style={{ color: brandAccent }} /> Click để phóng to ảnh
                   </p>
                 </div>
               </div>
@@ -1658,8 +1697,8 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
       <div className="pt-20 pb-32 min-h-screen bg-white">
         <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
           <div className="text-center mb-16 mt-12">
-            <span className="text-xs font-bold text-[#F59E0B] tracking-widest uppercase mb-3 block">Bản tin dự án</span>
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#92400E] mb-6">Tin Tức Mới Nhất</h1>
+            <span className="text-xs font-bold tracking-widest uppercase mb-3 block" style={{ color: brandAccent }}>Bản tin dự án</span>
+            <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6" style={{ color: brandPrimary }}>Tin Tức Mới Nhất</h1>
           </div>
 
           <div className="max-w-4xl mx-auto mb-12 flex flex-col sm:flex-row gap-4">
@@ -1671,14 +1710,14 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 value={searchNewsQuery}
                 onChange={(e) => setSearchNewsQuery(e.target.value)}
                 placeholder="Tìm tin tức, bài viết..." 
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:border-[#F59E0B] focus:ring-1 focus:ring-[#F59E0B] outline-none text-gray-700 text-sm"
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl outline-none text-gray-700 text-sm focus:ring-1"
               />
             </div>
             {/* News Categories */}
             <select 
               value={filterNewsCategory}
               onChange={(e) => setFilterNewsCategory(e.target.value)}
-              className="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-[#F59E0B] focus:ring-1 focus:ring-[#F59E0B] outline-none text-gray-700 bg-white cursor-pointer"
+              className="border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none text-gray-700 bg-white cursor-pointer"
             >
               <option value="Tất cả">Tất cả danh mục</option>
               <option value="Sự kiện">Sự kiện</option>
@@ -1702,16 +1741,16 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                   </div>
                   <div className="md:w-3/5 p-6 sm:p-8 flex flex-col justify-center">
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="bg-[#F59E0B]/10 text-[#92400E] text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide border border-[#F59E0B]/20">
+                      <span className="text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide border" style={{ backgroundColor: `${brandAccent}1A`, color: brandPrimary, borderColor: `${brandAccent}33` }}>
                         {news.category}
                       </span>
                       <span className="flex items-center text-[10px] text-gray-400">
-                        <Clock className="h-3 w-3 mr-1 text-[#F59E0B]" /> {news.date}
+                        <Clock className="h-3 w-3 mr-1" style={{ color: brandAccent }} /> {news.date}
                       </span>
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-serif font-bold text-[#92400E] mb-3 group-hover:text-[#F59E0B] transition-colors line-clamp-2">{news.title}</h3>
+                    <h3 className="text-xl sm:text-2xl font-serif font-bold mb-3 transition-colors line-clamp-2" style={{ color: brandPrimary }}>{news.title}</h3>
                     <p className="text-gray-600 text-xs leading-relaxed mb-4 line-clamp-2">{news.excerpt}</p>
-                    <button className="text-[#92400E] font-bold text-xs uppercase tracking-wider flex items-center hover:text-[#F59E0B] transition-colors mt-auto">
+                    <button className="font-bold text-xs uppercase tracking-wider flex items-center hover:opacity-80 transition-opacity mt-auto" style={{ color: brandPrimary }}>
                       Đọc tiếp bài viết <ArrowRight className="ml-1.5 h-4 w-4" />
                     </button>
                   </div>
@@ -1731,17 +1770,17 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
   };
 
   const renderContactSuccess = () => (
-    <div className="pt-20 pb-32 min-h-screen bg-[#FFFBEB] flex items-center justify-center animate-fade-in">
+    <div className="pt-20 pb-32 min-h-screen flex items-center justify-center animate-fade-in" style={{ backgroundColor: brandBg }}>
       <div className={`${MAX_W} mx-auto px-4 text-center max-w-lg`}>
-        <div className="bg-white p-12 rounded-3xl shadow-2xl border border-[#F59E0B]/20">
-          <div className="w-20 h-20 bg-[#F59E0B]/10 rounded-full flex items-center justify-center mx-auto mb-8 border-2 border-[#F59E0B]">
-            <CheckCircle className="h-10 w-10 text-[#92400E]" />
+        <div className="bg-white p-12 rounded-3xl shadow-2xl border" style={{ borderColor: `${brandAccent}33` }}>
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-8 border-2" style={{ backgroundColor: `${brandAccent}1A`, borderColor: brandAccent }}>
+            <CheckCircle className="h-10 w-10" style={{ color: brandPrimary }} />
           </div>
-          <h2 className="text-3xl font-serif font-bold text-[#92400E] mb-4">Gửi Yêu Cầu Thành Công!</h2>
+          <h2 className="text-3xl font-serif font-bold mb-4" style={{ color: brandPrimary }}>Gửi Yêu Cầu Thành Công!</h2>
           <p className="text-gray-600 mb-8 leading-relaxed text-sm">
             Cảm ơn quý khách <strong>{contactName}</strong>. Yêu cầu tư vấn thông tin {contactVilla ? `dự án biệt thự ${contactVilla}` : "dự án"} của quý khách đã được chuyển tới bộ phận kinh doanh.
           </p>
-          <div className="bg-[#FFFBEB] p-4 rounded-xl border border-[#F59E0B]/20 text-left text-xs text-[#92400E] mb-8 space-y-2">
+          <div className="p-4 rounded-xl border text-left text-xs mb-8 space-y-2" style={{ backgroundColor: brandBg, borderColor: `${brandAccent}33`, color: brandPrimary }}>
             <p className="font-bold">Thông tin liên hệ của quý khách:</p>
             <p>• Họ tên: {contactName}</p>
             <p>• Số điện thoại: {contactPhone}</p>
@@ -1759,7 +1798,8 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
               setContactVilla('');
               navigateTo('home');
             }}
-            className="w-full bg-[#92400E] text-white py-4 rounded-xl font-bold hover:bg-[#78350f] transition-colors text-sm shadow-md"
+            className="w-full text-white py-4 rounded-xl font-bold hover:opacity-90 transition-opacity text-sm shadow-md"
+            style={{ backgroundColor: brandPrimary }}
           >
             Quay Về Trang Chủ
           </button>
@@ -1774,12 +1814,12 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
     }
 
     return (
-      <div className="pt-20 pb-32 min-h-screen bg-[#FFFBEB]">
+      <div className="pt-20 pb-32 min-h-screen" style={{ backgroundColor: brandBg }}>
         <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
-          <div className="grid lg:grid-cols-2 gap-16 mt-12 bg-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100 shadow-lg">
+          <div className="grid lg:grid-cols-2 gap-16 mt-12 bg-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100">
             <div className="p-8 sm:p-12 md:p-16">
-              <span className="text-xs font-bold text-[#F59E0B] tracking-widest uppercase mb-3 block">Liên hệ với chúng tôi</span>
-              <h1 className="text-4xl font-serif font-bold text-[#92400E] mb-6">Liên Hệ Tư Vấn</h1>
+              <span className="text-xs font-bold tracking-widest uppercase mb-3 block" style={{ color: brandAccent }}>Liên hệ với chúng tôi</span>
+              <h1 className="text-4xl font-serif font-bold mb-6" style={{ color: brandPrimary }}>Liên Hệ Tư Vấn</h1>
               <p className="text-gray-600 mb-10 text-xs leading-relaxed">
                 Để lại thông tin dưới đây, đội ngũ chuyên viên tư vấn cao cấp của Premium Villa Group sẽ chủ động liên hệ lại với quý khách trong thời gian sớm nhất.
               </p>
@@ -1793,7 +1833,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                     value={contactName}
                     onChange={(e) => setContactName(e.target.value)}
                     placeholder="Nguyễn Văn A" 
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:border-[#F59E0B] focus:ring-1 focus:ring-[#F59E0B] outline-none text-xs text-gray-800" 
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none text-xs text-gray-800 focus:ring-1" 
                   />
                 </div>
                 <div>
@@ -1804,7 +1844,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                     value={contactPhone}
                     onChange={(e) => setContactPhone(e.target.value)}
                     placeholder="09xx xxx xxx" 
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:border-[#F59E0B] focus:ring-1 focus:ring-[#F59E0B] outline-none text-xs text-gray-800" 
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none text-xs text-gray-800 focus:ring-1" 
                   />
                 </div>
                 <div>
@@ -1814,7 +1854,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                     value={contactEmail}
                     onChange={(e) => setContactEmail(e.target.value)}
                     placeholder="email@example.com" 
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:border-[#F59E0B] focus:ring-1 focus:ring-[#F59E0B] outline-none text-xs text-gray-800" 
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none text-xs text-gray-800 focus:ring-1" 
                   />
                 </div>
                 <div>
@@ -1822,7 +1862,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                   <select 
                     value={contactVilla}
                     onChange={(e) => setContactVilla(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:border-[#F59E0B] focus:ring-1 focus:ring-[#F59E0B] outline-none text-xs text-gray-700 bg-white cursor-pointer"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none text-xs text-gray-700 bg-white cursor-pointer"
                   >
                     <option value="">-- Chọn biệt thự hoặc khu vực --</option>
                     {MOCK_VILLAS.map(villa => (
@@ -1837,57 +1877,66 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                     value={contactMessage}
                     onChange={(e) => setContactMessage(e.target.value)}
                     placeholder="Tôi muốn đăng ký tham quan thực tế nhà mẫu vào cuối tuần này..." 
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:border-[#F59E0B] focus:ring-1 focus:ring-[#F59E0B] outline-none text-xs text-gray-800 resize-none"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none text-xs text-gray-800 resize-none"
                   ></textarea>
                 </div>
                 
-                <button type="submit" className="w-full bg-[#92400E] text-white py-4 rounded-xl font-bold hover:bg-[#78350f] transition-all hover:shadow-lg flex items-center justify-center gap-2 text-sm shadow-md">
+                <button type="submit" className="w-full text-white py-4 rounded-xl font-bold hover:opacity-90 transition-all flex items-center justify-center gap-2 text-sm shadow-md" style={{ backgroundColor: brandPrimary }}>
                   Gửi Yêu Cầu Tư Vấn
                 </button>
               </form>
             </div>
             
-            <div className="bg-[#92400E] p-8 sm:p-12 md:p-16 text-white flex flex-col justify-center relative">
+            <div className="p-8 sm:p-12 md:p-16 text-white flex flex-col justify-center relative" style={{ backgroundColor: brandPrimary }}>
               <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000&q=80')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
               
               <div className="relative">
                 <h3 className="text-2xl font-serif font-bold mb-8 text-white border-b border-white/20 pb-4 font-semibold">Thông Tin Liên Hệ</h3>
                 <div className="space-y-8">
-                  <div className="flex items-start">
-                    <div className="w-10 h-10 rounded-full bg-[#F59E0B]/20 flex items-center justify-center mr-4 shrink-0 border border-[#F59E0B]/30">
-                      <MapPin className="h-5 w-5 text-[#F59E0B]" />
+                  <a href={`https://maps.google.com/?q=${encodeURIComponent(company?.address || '123 Đại lộ Thượng Lưu, Phường Thảo Điền, Quận 2, TP. Hồ Chí Minh')}`} target="_blank" rel="noopener noreferrer" className="flex items-start hover:opacity-90 transition">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center mr-4 shrink-0 border" style={{ backgroundColor: `${brandAccent}33`, borderColor: `${brandAccent}4D` }}>
+                      <MapPin className="h-5 w-5" style={{ color: brandAccent }} />
                     </div>
                     <div>
                       <h4 className="font-bold text-lg mb-1">Văn phòng bán hàng</h4>
-                      <p className="text-white/80 text-sm leading-relaxed">123 Đại lộ Thượng Lưu, Phường Thảo Điền, Quận 2, TP. Hồ Chí Minh</p>
+                      <p className="text-white/80 text-sm leading-relaxed">{company?.address || '123 Đại lộ Thượng Lưu, Phường Thảo Điền, Quận 2, TP. Hồ Chí Minh'}</p>
                     </div>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="w-10 h-10 rounded-full bg-[#F59E0B]/20 flex items-center justify-center mr-4 shrink-0 border border-[#F59E0B]/30">
-                      <Phone className="h-5 w-5 text-[#F59E0B]" />
+                  </a>
+                  <a href={`tel:${(company?.phone || '0919006030').replace(/\s/g, '')}`} className="flex items-start hover:opacity-90 transition">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center mr-4 shrink-0 border" style={{ backgroundColor: `${brandAccent}33`, borderColor: `${brandAccent}4D` }}>
+                      <Phone className="h-5 w-5" style={{ color: brandAccent }} />
                     </div>
                     <div>
                       <h4 className="font-bold text-lg mb-1">Hotline tư vấn 24/7</h4>
-                      <p className="text-white/80 text-sm">0909 123 456 - 1900 6868</p>
+                      <p className="text-white/80 text-sm">{company?.phone || '0919 006 030'}</p>
                     </div>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="w-10 h-10 rounded-full bg-[#F59E0B]/20 flex items-center justify-center mr-4 shrink-0 border border-[#F59E0B]/30">
-                      <Mail className="h-5 w-5 text-[#F59E0B]" />
+                  </a>
+                  <a href={`mailto:${company?.email || 'contact@premiumvilla.vn'}`} className="flex items-start hover:opacity-90 transition">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center mr-4 shrink-0 border" style={{ backgroundColor: `${brandAccent}33`, borderColor: `${brandAccent}4D` }}>
+                      <Mail className="h-5 w-5" style={{ color: brandAccent }} />
                     </div>
                     <div>
                       <h4 className="font-bold text-lg mb-1">Hòm thư điện tử</h4>
-                      <p className="text-white/80 text-sm">{company?.email || company?.email || 'contact@premiumvilla.vn'}</p>
+                      <p className="text-white/80 text-sm">{company?.email || 'contact@premiumvilla.vn'}</p>
                     </div>
-                  </div>
+                  </a>
                 </div>
                 
                 <div className="mt-12 pt-8 border-t border-white/10 text-center sm:text-left">
-                  <p className="text-[10px] text-white/50 mb-2">Theo dõi chúng tôi trên mạng xã hội</p>
-                  <div className="flex justify-center sm:justify-start gap-4">
-                    <span className="text-[10px] bg-white/10 px-3 py-1.5 rounded-full hover:bg-[#F59E0B] hover:text-white transition-colors cursor-pointer">Facebook</span>
-                    <span className="text-[10px] bg-white/10 px-3 py-1.5 rounded-full hover:bg-[#F59E0B] hover:text-white transition-colors cursor-pointer">YouTube</span>
-                    <span className="text-[10px] bg-white/10 px-3 py-1.5 rounded-full hover:bg-[#F59E0B] hover:text-white transition-colors cursor-pointer">LinkedIn</span>
+                  <p className="text-[10px] text-white/50 mb-3">Theo dõi chúng tôi trên mạng xã hội</p>
+                  <div className="flex justify-center sm:justify-start items-center gap-3">
+                    <a href={company?.socialLinks?.facebook || "https://facebook.com"} target="_blank" rel="noopener noreferrer" title="Facebook" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-blue-600 text-white transition-colors">
+                      <FacebookIcon className="w-4 h-4" />
+                    </a>
+                    <a href={`https://zalo.me/${company?.phone || '0919006030'}`} target="_blank" rel="noopener noreferrer" title="Zalo" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#0068FF] text-white transition-colors p-2">
+                      <ZaloIcon className="w-full h-full" />
+                    </a>
+                    <a href={company?.socialLinks?.youtube || "https://youtube.com"} target="_blank" rel="noopener noreferrer" title="YouTube" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-red-600 text-white transition-colors">
+                      <YoutubeIcon className="w-4 h-4" />
+                    </a>
+                    <a href={company?.socialLinks?.linkedin || "https://linkedin.com"} target="_blank" rel="noopener noreferrer" title="LinkedIn" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-blue-700 text-white transition-colors">
+                      <LinkedinIcon className="w-4 h-4" />
+                    </a>
                   </div>
                 </div>
               </div>
@@ -1899,7 +1948,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
   };
 
   return (
-    <div className="min-h-screen font-sans text-gray-900 bg-white selection:bg-[#F59E0B] selection:text-white">
+    <div className="min-h-screen font-sans text-gray-900 bg-white selection:text-white" style={{ selectionBackgroundColor: brandAccent } as any}>
       <Header />
       <main>
         {activePage === 'home' && renderHome()}
@@ -1924,33 +1973,33 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
             
             <div className="md:w-1/2 h-64 md:h-auto relative shrink-0">
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedProject.img} alt={selectedProject.name} className="w-full h-full object-cover" />
-              <div className="absolute top-4 left-4 bg-[#92400E] text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-md">
+              <div className="absolute top-4 left-4 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-md" style={{ backgroundColor: brandPrimary }}>
                 {selectedProject.type}
               </div>
               <div className="absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-sm p-4 rounded-xl text-white">
-                <p className="text-[#F59E0B] font-bold text-2xl">{selectedProject.price}</p>
+                <p className="font-bold text-2xl" style={{ color: brandAccent }}>{selectedProject.price}</p>
                 <p className="text-xs text-gray-300 flex items-center mt-1">
-                  <MapPin className="h-3 w-3 mr-1 text-[#F59E0B]" /> {selectedProject.location}
+                  <MapPin className="h-3 w-3 mr-1" style={{ color: brandAccent }} /> {selectedProject.location}
                 </p>
               </div>
             </div>
             
             <div className="md:w-1/2 p-8 overflow-y-auto flex flex-col justify-between">
               <div>
-                <h3 className="text-3xl font-serif font-bold text-[#92400E] mb-4">{selectedProject.name}</h3>
+                <h3 className="text-3xl font-serif font-bold mb-4" style={{ color: brandPrimary }}>{selectedProject.name}</h3>
                 
                 <div className="grid grid-cols-3 gap-2 mb-6 bg-gray-50 p-3 rounded-xl border border-gray-100 text-center">
                   <div>
                     <p className="text-[10px] text-gray-500 uppercase font-semibold">Diện tích</p>
-                    <p className="font-bold text-[#92400E] text-xs mt-0.5">{selectedProject.area}</p>
+                    <p className="font-bold text-xs mt-0.5" style={{ color: brandPrimary }}>{selectedProject.area}</p>
                   </div>
                   <div className="border-l border-r border-gray-200">
                     <p className="text-[10px] text-gray-500 uppercase font-semibold">Phòng ngủ</p>
-                    <p className="font-bold text-[#92400E] text-xs mt-0.5">{selectedProject.beds} PN</p>
+                    <p className="font-bold text-xs mt-0.5" style={{ color: brandPrimary }}>{selectedProject.beds} PN</p>
                   </div>
                   <div>
                     <p className="text-[10px] text-gray-500 uppercase font-semibold">Hướng nhà</p>
-                    <p className="font-bold text-[#92400E] text-xs mt-0.5">{selectedProject.direction}</p>
+                    <p className="font-bold text-xs mt-0.5" style={{ color: brandPrimary }}>{selectedProject.direction}</p>
                   </div>
                 </div>
                 
@@ -1961,7 +2010,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                 <ul className="space-y-2 mb-6">
                   {selectedProject.specifications.map((spec, i) => (
                     <li key={i} className="flex items-center text-xs text-gray-600">
-                      <CheckCircle className="h-4 w-4 text-[#F59E0B] mr-2 shrink-0" />
+                      <CheckCircle className="h-4 w-4 mr-2 shrink-0" style={{ color: brandAccent }} />
                       {spec}
                     </li>
                   ))}
@@ -1975,7 +2024,8 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                     setSelectedProject(null);
                     navigateTo('contact');
                   }}
-                  className="w-full bg-[#92400E] text-white py-3.5 rounded-xl text-xs font-bold hover:bg-[#78350f] transition-colors text-center shadow-md uppercase tracking-wider"
+                  className="w-full text-white py-3.5 rounded-xl text-xs font-bold hover:opacity-90 transition-opacity text-center shadow-md uppercase tracking-wider"
+                  style={{ backgroundColor: brandPrimary }}
                 >
                   Đăng Ký Tư Vấn Căn Này
                 </button>
@@ -2000,18 +2050,18 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
               <div className="absolute bottom-6 left-6 right-6 text-white">
-                <span className="bg-[#F59E0B] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                <span className="text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider" style={{ backgroundColor: brandAccent }}>
                   {selectedArticle.category}
                 </span>
                 <h3 className="text-xl sm:text-3xl font-serif font-bold mt-3 leading-tight text-white">{selectedArticle.title}</h3>
                 <div className="flex items-center text-[10px] text-gray-300 mt-2">
-                  <Calendar className="h-3.5 w-3.5 mr-1 text-[#F59E0B]" /> {selectedArticle.date}
+                  <Calendar className="h-3.5 w-3.5 mr-1" style={{ color: brandAccent }} /> {selectedArticle.date}
                 </div>
               </div>
             </div>
             
             <div className="p-8 overflow-y-auto flex-1 text-gray-600 leading-relaxed text-xs sm:text-sm">
-              <p className="font-bold text-gray-900 mb-4 text-sm sm:text-base border-l-4 border-[#F59E0B] pl-3 py-1">{selectedArticle.excerpt}</p>
+              <p className="font-bold text-gray-900 mb-4 text-sm sm:text-base border-l-4 pl-3 py-1" style={{ borderLeftColor: brandAccent }}>{selectedArticle.excerpt}</p>
               <div className="whitespace-pre-wrap">{selectedArticle.content}</div>
             </div>
           </div>

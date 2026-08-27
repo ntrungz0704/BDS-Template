@@ -42,18 +42,19 @@ const CARD_CONFIG: Record<string, {
 };
 
 export default function ProductCard({ template, onSelect, onOpenDetails }: ProductCardProps) {
-  const { wishlists, toggleWishlist, addToCart } = useAuth();
+  const { wishlists, toggleWishlist, addToCart, isPurchased } = useAuth();
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
+  const owned = isPurchased(template.slug || template.id);
   const isFavorite = wishlists?.some((w: any) => w.templateId === template.id || w.template?.id === template.id) || false;
 
   const cfg = CARD_CONFIG[template.id] || CARD_CONFIG['mock-1'];
   
-  const badgeText = template.badge || cfg.badge;
-  const badgeBg = template.badgeBg || cfg.badgeBg;
-  const badgeColor = template.badgeColor || cfg.badgeColor;
+  const badgeText = owned ? 'ĐÃ SỞ HỮU' : (template.badge || cfg.badge);
+  const badgeBg = owned ? '#10B981' : (template.badgeBg || cfg.badgeBg);
+  const badgeColor = owned ? '#FFFFFF' : (template.badgeColor || cfg.badgeColor);
   const tagline = template.shortDescription || cfg.tagline;
   const rating = template.rating || cfg.rating;
   const reviewCount = template.reviewCount || cfg.reviews;
@@ -69,7 +70,7 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
 
   return (
     <div
-      className="group relative bg-white rounded-2xl border border-slate-200/90 hover:border-blue-400 hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden shadow-sm cursor-pointer select-none h-full"
+      className={`group relative bg-white rounded-2xl border ${owned ? 'border-emerald-300 ring-2 ring-emerald-500/20' : 'border-slate-200/90 hover:border-blue-400'} hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden shadow-sm cursor-pointer select-none h-full`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => onOpenDetails(template)}
@@ -92,60 +93,47 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
           className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
         />
 
-        {/* Hover overlay */}
-        <div
-          className={`absolute inset-0 bg-slate-950/40 backdrop-blur-[2px] flex items-center justify-center gap-2.5 transition-opacity duration-200 ${
-            isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
-          }`}
-        >
-          <button
-            onClick={(e) => { e.stopPropagation(); window.open(demoUrl, '_blank'); }}
-            className="flex items-center gap-1.5 bg-white text-slate-900 font-bold text-xs px-3.5 py-2 rounded-xl shadow-lg hover:bg-blue-600 hover:text-white transition-all transform hover:scale-105"
-          >
-            <Play className="w-3 h-3 fill-current" /> Xem Demo
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); onOpenDetails(template); }}
-            className="flex items-center gap-1.5 bg-white/20 backdrop-blur-md border border-white/40 text-white font-bold text-xs px-3.5 py-2 rounded-xl hover:bg-white/30 transition-all"
-          >
-            <Eye className="w-3 h-3" /> Chi tiết
-          </button>
-        </div>
-
-        {/* Top badges */}
-        <div className="absolute top-3 left-3 flex flex-wrap items-center gap-1.5 z-10 pointer-events-none">
-          <span
-            className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide shadow-sm"
+        {/* Top Badges */}
+        <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between z-10 pointer-events-none">
+          <span 
+            className="text-[10px] font-black tracking-wider px-2.5 py-1 rounded-md uppercase shadow-md flex items-center gap-1 backdrop-blur-md"
             style={{ backgroundColor: badgeBg, color: badgeColor }}
           >
-            {cfg.badgeIcon}
+            {owned && <Check className="w-3 h-3 text-white" />}
             {badgeText}
           </span>
-          {cfg.ribbon && (
-            <span
-              className="text-[10px] font-bold px-2.5 py-1 rounded-full text-white uppercase tracking-wide shadow-sm"
-              style={{ backgroundColor: cfg.ribbonColor }}
+          {cfg.ribbon && !owned && (
+            <span 
+              className="text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider text-white shadow-sm"
+              style={{ backgroundColor: cfg.ribbonColor || '#2563EB' }}
             >
               {cfg.ribbon}
             </span>
           )}
         </div>
 
-        {/* Favorite */}
-        <button
-          onClick={(e) => { e.stopPropagation(); toggleWishlist(template); }}
-          className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md transition-transform hover:scale-110"
-          title={isFavorite ? "Bỏ yêu thích" : "Thêm vào yêu thích"}
+        {/* Hover overlay */}
+        <div
+          className={`absolute inset-0 bg-slate-950/40 backdrop-blur-[2px] flex items-center justify-center gap-2.5 transition-opacity duration-200 ${
+            isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
         >
-          <Heart className={`w-3.5 h-3.5 transition-colors ${isFavorite ? 'fill-red-500 text-red-500' : 'text-slate-400'}`} />
-        </button>
+          <a
+            href={demoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="px-4 py-2 bg-white/95 hover:bg-white text-slate-900 font-bold text-xs rounded-xl shadow-lg flex items-center gap-1.5 hover:scale-105 transition-all pointer-events-auto"
+          >
+            <Play className="w-3.5 h-3.5 fill-slate-900" /> Xem Demo
+          </a>
+        </div>
       </div>
 
-      {/* ── CONTENT ── */}
-      <div className="p-4 sm:p-5 flex flex-col flex-grow">
-        {/* Title row */}
+      {/* ── CARD CONTENT ── */}
+      <div className="p-4 flex flex-col flex-1">
         <div className="flex items-start justify-between gap-2 mb-1">
-          <h3 className="font-bold text-slate-900 text-base line-clamp-1 group-hover:text-blue-600 transition-colors">
+          <h3 className="font-bold text-slate-900 text-sm line-clamp-1 group-hover:text-blue-600 transition-colors">
             {template.name}
           </h3>
           <div className="flex items-center gap-1 shrink-0 mt-0.5" title={`${rating} sao (${reviewCount} đánh giá)`}>
@@ -189,29 +177,42 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
                 {fmt(template.priceBuy || 499000)}
               </span>
             </div>
-            <span className="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-md border border-emerald-200">
-              BÀN GIAO NGAY
+            <span className={`text-[10px] ${owned ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-emerald-50 text-emerald-700 border-emerald-200'} font-bold px-2 py-0.5 rounded-md border`}>
+              {owned ? 'ĐÃ SỞ HỮU TRỌN ĐỜI' : 'BÀN GIAO NGAY'}
             </span>
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                addToCart(template, 'BUY');
-              }}
-              className="p-2.5 rounded-xl border border-slate-200 hover:border-blue-500 bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-600 transition-all shrink-0 flex items-center justify-center group/btn"
-              title="Thêm vào giỏ hàng"
-            >
-              <ShoppingCart className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
-            </button>
-            <button
-              onClick={(e) => { e.stopPropagation(); onOpenDetails(template); }}
-              className="flex-1 py-2.5 px-3 bg-slate-900 hover:bg-blue-600 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-all group-hover:bg-blue-600"
-            >
-              <span>Xem chi tiết & Demo</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </button>
+            {owned ? (
+              <a
+                href={process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
+                onClick={(e) => e.stopPropagation()}
+                className="flex-1 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-all"
+              >
+                <Check className="w-3.5 h-3.5" />
+                <span>Vào CMS Quản trị</span>
+              </a>
+            ) : (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addToCart(template, 'BUY');
+                  }}
+                  className="p-2.5 rounded-xl border border-slate-200 hover:border-blue-500 bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-600 transition-all shrink-0 flex items-center justify-center group/btn"
+                  title="Thêm vào giỏ hàng"
+                >
+                  <ShoppingCart className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); onOpenDetails(template); }}
+                  className="flex-1 py-2.5 px-3 bg-slate-900 hover:bg-blue-600 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-all group-hover:bg-blue-600"
+                >
+                  <span>Xem chi tiết & Demo</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

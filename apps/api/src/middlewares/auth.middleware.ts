@@ -29,7 +29,15 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
   }
 
   try {
-    const accessSecret = process.env.JWT_ACCESS_SECRET || 'super-secret-access-key-should-be-long-and-random-123456';
+    const accessSecret = process.env.JWT_ACCESS_SECRET;
+    if (!accessSecret) {
+      // A missing signing key is an operator error.  Never silently accept a
+      // development key: doing so would make forged tokens possible.
+      return res.status(503).json({
+        success: false,
+        error: { code: 'AUTH_UNAVAILABLE', message: 'Dịch vụ xác thực đang tạm thời không khả dụng.' },
+      });
+    }
     const decoded = jwt.verify(token, accessSecret) as UserSessionPayload;
     
     req.user = decoded;

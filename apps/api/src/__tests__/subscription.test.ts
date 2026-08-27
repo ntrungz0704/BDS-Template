@@ -23,13 +23,20 @@ describe('Subscription Expiration & Grace Period Middleware Test', () => {
       await prisma.tenant.delete({ where: { id: oldTenant.id } });
     }
 
+    // Upsert template fixture
+    const template = await prisma.template.upsert({
+      where: { slug: 'luxury-gold' },
+      update: { isActive: true },
+      create: { name: 'Luxury Gold', slug: 'luxury-gold', isActive: true },
+    });
+
     // Create fresh test tenant
     tenant = await prisma.tenant.create({
       data: {
         name: 'Subscription Test Tenant Jest',
         slug: tenantSlug,
         status: 'ACTIVE',
-        templateId: 'template-1',
+        templateId: template.id,
       },
     });
 

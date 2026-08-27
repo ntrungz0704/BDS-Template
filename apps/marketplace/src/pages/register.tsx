@@ -41,6 +41,17 @@ export default function RegisterPage() {
       return;
     }
 
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setErrorMsg('Email không hợp lệ. VD: ten@gmail.com');
+      return;
+    }
+
+    const phoneClean = phone.replace(/\s/g, '');
+    if (!/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
+      setErrorMsg('SĐT phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.');
+      return;
+    }
+
     if (password.length < 6) {
       setErrorMsg('Mật khẩu cần tối thiểu 6 ký tự.');
       return;
@@ -81,20 +92,20 @@ export default function RegisterPage() {
   return (
     <>
       <Head>
-        <title>Đăng ký tài khoản | PLATFORMBDS</title>
-        <meta name="description" content="Đăng ký tài khoản PlatformBDS để sở hữu kho giao diện BĐS chuyên nghiệp và hệ thống CMS thông minh." />
+        <title>Đăng ký tài khoản | TEMPLATES BDS</title>
+        <meta name="description" content="Đăng ký tài khoản TEMPLATES BDS để sở hữu kho giao diện BĐS chuyên nghiệp và hệ thống CMS thông minh." />
       </Head>
 
       <div className="min-h-screen bg-slate-100/70 flex flex-col font-sans">
         <Header />
 
-        <main className="flex-1 flex items-center justify-center p-4 sm:p-6 py-12 sm:py-16">
-          <div className="w-full max-w-[460px] bg-white rounded-lg shadow-sm border border-slate-200 animate-fadeIn">
+        <main className="flex-1 flex items-center justify-center px-4 sm:px-6 py-12">
+          <div className="w-full max-w-[480px] bg-white rounded-lg shadow-sm border border-slate-200 animate-fadeIn">
             {/* Header */}
             <div className="px-6 pt-8 pb-4 text-center border-b border-slate-100">
               <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 mb-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>Tạo tài khoản thành viên</span>
+                <span>Hệ thống quản trị TEMPLATES BDS</span>
               </div>
               <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                 Đăng Ký

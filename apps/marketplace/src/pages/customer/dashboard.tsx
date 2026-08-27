@@ -20,20 +20,20 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 export default function CustomerDashboard() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { user, orders, wishlists, isLoading, openAuthModal, logout, updateProfile, updatePassword } = useAuth();
+  const { user, orders, wishlists, isLoading, openAuthModal, logout, updateProfile, updatePassword, addToCart } = useAuth();
   // Initialize activeTab from URL query if available
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'downloads' | 'wishlist' | 'settings'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'websites' | 'orders' | 'downloads' | 'wishlist' | 'settings'>('dashboard');
 
   useEffect(() => {
     if (router.isReady && router.query.tab) {
       const tabQuery = router.query.tab as string;
-      if (['dashboard', 'orders', 'downloads', 'wishlist', 'settings'].includes(tabQuery)) {
+      if (['dashboard', 'websites', 'orders', 'downloads', 'wishlist', 'settings'].includes(tabQuery)) {
         setActiveTab(tabQuery as any);
       }
     }
   }, [router.isReady, router.query.tab]);
 
-  const handleTabChange = (tab: 'dashboard' | 'orders' | 'downloads' | 'wishlist' | 'settings') => {
+  const handleTabChange = (tab: 'dashboard' | 'websites' | 'orders' | 'downloads' | 'wishlist' | 'settings') => {
     setActiveTab(tab);
     router.replace(
       {
@@ -271,6 +271,18 @@ export default function CustomerDashboard() {
                   <ChevronRight className="w-3.5 h-3.5 opacity-50" />
                 </button>
                 <button 
+                  onClick={() => handleTabChange('websites')}
+                  className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${activeTab === 'websites' ? 'bg-[#2563EB] text-white shadow-md' : 'hover:bg-slate-50'}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <span className="font-bold">Website của tôi</span>
+                  </div>
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${activeTab === 'websites' ? 'bg-white/20 text-white' : 'bg-emerald-100 text-emerald-800'}`}>
+                    {orders?.filter((o: any) => o.status === 'COMPLETED').length || 0}
+                  </span>
+                </button>
+                <button 
                   onClick={() => handleTabChange('orders')}
                   className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${activeTab === 'orders' ? 'bg-[#2563EB] text-white shadow-md' : 'hover:bg-slate-50'}`}
                 >
@@ -386,6 +398,96 @@ export default function CustomerDashboard() {
                 </div>
               )}
 
+              {/* TAB: MY WEBSITES (Danh sách các website đã sở hữu) */}
+              {activeTab === 'websites' && (
+                <div className="space-y-6">
+                  <div className="text-left flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                      <h2 className="text-2xl md:text-[32px] font-bold text-slate-900 leading-[1.15]">Website Của Tôi</h2>
+                      <p className="text-[14px] text-[#64748B] font-normal leading-[1.7] mt-1">Danh sách các website bất động sản bạn đã mua và kích hoạt trọn đời.</p>
+                    </div>
+                    <Link href="/templates" className="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-xs shrink-0">
+                      <Sparkles className="w-4 h-4" />
+                      <span>Mua Thêm Template Khác</span>
+                    </Link>
+                  </div>
+
+                  <div className="space-y-4">
+                    {!orders || orders.filter((o: any) => o.status === 'COMPLETED').length === 0 ? (
+                      <div className="bg-slate-50 border border-dashed border-slate-200 p-12 rounded-2xl text-center">
+                        <Sparkles className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                        <h4 className="text-base font-bold text-slate-800">Chưa có website nào được kích hoạt</h4>
+                        <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">Sau khi mua template và đơn hàng được duyệt, website của bạn sẽ xuất hiện tại đây kèm quyền truy cập CMS quản trị riêng.</p>
+                        <Link href="/templates" className="mt-5 inline-flex items-center gap-1.5 px-5 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 shadow-md">
+                          Xem Kho 16 Mẫu Template
+                        </Link>
+                      </div>
+                    ) : (
+                      orders.filter((o: any) => o.status === 'COMPLETED').map((ord: any, idx: number) => {
+                        const siteName = ord.template?.name || 'Mẫu Bất Động Sản';
+                        const siteSlug = ord.subdomain || `website-${ord.orderNumber.toLowerCase()}`;
+                        const siteUrl = `http://localhost:3003/?tenant=${siteSlug}`;
+                        return (
+                          <div key={ord.id} className="bg-white border border-slate-200 hover:border-blue-300 p-6 rounded-2xl shadow-xs transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
+                            <div className="flex items-start gap-4">
+                              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-black text-lg shadow-md shrink-0">
+                                #{idx + 1}
+                              </div>
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-black px-2.5 py-0.5 rounded-full uppercase">
+                                    🟢 Đang Hoạt Động (Sở Hữu Trọn Đời)
+                                  </span>
+                                  <span className="text-xs font-mono font-bold text-slate-400">#{ord.orderNumber}</span>
+                                </div>
+                                <h3 className="text-base font-bold text-slate-900">{siteName}</h3>
+                                <div className="text-xs text-slate-500 flex items-center gap-1.5 font-mono">
+                                  <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                  <span className="text-blue-600 font-semibold">{siteSlug}.platformbds.vn</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-2 flex-wrap w-full md:w-auto justify-end border-t md:border-t-0 pt-3 md:pt-0 border-slate-100">
+                              <a
+                                href={process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm"
+                              >
+                                <LayoutDashboard className="w-4 h-4" />
+                                <span>Vào CMS Quản Trị</span>
+                              </a>
+
+                              <a
+                                href={siteUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center gap-1.5 transition-colors"
+                              >
+                                <Eye className="w-4 h-4" />
+                                <span>Xem Website</span>
+                              </a>
+
+                              {ord.type === 'BUY' && (
+                                <button
+                                  onClick={() => handleTabChange('downloads')}
+                                  className="px-3 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-indigo-600 font-bold text-xs flex items-center gap-1.5 transition-colors"
+                                  title="Tải mã nguồn ZIP"
+                                >
+                                  <Download className="w-4 h-4" />
+                                  <span>Tải ZIP</span>
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* TAB 2: MY ORDERS */}
               {activeTab === 'orders' && (
                 <div className="space-y-6">
@@ -458,27 +560,39 @@ export default function CustomerDashboard() {
                                      </button>
                                    </div>
                                  )}
-                                 {/* Đơn thuê SaaS đã duyệt → Nút đi CMS */}
-                                 {ord.type === 'RENT' && ord.status === 'COMPLETED' && (
-                                   <a
-                                     href={`${process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}?redirect=/`}
-                                     target="_blank"
-                                     rel="noopener noreferrer"
-                                     className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all text-[10px] mr-2"
-                                   >
-                                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                                     Vào CMS
-                                   </a>
-                                 )}
-                                 {/* Đơn đã duyệt → Hiển thị nút Tải source */}
-                                 {ord.status === 'COMPLETED' && (
-                                   <button
-                                     onClick={() => handleTabChange('downloads')}
-                                     className="text-indigo-600 hover:text-indigo-800 font-bold text-[10px] underline ml-2"
-                                   >
-                                     Tải source
-                                   </button>
-                                 )}
+                                  {/* Đơn đã duyệt → Nút đi CMS & Xem Website */}
+                                  {ord.status === 'COMPLETED' && (
+                                    <div className="inline-flex items-center gap-1.5 flex-wrap">
+                                      <a
+                                        href={process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition-all text-[10px]"
+                                      >
+                                        <LayoutDashboard className="w-3 h-3" />
+                                        Vào CMS
+                                      </a>
+                                      {ord.subdomain && (
+                                        <a
+                                          href={`http://localhost:3003/?tenant=${ord.subdomain}`}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all text-[10px]"
+                                        >
+                                          <Eye className="w-3 h-3" />
+                                          Xem Web
+                                        </a>
+                                      )}
+                                      {ord.type === 'BUY' && (
+                                        <button
+                                          onClick={() => handleTabChange('downloads')}
+                                          className="text-indigo-600 hover:text-indigo-800 font-bold text-[10px] underline ml-1"
+                                        >
+                                          Tải source
+                                        </button>
+                                      )}
+                                    </div>
+                                  )}
                                  {/* Đơn chờ admin duyệt */}
                                  {ord.status === 'WAITING_CONFIRM' && (
                                    <div className="inline-flex items-center gap-2">
@@ -577,9 +691,15 @@ export default function CustomerDashboard() {
                                   <Link href={`/demo/${tpl.slug}`} className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-[11px] font-sans font-bold transition-colors">
                                     Xem Demo
                                   </Link>
-                                  <Link href="/templates" className="px-3 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg text-[11px] font-sans font-bold transition-colors">
+                                  <button
+                                    onClick={() => {
+                                      addToCart(tpl, 'BUY');
+                                      router.push('/cart');
+                                    }}
+                                    className="px-3 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg text-[11px] font-sans font-bold transition-colors cursor-pointer"
+                                  >
                                     Mua Ngay
-                                  </Link>
+                                  </button>
                                 </div>
                               </div>
                             </div>

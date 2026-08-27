@@ -7,6 +7,7 @@ import {
   Wind, Droplets, Sun, Activity, Coffee, Maximize, Play, Plus, Minus
 } from 'lucide-react';
 import { MAX_W } from '../design-system';
+import { FacebookIcon, InstagramIcon, YoutubeIcon, ZaloIcon } from '../icons/SocialIcons';
 
 interface TemplateProps {
   template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, any> };
@@ -538,12 +539,21 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
               </span>
             </div>
             <p className="leading-relaxed mb-6 font-light text-sm" style={{ color: COLORS.textLight }}>
-              Tái định nghĩa không gian sống đô thị qua lăng kính tối giản, tinh khiết và tiện tiện nghi đẳng cấp.
+              {company?.slogan || company?.description || 'Tái định nghĩa không gian sống đô thị qua lăng kính tối giản, tinh khiết và tiện nghi đẳng cấp.'}
             </p>
-            <div className="flex gap-4">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-gray-200 transition-colors cursor-pointer text-sm font-medium" style={{ borderColor: COLORS.border }}>FB</div>
-              <div className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-gray-200 transition-colors cursor-pointer text-sm font-medium" style={{ borderColor: COLORS.border }}>IN</div>
-              <div className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-gray-200 transition-colors cursor-pointer text-sm font-medium" style={{ borderColor: COLORS.border }}>YT</div>
+            <div className="flex items-center gap-3">
+              <a href={company?.socialLinks?.facebook || "https://facebook.com"} target="_blank" rel="noopener noreferrer" title="Facebook" className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors" style={{ borderColor: COLORS.border }}>
+                <FacebookIcon className="w-4 h-4" />
+              </a>
+              <a href={`https://zalo.me/${company?.phone || '0919006030'}`} target="_blank" rel="noopener noreferrer" title="Zalo" className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-[#0068FF] hover:text-white hover:border-[#0068FF] transition-colors p-2" style={{ borderColor: COLORS.border }}>
+                <ZaloIcon className="w-full h-full" />
+              </a>
+              <a href={company?.socialLinks?.instagram || "https://instagram.com"} target="_blank" rel="noopener noreferrer" title="Instagram" className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-pink-600 hover:text-white hover:border-pink-600 transition-colors" style={{ borderColor: COLORS.border }}>
+                <InstagramIcon className="w-4 h-4" />
+              </a>
+              <a href={company?.socialLinks?.youtube || "https://youtube.com"} target="_blank" rel="noopener noreferrer" title="YouTube" className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-red-600 hover:text-white hover:border-red-600 transition-colors" style={{ borderColor: COLORS.border }}>
+                <YoutubeIcon className="w-4 h-4" />
+              </a>
             </div>
           </div>
 
@@ -570,17 +580,23 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
           <div>
             <h4 className="text-sm uppercase tracking-widest font-semibold mb-6" style={{ color: COLORS.primary }}>Liên hệ</h4>
             <ul className="space-y-4 text-sm font-light">
-              <li className="flex items-start gap-3">
-                <MapPin size={18} className="mt-0.5 shrink-0" style={{ color: COLORS.gold }} />
-                <span style={{ color: COLORS.textLight }}>{company?.address || company?.address || 'Tầng 15, Tòa nhà Minimal, 123 Đường Tôn Đức Thắng, Quận 1, TP.HCM'}</span>
+              <li>
+                <a href={`https://maps.google.com/?q=${encodeURIComponent(company?.address || 'Tầng 15, Tòa nhà Minimal, 123 Đường Tôn Đức Thắng, Quận 1, TP.HCM')}`} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 hover:opacity-80 transition-opacity">
+                  <MapPin size={18} className="mt-0.5 shrink-0" style={{ color: COLORS.gold }} />
+                  <span style={{ color: COLORS.textLight }}>{company?.address || 'Tầng 15, Tòa nhà Minimal, 123 Đường Tôn Đức Thắng, Quận 1, TP.HCM'}</span>
+                </a>
               </li>
-              <li className="flex items-center gap-3">
-                <Phone size={18} className="shrink-0" style={{ color: COLORS.gold }} />
-                <span style={{ color: COLORS.textLight }}>{company?.phone || company?.hotline || company?.phone || company?.hotline || '0909 123 456'}</span>
+              <li>
+                <a href={`tel:${(company?.phone || '0919006030').replace(/\s/g, '')}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                  <Phone size={18} className="shrink-0" style={{ color: COLORS.gold }} />
+                  <span className="whitespace-nowrap" style={{ color: COLORS.textLight }}>{company?.phone || '0919 006 030'}</span>
+                </a>
               </li>
-              <li className="flex items-center gap-3">
-                <Mail size={18} className="shrink-0" style={{ color: COLORS.gold }} />
-                <span style={{ color: COLORS.textLight }}>{company?.email || company?.email || 'contact@minimal.vn'}</span>
+              <li>
+                <a href={`mailto:${company?.email || 'contact@minimal.vn'}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                  <Mail size={18} className="shrink-0" style={{ color: COLORS.gold }} />
+                  <span style={{ color: COLORS.textLight }}>{company?.email || 'contact@minimal.vn'}</span>
+                </a>
               </li>
             </ul>
           </div>
@@ -891,41 +907,52 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div className="col-span-2 row-span-2 relative group overflow-hidden">
-              <Image src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80" 
-                alt="Gallery 1" 
-                className="w-full h-full object-cover min-h-[400px] hover:opacity-90 transition-opacity cursor-pointer bg-gray-200 group-hover:scale-102 transition-all duration-500" 
-                onClick={() => setSelectedGalleryImg("https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80")} width={1200} height={800}
+              <img 
+                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85" 
+                onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}
+                alt="Phòng khách tối giản" 
+                className="w-full h-full object-cover min-h-[400px] hover:opacity-90 transition-opacity cursor-pointer bg-gray-200 group-hover:scale-105 transition-all duration-500" 
+                onClick={() => setSelectedGalleryImg("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85")}
               />
             </div>
             <div className="relative group overflow-hidden">
-              <Image src="https://images.unsplash.com/photo-1600607686527-6fb886090705?w=800&q=80" 
-                alt="Gallery 2" 
-                className="w-full h-full object-cover h-[200px] hover:opacity-90 transition-opacity cursor-pointer bg-gray-200 group-hover:scale-102 transition-all duration-500" 
-                onClick={() => setSelectedGalleryImg("https://images.unsplash.com/photo-1600607686527-6fb886090705?w=800&q=80")} width={1200} height={800}
+              <img 
+                src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=800&q=80" 
+                onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}
+                alt="Phòng ngủ hiện đại" 
+                className="w-full h-full object-cover h-[200px] hover:opacity-90 transition-opacity cursor-pointer bg-gray-200 group-hover:scale-105 transition-all duration-500" 
+                onClick={() => setSelectedGalleryImg("https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=800&q=80")}
               />
             </div>
             <div className="relative group overflow-hidden">
-              <Image src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80" 
-                alt="Gallery 3" 
-                className="w-full h-full object-cover h-[200px] hover:opacity-90 transition-opacity cursor-pointer bg-gray-200 group-hover:scale-102 transition-all duration-500" 
-                onClick={() => setSelectedGalleryImg("https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80")} width={1200} height={800}
+              <img 
+                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80" 
+                onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}
+                alt="Khu vực bàn ăn" 
+                className="w-full h-full object-cover h-[200px] hover:opacity-90 transition-opacity cursor-pointer bg-gray-200 group-hover:scale-105 transition-all duration-500" 
+                onClick={() => setSelectedGalleryImg("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80")}
               />
             </div>
             <div className="relative group overflow-hidden">
-              <Image src="https://images.unsplash.com/photo-1600585154526-990dced4e56d?w=800&q=80" 
-                alt="Gallery 4" 
-                className="w-full h-full object-cover h-[200px] hover:opacity-90 transition-opacity cursor-pointer bg-gray-200 group-hover:scale-102 transition-all duration-500" 
-                onClick={() => setSelectedGalleryImg("https://images.unsplash.com/photo-1600585154526-990dced4e56d?w=800&q=80")} width={1200} height={800}
+              <img 
+                src="https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=800&q=80" 
+                onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}
+                alt="Ban công rộng mở" 
+                className="w-full h-full object-cover h-[200px] hover:opacity-90 transition-opacity cursor-pointer bg-gray-200 group-hover:scale-105 transition-all duration-500" 
+                onClick={() => setSelectedGalleryImg("https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=800&q=80")}
               />
             </div>
             <div className="col-span-2 relative group overflow-hidden">
-              <Image src="https://images.unsplash.com/photo-1600607688969-a5bfcd394fc5?w=800&q=80" 
-                alt="Gallery 5" 
-                className="w-full h-full object-cover h-[200px] hover:opacity-90 transition-opacity cursor-pointer bg-gray-200 group-hover:scale-102 transition-all duration-500" 
-                onClick={() => setSelectedGalleryImg("https://images.unsplash.com/photo-1600607688969-a5bfcd394fc5?w=800&q=80")} width={1200} height={800}
+              <img 
+                src="https://images.unsplash.com/photo-1600585154526-990dced4e56d?w=1200&q=85" 
+                onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}
+                alt="Kiến trúc tổng thể" 
+                className="w-full h-full object-cover h-[200px] hover:opacity-90 transition-opacity cursor-pointer bg-gray-200 group-hover:scale-105 transition-all duration-500" 
+                onClick={() => setSelectedGalleryImg("https://images.unsplash.com/photo-1600585154526-990dced4e56d?w=1200&q=85")}
               />
             </div>
           </div>
+
           <div className="text-center mt-12">
             <button 
               onClick={() => navigate('gallery')} 

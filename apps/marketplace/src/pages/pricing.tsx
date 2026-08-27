@@ -38,14 +38,14 @@ export default function PricingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-[#F8FAFC] text-slate-900 antialiased font-sans">
       <Head>
-        <title>Bảng Giá Dịch Vụ Website Bất Động Sản - PlatformBDS</title>
+        <title>Bảng Giá Dịch Vụ Website Bất Động Sản - TEMPLATES BDS</title>
         <meta name="description" content="Sở hữu website bất động sản chuyên nghiệp giúp bạn thu hút khách hàng tiềm năng và chốt giao dịch mỗi ngày." />
       </Head>
 
       <Header 
         onSearch={() => {}} 
-        onOpenConsultation={() => alert('Đội ngũ tư vấn PlatformBDS sẽ liên hệ hỗ trợ bạn qua hotline 0919 006 030 ngay lập tức!')} 
-        onOpenAuth={() => {}}
+        onOpenConsultation={() => router.push('/contact')} 
+        onOpenAuth={() => router.push('/login')}
       />
 
       <main className="flex-grow max-w-[1200px] w-full mx-auto px-4 sm:px-6 py-[80px] sm:py-[100px]">
@@ -125,7 +125,7 @@ export default function PricingPage() {
             </div>
             <button 
               onClick={() => router.push('/templates')}
-              className="mt-auto w-full h-12 bg-blue-650 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
+              className="mt-auto w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
             >
               <span>Xem mẫu & Thiết kế ngay</span>
               <ArrowRight className="w-4 h-4" />

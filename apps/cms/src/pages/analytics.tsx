@@ -315,10 +315,11 @@ export default function AnalyticsPage() {
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
           <h3 className="text-sm font-black text-slate-900">Trang Xem Nhiều Nhất</h3>
-          <a href="#" className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1">
+          <Link href="/pages" className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1">
             Xem tất cả <ArrowUpRight className="w-3 h-3" />
-          </a>
+          </Link>
         </div>
+
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>

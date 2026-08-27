@@ -4,6 +4,7 @@ import axios from 'axios';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Phone, Mail, MapPin, ArrowLeft, Building2, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { themeToCSS, themeToGoogleFontsUrl } from '../utils/themeUtils';
 
 interface CustomPageProps {
   company: any;
@@ -22,6 +23,12 @@ export default function CustomPublicPage({ company, theme, page, slug, tenantSlu
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col justify-between">
       <Head>
         <title>{pageTitle} | {company?.name || 'Bất Động Sản Hoàng Gia'}</title>
+        {theme && (
+          <>
+            <style id="tenant-theme" dangerouslySetInnerHTML={{ __html: themeToCSS(theme) }} />
+            <link href={themeToGoogleFontsUrl(theme)} rel="stylesheet" />
+          </>
+        )}
       </Head>
 
       {/* Top Navbar */}

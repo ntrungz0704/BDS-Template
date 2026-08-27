@@ -7,6 +7,7 @@ import {
   Zap, Truck, Scale, ChevronRight, BarChart3, Filter, Award, Activity, Box, Maximize
 } from 'lucide-react';
 import { MAX_W } from '../design-system';
+import { FacebookIcon, LinkedinIcon, YoutubeIcon, ZaloIcon } from '../../icons/SocialIcons';
 
 const PROJECTS_DATA = [
   {
@@ -1198,10 +1199,19 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               </div>
             </div>
             <p className="mb-6 leading-relaxed">Nhà phát triển bất động sản công nghiệp uy tín, cung cấp giải pháp không gian tối ưu cho doanh nghiệp FDI tại Việt Nam.</p>
-            <div className="flex space-x-4">
-              <div className="w-10 h-10 bg-gray-800 flex items-center justify-center hover:bg-[#1E40AF] hover:text-white transition-colors cursor-pointer text-white">IN</div>
-              <div className="w-10 h-10 bg-gray-800 flex items-center justify-center hover:bg-[#1E40AF] hover:text-white transition-colors cursor-pointer text-white">FB</div>
-              <div className="w-10 h-10 bg-gray-800 flex items-center justify-center hover:bg-[#1E40AF] hover:text-white transition-colors cursor-pointer text-white">YT</div>
+            <div className="flex items-center gap-3">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook" className="w-10 h-10 bg-gray-800 flex items-center justify-center hover:bg-blue-600 text-white transition-colors cursor-pointer rounded-lg">
+                <FacebookIcon className="w-4 h-4" />
+              </a>
+              <a href="https://zalo.me/0919006030" target="_blank" rel="noopener noreferrer" title="Zalo" className="w-10 h-10 bg-gray-800 flex items-center justify-center hover:bg-[#0068FF] text-white transition-colors cursor-pointer rounded-lg p-2">
+                <ZaloIcon className="w-full h-full" />
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" title="LinkedIn" className="w-10 h-10 bg-gray-800 flex items-center justify-center hover:bg-blue-700 text-white transition-colors cursor-pointer rounded-lg">
+                <LinkedinIcon className="w-4 h-4" />
+              </a>
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" title="YouTube" className="w-10 h-10 bg-gray-800 flex items-center justify-center hover:bg-red-600 text-white transition-colors cursor-pointer rounded-lg">
+                <YoutubeIcon className="w-4 h-4" />
+              </a>
             </div>
           </div>
           
@@ -1229,24 +1239,30 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
           <div>
             <h4 className="text-white font-bold uppercase tracking-widest mb-6" style={{ fontFamily: fontHeading }}>LIÊN HỆ TRỤ SỞ</h4>
             <ul className="space-y-4">
-              <li className="flex items-start">
-                <MapPin className="w-5 h-5 mr-3 text-[#1E40AF] flex-shrink-0 mt-0.5" />
-                <span>Tầng 15, Tòa nhà Bitexco Financial Tower, Số 2 Hải Triều, Q.1, TP.HCM</span>
+              <li>
+                <a href="https://maps.google.com/?q=Bitexco+2+Hai+Trieu+Quan+1+TPHCM" target="_blank" rel="noopener noreferrer" className="flex items-start hover:text-white transition-colors">
+                  <MapPin className="w-5 h-5 mr-3 text-[#F59E0B] flex-shrink-0 mt-0.5" />
+                  <span>Tầng 15, Tòa nhà Bitexco Financial Tower, Số 2 Hải Triều, Q.1, TP.HCM</span>
+                </a>
               </li>
-              <li className="flex items-center">
-                <Phone className="w-5 h-5 mr-3 text-[#1E40AF] flex-shrink-0" />
-                <span>+84 90 123 4567 (Hotline Đầu Tư)</span>
+              <li>
+                <a href="tel:0919006030" className="flex items-center hover:text-white transition-colors">
+                  <Phone className="w-5 h-5 mr-3 text-[#F59E0B] flex-shrink-0" />
+                  <span className="whitespace-nowrap">0919 006 030 (Hotline Đầu Tư)</span>
+                </a>
               </li>
-              <li className="flex items-center">
-                <Mail className="w-5 h-5 mr-3 text-[#1E40AF] flex-shrink-0" />
-                <span>invest@platformbds.vn</span>
+              <li>
+                <a href="mailto:invest@aireviewbds.com" className="flex items-center hover:text-white transition-colors">
+                  <Mail className="w-5 h-5 mr-3 text-[#F59E0B] flex-shrink-0" />
+                  <span>invest@aireviewbds.com</span>
+                </a>
               </li>
             </ul>
           </div>
         </div>
         
         <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500">
-          <p>&copy; {new Date().getFullYear()} PlatformBDS - Industrial Division. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} TEMPLATES BDS - Industrial Division. All rights reserved.</p>
         </div>
       </footer>
 

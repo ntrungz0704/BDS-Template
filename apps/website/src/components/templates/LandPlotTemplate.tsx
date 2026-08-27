@@ -324,13 +324,16 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
   
   // Theme configuration
   const theme = {
-    bg: '#FAFAF7',
-    primary: '#2D6A4F',
-    accent: '#D4A373',
-    text: '#1F2937',
-    textLight: '#4B5563',
-    headingFont: "'Raleway', sans-serif",
-    bodyFont: "'Nunito Sans', sans-serif",
+    bg: dynamicTheme?.backgroundColor || '#FAFAF7',
+    primary: dynamicTheme?.primaryColor || '#2D6A4F',
+    accent: dynamicTheme?.accentColor || '#D4A373',
+    text: dynamicTheme?.textColor || '#1F2937',
+    textLight: dynamicTheme?.textMutedColor || '#4B5563',
+    textMuted: dynamicTheme?.textMutedColor || '#4B5563',
+    surface: dynamicTheme?.surfaceColor || '#FFFFFF',
+    border: dynamicTheme?.borderColor || '#E5E7EB',
+    headingFont: dynamicTheme?.fontHeading ? (dynamicTheme.fontHeading.includes(',') ? dynamicTheme.fontHeading : `'${dynamicTheme.fontHeading}', sans-serif`) : "'Raleway', sans-serif",
+    bodyFont: dynamicTheme?.fontBody ? (dynamicTheme.fontBody.includes(',') ? dynamicTheme.fontBody : `'${dynamicTheme.fontBody}', sans-serif`) : "'Nunito Sans', sans-serif",
   };
 
   // Nav Links

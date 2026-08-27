@@ -1591,7 +1591,7 @@ function DefaultFallbackTemplate({ template, viewport = 'desktop' }: DemoRendere
             Trụ sở sàn giao dịch: Tòa nhà Platform Tower, 68 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh. Hotline Concierge 24/7: <strong>0919 006 030</strong>.
           </p>
           <p className="opacity-60 pt-4 border-t border-slate-800">
-            Bản quyền mẫu website <strong>{template.name}</strong> thuộc về kho giao diện PlatformBDS Marketplace. Tích hợp sẵn hệ thống CMS Quản lý tin đăng tự động & Tối ưu SEO Google 100/100.
+            Bản quyền mẫu website <strong>{template.name}</strong> thuộc về kho giao diện TEMPLATES BDS Marketplace. Tích hợp sẵn hệ thống CMS Quản lý tin đăng tự động & Tối ưu SEO Google 100/100.
           </p>
         </div>
       </footer>

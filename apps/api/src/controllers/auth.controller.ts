@@ -11,7 +11,7 @@ const registerSchema = z.object({
   email: z.string().email('Định dạng email không hợp lệ.'),
   fullName: z.string().min(2, 'Họ và tên tối thiểu phải có 2 ký tự.'),
   password: z.string().min(6, 'Mật khẩu tối thiểu phải từ 6 ký tự trở lên.'),
-  phone: z.string().optional(),
+  phone: z.string().regex(/^(0|\+84)[0-9]{9,10}$/, 'SĐT phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.').optional(),
 });
 
 const loginSchema = z.object({

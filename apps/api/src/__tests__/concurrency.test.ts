@@ -9,6 +9,7 @@ describe('Concurrency & Approve Order Integration Test', () => {
   let adminUser: any;
   let adminToken: string;
   let testOrder: any;
+  let templateId: string;
   const subdomain = 'luxury-gold-concurrency-test';
 
   beforeAll(async () => {
@@ -38,6 +39,19 @@ describe('Concurrency & Approve Order Integration Test', () => {
   });
 
   beforeEach(async () => {
+    // The test database may be intentionally empty; provision the immutable
+    // template fixture required by the order foreign key.
+    const template = await prisma.template.upsert({
+      where: { slug: 'luxury-gold' },
+      update: { isActive: true },
+      create: {
+        name: 'Luxury Gold',
+        slug: 'luxury-gold',
+        isActive: true,
+      },
+    });
+    templateId = template.id;
+
     // Clean up existing tenant & order if any
     const existingTenant = await prisma.tenant.findUnique({
       where: { slug: subdomain },
@@ -87,7 +101,7 @@ describe('Concurrency & Approve Order Integration Test', () => {
         amount: 3000000,
         type: 'RENT',
         status: 'WAITING_CONFIRM',
-        templateId: 'template-1',
+        templateId,
         subdomain: subdomain,
         version: 1,
       },

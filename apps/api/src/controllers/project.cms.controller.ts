@@ -46,8 +46,9 @@ const projectSchema = z.object({
   images: z.array(z.string()).optional().default([]),
   thumbnail: z.string().optional(),
   featured: z.coerce.boolean().optional().default(false),
-  published: z.coerce.boolean().optional().default(false),
+  published: z.coerce.boolean().optional().default(true),
 });
+
 
 export async function getProjects(req: Request, res: Response, next: NextFunction) {
   const tenantId = req.tenantId; // Lấy từ checkTenantAccess middleware

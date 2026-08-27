@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Crown, Star, Phone, Mail, MapPin, ChevronRight, Play, Download, Award, Users, Building2, TrendingUp, Shield, Clock, ArrowRight, CheckCircle, ChevronDown, Menu, X, Search, Facebook, Youtube, Instagram } from 'lucide-react';
 import { MAX_W } from '../design-system';
+import { getSectionContent, isSectionVisible } from '../../utils/useSectionContent';
 
 interface TemplateProps {
   template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, any> };
@@ -13,20 +14,13 @@ interface TemplateProps {
   theme?: any;
   projects?: any[];
   posts?: any[];
+  pageContent?: any;
 }
 
-// ── DESIGN TOKENS ────────────────────────────────────────────────────────────
-const GOLD = '#C9A84C';
-const GOLD_LIGHT = '#E8C97E';
-const DARK = '#0A0A0F';
-const DARK2 = '#12121A';
-const DARK3 = '#1A1A24';
-const WHITE = '#FFFFFF';
-const OFFWHITE = '#F8F5EF';
-const MUTED = '#9A9AA8';
+// ── DESIGN TOKENS (defaults — overridden by dynamicTheme inside component) ──
+// Moved to inside the function component to use dynamicTheme values.
+// See line ~366 where GOLD, DARK, etc. are resolved from dynamicTheme prop.
 
-const FONT_HEADING = "'Playfair Display', 'Cormorant Garamond', Georgia, serif";
-const FONT_BODY = "'Plus Jakarta Sans', 'Inter', sans-serif";
 
 // ── REAL ESTATE DATA ─────────────────────────────────────────────────────────
 const PROJECTS = [
@@ -325,43 +319,10 @@ const FAQ = [
   { q: 'Dịch vụ sau bàn giao bao gồm những gì?', a: 'Concierge 24/7, quản gia riêng, bảo trì định kỳ miễn phí 5 năm, dịch vụ cho thuê sinh lời, quản lý tài sản toàn diện theo chuẩn Ritz-Carlton.' },
 ];
 
-// ── HELPER COMPONENTS ─────────────────────────────────────────────────────────
-const SectionLabel = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex items-center gap-3 mb-4">
-    <span className="w-8 h-px" style={{ backgroundColor: GOLD }} />
-    <span className="text-xs tracking-[0.25em] uppercase" style={{ color: GOLD, fontFamily: FONT_BODY }}>{children}</span>
-    <span className="w-8 h-px" style={{ backgroundColor: GOLD }} />
-  </div>
-);
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-}
-
-const GoldButton = ({ children, className = '', style = {}, ...props }: ButtonProps) => (
-  <button
-    className={`inline-flex items-center gap-2 px-8 py-4 text-sm tracking-[0.15em] uppercase font-semibold transition-all duration-300 ${className}`}
-    style={{ backgroundColor: GOLD, color: DARK, fontFamily: FONT_BODY, ...style }}
-    onMouseEnter={e => (e.currentTarget.style.backgroundColor = GOLD_LIGHT)}
-    onMouseLeave={e => (e.currentTarget.style.backgroundColor = GOLD)}
-    {...props}
-  >
-    {children}
-  </button>
-);
-
-const OutlineButton = ({ children, className = '', ...props }: ButtonProps) => (
-  <button
-    className={`inline-flex items-center gap-2 px-8 py-4 text-sm tracking-[0.15em] uppercase font-medium border transition-all duration-300 hover:bg-white/5 ${className}`}
-    style={{ borderColor: GOLD, color: GOLD, fontFamily: FONT_BODY }}
-    {...props}
-  >
-    {children}
-  </button>
-);
 
 // ══ MAIN COMPONENT ════════════════════════════════════════════════════════════
-export default function LuxuryTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
+export default function LuxuryTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts, pageContent }: TemplateProps) {
   // Shadowing variables
   const GOLD = dynamicTheme?.primaryColor || '#C9A84C';
   const GOLD_LIGHT = dynamicTheme?.secondaryColor || '#E8C97E';
@@ -373,6 +334,93 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
   const FONT_HEADING = dynamicTheme?.fontHeading ? `'${dynamicTheme.fontHeading}', serif` : "'Playfair Display', 'Cormorant Garamond', Georgia, serif";
   const FONT_BODY = dynamicTheme?.fontBody ? `'${dynamicTheme.fontBody}', sans-serif` : "'Plus Jakarta Sans', 'Inter', sans-serif";
+
+  // ── DYNAMIC SECTION CONTENT (DB → fallback to hardcoded defaults) ──
+  const sections = pageContent?.sections || [];
+
+  const heroContent = getSectionContent(sections, 'hero', {
+    badge: 'Lumière Grand Palace — Vinhomes Riverside',
+    heading: 'Kiệt Tác\nĐỉnh Cao\nSống Thượng Lưu',
+    headingAccent: 'Đỉnh Cao',
+    subtitle: '18 dinh thự độc bản được kiến trúc sư người Ý thiết kế riêng cho 18 vị chủ nhân tinh hoa. Tọa lạc bên dòng sông ngọc Hà Nội.',
+    ctaText: 'Khám phá dự án',
+    ctaUrl: 'projects',
+    backgroundImage: 'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=1920&q=90',
+    quickStats: [
+      { label: 'Diện tích', value: 'Từ 280m²' },
+      { label: 'Giá từ', value: '28 Tỷ VNĐ' },
+      { label: 'Pháp lý', value: 'Sổ đỏ vĩnh viễn' },
+      { label: 'Bàn giao', value: 'Q2 / 2027' },
+    ],
+  });
+
+  const introContent = getSectionContent(sections, 'intro', {
+    quote: 'Chúng tôi không xây những ngôi nhà. Chúng tôi kiến tạo những di sản trường tồn theo năm tháng.',
+    quoteAccent: 'di sản trường tồn',
+    description: 'Lumière Group — 18 năm kiến tạo những không gian sống đỉnh cao chỉ dành cho 2.800+ vị chủ nhân tinh hoa nhất Việt Nam và khu vực.',
+  });
+
+  const statsContent = getSectionContent(sections, 'stats', {
+    items: [
+      { value: '18+', label: 'Năm kinh nghiệm', iconName: 'Clock' },
+      { value: '350+', label: 'Dinh thự đã bàn giao', iconName: 'Building2' },
+      { value: '2,800+', label: 'Chủ nhân tinh hoa', iconName: 'Users' },
+      { value: '98%', label: 'Hài lòng tuyệt đối', iconName: 'Star' },
+    ],
+  });
+
+  const amenitiesContent = getSectionContent(sections, 'amenities', {
+    heading: 'Chuẩn Mực 6 Sao Quốc Tế',
+    headingAccent: '6 Sao',
+    sectionLabel: 'Đặc quyền & tiện ích',
+    items: AMENITIES,
+  });
+
+  const testimonialsContent = getSectionContent(sections, 'testimonials', {
+    heading: 'Tiếng Nói Từ Giới Tinh Hoa',
+    headingAccent: 'Giới Tinh Hoa',
+    sectionLabel: 'Chủ nhân nói gì',
+    items: TESTIMONIALS,
+  });
+
+  const timelineContent = getSectionContent(sections, 'timeline', {
+    heading: '18 Năm Kiến Tạo Di Sản',
+    headingAccent: 'Kiến Tạo Di Sản',
+    sectionLabel: 'Hành trình phát triển',
+    items: TIMELINE,
+  });
+
+  const faqContent = getSectionContent(sections, 'faq', {
+    heading: 'Câu Hỏi Thường Gặp',
+    headingAccent: 'Thường Gặp',
+    sectionLabel: 'Giải đáp thắc mắc',
+    items: FAQ,
+  });
+
+  const ctaContent = getSectionContent(sections, 'cta', {
+    heading: 'Bắt Đầu Hành Trình\nSống Đỉnh Cao Của Bạn',
+    headingAccent: 'Sống Đỉnh Cao',
+    description: 'Quản gia cá nhân của chúng tôi sẽ thiết kế riêng một buổi thưởng lãm dành cho quý vị. Tuyệt đối bảo mật.',
+    ctaText: 'Yêu Cầu Tư Vấn VIP',
+  });
+
+  const floorPlansContent = getSectionContent(sections, 'floor_plans', {
+    heading: 'Bản Giao Hưởng Kiến Trúc',
+    headingAccent: 'Kiến Trúc',
+    sectionLabel: 'Mặt bằng dự án',
+    items: FLOOR_PLANS,
+  });
+
+  const galleryContent = getSectionContent(sections, 'gallery', {
+    heading: 'Nghệ Thuật Của Sự Hoàn Mỹ',
+    headingAccent: 'Của Sự Hoàn Mỹ',
+    sectionLabel: 'Thư viện hình ảnh',
+    items: GALLERY_ITEMS,
+  });
+
+  const partnersContent = getSectionContent(sections, 'partners', {
+    items: ['VINHOMES', 'MASTERISE', 'SUN GROUP', 'CAPITALAND', 'KNIGHT FRANK'],
+  });
 
   // Local helper components to capture the shadowed theme variables
   const SectionLabel = ({ children }: { children: React.ReactNode }) => (
@@ -605,7 +653,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       {/* ── HERO ── */}
       <section className="relative h-screen min-h-[700px] flex items-end justify-start overflow-hidden" style={{ backgroundColor: DARK }}>
         <div className="absolute inset-0">
-          <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}             src="https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=1920&q=90"
+          <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}             src={heroContent.backgroundImage}
             alt="Luxury Villa"
             className="w-full h-full object-cover"
             style={{ opacity: 0.55 }}
@@ -616,27 +664,29 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         {/* Content */}
         <div className={`${MAX_W} mx-auto px-4 md:px-8 pb-20 md:pb-28 relative z-10 w-full`}>
           <div className="max-w-3xl">
-            <SectionLabel>Lumière Grand Palace — Vinhomes Riverside</SectionLabel>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-light text-white leading-none mb-6" style={{ fontFamily: FONT_HEADING }}>
-              Kiệt Tác<br />
-              <span className="italic" style={{ color: GOLD }}>Đỉnh Cao</span><br />
-              Sống Thượng Lưu
+            <SectionLabel>{heroContent.badge}</SectionLabel>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-light text-white leading-none mb-6 heading-safe" style={{ fontFamily: FONT_HEADING }}>
+              {heroContent.heading.split('\n').map((line: string, i: number) => (
+                <React.Fragment key={i}>
+                  {line.includes(heroContent.headingAccent) ? (
+                    <span className="italic" style={{ color: GOLD }}>{line}</span>
+                  ) : (
+                    line
+                  )}
+                  {i < heroContent.heading.split('\n').length - 1 && <br />}
+                </React.Fragment>
+              ))}
             </h1>
-            <p className="text-lg md:text-xl font-light leading-relaxed mb-10 max-w-xl" style={{ color: '#B0B0C0', fontFamily: FONT_BODY }}>
-              18 dinh thự độc bản được kiến trúc sư người Ý thiết kế riêng cho 18 vị chủ nhân tinh hoa. Tọa lạc bên dòng sông ngọc Hà Nội.
+            <p className="text-lg md:text-xl font-light leading-relaxed mb-10 max-w-xl text-safe" style={{ color: '#B0B0C0', fontFamily: FONT_BODY }}>
+              {heroContent.subtitle}
             </p>
             <div className="flex flex-wrap gap-4 mb-12">
-              <GoldButton onClick={(e) => handlePageChange('projects', e)}><ArrowRight className="w-4 h-4" /> Khám phá dự án</GoldButton>
+              <GoldButton onClick={(e) => handlePageChange(heroContent.ctaUrl || 'projects', e)}><ArrowRight className="w-4 h-4" /> {heroContent.ctaText}</GoldButton>
               <OutlineButton><Play className="w-4 h-4" /> Xem phim ngắn</OutlineButton>
             </div>
             {/* Stats row */}
             <div className="flex flex-wrap gap-8">
-              {[
-                { label: 'Diện tích', value: 'Từ 280m²' },
-                { label: 'Giá từ', value: '28 Tỷ VNĐ' },
-                { label: 'Pháp lý', value: 'Sổ đỏ vĩnh viễn' },
-                { label: 'Bàn giao', value: 'Q2 / 2027' },
-              ].map(s => (
+              {(heroContent.quickStats || []).map((s: any) => (
                 <div key={s.label}>
                   <div className="text-xs tracking-widest uppercase mb-1" style={{ color: MUTED, fontFamily: FONT_BODY }}>{s.label}</div>
                   <div className="text-base font-semibold text-white" style={{ fontFamily: FONT_BODY }}>{s.value}</div>
@@ -717,29 +767,36 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       </section>
 
       {/* ── INTRO STATEMENT ── */}
-      <section className="py-28 md:py-36 text-center relative overflow-hidden" style={{ backgroundColor: DARK }}>
+      {isSectionVisible(sections, 'intro') && <section className="py-28 md:py-36 text-center relative overflow-hidden" style={{ backgroundColor: DARK }}>
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24" style={{ background: `linear-gradient(to bottom, ${GOLD}, transparent)` }} />
         <div className="max-w-4xl mx-auto px-4">
           <Crown className="w-10 h-10 mx-auto mb-10 opacity-40" style={{ color: GOLD }} />
           <blockquote className="text-2xl md:text-4xl font-light leading-relaxed mb-8 text-white" style={{ fontFamily: FONT_HEADING }}>
-            &quot;Chúng tôi không xây những ngôi nhà. Chúng tôi kiến tạo những <span className="italic" style={{ color: GOLD }}>di sản trường tồn</span> theo năm tháng.&quot;
+            &quot;{introContent.quote.includes(introContent.quoteAccent) 
+              ? <>{introContent.quote.split(introContent.quoteAccent)[0]}<span className="italic" style={{ color: GOLD }}>{introContent.quoteAccent}</span>{introContent.quote.split(introContent.quoteAccent)[1]}</>  
+              : introContent.quote
+            }&quot;
           </blockquote>
           <p className="text-base font-light leading-loose max-w-2xl mx-auto" style={{ color: MUTED, fontFamily: FONT_BODY }}>
-            Lumière Group — 18 năm kiến tạo những không gian sống đỉnh cao chỉ dành cho 2.800+ vị chủ nhân tinh hoa nhất Việt Nam và khu vực.
+            {introContent.description}
           </p>
         </div>
-      </section>
+      </section>}
 
       {/* ── STATS ── */}
       <section className="py-20" style={{ backgroundColor: DARK3, borderTop: `1px solid rgba(201,168,76,0.1)`, borderBottom: `1px solid rgba(201,168,76,0.1)` }}>
         <div className={`${MAX_W} mx-auto px-4 md:px-8 grid grid-cols-2 md:grid-cols-4 gap-12`}>
-          {STATS.map((s, i) => (
-            <div key={i} className="text-center">
-              <s.icon className="w-6 h-6 mx-auto mb-4 opacity-50" style={{ color: GOLD }} />
-              <div className="text-3xl md:text-5xl font-light mb-2 text-white" style={{ fontFamily: FONT_HEADING }}>{s.value}</div>
-              <div className="text-xs uppercase tracking-widest" style={{ color: MUTED, fontFamily: FONT_BODY }}>{s.label}</div>
-            </div>
-          ))}
+          {statsContent.items.map((s: any, i: number) => {
+            const iconMap: Record<string, any> = { Clock, Building2, Users, Star, TrendingUp, Award, Shield };
+            const IconComp = iconMap[s.iconName || s.icon] || Star;
+            return (
+              <div key={i} className="text-center">
+                <IconComp className="w-6 h-6 mx-auto mb-4 opacity-50" style={{ color: GOLD }} />
+                <div className="text-3xl md:text-5xl font-light mb-2 text-white text-safe" style={{ fontFamily: FONT_HEADING }}>{s.value}</div>
+                <div className="text-xs uppercase tracking-widest text-safe" style={{ color: MUTED, fontFamily: FONT_BODY }}>{s.label}</div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -841,7 +898,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
           {/* Floor tabs */}
           <div className="flex gap-1 mb-10 overflow-x-auto">
-            {FLOOR_PLANS.map((fp, i) => (
+            {floorPlansContent.items.map((fp: any, i: number) => (
               <button key={fp.id} onClick={() => setActiveFloor(i)}
                 className="px-5 py-3 text-xs uppercase tracking-widest whitespace-nowrap transition-all"
                 style={{
@@ -856,17 +913,17 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           </div>
 
           {/* Active floor */}
-          {FLOOR_PLANS[activeFloor] && (
+          {floorPlansContent.items[activeFloor] && (
             <div className={`grid ${isSmall ? 'grid-cols-1' : 'grid-cols-2'} gap-12 items-center`}>
-              <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={FLOOR_PLANS[activeFloor].img} alt={FLOOR_PLANS[activeFloor].label} className="w-full h-[400px] object-cover" style={{ border: `1px solid rgba(201,168,76,0.2)` }} />
+              <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={floorPlansContent.items[activeFloor].img} alt={floorPlansContent.items[activeFloor].label} className="w-full h-[400px] object-cover" style={{ border: `1px solid rgba(201,168,76,0.2)` }} />
               <div>
-                <div className="text-xs uppercase tracking-widest mb-3" style={{ color: GOLD, fontFamily: FONT_BODY }}>{FLOOR_PLANS[activeFloor].label}</div>
-                <h3 className="text-3xl font-light text-white mb-4" style={{ fontFamily: FONT_HEADING }}>{FLOOR_PLANS[activeFloor].desc}</h3>
+                <div className="text-xs uppercase tracking-widest mb-3" style={{ color: GOLD, fontFamily: FONT_BODY }}>{floorPlansContent.items[activeFloor].label}</div>
+                <h3 className="text-3xl font-light text-white mb-4" style={{ fontFamily: FONT_HEADING }}>{floorPlansContent.items[activeFloor].desc}</h3>
                 <div className="grid grid-cols-3 gap-6 mb-8 py-6" style={{ borderTop: `1px solid rgba(201,168,76,0.1)`, borderBottom: `1px solid rgba(201,168,76,0.1)` }}>
                   {[
-                    { label: 'Phòng ngủ', value: FLOOR_PLANS[activeFloor].bedrooms },
-                    { label: 'Phòng tắm', value: FLOOR_PLANS[activeFloor].bathrooms },
-                    { label: 'Mức giá', value: FLOOR_PLANS[activeFloor].price },
+                    { label: 'Phòng ngủ', value: floorPlansContent.items[activeFloor].bedrooms },
+                    { label: 'Phòng tắm', value: floorPlansContent.items[activeFloor].bathrooms },
+                    { label: 'Mức giá', value: floorPlansContent.items[activeFloor].price },
                   ].map(d => (
                     <div key={d.label} className="text-center">
                       <div className="text-xl font-light mb-1" style={{ color: GOLD, fontFamily: FONT_HEADING }}>{d.value}</div>
@@ -888,17 +945,17 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       <section className="py-24 md:py-32" style={{ backgroundColor: DARK3 }}>
         <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
           <div className="text-center mb-16">
-            <SectionLabel>Đặc quyền & tiện ích</SectionLabel>
-            <h2 className="text-3xl md:text-5xl font-light text-white" style={{ fontFamily: FONT_HEADING }}>
-              Chuẩn Mực <span className="italic" style={{ color: GOLD }}>6 Sao</span> Quốc Tế
+            <SectionLabel>{amenitiesContent.sectionLabel}</SectionLabel>
+            <h2 className="text-3xl md:text-5xl font-light text-white heading-safe" style={{ fontFamily: FONT_HEADING }}>
+              {amenitiesContent.heading.split(amenitiesContent.headingAccent)[0]}<span className="italic" style={{ color: GOLD }}>{amenitiesContent.headingAccent}</span>{amenitiesContent.heading.split(amenitiesContent.headingAccent).slice(1).join(amenitiesContent.headingAccent)}
             </h2>
           </div>
           <div className={`grid ${isSmall ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-3'} gap-8`}>
-            {AMENITIES.map((a, i) => (
+            {amenitiesContent.items.map((a: any, i: number) => (
               <div key={i} className="p-8 group hover:border-opacity-50 transition-all" style={{ border: `1px solid rgba(201,168,76,0.15)`, backgroundColor: 'rgba(255,255,255,0.02)' }}>
-                <div className="text-4xl mb-5">{a.icon}</div>
-                <h3 className="text-base font-semibold text-white mb-3" style={{ fontFamily: FONT_BODY }}>{a.title}</h3>
-                <p className="text-sm font-light leading-relaxed" style={{ color: MUTED, fontFamily: FONT_BODY }}>{a.desc}</p>
+                <div className="text-4xl mb-5 text-safe">{a.icon}</div>
+                <h3 className="text-base font-semibold text-white mb-3 text-safe" style={{ fontFamily: FONT_BODY }}>{a.title}</h3>
+                <p className="text-sm font-light leading-relaxed text-safe" style={{ color: MUTED, fontFamily: FONT_BODY }}>{a.desc}</p>
               </div>
             ))}
           </div>
@@ -938,23 +995,23 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       <section className="py-24 md:py-32" style={{ backgroundColor: DARK2 }}>
         <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
           <div className="text-center mb-16">
-            <SectionLabel>Chủ nhân nói gì</SectionLabel>
-            <h2 className="text-3xl md:text-5xl font-light text-white" style={{ fontFamily: FONT_HEADING }}>
-              Tiếng Nói Từ <span className="italic" style={{ color: GOLD }}>Giới Tinh Hoa</span>
+            <SectionLabel>{testimonialsContent.sectionLabel}</SectionLabel>
+            <h2 className="text-3xl md:text-5xl font-light text-white heading-safe" style={{ fontFamily: FONT_HEADING }}>
+              {testimonialsContent.heading.split(testimonialsContent.headingAccent)[0]}<span className="italic" style={{ color: GOLD }}>{testimonialsContent.headingAccent}</span>{testimonialsContent.heading.split(testimonialsContent.headingAccent).slice(1).join(testimonialsContent.headingAccent)}
             </h2>
           </div>
           <div className={`grid ${isSmall ? 'grid-cols-1' : 'grid-cols-3'} gap-8`}>
-            {TESTIMONIALS.map((t, i) => (
+            {testimonialsContent.items.map((t: any, i: number) => (
               <div key={i} className="p-8 relative" style={{ border: `1px solid rgba(201,168,76,0.2)`, backgroundColor: 'rgba(255,255,255,0.02)' }}>
                 <div className="flex gap-1 mb-6">
-                  {Array.from({ length: t.rating }).map((_, j) => <Star key={j} className="w-4 h-4 fill-current" style={{ color: GOLD }} />)}
+                  {Array.from({ length: t.rating || 5 }).map((_, j) => <Star key={j} className="w-4 h-4 fill-current" style={{ color: GOLD }} />)}
                 </div>
-                <p className="text-base font-light leading-relaxed mb-8 italic" style={{ color: '#D0D0E0', fontFamily: FONT_HEADING }}>&ldquo;{t.text}&rdquo;</p>
+                <p className="text-base font-light leading-relaxed mb-8 italic text-safe" style={{ color: '#D0D0E0', fontFamily: FONT_HEADING }}>&ldquo;{t.text}&rdquo;</p>
                 <div className="flex items-center gap-4">
-                  <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={t.img} alt={t.name} className="w-12 h-12 rounded-full object-cover" style={{ border: `2px solid ${GOLD}` }} />
+                  <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={t.img || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80"} alt={t.name} className="w-12 h-12 rounded-full object-cover" style={{ border: `2px solid ${GOLD}` }} />
                   <div>
-                    <div className="text-sm font-semibold text-white" style={{ fontFamily: FONT_BODY }}>{t.name}</div>
-                    <div className="text-xs" style={{ color: MUTED, fontFamily: FONT_BODY }}>{t.title}</div>
+                    <div className="text-sm font-semibold text-white text-safe" style={{ fontFamily: FONT_BODY }}>{t.name}</div>
+                    <div className="text-xs text-safe" style={{ color: MUTED, fontFamily: FONT_BODY }}>{t.title}</div>
                   </div>
                 </div>
               </div>
@@ -967,20 +1024,20 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       <section className="py-24 md:py-32" style={{ backgroundColor: DARK }}>
         <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
           <div className="text-center mb-16">
-            <SectionLabel>Hành trình phát triển</SectionLabel>
-            <h2 className="text-3xl md:text-5xl font-light text-white" style={{ fontFamily: FONT_HEADING }}>
-              18 Năm <span className="italic" style={{ color: GOLD }}>Kiến Tạo Di Sản</span>
+            <SectionLabel>{timelineContent.sectionLabel}</SectionLabel>
+            <h2 className="text-3xl md:text-5xl font-light text-white heading-safe" style={{ fontFamily: FONT_HEADING }}>
+              {timelineContent.heading.split(timelineContent.headingAccent)[0]}<span className="italic" style={{ color: GOLD }}>{timelineContent.headingAccent}</span>{timelineContent.heading.split(timelineContent.headingAccent).slice(1).join(timelineContent.headingAccent)}
             </h2>
           </div>
           <div className="relative">
             <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px hidden md:block" style={{ backgroundColor: 'rgba(201,168,76,0.2)' }} />
             <div className="space-y-12">
-              {TIMELINE.map((item, i) => (
+              {timelineContent.items.map((item: any, i: number) => (
                 <div key={i} className={`flex ${isSmall ? 'flex-col' : i % 2 === 0 ? 'flex-row' : 'flex-row-reverse'} gap-8 items-center`}>
                   <div className={`${isSmall ? 'w-full' : 'w-1/2'} ${!isSmall && i % 2 === 0 ? 'text-right' : 'text-left'}`}>
-                    <div className="text-4xl font-light mb-2" style={{ color: GOLD, fontFamily: FONT_HEADING }}>{item.year}</div>
-                    <h3 className="text-xl font-light text-white mb-2" style={{ fontFamily: FONT_HEADING }}>{item.title}</h3>
-                    <p className="text-sm font-light leading-relaxed" style={{ color: MUTED, fontFamily: FONT_BODY }}>{item.desc}</p>
+                    <div className="text-4xl font-light mb-2 text-safe" style={{ color: GOLD, fontFamily: FONT_HEADING }}>{item.year}</div>
+                    <h3 className="text-xl font-light text-white mb-2 text-safe" style={{ fontFamily: FONT_HEADING }}>{item.title}</h3>
+                    <p className="text-sm font-light leading-relaxed text-safe" style={{ color: MUTED, fontFamily: FONT_BODY }}>{item.desc}</p>
                   </div>
                   {!isSmall && (
                     <div className="w-4 h-4 rounded-full flex-shrink-0 border-2" style={{ backgroundColor: GOLD, borderColor: DARK, zIndex: 1 }} />
@@ -1024,13 +1081,13 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       <section className="py-24 md:py-32" style={{ backgroundColor: DARK2 }}>
         <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
           <div className="text-center mb-16">
-            <SectionLabel>Giải đáp thắc mắc</SectionLabel>
-            <h2 className="text-3xl md:text-5xl font-light text-white" style={{ fontFamily: FONT_HEADING }}>
-              Câu Hỏi <span className="italic" style={{ color: GOLD }}>Thường Gặp</span>
+            <SectionLabel>{faqContent.sectionLabel}</SectionLabel>
+            <h2 className="text-3xl md:text-5xl font-light text-white heading-safe" style={{ fontFamily: FONT_HEADING }}>
+              {faqContent.heading.split(faqContent.headingAccent)[0]}<span className="italic" style={{ color: GOLD }}>{faqContent.headingAccent}</span>{faqContent.heading.split(faqContent.headingAccent).slice(1).join(faqContent.headingAccent)}
             </h2>
           </div>
           <div className="max-w-3xl mx-auto space-y-4">
-            {FAQ.map((item, i) => (
+            {faqContent.items.map((item: any, i: number) => (
               <div key={i} className="overflow-hidden" style={{ border: `1px solid rgba(201,168,76,0.15)` }}>
                 <button
                   className="w-full flex items-center justify-between p-6 text-left"
@@ -1057,8 +1114,8 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             <div className="text-xs uppercase tracking-widest" style={{ color: MUTED, fontFamily: FONT_BODY }}>Đối tác chiến lược</div>
           </div>
           <div className="flex flex-wrap justify-center items-center gap-12 opacity-50">
-            {['VINHOMES', 'MASTERISE', 'SUN GROUP', 'CAPITALAND', 'KNIGHT FRANK'].map(p => (
-              <div key={p} className="text-lg font-light tracking-widest uppercase" style={{ color: WHITE, fontFamily: FONT_BODY }}>{p}</div>
+            {partnersContent.items.map((p: any) => (
+              <div key={typeof p === 'string' ? p : p.name} className="text-lg font-light tracking-widest uppercase text-safe" style={{ color: WHITE, fontFamily: FONT_BODY }}>{typeof p === 'string' ? p : p.name}</div>
             ))}
           </div>
         </div>
@@ -1072,11 +1129,16 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, ${DARK2}, rgba(18,18,26,0.95))` }} />
         <div className="relative z-10 max-w-2xl mx-auto px-4">
           <Crown className="w-10 h-10 mx-auto mb-8" style={{ color: GOLD, opacity: 0.6 }} />
-          <h2 className="text-3xl md:text-5xl font-light text-white mb-6 leading-tight" style={{ fontFamily: FONT_HEADING }}>
-            Bắt Đầu Hành Trình<br /><span className="italic" style={{ color: GOLD }}>Sống Đỉnh Cao</span> Của Bạn
+          <h2 className="text-3xl md:text-5xl font-light text-white mb-6 leading-tight heading-safe" style={{ fontFamily: FONT_HEADING }}>
+            {ctaContent.heading.split('\n').map((line: string, i: number) => (
+              <React.Fragment key={i}>
+                {line.includes(ctaContent.headingAccent) ? <>{line.split(ctaContent.headingAccent)[0]}<span className="italic" style={{ color: GOLD }}>{ctaContent.headingAccent}</span>{line.split(ctaContent.headingAccent).slice(1).join(ctaContent.headingAccent)}</> : line}
+                {i < ctaContent.heading.split('\n').length - 1 && <br />}
+              </React.Fragment>
+            ))}
           </h2>
-          <p className="text-base font-light mb-10 leading-loose" style={{ color: MUTED, fontFamily: FONT_BODY }}>
-            Quản gia cá nhân của chúng tôi sẽ thiết kế riêng một buổi thưởng lãm dành cho quý vị. Tuyệt đối bảo mật.
+          <p className="text-base font-light mb-10 leading-loose text-safe" style={{ color: MUTED, fontFamily: FONT_BODY }}>
+            {ctaContent.description}
           </p>
           {homeContactSubmitted ? (
             <div className="p-8 border max-w-lg mx-auto text-center" style={{ borderColor: GOLD, backgroundColor: 'rgba(255,255,255,0.01)' }}>
@@ -1108,7 +1170,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             >
               <input required type="text" placeholder="Danh xưng & Họ Tên" className="w-full bg-transparent border-b py-4 px-2 text-white text-sm placeholder-zinc-600 focus:outline-none transition-colors" style={{ borderColor: 'rgba(201,168,76,0.3)', fontFamily: FONT_BODY }} />
               <input required type="tel" placeholder="Số điện thoại" className="w-full bg-transparent border-b py-4 px-2 text-white text-sm placeholder-zinc-600 focus:outline-none transition-colors" style={{ borderColor: 'rgba(201,168,76,0.3)', fontFamily: FONT_BODY }} />
-              <GoldButton className="w-full justify-center py-5 text-sm" style={{ color: DARK }}>Yêu Cầu Tư Vấn VIP</GoldButton>
+              <GoldButton className="w-full justify-center py-5 text-sm" style={{ color: DARK }}>{ctaContent.ctaText}</GoldButton>
             </form>
           )}
           <p className="text-xs mt-4 animate-fade-in" style={{ color: MUTED, fontFamily: FONT_BODY }}>Cam kết bảo mật thông tin · Phản hồi trong vòng 2 giờ</p>
@@ -1460,9 +1522,12 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
   // ─ GALLERY PAGE ─────────────────────────────────────────────────────────────
   const renderGallery = () => {
     const categories = ['Tất cả', 'Ngoại thất', 'Nội thất', 'Tiện ích', 'Phối cảnh'];
+    const dynamicGallery = (galleryContent.items && galleryContent.items.length > 0) ? galleryContent.items : GALLERY_ITEMS;
     const filteredGallery = selectedGalleryTab === 'Tất cả'
-      ? GALLERY_ITEMS
-      : GALLERY_ITEMS.filter(img => img.category === selectedGalleryTab);
+      ? dynamicGallery
+      : dynamicGallery.filter((img: any) => img.category === selectedGalleryTab);
+
+
 
     return (
       <main className="pt-24 min-h-screen" style={{ backgroundColor: DARK }}>

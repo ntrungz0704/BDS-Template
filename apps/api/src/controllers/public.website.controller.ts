@@ -23,6 +23,7 @@ export async function getCompanyInfo(req: Request, res: Response, next: NextFunc
             themeOverrides: true,
             templateId: true,
             status: true,
+            template: { select: { slug: true } },
           },
         },
       },
@@ -209,6 +210,24 @@ export async function submitContactForm(req: Request, res: Response, next: NextF
       },
     });
 
+    // Automatically create a CRM Lead record for Tenant's Lead Management (/leads)
+    try {
+      await prisma.lead.create({
+        data: {
+          tenantId,
+          fullName: data.fullName,
+          email: data.email || null,
+          phone: data.phone,
+          source: 'FORM',
+          status: 'NEW',
+          note: data.message ? `Yêu cầu từ Form Website: ${data.message}` : 'Khách hàng liên hệ qua Form Website',
+          tags: ['Website Lead', 'Tư vấn'],
+        },
+      });
+    } catch (leadErr: any) {
+      logger.warn(`Could not sync lead to CRM: ${leadErr.message}`);
+    }
+
     logger.info(`Nhận form liên hệ mới từ khách hàng ${data.fullName} tại Website Tenant ID ${tenantId}`);
 
     res.status(201).json({
@@ -242,37 +261,18 @@ export async function getThemeSettings(req: Request, res: Response, next: NextFu
   const tenantId = req.tenantId;
   const slug = req.params.tenantSlug;
 
-  const DEFAULT_THEME = {
-    primaryColor: '#2563EB',
-    secondaryColor: '#64748B',
-    accentColor: '#F59E0B',
-    backgroundColor: '#FFFFFF',
-    surfaceColor: '#F8FAFC',
-    textColor: '#0F172A',
-    textMutedColor: '#64748B',
-    borderColor: '#E2E8F0',
-    fontHeading: 'Plus Jakarta Sans',
-    fontBody: 'Inter',
-    fontSizeBase: '16px',
-    lineHeight: '1.6',
-    containerWidth: '1280px',
-    borderRadius: '8px',
-    shadowStyle: 'soft',
-    darkMode: false,
-    buttonStyle: 'rounded',
-    animationsEnabled: true,
-  };
-
   try {
     if (!tenantId) {
-      return res.json({ success: true, data: DEFAULT_THEME });
+      return res.status(404).json({ success: false, error: { code: 'TENANT_NOT_FOUND', message: 'Website không tồn tại.' } });
     }
     const theme = await prisma.tenantThemeSettings.findUnique({ where: { tenantId } });
-    return res.json({ success: true, data: theme || DEFAULT_THEME });
+    if (!theme) {
+      return res.status(409).json({ success: false, error: { code: 'TENANT_NOT_PROVISIONED', message: 'Website chưa hoàn tất khởi tạo.' } });
+    }
+    return res.json({ success: true, data: theme });
   } catch (error) {
-    // Graceful fallback — never crash the website
-    logger.warn(`[getThemeSettings] DB unavailable for tenant ${slug}, using defaults.`);
-    return res.json({ success: true, data: DEFAULT_THEME });
+    logger.error(`[getThemeSettings] failed for tenant ${slug}: ${(error as Error).message}`);
+    next(error);
   }
 }
 
@@ -306,13 +306,19 @@ export async function getPageContent(req: Request, res: Response, next: NextFunc
     });
 
     if (!page) {
-      return res.status(404).json({
-        success: false,
-        error: { code: 'PAGE_NOT_FOUND', message: `Trang '${pageSlug}' không tồn tại hoặc chưa được xuất bản.` },
+      return res.json({
+        success: true,
+        data: {
+          id: `default-${pageSlug}`,
+          title: pageSlug === 'home' ? 'Trang Chủ' : pageSlug,
+          slug: pageSlug,
+          sections: [],
+        },
       });
     }
 
     return res.json({ success: true, data: page });
+
   } catch (error) {
     next(error);
   }

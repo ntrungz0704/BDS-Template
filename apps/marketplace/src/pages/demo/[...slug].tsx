@@ -21,6 +21,7 @@ import axios from 'axios';
 import { ALL_TEMPLATES } from '../../data/templatesData';
 import DemoRenderer from '../../components/demo/DemoRenderer';
 import PreviewToolbar, { ViewportType } from '../../components/demo/PreviewToolbar';
+import { useAuth } from '../../context/AuthContext';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -88,6 +89,7 @@ function DemoLoadingSkeleton() {
 
 export default function TemplateLiveDemoPage() {
   const router = useRouter();
+  const { addToCart } = useAuth();
   const { slug } = router.query;
 
   const templateSlug = Array.isArray(slug) ? slug[0] : slug;
@@ -250,8 +252,13 @@ export default function TemplateLiveDemoPage() {
               <h2 className="text-2xl font-bold text-slate-900">Phiên dùng thử đã hết hạn</h2>
               <p className="text-slate-600">Bạn đã dùng thử template này. Mua ngay để sở hữu vĩnh viễn và mở khóa toàn bộ tính năng!</p>
               <button 
-                onClick={() => router.push(`/cart?template=${templateSlug}`)}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl transition-colors shadow-lg shadow-blue-500/30"
+                onClick={() => {
+                  if (template) {
+                    addToCart(template, 'BUY');
+                  }
+                  router.push('/cart');
+                }}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl transition-colors shadow-lg shadow-blue-500/30 cursor-pointer"
               >
                 Mua ngay
               </button>

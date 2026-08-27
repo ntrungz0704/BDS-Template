@@ -7,6 +7,7 @@ import {
   Camera, Check
 } from 'lucide-react';
 import { MAX_W } from '../design-system';
+import { FacebookIcon, InstagramIcon, YoutubeIcon, ZaloIcon } from '../../icons/SocialIcons';
 
 interface TemplateProps {
   template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
@@ -456,69 +457,102 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
 
   const renderHeader = () => (
     <header className="bg-white sticky top-0 z-50 shadow-sm" style={fontBody}>
-      <div className={`${MAX_W} px-4 py-4 flex justify-between items-center`}>
-        <div className="flex items-center gap-2 text-violet-600 font-bold text-2xl cursor-pointer" onClick={() => navigateTo('home')} style={fontHeading}>
-          <Building2 size={32} />
-          <span>SmartUrban</span>
+      <div className={`${MAX_W} px-4 py-3.5 flex justify-between items-center`}>
+        <div className="flex items-center gap-2.5 font-bold cursor-pointer text-left" onClick={() => navigateTo('home')}>
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
+            <Building2 size={22} />
+          </div>
+          <div>
+            <span className="text-base sm:text-lg font-black uppercase block leading-tight text-slate-900 tracking-tight">SmartUrban</span>
+            <span className="text-[10px] uppercase font-bold tracking-wider block text-violet-600">★ IOT SMART HOME 4.0 METROPOLIS ★</span>
+          </div>
         </div>
         {!isSmall ? (
-          <nav className="flex gap-8 items-center font-medium text-slate-600">
-            <button onClick={() => navigateTo('home')} className={`hover:text-violet-600 transition ${currentPage === 'home' ? 'text-violet-600 font-bold' : ''}`}>Trang chủ</button>
-            <button onClick={() => navigateTo('projects')} className={`hover:text-violet-600 transition ${currentPage === 'projects' ? 'text-violet-600 font-bold' : ''}`}>Căn hộ</button>
-            <button onClick={() => navigateTo('about')} className={`hover:text-violet-600 transition ${currentPage === 'about' ? 'text-violet-600 font-bold' : ''}`}>Giới thiệu</button>
-            <button onClick={() => navigateTo('gallery')} className={`hover:text-violet-600 transition ${currentPage === 'gallery' ? 'text-violet-600 font-bold' : ''}`}>Thư viện</button>
-            <button onClick={() => navigateTo('news')} className={`hover:text-violet-600 transition ${currentPage === 'news' ? 'text-violet-600 font-bold' : ''}`}>Tin tức</button>
-            <button onClick={() => navigateTo('contact')} className="bg-violet-600 text-white px-6 py-2 rounded-full hover:bg-violet-700 transition shadow-lg shadow-violet-200">Liên hệ</button>
+          <nav className="flex gap-6 lg:gap-8 items-center text-sm font-semibold text-slate-600">
+            <button onClick={() => navigateTo('home')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'home' ? 'text-violet-700 font-black' : ''}`}>Trang chủ</button>
+            <button onClick={() => navigateTo('projects')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'projects' ? 'text-violet-700 font-black' : ''}`}>Căn hộ</button>
+            <button onClick={() => navigateTo('about')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'about' ? 'text-violet-700 font-black' : ''}`}>Giới thiệu</button>
+            <button onClick={() => navigateTo('gallery')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'gallery' ? 'text-violet-700 font-black' : ''}`}>Thư viện</button>
+            <button onClick={() => navigateTo('news')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'news' ? 'text-violet-700 font-black' : ''}`}>Tin tức</button>
+            <button onClick={() => navigateTo('contact')} className="px-5 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-xs transition-all shadow-md shadow-violet-500/20 cursor-pointer">
+              Liên Hệ Ngay
+            </button>
           </nav>
         ) : (
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-violet-600">
-            {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-violet-700">
+            {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
           </button>
         )}
       </div>
       {isSmall && mobileMenuOpen && (
-        <div className="absolute top-full left-0 w-full bg-white shadow-lg py-4 px-4 flex flex-col gap-4 text-slate-600 font-medium z-50 border-t border-violet-50">
-          <button onClick={() => navigateTo('home')} className="text-left w-full p-2">Trang chủ</button>
-          <button onClick={() => navigateTo('projects')} className="text-left w-full p-2">Căn hộ</button>
-          <button onClick={() => navigateTo('about')} className="text-left w-full p-2">Giới thiệu</button>
-          <button onClick={() => navigateTo('gallery')} className="text-left w-full p-2">Thư viện</button>
-          <button onClick={() => navigateTo('news')} className="text-left w-full p-2">Tin tức</button>
-          <button onClick={() => navigateTo('contact')} className="bg-violet-600 text-white px-6 py-3 rounded-full text-center mt-2">Liên hệ</button>
+        <div className="absolute top-full left-0 w-full bg-white shadow-xl py-4 px-5 flex flex-col gap-3 text-slate-700 font-semibold z-50 border-t border-slate-100 animate-fadeIn">
+          <button onClick={() => navigateTo('home')} className="text-left w-full p-2 hover:bg-violet-50 rounded-lg">Trang chủ</button>
+          <button onClick={() => navigateTo('projects')} className="text-left w-full p-2 hover:bg-violet-50 rounded-lg">Căn hộ</button>
+          <button onClick={() => navigateTo('about')} className="text-left w-full p-2 hover:bg-violet-50 rounded-lg">Giới thiệu</button>
+          <button onClick={() => navigateTo('gallery')} className="text-left w-full p-2 hover:bg-violet-50 rounded-lg">Thư viện</button>
+          <button onClick={() => navigateTo('news')} className="text-left w-full p-2 hover:bg-violet-50 rounded-lg">Tin tức</button>
+          <button onClick={() => navigateTo('contact')} className="text-white px-6 py-3 rounded-xl text-center mt-2 bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-sm shadow-md">
+            Liên Hệ Tư Vấn
+          </button>
         </div>
       )}
     </header>
   );
 
   const renderHero = () => (
-    <section className="bg-violet-50 relative overflow-hidden" style={fontBody}>
-      <div className={`${MAX_W} px-4 py-20 lg:py-32 flex flex-col lg:flex-row items-center gap-12`}>
-        <div className="flex-1 space-y-6 z-10">
-          <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full text-violet-600 font-semibold shadow-sm border border-violet-100">
-            <Star size={18} className="text-amber-500" fill="currentColor" /> Dự án căn hộ cao cấp 2026
+    <section className="bg-gradient-to-b from-violet-50/70 via-purple-50/40 to-white relative overflow-hidden" style={fontBody}>
+      <div className={`${MAX_W} px-4 py-12 lg:py-20 flex flex-col lg:flex-row items-center gap-10 lg:gap-14`}>
+        <div className="flex-1 space-y-5 z-10 text-left">
+          <div className="inline-flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-xs border border-violet-100 text-violet-700">
+            <Star size={14} className="text-amber-500" fill="currentColor" />
+            <span>Dự án căn hộ công nghệ 2026</span>
           </div>
-          <h1 className="text-5xl lg:text-7xl font-extrabold text-violet-950 leading-tight" style={fontHeading}>
-            Sống Đỉnh Cao <br />
-            <span className="text-violet-600">Giữa Lòng Đô Thị</span>
+
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-black text-slate-900 leading-[1.18] tracking-tight" style={fontHeading}>
+            Sống Đỉnh Cao <br className="hidden sm:inline" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600">
+              Giữa Lòng Đô Thị
+            </span>
           </h1>
-          <p className="text-lg text-slate-600 max-w-xl leading-relaxed">
+
+          <p className="text-sm sm:text-base text-slate-600 max-w-xl leading-relaxed">
             Khám phá không gian sống hiện đại, tiện nghi vượt trội với vị trí đắc địa ngay trung tâm thành phố. SmartUrban mang đến trải nghiệm sống hoàn hảo cho cộng đồng tinh hoa.
           </p>
-          <div className="flex flex-wrap gap-4 pt-4">
-            <button onClick={() => navigateTo('projects')} className="bg-violet-600 text-white px-8 py-4 rounded-full font-bold hover:bg-violet-700 transition flex items-center gap-2 shadow-xl shadow-violet-200">
-              Xem Căn Hộ <ArrowRight size={20} />
+
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <button 
+              onClick={() => navigateTo('projects')} 
+              className="px-6 py-3.5 rounded-xl font-bold bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-lg shadow-violet-500/25 transition-all flex items-center gap-2 text-xs sm:text-sm cursor-pointer"
+            >
+              <span>Xem Căn Hộ</span> <ArrowRight size={16} />
             </button>
-            <button onClick={() => navigateTo('contact')} className="bg-white text-violet-600 border border-violet-200 px-8 py-4 rounded-full font-bold hover:bg-violet-50 transition">
-              Nhận Báo Giá
+            <button 
+              onClick={() => navigateTo('contact')} 
+              className="px-6 py-3.5 rounded-xl font-bold bg-white hover:bg-violet-50 text-violet-700 border border-violet-200 transition-all text-xs sm:text-sm shadow-xs cursor-pointer"
+            >
+              <span>Nhận Báo Giá</span>
             </button>
           </div>
         </div>
-        <div className="flex-1 relative w-full">
-          <div className="absolute inset-0 bg-violet-600 rounded-[3rem] rotate-3 scale-105 opacity-10"></div>
-          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
-            src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" 
-            alt="Hero Apartment" 
-            className="rounded-[3rem] relative z-10 w-full h-[400px] lg:h-[600px] object-cover shadow-2xl"
-          />
+
+        <div className="flex-1 relative w-full max-w-xl">
+          <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-violet-600 to-indigo-400 opacity-15 blur-xl -z-10"></div>
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+            <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
+              src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" 
+              alt="Hero Apartment" 
+              className="w-full h-[320px] sm:h-[400px] lg:h-[460px] object-cover"
+            />
+            <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-3 rounded-2xl border border-white/80 shadow-lg flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-bold text-violet-600 uppercase tracking-wide">Tiêu chuẩn bàn giao</span>
+                <p className="text-xs font-bold text-slate-900">100% Căn Hộ Full Smart Home AI</p>
+              </div>
+              <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-lg">
+                Quý 4/2026
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -997,18 +1031,39 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             <span>SmartUrban</span>
           </div>
           <p className="mb-8 opacity-80 leading-relaxed">Kiến tạo không gian sống đỉnh cao giữa lòng đô thị. Nơi hội tụ tinh hoa của thiết kế hiện đại và công nghệ thông minh.</p>
-          <div className="flex gap-4">
-             <div onClick={() => alert('Facebook link')} className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-violet-700 cursor-pointer transition">Fb</div>
-             <div onClick={() => alert('Instagram link')} className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-violet-700 cursor-pointer transition">Ig</div>
-             <div onClick={() => alert('Youtube link')} className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-violet-700 cursor-pointer transition">Yt</div>
+          <div className="flex items-center gap-3">
+             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook" className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-blue-600 text-white transition">
+               <FacebookIcon className="w-4 h-4" />
+             </a>
+             <a href="https://zalo.me/0919006030" target="_blank" rel="noopener noreferrer" title="Zalo" className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-[#0068FF] text-white transition p-2">
+               <ZaloIcon className="w-full h-full" />
+             </a>
+             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram" className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-pink-600 text-white transition">
+               <InstagramIcon className="w-4 h-4" />
+             </a>
+             <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" title="Youtube" className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-red-600 text-white transition">
+               <YoutubeIcon className="w-4 h-4" />
+             </a>
           </div>
         </div>
         <div>
           <h4 className="text-white font-bold text-xl mb-8" style={fontHeading}>Thông Tin Liên Hệ</h4>
           <ul className="space-y-6 opacity-90">
-            <li className="flex items-start gap-4"><MapPin size={24} className="shrink-0 text-amber-500" /> <span>Số 1 Đại lộ Mới, Quận Trung Tâm, TP.HCM</span></li>
-            <li className="flex items-center gap-4"><Phone size={24} className="shrink-0 text-amber-500" /> <span className="font-bold text-white text-lg">1800 9999</span></li>
-            <li className="flex items-center gap-4"><Mail size={24} className="shrink-0 text-amber-500" /> <span>info@smarturban.vn</span></li>
+            <li>
+              <a href="https://maps.google.com/?q=So+1+Dai+lo+Moi+TPHCM" target="_blank" rel="noopener noreferrer" className="flex items-start gap-4 hover:text-white transition">
+                <MapPin size={24} className="shrink-0 text-amber-500" /> <span>Số 1 Đại lộ Mới, Quận Trung Tâm, TP.HCM</span>
+              </a>
+            </li>
+            <li>
+              <a href="tel:0919006030" className="flex items-center gap-4 hover:text-white transition">
+                <Phone size={24} className="shrink-0 text-amber-500" /> <span className="font-bold text-white text-lg">0919 006 030</span>
+              </a>
+            </li>
+            <li>
+              <a href="mailto:info@smarturban.vn" className="flex items-center gap-4 hover:text-white transition">
+                <Mail size={24} className="shrink-0 text-amber-500" /> <span>info@smarturban.vn</span>
+              </a>
+            </li>
           </ul>
         </div>
         <div>
@@ -1549,6 +1604,20 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
 
   const handleContactFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const phoneClean = contactPhone.replace(/\s/g, '');
+    if (!phoneClean || !/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
+      alert('Số điện thoại phải từ 10-11 số (VD: 0919006030 hoặc +84919006030).');
+      return;
+    }
+    if (typeof (globalThis as any).submitContactForm === 'function') {
+      (globalThis as any).submitContactForm({
+        fullName: contactName,
+        phone: phoneClean,
+        email: contactEmail || undefined,
+        message: contactMessage || 'Yêu cầu tư vấn căn hộ SmartUrban',
+        source: 'website_contact_form',
+      }).catch(() => {});
+    }
     setContactSubmitted(true);
   };
 

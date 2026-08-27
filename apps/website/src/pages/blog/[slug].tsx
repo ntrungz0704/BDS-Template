@@ -8,16 +8,19 @@ import {
   ArrowRight, BookOpen, Send, CheckCircle2 
 } from 'lucide-react';
 import { demoBlogs } from '../../utils/demoData';
+import { themeToCSS, themeToGoogleFontsUrl } from '../../utils/themeUtils';
+
 
 interface BlogDetailProps {
   company: any;
   post?: any;
   blogSlug: string;
   tenantSlug: string;
+  theme?: any;
   error?: string;
 }
 
-export default function PublicBlogDetail({ company, post, blogSlug, tenantSlug, error }: BlogDetailProps) {
+export default function PublicBlogDetail({ company, post, blogSlug, tenantSlug, theme, error }: BlogDetailProps) {
   // Use real post from API if available, otherwise find in mock or show error
   const blog = post || demoBlogs.find((b) => b.slug === blogSlug) || demoBlogs[0];
 
@@ -28,17 +31,23 @@ export default function PublicBlogDetail({ company, post, blogSlug, tenantSlug, 
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const primaryColor = '#C5A572'; // Luxury color
+  const primaryColor = theme?.primaryColor || '#C5A572';
 
   const relatedBlogs = demoBlogs
     .filter((b) => b.slug !== blog?.slug)
     .slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-[#F8F6F3] text-slate-900 pb-12 font-sans">
+    <div className="min-h-screen text-slate-900 pb-12 font-sans" style={{ backgroundColor: theme?.backgroundColor || '#F8F6F3' }}>
       <Head>
         <title>{blog?.title || 'Bài viết'} | Góc tin tức BĐS</title>
         <meta name="description" content={blog?.summary || blog?.title || ''} />
+        {theme && (
+          <>
+            <style id="tenant-theme" dangerouslySetInnerHTML={{ __html: themeToCSS(theme) }} />
+            <link href={themeToGoogleFontsUrl(theme)} rel="stylesheet" />
+          </>
+        )}
       </Head>
 
       {/* HEADER */}
@@ -65,7 +74,7 @@ export default function PublicBlogDetail({ company, post, blogSlug, tenantSlug, 
           </Link>
           <h1 className="text-3xl font-bold text-slate-950 mt-3 font-serif leading-tight">{blog.title}</h1>
           <div className="flex items-center gap-4 text-xs text-slate-400 mt-3">
-            <span className="bg-[#C5A572]/10 text-[#C5A572] px-2.5 py-0.5 rounded-full font-bold">{blog.category}</span>
+            <span className="px-2.5 py-0.5 rounded-full font-bold" style={{ backgroundColor: `${primaryColor}1A`, color: primaryColor }}>{blog.category}</span>
             <div className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> <span>{blog.date}</span></div>
             <div className="flex items-center gap-1.5"><User className="w-3.5 h-3.5" /> <span>{blog.author}</span></div>
           </div>
@@ -85,10 +94,10 @@ export default function PublicBlogDetail({ company, post, blogSlug, tenantSlug, 
             {/* Table of Contents */}
             <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
               <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
-                <BookOpen className="w-4 h-4 text-[#C5A572]" />
+                <BookOpen className="w-4 h-4" style={{ color: primaryColor }} />
                 <span>MỤC LỤC CHI TIẾT BÀI VIẾT</span>
               </h3>
-              <ul className="text-xs font-bold text-[#C5A572] space-y-2">
+              <ul className="text-xs font-bold space-y-2" style={{ color: primaryColor }}>
                 <li><a href="#section-1" className="hover:underline">1. Tổng quan tình hình thị trường bất động sản quý 2 năm 2026</a></li>
                 <li><a href="#section-2" className="hover:underline">2. Tại sao nên chú trọng yếu tố pháp lý hơn là giá bán?</a></li>
                 <li><a href="#section-3" className="hover:underline">3. Cách đối chiếu quy hoạch đất đai tại địa phương nhanh nhất</a></li>
@@ -125,9 +134,9 @@ export default function PublicBlogDetail({ company, post, blogSlug, tenantSlug, 
                   <div key={rb.id} className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between group">
                     <img src={rb.thumbnail} alt={rb.title} className="w-full h-32 object-cover group-hover:scale-105 transition-transform" />
                     <div className="p-4 text-left">
-                      <span className="text-[9px] font-bold text-[#C5A572] uppercase tracking-wider">{rb.category}</span>
+                      <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: primaryColor }}>{rb.category}</span>
                       <h4 className="text-xs font-bold text-slate-900 line-clamp-1 mt-1">{rb.title}</h4>
-                      <Link href={`/blog/${rb.slug}?tenant=${tenantSlug}`} className="inline-flex items-center gap-1 text-[10px] font-bold text-[#C5A572] hover:underline mt-4">
+                      <Link href={`/blog/${rb.slug}?tenant=${tenantSlug}`} className="inline-flex items-center gap-1 text-[10px] font-bold hover:underline mt-4" style={{ color: primaryColor }}>
                         <span>Đọc tiếp →</span>
                       </Link>
                     </div>
@@ -145,7 +154,7 @@ export default function PublicBlogDetail({ company, post, blogSlug, tenantSlug, 
               {/* Newsletter Form */}
               <div className="rounded-3xl border border-slate-100 bg-[#0F172A] text-white p-6 shadow-md text-left">
                 <h3 className="text-base font-bold font-serif mb-2 flex items-center gap-2">
-                  <Send className="w-4 h-4 text-[#C5A572]" />
+                  <Send className="w-4 h-4" style={{ color: primaryColor }} />
                   <span>Bản Tin Phong Thủy</span>
                 </h3>
                 <p className="text-[11px] text-slate-400 leading-normal mb-6">Đăng ký để nhận thông báo thị trường sốt đất và kiến thức phong thủy nhà ở VIP hàng tuần hoàn toàn miễn phí.</p>
@@ -153,11 +162,14 @@ export default function PublicBlogDetail({ company, post, blogSlug, tenantSlug, 
                 <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert('Cảm ơn bạn đã đăng ký nhận bản tin thị trường!'); }}>
                   <input 
                     type="email" 
-                    className="w-full rounded-xl border border-slate-800 bg-slate-900 text-white px-3 py-2 text-xs focus:outline-none focus:border-[#C5A572]" 
+                    className="w-full rounded-xl border border-slate-800 bg-slate-900 text-white px-3 py-2 text-xs focus:outline-none" 
+                    style={{ borderColor: undefined }}
+                    onFocus={(e) => e.currentTarget.style.borderColor = primaryColor}
+                    onBlur={(e) => e.currentTarget.style.borderColor = ''}
                     placeholder="nguyenvana@gmail.com" 
                     required 
                   />
-                  <button type="submit" className="w-full text-[#0F172A] font-extrabold uppercase py-3 rounded-xl text-xs tracking-wider transition-all bg-[#C5A572] hover:bg-amber-600">
+                  <button type="submit" className="w-full font-extrabold uppercase py-3 rounded-xl text-xs tracking-wider transition-all" style={{ backgroundColor: primaryColor, color: '#0F172A' }}>
                     Đăng Ký Bản Tin
                   </button>
                 </form>
@@ -168,7 +180,10 @@ export default function PublicBlogDetail({ company, post, blogSlug, tenantSlug, 
                 <span className="text-xs font-bold">Chia sẻ tin tức:</span>
                 <button 
                   onClick={copyLink}
-                  className="p-2.5 rounded-xl border border-slate-200 hover:border-[#C5A572] transition-colors"
+                  className="p-2.5 rounded-xl border border-slate-200 transition-colors"
+                  style={{ borderColor: undefined }}
+                  onMouseEnter={(e) => e.currentTarget.style.borderColor = primaryColor}
+                  onMouseLeave={(e) => e.currentTarget.style.borderColor = ''}
                 >
                   <Share2 className="w-4 h-4 text-slate-600" />
                 </button>

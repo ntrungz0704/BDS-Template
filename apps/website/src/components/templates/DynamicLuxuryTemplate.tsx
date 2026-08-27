@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Crown, Star, Phone, Mail, Clock, Building2, Users, ArrowRight, Menu, X, ChevronRight, Download } from 'lucide-react';
 
 interface DynamicLuxuryTemplateProps {
@@ -8,18 +8,19 @@ interface DynamicLuxuryTemplateProps {
   posts: any[];
 }
 
-// ── DESIGN TOKENS (Độc quyền Luxury Gold) ──────────────────────────────────────
-const GOLD = '#C9A84C';
-const GOLD_LIGHT = '#E8C97E';
-const DARK = '#0A0A0F';
-const DARK2 = '#12121A';
-const DARK3 = '#1A1A24';
-const WHITE = '#FFFFFF';
-const MUTED = '#9A9AA8';
+// ── DESIGN TOKENS (defaults — overridden by dynamicTheme inside component) ──
+// These are used as fallbacks only when dynamicTheme values are not available.
+const DEFAULT_GOLD = '#C9A84C';
+const DEFAULT_GOLD_LIGHT = '#E8C97E';
+const DEFAULT_DARK = '#0A0A0F';
+const DEFAULT_DARK2 = '#12121A';
+const DEFAULT_DARK3 = '#1A1A24';
+const DEFAULT_WHITE = '#FFFFFF';
+const DEFAULT_MUTED = '#9A9AA8';
 const MAX_W = 'max-w-7xl';
 
-const FONT_HEADING = "'Playfair Display', 'Cormorant Garamond', Georgia, serif";
-const FONT_BODY = "'Plus Jakarta Sans', 'Inter', sans-serif";
+const DEFAULT_FONT_HEADING = "'Playfair Display', 'Cormorant Garamond', Georgia, serif";
+const DEFAULT_FONT_BODY = "'Plus Jakarta Sans', 'Inter', sans-serif";
 
 const DEFAULT_PROJECTS = [
   {
@@ -65,11 +66,11 @@ const STATS = [
   { value: '98%', label: 'Hài lòng tuyệt đối', icon: Star },
 ];
 
-const SectionLabel = ({ children }: { children: React.ReactNode }) => (
+const SectionLabel = ({ children, goldColor, bodyFont }: { children: React.ReactNode; goldColor?: string; bodyFont?: string }) => (
   <div className="flex items-center gap-3 mb-4 justify-center md:justify-start">
-    <span className="w-8 h-px" style={{ backgroundColor: GOLD }} />
-    <span className="text-xs tracking-[0.25em] uppercase" style={{ color: GOLD, fontFamily: FONT_BODY }}>{children}</span>
-    <span className="w-8 h-px" style={{ backgroundColor: GOLD }} />
+    <span className="w-8 h-px" style={{ backgroundColor: goldColor || DEFAULT_GOLD }} />
+    <span className="text-xs tracking-[0.25em] uppercase" style={{ color: goldColor || DEFAULT_GOLD, fontFamily: bodyFont || DEFAULT_FONT_BODY }}>{children}</span>
+    <span className="w-8 h-px" style={{ backgroundColor: goldColor || DEFAULT_GOLD }} />
   </div>
 );
 
@@ -94,11 +95,22 @@ export default function DynamicLuxuryTemplate({ company, theme, projects, posts 
       }))
     : DEFAULT_PROJECTS;
 
+  // Resolve dynamic theme values with fallbacks
+  const GOLD = theme?.primaryColor || DEFAULT_GOLD;
+  const GOLD_LIGHT = theme?.accentColor || DEFAULT_GOLD_LIGHT;
+  const DARK = theme?.backgroundColor || DEFAULT_DARK;
+  const DARK2 = theme?.surfaceColor || DEFAULT_DARK2;
+  const DARK3 = theme?.borderColor || DEFAULT_DARK3;
+  const WHITE = theme?.textColor || DEFAULT_WHITE;
+  const MUTED = theme?.textMutedColor || DEFAULT_MUTED;
+  const FONT_HEADING = theme?.fontHeading ? `'${theme.fontHeading}', serif` : DEFAULT_FONT_HEADING;
+  const FONT_BODY = theme?.fontBody ? `'${theme.fontBody}', sans-serif` : DEFAULT_FONT_BODY;
+
   const activeTheme = {
-    primaryColor: theme?.primaryColor || GOLD,
-    secondaryColor: theme?.secondaryColor || DARK,
-    accentColor: theme?.accentColor || GOLD_LIGHT,
-    backgroundColor: theme?.backgroundColor || '#070C1E',
+    primaryColor: GOLD,
+    secondaryColor: theme?.secondaryColor || DEFAULT_DARK,
+    accentColor: GOLD_LIGHT,
+    backgroundColor: DARK,
   };
 
   const navItems = [

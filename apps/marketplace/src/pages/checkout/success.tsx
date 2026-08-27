@@ -83,12 +83,12 @@ export default function CheckoutSuccessPage() {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(amount || 0);
   };
 
-  const zaloChatUrl = orderData ? `https://zalo.me/0983312219?text=${encodeURIComponent(`Chào Admin, tôi vừa đặt mẫu website trên PlatformBDS. Mã đơn: ${orderData.orderNumber}. Nhờ bạn tư vấn thanh toán và kích hoạt website.`)}` : 'https://zalo.me/0983312219';
+  const zaloChatUrl = orderData ? `https://zalo.me/0983312219?text=${encodeURIComponent(`Chào Admin, tôi vừa đặt mẫu website trên TEMPLATES BDS. Mã đơn: ${orderData.orderNumber}. Nhờ bạn tư vấn thanh toán và kích hoạt website.`)}` : 'https://zalo.me/0983312219';
 
   return (
     <>
       <Head>
-        <title>Xác Nhận Đơn Hàng & Bàn Giao Website | PlatformBDS</title>
+        <title>Xác Nhận Đơn Hàng & Bàn Giao Website | TEMPLATES BDS</title>
       </Head>
 
       <div className="min-h-screen flex flex-col bg-slate-50">
@@ -149,7 +149,7 @@ export default function CheckoutSuccessPage() {
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline font-mono font-bold flex items-center gap-1 text-sm"
                   >
-                    {tenantSlug || orderData.subdomain || 'site'}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'platformbds.vn'}
+                    {tenantSlug || orderData.subdomain || 'site'}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com'}
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -162,7 +162,7 @@ export default function CheckoutSuccessPage() {
                     rel="noopener noreferrer"
                     className="text-indigo-600 hover:underline font-mono font-bold flex items-center gap-1 text-sm"
                   >
-                    {process.env.NEXT_PUBLIC_CMS_URL || 'cms.platformbds.vn'}
+                    {process.env.NEXT_PUBLIC_CMS_URL || 'cms.aireviewbds.com'}
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>

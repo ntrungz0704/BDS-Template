@@ -986,7 +986,35 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
               <p className="text-xs text-zinc-400" style={{ fontFamily: FONT_BODY }}>Quản gia cá nhân sẽ liên lạc riêng với quý vị trong vòng 2 giờ.</p>
             </div>
           ) : (
-            <form onSubmit={(e) => { e.preventDefault(); setHomeContactSubmitted(true); }} className="max-w-lg mx-auto space-y-5 mb-8">
+            <form 
+              onSubmit={async (e) => { 
+                e.preventDefault(); 
+                const form = e.currentTarget;
+                const name = (form.elements[0] as HTMLInputElement).value;
+                const phone = (form.elements[1] as HTMLInputElement).value;
+                const phoneClean = phone.replace(/\s/g, '');
+                if (!/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
+                  alert('Số điện thoại phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.');
+                  return;
+                }
+                try {
+                  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+                  await fetch(`${API_URL}/api/marketplace/contact`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      fullName: name.trim() || 'Khách VIP',
+                      phone: phoneClean,
+                      selectedTemplate: 'luxury-gold',
+                      packageInterest: 'Yêu cầu tư vấn VIP Luxury Gold',
+                      message: 'Đăng ký nhận tư vấn VIP từ trang chủ Luxury Gold',
+                    }),
+                  });
+                } catch (err) {}
+                setHomeContactSubmitted(true); 
+              }} 
+              className="max-w-lg mx-auto space-y-5 mb-8"
+            >
               <input required type="text" placeholder="Danh xưng & Họ Tên" className="w-full bg-transparent border-b py-4 px-2 text-white text-sm placeholder-zinc-600 focus:outline-none transition-colors" style={{ borderColor: 'rgba(201,168,76,0.3)', fontFamily: FONT_BODY }} />
               <input required type="tel" placeholder="Số điện thoại" className="w-full bg-transparent border-b py-4 px-2 text-white text-sm placeholder-zinc-600 focus:outline-none transition-colors" style={{ borderColor: 'rgba(201,168,76,0.3)', fontFamily: FONT_BODY }} />
               <GoldButton className="w-full justify-center py-5 text-sm" style={{ color: DARK }}>Yêu Cầu Tư Vấn VIP</GoldButton>
@@ -1414,17 +1442,44 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
               </div>
             ) : (
               <form
-                onSubmit={(e) => {
+                onSubmit={async (e) => {
                   e.preventDefault();
+                  const form = e.currentTarget;
+                  const name = (form.elements[0] as HTMLInputElement).value;
+                  const phone = (form.elements[1] as HTMLInputElement).value;
+                  const email = (form.elements[2] as HTMLInputElement).value;
+                  const propType = (form.elements[3] as HTMLInputElement).value;
+                  const message = (form.elements[4] as HTMLTextAreaElement).value;
+                  
+                  const phoneClean = phone.replace(/\s/g, '');
+                  if (!/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
+                    alert('Số điện thoại phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.');
+                    return;
+                  }
+                  try {
+                    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+                    await fetch(`${API_URL}/api/marketplace/contact`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        fullName: name.trim() || 'Khách VIP',
+                        phone: phoneClean,
+                        email: email.trim(),
+                        selectedTemplate: 'luxury-gold',
+                        packageInterest: propType ? `Quan tâm: ${propType}` : 'Tư vấn Luxury Gold',
+                        message: message?.trim() || 'Khách gửi từ trang liên hệ Luxury Gold',
+                      }),
+                    });
+                  } catch (err) {}
                   setContactSubmitted(true);
                 }}
                 className="space-y-6"
               >
-                <input required type="text" placeholder="Danh xưng & Họ Tên" className="w-full bg-transparent border-b py-4 text-white text-sm placeholder-zinc-600 focus:outline-none"
+                <input required type="text" placeholder="Danh xưng & Họ Tên *" className="w-full bg-transparent border-b py-4 text-white text-sm placeholder-zinc-600 focus:outline-none"
                   style={{ borderColor: 'rgba(201,168,76,0.25)', fontFamily: FONT_BODY }} />
-                <input required type="tel" placeholder="Số điện thoại" className="w-full bg-transparent border-b py-4 text-white text-sm placeholder-zinc-600 focus:outline-none"
+                <input required type="tel" placeholder="Số điện thoại *" className="w-full bg-transparent border-b py-4 text-white text-sm placeholder-zinc-600 focus:outline-none"
                   style={{ borderColor: 'rgba(201,168,76,0.25)', fontFamily: FONT_BODY }} />
-                <input required type="email" placeholder="Email" className="w-full bg-transparent border-b py-4 text-white text-sm placeholder-zinc-600 focus:outline-none"
+                <input required type="email" placeholder="Email *" className="w-full bg-transparent border-b py-4 text-white text-sm placeholder-zinc-600 focus:outline-none"
                   style={{ borderColor: 'rgba(201,168,76,0.25)', fontFamily: FONT_BODY }} />
                 <input type="text" placeholder="Loại bất động sản quan tâm (vd: Penthouse)" className="w-full bg-transparent border-b py-4 text-white text-sm placeholder-zinc-600 focus:outline-none"
                   style={{ borderColor: 'rgba(201,168,76,0.25)', fontFamily: FONT_BODY }} />

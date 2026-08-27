@@ -1,4 +1,4 @@
-﻿import Image from 'next/image';
+import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
@@ -10,6 +10,7 @@ import {
   Instagram, Youtube
 } from 'lucide-react';
 import { MAX_W } from '../design-system';
+import { FacebookIcon, LinkedinIcon, YoutubeIcon, ZaloIcon } from '../icons/SocialIcons';
 
 interface TemplateProps {
   template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, any> };
@@ -568,11 +569,19 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
               VinaCorp - Khẳng định vị thế nhà phát triển bất động sản thương mại và công nghiệp hàng đầu khu vực, mang lại giá trị bền vững cho đối tác và cộng đồng.
             </p>
-            <div className="flex space-x-4">
-              <div className="p-2 bg-white/5 rounded-full hover:bg-white/20 cursor-pointer transition-colors"><Facebook size={18} /></div>
-              <div className="p-2 bg-white/5 rounded-full hover:bg-white/20 cursor-pointer transition-colors"><Linkedin size={18} /></div>
-              <div className="p-2 bg-white/5 rounded-full hover:bg-white/20 cursor-pointer transition-colors"><Twitter size={18} /></div>
-              <div className="p-2 bg-white/5 rounded-full hover:bg-white/20 cursor-pointer transition-colors"><Youtube size={18} /></div>
+            <div className="flex items-center space-x-3">
+              <a href={company?.socialLinks?.facebook || "https://facebook.com"} target="_blank" rel="noopener noreferrer" title="Facebook" className="p-2.5 bg-white/5 rounded-full hover:bg-blue-600 text-white transition-colors">
+                <FacebookIcon className="w-4 h-4" />
+              </a>
+              <a href={`https://zalo.me/${company?.phone || '0919006030'}`} target="_blank" rel="noopener noreferrer" title="Zalo" className="p-2 bg-white/5 rounded-full hover:bg-[#0068FF] text-white transition-colors">
+                <ZaloIcon className="w-5 h-5" />
+              </a>
+              <a href={company?.socialLinks?.linkedin || "https://linkedin.com"} target="_blank" rel="noopener noreferrer" title="LinkedIn" className="p-2.5 bg-white/5 rounded-full hover:bg-blue-700 text-white transition-colors">
+                <LinkedinIcon className="w-4 h-4" />
+              </a>
+              <a href={company?.socialLinks?.youtube || "https://youtube.com"} target="_blank" rel="noopener noreferrer" title="YouTube" className="p-2.5 bg-white/5 rounded-full hover:bg-red-600 text-white transition-colors">
+                <YoutubeIcon className="w-4 h-4" />
+              </a>
             </div>
           </div>
           
@@ -601,17 +610,23 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           <div>
             <h4 className="text-lg font-bold mb-6" style={{ color: colors.surface }}>Liên Hệ Trụ Sở</h4>
             <ul className="space-y-4 text-gray-400 text-sm">
-              <li className="flex items-start space-x-3">
-                <MapPin size={18} className="shrink-0 mt-0.5" style={{ color: colors.accent }} />
-                <span>Tòa nhà VinaCorp Center, 72 Lê Thánh Tôn, Bến Nghé, Quận 1, TP. HCM</span>
+              <li>
+                <a href={`https://maps.google.com/?q=${encodeURIComponent(company?.address || 'Tòa nhà VinaCorp Center, 72 Lê Thánh Tôn, Bến Nghé, Quận 1, TP. HCM')}`} target="_blank" rel="noopener noreferrer" className="flex items-start space-x-3 hover:text-white transition-colors">
+                  <MapPin size={18} className="shrink-0 mt-0.5" style={{ color: colors.accent }} />
+                  <span>{company?.address || 'Tòa nhà VinaCorp Center, 72 Lê Thánh Tôn, Bến Nghé, Quận 1, TP. HCM'}</span>
+                </a>
               </li>
-              <li className="flex items-center space-x-3">
-                <Phone size={18} className="shrink-0" style={{ color: colors.accent }} />
-                <span>{company?.phone || company?.hotline || company?.phone || company?.hotline || '+84 (0) 24 3828 9999'}</span>
+              <li>
+                <a href={`tel:${(company?.phone || '0919006030').replace(/\s/g, '')}`} className="flex items-center space-x-3 hover:text-white transition-colors">
+                  <Phone size={18} className="shrink-0" style={{ color: colors.accent }} />
+                  <span className="whitespace-nowrap">{company?.phone || '+84 (0) 24 3828 9999'}</span>
+                </a>
               </li>
-              <li className="flex items-center space-x-3">
-                <Mail size={18} className="shrink-0" style={{ color: colors.accent }} />
-                <span>{company?.email || company?.email || 'contact@vinacorporate.vn'}</span>
+              <li>
+                <a href={`mailto:${company?.email || 'contact@vinacorporate.vn'}`} className="flex items-center space-x-3 hover:text-white transition-colors">
+                  <Mail size={18} className="shrink-0" style={{ color: colors.accent }} />
+                  <span>{company?.email || 'contact@vinacorporate.vn'}</span>
+                </a>
               </li>
             </ul>
           </div>

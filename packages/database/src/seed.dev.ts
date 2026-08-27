@@ -34,18 +34,104 @@ const LUXURY_THEME = {
 const GREEN_THEME = { ...LUXURY_THEME, primaryColor: '#16A34A', accentColor: '#22C55E', backgroundColor: '#F0FDF4', surfaceColor: '#DCFCE7', textColor: '#14532D', textMutedColor: '#166534', borderColor: '#BBF7D0', darkMode: false };
 
 const DEFAULT_PAGES = [
-  { slug: 'home', title: 'Trang chu', isSystem: true, sortOrder: 0, sections: [
-    { key: 'hero', label: 'Hero Banner', order: 0, content: { heading: 'Kien Tao Khong Gian Song Thuong Luu', ctaUrl: '/projects' }, settings: { fullHeight: true } },
-    { key: 'featured_projects', label: 'Du an noi bat', order: 1, content: { maxItems: 6 }, settings: {} },
-    { key: 'about', label: 'Gioi thieu', order: 2, content: { heading: 'Ve Chung Toi' }, settings: {} },
-    { key: 'stats', label: 'So lieu', order: 3, content: { items: [{ number: '200+', label: 'Du an' }] }, settings: {} },
-    { key: 'cta', label: 'CTA', order: 4, content: { heading: 'Bat Dau Hanh Trinh', ctaUrl: '/contact' }, settings: {} },
-    { key: 'contact', label: 'Lien he', order: 5, content: { showForm: true }, settings: {} },
+  { slug: 'home', title: 'Trang chủ', isSystem: true, sortOrder: 0, sections: [
+    { key: 'hero', label: 'Hero Banner', order: 0, content: {
+      badge: 'Lumière Grand Palace — Vinhomes Riverside',
+      heading: 'Kiệt Tác\nĐỉnh Cao\nSống Thượng Lưu',
+      headingAccent: 'Đỉnh Cao',
+      subtitle: '18 dinh thự độc bản được kiến trúc sư người Ý thiết kế riêng cho 18 vị chủ nhân tinh hoa. Tọa lạc bên dòng sông ngọc Hà Nội.',
+      ctaText: 'Khám phá dự án', ctaUrl: 'projects',
+      backgroundImage: 'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=1920&q=90',
+      quickStats: [
+        { label: 'Diện tích', value: 'Từ 280m²' },
+        { label: 'Giá từ', value: '28 Tỷ VNĐ' },
+        { label: 'Pháp lý', value: 'Sổ đỏ vĩnh viễn' },
+        { label: 'Bàn giao', value: 'Q2 / 2027' },
+      ],
+    }, settings: { fullHeight: true } },
+    { key: 'intro', label: 'Giới thiệu ngắn', order: 1, content: {
+      quote: 'Chúng tôi không xây những ngôi nhà. Chúng tôi kiến tạo những di sản trường tồn theo năm tháng.',
+      quoteAccent: 'di sản trường tồn',
+      description: 'Lumière Group — 18 năm kiến tạo những không gian sống đỉnh cao chỉ dành cho 2.800+ vị chủ nhân tinh hoa nhất Việt Nam và khu vực.',
+    }, settings: {} },
+    { key: 'stats', label: 'Số liệu nổi bật', order: 2, content: {
+      items: [
+        { value: '18+', label: 'Năm kinh nghiệm', iconName: 'Clock' },
+        { value: '350+', label: 'Dinh thự đã bàn giao', iconName: 'Building2' },
+        { value: '2,800+', label: 'Chủ nhân tinh hoa', iconName: 'Users' },
+        { value: '98%', label: 'Hài lòng tuyệt đối', iconName: 'Star' },
+      ],
+    }, settings: {} },
+    { key: 'featured_projects', label: 'Dự án nổi bật', order: 3, content: { maxItems: 6, heading: 'Bộ Sưu Tập Đỉnh Cao', headingAccent: 'Đỉnh Cao', sectionLabel: 'Dự án nổi bật' }, settings: {} },
+    { key: 'amenities', label: 'Tiện ích', order: 4, content: {
+      heading: 'Chuẩn Mực 6 Sao Quốc Tế', headingAccent: '6 Sao', sectionLabel: 'Đặc quyền & tiện ích',
+      items: [
+        { icon: '🏊', title: 'Hồ bơi vô cực tầng 50', desc: 'Tầm nhìn panorama 360° toàn cảnh thành phố và sông Sài Gòn' },
+        { icon: '🍷', title: 'Wine Cellar & Cigar Lounge', desc: 'Hầm rượu kiểm soát nhiệt độ chuẩn Ý, 5000 chai phục vụ 24/7' },
+        { icon: '🚁', title: 'Sân đáp trực thăng riêng', desc: 'Kết nối nhanh đến sân bay Tân Sơn Nhất trong 8 phút' },
+        { icon: '🧘', title: 'Spa & Wellness Center', desc: '4000m² trung tâm chăm sóc sức khỏe đẳng cấp 6 sao quốc tế' },
+        { icon: '🎾', title: 'Tennis & Golf Simulator', desc: 'Sân tennis trong nhà và hệ thống golf mô phỏng 3D hiện đại nhất' },
+        { icon: '🚤', title: 'Bến du thuyền riêng', desc: 'Cầu cảng độc quyền, kết nối trực tiếp sông Sài Gòn và vịnh biển' },
+      ],
+    }, settings: {} },
+    { key: 'testimonials', label: 'Đánh giá khách hàng', order: 5, content: {
+      heading: 'Tiếng Nói Từ Giới Tinh Hoa', headingAccent: 'Giới Tinh Hoa', sectionLabel: 'Chủ nhân nói gì',
+      items: [
+        { name: 'Ông Nguyễn Minh Tuấn', title: 'CEO — Tập đoàn Sao Bắc Holdings', text: 'Đây không đơn thuần là nơi ở, đây là tuyên ngôn về vị thế của tôi.', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80', rating: 5 },
+        { name: 'Bà Phạm Lan Anh', title: 'Chủ tịch HĐQT — Goldmark City Group', text: 'Kiến trúc đỉnh cao, nội thất sang trọng đến từng chi tiết nhỏ nhất.', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&q=80', rating: 5 },
+        { name: 'Ông David Chen', title: 'Country Director — CapitaLand Vietnam', text: 'This project set a completely new standard. Absolutely world-class.', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&q=80', rating: 5 },
+      ],
+    }, settings: {} },
+    { key: 'timeline', label: 'Lịch sử phát triển', order: 6, content: {
+      heading: '18 Năm Kiến Tạo Di Sản', headingAccent: 'Kiến Tạo Di Sản', sectionLabel: 'Hành trình phát triển',
+      items: [
+        { year: '2008', title: 'Thành lập Lumière Group', desc: 'Ra đời với tầm nhìn kiến tạo không gian sống đỉnh cao.' },
+        { year: '2012', title: 'Dự án đầu tiên Quận 1', desc: 'Bàn giao 24 penthouse siêu sang đầu tiên tại TP.HCM.' },
+        { year: '2016', title: 'Mở rộng ra Hà Nội', desc: 'Khai trương 18 biệt thự ven Hồ Tây.' },
+        { year: '2020', title: 'Giải thưởng Quốc tế', desc: 'Nhận giải "Best Luxury Developer Vietnam" từ Asia Property Awards.' },
+        { year: '2024', title: 'Lumière Grand Palace', desc: 'Ra mắt dinh thự đắt giá nhất lịch sử BĐS Việt Nam.' },
+      ],
+    }, settings: {} },
+    { key: 'faq', label: 'Câu hỏi thường gặp', order: 7, content: {
+      heading: 'Câu Hỏi Thường Gặp', headingAccent: 'Thường Gặp', sectionLabel: 'Giải đáp thắc mắc',
+      items: [
+        { q: 'Chính sách pháp lý của các dự án như thế nào?', a: 'Toàn bộ dự án đều được cấp Sổ đỏ / Sổ hồng lâu dài, đã qua kiểm định pháp lý 3 lớp.' },
+        { q: 'Có hỗ trợ vay ngân hàng không?', a: 'Hợp tác với 5 ngân hàng hàng đầu với lãi suất ưu đãi từ 0% trong 24 tháng đầu.' },
+        { q: 'Quy trình đặt mua diễn ra thế nào?', a: 'Tư vấn 1:1 → Tham quan thực tế → Ký thỏa thuận đặt cọc → Ký hợp đồng. Hoàn tất trong 48 giờ.' },
+        { q: 'Dịch vụ sau bàn giao bao gồm những gì?', a: 'Concierge 24/7, quản gia riêng, bảo trì miễn phí 5 năm, quản lý tài sản toàn diện.' },
+      ],
+    }, settings: {} },
+    { key: 'cta', label: 'CTA Banner', order: 8, content: {
+      heading: 'Bắt Đầu Hành Trình\nSống Đỉnh Cao Của Bạn',
+      headingAccent: 'Sống Đỉnh Cao',
+      description: 'Quản gia cá nhân của chúng tôi sẽ thiết kế riêng một buổi thưởng lãm dành cho quý vị. Tuyệt đối bảo mật.',
+      ctaText: 'Yêu Cầu Tư Vấn VIP',
+    }, settings: {} },
+    { key: 'partners', label: 'Đối tác chiến lược', order: 9, content: {
+      items: ['VINHOMES', 'MASTERISE', 'SUN GROUP', 'CAPITALAND', 'KNIGHT FRANK'],
+    }, settings: {} },
+    { key: 'floor_plans', label: 'Mặt bằng dự án', order: 10, content: {
+      heading: 'Bản Giao Hưởng Kiến Trúc', headingAccent: 'Kiến Trúc', sectionLabel: 'Mặt bằng dự án',
+      items: [
+        { id: 'penthouse', label: 'Penthouse · 650m²', desc: 'Tầng 50-51, Tầm nhìn 360°, Bể bơi riêng', bedrooms: 5, bathrooms: 6, price: '85 Tỷ', img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900&q=80' },
+        { id: 'villa', label: 'Grand Villa · 450m²', desc: 'Biệt thự đơn lập, Hồ bơi, Sân vườn 200m²', bedrooms: 4, bathrooms: 5, price: '65 Tỷ', img: 'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=900&q=80' },
+        { id: 'duplex', label: 'Duplex Sky · 320m²', desc: 'Thông tầng 2 lớp, Ban công đôi, View sông', bedrooms: 3, bathrooms: 4, price: '42 Tỷ', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=900&q=80' },
+      ],
+    }, settings: {} },
+    { key: 'gallery', label: 'Thư viện hình ảnh', order: 11, content: {
+      heading: 'Nghệ Thuật Của Sự Hoàn Mỹ', headingAccent: 'Của Sự Hoàn Mỹ', sectionLabel: 'Thư viện hình ảnh',
+      items: [
+        { url: 'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=800&q=80', category: 'Ngoại thất', title: 'Mặt đứng dinh thự Grand Villa' },
+        { url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80', category: 'Nội thất', title: 'Phòng khách Penthouse Sky Residences' },
+        { url: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80', category: 'Ngoại thất', title: 'Bể bơi tràn bờ The Manor' },
+      ],
+    }, settings: {} },
   ]},
-  { slug: 'projects', title: 'Du an', isSystem: true, sortOrder: 1, sections: [{ key: 'projects_list', label: 'Danh sach', order: 0, content: { perPage: 12 }, settings: {} }] },
-  { slug: 'posts', title: 'Tin tuc', isSystem: true, sortOrder: 2, sections: [{ key: 'posts_list', label: 'Bai viet', order: 0, content: { perPage: 10 }, settings: {} }] },
-  { slug: 'contact', title: 'Lien he', isSystem: true, sortOrder: 3, sections: [{ key: 'contact_full', label: 'Lien he', order: 0, content: { showForm: true }, settings: {} }] },
+  { slug: 'projects', title: 'Dự án', isSystem: true, sortOrder: 1, sections: [{ key: 'projects_list', label: 'Danh sách dự án', order: 0, content: { perPage: 12 }, settings: {} }] },
+  { slug: 'posts', title: 'Tin tức', isSystem: true, sortOrder: 2, sections: [{ key: 'posts_list', label: 'Danh sách bài viết', order: 0, content: { perPage: 10 }, settings: {} }] },
+  { slug: 'contact', title: 'Liên hệ', isSystem: true, sortOrder: 3, sections: [{ key: 'contact_full', label: 'Form liên hệ', order: 0, content: { showForm: true, heading: 'Tư Vấn 1:1 Riêng Tư', headingAccent: '1:1 Riêng Tư' }, settings: {} }] },
 ];
+
 
 async function provisionTenant(opts: { userId: string; name: string; slug: string; subdomain: string; templateId: string; companyData: Record<string, any>; theme: Record<string, any>; isPrimary: boolean; }) {
   const { userId, name, slug, subdomain, templateId, companyData, theme, isPrimary } = opts;
@@ -135,11 +221,67 @@ async function main() {
   await prisma.template.deleteMany({});
   console.log('  [OK] Xoa xong\n');
 
-  console.log('Tao Template...');
-  const template = await prisma.template.create({ data: { id: 'template-luxury-gold', name: 'Luxury Gold Style', slug: 'luxury-gold', description: 'Giao dien phong cach hoang gia', shortDescription: 'Luxury Gold Style', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, isActive: true, sortOrder: 1 } });
-  await prisma.templateConfig.create({ data: { templateId: template.id, themeConfig: { colorPrimary: '#C5A572', colorSecondary: '#1A1A2E', fontHeading: 'Playfair Display', fontBody: 'Plus Jakarta Sans' }, layoutConfig: { header: 'sticky', homeSections: ['hero','featured_projects','about','stats','cta','contact'] }, featureFlags: { enableBlog: true, enableLeadCRM: true } } });
-  await prisma.templateVersion.create({ data: { templateId: template.id, version: 1, updateNotes: 'Luxury Gold Style v1.0', themeConfig: {}, layoutConfig: {}, featureFlags: {} } });
-  console.log('  [OK] Template: ' + template.name + '\n');
+  console.log('Tao Templates (17 mau)...');
+  const ALL_SEED_TEMPLATES = [
+    { id: 'template-luxury-gold', slug: 'luxury-gold', name: 'Luxury Gold Style', desc: 'Giao diện phong cách hoàng gia, dinh thự và penthouse siêu sang' },
+    { id: 'template-minimal-white', slug: 'minimal-white', name: 'Minimal White Style', desc: 'Phong cách tối giản Bắc Âu, chung cư cao cấp và duplex hiện đại' },
+    { id: 'template-modern-corporate', slug: 'modern-corporate', name: 'Modern Corporate Style', desc: 'Doanh nghiệp bất động sản và tập đoàn chuyên nghiệp' },
+    { id: 'template-resort-paradise', slug: 'resort-paradise', name: 'Resort Paradise Style', desc: 'Bất động sản nghỉ dưỡng, condotel ven biển và villa sinh thái' },
+    { id: 'template-urban-city', slug: 'urban-city', name: 'Urban City Style', desc: 'Căn hộ chung cư đô thị, nhà phố và shophouse sôi động' },
+    { id: 'template-industrial-estate', slug: 'industrial-estate', name: 'Industrial Estate Style', desc: 'Bất động sản công nghiệp, kho bãi và nhà xưởng cho thuê' },
+    { id: 'template-luxury-villa', slug: 'luxury-villa', name: 'Luxury Villa Style', desc: 'Biệt thự đơn lập, song lập phong cách thượng lưu' },
+    { id: 'template-eco-living', slug: 'eco-living', name: 'Eco Living Style', desc: 'Không gian sống xanh, bất động sản sinh thái và vườn nghỉ dưỡng' },
+    { id: 'template-classic-heritage', slug: 'classic-heritage', name: 'Classic Heritage Style', desc: 'Kiến trúc tân cổ điển Pháp, lâu đài và biệt thự di sản' },
+    { id: 'template-classic-elegant', slug: 'classic-elegant', name: 'Classic Elegant Style', desc: 'Phong cách thanh lịch sang trọng vượt thời gian' },
+    { id: 'template-investment-pro', slug: 'investment-pro', name: 'Investment Pro Style', desc: 'Dành cho nhà đầu tư, chuyên gia tài chính và môi giới chuyên sâu' },
+    { id: 'template-agency-onepage', slug: 'agency-onepage', name: 'Agency Onepage Style', desc: 'Landing page giới thiệu sàn môi giới và phân phối dự án' },
+    { id: 'template-retail-commercial', slug: 'retail-commercial', name: 'Retail Commercial Style', desc: 'Mặt bằng bán lẻ, trung tâm thương mại và shophouse kinh doanh' },
+    { id: 'template-listing-portal', slug: 'listing-portal', name: 'Listing Portal Style', desc: 'Cổng thông tin rao vặt và sàn giao dịch BĐS đa phân khúc' },
+    { id: 'template-personal-agent', slug: 'personal-agent', name: 'Personal Agent Style', desc: 'Thương hiệu cá nhân cho môi giới BĐS triệu đô' },
+    { id: 'template-auction-bds', slug: 'auction-bds', name: 'Auction BĐS Style', desc: 'Đấu giá bất động sản, phát mại và cơ hội đầu tư độc quyền' },
+    { id: 'template-land-plot', slug: 'land-plot', name: 'Land Plot Style', desc: 'Đất nền phân lô, đất thổ cư và đất nông nghiệp' },
+  ];
+
+  let primaryTemplate: any = null;
+  for (let i = 0; i < ALL_SEED_TEMPLATES.length; i++) {
+    const t = ALL_SEED_TEMPLATES[i];
+    const createdTpl = await prisma.template.create({
+      data: {
+        id: t.id,
+        name: t.name,
+        slug: t.slug,
+        description: t.desc,
+        shortDescription: t.name,
+        priceBuy: 499000,
+        priceBuySource: 799000,
+        priceRentMonthly: 199000,
+        isActive: true,
+        sortOrder: i + 1,
+      },
+    });
+    await prisma.templateConfig.create({
+      data: {
+        templateId: createdTpl.id,
+        themeConfig: { colorPrimary: '#C5A572', colorSecondary: '#1A1A2E', fontHeading: 'Playfair Display', fontBody: 'Plus Jakarta Sans' },
+        layoutConfig: { header: 'sticky', homeSections: ['hero', 'featured_projects', 'about', 'stats', 'cta', 'contact'] },
+        featureFlags: { enableBlog: true, enableLeadCRM: true },
+      },
+    });
+    await prisma.templateVersion.create({
+      data: {
+        templateId: createdTpl.id,
+        version: 1,
+        updateNotes: `${t.name} v1.0`,
+        themeConfig: {},
+        layoutConfig: {},
+        featureFlags: {},
+      },
+    });
+    if (i === 0) primaryTemplate = createdTpl;
+  }
+  const template = primaryTemplate;
+  console.log(`  [OK] Da tao thanh cong ${ALL_SEED_TEMPLATES.length} templates trong Database!\n`);
+
 
   console.log('Tao tai khoan...');
   const adminPw = await bcrypt.hash('adminsuper@123456', 10);

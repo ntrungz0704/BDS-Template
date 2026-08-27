@@ -95,6 +95,7 @@ interface AuthContextType {
   addOrder: (order: { template: OrderTemplateInfo; type: 'BUY' | 'RENT'; amount: number; subdomain?: string; note?: string }) => Order;
   toggleWishlist: (template: any) => void;
   isWishlisted: (templateSlug: string) => boolean;
+  isPurchased: (templateSlug: string) => boolean;
   addToCart: (template: any, type?: 'BUY' | 'RENT', subdomain?: string, note?: string) => void;
   removeFromCart: (templateId: string) => void;
   updateCartItem: (templateId: string, updates: Partial<CartItem>) => void;
@@ -438,8 +439,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return wishlists.some((w) => w.template.slug === templateSlug);
   };
 
+  const isPurchased = (templateSlug: string): boolean => {
+    if (!templateSlug) return false;
+    const slug = templateSlug.toLowerCase().trim();
+    
+    // Check if current user's tenant has this template
+    if ((user as any)?.tenant?.templateSlug?.toLowerCase() === slug || (user as any)?.tenant?.template?.toLowerCase() === slug) {
+      return true;
+    }
+
+    // Check in existing orders
+    return orders.some((o) => {
+      const oSlug = (o.template?.slug || (o.template as any)?.id || '').toLowerCase().trim();
+      return oSlug === slug;
+    });
+  };
+
   const addToCart = (template: any, type: 'BUY' | 'RENT' = 'BUY', subdomain?: string, note?: string) => {
     const slug = template.slug || template.id;
+
+    // If template is already owned by user
+    if (isPurchased(slug)) {
+      showToast(`Bạn đã sở hữu mẫu "${template.name}". Bạn có thể sử dụng vĩnh viễn không cần mua lại!`, 'info', {
+        label: 'Vào CMS Quản trị',
+        onClick: () => {
+          const cmsUrl = process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001';
+          if (typeof window !== 'undefined') window.location.href = cmsUrl;
+        },
+      });
+      return;
+    }
+
     const exists = cart.some(item => item.template.slug === slug || item.template.id === template.id);
     if (exists) {
       showToast(`Mẫu "${template.name}" đã có trong giỏ hàng!`, 'info', {
@@ -531,6 +561,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         addOrder,
         toggleWishlist,
         isWishlisted,
+        isPurchased,
         addToCart,
         removeFromCart,
         updateCartItem,

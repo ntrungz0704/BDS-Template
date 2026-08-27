@@ -72,7 +72,8 @@ export default function PreviewToolbar({
   className = '',
 }: PreviewToolbarProps) {
   const router = useRouter();
-  const { addToCart } = useAuth();
+  const { addToCart, isPurchased } = useAuth();
+  const owned = isPurchased(template.slug);
   const [copied, setCopied] = useState(false);
   const [toolbarVisible, setToolbarVisible] = useState(true);
 
@@ -235,25 +236,38 @@ export default function PreviewToolbar({
         {/* Divider */}
         <div className="h-6 w-px bg-slate-700 hidden sm:block" />
 
-        {/* Add to Cart CTA */}
-        <button
-          onClick={handleAddToCart}
-          className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white text-xs font-bold transition-all duration-150 items-center gap-1.5 flex"
-          title="Thêm mẫu này vào giỏ hàng"
-        >
-          <ShoppingCart className="w-3.5 h-3.5 text-blue-400" />
-          <span className="hidden md:inline">Thêm giỏ</span>
-        </button>
+        {owned ? (
+          <a
+            href={process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
+            className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg transition-all duration-150 flex items-center gap-1.5"
+          >
+            <Check className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Đã Sở Hữu - Vào CMS</span>
+            <span className="sm:hidden">Vào CMS</span>
+          </a>
+        ) : (
+          <>
+            {/* Add to Cart CTA */}
+            <button
+              onClick={handleAddToCart}
+              className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white text-xs font-bold transition-all duration-150 items-center gap-1.5 flex"
+              title="Thêm mẫu này vào giỏ hàng"
+            >
+              <ShoppingCart className="w-3.5 h-3.5 text-blue-400" />
+              <span className="hidden md:inline">Thêm giỏ</span>
+            </button>
 
-        {/* Buy CTA — primary action */}
-        <button
-          onClick={handleBuyNow}
-          className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-extrabold shadow-lg shadow-blue-600/25 transition-all duration-150 flex items-center gap-1.5 border border-blue-500/30"
-        >
-          <Zap className="w-3.5 h-3.5 fill-white" />
-          <span className="hidden sm:inline">Mua Ngay</span>
-          <span className="sm:hidden">Mua</span>
-        </button>
+            {/* Buy CTA — primary action */}
+            <button
+              onClick={handleBuyNow}
+              className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-extrabold shadow-lg shadow-blue-600/25 transition-all duration-150 flex items-center gap-1.5 border border-blue-500/30"
+            >
+              <Zap className="w-3.5 h-3.5 fill-white" />
+              <span className="hidden sm:inline">Mua Ngay</span>
+              <span className="sm:hidden">Mua</span>
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

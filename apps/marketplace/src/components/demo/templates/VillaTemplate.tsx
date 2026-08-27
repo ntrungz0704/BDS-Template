@@ -9,6 +9,7 @@ import {
   ChevronLeft, Clock, Filter, RefreshCw, Compass
 } from 'lucide-react';
 import { MAX_W } from '../design-system';
+import { FacebookIcon, YoutubeIcon, LinkedinIcon, ZaloIcon } from '../../icons/SocialIcons';
 
 interface TemplateProps {
   template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
@@ -431,9 +432,23 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
   // Contact submission
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!contactName || !contactPhone) {
-      alert("Vui lòng điền họ tên và số điện thoại liên hệ!");
+    const phoneClean = contactPhone.replace(/\s/g, '');
+    if (!phoneClean || !/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
+      alert('Số điện thoại phải từ 10-11 số (VD: 0919006030 hoặc +84919006030).');
       return;
+    }
+    if (!contactName.trim()) {
+      alert("Vui lòng điền họ tên liên hệ!");
+      return;
+    }
+    if (typeof (globalThis as any).submitContactForm === 'function') {
+      (globalThis as any).submitContactForm({
+        fullName: contactName,
+        phone: phoneClean,
+        email: contactEmail || undefined,
+        message: contactMessage || 'Yêu cầu tư vấn biệt thự cao cấp',
+        source: 'website_contact_form',
+      }).catch(() => {});
     }
     setContactSubmitted(true);
   };
@@ -1784,7 +1799,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
               <div className="relative">
                 <h3 className="text-2xl font-serif font-bold mb-8 text-white border-b border-white/20 pb-4 font-semibold">Thông Tin Liên Hệ</h3>
                 <div className="space-y-8">
-                  <div className="flex items-start">
+                  <a href="https://maps.google.com/?q=123+Dai+lo+Thuong+Luu+Thao+Dien+Quan+2+TPHCM" target="_blank" rel="noopener noreferrer" className="flex items-start hover:opacity-90 transition">
                     <div className="w-10 h-10 rounded-full bg-[#F59E0B]/20 flex items-center justify-center mr-4 shrink-0 border border-[#F59E0B]/30">
                       <MapPin className="h-5 w-5 text-[#F59E0B]" />
                     </div>
@@ -1792,17 +1807,17 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                       <h4 className="font-bold text-lg mb-1">Văn phòng bán hàng</h4>
                       <p className="text-white/80 text-sm leading-relaxed">123 Đại lộ Thượng Lưu, Phường Thảo Điền, Quận 2, TP. Hồ Chí Minh</p>
                     </div>
-                  </div>
-                  <div className="flex items-start">
+                  </a>
+                  <a href="tel:0919006030" className="flex items-start hover:opacity-90 transition">
                     <div className="w-10 h-10 rounded-full bg-[#F59E0B]/20 flex items-center justify-center mr-4 shrink-0 border border-[#F59E0B]/30">
                       <Phone className="h-5 w-5 text-[#F59E0B]" />
                     </div>
                     <div>
                       <h4 className="font-bold text-lg mb-1">Hotline tư vấn 24/7</h4>
-                      <p className="text-white/80 text-sm">0909 123 456 - 1900 6868</p>
+                      <p className="text-white/80 text-sm">0919 006 030</p>
                     </div>
-                  </div>
-                  <div className="flex items-start">
+                  </a>
+                  <a href="mailto:contact@premiumvilla.vn" className="flex items-start hover:opacity-90 transition">
                     <div className="w-10 h-10 rounded-full bg-[#F59E0B]/20 flex items-center justify-center mr-4 shrink-0 border border-[#F59E0B]/30">
                       <Mail className="h-5 w-5 text-[#F59E0B]" />
                     </div>
@@ -1810,15 +1825,24 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                       <h4 className="font-bold text-lg mb-1">Hòm thư điện tử</h4>
                       <p className="text-white/80 text-sm">contact@premiumvilla.vn</p>
                     </div>
-                  </div>
+                  </a>
                 </div>
                 
                 <div className="mt-12 pt-8 border-t border-white/10 text-center sm:text-left">
-                  <p className="text-[10px] text-white/50 mb-2">Theo dõi chúng tôi trên mạng xã hội</p>
-                  <div className="flex justify-center sm:justify-start gap-4">
-                    <span className="text-[10px] bg-white/10 px-3 py-1.5 rounded-full hover:bg-[#F59E0B] hover:text-white transition-colors cursor-pointer">Facebook</span>
-                    <span className="text-[10px] bg-white/10 px-3 py-1.5 rounded-full hover:bg-[#F59E0B] hover:text-white transition-colors cursor-pointer">YouTube</span>
-                    <span className="text-[10px] bg-white/10 px-3 py-1.5 rounded-full hover:bg-[#F59E0B] hover:text-white transition-colors cursor-pointer">LinkedIn</span>
+                  <p className="text-[10px] text-white/50 mb-3">Theo dõi chúng tôi trên mạng xã hội</p>
+                  <div className="flex justify-center sm:justify-start items-center gap-3">
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-blue-600 text-white transition-colors">
+                      <FacebookIcon className="w-4 h-4" />
+                    </a>
+                    <a href="https://zalo.me/0919006030" target="_blank" rel="noopener noreferrer" title="Zalo" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#0068FF] text-white transition-colors p-2">
+                      <ZaloIcon className="w-full h-full" />
+                    </a>
+                    <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" title="YouTube" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-red-600 text-white transition-colors">
+                      <YoutubeIcon className="w-4 h-4" />
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" title="LinkedIn" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-blue-700 text-white transition-colors">
+                      <LinkedinIcon className="w-4 h-4" />
+                    </a>
                   </div>
                 </div>
               </div>

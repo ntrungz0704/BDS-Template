@@ -142,6 +142,20 @@ export default function MarketplaceHome() {
 
   const handleOrderSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Client-side validation
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert('Email không hợp lệ. VD: ten@gmail.com');
+      return;
+    }
+    const phoneClean = phone.replace(/\s/g, '');
+    if (!phoneClean || !/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
+      alert('SĐT phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.');
+      return;
+    }
+    if (!fullName || fullName.trim().length < 2) {
+      alert('Họ và tên tối thiểu 2 ký tự.');
+      return;
+    }
     const data = {
       templateId: selectedTemplate.id,
       type: orderType,
@@ -335,14 +349,14 @@ export default function MarketplaceHome() {
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] antialiased overflow-x-hidden">
       <Head>
-        <title>Sàn Giao Dịch Website Bất Động Sản Cao Cấp — PlatformBDS</title>
+        <title>Kho Mẫu Website Bất Động Sản Cao Cấp — TEMPLATES BDS</title>
         <meta name="description" content="16 mẫu website BĐS chuyên nghiệp. Kích hoạt 30 giây. Chuẩn SEO Google. Hỗ trợ 24/7. Hơn 500+ môi giới & doanh nghiệp đã tin dùng." />
-        <meta property="og:title" content="PlatformBDS — Sở Hữu Website BĐS Chuyên Nghiệp" />
+        <meta property="og:title" content="TEMPLATES BDS — Sở Hữu Website BĐS Chuyên Nghiệp" />
       </Head>
 
       <Header
         onSearch={setSearchQuery}
-        onOpenConsultation={() => alert('Đội ngũ tư vấn sẽ liên hệ bạn qua hotline 0919 006 030!')}
+        onOpenConsultation={() => router.push('/contact')}
         onOpenAuth={() => openAuthModal('login')}
       />
 
@@ -402,11 +416,13 @@ export default function MarketplaceHome() {
                 Khám phá 16 mẫu website
               </a>
               <button
-                onClick={() => alert('Đội ngũ tư vấn sẽ liên hệ bạn qua hotline 0919 006 030!')}
-                className="btn-ghost text-sm"
+                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                className="btn-ghost text-sm flex items-center gap-1.5"
               >
+                <Phone className="w-4 h-4 text-blue-600" />
                 Nhận tư vấn miễn phí
               </button>
+
             </div>
 
             {/* Stats — animated (HeroStats) */}
@@ -423,7 +439,7 @@ export default function MarketplaceHome() {
                   <span className="w-2 h-2 rounded-full bg-red-400/80" />
                   <span className="w-2 h-2 rounded-full bg-amber-400/80" />
                   <span className="w-2 h-2 rounded-full bg-emerald-400/80" />
-                  <span className="flex-1 mx-2 bg-[#0F172A] rounded text-[7px] text-slate-500 text-center py-0.5 font-mono">hoanggialand.platformbds.vn</span>
+                  <span className="flex-1 mx-2 bg-[#0F172A] rounded text-[7px] text-slate-500 text-center py-0.5 font-mono">hoanggialand.aireviewbds.com</span>
                 </div>
                 <div className="rounded-t-xl overflow-hidden aspect-[16/9] bg-slate-900">
                   <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=700" alt="Luxury template" className="w-full h-full object-cover opacity-90" />
@@ -897,7 +913,7 @@ export default function MarketplaceHome() {
                   <div className="relative flex items-center border border-slate-200 rounded-xl overflow-hidden">
                     <input type="text" value={subdomain} onChange={e => setSubdomain(e.target.value)} placeholder="your-brand" required
                       className="flex-1 h-11 pl-3 pr-2 text-[13px] font-medium focus:outline-none" />
-                    <span className="bg-slate-50 border-l border-slate-200 h-11 flex items-center px-3 text-[12px] text-slate-400 font-medium shrink-0">.platformbds.vn</span>
+                    <span className="bg-slate-50 border-l border-slate-200 h-11 flex items-center px-3 text-[12px] text-slate-400 font-medium shrink-0">.aireviewbds.com</span>
                   </div>
                 </div>
               )}

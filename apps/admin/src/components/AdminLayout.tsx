@@ -149,10 +149,10 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
         <div className="h-20 flex items-center px-8 border-b border-slate-800">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-500/20">
-              B
+              T
             </div>
             <div>
-              <span className="text-sm font-extrabold text-white tracking-wider uppercase block leading-none">PlatformBDS</span>
+              <span className="text-sm font-extrabold text-white tracking-wider uppercase block leading-none">TEMPLATES BDS</span>
               <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mt-1 block">Super Admin</span>
             </div>
           </div>

@@ -201,7 +201,8 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
   const accent = extra.accentColor;
 
   const router = useRouter();
-  const { addToCart } = useAuth();
+  const { addToCart, isPurchased } = useAuth();
+  const owned = isPurchased(template.slug || template.id);
 
   const fmt = (v: number) =>
     new Intl.NumberFormat('vi-VN').format(v) + 'đ';
@@ -411,31 +412,41 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
                     className="w-full h-9 text-sm font-bold rounded-xl border-2 flex items-center justify-center gap-2 transition-all hover:opacity-80"
                     style={{ borderColor: accent, color: accent }}
                   >
-                    <Play className="w-3.5 h-3.5" /> Xem Demo
+                    <Play className="w-3.5 h-3.5" /> Xem Demo Trực Tuyến
                   </button>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      onClick={() => {
-                        addToCart(template, 'BUY');
-                        onClose();
-                        router.push('/cart');
-                      }}
-                      className="h-10 text-[13px] font-bold rounded-xl text-white flex items-center justify-center gap-1.5 transition-all hover:opacity-90 shadow-md"
-                      style={{ backgroundColor: accent }}
+                  
+                  {owned ? (
+                    <a
+                      href={process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
+                      className="w-full h-10 text-[13px] font-bold rounded-xl text-white bg-emerald-600 hover:bg-emerald-700 flex items-center justify-center gap-1.5 transition-all shadow-md"
                     >
-                      <Zap className="w-3.5 h-3.5" /> Mua ngay
-                    </button>
-                    <button
-                      onClick={() => {
-                        addToCart(template, 'BUY');
-                        onClose();
-                      }}
-                      className="h-10 text-[13px] font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all hover:opacity-80 border border-slate-200"
-                      style={{ backgroundColor: accent + '15', color: accent }}
-                    >
-                      <ShoppingCart className="w-3.5 h-3.5" /> Thêm vào giỏ
-                    </button>
-                  </div>
+                      <Check className="w-4 h-4" /> Bạn Đã Sở Hữu - Vào CMS Quản Trị
+                    </a>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => {
+                          addToCart(template, 'BUY');
+                          onClose();
+                          router.push('/cart');
+                        }}
+                        className="h-10 text-[13px] font-bold rounded-xl text-white flex items-center justify-center gap-1.5 transition-all hover:opacity-90 shadow-md"
+                        style={{ backgroundColor: accent }}
+                      >
+                        <Zap className="w-3.5 h-3.5" /> Mua ngay
+                      </button>
+                      <button
+                        onClick={() => {
+                          addToCart(template, 'BUY');
+                          onClose();
+                        }}
+                        className="h-10 text-[13px] font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all hover:opacity-80 border border-slate-200"
+                        style={{ backgroundColor: accent + '15', color: accent }}
+                      >
+                        <ShoppingCart className="w-3.5 h-3.5" /> Thêm vào giỏ
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="mt-3 pt-3 border-t border-slate-100 flex flex-col gap-1.5">

@@ -437,10 +437,11 @@ export default function AdminOrders() {
                             </a>
                             <button
                               onClick={() => setSelectedOrder(order)}
-                              className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all"
+                              className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-all shadow-xs flex items-center gap-1"
                             >
-                              Xem Lại
+                              <span>📋 Bàn Giao</span>
                             </button>
+
                           </div>
                         ) : (
                           <button
@@ -537,6 +538,89 @@ export default function AdminOrders() {
               </div>
             </div>
 
+            {/* THÔNG TIN BÀN GIAO WEBSITE & TÀI KHOẢN CMS DÀNH CHO ĐƠN ĐÃ DUYỆT */}
+            {selectedOrder.status === 'COMPLETED' && (
+              <div className="mb-6 p-5 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200 text-left">
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-emerald-200/60">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <h4 className="text-xs font-black uppercase tracking-wider text-emerald-900">
+                      Thông Tin Bàn Giao Website & Tài Khoản CMS
+                    </h4>
+                  </div>
+                  <span className="text-[10px] text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md font-bold">
+                    Khách Có Thể Đăng Nhập Ngay
+                  </span>
+                </div>
+
+                <div className="space-y-2.5 text-xs font-mono">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                    <span className="text-slate-500 font-sans">Website Khách Hàng:</span>
+                    <a
+                      href={`http://localhost:3003/?tenant=${selectedOrder.subdomain || selectedOrder.tenantId}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-blue-600 font-bold hover:underline font-mono"
+                    >
+                      http://localhost:3003/?tenant={selectedOrder.subdomain || selectedOrder.tenantId}
+                    </a>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                    <span className="text-slate-500 font-sans">Trang Quản Trị CMS:</span>
+                    <a
+                      href="http://localhost:3001"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-indigo-600 font-bold hover:underline font-mono"
+                    >
+                      http://localhost:3001
+                    </a>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                    <span className="text-slate-500 font-sans">Email Đăng Nhập:</span>
+                    <span className="font-bold text-slate-800">{selectedOrder.email}</span>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                    <span className="text-slate-500 font-sans">Mật Khẩu CMS (Mặc định):</span>
+                    <span className="font-bold text-emerald-800 bg-white px-2 py-0.5 rounded border border-emerald-300 inline-block w-fit">
+                      {selectedOrder.email ? selectedOrder.email.split('@')[0] : '123456'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-emerald-200/60 flex flex-col sm:flex-row items-center gap-2">
+                  <button
+                    onClick={() => {
+                      const prefix = selectedOrder.email ? selectedOrder.email.split('@')[0] : '123456';
+                      const targetSub = selectedOrder.subdomain || selectedOrder.tenantId;
+                      const info = `🎉 THÔNG TIN BÀN GIAO WEBSITE BẤT ĐỘNG SẢN:\n\n` +
+                        `- Website công khai: http://localhost:3003/?tenant=${targetSub}\n` +
+                        `- Trang quản trị CMS: http://localhost:3001\n` +
+                        `- Email đăng nhập: ${selectedOrder.email}\n` +
+                        `- Mật khẩu CMS: ${prefix}\n\n` +
+                        `👉 Bạn hãy đăng nhập vào CMS để đổi thông tin và đăng tải dự án ngay!`;
+                      handleCopy(info, `HANDOVER_${selectedOrder.id}`);
+                    }}
+                    className="w-full sm:flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5"
+                  >
+                    <span>{copiedField === `HANDOVER_${selectedOrder.id}` ? '✓ Đã Sao Chép Toàn Bộ' : '📋 Sao Chép Gửi Zalo Cho Khách'}</span>
+                  </button>
+
+                  <a
+                    href={`http://localhost:3003/?tenant=${selectedOrder.subdomain || selectedOrder.tenantId}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full sm:w-auto px-4 py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all text-center"
+                  >
+                    Xem Web
+                  </a>
+                </div>
+              </div>
+            )}
+
             {/* Ghi chú từ chối nếu có */}
             {isPendingStatus(selectedOrder.status) && (
               <div className="mb-6">
@@ -561,6 +645,7 @@ export default function AdminOrders() {
               >
                 Đóng
               </button>
+
 
               {isPendingStatus(selectedOrder.status) && (
                 <>
@@ -629,12 +714,12 @@ export default function AdminOrders() {
               <div>
                 <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Website công khai:</span>
                 <a
-                  href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'http://localhost:3003'}?tenant=${approvalResult.subdomain}`}
+                  href={`http://localhost:3003/?tenant=${approvalResult.subdomain || approvalResult.tenantSlug || 'website'}`}
                   target="_blank"
                   rel="noreferrer"
                   className="text-blue-600 font-bold hover:underline"
                 >
-                  http://{approvalResult.subdomain}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'platformbds.vn'}
+                  http://localhost:3003/?tenant={approvalResult.subdomain || approvalResult.tenantSlug}
                 </a>
               </div>
 
@@ -656,9 +741,9 @@ export default function AdminOrders() {
               </div>
 
               <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Mật khẩu tạm:</span>
+                <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Mật khẩu CMS:</span>
                 <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                  {approvalResult.tempPassword || approvalResult.password || '123456'}
+                  {approvalResult.password || '123456'}
                 </span>
               </div>
             </div>
@@ -666,11 +751,12 @@ export default function AdminOrders() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => {
-                  const info = `🎉 CHÚC MỪNG! WEBSITE CỦA BẠN ĐÃ KÍCH HOẠT THÀNH CÔNG TRÊN PLATFORMBDS:\n\n` +
-                    `- Website công khai: http://${approvalResult.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'platformbds.vn'}\n` +
+                  const targetSub = approvalResult.subdomain || approvalResult.tenantSlug || 'website';
+                  const info = `🎉 CHÚC MỪNG! WEBSITE CỦA BẠN ĐÃ KÍCH HOẠT THÀNH CÔNG:\n\n` +
+                    `- Website công khai: http://localhost:3003/?tenant=${targetSub}\n` +
                     `- Quản trị website (CMS): ${process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}\n` +
                     `- Email đăng nhập: ${approvalResult.email}\n` +
-                    `- Mật khẩu đăng nhập: ${approvalResult.tempPassword || approvalResult.password || '123456'}\n\n` +
+                    `- Mật khẩu đăng nhập: ${approvalResult.password || '123456'}\n\n` +
                     `👉 Bạn hãy đăng nhập vào CMS để đổi thông tin và đăng tải dự án ngay!`;
                   handleCopy(info, 'ALL_INFO');
                 }}
@@ -678,6 +764,7 @@ export default function AdminOrders() {
               >
                 {copiedField === 'ALL_INFO' ? '✓ Đã Sao Chép Toàn Bộ' : '📋 Sao Chép Thông Tin Gửi Zalo'}
               </button>
+
 
               <button
                 onClick={() => setApprovalResult(null)}

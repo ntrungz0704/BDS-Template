@@ -9,10 +9,22 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "var(--primary)",
-        secondary: "var(--secondary)",
-      }
+        primary: "var(--color-primary)",
+        secondary: "var(--color-secondary)",
+        accent: "var(--color-accent)",
+        surface: "var(--color-surface)",
+        ink: "var(--color-ink)",
+        muted: "var(--color-muted)",
+      },
+      fontFamily: {
+        heading: "var(--font-heading)",
+        body: "var(--font-body)",
+      },
+      borderRadius: {
+        base: "var(--radius-base)",
+      },
     },
   },
   plugins: [],
 }
+

@@ -8,6 +8,7 @@ import {
   Building2, TrendingUp, Heart, Shield, Zap, Coffee, BookOpen, Bike, Search, Filter 
 } from 'lucide-react';
 import { MAX_W } from '../design-system';
+import { FacebookIcon, YoutubeIcon, TiktokIcon, ZaloIcon, InstagramIcon } from '../../icons/SocialIcons';
 
 interface TemplateProps {
   template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
@@ -786,15 +787,15 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 Để lại thông tin, chuyên viên tư vấn sẽ liên hệ trong vòng 30 phút và tư vấn miễn phí về dự án phù hợp nhất với bạn.
               </p>
               <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-3" style={{ color: t.accent }}>
-                  <Phone className="w-5 h-5" /> <span>1800 1234 (Miễn phí)</span>
-                </div>
-                <div className="flex items-center gap-3" style={{ color: t.accent }}>
-                  <Mail className="w-5 h-5" /> <span>hello@ecoliving.vn</span>
-                </div>
-                <div className="flex items-center gap-3" style={{ color: t.accent }}>
-                  <MapPin className="w-5 h-5" /> <span>Tầng 12, Vinhomes Center, 208 Giảng Võ, Hà Nội</span>
-                </div>
+                <a href="tel:0919006030" className="flex items-center gap-3 hover:underline transition-colors" style={{ color: t.accent }}>
+                  <Phone className="w-5 h-5 shrink-0" /> <span>0919 006 030 (Hotline CSKH)</span>
+                </a>
+                <a href="mailto:hello@ecoliving.vn" className="flex items-center gap-3 hover:underline transition-colors" style={{ color: t.accent }}>
+                  <Mail className="w-5 h-5 shrink-0" /> <span>hello@ecoliving.vn</span>
+                </a>
+                <a href="https://maps.google.com/?q=208+Giang+Vo+Ba+Dinh+Ha+Noi" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:underline transition-colors" style={{ color: t.accent }}>
+                  <MapPin className="w-5 h-5 shrink-0" /> <span>Tầng 12, Vinhomes Center, 208 Giảng Võ, Hà Nội</span>
+                </a>
               </div>
             </div>
             
@@ -822,7 +823,12 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
               ) : (
                 <form onSubmit={(e) => {
                   e.preventDefault();
-                  if (consultName.trim() && consultPhone.trim()) {
+                  const phoneClean = consultPhone.replace(/\s/g, '');
+                  if (!phoneClean || !/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
+                    alert('Số điện thoại phải từ 10-11 số (VD: 0919006030 hoặc +84919006030).');
+                    return;
+                  }
+                  if (consultName.trim()) {
                     setConsultSubmitted(true);
                   }
                 }}>
@@ -1462,10 +1468,57 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
             <p className="text-sm leading-relaxed mb-6" style={{ color: 'rgba(255,255,255,0.5)' }}>
               Tiên phong phát triển bất động sản sinh thái bền vững tại Việt Nam.
             </p>
-            <div className="flex gap-3">
-              {['FB', 'YT', 'IG', 'TK'].map(s => (
-                <button key={s} className="w-9 h-9 rounded-full text-xs font-bold flex items-center justify-center hover:bg-white/20 transition-colors" style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: 'white' }}>{s}</button>
-              ))}
+            <div className="flex items-center gap-2.5">
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Facebook"
+                className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-blue-600 text-white transition-all shadow-xs"
+                style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
+              >
+                <FacebookIcon className="w-4 h-4" />
+              </a>
+              <a
+                href="https://zalo.me/0919006030"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Zalo Chat"
+                className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#0068FF] text-white transition-all shadow-xs p-2"
+                style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
+              >
+                <ZaloIcon className="w-full h-full" />
+              </a>
+              <a
+                href="https://youtube.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="YouTube"
+                className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-red-600 text-white transition-all shadow-xs"
+                style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
+              >
+                <YoutubeIcon className="w-4 h-4" />
+              </a>
+              <a
+                href="https://tiktok.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="TikTok"
+                className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-slate-800 text-white transition-all shadow-xs"
+                style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
+              >
+                <TiktokIcon className="w-4 h-4" />
+              </a>
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Instagram"
+                className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-pink-600 text-white transition-all shadow-xs"
+                style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
+              >
+                <InstagramIcon className="w-4 h-4" />
+              </a>
             </div>
           </div>
           {[

@@ -213,14 +213,28 @@ export class OnboardingService {
 
       // 3. Create Default Theme from Template config (or defaults)
       const templateConfig = await tx.templateConfig.findUnique({ where: { templateId } });
+      const tc = templateConfig?.themeConfig as any;
       await tx.tenantThemeSettings.create({
         data: {
           tenantId: tenant.id,
-          primaryColor: (templateConfig?.themeConfig as any)?.primaryColor ?? '#2563EB',
-          secondaryColor: (templateConfig?.themeConfig as any)?.secondaryColor ?? '#64748B',
-          accentColor: (templateConfig?.themeConfig as any)?.accentColor ?? '#F59E0B',
-          fontHeading: (templateConfig?.themeConfig as any)?.fontHeading ?? 'Plus Jakarta Sans',
-          fontBody: (templateConfig?.themeConfig as any)?.fontBody ?? 'Inter',
+          primaryColor: tc?.primaryColor ?? '#2563EB',
+          secondaryColor: tc?.secondaryColor ?? '#64748B',
+          accentColor: tc?.accentColor ?? '#F59E0B',
+          backgroundColor: tc?.backgroundColor ?? '#FFFFFF',
+          surfaceColor: tc?.surfaceColor ?? '#F8FAFC',
+          textColor: tc?.textColor ?? '#0F172A',
+          textMutedColor: tc?.textMutedColor ?? '#64748B',
+          borderColor: tc?.borderColor ?? '#E2E8F0',
+          fontHeading: tc?.fontHeading ?? 'Plus Jakarta Sans',
+          fontBody: tc?.fontBody ?? 'Inter',
+          fontSizeBase: tc?.fontSizeBase ?? '16px',
+          lineHeight: tc?.lineHeight ?? '1.6',
+          containerWidth: tc?.containerWidth ?? '1280px',
+          borderRadius: tc?.borderRadius ?? '8px',
+          shadowStyle: tc?.shadowStyle ?? 'soft',
+          darkMode: tc?.darkMode ?? false,
+          buttonStyle: tc?.buttonStyle ?? 'rounded',
+          animationsEnabled: tc?.animationsEnabled ?? true,
         },
       });
 

@@ -126,6 +126,10 @@ app.use(
       if (!origin) return callback(null, true);
       if (
         allowedOrigins.indexOf(origin) !== -1 ||
+        origin.endsWith('.aireviewbds.com') ||
+        origin === 'https://aireviewbds.com' ||
+        origin === 'https://www.aireviewbds.com' ||
+        origin === 'https://templates.aireviewbds.com' ||
         origin.endsWith('.platformbds.vn') ||
         origin === 'https://platformbds.vn' ||
         origin === 'https://www.platformbds.vn'
@@ -261,16 +265,13 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
   const statusCode = err.status || err.statusCode || 500;
   
-  logger.error(`[${req.method}] ${req.path} - Error: ${err.message}`);
+  logger.error(`[${req.method}] ${req.path} - Error: ${err.message}\nStack: ${err.stack}`);
   
   res.status(statusCode).json({
     success: false,
     error: {
       code: err.code || 'INTERNAL_SERVER_ERROR',
-      message: process.env.NODE_ENV === 'production' 
-        ? 'Đã xảy ra lỗi hệ thống, vui lòng liên hệ admin.' 
-        : err.message,
-      ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }),
+      message: (process.env.NODE_ENV !== 'production' && err.message) ? err.message : (err.message || 'Không thể xử lý yêu cầu. Vui lòng thử lại sau.'),
     },
   });
 });

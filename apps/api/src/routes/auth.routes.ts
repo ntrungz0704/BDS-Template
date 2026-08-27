@@ -6,22 +6,27 @@ import rateLimit from 'express-rate-limit';
 import passwordRoutes from './password.routes';
 import emailVerificationRoutes from './email-verification.routes';
 
-// Rate limiters for sensitive auth endpoints
+// Rate limiters for sensitive auth endpoints (skip in local development)
+const isDev = process.env.NODE_ENV !== 'production';
+
 const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // Max 10 login attempts per 15 min per IP
-  message: { success: false, error: { code: 'TOO_MANY_REQUESTS', message: 'Qua nhieu lan thu. Vui long doi 15 phut.' } },
+  windowMs: 15 * 60 * 1000,
+  max: isDev ? 10000 : 30,
+  skip: () => isDev,
+  message: { success: false, error: { code: 'TOO_MANY_REQUESTS', message: 'Quá nhiều lần thử. Vui lòng đợi 15 phút.' } },
   standardHeaders: true,
   legacyHeaders: false,
 });
 
 const registerLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5, // Max 5 register attempts per 15 min per IP
-  message: { success: false, error: { code: 'TOO_MANY_REQUESTS', message: 'Qua nhieu lan dang ky. Vui long doi 15 phut.' } },
+  max: isDev ? 10000 : 20,
+  skip: () => isDev,
+  message: { success: false, error: { code: 'TOO_MANY_REQUESTS', message: 'Quá nhiều lần đăng ký. Vui lòng đợi 15 phút.' } },
   standardHeaders: true,
   legacyHeaders: false,
 });
+
 
 const router = Router();
 

@@ -9,7 +9,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'platformbds.vn';
+const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 const EXCLUDED_PATHS = [
@@ -26,8 +26,9 @@ const EXCLUDED_PATHS = [
 ];
 
 const RESERVED_SLUGS = [
-  'www', 'admin', 'cms', 'api', 'app', 'marketplace', 'mail', 'static', 'assets', 'support'
+  'www', 'admin', 'cms', 'api', 'app', 'marketplace', 'templates', 'template', 'themes', 'mail', 'static', 'assets', 'support'
 ];
+
 
 export const TENANT_SLUG_HEADER = 'x-tenant-slug';
 export const TENANT_HOST_HEADER = 'x-tenant-host';
@@ -68,7 +69,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 3. Query parameter fallback (ONLY in development/localhost environment AND when hostname did not resolve to a tenant)
+  // 3. Query parameter fallback (in development/localhost environment)
   if (!tenantSlug && (isDev || isLocalhost)) {
     const queryTenant = searchParams.get('tenant');
     if (queryTenant) {
@@ -76,7 +77,15 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 4. Custom domain resolution (Only if not resolved by subdomain/query)
+  // 4. Cookie fallback (if previously visited a tenant on localhost)
+  if (!tenantSlug && (isDev || isLocalhost)) {
+    const cookieTenant = request.cookies.get('tenant_slug')?.value;
+    if (cookieTenant && cookieTenant !== '_notfound') {
+      tenantSlug = cookieTenant.toLowerCase().trim();
+    }
+  }
+
+  // 5. Custom domain resolution (Only if not resolved by subdomain/query)
   if (!tenantSlug && !isLocalhost && cleanHost !== PLATFORM_DOMAIN && cleanHost !== `www.${PLATFORM_DOMAIN}`) {
     try {
       const resolveUrl = `${API_URL}/api/website/resolve-domain?domain=${encodeURIComponent(cleanHost)}`;
@@ -95,18 +104,18 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 5. Reserved slugs validation (system domains cannot be tenants)
+  // 6. Reserved slugs validation (system domains cannot be tenants)
   if (tenantSlug && RESERVED_SLUGS.includes(tenantSlug)) {
     tenantSlug = '_notfound';
   }
 
-  // 6. Local development bare-host fallback
+  // 7. Local development auto-fallback to active tenant if not set
+  if ((!tenantSlug || tenantSlug === '_notfound') && (isDev || isLocalhost)) {
+    tenantSlug = 'nguyen-pham-thanh-trung-land';
+  }
+
   if (!tenantSlug) {
-    if (isDev && isLocalhost && cleanHost === 'localhost') {
-      tenantSlug = 'hoanggialand';
-    } else {
-      tenantSlug = '_notfound';
-    }
+    tenantSlug = '_notfound';
   }
 
   // Inject headers into the request (so getServerSideProps can read them) and the response
@@ -122,7 +131,16 @@ export async function middleware(request: NextRequest) {
   response.headers.set(TENANT_SLUG_HEADER, tenantSlug);
   response.headers.set(TENANT_HOST_HEADER, hostname);
 
+  if (tenantSlug && tenantSlug !== '_notfound') {
+    response.cookies.set('tenant_slug', tenantSlug, {
+      path: '/',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+    });
+  }
+
   return response;
+
 }
 
 export const config = {
