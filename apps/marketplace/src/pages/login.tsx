@@ -48,6 +48,11 @@ export default function LoginPage() {
     e.preventDefault();
     setErrorMsg('');
 
+    if (email.trim().toLowerCase() === 'admin@aireviewbds.com') {
+      setErrorMsg('Tài khoản Super Admin không thể đăng nhập tại đây. Vui lòng truy cập trang quản trị riêng: https://admin.aireviewbds.com');
+      return;
+    }
+
     if (!email || !password) {
       setErrorMsg('Vui lòng nhập đầy đủ email và mật khẩu.');
       return;

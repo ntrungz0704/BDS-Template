@@ -261,7 +261,7 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
                 className="flex items-center gap-1.5 hover:text-white hover:bg-blue-600 transition-all font-bold text-slate-700 bg-slate-100/90 px-3 py-1 rounded-full border border-slate-200 shadow-sm hover:shadow"
               >
                 <User className="w-3.5 h-3.5 text-[#2563EB]" />
-                <span>Đăng Nhập CMS</span>
+                <span>Đăng Nhập Khách Hàng</span>
               </Link>
             )}
             <Link

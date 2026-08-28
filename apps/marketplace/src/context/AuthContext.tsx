@@ -188,6 +188,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           });
           if (res?.data?.data?.user) {
             const apiUser = res.data.data.user;
+            if (apiUser.role === 'SUPER_ADMIN') {
+              setUser(null);
+              localStorage.removeItem('platformbds_user_v3');
+              localStorage.removeItem('platformbds_orders_v3');
+              localStorage.removeItem('platformbds_token');
+              delete axios.defaults.headers.common['Authorization'];
+              return;
+            }
             const apiOrders = res.data.data.orders || [];
             const apiWishlists = res.data.data.user?.wishlists || [];
 
@@ -232,6 +240,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const login = async (email: string, password: string): Promise<boolean> => {
+    if (email.trim().toLowerCase() === 'admin@aireviewbds.com') {
+      throw new Error('Tài khoản Super Admin vui lòng đăng nhập tại trang quản trị riêng: https://admin.aireviewbds.com');
+    }
+
     try {
       const res = await axios.post(`${API_URL}/api/auth/login`, { email, password }, {
         withCredentials: true,
@@ -239,6 +251,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       if (res?.data?.data?.user || res?.data?.user) {
         const loggedUser = res.data?.data?.user || res.data?.user;
+        if (loggedUser.role === 'SUPER_ADMIN') {
+          await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true, timeout: 2000 }).catch(() => {});
+          localStorage.removeItem('platformbds_user_v3');
+          localStorage.removeItem('platformbds_token');
+          delete axios.defaults.headers.common['Authorization'];
+          throw new Error('Tài khoản Super Admin không thể đăng nhập trên Marketplace. Vui lòng đăng nhập tại https://admin.aireviewbds.com');
+        }
+
         const accessToken = res.data?.data?.accessToken;
         
         if (accessToken) {

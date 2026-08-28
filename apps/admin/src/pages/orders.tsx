@@ -818,7 +818,7 @@ export default function AdminOrders() {
               <div>
                 <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Mật khẩu CMS:</span>
                 <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                  {approvalResult.password || '123456'}
+                  {approvalResult.cmsPassword || approvalResult.tempPassword || approvalResult.email?.split('@')[0] || '123456'}
                 </span>
               </div>
             </div>
@@ -827,11 +827,12 @@ export default function AdminOrders() {
               <button
                 onClick={() => {
                   const targetSub = approvalResult.subdomain || approvalResult.tenantSlug || 'website';
+                  const pwd = approvalResult.cmsPassword || approvalResult.tempPassword || approvalResult.email?.split('@')[0] || '123456';
                   const info = `🎉 CHÚC MỪNG! WEBSITE CỦA BẠN ĐÃ KÍCH HOẠT THÀNH CÔNG:\n\n` +
                     `- Website công khai: ${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant=${targetSub}\n` +
                     `- Quản trị website (CMS): ${process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}\n` +
                     `- Email đăng nhập: ${approvalResult.email}\n` +
-                    `- Mật khẩu đăng nhập: ${approvalResult.password || '123456'}\n\n` +
+                    `- Mật khẩu đăng nhập: ${pwd}\n\n` +
                     `👉 Bạn hãy đăng nhập vào CMS để đổi thông tin và đăng tải dự án ngay!`;
                   handleCopy(info, 'ALL_INFO');
                 }}
