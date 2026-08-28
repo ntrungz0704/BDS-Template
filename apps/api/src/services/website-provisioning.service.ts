@@ -132,7 +132,10 @@ export class WebsiteProvisioningService {
 
     const result = await prisma.$transaction(async (tx: any) => {
       // a. Create Tenant
+      const isTrial = plan === 'TRIAL';
       const oneYearLater = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+      const threeDaysLater = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+
       const tenant = await tx.tenant.create({
         data: {
           name: websiteName,
@@ -142,15 +145,29 @@ export class WebsiteProvisioningService {
           status: 'ACTIVE',
           version: 10,
           activatedAt: new Date(),
-          trialStatus: 'ACTIVE',
-          trialStartAt: new Date(),
-          trialEndAt: oneYearLater,
-          trialSaveLimit: 999999,
+          trialStatus: isTrial ? 'ACTIVE' : null,
+          trialStartAt: isTrial ? new Date() : null,
+          trialEndAt: isTrial ? threeDaysLater : null,
+          trialSaveLimit: isTrial ? 3 : 999999,
           trialSaveCount: 0,
         },
       });
 
-      // b. Create/Update User as TENANT_OWNER with CMS password
+      // b. Create Subscription for paid websites
+      if (!isTrial) {
+        const isLifetime = plan === 'LIFETIME' || plan === 'BUY_SOURCE' || !plan || plan === 'STARTER';
+        await tx.subscription.create({
+          data: {
+            tenantId: tenant.id,
+            plan: isLifetime ? 'LIFETIME' : (plan || 'YEARLY'),
+            status: 'ACTIVE',
+            startDate: new Date(),
+            endDate: isLifetime ? null : oneYearLater,
+          },
+        });
+      }
+
+      // c. Create/Update User as TENANT_OWNER with CMS password
       let user;
       if (customerId) {
         user = await tx.user.update({
@@ -193,7 +210,7 @@ export class WebsiteProvisioningService {
         }
       }
 
-      // c. Create TenantMembership
+      // d. Create TenantMembership
       await tx.tenantMembership.create({
         data: {
           userId: user.id,

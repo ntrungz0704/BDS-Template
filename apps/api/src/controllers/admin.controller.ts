@@ -423,6 +423,16 @@ export async function getTenants(req: Request, res: Response, next: NextFunction
         },
         subscription: {
           select: { plan: true, status: true, endDate: true }
+        },
+        users: {
+          select: { id: true, fullName: true, email: true, phone: true }
+        },
+        memberships: {
+          include: {
+            user: {
+              select: { id: true, fullName: true, email: true, phone: true }
+            }
+          }
         }
       },
       orderBy: { createdAt: 'desc' }
@@ -431,6 +441,44 @@ export async function getTenants(req: Request, res: Response, next: NextFunction
     res.status(200).json({
       success: true,
       data: tenants
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deleteTenant(req: Request, res: Response, next: NextFunction) {
+  const { id } = req.params;
+
+  try {
+    const tenant = await prisma.tenant.findUnique({ where: { id } });
+    if (!tenant) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'TENANT_NOT_FOUND', message: 'Website không tồn tại.' },
+      });
+    }
+
+    await prisma.$transaction([
+      prisma.lead.deleteMany({ where: { tenantId: id } }),
+      prisma.project.deleteMany({ where: { tenantId: id } }),
+      prisma.post.deleteMany({ where: { tenantId: id } }),
+      prisma.companyInfo.deleteMany({ where: { tenantId: id } }),
+      prisma.tenantSection.deleteMany({ where: { tenantId: id } }),
+      prisma.tenantPage.deleteMany({ where: { tenantId: id } }),
+      prisma.tenantThemeSettings.deleteMany({ where: { tenantId: id } }),
+      prisma.domain.deleteMany({ where: { tenantId: id } }),
+      prisma.subscription.deleteMany({ where: { tenantId: id } }),
+      prisma.tenantMembership.deleteMany({ where: { tenantId: id } }),
+      prisma.user.updateMany({ where: { tenantId: id }, data: { tenantId: null } }),
+      prisma.tenant.delete({ where: { id } }),
+    ]);
+
+    logger.info(`Admin đã xóa vĩnh viễn website tenant ${tenant.name} (${tenant.slug})`);
+
+    res.status(200).json({
+      success: true,
+      message: 'Đã xóa website thành công.',
     });
   } catch (error) {
     next(error);

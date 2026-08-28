@@ -261,9 +261,20 @@ export async function autoSeedDatabase() {
       },
     });
 
-    // 3. Reset toàn bộ tài khoản rác/khách thử nghiệm & đơn hàng để Admin test lại từ đầu
+    // 3. Reset toàn bộ tài khoản rác/khách thử nghiệm, website test & đơn hàng để Admin test lại từ đầu
     try {
       await prisma.order.deleteMany({});
+      await prisma.lead.deleteMany({});
+      await prisma.project.deleteMany({});
+      await prisma.post.deleteMany({});
+      await prisma.companyInfo.deleteMany({});
+      await prisma.tenantSection.deleteMany({});
+      await prisma.tenantPage.deleteMany({});
+      await prisma.tenantThemeSettings.deleteMany({});
+      await prisma.domain.deleteMany({});
+      await prisma.subscription.deleteMany({});
+      await prisma.tenantMembership.deleteMany({});
+      await prisma.tenant.deleteMany({});
       await prisma.refreshToken.deleteMany({
         where: { userId: { not: superAdmin.id } },
       });
@@ -283,9 +294,6 @@ export async function autoSeedDatabase() {
         where: { userId: { not: superAdmin.id } },
       });
       await prisma.review.deleteMany({
-        where: { userId: { not: superAdmin.id } },
-      });
-      await prisma.tenantMembership.deleteMany({
         where: { userId: { not: superAdmin.id } },
       });
       await prisma.auditLog.deleteMany({

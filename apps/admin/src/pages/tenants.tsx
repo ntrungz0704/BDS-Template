@@ -110,6 +110,30 @@ export default function AdminTenants() {
     },
   });
 
+  const deleteTenantMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const csrfToken = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('csrf_token='))
+        ?.split('=')[1];
+
+      const res = await axios.delete(
+        `${API_URL}/api/admin/tenants/${id}`,
+        {
+          headers: { 'X-CSRF-Token': csrfToken || '' },
+          withCredentials: true,
+        }
+      );
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminTenants'] });
+    },
+    onError: (error: any) => {
+      alert(error.response?.data?.error?.message || 'Có lỗi xảy ra khi xóa website.');
+    },
+  });
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
@@ -134,134 +158,165 @@ export default function AdminTenants() {
           onClick={() => setShowCreateModal(true)}
           className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition shadow-md shadow-indigo-600/10 hover:scale-[1.01] active:scale-[0.99] flex items-center gap-1.5"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
           </svg>
           Tạo Website Mới
         </button>
       </div>
 
-      {/* Table */}
-      <div className="rounded-2xl bg-white shadow-sm border border-slate-100 overflow-hidden mb-10">
-        <table className="w-full border-collapse text-left text-sm text-slate-700">
-          <thead className="bg-slate-50/50 text-xs font-bold text-slate-400 border-b border-slate-100">
-            <tr>
-              <th className="px-6 py-4">Tên Website</th>
-              <th className="px-6 py-4">Subdomain</th>
-              <th className="px-6 py-4">Template</th>
-              <th className="px-6 py-4">Version</th>
-              <th className="px-6 py-4">Chủ sở hữu</th>
-              <th className="px-6 py-4">Dùng thử / Thời hạn</th>
-              <th className="px-6 py-4">Trạng thái</th>
-              <th className="px-6 py-4 text-right">Hành động</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {tenants.length === 0 ? (
-              <tr>
-                <td colSpan={8} className="px-8 py-12 text-center text-slate-400 font-semibold">Chưa có website nào được khởi tạo.</td>
+      {/* Tenants Table */}
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-slate-200 bg-slate-50/50 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <th className="px-6 py-3.5">Tên Website</th>
+                <th className="px-6 py-3.5">Subdomain</th>
+                <th className="px-6 py-3.5">Template</th>
+                <th className="px-6 py-3.5">Version</th>
+                <th className="px-6 py-3.5">Chủ sở hữu</th>
+                <th className="px-6 py-3.5">Dùng thử / Thời hạn</th>
+                <th className="px-6 py-3.5">Trạng thái</th>
+                <th className="px-6 py-3.5 text-right">Hành động</th>
               </tr>
-            ) : (
-              tenants.map((tenant: any) => (
-                <tr key={tenant.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="font-bold text-slate-900">{tenant.name}</div>
-                    <div className="text-[10px] text-slate-400 font-medium font-mono">ID: {tenant.id.slice(0, 8)}...</div>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-sm">
+              {tenants.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="px-6 py-12 text-center text-slate-400 font-medium">
+                    Chưa có website nào được tạo. Nhấn &quot;Tạo Website Mới&quot; hoặc duyệt đơn hàng để bắt đầu.
                   </td>
-                  <td className="px-6 py-4">
-                    <a
-                      href={`https://bds-template-website.aireviewbds.com/?tenant=${tenant.slug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs font-mono font-bold text-indigo-600 hover:underline"
-                    >
-                      {tenant.slug}.aireviewbds.com
-                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </a>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="bg-slate-100 border border-slate-200 text-slate-700 px-2.5 py-1 rounded-lg text-xs font-bold font-mono">
-                      {tenant.templateId || 'luxury-gold'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-xs font-mono font-bold text-slate-500">
-                      v{tenant.version ? (tenant.version / 10).toFixed(1) : '1.0'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-xs font-bold text-slate-700">{tenant.users?.[0]?.fullName || '—'}</div>
-                    <div className="text-[10px] text-slate-400 font-medium">{tenant.users?.[0]?.email || ''}</div>
-                  </td>
-                  <td className="px-6 py-4 text-xs font-medium">
-                    {tenant.trialStatus ? (
-                      <div>
-                        <span className="text-amber-600 font-bold block">Trial ({tenant.trialSaveCount || 0}/3 lượt lưu)</span>
-                        <span className="text-slate-400 text-[10px]">
-                          {tenant.trialEndAt ? `Hết hạn: ${new Date(tenant.trialEndAt).toLocaleDateString('vi-VN')}` : 'Đang dùng thử'}
-                        </span>
-                      </div>
-                    ) : (
-                      <div>
-                        <span className="text-emerald-600 font-bold block">Gói Thuê Năm</span>
-                        <span className="text-slate-400 text-[10px]">
-                          {tenant.activatedAt ? `Kích hoạt: ${new Date(tenant.activatedAt).toLocaleDateString('vi-VN')}` : 'Hoạt động'}
-                        </span>
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
-                      tenant.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-rose-50 text-rose-700 border border-rose-100'
-                    }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${tenant.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
-                      {tenant.status === 'ACTIVE' ? 'Hoạt động' : 'Tạm khóa'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-1.5">
+                </tr>
+              ) : (
+                tenants.map((tenant: any) => {
+                  const owner = tenant.users?.[0] || tenant.memberships?.[0]?.user;
+                  return (
+                  <tr key={tenant.id} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="font-bold text-slate-900">{tenant.name}</div>
+                      <div className="text-[10px] text-slate-400 font-medium font-mono">ID: {tenant.id.slice(0, 8)}...</div>
+                    </td>
+                    <td className="px-6 py-4">
                       <a
                         href={`https://bds-template-website.aireviewbds.com/?tenant=${tenant.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-all"
-                        title="Xem Website công khai"
+                        className="inline-flex items-center gap-1 text-xs font-mono font-bold text-indigo-600 hover:underline"
                       >
-                        Xem Web
+                        {tenant.slug}.aireviewbds.com
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
                       </a>
-                      <a
-                        href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg transition-all"
-                        title="Mở Customer CMS"
-                      >
-                        Vào CMS
-                      </a>
-                      {tenant.status === 'ACTIVE' ? (
-                        <button
-                          onClick={() => updateStatusMutation.mutate({ id: tenant.id, status: 'SUSPENDED' })}
-                          className="text-xs font-bold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100/70 px-2.5 py-1.5 rounded-lg transition-all"
-                        >
-                          Khóa
-                        </button>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="bg-blue-50 border border-blue-200 text-blue-800 px-2.5 py-1 rounded-lg text-xs font-bold font-sans">
+                        {tenant.template?.name || tenant.template?.slug || 'Green Eco Living'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-xs font-mono font-bold text-slate-500">
+                        v{tenant.version ? (tenant.version / 10).toFixed(1) : '1.0'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-xs font-bold text-slate-700">{owner?.fullName || 'Chưa cập nhật'}</div>
+                      <div className="text-[10px] text-slate-400 font-medium">{owner?.email || ''}</div>
+                    </td>
+                    <td className="px-6 py-4 text-xs font-medium">
+                      {tenant.trialStatus === 'ACTIVE' || tenant.trialStatus === 'EXPIRED' ? (
+                        <div>
+                          <span className="text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200 inline-block text-[11px]">
+                            Dùng thử ({tenant.trialSaveCount || 0}/{tenant.trialSaveLimit || 3} lưu)
+                          </span>
+                          <span className="text-slate-400 text-[10px] block mt-0.5">
+                            {tenant.trialEndAt ? `Hết hạn: ${new Date(tenant.trialEndAt).toLocaleDateString('vi-VN')}` : 'Đang dùng thử'}
+                          </span>
+                        </div>
+                      ) : tenant.subscription?.plan === 'LIFETIME' || !tenant.trialStatus ? (
+                        <div>
+                          <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 inline-block text-[11px]">
+                            Sở hữu trọn đời
+                          </span>
+                          <span className="text-slate-400 text-[10px] block mt-0.5">
+                            {tenant.activatedAt ? `Kích hoạt: ${new Date(tenant.activatedAt).toLocaleDateString('vi-VN')}` : 'Vĩnh viễn'}
+                          </span>
+                        </div>
                       ) : (
-                        <button
-                          onClick={() => updateStatusMutation.mutate({ id: tenant.id, status: 'ACTIVE' })}
-                          className="text-xs font-bold text-emerald-600 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100/70 px-2.5 py-1.5 rounded-lg transition-all"
-                        >
-                          Mở
-                        </button>
+                        <div>
+                          <span className="text-blue-700 font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-200 inline-block text-[11px]">
+                            Gói Thuê Năm
+                          </span>
+                          <span className="text-slate-400 text-[10px] block mt-0.5">
+                            {tenant.subscription?.endDate ? `Hết hạn: ${new Date(tenant.subscription.endDate).toLocaleDateString('vi-VN')}` : 'Hoạt động'}
+                          </span>
+                        </div>
                       )}
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
+                        tenant.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-rose-50 text-rose-700 border border-rose-100'
+                      }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${tenant.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
+                        {tenant.status === 'ACTIVE' ? 'Hoạt động' : 'Tạm khóa'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <a
+                          href={`https://bds-template-website.aireviewbds.com/?tenant=${tenant.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-all"
+                          title="Xem Website công khai"
+                        >
+                          Xem Web
+                        </a>
+                        <a
+                          href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg transition-all"
+                          title="Mở Customer CMS"
+                        >
+                          Vào CMS
+                        </a>
+                        {tenant.status === 'ACTIVE' ? (
+                          <button
+                            onClick={() => updateStatusMutation.mutate({ id: tenant.id, status: 'SUSPENDED' })}
+                            className="text-xs font-bold text-amber-600 hover:text-amber-800 bg-amber-50 hover:bg-amber-100/70 px-2.5 py-1.5 rounded-lg transition-all"
+                          >
+                            Khóa
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => updateStatusMutation.mutate({ id: tenant.id, status: 'ACTIVE' })}
+                            className="text-xs font-bold text-emerald-600 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100/70 px-2.5 py-1.5 rounded-lg transition-all"
+                          >
+                            Mở
+                          </button>
+                        )}
+                        <button
+                          onClick={() => {
+                            if (confirm(`Bạn có chắc muốn XÓA VĨNH VIỄN website ${tenant.name} (${tenant.slug})? Mọi dữ liệu sẽ bị xóa sạch!`)) {
+                              deleteTenantMutation.mutate(tenant.id);
+                            }
+                          }}
+                          className="text-xs font-bold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100/70 px-2.5 py-1.5 rounded-lg transition-all"
+                          title="Xóa vĩnh viễn website này"
+                        >
+                          Xóa
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Create Tenant Modal */}

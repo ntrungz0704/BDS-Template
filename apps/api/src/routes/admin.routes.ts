@@ -8,6 +8,7 @@ import {
   getTenants,
   createTenantManually,
   updateTenantStatus,
+  deleteTenant,
   getUsers,
   updateUserStatus,
   deleteUser,
@@ -51,6 +52,7 @@ router.delete('/orders/:id', csrfMiddleware, deleteOrder);
 router.get('/tenants', getTenants);
 router.post('/tenants', csrfMiddleware, createTenantManually);
 router.put('/tenants/:id/status', csrfMiddleware, updateTenantStatus);
+router.delete('/tenants/:id', csrfMiddleware, deleteTenant);
 
 router.get('/users', getUsers);
 router.put('/users/:id/status', csrfMiddleware, updateUserStatus);

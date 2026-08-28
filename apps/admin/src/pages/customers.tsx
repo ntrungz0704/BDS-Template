@@ -120,6 +120,7 @@ export default function CustomersPage() {
 
   const users: any[] = usersRes?.data || [];
   const filteredUsers = users.filter((u) => {
+    if (u.role === 'SUPER_ADMIN' || u.email === 'admin@aireviewbds.com') return false;
     const matchSearch =
       u.fullName?.toLowerCase().includes(search.toLowerCase()) ||
       u.email?.toLowerCase().includes(search.toLowerCase()) ||
@@ -198,7 +199,7 @@ export default function CustomersPage() {
                 ) : filteredUsers.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="py-12 text-center text-slate-400">
-                      Không tìm thấy khách hàng nào phù hợp.
+                      Chưa có khách hàng nào. Danh sách khách hàng sẽ tự động hiển thị khi có đơn đặt hàng mới.
                     </td>
                   </tr>
                 ) : (
@@ -213,7 +214,7 @@ export default function CustomersPage() {
                         {u.tenant ? (
                           <div>
                             <div className="font-bold text-slate-800">{u.tenant.name}</div>
-                            <div className="text-xs font-mono text-indigo-600">{u.tenant.slug}</div>
+                            <div className="text-xs font-mono text-indigo-600">{u.tenant.slug}.aireviewbds.com</div>
                           </div>
                         ) : (
                           <span className="text-slate-400 italic text-xs">Chưa gắn website</span>
@@ -251,13 +252,15 @@ export default function CustomersPage() {
                           >
                             Hồ sơ 360°
                           </Link>
-                          <button
-                            onClick={() => extendTrialMutation.mutate({ userId: u.id, days: 3 })}
-                            title="Gia hạn dùng thử +3 ngày"
-                            className="px-2 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-bold rounded-lg transition-colors"
-                          >
-                            +3 Ngày Trial
-                          </button>
+                          {u.tenant?.trialStatus === 'ACTIVE' && (
+                            <button
+                              onClick={() => extendTrialMutation.mutate({ userId: u.id, days: 3 })}
+                              title="Gia hạn dùng thử +3 ngày"
+                              className="px-2 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-bold rounded-lg transition-colors"
+                            >
+                              +3 Ngày Trial
+                            </button>
+                          )}
                           <button
                             onClick={() => {
                               if (confirm(`Đặt lại mật khẩu cho ${u.email}?`)) {
