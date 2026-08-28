@@ -549,6 +549,31 @@ export async function updateUserStatus(req: Request, res: Response, next: NextFu
   }
 }
 
+export async function deleteUser(req: Request, res: Response, next: NextFunction) {
+  const { id } = req.params;
+  try {
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      return res.status(404).json({ success: false, error: { message: 'Không tìm thấy người dùng.' } });
+    }
+
+    if (user.email === 'admin@aireviewbds.com') {
+      return res.status(400).json({ success: false, error: { message: 'Không thể xóa tài khoản Super Admin chính.' } });
+    }
+
+    // Xóa liên kết hoặc xóa user
+    await prisma.user.delete({ where: { id } });
+    logger.info(`Admin đã xóa người dùng ${user.email} (${id})`);
+
+    res.status(200).json({
+      success: true,
+      message: 'Đã xóa người dùng thành công.',
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 // 3. Quản lý Mẫu giao diện (Templates)
 export async function getTemplates(req: Request, res: Response, next: NextFunction) {
   try {

@@ -86,6 +86,22 @@ export default function CustomersPage() {
     onError: (err: any) => alert(err.response?.data?.error?.message || 'Lỗi đặt lại mật khẩu'),
   });
 
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      const csrfToken = document.cookie.split('; ').find(r => r.startsWith('csrf_token='))?.split('=')[1];
+      const res = await axios.delete(`${API_URL}/api/admin/users/${userId}`, {
+        headers: { 'X-CSRF-Token': csrfToken || '' },
+        withCredentials: true,
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      alert('Đã xóa người dùng thành công!');
+      queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
+    },
+    onError: (err: any) => alert(err.response?.data?.error?.message || 'Lỗi khi xóa người dùng'),
+  });
+
   const handleCreateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName || !email || !phone || !subdomain) {
@@ -253,6 +269,19 @@ export default function CustomersPage() {
                           >
                             Reset MK
                           </button>
+                          {u.email !== 'admin@aireviewbds.com' && (
+                            <button
+                              onClick={() => {
+                                if (confirm(`Bạn có chắc chắn muốn XÓA vĩnh viễn tài khoản ${u.email}? Hành động này không thể hoàn tác!`)) {
+                                  deleteUserMutation.mutate(u.id);
+                                }
+                              }}
+                              title="Xóa tài khoản"
+                              className="px-2 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold rounded-lg transition-colors"
+                            >
+                              Xóa
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

@@ -46,6 +46,29 @@ export default function AdminUsers() {
     },
   });
 
+  // 3. Phép xóa người dùng
+  const deleteUserMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const csrfToken = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('csrf_token='))
+        ?.split('=')[1];
+
+      const res = await axios.delete(`${API_URL}/api/admin/users/${id}`, {
+        headers: { 'X-CSRF-Token': csrfToken || '' },
+        withCredentials: true,
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      alert('Đã xóa tài khoản thành công!');
+      queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
+    },
+    onError: (error: any) => {
+      alert(error.response?.data?.error?.message || 'Có lỗi xảy ra khi xóa người dùng.');
+    },
+  });
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
@@ -115,23 +138,41 @@ export default function AdminUsers() {
                     </span>
                   </td>
                   <td className="px-8 py-4 text-right">
-                    {user.role === 'SUPER_ADMIN' ? (
-                      <span className="text-xs text-slate-400 italic font-semibold">Quyền tối cao</span>
-                    ) : user.isActive && user.status === 'ACTIVE' ? (
-                      <button
-                        onClick={() => updateStatusMutation.mutate({ id: user.id, status: 'BANNED', isActive: false })}
-                        className="text-xs font-bold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100/70 px-3.5 py-2 rounded-xl transition-all shadow-sm"
-                      >
-                        Khóa Tài Khoản
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => updateStatusMutation.mutate({ id: user.id, status: 'ACTIVE', isActive: true })}
-                        className="text-xs font-bold text-emerald-600 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100/70 px-3.5 py-2 rounded-xl transition-all shadow-sm"
-                      >
-                        Mở Khóa
-                      </button>
-                    )}
+                    <div className="flex items-center justify-end gap-2">
+                      {user.email === 'admin@aireviewbds.com' ? (
+                        <span className="text-xs text-purple-600 font-bold bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200">
+                          👑 Super Admin Chính
+                        </span>
+                      ) : (
+                        <>
+                          {user.isActive && user.status === 'ACTIVE' ? (
+                            <button
+                              onClick={() => updateStatusMutation.mutate({ id: user.id, status: 'BANNED', isActive: false })}
+                              className="text-xs font-bold text-amber-700 hover:text-amber-800 bg-amber-50 hover:bg-amber-100/70 px-3 py-1.5 rounded-xl transition-all shadow-sm"
+                            >
+                              Khóa
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => updateStatusMutation.mutate({ id: user.id, status: 'ACTIVE', isActive: true })}
+                              className="text-xs font-bold text-emerald-600 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100/70 px-3 py-1.5 rounded-xl transition-all shadow-sm"
+                            >
+                              Mở Khóa
+                            </button>
+                          )}
+                          <button
+                            onClick={() => {
+                              if (confirm(`Bạn có chắc chắn muốn XÓA vĩnh viễn tài khoản ${user.email}? Hành động này không thể khôi phục!`)) {
+                                deleteUserMutation.mutate(user.id);
+                              }
+                            }}
+                            className="text-xs font-bold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100/70 px-3 py-1.5 rounded-xl transition-all shadow-sm"
+                          >
+                            Xóa
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))

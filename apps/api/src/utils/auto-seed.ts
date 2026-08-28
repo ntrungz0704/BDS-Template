@@ -261,11 +261,11 @@ export async function autoSeedDatabase() {
       });
     }
 
-    // 2. Tạo Super Admin tài khoản chính thức
+    // 2. Tạo DUY NHẤT 1 Super Admin tài khoản chính thức
     const adminPasswordHash = await bcrypt.hash('adminsuper@123456', 10);
     await prisma.user.upsert({
       where: { email: 'admin@aireviewbds.com' },
-      update: { role: 'SUPER_ADMIN', isActive: true },
+      update: { role: 'SUPER_ADMIN', isActive: true, fullName: 'Super Admin AI Review BDS' },
       create: {
         email: 'admin@aireviewbds.com',
         passwordHash: adminPasswordHash,
@@ -274,19 +274,17 @@ export async function autoSeedDatabase() {
         isActive: true,
       },
     });
-    await prisma.user.upsert({
-      where: { email: 'admin@platformbds.vn' },
-      update: { role: 'SUPER_ADMIN', isActive: true },
-      create: {
-        email: 'admin@platformbds.vn',
-        passwordHash: adminPasswordHash,
-        fullName: 'Admin PlatformBDS',
-        role: 'SUPER_ADMIN',
-        isActive: true,
+
+    // 3. Dọn dẹp các tài khoản admin rác hoặc tài khoản khởi tạo thử nghiệm trước đây
+    await prisma.user.deleteMany({
+      where: {
+        email: {
+          in: ['admin@platformbds.vn', 'admin@myplatform.com', 'admin@example.com', 'test@example.com'],
+        },
       },
     });
 
-    console.log('✅ Đã đồng bộ thành công 16+ Templates và tài khoản Super Admin vào Database!');
+    console.log('✅ Đã đồng bộ thành công 16+ Templates và duy nhất 1 tài khoản Super Admin (admin@aireviewbds.com) vào Database!');
   } catch (err: any) {
     console.warn('⚠️ Gặp lỗi khi tự động seed database (bỏ qua):', err.message);
   }

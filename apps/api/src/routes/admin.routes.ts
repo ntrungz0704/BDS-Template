@@ -9,6 +9,7 @@ import {
   updateTenantStatus,
   getUsers,
   updateUserStatus,
+  deleteUser,
   getTemplates,
   updateTemplateStatus,
   updateTemplatePrice,
@@ -51,6 +52,7 @@ router.put('/tenants/:id/status', csrfMiddleware, updateTenantStatus);
 
 router.get('/users', getUsers);
 router.put('/users/:id/status', csrfMiddleware, updateUserStatus);
+router.delete('/users/:id', csrfMiddleware, deleteUser);
 
 router.get('/templates', getTemplates);
 router.put('/templates/:id/status', csrfMiddleware, updateTemplateStatus);
