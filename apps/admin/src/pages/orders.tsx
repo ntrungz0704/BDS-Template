@@ -331,7 +331,20 @@ export default function AdminOrders() {
                       {/* Khách hàng */}
                       <td className="px-6 py-4">
                         <div className="font-bold text-slate-900">{order.fullName || 'Khách hàng'}</div>
-                        <div className="text-slate-500 font-mono mt-0.5">{order.phone || '—'}</div>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          <span className="text-slate-700 font-mono font-bold">{order.phone || '—'}</span>
+                          {order.phone && (
+                            <a
+                              href={`https://zalo.me/${order.phone.replace(/[^0-9]/g, '')}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-1.5 py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold text-[10px] rounded border border-blue-200 transition-colors inline-flex items-center gap-0.5 shrink-0"
+                              title="Mở Zalo nhắn tin trực tiếp với khách hàng"
+                            >
+                              <span>💬 Zalo</span>
+                            </a>
+                          )}
+                        </div>
                         <div className="text-[11px] text-slate-400 truncate max-w-[180px]">{order.email}</div>
                       </td>
 
@@ -347,7 +360,7 @@ export default function AdminOrders() {
                         {order.subdomain ? (
                           <div className="space-y-1">
                             <span className="bg-indigo-50 text-indigo-700 border border-indigo-100 px-2.5 py-0.5 rounded-md text-xs font-mono font-bold">
-                              {order.subdomain}.platformbds.vn
+                              {order.subdomain}.aireviewbds.com
                             </span>
                             <span className="text-[10px] text-slate-400 block font-semibold">
                               {order.type === 'BUY' ? 'Mua Đứt' : 'Thuê SaaS'}
@@ -494,7 +507,19 @@ export default function AdminOrders() {
                 </div>
                 <div>
                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Số Điện Thoại</span>
-                  <p className="font-mono font-bold text-slate-800 mt-0.5">{selectedOrder.phone || '—'}</p>
+                  <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                    <p className="font-mono font-bold text-slate-800 text-sm">{selectedOrder.phone || '—'}</p>
+                    {selectedOrder.phone && (
+                      <a
+                        href={`https://zalo.me/${selectedOrder.phone.replace(/[^0-9]/g, '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] rounded-lg transition-all inline-flex items-center gap-1 shadow-sm"
+                      >
+                        <span>💬 Mở Zalo Xác Nhận Chuyển Khoản</span>
+                      </a>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Email Đăng Nhập</span>
@@ -524,7 +549,7 @@ export default function AdminOrders() {
                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Subdomain Yêu Cầu</span>
                   <p className="font-mono font-bold text-slate-800 mt-0.5">
                     {selectedOrder.subdomain 
-                      ? `${selectedOrder.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'platformbds.vn'}`
+                      ? `${selectedOrder.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com'}`
                       : 'Tự động tạo từ tên khách hàng'}
                   </p>
                   {selectedOrder.status === 'COMPLETED' && selectedOrder.tenantId && (

@@ -385,7 +385,7 @@ export default function CMSDashboard() {
     { ...STAT_CARDS[3], value: formsCount !== undefined ? String(formsCount) : '0' },
   ];
 
-  const displayName = meData?.user?.fullName || meData?.fullName || 'Nguyễn Phạm Thành Trung';
+  const displayName = meData?.user?.fullName || meData?.fullName || 'Chủ Sở Hữu Website';
 
   return (
     <CMSLayout
