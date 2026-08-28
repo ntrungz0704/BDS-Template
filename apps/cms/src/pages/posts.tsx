@@ -729,7 +729,7 @@ export default function PostsManagerPage() {
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
                         <a
-                          href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/posts/${post.slug}?tenant=${domainData?.subdomain || 'hoanggialand'}`}
+                          href={domainData?.customDomain ? `https://${domainData.customDomain}/posts/${post.slug}` : `https://${domainData?.subdomain || 'hoanggialand'}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}/posts/${post.slug}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           title="Xem trên Website"

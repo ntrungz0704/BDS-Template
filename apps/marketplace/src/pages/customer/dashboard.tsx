@@ -426,7 +426,7 @@ export default function CustomerDashboard() {
                       orders.filter((o: any) => o.status === 'COMPLETED').map((ord: any, idx: number) => {
                         const siteName = ord.template?.name || 'Mẫu Bất Động Sản';
                         const siteSlug = ord.subdomain || `website-${ord.orderNumber.toLowerCase()}`;
-                        const siteUrl = `${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant=${siteSlug}`;
+                        const siteUrl = `https://${siteSlug}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`;
                         return (
                           <div key={ord.id} className="bg-white border border-slate-200 hover:border-blue-300 p-6 rounded-2xl shadow-xs transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
                             <div className="flex items-start gap-4">
@@ -443,7 +443,7 @@ export default function CustomerDashboard() {
                                 <h3 className="text-base font-bold text-slate-900">{siteName}</h3>
                                 <div className="text-xs text-slate-500 flex items-center gap-1.5 font-mono">
                                   <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                                  <span className="text-blue-600 font-semibold">{siteSlug}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com'}</span>
+                                  <span className="text-blue-600 font-semibold">{siteSlug}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}</span>
                                 </div>
                               </div>
                             </div>
@@ -574,7 +574,7 @@ export default function CustomerDashboard() {
                                       </a>
                                       {ord.subdomain && (
                                         <a
-                                          href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant=${ord.subdomain}`}
+                                          href={`https://${ord.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all text-[10px]"

@@ -649,7 +649,7 @@ export class WebsiteProvisioningService {
         data: {
           tenantId: tenant.id,
           subdomain: slug.toLowerCase(),
-          platformDomain: process.env.PLATFORM_DOMAIN || 'platformbds.vn',
+          platformDomain: process.env.PLATFORM_DOMAIN || 'templates.aireviewbds.com',
           customDomain: null,
           dnsVerified: true,
           sslStatus: 'ACTIVE'

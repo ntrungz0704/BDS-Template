@@ -5,8 +5,10 @@ import AdminLayout from '../components/AdminLayout';
 import { formatVND } from '@repo/utils';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
-const WEBSITE_APP_URL = 'https://bds-template-website.aireviewbds.com';
-const CMS_APP_URL = 'https://cms.aireviewbds.com';
+const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com';
+const CMS_APP_URL = process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com';
+
+const getTenantUrl = (subdomain: string) => `https://${subdomain}.${PLATFORM_DOMAIN}`;
 
 // Web Audio API beep chime for new orders
 function playOrderAlertSound() {
@@ -480,7 +482,7 @@ export default function AdminOrders() {
                           )}
                           {order.status === 'COMPLETED' && (
                             <a
-                              href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}?tenant=${order.subdomain || order.tenantId || 'hoanggialand'}`}
+                              href={getTenantUrl(order.subdomain || order.tenantId || 'website')}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-xl text-xs transition-all border border-emerald-200 flex items-center gap-1"
@@ -591,7 +593,7 @@ export default function AdminOrders() {
                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Subdomain Yêu Cầu</span>
                   <p className="font-mono font-bold text-slate-800 mt-0.5">
                     {selectedOrder.subdomain 
-                      ? `${selectedOrder.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com'}`
+                      ? `${selectedOrder.subdomain}.${PLATFORM_DOMAIN}`
                       : 'Tự động tạo từ tên khách hàng'}
                   </p>
                   {selectedOrder.status === 'COMPLETED' && selectedOrder.tenantId && (
@@ -624,12 +626,12 @@ export default function AdminOrders() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                     <span className="text-slate-500 font-sans">Website Khách Hàng:</span>
                     <a
-                      href={`${WEBSITE_APP_URL}/?tenant=${selectedOrder.subdomain || selectedOrder.tenantId}`}
+                      href={getTenantUrl(selectedOrder.subdomain || selectedOrder.tenantId || 'website')}
                       target="_blank"
                       rel="noreferrer"
                       className="text-blue-600 font-bold hover:underline font-mono"
                     >
-                      {WEBSITE_APP_URL}/?tenant={selectedOrder.subdomain || selectedOrder.tenantId}
+                      {getTenantUrl(selectedOrder.subdomain || selectedOrder.tenantId || 'website')}
                     </a>
                   </div>
 
@@ -662,9 +664,10 @@ export default function AdminOrders() {
                   <button
                     onClick={() => {
                       const prefix = selectedOrder.email ? selectedOrder.email.split('@')[0] : '123456';
-                      const targetSub = selectedOrder.subdomain || selectedOrder.tenantId;
+                      const targetSub = selectedOrder.subdomain || selectedOrder.tenantId || 'website';
+                      const siteLink = getTenantUrl(targetSub);
                       const info = `🎉 THÔNG TIN BÀN GIAO WEBSITE BẤT ĐỘNG SẢN:\n\n` +
-                        `- Website công khai: ${WEBSITE_APP_URL}/?tenant=${targetSub}\n` +
+                        `- Website công khai: ${siteLink}\n` +
                         `- Trang quản trị CMS: ${CMS_APP_URL}\n` +
                         `- Email đăng nhập: ${selectedOrder.email}\n` +
                         `- Mật khẩu CMS: ${prefix}\n\n` +
@@ -677,7 +680,7 @@ export default function AdminOrders() {
                   </button>
 
                   <a
-                    href={`${WEBSITE_APP_URL}/?tenant=${selectedOrder.subdomain || selectedOrder.tenantId}`}
+                    href={getTenantUrl(selectedOrder.subdomain || selectedOrder.tenantId || 'website')}
                     target="_blank"
                     rel="noreferrer"
                     className="w-full sm:w-auto px-4 py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all text-center"
@@ -794,12 +797,12 @@ export default function AdminOrders() {
               <div>
                 <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Website công khai:</span>
                 <a
-                  href={`${WEBSITE_APP_URL}/?tenant=${approvalResult.subdomain || approvalResult.tenantSlug || 'website'}`}
+                  href={getTenantUrl(approvalResult.subdomain || approvalResult.tenantSlug || 'website')}
                   target="_blank"
                   rel="noreferrer"
                   className="text-blue-600 font-bold hover:underline"
                 >
-                  {WEBSITE_APP_URL}/?tenant={approvalResult.subdomain || approvalResult.tenantSlug}
+                  {getTenantUrl(approvalResult.subdomain || approvalResult.tenantSlug || 'website')}
                 </a>
               </div>
 
@@ -833,8 +836,9 @@ export default function AdminOrders() {
                 onClick={() => {
                   const targetSub = approvalResult.subdomain || approvalResult.tenantSlug || 'website';
                   const pwd = approvalResult.cmsPassword || approvalResult.tempPassword || approvalResult.email?.split('@')[0] || '123456';
+                  const tenantLink = getTenantUrl(targetSub);
                   const info = `🎉 CHÚC MỪNG! WEBSITE CỦA BẠN ĐÃ KÍCH HOẠT THÀNH CÔNG:\n\n` +
-                    `- Website công khai: ${WEBSITE_APP_URL}/?tenant=${targetSub}\n` +
+                    `- Website công khai: ${tenantLink}\n` +
                     `- Quản trị website (CMS): ${CMS_APP_URL}\n` +
                     `- Email đăng nhập: ${approvalResult.email}\n` +
                     `- Mật khẩu đăng nhập: ${pwd}\n\n` +

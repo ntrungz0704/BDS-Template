@@ -17,7 +17,7 @@ export const BUSINESS_CONFIG = {
   SUBSCRIPTION_GRACE_PERIOD_DAYS: 7,
   
   // Platform
-  PLATFORM_DOMAIN: process.env.PLATFORM_DOMAIN || 'aireviewbds.com',
+  PLATFORM_DOMAIN: process.env.PLATFORM_DOMAIN || 'templates.aireviewbds.com',
   ZALO_CONTACT_URL: process.env.ZALO_CONTACT_URL || 'https://zalo.me/aireviewbds',
   
   // Trial Status Values

@@ -50,11 +50,29 @@ export default function TenantHome({ company, theme, pageContent, projects, post
 
   if (error || !company) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
-        <div className="text-center bg-white p-8 rounded-2xl border border-gray-200 shadow-md max-w-md">
-          <h1 className="text-2xl font-bold text-red-600">Lỗi kết nối website</h1>
-          <p className="text-gray-500 mt-2">{error || 'Không tìm thấy thông tin Website.'}</p>
-          <p className="text-xs text-gray-400 mt-4">Vui lòng kiểm tra lại cấu hình tên miền hoặc liên hệ Admin.</p>
+      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-100 p-4">
+        <div className="text-center bg-slate-900/90 p-8 md:p-12 rounded-3xl border border-slate-800 shadow-2xl max-w-lg">
+          <div className="w-16 h-16 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-5 text-xl font-black">
+            404
+          </div>
+          <h1 className="text-2xl font-black text-white">Website Không Tồn Tại</h1>
+          <p className="text-slate-400 text-sm mt-3 leading-relaxed">
+            Địa chỉ website này chưa được tạo hoặc chưa liên kết với bất kỳ mẫu giao diện nào trong hệ thống CloneCraft.
+          </p>
+          <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+            <a
+              href="https://templates.aireviewbds.com"
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition shadow-lg shadow-blue-600/20"
+            >
+              Xem Sàn Mẫu Website
+            </a>
+            <a
+              href="https://cms.aireviewbds.com"
+              className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm rounded-xl border border-slate-700 transition"
+            >
+              Đăng Nhập CMS
+            </a>
+          </div>
         </div>
       </div>
     );

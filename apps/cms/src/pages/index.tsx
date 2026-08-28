@@ -457,7 +457,7 @@ export default function CMSDashboard() {
                 Thiết Kế
               </Link>
               <Link
-                href={`https://bds-template-website.aireviewbds.com/?tenant=${dashboardStatus?.subdomain || 'hoanggialand'}`}
+                href={`https://${dashboardStatus?.subdomain || 'hoanggialand'}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-slate-900 text-sm font-bold hover:bg-slate-100 transition-colors shadow-md"

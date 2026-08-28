@@ -312,7 +312,7 @@ export default function CustomersPage() {
                   </div>
 
                   <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs font-mono space-y-2 select-all">
-                    <div><strong>Website:</strong> {createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com'}`}</div>
+                    <div><strong>Website:</strong> {createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`}</div>
                     <div><strong>Quản trị CMS:</strong> {createdCredentials.cmsUrl || process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}</div>
                     <div><strong>Email:</strong> {createdCredentials.email}</div>
                     <div><strong>Mật khẩu tạm:</strong> {createdCredentials.password}</div>
@@ -321,7 +321,7 @@ export default function CustomersPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => {
-                        const info = `THÔNG TIN BÀN GIAO WEBSITE:\n- Website: ${createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com'}`}\n- Quản trị CMS: ${createdCredentials.cmsUrl || process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}\n- Email: ${createdCredentials.email}\n- Mật khẩu: ${createdCredentials.password}`;
+                        const info = `THÔNG TIN BÀN GIAO WEBSITE:\n- Website: ${createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`}\n- Quản trị CMS: ${createdCredentials.cmsUrl || process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}\n- Email: ${createdCredentials.email}\n- Mật khẩu: ${createdCredentials.password}`;
                         navigator.clipboard.writeText(info);
                         alert('Đã copy thông tin bàn giao vào clipboard!');
                       }}

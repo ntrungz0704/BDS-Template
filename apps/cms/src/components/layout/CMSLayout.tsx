@@ -281,14 +281,14 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
   const activeTenant = userTenants?.find((t: any) => t.id === domainData?.tenantId) || userTenants?.[0];
   const tenantSlug = domainData?.subdomain || activeTenant?.slug || 'hoanggialand';
   const tenantName = companyInfo?.name || activeTenant?.name || 'Hoàng Gia Land';
-  const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com';
+  const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com';
 
   const buildPublicUrl = () => {
-    if (!tenantSlug) return `https://bds-template-website.aireviewbds.com/?tenant=hoanggialand`;
     if (domainData?.customDomain && domainData?.dnsVerified && domainData?.sslStatus === 'ACTIVE') {
       return `https://${domainData.customDomain}`;
     }
-    return `https://bds-template-website.aireviewbds.com/?tenant=${tenantSlug}`;
+    if (!tenantSlug) return `https://${PLATFORM_DOMAIN}`;
+    return `https://${tenantSlug}.${PLATFORM_DOMAIN}`;
   };
 
   const websiteUrl = buildPublicUrl();
@@ -394,7 +394,7 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
                   >
                     <div className="min-w-0 flex-1">
                       <div className="truncate font-semibold">{t.name}</div>
-                      <div className="text-[10px] text-white/40 truncate">{t.slug}.aireviewbds.com</div>
+                      <div className="text-[10px] text-white/40 truncate">{t.slug}.{PLATFORM_DOMAIN}</div>
                     </div>
                     {t.id === domainData?.tenantId && (
                       <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0 ml-2 animate-pulse" />
@@ -532,7 +532,7 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
 
             <div className="hidden lg:flex items-center text-xs text-slate-500 font-medium ml-1">
               <Globe className="w-3.5 h-3.5 mr-1 text-slate-400" />
-              <span className="truncate max-w-[220px]">{tenantSlug}.aireviewbds.com</span>
+              <span className="truncate max-w-[220px]">{tenantSlug}.{PLATFORM_DOMAIN}</span>
             </div>
 
             {/* Top Switcher Dropdown Modal */}
@@ -583,7 +583,7 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
                               </div>
                               <div className="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1">
                                 <Globe className="w-3 h-3 text-slate-400 shrink-0" />
-                                <span className="truncate">{t.slug}.aireviewbds.com</span>
+                                <span className="truncate">{t.slug}.{PLATFORM_DOMAIN}</span>
                               </div>
                             </div>
                             <span className="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded-md shrink-0 uppercase border border-slate-200">

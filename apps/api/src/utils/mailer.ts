@@ -12,9 +12,9 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function sendWelcomeEmail(to: string, fullName: string, subdomain: string, tempPassword: string) {
-  const platformDomain = process.env.PLATFORM_DOMAIN || 'platformbds.vn';
+  const platformDomain = process.env.PLATFORM_DOMAIN || 'templates.aireviewbds.com';
   const websiteUrl = `https://${subdomain}.${platformDomain}`;
-  const cmsUrl = `https://${subdomain}-cms.${platformDomain}`;
+  const cmsUrl = process.env.CMS_URL || 'https://cms.aireviewbds.com';
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px;">

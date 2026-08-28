@@ -144,12 +144,12 @@ export default function CheckoutSuccessPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                   <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Website Công Khai Của Bạn:</span>
                   <a
-                    href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}?tenant=${tenantSlug || orderData.subdomain || 'hoanggialand'}`}
+                    href={`https://${tenantSlug || orderData.subdomain || 'site'}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline font-mono font-bold flex items-center gap-1 text-sm"
                   >
-                    {tenantSlug || orderData.subdomain || 'site'}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com'}
+                    {tenantSlug || orderData.subdomain || 'site'}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -200,7 +200,7 @@ export default function CheckoutSuccessPage() {
                   <span>Vào Quản Trị CMS Ngay</span>
                 </a>
                 <a
-                  href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}?tenant=${tenantSlug || orderData.subdomain || 'hoanggialand'}`}
+                  href={`https://${tenantSlug || orderData.subdomain || 'site'}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="py-4 px-6 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl text-sm flex items-center justify-center gap-2 shadow-lg transition-all"
