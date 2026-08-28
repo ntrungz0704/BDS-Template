@@ -7,6 +7,7 @@ import bcrypt from 'bcrypt';
 import { sendWelcomeEmail } from '../utils/mailer';
 import { BUSINESS_CONFIG } from '@repo/config';
 import { websiteProvisioningService } from '../services/website-provisioning.service';
+import { vercelDomainService } from '../services/vercel-domain.service';
 
 export async function getDashboardStats(req: Request, res: Response, next: NextFunction) {
   try {
@@ -476,6 +477,10 @@ export async function deleteTenant(req: Request, res: Response, next: NextFuncti
       prisma.user.updateMany({ where: { tenantId: id }, data: { tenantId: null } }),
       prisma.tenant.delete({ where: { id } }),
     ]);
+
+    // Tự động xóa domain khỏi Vercel Project
+    const platformDomain = process.env.PLATFORM_DOMAIN || 'templates.aireviewbds.com';
+    await vercelDomainService.removeDomainFromVercel(`${tenant.slug}.${platformDomain}`);
 
     logger.info(`Admin đã xóa vĩnh viễn website tenant ${tenant.name} (${tenant.slug})`);
 

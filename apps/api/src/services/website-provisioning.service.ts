@@ -3,6 +3,7 @@ import { TEMPLATE_CONFIGS } from '@repo/utils';
 import { BUSINESS_CONFIG } from '@repo/config';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
+import { vercelDomainService } from './vercel-domain.service';
 
 export interface ProvisionWebsiteInput {
   templateId: string;
@@ -684,6 +685,11 @@ export class WebsiteProvisioningService {
 
       return { tenant, user };
     });
+
+    // n. Tự động đăng ký domain của khách vào Vercel Project qua Vercel API
+    const platformDomain = process.env.PLATFORM_DOMAIN || 'templates.aireviewbds.com';
+    const targetDomain = `${slug.toLowerCase()}.${platformDomain}`;
+    await vercelDomainService.addDomainToVercel(targetDomain);
 
     return {
       tenant: result.tenant,
