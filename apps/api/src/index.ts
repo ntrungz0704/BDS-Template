@@ -99,23 +99,18 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// 2. Bảo mật Headers với Helmet & Content Security Policy (CSP)
-app.use(helmet());
+// 2. Bảo mật Headers với Helmet
 app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
-      connectSrc: ["'self'"],
-    },
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
   })
 );
 
 // 3. Cấu hình CORS Whitelist
-const allowedOrigins = process.env.CORS_ORIGINS
-  ? process.env.CORS_ORIGINS.split(',')
+const rawCors = process.env.CORS_ORIGINS || process.env.CORS_ORIGIN;
+const allowedOrigins = rawCors
+  ? rawCors.split(',').map(s => s.trim())
   : [
       'http://localhost:3000', // Marketplace
       'http://localhost:3001', // CMS
