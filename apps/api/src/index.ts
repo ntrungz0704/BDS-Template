@@ -45,6 +45,7 @@ import DailyRotateFile from 'winston-daily-rotate-file';
 import { Prisma } from '@repo/database';
 import * as Sentry from '@sentry/node';
 import { initMediaWorker } from './workers/media.worker';
+import { autoSeedDatabase } from './utils/auto-seed';
 
 // Initialize Sentry
 Sentry.init({
@@ -281,6 +282,9 @@ if (process.env.NODE_ENV !== 'test') {
   server = app.listen(PORT, () => {
     logger.info(`API Server đang chạy trên cổng ${PORT} ở chế độ ${process.env.NODE_ENV}`);
     
+    // Tự động khởi tạo dữ liệu mẫu nếu Database trống
+    autoSeedDatabase().catch((e) => console.warn('AutoSeed warning:', e));
+
     // Khởi chạy Background Workers (graceful — không crash API nếu Redis không có)
     try {
       initMediaWorker();
