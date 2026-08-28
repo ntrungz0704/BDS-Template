@@ -238,7 +238,7 @@ export default function PreviewToolbar({
 
         {owned ? (
           <a
-            href={process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
+            href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
             className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-lg transition-all duration-150 flex items-center gap-1.5"
           >
             <Check className="w-3.5 h-3.5" />

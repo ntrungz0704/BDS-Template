@@ -94,7 +94,7 @@ export default function CMSGuidePage() {
                 Sau khi hoàn tất đăng ký tài khoản trên PlatformBDS, hệ thống tự động khởi tạo cho bạn một website demo riêng biệt. Bạn có thể đăng nhập vào trang CMS Quản Trị bằng tài khoản của mình bất cứ lúc nào.
               </p>
               <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-md text-xs text-slate-700 space-y-1">
-                <p>✅ Truy cập nhanh CMS: <strong className="text-blue-600 font-mono">{process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}</strong> (hoặc subdomain của bạn)</p>
+                <p>✅ Truy cập nhanh CMS: <strong className="text-blue-600 font-mono">{process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}</strong> (hoặc subdomain của bạn)</p>
                 <p>✅ Đăng nhập bằng Email & Mật khẩu bạn đã tạo trên Marketplace.</p>
               </div>
             </section>

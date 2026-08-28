@@ -463,7 +463,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       showToast(`Bạn đã sở hữu mẫu "${template.name}". Bạn có thể sử dụng vĩnh viễn không cần mua lại!`, 'info', {
         label: 'Vào CMS Quản trị',
         onClick: () => {
-          const cmsUrl = process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001';
+          const cmsUrl = process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com';
           if (typeof window !== 'undefined') window.location.href = cmsUrl;
         },
       });

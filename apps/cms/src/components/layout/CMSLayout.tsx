@@ -281,14 +281,14 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
   const activeTenant = userTenants?.find((t: any) => t.id === domainData?.tenantId) || userTenants?.[0];
   const tenantSlug = domainData?.subdomain || activeTenant?.slug || 'hoanggialand';
   const tenantName = companyInfo?.name || activeTenant?.name || 'Hoàng Gia Land';
-  const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'platformbds.vn';
+  const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com';
 
   const buildPublicUrl = () => {
-    if (!tenantSlug) return `${process.env.NEXT_PUBLIC_WEBSITE_URL || 'http://localhost:3003'}?tenant=hoanggialand`;
+    if (!tenantSlug) return `${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}?tenant=hoanggialand`;
     if (domainData?.customDomain && domainData?.dnsVerified && domainData?.sslStatus === 'ACTIVE') {
       return `https://${domainData.customDomain}`;
     }
-    return `${process.env.NEXT_PUBLIC_WEBSITE_URL || 'http://localhost:3003'}?tenant=${tenantSlug}`;
+    return `${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}?tenant=${tenantSlug}`;
   };
 
   const websiteUrl = buildPublicUrl();
@@ -403,7 +403,7 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
                 ))}
 
                 <a
-                  href={`${process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'http://localhost:3000'}/templates`}
+                  href={`${process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'https://templates.aireviewbds.com'}/templates`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-3 py-2 text-xs font-bold text-amber-400 hover:bg-amber-500/15 border-t border-slate-700/80 flex items-center gap-1.5 transition-colors"
@@ -431,7 +431,7 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
         {/* Bottom actions */}
         <div className="border-t border-white/10 p-2 space-y-1">
           <a
-            href={process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'http://localhost:3000'}
+            href={process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'https://templates.aireviewbds.com'}
             target="_blank"
             rel="noopener noreferrer"
             title={collapsed ? 'Sàn Giao Diện' : undefined}
@@ -597,7 +597,7 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
 
                   <div className="pt-2 border-t border-slate-100">
                     <a
-                      href={`${process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'http://localhost:3000'}/templates`}
+                      href={`${process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'https://templates.aireviewbds.com'}/templates`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-sm"
@@ -615,7 +615,7 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {/* Marketplace link */}
             <a
-              href={process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'http://localhost:3000'}
+              href={process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'https://templates.aireviewbds.com'}
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 transition-all shadow-2xs"

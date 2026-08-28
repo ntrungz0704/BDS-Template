@@ -453,7 +453,7 @@ export default function AdminDashboard() {
                                     <div className="text-[10px] text-slate-400">{order.phone}</div>
                                   </td>
                                   <td className="px-5 py-4 font-bold text-indigo-600">
-                                    {order.subdomain ? `${order.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'localhost:3003'}` : 'Mua Source Code'}
+                                    {order.subdomain ? `${order.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com'}` : 'Mua Source Code'}
                                   </td>
                                   <td className="px-5 py-4 font-black text-slate-800">
                                     {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(order.amount)}
@@ -540,12 +540,12 @@ export default function AdminDashboard() {
                                   <td className="px-5 py-4 font-bold text-slate-800">{tenant.name}</td>
                                   <td className="px-5 py-4 font-mono">
                                     <a
-                                      href={`http://${tenant.slug}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'localhost:3003'}`}
+                                      href={`https://${tenant.slug}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com'}`}
                                       target="_blank"
                                       rel="noreferrer"
                                       className="text-indigo-600 hover:underline font-semibold"
                                     >
-                                      {tenant.slug}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'localhost:3003'}
+                                      {tenant.slug}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com'}
                                     </a>
                                   </td>
                                   <td className="px-5 py-4 text-slate-600">{tenant.template?.name || 'Luxury Default'}</td>

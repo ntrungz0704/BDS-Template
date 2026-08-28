@@ -245,7 +245,7 @@ export default function CartPage() {
                           </div>
                           <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
                             <a
-                              href={process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
+                              href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
                               className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-all text-center"
                             >
                               Vào CMS Quản trị

@@ -1133,7 +1133,7 @@ export default function PagesManagerPage() {
                               <Pencil className="w-3.5 h-3.5" /> Meta
                             </button>
                             <a
-                              href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'http://localhost:3003'}/${page.slug === 'home' ? '' : page.slug}?tenant=${domainData?.subdomain || 'hoanggialand'}`}
+                              href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/${page.slug === 'home' ? '' : page.slug}?tenant=${domainData?.subdomain || 'hoanggialand'}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               title="Xem trang thực tế trên Website"

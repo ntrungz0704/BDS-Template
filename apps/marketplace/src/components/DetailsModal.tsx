@@ -417,7 +417,7 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
                   
                   {owned ? (
                     <a
-                      href={process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
+                      href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
                       className="w-full h-10 text-[13px] font-bold rounded-xl text-white bg-emerald-600 hover:bg-emerald-700 flex items-center justify-center gap-1.5 transition-all shadow-md"
                     >
                       <Check className="w-4 h-4" /> Bạn Đã Sở Hữu - Vào CMS Quản Trị
