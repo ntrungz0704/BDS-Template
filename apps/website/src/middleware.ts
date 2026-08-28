@@ -26,9 +26,8 @@ const EXCLUDED_PATHS = [
 ];
 
 const RESERVED_SLUGS = [
-  'www', 'admin', 'cms', 'api', 'app', 'marketplace', 'templates', 'template', 'themes', 'mail', 'static', 'assets', 'support'
+  'www', 'admin', 'cms', 'api', 'app', 'marketplace', 'templates', 'template', 'themes', 'mail', 'static', 'assets', 'support', 'bds-template-website', 'website'
 ];
-
 
 export const TENANT_SLUG_HEADER = 'x-tenant-slug';
 export const TENANT_HOST_HEADER = 'x-tenant-host';
@@ -49,44 +48,45 @@ export async function middleware(request: NextRequest) {
 
   const cleanHost = hostname.split(':')[0].toLowerCase().trim();
   const isLocalhost = cleanHost.includes('localhost') || cleanHost.includes('127.0.0.1');
-  const isDev = process.env.NODE_ENV !== 'production';
 
   let tenantSlug: string | null = null;
 
-  // 2. Subdomain resolution (Hosts take highest precedence)
-  if (isLocalhost) {
-    // e.g. hoanggialand.localhost:3003 -> tenantSlug = 'hoanggialand'
-    if (cleanHost.endsWith('.localhost')) {
-      const parts = cleanHost.split('.');
-      if (parts.length > 1 && parts[0] !== 'www') {
-        tenantSlug = parts[0];
+  // 2. Query parameter `?tenant=...` takes HIGHEST precedence (both prod and dev)
+  const queryTenant = searchParams.get('tenant');
+  if (queryTenant && queryTenant.trim() !== '') {
+    const candidate = queryTenant.toLowerCase().trim();
+    if (!RESERVED_SLUGS.includes(candidate)) {
+      tenantSlug = candidate;
+    }
+  }
+
+  // 3. Subdomain resolution
+  if (!tenantSlug) {
+    if (isLocalhost) {
+      if (cleanHost.endsWith('.localhost')) {
+        const parts = cleanHost.split('.');
+        if (parts.length > 1 && parts[0] !== 'www' && !RESERVED_SLUGS.includes(parts[0])) {
+          tenantSlug = parts[0];
+        }
+      }
+    } else if (cleanHost.endsWith(`.${PLATFORM_DOMAIN}`)) {
+      const subdomain = cleanHost.replace(`.${PLATFORM_DOMAIN}`, '');
+      if (subdomain && subdomain !== 'www' && subdomain !== PLATFORM_DOMAIN && !RESERVED_SLUGS.includes(subdomain)) {
+        tenantSlug = subdomain;
       }
     }
-  } else if (cleanHost.endsWith(`.${PLATFORM_DOMAIN}`)) {
-    const subdomain = cleanHost.replace(`.${PLATFORM_DOMAIN}`, '');
-    if (subdomain && subdomain !== 'www' && subdomain !== PLATFORM_DOMAIN) {
-      tenantSlug = subdomain;
-    }
   }
 
-  // 3. Query parameter fallback (in development/localhost environment)
-  if (!tenantSlug && (isDev || isLocalhost)) {
-    const queryTenant = searchParams.get('tenant');
-    if (queryTenant) {
-      tenantSlug = queryTenant.toLowerCase().trim();
-    }
-  }
-
-  // 4. Cookie fallback (if previously visited a tenant on localhost)
-  if (!tenantSlug && (isDev || isLocalhost)) {
+  // 4. Cookie fallback (if previously visited a tenant)
+  if (!tenantSlug) {
     const cookieTenant = request.cookies.get('tenant_slug')?.value;
-    if (cookieTenant && cookieTenant !== '_notfound') {
+    if (cookieTenant && cookieTenant !== '_notfound' && !RESERVED_SLUGS.includes(cookieTenant)) {
       tenantSlug = cookieTenant.toLowerCase().trim();
     }
   }
 
-  // 5. Custom domain resolution (Only if not resolved by subdomain/query)
-  if (!tenantSlug && !isLocalhost && cleanHost !== PLATFORM_DOMAIN && cleanHost !== `www.${PLATFORM_DOMAIN}`) {
+  // 5. Custom domain resolution
+  if (!tenantSlug && !isLocalhost && cleanHost !== PLATFORM_DOMAIN && cleanHost !== `www.${PLATFORM_DOMAIN}` && !cleanHost.startsWith('bds-template-website')) {
     try {
       const resolveUrl = `${API_URL}/api/website/resolve-domain?domain=${encodeURIComponent(cleanHost)}`;
       const res = await fetch(resolveUrl, {
@@ -104,17 +104,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 6. Reserved slugs validation (system domains cannot be tenants)
-  if (tenantSlug && RESERVED_SLUGS.includes(tenantSlug)) {
-    tenantSlug = '_notfound';
-  }
-
-  // 7. Local development auto-fallback to active tenant if not set
-  if ((!tenantSlug || tenantSlug === '_notfound') && (isDev || isLocalhost)) {
-    tenantSlug = 'nguyen-pham-thanh-trung-land';
-  }
-
-  if (!tenantSlug) {
+  if (!tenantSlug || RESERVED_SLUGS.includes(tenantSlug)) {
     tenantSlug = '_notfound';
   }
 
@@ -140,7 +130,6 @@ export async function middleware(request: NextRequest) {
   }
 
   return response;
-
 }
 
 export const config = {

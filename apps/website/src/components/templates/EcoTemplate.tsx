@@ -387,8 +387,15 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
 
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
-      const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
+      const params = new URLSearchParams(window.location.search);
+      const tenant = params.get('tenant');
+      if (p === 'home') {
+        const query = tenant ? `/?tenant=${tenant}` : window.location.pathname;
+        window.history.pushState(null, '', query);
+      } else {
+        const query = tenant ? `/?tenant=${tenant}&page=${p}` : `/?page=${p}`;
+        window.history.pushState(null, '', query);
+      }
     }
   };
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
@@ -434,7 +441,16 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
   const isMobile = viewport === 'mobile';
   const isSmall = isMobile || viewport === 'tablet';
 
-  const getPageHref = (page: string) => page === 'home' ? '/' : '?page=' + page;
+  const getPageHref = (page: string) => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tenant = params.get('tenant');
+      if (tenant) {
+        return page === 'home' ? `/?tenant=${tenant}` : `/?tenant=${tenant}&page=${page}`;
+      }
+    }
+    return page === 'home' ? '/' : `/?page=${page}`;
+  };
 
   const navLinks = [
     { label: 'Trang chủ', page: 'home' },

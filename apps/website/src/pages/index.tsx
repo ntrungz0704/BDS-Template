@@ -131,13 +131,15 @@ export default function TenantHome({ company, theme, pageContent, projects, post
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const host = context.req.headers.host || '';
-  let tenantSlug = (context.req.headers['x-tenant-slug'] as string) || '';
   const initialPage = (context.query.page as string) || 'home';
   
-  if (!tenantSlug || tenantSlug === '_notfound' || tenantSlug === 'localhost:3003' || tenantSlug === 'localhost' || tenantSlug === 'bds-template-website' || tenantSlug === 'website') {
-    tenantSlug = (context.query.tenant as string) 
-      || (context.req.cookies['tenant_slug'] as string) 
-      || 'showcase';
+  let tenantSlug = (context.query.tenant as string) 
+    || (context.req.headers['x-tenant-slug'] as string) 
+    || (context.req.cookies['tenant_slug'] as string) 
+    || '';
+
+  if (tenantSlug === '_notfound' || tenantSlug === 'bds-template-website' || tenantSlug === 'website' || tenantSlug === 'localhost:3003' || tenantSlug === 'localhost') {
+    tenantSlug = (context.query.tenant as string) || (context.req.cookies['tenant_slug'] as string) || '';
   }
 
   try {
