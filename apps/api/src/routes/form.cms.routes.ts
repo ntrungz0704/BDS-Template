@@ -22,3 +22,4 @@ router.put('/:id/status', csrfMiddleware, updateSubmissionStatus);
 router.delete('/:id', csrfMiddleware, deleteSubmission);
 
 export default router;
+

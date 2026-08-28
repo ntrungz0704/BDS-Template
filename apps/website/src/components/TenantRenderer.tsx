@@ -38,3 +38,4 @@ export default function TenantRenderer({ templateSlug, company, theme, projects,
     />
   );
 }
+

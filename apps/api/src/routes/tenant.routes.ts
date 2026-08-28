@@ -23,3 +23,4 @@ router.post('/onboard', completeTenantOnboarding);
 router.get('/onboard/status', getOnboardingStatus);
 
 export default router;
+

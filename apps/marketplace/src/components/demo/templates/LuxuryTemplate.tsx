@@ -998,7 +998,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                   return;
                 }
                 try {
-                  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+                  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
                   await fetch(`${API_URL}/api/marketplace/contact`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1457,7 +1457,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                     return;
                   }
                   try {
-                    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+                    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
                     await fetch(`${API_URL}/api/marketplace/contact`, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
@@ -1929,3 +1929,4 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     </div>
   );
 }
+

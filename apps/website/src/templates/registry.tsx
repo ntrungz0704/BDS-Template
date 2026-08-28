@@ -95,3 +95,4 @@ for (const tpl of INITIAL_TEMPLATES) {
 }
 
 export { WebsiteTemplateRegistry };
+

@@ -428,3 +428,4 @@ export async function getTenantStatus(req: Request, res: Response, next: NextFun
     next(error);
   }
 }
+

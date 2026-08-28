@@ -29,3 +29,4 @@ router.put('/:id', csrfMiddleware, updateProject);
 router.delete('/:id', csrfMiddleware, deleteProject);
 
 export default router;
+

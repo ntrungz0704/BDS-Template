@@ -1378,3 +1378,4 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
     </div>
   );
 }
+

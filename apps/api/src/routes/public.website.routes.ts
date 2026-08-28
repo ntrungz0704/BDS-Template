@@ -56,3 +56,4 @@ router.get('/:tenantSlug/pages/:pageSlug', getPageContent);
 router.post('/:tenantSlug/contact', contactLimiter, submitContactForm);
 
 export default router;
+

@@ -1845,3 +1845,4 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
     </div>
   );
 }
+

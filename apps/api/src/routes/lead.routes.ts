@@ -51,3 +51,4 @@ router.post('/:id/activities', csrfMiddleware, addLeadActivity);
 router.delete('/:id', csrfMiddleware, deleteLead);
 
 export default router;
+

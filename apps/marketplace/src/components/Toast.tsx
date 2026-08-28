@@ -1,4 +1,4 @@
-ï»¿import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { CheckCircle2, AlertCircle, Info, X, ArrowRight } from 'lucide-react';
 
@@ -50,7 +50,7 @@ export default function Toast() {
         <button
           onClick={hideToast}
           className="text-slate-400 hover:text-white transition-colors p-1 -mr-1 -mt-1 rounded-lg"
-          title="ÄÃ³ng"
+          title="Ðóng"
         >
           <X className="w-4 h-4" />
         </button>
@@ -58,3 +58,4 @@ export default function Toast() {
     </div>
   );
 }
+

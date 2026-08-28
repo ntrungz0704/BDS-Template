@@ -619,3 +619,4 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
     </header>
   );
 }
+

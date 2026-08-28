@@ -155,3 +155,4 @@ export default {
   isSectionVisible,
   getSortedSectionKeys,
 };
+

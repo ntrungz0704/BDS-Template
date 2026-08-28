@@ -125,3 +125,4 @@ export const deleteLead = async (req: Request, res: Response) => {
     res.status(status).json({ success: false, message: err.message });
   }
 };
+

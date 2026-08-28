@@ -222,7 +222,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   }
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
   try {
     const [compRes, themeRes, postRes] = await Promise.allSettled([

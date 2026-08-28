@@ -6,7 +6,7 @@ import axios from 'axios';
 
 // ─── Global Axios: Auto Token Refresh + 401 handler ──────────────────────────
 if (typeof window !== 'undefined') {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
   let isRefreshing = false;
   let refreshQueue: Array<(token: boolean) => void> = [];
 
@@ -173,3 +173,4 @@ export default function App({ Component, pageProps }: AppProps) {
     </QueryClientProvider>
   );
 }
+

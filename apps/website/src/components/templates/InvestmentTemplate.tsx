@@ -2109,3 +2109,4 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
     </div>
   );
 }
+

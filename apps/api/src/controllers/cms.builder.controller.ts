@@ -1526,3 +1526,4 @@ export async function updateSeoConfig(req: Request, res: Response, next: NextFun
     next(err);
   }
 }
+

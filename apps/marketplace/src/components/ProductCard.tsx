@@ -219,3 +219,4 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
     </div>
   );
 }
+

@@ -1100,3 +1100,4 @@ export const ALL_TEMPLATES: Template[] = [
     sectionConfig: {}
   }
 ];
+

@@ -2121,3 +2121,4 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 if (typeof globalThis !== 'undefined') {
   (globalThis as any).__news_ref = NEWS;
 }
+

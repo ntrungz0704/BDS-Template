@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Users, MoreVertical, Trash2, Mail, Edit2, CheckCircle, XCircle, Clock } from 'lucide-react';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
 export default function MembersPage() {
   const queryClient = useQueryClient();
@@ -265,3 +265,4 @@ export default function MembersPage() {
     </>
   );
 }
+

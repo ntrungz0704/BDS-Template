@@ -46,3 +46,4 @@ router.get('/tenants', authMiddleware, getUserTenants);
 router.post('/switch-tenant', authMiddleware, switchTenant);
 
 export default router;
+

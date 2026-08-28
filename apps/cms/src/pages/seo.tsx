@@ -515,7 +515,7 @@ function SocialTab({
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
 export default function SeoSettingsPage() {
   const queryClient = useQueryClient();
@@ -674,3 +674,4 @@ export default function SeoSettingsPage() {
     </CMSLayout>
   );
 }
+

@@ -21,7 +21,7 @@ import {
   Smartphone, Code, Timer, BarChart3, HelpCircle, CheckCircle2, ChevronDown, Award, Layout, Zap, Building, HelpCircle as HelpIcon, ArrowRight
 } from 'lucide-react';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
 export default function MarketplaceHome() {
   const { user, openAuthModal, addOrder, addToCart } = useAuth();
@@ -1008,3 +1008,4 @@ function XIcon() {
     </svg>
   );
 }
+

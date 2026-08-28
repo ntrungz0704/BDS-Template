@@ -24,3 +24,4 @@ router.delete('/:id', deleteMedia);
 router.post('/folder', createFolder);
 
 export default router;
+

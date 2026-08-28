@@ -97,3 +97,4 @@ export async function verifyEmail(req: Request, res: Response, next: NextFunctio
     next(error);
   }
 }
+

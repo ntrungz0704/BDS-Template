@@ -119,3 +119,4 @@ export function getStorageProvider(): IStorageProvider {
   }
   return new LocalStorageProvider();
 }
+

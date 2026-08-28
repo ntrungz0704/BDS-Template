@@ -22,3 +22,4 @@ router.post('/reset-password', resetPassword);
 router.post('/direct-reset-password', resetLimiter, directResetPassword);
 
 export default router;
+

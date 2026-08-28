@@ -26,3 +26,4 @@ router.delete('/:id', requireRole(['TENANT_OWNER']), removeMember);
 router.post('/:id/resend', requireRole(['TENANT_OWNER']), resendInvite);
 
 export default router;
+

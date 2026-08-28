@@ -1749,3 +1749,4 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
     </div>
   );
 }
+

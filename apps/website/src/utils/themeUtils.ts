@@ -216,3 +216,4 @@ export function themeColorScheme(theme?: TenantTheme | null): string {
   const t = mergeTheme(theme);
   return t.darkMode ? 'dark' : 'light';
 }
+

@@ -12,7 +12,7 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
 export default function CheckoutSuccessPage() {
   const router = useRouter();
@@ -428,3 +428,4 @@ export default function CheckoutSuccessPage() {
     </>
   );
 }
+

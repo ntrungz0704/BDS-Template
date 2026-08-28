@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
 interface MediaAsset {
   id: string;
@@ -178,3 +178,4 @@ export const MediaLibraryModal: React.FC<{ isOpen: boolean; onClose: () => void;
     </div>
   );
 };
+

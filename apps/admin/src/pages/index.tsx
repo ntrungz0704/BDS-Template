@@ -5,7 +5,7 @@ import Link from 'next/link';
 import AdminLayout from '../components/AdminLayout';
 import { formatVND } from '@repo/utils';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
 export default function AdminDashboard() {
   // Lấy dữ liệu thống kê từ API Super Admin
@@ -220,3 +220,4 @@ export default function AdminDashboard() {
     </AdminLayout>
   );
 }
+

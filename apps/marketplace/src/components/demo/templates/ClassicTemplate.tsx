@@ -1691,3 +1691,4 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
     </div>
   );
 }
+

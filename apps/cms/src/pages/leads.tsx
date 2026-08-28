@@ -59,7 +59,7 @@ const COLUMNS: KanbanColumn[] = [
 
 // ─── API Helper ────────────────────────────────────────────────────────────
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
 async function apiFetch(path: string, options?: RequestInit) {
   const res = await fetch(`${API_URL}${path}`, {
@@ -651,3 +651,4 @@ export default function LeadCRMPage() {
     </>
   );
 }
+

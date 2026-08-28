@@ -464,3 +464,4 @@ export default function DynamicLuxuryTemplate({ company, theme, projects, posts 
     </div>
   );
 }
+

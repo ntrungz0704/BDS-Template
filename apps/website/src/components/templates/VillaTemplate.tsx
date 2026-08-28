@@ -2125,3 +2125,4 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
     </div>
   );
 }
+

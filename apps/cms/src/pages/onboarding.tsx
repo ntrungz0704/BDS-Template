@@ -389,7 +389,7 @@ function Step4({ data, onLaunch, launching }: { data: OnboardingData; onLaunch: 
 
 // ─── Main Wizard ──────────────────────────────────────────────────────────────
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -518,3 +518,4 @@ export default function OnboardingPage() {
     </>
   );
 }
+

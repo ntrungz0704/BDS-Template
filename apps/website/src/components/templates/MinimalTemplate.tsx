@@ -1931,3 +1931,4 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
     </div>
   );
 }
+

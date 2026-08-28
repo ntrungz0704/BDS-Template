@@ -5,3 +5,4 @@
 export function getTemplateDemoUrl(slug: string): string {
   return `/demo/${slug}`;
 }
+

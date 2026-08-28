@@ -23,7 +23,7 @@ import DemoRenderer from '../../components/demo/DemoRenderer';
 import PreviewToolbar, { ViewportType } from '../../components/demo/PreviewToolbar';
 import { useAuth } from '../../context/AuthContext';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
 // ─── Viewport configuration ──────────────────────────────────────────────────
 

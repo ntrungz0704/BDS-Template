@@ -1884,3 +1884,4 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
     </div>
   );
 }
+

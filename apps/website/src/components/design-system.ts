@@ -368,3 +368,4 @@ export const IMAGES = {
 export const SECTION_SPACING = 'py-24 sm:py-28 lg:py-32 px-4 sm:px-8 lg:px-12';
 export const SECTION_SPACING_SM = 'py-16 sm:py-20 lg:py-24 px-4 sm:px-8 lg:px-12';
 export const MAX_W = 'max-w-7xl mx-auto';
+

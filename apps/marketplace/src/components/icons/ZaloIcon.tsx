@@ -39,3 +39,4 @@ export default function ZaloIcon({ className = 'w-5 h-5', ...props }: ZaloIconPr
     </svg>
   );
 }
+

@@ -191,7 +191,7 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
   // Tải dữ liệu công ty từ API
   React.useEffect(() => {
@@ -466,3 +466,4 @@ export default function SettingsPage() {
     </CMSLayout>
   );
 }
+

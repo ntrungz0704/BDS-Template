@@ -28,7 +28,7 @@ export default function TrialStatusBar() {
 
   const fetchStatus = useCallback(async () => {
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
       const res = await axios.get(`${API_URL}/api/cms/builder/subscription`, {
         withCredentials: true,
       });
@@ -162,3 +162,4 @@ export default function TrialStatusBar() {
     </div>
   );
 }
+

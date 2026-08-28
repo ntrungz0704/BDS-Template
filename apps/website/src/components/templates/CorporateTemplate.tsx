@@ -660,3 +660,4 @@ const MOCK_NEWS = [
   { id: '2', title: 'Cất Nóc Dự Án Tòa Tháp Tài Chính VinaCorp Center', date: '02/10/2026', img: 'https://images.unsplash.com/photo-1590240562544-a141b2c4e511?w=800&q=80', excerpt: 'Dự án tháp tài chính chính thức hoàn thành phần thô vượt tiến độ 30 ngày...' },
   { id: '3', title: 'Báo Cáo Tài Chính Quý 3/2026: Lợi Nhuận Vượt Kế Hoạch 120%', date: '28/09/2026', img: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80', excerpt: 'Kết quả kinh doanh tăng trưởng ấn tượng nhờ đóng góp lớn từ mảng bất động sản...' }
 ];
+

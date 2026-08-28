@@ -247,3 +247,4 @@ export async function getOnboardingStatus(req: Request, res: Response, next: Nex
     next(error);
   }
 }
+

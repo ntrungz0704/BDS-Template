@@ -119,7 +119,7 @@ export default function CustomPublicPage({ company, theme, page, slug, tenantSlu
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { slug } = context.params || {};
   const tenantSlug = (context.query.tenant as string) || 'hoanggialand';
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
   try {
     const [compRes, themeRes, pageRes] = await Promise.allSettled([

@@ -35,7 +35,7 @@ import {
   Check,
 } from 'lucide-react';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -773,3 +773,4 @@ export default function FormsManagerPage() {
     </CMSLayout>
   );
 }
+

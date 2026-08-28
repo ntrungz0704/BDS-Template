@@ -4,7 +4,7 @@ import Head from 'next/head';
 import axios from 'axios';
 import { CheckCircle, XCircle } from 'lucide-react';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
 export default function AcceptInvitePage() {
   const router = useRouter();
@@ -175,3 +175,4 @@ export default function AcceptInvitePage() {
     </div>
   );
 }
+

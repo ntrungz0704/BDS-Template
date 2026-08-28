@@ -163,7 +163,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
     const [compRes, projRes, themeRes] = await Promise.allSettled([
       axios.get(`${apiUrl}/api/website/${tenantSlug}/company-info`, { timeout: 3000 }),
       axios.get(`${apiUrl}/api/website/${tenantSlug}/projects/${slug}`, { timeout: 3000 }),

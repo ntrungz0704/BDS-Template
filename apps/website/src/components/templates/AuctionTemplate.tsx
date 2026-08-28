@@ -2049,3 +2049,4 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
     </div>
   );
 }
+

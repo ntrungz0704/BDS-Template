@@ -2205,3 +2205,4 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
     </div>
   );
 }
+

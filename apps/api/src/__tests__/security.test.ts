@@ -59,3 +59,4 @@ describe('Production JWT Security Startup Check', () => {
     expect(exitMock).toHaveBeenCalledWith(1);
   });
 });
+

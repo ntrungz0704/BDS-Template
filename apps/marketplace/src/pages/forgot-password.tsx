@@ -9,7 +9,7 @@ import Footer from '../components/Footer';
 import ZaloIcon from '../components/icons/ZaloIcon';
 import { useAuth } from '../context/AuthContext';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
 export default function ForgotPassword() {
   const router = useRouter();
@@ -248,3 +248,4 @@ export default function ForgotPassword() {
     </>
   );
 }
+

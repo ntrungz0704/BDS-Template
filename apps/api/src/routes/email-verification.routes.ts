@@ -9,3 +9,4 @@ router.get('/verify-email', verifyEmail);
 router.post('/verify-email', verifyEmail);
 
 export default router;
+

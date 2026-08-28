@@ -148,7 +148,7 @@ export default function DomainSettingsPage() {
   const [saved, setSaved] = useState(false);
   const [verifying, setVerifying] = useState(false);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
   // Tải domain settings từ API
   React.useEffect(() => {
@@ -541,3 +541,4 @@ export default function DomainSettingsPage() {
     </CMSLayout>
   );
 }
+

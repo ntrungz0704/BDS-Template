@@ -130,3 +130,4 @@ export const demoLocations = [
   { name: "Nha Trang", count: 22, img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400" },
   { name: "Bà Rịa Vũng Tàu", count: 19, img: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400" }
 ];
+

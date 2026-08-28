@@ -107,3 +107,4 @@ export async function checkTenantAccess(req: Request, res: Response, next: NextF
   req.tenantId = tenantId;
   tenantStorage.run(tenantId, () => next());
 }
+

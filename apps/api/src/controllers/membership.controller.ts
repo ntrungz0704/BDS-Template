@@ -295,3 +295,4 @@ export const resendInvite = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: 'Lỗi máy chủ' } });
   }
 };
+

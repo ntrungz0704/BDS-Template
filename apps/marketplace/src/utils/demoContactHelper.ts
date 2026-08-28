@@ -15,7 +15,7 @@ export interface DemoContactPayload {
 
 export async function submitDemoContact(payload: DemoContactPayload): Promise<{ success: boolean; message?: string }> {
   try {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
     const phoneClean = payload.phone.replace(/\s/g, '');
     
     // Validate phone number format
@@ -48,3 +48,4 @@ export async function submitDemoContact(payload: DemoContactPayload): Promise<{ 
 }
 
 export default submitDemoContact;
+

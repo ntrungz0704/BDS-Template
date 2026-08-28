@@ -15,7 +15,7 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { getProvinces, getDistricts, getWards, parseAddress, formatAddress } from '@repo/utils';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
 export default function CustomerDashboard() {
   const router = useRouter();
@@ -1008,3 +1008,4 @@ export default function CustomerDashboard() {
     </div>
   );
 }
+

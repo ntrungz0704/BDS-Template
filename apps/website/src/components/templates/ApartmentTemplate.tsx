@@ -2069,3 +2069,4 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
     </div>
   );
 }
+

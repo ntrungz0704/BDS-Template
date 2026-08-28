@@ -1984,3 +1984,4 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
     </div>
   );
 }
+

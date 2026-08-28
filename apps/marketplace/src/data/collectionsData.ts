@@ -474,3 +474,4 @@ export const DESIGN_COLLECTIONS: DesignFamily[] = [
     ]
   }
 ];
+

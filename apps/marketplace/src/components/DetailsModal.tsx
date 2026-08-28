@@ -487,3 +487,4 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
     </div>
   );
 }
+

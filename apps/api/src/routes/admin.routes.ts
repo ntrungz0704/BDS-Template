@@ -80,3 +80,4 @@ router.post('/customers/:id/activate-subscription', csrfMiddleware, activateSubs
 router.post('/customers/:id/suspend', csrfMiddleware, suspendCustomer);
 
 export default router;
+
