@@ -315,11 +315,21 @@ const MOCK_GALLERY: GalleryItem[] = [
   }
 ];
 
+const normalizeVillaPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham', 'villa', 'biet-thu'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
+
 export default function VillaTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const [activePage, setActivePageState] = useState(initialPage);
+  const [activePage, setActivePageState] = useState(normalizeVillaPage(initialPage));
 
   useEffect(() => {
-    setActivePageState(initialPage);
+    setActivePageState(normalizeVillaPage(initialPage));
   }, [initialPage]);
   const setActivePage = (p: string) => {
     setActivePageState(p);
@@ -1857,12 +1867,13 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
     <div className="min-h-screen font-sans text-gray-900 bg-white selection:bg-[#F59E0B] selection:text-white">
       <Header />
       <main>
-        {activePage === 'home' && renderHome()}
-        {activePage === 'projects' && renderProjects()}
-        {activePage === 'about' && renderAbout()}
-        {activePage === 'gallery' && renderGallery()}
-        {activePage === 'news' && renderNews()}
-        {activePage === 'contact' && renderContact()}
+        {['home'].includes(activePage) && renderHome()}
+        {['projects', 'du-an', 'san-pham', 'villa', 'biet-thu'].includes(activePage) && renderProjects()}
+        {['about', 'gioi-thieu', 've-chung-toi'].includes(activePage) && renderAbout()}
+        {['gallery', 'thu-vien', 'hinh-anh'].includes(activePage) && renderGallery()}
+        {['news', 'tin-tuc', 'bai-viet'].includes(activePage) && renderNews()}
+        {['contact', 'lien-he', 'tu-van'].includes(activePage) && renderContact()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'villa', 'biet-thu', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(activePage) && renderHome()}
       </main>
       <Footer />
 

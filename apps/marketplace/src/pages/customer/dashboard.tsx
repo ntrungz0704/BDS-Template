@@ -353,7 +353,7 @@ export default function CustomerDashboard() {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {[
                       { title: "Đơn hàng đã đặt", val: `${orders?.length || 0} đơn`, icon: <ShoppingBag className="w-5 h-5 text-blue-500" /> },
-                      { title: "Mẫu đã mua đứt", val: `${orders?.filter((o: any) => o.type === 'BUY' && o.status === 'COMPLETED').length || 0} mẫu`, icon: <CheckCircle2 className="w-5 h-5 text-green-500" /> },
+                      { title: "Mẫu đã mua source", val: `${orders?.filter((o: any) => (o.type === 'BUY' || o.type === 'BUY_SOURCE') && o.status === 'COMPLETED').length || 0} mẫu`, icon: <CheckCircle2 className="w-5 h-5 text-green-500" /> },
                       { title: "Gói thuê hoạt động", val: `${orders?.filter((o: any) => o.type === 'RENT' && o.status === 'COMPLETED').length || 0} website`, icon: <Download className="w-5 h-5 text-indigo-500" /> },
                       { title: "Lưu yêu thích", val: `${wishlists?.length || 0} mẫu`, icon: <Heart className="w-5 h-5 text-red-500" /> },
                     ].map((metric, i) => (
@@ -383,7 +383,7 @@ export default function CustomerDashboard() {
                             <div className="flex-1">
                               <span className="font-bold text-slate-900">Đơn hàng #{ord.orderNumber}</span> ({ord.template?.name}) 
                               {ord.status === 'COMPLETED' 
-                                ? ` đã hoàn tất kích hoạt. ${ord.type === 'BUY' ? 'Bạn có thể tải file nguồn ZIP ở mục Tải file Source.' : `Website của bạn đã sẵn sàng sử dụng.`}`
+                                ? ` đã hoàn tất kích hoạt. ${(ord.type === 'BUY' || ord.type === 'BUY_SOURCE') ? 'Bạn có thể tải file nguồn ZIP ở mục Tải file Source.' : `Website của bạn đã sẵn sàng sử dụng.`}`
                                 : ord.status === 'WAITING_CONFIRM' 
                                 ? ` đang chờ quản trị viên đối soát giao dịch chuyển khoản.`
                                 : ` đang chờ bạn gửi thông tin xác nhận chuyển khoản.`
@@ -469,7 +469,7 @@ export default function CustomerDashboard() {
                                 <span>Xem Website</span>
                               </a>
 
-                              {ord.type === 'BUY' && (
+                              {(ord.type === 'BUY' || ord.type === 'BUY_SOURCE') && (
                                 <button
                                   onClick={() => handleTabChange('downloads')}
                                   className="px-3 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-indigo-600 font-bold text-xs flex items-center gap-1.5 transition-colors"
@@ -532,8 +532,8 @@ export default function CustomerDashboard() {
                                 {new Date(ord.createdAt).toLocaleDateString('vi-VN')}
                               </td>
                               <td className="py-4 px-4">
-                                <span className={`text-[9px] font-bold px-2.5 py-0.5 rounded uppercase ${ord.type === 'BUY' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200/50' : 'bg-amber-50 text-amber-800 border border-amber-200/50'}`}>
-                                  {ord.type === 'BUY' ? 'Mua đứt mã nguồn' : 'Thuê SaaS trọn gói'}
+                                <span className={`text-[9px] font-bold px-2.5 py-0.5 rounded uppercase ${(ord.type === 'BUY' || ord.type === 'BUY_SOURCE') ? 'bg-indigo-50 text-indigo-700 border border-indigo-200/50' : 'bg-amber-50 text-amber-800 border border-amber-200/50'}`}>
+                                  {(ord.type === 'BUY' || ord.type === 'BUY_SOURCE') ? 'Mua mã nguồn' : 'Thuê SaaS trọn gói'}
                                 </span>
                               </td>
                               <td className="py-4 px-4 font-bold font-mono text-slate-950">
@@ -583,7 +583,7 @@ export default function CustomerDashboard() {
                                           Xem Web
                                         </a>
                                       )}
-                                      {ord.type === 'BUY' && (
+                                      {(ord.type === 'BUY' || ord.type === 'BUY_SOURCE') && (
                                         <button
                                           onClick={() => handleTabChange('downloads')}
                                           className="text-indigo-600 hover:text-indigo-800 font-bold text-[10px] underline ml-1"

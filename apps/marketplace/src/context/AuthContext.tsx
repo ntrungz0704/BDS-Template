@@ -31,7 +31,7 @@ export interface Order {
   id: string;
   orderNumber: string;
   amount: number;
-  type: 'BUY' | 'RENT';
+  type: 'BUY' | 'RENT' | 'BUY_SOURCE';
   status: 'COMPLETED' | 'WAITING_CONFIRM' | 'PENDING';
   createdAt: string;
   template: OrderTemplateInfo;
@@ -61,7 +61,7 @@ export interface CartItem {
     priceBuy: number;
     priceRentMonthly: number;
   };
-  type: 'BUY' | 'RENT';
+  type: 'BUY' | 'RENT' | 'BUY_SOURCE';
   subdomain?: string;
   note?: string;
 }
@@ -92,11 +92,11 @@ interface AuthContextType {
   logout: () => Promise<void>;
   updateProfile: (profile: { fullName: string; phone: string; address: string; companyName: string; taxCode: string }) => void;
   updatePassword: (oldPassword: string, newPassword: string) => Promise<boolean>;
-  addOrder: (order: { template: OrderTemplateInfo; type: 'BUY' | 'RENT'; amount: number; subdomain?: string; note?: string }) => Order;
+  addOrder: (order: { template: OrderTemplateInfo; type: 'BUY' | 'RENT' | 'BUY_SOURCE'; amount: number; subdomain?: string; note?: string }) => Order;
   toggleWishlist: (template: any) => void;
   isWishlisted: (templateSlug: string) => boolean;
   isPurchased: (templateSlug: string) => boolean;
-  addToCart: (template: any, type?: 'BUY' | 'RENT', subdomain?: string, note?: string) => void;
+  addToCart: (template: any, type?: 'BUY' | 'RENT' | 'BUY_SOURCE', subdomain?: string, note?: string) => void;
   removeFromCart: (templateId: string) => void;
   updateCartItem: (templateId: string, updates: Partial<CartItem>) => void;
   clearCart: () => void;
@@ -390,7 +390,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const addOrder = (orderInfo: { template: OrderTemplateInfo; type: 'BUY' | 'RENT'; amount: number; subdomain?: string; note?: string }): Order => {
+  const addOrder = (orderInfo: { template: OrderTemplateInfo; type: 'BUY' | 'RENT' | 'BUY_SOURCE'; amount: number; subdomain?: string; note?: string }): Order => {
     const newOrderNumber = `ORD-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(100 + Math.random() * 900)}`;
     const newOrder: Order = {
       id: `ord-${Date.now()}`,
@@ -475,7 +475,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const addToCart = (template: any, type: 'BUY' | 'RENT' = 'BUY', subdomain?: string, note?: string) => {
+  const addToCart = (template: any, type: 'BUY' | 'RENT' | 'BUY_SOURCE' = 'BUY', subdomain?: string, note?: string) => {
     const slug = template.slug || template.id;
 
     // If template is already owned by user

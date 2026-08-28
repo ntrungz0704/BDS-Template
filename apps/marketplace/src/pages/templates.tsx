@@ -7,7 +7,7 @@ import ProductCard from '../components/ProductCard';
 import DetailsModal from '../components/DetailsModal';
 import { ALL_TEMPLATES, Template } from '../data/templatesData';
 import { DESIGN_COLLECTIONS } from '../data/collectionsData';
-import { Search, Sparkles, CheckCircle2, SlidersHorizontal, Layers, Grid } from 'lucide-react';
+import { Search, Sparkles, CheckCircle2, SlidersHorizontal, Grid } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function TemplatesPage() {
@@ -28,20 +28,7 @@ export default function TemplatesPage() {
     }
   }, [router.isReady, router.query]);
 
-  const categories = [
-    { id: 'all', label: '🌟 Tất cả 16 Mẫu' },
-    { id: 'luxury', label: '👑 Luxury & Villa' },
-    { id: 'minimal', label: '⚡ Apple Minimal' },
-    { id: 'corporate', label: '🏢 Corporate & Sàn' },
-    { id: 'resort', label: '🏝️ Resort Nghỉ Dưỡng' },
-    { id: 'apartment', label: '🏙️ Smart Urban' },
-    { id: 'industrial', label: '⚙️ Industrial B2B' },
-    { id: 'eco', label: '🌿 Eco Living' },
-    { id: 'classic', label: '📜 Classic Heritage' },
-    { id: 'investment', label: '📈 Investment Pro' },
-    { id: 'agency', label: '🎯 Agency Ads' },
-    { id: 'developer', label: '🌐 Mega Portal' },
-  ];
+  const categories = [{ id: 'all', label: `BĐS 01 → BĐS ${String(ALL_TEMPLATES.length).padStart(2, '0')}` }];
 
   const filteredTemplates = ALL_TEMPLATES.filter((tpl) => {
     const matchSearch = tpl.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -72,8 +59,8 @@ export default function TemplatesPage() {
   return (
     <>
       <Head>
-        <title>Bộ Sưu Tập 16 Mẫu Website Bất Động Sản Chuyên Nghiệp | TEMPLATES BDS</title>
-        <meta name="description" content="16 Mẫu website BĐS độc quyền: Luxury, Minimal, Corporate, Resort, Industrial, Villa, Eco, Classic, Investment, Agency, Developer." />
+        <title>Bộ Sưu Tập {ALL_TEMPLATES.length} Mẫu Website Bất Động Sản Việt Nam | TEMPLATES BDS</title>
+        <meta name="description" content={`${ALL_TEMPLATES.length} mẫu website BĐS Việt Nam: sàn giao dịch, căn hộ, đất nền, villa, nghỉ dưỡng, công nghiệp và môi giới cá nhân.`} />
       </Head>
 
       <Header 
@@ -90,7 +77,7 @@ export default function TemplatesPage() {
               <Sparkles className="w-3.5 h-3.5 text-blue-600" /> Kho Giao Diện BĐS Độc Quyền
             </span>
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-slate-900 mb-3">
-              16 Mẫu Website <span className="text-[#2563EB]">Chuẩn SEO & Đẳng Cấp</span>
+              {ALL_TEMPLATES.length} Mẫu Website <span className="text-[#2563EB]">Bất Động Sản Việt Nam</span>
             </h1>
             <p className="text-slate-600 max-w-2xl mx-auto text-xs sm:text-sm leading-relaxed font-medium">
               Mỗi mẫu được thiết kế riêng biệt cho từng phân khúc BĐS, tích hợp sẵn CMS quản trị tin đăng, form thu thập khách hàng (Leads) và tối ưu chuyển đổi cao.
@@ -105,7 +92,7 @@ export default function TemplatesPage() {
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Tìm kiếm mẫu, phân khúc (luxury, villa, shophouse)..."
+                  placeholder="Tìm theo số mẫu hoặc loại hình BĐS..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all font-medium"
@@ -122,14 +109,6 @@ export default function TemplatesPage() {
                     }`}
                   >
                     <Grid className="w-3.5 h-3.5" /> Lưới xem nhanh
-                  </button>
-                  <button
-                    onClick={() => setViewMode('family')}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                      viewMode === 'family' ? 'bg-[#2563EB] text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    <Layers className="w-3.5 h-3.5" /> Theo Bộ Sưu Tập
                   </button>
                 </div>
 
@@ -149,21 +128,7 @@ export default function TemplatesPage() {
             </div>
 
             {/* Categories pills */}
-            <div className="flex flex-wrap items-center gap-1.5 pt-3 border-t border-slate-100">
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                    activeCategory === cat.id
-                      ? 'bg-[#2563EB] text-white shadow-sm shadow-blue-500/25 scale-[1.02]'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
-                  }`}
-                >
-                  {cat.label}
-                </button>
-              ))}
-            </div>
+            <div className="pt-3 border-t border-slate-100 text-xs font-bold text-blue-700">{categories[0].label} · 32 giao diện có URL và thumbnail riêng</div>
           </div>
 
           {/* Templates Display */}
@@ -175,7 +140,7 @@ export default function TemplatesPage() {
                 onClick={() => { setSearchQuery(''); setActiveCategory('all'); }}
                 className="px-5 py-2 bg-[#2563EB] text-white rounded-xl text-xs font-bold hover:bg-blue-600 transition-colors shadow-sm"
               >
-                Xem toàn bộ 17 mẫu
+                Xem toàn bộ {ALL_TEMPLATES.length} mẫu
               </button>
 
             </div>

@@ -294,11 +294,21 @@ const GALLERY_ITEMS: GalleryItem[] = [
   { id: 10, title: "Phòng ngủ view hồ Tây Liễu Giai", image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80", category: "can-ho" }
 ];
 
+const normalizeAuctionPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham', 'dau-gia', 'auctions'].includes(clean)) return 'auctions';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
+
 export default function AuctionTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+  const [currentPage, setCurrentPageState] = useState(normalizeAuctionPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizeAuctionPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedArticle === "function") setSelectedArticle(null);
@@ -1683,12 +1693,13 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
 
       {/* PAGE CONTENT */}
       <div className="flex-1 mt-[104px]">
-        {currentPage === 'home' && renderHome()}
-        {currentPage === 'auctions' && renderAuctions()}
-        {currentPage === 'about' && renderAbout()}
-        {currentPage === 'gallery' && renderGallery()}
-        {currentPage === 'news' && renderNews()}
-        {currentPage === 'contact' && renderContact()}
+        {['home'].includes(currentPage) && renderHome()}
+        {['auctions', 'projects', 'du-an', 'san-pham', 'dau-gia'].includes(currentPage) && renderAuctions()}
+        {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAbout()}
+        {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGallery()}
+        {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNews()}
+        {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContact()}
+        {!['home', 'auctions', 'projects', 'du-an', 'san-pham', 'dau-gia', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
       </div>
 
       {/* DETAIL MODAL */}

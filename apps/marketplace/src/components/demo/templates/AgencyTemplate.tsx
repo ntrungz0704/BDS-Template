@@ -407,11 +407,21 @@ const MOCK_GALLERY = [
   { id: 10, category: 'Interior', title: 'Phòng tắm cao cấp bàn giao Kohler', img: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&q=80' }
 ];
 
+const normalizeAgencyPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
+
 export default function AgencyTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+  const [currentPage, setCurrentPageState] = useState(normalizeAgencyPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizeAgencyPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
@@ -1959,13 +1969,29 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
 
   const renderContent = () => {
     switch (currentPage) {
-      case 'projects': return renderProjectsPage();
-      case 'about': return renderAboutPage();
-      case 'gallery': return renderGalleryPage();
-      case 'news': return renderNewsPage();
-      case 'contact': return renderContactPage();
+      case 'projects':
+      case 'du-an':
+      case 'san-pham':
+        return renderProjectsPage();
+      case 'about':
+      case 'gioi-thieu':
+      case 've-chung-toi':
+        return renderAboutPage();
+      case 'gallery':
+      case 'thu-vien':
+      case 'hinh-anh':
+        return renderGalleryPage();
+      case 'news':
+      case 'tin-tuc':
+      case 'bai-viet':
+        return renderNewsPage();
+      case 'contact':
+      case 'lien-he':
+      case 'tu-van':
+        return renderContactPage();
       case 'home':
-      default: return renderHome();
+      default:
+        return renderHome();
     }
   };
 

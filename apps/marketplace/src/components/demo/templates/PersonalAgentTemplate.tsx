@@ -178,11 +178,21 @@ interface TemplateProps {
   initialPage?: string;
 }
 
+const normalizePersonalAgentPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van', 'dat-lich'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham', 'bat-dong-san'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
+
 export default function PersonalAgentTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+  const [currentPage, setCurrentPageState] = useState(normalizePersonalAgentPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizePersonalAgentPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
@@ -1696,30 +1706,29 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
   const renderOtherPages = () => {
     switch (currentPage) {
       case 'projects':
+      case 'du-an':
+      case 'san-pham':
+      case 'bat-dong-san':
         return renderProjectsPage();
       case 'about':
+      case 'gioi-thieu':
+      case 've-chung-toi':
         return renderAboutPage();
       case 'gallery':
+      case 'thu-vien':
+      case 'hinh-anh':
         return renderGalleryPage();
       case 'news':
+      case 'tin-tuc':
+      case 'bai-viet':
         return renderNewsPage();
       case 'contact':
+      case 'lien-he':
+      case 'tu-van':
+      case 'dat-lich':
         return renderContactPage();
       default:
-        return (
-          <div className="min-h-screen pt-32 pb-24 flex items-center justify-center bg-gray-50">
-            <div className="text-center px-4 max-w-xl">
-              <div className="w-24 h-24 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-8">
-                <Clock size={40} />
-              </div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">Trang {currentPage}</h1>
-              <p className="text-gray-600 text-lg mb-8">Nội dung trang này đang được cập nhật trong bản demo. Vui lòng quay lại trang chủ để trải nghiệm đầy đủ các tính năng.</p>
-              <button onClick={() => navigateTo('home')} className="px-8 py-4 bg-indigo-600 text-white rounded-full font-bold hover:bg-indigo-700 transition-colors shadow-lg">
-                Quay lại Trang Chủ
-              </button>
-            </div>
-          </div>
-        );
+        return renderHomePage();
     }
   };
 

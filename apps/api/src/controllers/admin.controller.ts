@@ -259,6 +259,7 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
       slug: finalSubdomain,
       plan: order.plan || 'STARTER',
       orderId: order.id,
+      amount: order.amount,
     });
     
     tenantId = provResult.tenant.id;

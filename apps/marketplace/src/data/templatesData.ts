@@ -51,7 +51,7 @@ export interface Template {
   sectionConfig: Record<string, any>;
 }
 
-export const ALL_TEMPLATES: Template[] = [
+const BASE_TEMPLATES: Template[] = [
   {
     id: "mock-1",
     name: "Luxury Gold",
@@ -1100,4 +1100,126 @@ export const ALL_TEMPLATES: Template[] = [
     sectionConfig: {}
   }
 ];
+
+/**
+ * Bốn mẫu bổ sung, xây dựng trên renderer gốc nhưng có định hướng và nội dung
+ * Việt Nam riêng. Giữ module chung giúp CMS, mobile và checkout hoạt động
+ * thống nhất thay vì nhân bản một codebase cho mỗi mẫu.
+ */
+const VIETNAMESE_VARIANTS: Template[] = [
+  {
+    source: 'mock-3', id: 'vn-bds-01', slug: 'bds-01', name: 'BĐS 01 — Sàn Giao Dịch Việt',
+    collectionSlug: 'corporate', collectionName: 'Sàn BĐS Việt Nam', badge: 'SÀN GIAO DỊCH',
+    shortDescription: 'Sàn môi giới · Dự án sơ cấp · Phân phối F1', accentColor: '#075985',
+    description: 'Giao diện doanh nghiệp cho sàn giao dịch bất động sản tại Việt Nam, tối ưu giỏ hàng dự án, đội ngũ môi giới, Zalo và form nhận bảng giá.',
+    targetAudience: ['Sàn giao dịch tại Hà Nội, TP.HCM và tỉnh thành'],
+    features: ['Bộ lọc tỉnh/thành · quận/huyện', 'Lịch hẹn xem nhà qua Zalo', 'Danh sách dự án & bảng giá PDF'], sortOrder: 17,
+    thumbnail: '/images/template-previews/bds-01-ui-v1.png',
+  },
+  {
+    source: 'mock-5', id: 'vn-bds-02', slug: 'bds-02', name: 'BĐS 02 — Căn Hộ Sống Xanh',
+    collectionSlug: 'apartment', collectionName: 'Căn Hộ Việt Nam', badge: 'MỞ BÁN CĂN HỘ',
+    shortDescription: 'Căn hộ · Nhà mẫu · Chính sách vay ngân hàng', accentColor: '#0f766e',
+    description: 'Landing dự án căn hộ Việt Nam có mặt bằng, tiến độ, chính sách ngân hàng và biểu mẫu đăng ký nhận thông tin.',
+    targetAudience: ['Chủ đầu tư, đại lý F1 và đội kinh doanh căn hộ'],
+    features: ['Bảng giá theo toà', 'Mặt bằng căn hộ', 'Đăng ký xem nhà mẫu'], sortOrder: 18,
+    thumbnail: '/images/template-previews/bds-02-ui-v1.png',
+  },
+  {
+    source: 'mock-new-2', id: 'vn-bds-03', slug: 'bds-03', name: 'BĐS 03 — Khu Đô Thị Vườn',
+    collectionSlug: 'project', collectionName: 'Đất Nền & Khu Đô Thị', badge: 'ĐẤT NỀN 1/500',
+    shortDescription: 'Đất nền · Khu đô thị · Pháp lý minh bạch', accentColor: '#a16207',
+    description: 'Mẫu giới thiệu khu đô thị và đất nền Việt Nam, làm rõ pháp lý, vị trí, sơ đồ phân lô, tiện ích và phương thức thanh toán.',
+    targetAudience: ['Chủ đầu tư đất nền, khu đô thị và môi giới địa phương'],
+    features: ['Sơ đồ phân lô', 'Hồ sơ pháp lý', 'Đăng ký chọn vị trí'], sortOrder: 19,
+    thumbnail: '/images/template-previews/bds-03-ui-v1.png',
+  },
+  {
+    source: 'mock-16', id: 'vn-bds-04', slug: 'bds-04', name: 'BĐS 04 — Môi Giới Zalo Pro',
+    collectionSlug: 'agent', collectionName: 'Môi Giới Cá Nhân', badge: 'MÔI GIỚI CHUYÊN NGHIỆP',
+    shortDescription: 'Thương hiệu cá nhân · Zalo · Đặt lịch xem nhà', accentColor: '#0f766e',
+    description: 'One-page cho chuyên viên tư vấn Việt Nam, tập trung hồ sơ cá nhân, listing nổi bật, nhận ký gửi và liên hệ Zalo một chạm.',
+    targetAudience: ['Môi giới độc lập, đội nhóm sale và chuyên viên tư vấn'],
+    features: ['Zalo một chạm', 'Đặt lịch xem nhà', 'Form nhận ký gửi'], sortOrder: 20,
+    thumbnail: '/images/template-previews/bds-04-ui-v1.png',
+  },
+].map(({ source, ...variant }) => {
+  const base = BASE_TEMPLATES.find((template) => template.id === source);
+  if (!base) throw new Error(`Thiếu template nền: ${source}`);
+  return { ...base, ...variant, screenshots: base.screenshots.slice(), highlights: variant.features, availablePages: [...base.availablePages] };
+});
+
+/**
+ * URL công khai cho khách xem demo luôn là bds-01 ... bds-20.  Các mẫu bên
+ * dưới kế thừa component đã có thay vì copy mã giao diện; vì vậy mỗi số vẫn
+ * là một website chạy độc lập, responsive và có trang con.
+ */
+const NUMBERED_DEMO_VARIANTS: Template[] = [
+  ['mock-1', 'bds-05', 'BĐS 05 — Biệt Thự Vàng'],
+  ['mock-2', 'bds-06', 'BĐS 06 — Tối Giản Đô Thị'],
+  ['mock-4', 'bds-07', 'BĐS 07 — Nghỉ Dưỡng Biển'],
+  ['mock-6', 'bds-08', 'BĐS 08 — Khu Công Nghiệp'],
+  ['mock-7', 'bds-09', 'BĐS 09 — Villa Compound'],
+  ['mock-8', 'bds-10', 'BĐS 10 — Đô Thị Sinh Thái'],
+  ['mock-9', 'bds-11', 'BĐS 11 — Phong Cách Di Sản'],
+  ['mock-10', 'bds-12', 'BĐS 12 — Đầu Tư Thông Minh'],
+  ['mock-11', 'bds-13', 'BĐS 13 — Landing Mở Bán'],
+  ['mock-12', 'bds-14', 'BĐS 14 — Cổng Dự Án'],
+  ['mock-new-1', 'bds-15', 'BĐS 15 — Sàn Đấu Giá'],
+  ['mock-15', 'bds-16', 'BĐS 16 — Shophouse Thương Mại'],
+].map(([source, slug, name], index) => {
+  const base = BASE_TEMPLATES.find((template) => template.id === source);
+  if (!base) throw new Error(`Thiếu template nền: ${source}`);
+  return {
+    ...base,
+    id: `vn-${slug}`,
+    slug,
+    name,
+    badge: `MẪU ${String(index + 5).padStart(2, '0')}`,
+    sortOrder: index + 21,
+    screenshots: base.screenshots.slice(),
+    highlights: [...base.highlights],
+    availablePages: [...base.availablePages],
+  };
+});
+
+const VIETNAMESE_TEMPLATE_NAMES: Record<string, string> = {
+  'luxury-gold': 'Biệt Thự Hoàng Gia', 'minimal-white': 'Căn Hộ Tối Giản', 'modern-corporate': 'Sàn Giao Dịch Chuyên Nghiệp',
+  'resort-paradise': 'Nghỉ Dưỡng Ven Biển', 'urban-city': 'Đại Đô Thị Thông Minh', 'industrial-estate': 'Khu Công Nghiệp Hiện Đại',
+  'villa-premium': 'Biệt Thự Compound', 'eco-green': 'Đô Thị Sinh Thái', 'classic-elegant': 'Dinh Thự Di Sản',
+  'investment-pro': 'Đầu Tư Bất Động Sản', 'agency-onepage': 'Landing Mở Bán', 'mega-developer': 'Cổng Thông Tin Dự Án',
+  'auction-template': 'Sàn Đấu Giá Bất Động Sản', 'landplot-template': 'Đất Nền Quy Hoạch', 'retail-podium': 'Shophouse Thương Mại', 'personal-agent': 'Môi Giới Nhà Đất',
+};
+
+const VIETNAMESE_SEQUENCE_NAMES = [
+  'Biệt Thự Hoàng Gia', 'Căn Hộ Tối Giản', 'Sàn Giao Dịch Việt', 'Nghỉ Dưỡng Ven Biển',
+  'Đại Đô Thị Thông Minh', 'Khu Công Nghiệp Việt', 'Biệt Thự Compound', 'Đô Thị Sinh Thái',
+  'Dinh Thự Di Sản', 'Đầu Tư Bất Động Sản', 'Landing Mở Bán', 'Cổng Thông Tin Dự Án',
+  'Sàn Đấu Giá Nhà Đất', 'Đất Nền Quy Hoạch', 'Shophouse Thương Mại', 'Môi Giới Nhà Đất',
+  'Sàn Phân Phối Dự Án', 'Căn Hộ Sống Xanh', 'Khu Đô Thị Vườn', 'Chuyên Viên Tư Vấn Zalo',
+  'Biệt Thự Ven Sông', 'Căn Hộ Phong Cách Việt', 'Resort Biển Miền Trung', 'Kho Xưởng Và Logistics',
+  'Khu Villa Khép Kín', 'Nhà Vườn Sinh Thái', 'Nhà Phố Tân Cổ Điển', 'Tư Vấn Đầu Tư Sinh Lời',
+  'Trang Mở Bán Dự Án', 'Tập Đoàn Phát Triển Đô Thị', 'Tài Sản Phát Mãi', 'Phố Thương Mại Trung Tâm',
+];
+
+/** Danh mục công khai chỉ có một chuẩn URL bds-01 → bds-32. */
+export const ALL_TEMPLATES: Template[] = [...BASE_TEMPLATES, ...VIETNAMESE_VARIANTS, ...NUMBERED_DEMO_VARIANTS].map((template, index) => {
+  const number = String(index + 1).padStart(2, '0');
+  const sourceSlug = template.slug;
+  return {
+    ...template,
+    id: `vn-bds-${number}`,
+    slug: `bds-${number}`,
+    name: `BĐS ${number} — ${VIETNAMESE_SEQUENCE_NAMES[index]}`,
+    badge: `MẪU ${number}`,
+    sortOrder: index + 1,
+    thumbnail: `/images/template-previews/bds-${number}-live.png`,
+    screenshots: [
+      `/images/template-fullpages/bds-${number}-full.png`,
+      `/images/template-previews/bds-${number}-live.png`,
+    ],
+    sectionConfig: { ...template.sectionConfig, sourceSlug },
+  };
+});
+
 

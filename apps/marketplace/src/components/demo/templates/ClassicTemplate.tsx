@@ -287,12 +287,22 @@ const GALLERY_IMAGES: GalleryImage[] = [
   { id: 'g8', url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80', category: 'Nội thất', title: 'Phòng ngủ Master ấm áp quý phái' }
 ];
 
+const normalizeClassicPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham', 'dinh-thu'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
+
 export default function ClassicTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
   const isMobile = viewport === 'mobile';
-  const [page, setPageState] = useState(initialPage);
+  const [page, setPageState] = useState(normalizeClassicPage(initialPage));
 
   useEffect(() => {
-    setPageState(initialPage);
+    setPageState(normalizeClassicPage(initialPage));
   }, [initialPage]);
   const setPage = (p: string) => {
     setPageState(p);
@@ -1459,12 +1469,13 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
     <div className="min-h-screen flex flex-col w-full relative" style={{ backgroundColor: C.bg }}>
       {renderHeader()}
       <main className="flex-grow">
-        {page === 'home' && renderHome()}
-        {page === 'projects' && renderProjects()}
-        {page === 'about' && renderAbout()}
-        {page === 'gallery' && renderGallery()}
-        {page === 'news' && renderNews()}
-        {page === 'contact' && renderContact()}
+        {['home'].includes(page) && renderHome()}
+        {['projects', 'du-an', 'san-pham', 'dinh-thu'].includes(page) && renderProjects()}
+        {['about', 'gioi-thieu', 've-chung-toi'].includes(page) && renderAbout()}
+        {['gallery', 'thu-vien', 'hinh-anh'].includes(page) && renderGallery()}
+        {['news', 'tin-tuc', 'bai-viet'].includes(page) && renderNews()}
+        {['contact', 'lien-he', 'tu-van'].includes(page) && renderContact()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'dinh-thu', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(page) && renderHome()}
       </main>
       
       {/* FOOTER */}

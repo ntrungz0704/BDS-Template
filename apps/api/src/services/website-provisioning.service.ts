@@ -15,6 +15,8 @@ export interface ProvisionWebsiteInput {
   websiteName: string;
   slug: string;
   plan?: string;
+  /** Amount paid for the order; persisted for subscription billing/audit. */
+  amount?: number;
   /** Set only by the approved order workflow. Used for traceability. */
   orderId?: string;
 }
@@ -31,6 +33,7 @@ export class WebsiteProvisioningService {
       websiteName,
       slug,
       plan = 'STARTER',
+      amount = 0,
     } = input;
 
     // 1. Flexible lookup for template by id or slug
@@ -154,21 +157,7 @@ export class WebsiteProvisioningService {
         },
       });
 
-      // b. Create Subscription for paid websites
-      if (!isTrial) {
-        const isLifetime = plan === 'LIFETIME' || plan === 'BUY_SOURCE' || !plan || plan === 'STARTER';
-        await tx.subscription.create({
-          data: {
-            tenantId: tenant.id,
-            plan: isLifetime ? 'LIFETIME' : (plan || 'YEARLY'),
-            status: 'ACTIVE',
-            startDate: new Date(),
-            endDate: isLifetime ? null : oneYearLater,
-          },
-        });
-      }
-
-      // c. Create/Update User as TENANT_OWNER with CMS password
+      // b. Create/Update User as TENANT_OWNER with CMS password
       let user;
       if (customerId) {
         user = await tx.user.update({
@@ -657,7 +646,7 @@ export class WebsiteProvisioningService {
         }
       });
 
-      // m. Create Subscription/Trial based on plan
+      // m. Create exactly one subscription per tenant.
       const PLAN_DURATION_DAYS: Record<string, number> = {
         BASIC: 30,
         STARTER: 30,
@@ -666,18 +655,20 @@ export class WebsiteProvisioningService {
         BUSINESS: 365,
         ENTERPRISE: 365,
       };
+      const isLifetime = plan === 'LIFETIME' || plan === 'BUY_SOURCE' || plan === 'STARTER';
       const durationDays = PLAN_DURATION_DAYS[plan] ?? 30;
       const startDate = new Date();
       const endDate = new Date();
-      endDate.setDate(endDate.getDate() + durationDays);
+      if (isLifetime) endDate.setFullYear(2125, 0, 1);
+      else endDate.setDate(endDate.getDate() + durationDays);
 
       await tx.subscription.create({
         data: {
-          tenantId: tenant.id,
+          tenant: { connect: { id: tenant.id } },
           orderId: input.orderId,
           plan: plan,
           status: 'ACTIVE',
-          amount: 0,
+          amount,
           startDate,
           endDate,
         },

@@ -26,8 +26,9 @@ router.get('/templates/:slug', getTemplateDetail);
 router.get('/check-subdomain', checkSubdomain);
 router.get('/stats', getMarketplaceStats);
 
-// API gửi đơn hàng (cho phép guest checkout — không bắt buộc auth)
-router.post('/orders', createOrder);
+// Checkout phải gắn với tài khoản đã đăng nhập để quyền dùng CMS và tải source
+// luôn thuộc về đúng khách hàng.
+router.post('/orders', authMiddleware, createOrder);
 router.post('/contact', createContactSubmission);
 
 // API lịch sử đơn hàng của khách (yêu cầu đăng nhập)
@@ -36,10 +37,10 @@ router.get('/orders/my-orders', authMiddleware, getMyOrders);
 // API kiểm tra trạng thái đơn hàng realtime (polling)
 router.get('/orders/:orderNumber/status', getOrderStatus);
 
-// Webhook tự động nhận thông báo tiền về từ SePay (Công khai cho SePay server gọi)
+// Webhook SePay. Controller bắt buộc kiểm tra webhook secret trong production.
 router.post('/webhook/sepay', handleSepayWebhook);
 
-// Dev Sandbox: Giả lập thanh toán thành công ngay lập tức để test
+// Dev Sandbox: controller tự chặn hoàn toàn khi chạy production.
 router.post('/orders/:orderNumber/simulate-payment', simulatePayment);
 
 // API upload ảnh bill thanh toán thủ công — Yêu cầu đăng nhập + kiểm tra chủ sở hữu đơn hàng

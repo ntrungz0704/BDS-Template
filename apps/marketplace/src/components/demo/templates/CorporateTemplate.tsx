@@ -18,11 +18,21 @@ interface TemplateProps {
   initialPage?: string;
 }
 
+const normalizeCorporatePage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
+
 export default function CorporateTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const [activePage, setActivePageState] = useState(initialPage);
+  const [activePage, setActivePageState] = useState(normalizeCorporatePage(initialPage));
 
   useEffect(() => {
-    setActivePageState(initialPage);
+    setActivePageState(normalizeCorporatePage(initialPage));
   }, [initialPage]);
   const setActivePage = (p: string) => {
     setActivePageState(p);
@@ -1007,12 +1017,13 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
     <div style={{ backgroundColor: colors.body, color: colors.text, fontFamily: fonts.body, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {renderHeader()}
       <main style={{ flex: 1 }}>
-        {activePage === 'home' && renderHome()}
-        {activePage === 'projects' && renderProjects()}
-        {activePage === 'about' && renderAbout()}
-        {activePage === 'gallery' && renderGallery()}
-        {activePage === 'contact' && renderContact()}
-        {activePage === 'news' && renderNews()}
+        {['home'].includes(activePage) && renderHome()}
+        {['projects', 'du-an', 'san-pham'].includes(activePage) && renderProjects()}
+        {['about', 'gioi-thieu', 've-chung-toi'].includes(activePage) && renderAbout()}
+        {['gallery', 'thu-vien', 'hinh-anh'].includes(activePage) && renderGallery()}
+        {['contact', 'lien-he', 'tu-van'].includes(activePage) && renderContact()}
+        {['news', 'tin-tuc', 'bai-viet'].includes(activePage) && renderNews()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'contact', 'lien-he', 'tu-van', 'news', 'tin-tuc', 'bai-viet'].includes(activePage) && renderHome()}
       </main>
       {renderFooter()}
     </div>

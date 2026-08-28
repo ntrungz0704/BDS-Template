@@ -241,12 +241,22 @@ const GALLERY_ITEMS: GalleryItem[] = [
   { id: 'g7', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80', cat: 'amenities', title: 'Công viên Zen tĩnh lặng' }
 ];
 
+const normalizeMinimalPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
+
 export default function MinimalTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
   // Page state
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+  const [currentPage, setCurrentPageState] = useState(normalizeMinimalPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizeMinimalPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
@@ -1856,12 +1866,13 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
     <div className="min-h-screen text-gray-900" style={{ backgroundColor: COLORS.bg, fontFamily: FONTS.body }}>
       {renderHeader()}
       <main>
-        {currentPage === 'home' && renderHome()}
-        {currentPage === 'projects' && renderProjects()}
-        {currentPage === 'about' && renderAbout()}
-        {currentPage === 'gallery' && renderGallery()}
-        {currentPage === 'news' && renderNews()}
-        {currentPage === 'contact' && renderContact()}
+        {['home'].includes(currentPage) && renderHome()}
+        {['projects', 'du-an', 'san-pham'].includes(currentPage) && renderProjects()}
+        {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAbout()}
+        {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGallery()}
+        {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNews()}
+        {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContact()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
       </main>
       {renderFooter()}
 

@@ -21,12 +21,17 @@ describe('Media Upload Validation & Safety Test', () => {
     }
 
     // Create fresh test tenant
+    const template = await prisma.template.upsert({
+      where: { slug: 'media-test-template' },
+      update: { isActive: true },
+      create: { name: 'Media Test Template', slug: 'media-test-template', isActive: true },
+    });
     tenant = await prisma.tenant.create({
       data: {
         name: 'Media Test Tenant Jest',
         slug: tenantSlug,
         status: 'ACTIVE',
-        templateId: 'template-1',
+        templateId: template.id,
       },
     });
 

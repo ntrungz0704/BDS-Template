@@ -73,6 +73,12 @@ export default function CartPage() {
       return;
     }
 
+    if (!user) {
+      showToast('Vui lòng đăng nhập hoặc đăng ký trước khi đặt mua để nhận quyền tải source.', 'info');
+      router.push('/login?redirect=/cart');
+      return;
+    }
+
     if (!fullName || fullName.trim().length < 2) {
       showToast('Vui lòng nhập Họ và tên (tối thiểu 2 ký tự).', 'error');
       return;

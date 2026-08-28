@@ -203,11 +203,21 @@ const galleryImages = [
   { url: 'https://images.unsplash.com/photo-1542385151-efd9000785a0?w=800&q=80', category: 'Shophouse', caption: 'Mặt tiền Shophouse góc hai mặt lộ lớn' },
 ];
 
+const normalizeRetailPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham', 'shophouse', 'thuong-mai'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
+
 export default function RetailTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+  const [currentPage, setCurrentPageState] = useState(normalizeRetailPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizeRetailPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
@@ -1659,12 +1669,13 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
       {renderHeader()}
       
       <main className="flex-grow">
-        {currentPage === 'home' && renderHome()}
-        {currentPage === 'projects' && renderProjects()}
-        {currentPage === 'about' && renderAbout()}
-        {currentPage === 'gallery' && renderGallery()}
-        {currentPage === 'news' && renderNews()}
-        {currentPage === 'contact' && renderContact()}
+        {['home'].includes(currentPage) && renderHome()}
+        {['projects', 'du-an', 'san-pham', 'shophouse', 'thuong-mai'].includes(currentPage) && renderProjects()}
+        {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAbout()}
+        {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGallery()}
+        {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNews()}
+        {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContact()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'shophouse', 'thuong-mai', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
       </main>
       
       {renderFooter()}

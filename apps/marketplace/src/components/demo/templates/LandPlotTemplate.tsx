@@ -221,11 +221,21 @@ const GALLERY_PHOTOS = [
   { id: 8, type: 'amenity', title: 'Công viên cây xanh trung tâm dự án', url: 'https://images.unsplash.com/photo-1502485019198-a625bd53ceb7?w=800&q=80' }
 ];
 
+const normalizeLandPlotPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham', 'dat-nen'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
+
 export default function LandPlotTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+  const [currentPage, setCurrentPageState] = useState(normalizeLandPlotPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizeLandPlotPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
@@ -2023,17 +2033,47 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
           </>
         );
       case 'projects':
+      case 'du-an':
+      case 'san-pham':
+      case 'dat-nen':
         return renderProjectsPage();
       case 'about':
+      case 'gioi-thieu':
+      case 've-chung-toi':
         return renderAboutPage();
       case 'gallery':
+      case 'thu-vien':
+      case 'hinh-anh':
         return renderGalleryPage();
       case 'news':
+      case 'tin-tuc':
+      case 'bai-viet':
         return renderNewsPage();
       case 'contact':
+      case 'lien-he':
+      case 'tu-van':
         return renderContactPage();
       default:
-        return null;
+        return (
+          <>
+            {renderHero()}
+            {renderQuickSearch()}
+            {renderFeaturedPlots()}
+            {renderCategories()}
+            {renderMasterPlan()}
+            {renderAbout()}
+            {renderWhyLand()}
+            {renderLocation()}
+            {renderStats()}
+            {renderGallery()}
+            {renderTestimonials()}
+            {renderProgress()}
+            {renderNews()}
+            {renderLegal()}
+            {renderFAQ()}
+            {renderContact()}
+          </>
+        );
     }
   };
 

@@ -241,11 +241,21 @@ const GALLERY_IMAGES = [
   { url: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=800&q=80', tab: 'Tiện ích', title: 'Novaworld Water Park' }
 ];
 
+const normalizeListingPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham', 'bat-dong-san'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
+
 export default function ListingMarketplace({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+  const [currentPage, setCurrentPageState] = useState(normalizeListingPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizeListingPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
@@ -1968,11 +1978,12 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             {renderCTA()}
           </>
         )}
-        {currentPage === 'projects' && renderProjectsPage()}
-        {currentPage === 'about' && renderAboutPage()}
-        {currentPage === 'gallery' && renderGalleryPage()}
-        {currentPage === 'news' && renderNewsPage()}
-        {currentPage === 'contact' && renderContactPage()}
+        {['projects', 'du-an', 'san-pham', 'bat-dong-san'].includes(currentPage) && renderProjectsPage()}
+        {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAboutPage()}
+        {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGalleryPage()}
+        {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNewsPage()}
+        {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContactPage()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'bat-dong-san', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHero()}
       </main>
 
       {renderFooter()}

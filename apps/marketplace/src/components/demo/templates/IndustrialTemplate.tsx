@@ -157,11 +157,21 @@ interface TemplateProps {
   initialPage?: string;
 }
 
+const normalizeIndustrialPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham', 'kho-xuong'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
+
 export default function IndustrialTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const [activePage, setActivePageState] = useState(initialPage);
+  const [activePage, setActivePageState] = useState(normalizeIndustrialPage(initialPage));
 
   useEffect(() => {
-    setActivePageState(initialPage);
+    setActivePageState(normalizeIndustrialPage(initialPage));
   }, [initialPage]);
   const setActivePage = (p: string) => {
     setActivePageState(p);
@@ -1174,18 +1184,13 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
       {renderHeader()}
       
       <main className="flex-grow">
-        {activePage === 'home' && renderHome()}
-        {activePage === 'projects' && renderProjects()}
-        {activePage === 'about' && renderAbout()}
-        {activePage === 'gallery' && renderGallery()}
-        {activePage === 'news' && renderNews()}
-        {activePage === 'contact' && renderContact()}
-        {![ 'home', 'projects', 'about', 'gallery', 'news', 'contact'].includes(activePage) && (
-          <div className="py-20 text-center text-[#0F172A]">
-            <h2 className="text-3xl font-bold uppercase mb-4" style={{ fontFamily: fontHeading }}>{activePage} Page</h2>
-            <p>Trang này đang được cập nhật.</p>
-          </div>
-        )}
+        {['home'].includes(activePage) && renderHome()}
+        {['projects', 'du-an', 'san-pham', 'kho-xuong'].includes(activePage) && renderProjects()}
+        {['about', 'gioi-thieu', 've-chung-toi'].includes(activePage) && renderAbout()}
+        {['gallery', 'thu-vien', 'hinh-anh'].includes(activePage) && renderGallery()}
+        {['news', 'tin-tuc', 'bai-viet'].includes(activePage) && renderNews()}
+        {['contact', 'lien-he', 'tu-van'].includes(activePage) && renderContact()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'kho-xuong', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(activePage) && renderHome()}
       </main>
 
       {/* 17. FOOTER */}

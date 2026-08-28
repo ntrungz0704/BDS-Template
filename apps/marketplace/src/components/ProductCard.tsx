@@ -111,6 +111,24 @@ const CARD_CONFIG: Record<string, {
   'mock-16': { accent:'#4F46E5', badge:'TOP PERFORMER', badgeBg:'#EEF2FF', badgeColor:'#4F46E5', tagline:'Môi giới triệu đô · One Page · Booking tư vấn', audience:'Chuyên viên môi giới cá nhân & Top Advisor', rating:5.0, reviews:165, ribbon:'Môi Giới VIP', ribbonColor:'#4F46E5', badgeIcon:<TrendingUp className="w-3 h-3 text-indigo-600"/>, thumbnail:'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800' },
 };
 
+const VIETNAMESE_CARD_COPY: Record<string, { tagline: string; audience: string; features: string[] }> = {
+  luxury: { tagline: 'Biệt thự · Dinh thự · Nhà ở cao cấp', audience: 'Chủ đầu tư và đơn vị phân phối biệt thự', features: ['Ảnh mở đầu tràn màn hình', 'Thư viện ảnh cao cấp', 'Form đăng ký tham quan riêng'] },
+  minimal: { tagline: 'Căn hộ · Nhà phố · Phong cách tối giản', audience: 'Môi giới cá nhân và nhóm tư vấn trẻ', features: ['Bố cục chia đôi hiện đại', 'Khoảng trắng dễ đọc', 'Thẻ dự án tối ưu di động'] },
+  corporate: { tagline: 'Tổng công ty · Sàn giao dịch · Tập đoàn', audience: 'Doanh nghiệp bất động sản Việt Nam', features: ['Điều hướng doanh nghiệp', 'Lưới dự án đang phân phối', 'Trang đối tác và tuyển dụng'] },
+  resort: { tagline: 'Villa biển · Khu nghỉ dưỡng · Ngôi nhà thứ hai', audience: 'Chủ đầu tư bất động sản nghỉ dưỡng', features: ['Ảnh biển toàn màn hình', 'Bộ sưu tập điểm đến', 'Form nhận tài liệu dự án'] },
+  apartment: { tagline: 'Căn hộ đô thị · Nhà mẫu · Mặt bằng', audience: 'Chủ đầu tư và đại lý phân phối căn hộ', features: ['Bảng giá theo tòa', 'Mặt bằng căn hộ', 'Đăng ký xem nhà mẫu'] },
+  industrial: { tagline: 'Khu công nghiệp · Nhà xưởng · Kho vận', audience: 'Doanh nghiệp sản xuất và logistics', features: ['Bộ lọc kho xưởng', 'Bản đồ hạ tầng vùng', 'Form yêu cầu mặt bằng'] },
+  villa: { tagline: 'Biệt thự · Compound · Nhà vườn', audience: 'Chủ đầu tư khu biệt thự khép kín', features: ['Danh mục biệt thự', 'Mặt bằng từng tầng', 'Đặt lịch tham quan'] },
+  eco: { tagline: 'Đô thị sinh thái · Nhà vườn · Cảnh quan', audience: 'Khu đô thị xanh và nhà ở gia đình', features: ['Tổng quan quy hoạch', 'Hệ sinh thái tiện ích', 'Tiến độ phát triển'] },
+  classic: { tagline: 'Nhà phố · Dinh thự · Kiến trúc di sản', audience: 'Dự án tân cổ điển và nhà ở lâu dài', features: ['Câu chuyện kiến trúc', 'Bộ sưu tập nhà ở', 'Thư viện nội ngoại thất'] },
+  investment: { tagline: 'Dữ liệu giá · Lợi suất · Cơ hội đầu tư', audience: 'Nhà đầu tư và đơn vị tư vấn tài sản', features: ['Phân tích lợi suất', 'So sánh khu vực', 'Báo cáo thị trường'] },
+  agency: { tagline: 'Trang mở bán · Quảng cáo · Thu khách hàng', audience: 'Đại lý triển khai chiến dịch mở bán', features: ['Thông tin mở bán nổi bật', 'Chính sách và giỏ hàng', 'Form nhận bảng giá'] },
+  developer: { tagline: 'Chủ đầu tư · Danh mục dự án · Đối tác', audience: 'Tập đoàn phát triển bất động sản', features: ['Hồ sơ năng lực', 'Danh mục dự án', 'Tin tức doanh nghiệp'] },
+  project: { tagline: 'Đất nền · Quy hoạch · Khu đô thị', audience: 'Chủ đầu tư đất nền và khu đô thị', features: ['Sơ đồ phân lô', 'Thông tin pháp lý', 'Đăng ký chọn vị trí'] },
+  retail: { tagline: 'Shophouse · Khối đế · Mặt bằng bán lẻ', audience: 'Đơn vị phát triển bất động sản thương mại', features: ['Danh mục mặt bằng', 'Thông tin khai thác', 'Form thuê và đầu tư'] },
+  agent: { tagline: 'Môi giới cá nhân · Zalo · Đặt lịch', audience: 'Chuyên viên tư vấn bất động sản', features: ['Hồ sơ chuyên viên', 'Dự án đang phân phối', 'Đặt lịch xem nhà'] },
+};
+
 export default function ProductCard({ template, onSelect, onOpenDetails }: ProductCardProps) {
   const { wishlists, toggleWishlist, addToCart, isPurchased } = useAuth();
   const [imgLoaded, setImgLoaded] = useState(false);
@@ -120,15 +138,17 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
   const owned = isPurchased(template.slug || template.id);
   const isFavorite = wishlists?.some((w: any) => w.templateId === template.id || w.template?.id === template.id) || false;
 
-  const cfg = CARD_CONFIG[template.slug] || CARD_CONFIG[template.id] || CARD_CONFIG['luxury-gold'] || CARD_CONFIG['mock-1'];
+  const sourceSlug = template.sectionConfig?.sourceSlug;
+  const cfg = CARD_CONFIG[sourceSlug] || CARD_CONFIG[template.slug] || CARD_CONFIG[template.id] || CARD_CONFIG['luxury-gold'] || CARD_CONFIG['mock-1'];
+  const vietnameseCopy = VIETNAMESE_CARD_COPY[template.collectionSlug] || VIETNAMESE_CARD_COPY.corporate;
   
   const badgeText = owned ? 'ĐÃ SỞ HỮU' : (template.badge || cfg?.badge || 'PREMIUM');
   const badgeBg = owned ? '#10B981' : (template.badgeBg || cfg?.badgeBg || '#0F172A');
   const badgeColor = owned ? '#FFFFFF' : (template.badgeColor || cfg?.badgeColor || '#D4AF37');
-  const tagline = template.shortDescription || cfg?.tagline || 'Giao diện Bất Động Sản cao cấp';
+  const tagline = vietnameseCopy.tagline;
   const rating = template.rating || cfg?.rating || 4.9;
   const reviewCount = template.reviewCount || cfg?.reviews || 95;
-  const targetAudience = template.targetAudience?.[0] || cfg?.audience || 'Chủ đầu tư & Môi giới';
+  const targetAudience = vietnameseCopy.audience;
   const audience = targetAudience;
   const demoUrl = getTemplateDemoUrl(template.slug);
 
@@ -174,14 +194,7 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
             {owned && <Check className="w-3 h-3 text-white" />}
             {badgeText}
           </span>
-          {cfg.ribbon && !owned && (
-            <span 
-              className="text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider text-white shadow-sm"
-              style={{ backgroundColor: cfg.ribbonColor || '#2563EB' }}
-            >
-              {cfg.ribbon}
-            </span>
-          )}
+          <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider text-white bg-blue-600 shadow-sm">BĐS {template.slug?.slice(-2)}</span>
         </div>
 
         {/* Hover overlay */}
@@ -225,7 +238,7 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
 
         {/* Features — top 3 */}
         <div className="flex flex-col gap-1.5 mb-4 flex-grow">
-          {(template.features || []).slice(0, 3).map((f: string, i: number) => (
+          {vietnameseCopy.features.map((f: string, i: number) => (
             <div key={i} className="flex items-center gap-2 text-xs text-slate-600">
               <Check className="w-3.5 h-3.5 shrink-0 text-blue-600" />
               <span className="line-clamp-1">{f}</span>

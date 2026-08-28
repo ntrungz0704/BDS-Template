@@ -429,7 +429,7 @@ export async function downloadTemplateSource(req: Request, res: Response, next: 
           ...(userEmail ? [{ email: userEmail }] : []),
         ],
         ...(tpl ? { templateId: tpl.id } : {}),
-        type: "BUY",
+        type: { in: ["BUY", "BUY_SOURCE"] },
         status: "COMPLETED",
       },
       orderBy: { createdAt: 'desc' },
@@ -476,6 +476,17 @@ export async function quickApproveOrder(req: Request, res: Response, next: NextF
  */
 export async function handleSepayWebhook(req: Request, res: Response, next: NextFunction) {
   try {
+    const webhookSecret = process.env.SEPAY_WEBHOOK_SECRET;
+    if (process.env.NODE_ENV === 'production') {
+      const providedSecret = req.get('x-sepay-webhook-secret');
+      const providedBuffer = Buffer.from(providedSecret || '');
+      const expectedBuffer = Buffer.from(webhookSecret || '');
+      if (!webhookSecret || !providedSecret || providedBuffer.length !== expectedBuffer.length || !crypto.timingSafeEqual(providedBuffer, expectedBuffer)) {
+        logger.warn('[SePay Webhook] Rejected request with an invalid webhook secret.');
+        return res.status(401).json({ success: false, error: 'Unauthorized webhook request' });
+      }
+    }
+
     const payload = req.body;
     logger.info(`[SePay Webhook] Received payload: ${JSON.stringify(payload)}`);
 
@@ -546,6 +557,7 @@ export async function handleSepayWebhook(req: Request, res: Response, next: Next
       websiteName: `${order.fullName} Real Estate`,
       slug: finalSubdomain,
       plan: 'STARTER',
+      amount: order.amount,
     });
 
     logger.info(`[SePay Webhook] Đã tự động duyệt đơn ${orderNumber} và tạo Website Instance thành công: ${finalSubdomain}`);
@@ -632,6 +644,10 @@ export async function getOrderStatus(req: Request, res: Response, next: NextFunc
  */
 export async function simulatePayment(req: Request, res: Response, next: NextFunction) {
   try {
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(404).json({ success: false, error: { message: 'Không tìm thấy endpoint.' } });
+    }
+
     const { orderNumber } = req.params;
     const order = await prisma.order.findUnique({
       where: { orderNumber },

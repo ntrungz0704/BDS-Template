@@ -16,9 +16,13 @@ for (const p of envPaths) {
 }
 
 // Setup & validate JWT secrets with automatic fallback support
-if (process.env.JWT_SECRET) {
+if (process.env.JWT_SECRET && process.env.NODE_ENV !== 'production') {
   process.env.JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || process.env.JWT_SECRET;
   process.env.JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET;
+}
+if (process.env.NODE_ENV === 'production' && (!process.env.JWT_ACCESS_SECRET || process.env.JWT_ACCESS_SECRET === 'super-secret-access-key-should-be-long-and-random-123456')) {
+  console.error('CRITICAL ERROR: JWT_ACCESS_SECRET is not configured or uses an insecure default.');
+  process.exit(1);
 }
 if (!process.env.JWT_ACCESS_SECRET) {
   process.env.JWT_ACCESS_SECRET = 'bds-platform-prod-access-jwt-secret-key-2026-secure';
@@ -278,7 +282,9 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 // 9. Khởi chạy Server HTTP
 let server: any;
-if (process.env.NODE_ENV !== 'test') {
+// Jest may temporarily set NODE_ENV while importing this module. Never open a
+// network listener from a Jest worker; Supertest uses the exported app directly.
+if (process.env.NODE_ENV !== 'test' && !process.env.JEST_WORKER_ID) {
   server = app.listen(PORT, () => {
     logger.info(`API Server đang chạy trên cổng ${PORT} ở chế độ ${process.env.NODE_ENV}`);
     
