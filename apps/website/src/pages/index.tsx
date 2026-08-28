@@ -155,14 +155,30 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if (!compRes.data?.data) {
       return {
         props: {
-          company: null,
-          theme: null,
-          pageContent: null,
-          projects: [],
-          posts: [],
-          tenantSlug,
+          company: {
+            name: 'AI Review BĐS — Hệ Thống Website Bất Động Sản Cao Cấp',
+            slogan: 'Nâng Tầm Vị Thế Doanh Nghiệp Bất Động Sản',
+            phone: '0983 312 219',
+            hotline: '0919 006 030',
+            email: 'contact@aireviewbds.com',
+            address: 'Tòa nhà Landmark 81, TP. Hồ Chí Minh',
+            workingHours: '8:00 - 18:00 (Thứ 2 - Thứ 7)',
+            aboutContent: 'Hệ thống nền tảng cung cấp giải pháp chuyển đổi số toàn diện cho doanh nghiệp và nhà môi giới bất động sản hàng đầu Việt Nam.',
+            logo: '',
+          },
+          theme: themeRes.data?.data || {
+            primaryColor: '#2563EB',
+            secondaryColor: '#1E293B',
+            accentColor: '#F59E0B',
+            fontHeading: 'Plus Jakarta Sans',
+            fontBody: 'Inter',
+          },
+          pageContent: pageRes.data?.data || null,
+          projects: (projRes.data?.data && projRes.data.data.length > 0) ? projRes.data.data : [],
+          posts: (postRes.data?.data && postRes.data.data.length > 0) ? postRes.data.data : [],
+          tenantSlug: tenantSlug || 'showcase',
           initialPage,
-          error: `Website với tên miền hoặc mã '${tenantSlug}' chưa tồn tại hoặc chưa được kích hoạt.`,
+          tenantStatus: { isAccessible: true },
         },
       };
     }

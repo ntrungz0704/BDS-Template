@@ -68,8 +68,19 @@ export async function autoSeedDatabase() {
       });
     }
 
-    // 2. Tạo Super Admin tài khoản mặc định
+    // 2. Tạo Super Admin tài khoản chính thức
     const adminPasswordHash = await bcrypt.hash('adminsuper@123456', 10);
+    await prisma.user.upsert({
+      where: { email: 'admin@aireviewbds.com' },
+      update: {},
+      create: {
+        email: 'admin@aireviewbds.com',
+        passwordHash: adminPasswordHash,
+        fullName: 'Super Admin AI Review BDS',
+        role: 'SUPER_ADMIN',
+        isActive: true,
+      },
+    });
     await prisma.user.upsert({
       where: { email: 'admin@platformbds.vn' },
       update: {},

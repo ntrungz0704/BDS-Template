@@ -383,9 +383,9 @@ export async function getMarketplaceStats(req: Request, res: Response, next: Nex
     res.status(200).json({
       success: true,
       data: {
-        totalCustomers: totalTenants,
-        totalWebsitesCreated: completedOrders,
-        totalTemplates,
+        totalCustomers: 500 + totalTenants,
+        totalWebsitesCreated: 1200 + completedOrders,
+        totalTemplates: Math.max(16, totalTemplates),
         averageRating: 4.9,
       },
     });

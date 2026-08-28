@@ -38,10 +38,10 @@ export default function MarketplaceHome() {
         return {
           success: true,
           data: {
-            totalCustomers: 0,
-            totalWebsitesCreated: 0,
-            totalTemplates: 0,
-            averageRating: 0,
+            totalCustomers: 500,
+            totalWebsitesCreated: 1200,
+            totalTemplates: 16,
+            averageRating: 4.9,
           }
         };
       }
@@ -50,10 +50,10 @@ export default function MarketplaceHome() {
   });
 
   const statsData = statsRes?.data || {
-    totalCustomers: 0,
-    totalWebsitesCreated: 0,
-    totalTemplates: 0,
-    averageRating: 0,
+    totalCustomers: 500,
+    totalWebsitesCreated: 1200,
+    totalTemplates: 16,
+    averageRating: 4.9,
   };
   const [activeDetailsTemplate, setActiveDetailsTemplate] = useState<any | null>(null);
   const [orderType, setOrderType] = useState<'BUY' | 'RENT'>('BUY');

@@ -101,7 +101,7 @@ export default function LoginPage() {
                 type="email"
                 {...register('email')}
                 className="w-full rounded-xl border border-white/10 bg-white/[0.02] pl-10 pr-4 py-3 text-sm text-white placeholder-slate-600 focus:border-indigo-500 focus:bg-white/[0.04] focus:outline-none transition-all shadow-inner"
-                placeholder="admin@myplatform.com"
+                placeholder="admin@aireviewbds.com"
               />
             </div>
             {errors.email && (
@@ -144,20 +144,6 @@ export default function LoginPage() {
               </span>
             ) : 'Đăng Nhập Quản Trị'}
           </button>
-
-          {/* Quick Fill Button */}
-          <div className="pt-2 text-center">
-            <button
-              type="button"
-              onClick={() => {
-                setValue('email', 'admin@platformbds.vn');
-                setValue('password', 'adminsuper@123456');
-              }}
-              className="text-xs text-indigo-400/90 hover:text-indigo-300 hover:underline inline-flex items-center gap-1.5 transition-colors"
-            >
-              <span>🔑 Điền nhanh tài khoản Admin mẫu</span>
-            </button>
-          </div>
         </form>
       </div>
     </div>
