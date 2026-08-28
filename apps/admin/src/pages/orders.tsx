@@ -413,7 +413,7 @@ export default function AdminOrders() {
                         {order.subdomain ? (
                           <div className="space-y-1">
                             <span className="bg-indigo-50 text-indigo-700 border border-indigo-100 px-2.5 py-0.5 rounded-md text-xs font-mono font-bold">
-                              {order.subdomain}.aireviewbds.com
+                              {order.subdomain}.{PLATFORM_DOMAIN}
                             </span>
                             <span className="text-[10px] text-slate-400 block font-semibold">
                               {order.type === 'BUY' ? 'Mua Đứt' : 'Thuê SaaS'}

@@ -505,7 +505,7 @@ export default function CMSDashboard() {
               detail={dashboardStatus?.customDomain || 'Chưa thiết lập'}
             />
             <StatusItem label="Database" status="ok" detail="Kết nối ổn định" />
-            <StatusItem label="Subdomain" status="ok" detail={dashboardStatus?.subdomain ? `${dashboardStatus.subdomain}.aireviewbds.com` : 'Chưa có'} />
+            <StatusItem label="Subdomain" status="ok" detail={dashboardStatus?.subdomain ? `${dashboardStatus.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}` : 'Chưa có'} />
           </div>
 
           {/* Plan Info */}

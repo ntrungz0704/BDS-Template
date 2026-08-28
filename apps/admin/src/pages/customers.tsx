@@ -214,7 +214,7 @@ export default function CustomersPage() {
                         {u.tenant ? (
                           <div>
                             <div className="font-bold text-slate-800">{u.tenant.name}</div>
-                            <div className="text-xs font-mono text-indigo-600">{u.tenant.slug}.aireviewbds.com</div>
+                            <div className="text-xs font-mono text-indigo-600">{u.tenant.slug}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}</div>
                           </div>
                         ) : (
                           <span className="text-slate-400 italic text-xs">Chưa gắn website</span>
