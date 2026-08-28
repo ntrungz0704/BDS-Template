@@ -142,7 +142,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 
   try {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
     const [compRes, themeRes, pageRes, projRes, postRes, statusRes] = await Promise.all([
       axios.get(`${API_URL}/api/website/${tenantSlug}/company-info`).catch(() => ({ data: { data: null } })),
       axios.get(`${API_URL}/api/website/${tenantSlug}/theme`).catch(() => ({ data: { data: null } })),
