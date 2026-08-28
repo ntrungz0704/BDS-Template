@@ -108,7 +108,11 @@ const INITIAL_TEMPLATES: TemplateDefinition[] = [
   { id: 'template-listing-portal', slug: 'listing-portal', name: 'Listing Portal', category: 'portal', version: '1.0.0', component: ListingMarketplace },
   { id: 'template-personal-agent', slug: 'personal-agent', name: 'Personal Agent', category: 'agent', version: '1.0.0', component: PersonalAgentTemplate },
   { id: 'template-auction-bds', slug: 'auction-bds', name: 'Auction BĐS', category: 'auction', version: '1.0.0', component: AuctionTemplate },
+  { id: 'template-auction-template', slug: 'auction-template', name: 'Auction Template', category: 'auction', version: '1.0.0', component: AuctionTemplate },
   { id: 'template-land-plot', slug: 'land-plot', name: 'Land Plot', category: 'land', version: '1.0.0', component: LandPlotTemplate },
+  { id: 'template-landplot-template', slug: 'landplot-template', name: 'Landplot Template', category: 'land', version: '1.0.0', component: LandPlotTemplate },
+  { id: 'template-retail-podium', slug: 'retail-podium', name: 'Retail Podium', category: 'retail', version: '1.0.0', component: RetailTemplate },
+  { id: 'template-mega-developer', slug: 'mega-developer', name: 'Mega Developer', category: 'portal', version: '1.0.0', component: ListingMarketplace },
 ];
 
 for (const tpl of INITIAL_TEMPLATES) {

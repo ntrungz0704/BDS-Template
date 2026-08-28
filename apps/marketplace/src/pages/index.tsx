@@ -198,18 +198,45 @@ export default function MarketplaceHome() {
     return { count, ref };
   };
 
-  // 12 Mock premium templates — each with unique identity
+  const SLUG_CANONICAL_MAP: Record<string, string> = {
+    'modern-villa': 'villa-premium',
+    'luxury-villa': 'villa-premium',
+    'smart-urban': 'urban-city',
+    'high-rise': 'urban-city',
+    'green-eco': 'eco-green',
+    'eco-living': 'eco-green',
+    'ocean-view': 'resort-paradise',
+    'minimal-zen': 'minimal-white',
+    'heritage-classic': 'classic-elegant',
+    'classic-heritage': 'classic-elegant',
+    'tech-hub': 'investment-pro',
+    'suburban-family': 'agency-onepage',
+    'riverside-mansion': 'mega-developer',
+    'listing-portal': 'mega-developer',
+    'lake-sanctuary': 'auction-template',
+    'auction-bds': 'auction-template',
+    'mountain-retreat': 'landplot-template',
+    'land-plot': 'landplot-template',
+    'commercial-plaza': 'retail-podium',
+    'retail-commercial': 'retail-podium',
+    'golf-residences': 'personal-agent',
+    'industrial-logistics': 'industrial-estate',
+  };
+
+  // Mock premium templates — each with unique identity
   const mockTemplates = ALL_TEMPLATES;
 
   const dbTemplates = templatesRes?.data || [];
   const mergedTemplates = [...mockTemplates];
   dbTemplates.forEach((dbTpl: any) => {
-    const idx = mergedTemplates.findIndex(m => m.slug === dbTpl.slug);
+    const canonicalSlug = SLUG_CANONICAL_MAP[dbTpl.slug] || dbTpl.slug;
+    const idx = mergedTemplates.findIndex(m => m.slug === canonicalSlug || m.slug === dbTpl.slug);
     if (idx !== -1) {
       const original = mergedTemplates[idx];
-      const merged = { ...original, ...dbTpl };
+      const merged = { ...original, ...dbTpl, slug: original.slug };
       
       // Khôi phục các trường thông tin chi tiết từ mock nếu DB trống/null
+      if (!dbTpl.thumbnail) merged.thumbnail = original.thumbnail;
       if (!dbTpl.features || (Array.isArray(dbTpl.features) && dbTpl.features.length === 0)) {
         merged.features = original.features;
       }

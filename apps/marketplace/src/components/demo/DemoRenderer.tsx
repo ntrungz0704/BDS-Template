@@ -1033,49 +1033,49 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
     if (slug === 'luxury-gold' || colSlug === 'luxury') {
       return <LuxuryTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'minimal-white' || colSlug === 'minimal') {
+    if (slug === 'minimal-white' || slug === 'minimal-zen' || colSlug === 'minimal') {
       return <MinimalTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
     if (slug === 'modern-corporate' || colSlug === 'corporate') {
       return <CorporateTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'resort-paradise' || colSlug === 'resort') {
+    if (slug === 'resort-paradise' || slug === 'ocean-view' || colSlug === 'resort') {
       return <ResortTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'urban-city' || colSlug === 'apartment') {
+    if (slug === 'urban-city' || slug === 'smart-urban' || slug === 'high-rise' || colSlug === 'apartment') {
       return <ApartmentTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'industrial-estate' || colSlug === 'industrial') {
+    if (slug === 'industrial-estate' || slug === 'industrial-logistics' || colSlug === 'industrial') {
       return <IndustrialTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'villa-premium' || colSlug === 'villa') {
+    if (slug === 'villa-premium' || slug === 'modern-villa' || slug === 'luxury-villa' || colSlug === 'villa') {
       return <VillaTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'eco-green' || colSlug === 'eco') {
+    if (slug === 'eco-green' || slug === 'eco-living' || slug === 'green-eco' || colSlug === 'eco') {
       return <EcoTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'classic-elegant' || colSlug === 'classic') {
+    if (slug === 'classic-elegant' || slug === 'classic-heritage' || slug === 'heritage-classic' || colSlug === 'classic') {
       return <ClassicTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'investment-pro' || colSlug === 'investment') {
+    if (slug === 'investment-pro' || slug === 'tech-hub' || colSlug === 'investment') {
       return <InvestmentTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'agency-onepage' || colSlug === 'agency') {
+    if (slug === 'agency-onepage' || slug === 'suburban-family' || colSlug === 'agency') {
       return <AgencyTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'personal-agent') {
+    if (slug === 'personal-agent' || slug === 'golf-residences' || colSlug === 'agent') {
       return <PersonalAgentTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'mega-developer' || colSlug === 'developer') {
+    if (slug === 'mega-developer' || slug === 'listing-portal' || slug === 'riverside-mansion' || colSlug === 'developer') {
       return <ListingMarketplace template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'retail-podium' || colSlug === 'retail') {
+    if (slug === 'retail-podium' || slug === 'retail-commercial' || slug === 'commercial-plaza' || colSlug === 'retail') {
       return <RetailTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'auction-template') {
+    if (slug === 'auction-template' || slug === 'auction-bds' || slug === 'lake-sanctuary') {
       return <AuctionTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'landplot-template') {
+    if (slug === 'landplot-template' || slug === 'land-plot' || slug === 'mountain-retreat' || colSlug === 'project') {
       return <LandPlotTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
     return <DefaultFallbackTemplate template={template} viewport={viewport} />;

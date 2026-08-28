@@ -426,7 +426,7 @@ export default function CustomerDashboard() {
                       orders.filter((o: any) => o.status === 'COMPLETED').map((ord: any, idx: number) => {
                         const siteName = ord.template?.name || 'Mẫu Bất Động Sản';
                         const siteSlug = ord.subdomain || `website-${ord.orderNumber.toLowerCase()}`;
-                        const siteUrl = `http://localhost:3003/?tenant=${siteSlug}`;
+                        const siteUrl = `${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant=${siteSlug}`;
                         return (
                           <div key={ord.id} className="bg-white border border-slate-200 hover:border-blue-300 p-6 rounded-2xl shadow-xs transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
                             <div className="flex items-start gap-4">
@@ -443,14 +443,14 @@ export default function CustomerDashboard() {
                                 <h3 className="text-base font-bold text-slate-900">{siteName}</h3>
                                 <div className="text-xs text-slate-500 flex items-center gap-1.5 font-mono">
                                   <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                                  <span className="text-blue-600 font-semibold">{siteSlug}.platformbds.vn</span>
+                                  <span className="text-blue-600 font-semibold">{siteSlug}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com'}</span>
                                 </div>
                               </div>
                             </div>
 
                             <div className="flex items-center gap-2 flex-wrap w-full md:w-auto justify-end border-t md:border-t-0 pt-3 md:pt-0 border-slate-100">
                               <a
-                                href={process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
+                                href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm"
@@ -564,7 +564,7 @@ export default function CustomerDashboard() {
                                   {ord.status === 'COMPLETED' && (
                                     <div className="inline-flex items-center gap-1.5 flex-wrap">
                                       <a
-                                        href={process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
+                                        href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition-all text-[10px]"
@@ -574,7 +574,7 @@ export default function CustomerDashboard() {
                                       </a>
                                       {ord.subdomain && (
                                         <a
-                                          href={`http://localhost:3003/?tenant=${ord.subdomain}`}
+                                          href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant=${ord.subdomain}`}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all text-[10px]"
