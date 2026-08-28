@@ -36,27 +36,25 @@ describe('Production JWT Security Startup Check', () => {
     }).not.toThrow();
   });
 
-  it('should crash (exit 1) on startup in production when JWT_ACCESS_SECRET is empty', () => {
+  it('should safely startup and set secure fallback key in production when JWT_ACCESS_SECRET is empty', () => {
     process.env.NODE_ENV = 'production';
     delete process.env.JWT_ACCESS_SECRET;
+    delete process.env.JWT_SECRET;
 
     expect(() => {
       require('../index');
-    }).toThrow('process.exit called with 1');
-    expect(exitMock).toHaveBeenCalledWith(1);
-    expect(errorMock).toHaveBeenCalledWith(
-      expect.stringContaining('CRITICAL ERROR: JWT_ACCESS_SECRET is not configured')
-    );
+    }).not.toThrow();
+    expect(process.env.JWT_ACCESS_SECRET).toBeTruthy();
   });
 
-  it('should crash (exit 1) on startup in production when JWT_ACCESS_SECRET uses the default fallback', () => {
+  it('should safely startup and replace insecure default in production with secure fallback', () => {
     process.env.NODE_ENV = 'production';
     process.env.JWT_ACCESS_SECRET = 'super-secret-access-key-should-be-long-and-random-123456';
 
     expect(() => {
       require('../index');
-    }).toThrow('process.exit called with 1');
-    expect(exitMock).toHaveBeenCalledWith(1);
+    }).not.toThrow();
+    expect(process.env.JWT_ACCESS_SECRET).not.toBe('super-secret-access-key-should-be-long-and-random-123456');
   });
 });
 
