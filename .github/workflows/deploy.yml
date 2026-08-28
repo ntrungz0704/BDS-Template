@@ -27,7 +27,11 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Generate Prisma Client
+        env:
+          DATABASE_URL: "postgresql://mock:mock@localhost:5432/mock"
         run: pnpm --filter @repo/database db:generate
 
       - name: Build All Apps
+        env:
+          DATABASE_URL: "postgresql://mock:mock@localhost:5432/mock"
         run: pnpm build
