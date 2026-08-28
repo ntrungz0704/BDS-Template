@@ -278,16 +278,17 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
     },
   });
 
+  const hasTenant = Boolean(userTenants && userTenants.length > 0);
   const activeTenant = userTenants?.find((t: any) => t.id === domainData?.tenantId) || userTenants?.[0];
-  const tenantSlug = domainData?.subdomain || activeTenant?.slug || 'hoanggialand';
-  const tenantName = companyInfo?.name || activeTenant?.name || 'Hoàng Gia Land';
+  const tenantSlug = hasTenant ? (domainData?.subdomain || activeTenant?.slug || '') : '';
+  const tenantName = hasTenant ? (companyInfo?.name || activeTenant?.name || 'Website của tôi') : 'Chưa có Website';
   const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com';
 
   const buildPublicUrl = () => {
+    if (!hasTenant || !tenantSlug) return `https://${PLATFORM_DOMAIN}`;
     if (domainData?.customDomain && domainData?.dnsVerified && domainData?.sslStatus === 'ACTIVE') {
       return `https://${domainData.customDomain}`;
     }
-    if (!tenantSlug) return `https://${PLATFORM_DOMAIN}`;
     return `https://${tenantSlug}.${PLATFORM_DOMAIN}`;
   };
 
@@ -520,7 +521,7 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
               onClick={() => setSwitcherOpen((v) => !v)}
               className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 transition-all shadow-xs"
             >
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-100 animate-pulse"></span>
+              <span className={`w-2.5 h-2.5 rounded-full ${hasTenant ? 'bg-emerald-500 ring-4 ring-emerald-100 animate-pulse' : 'bg-slate-300'}`}></span>
               <span className="text-sm font-bold text-slate-800 truncate max-w-[180px] sm:max-w-[280px]">{tenantName}</span>
               {userTenants && userTenants.length > 1 && (
                 <span className="text-[10px] bg-blue-100 text-blue-700 font-extrabold px-1.5 py-0.5 rounded-md">
@@ -530,10 +531,16 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
               <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${switcherOpen ? 'rotate-180' : ''}`} />
             </button>
 
-            <div className="hidden lg:flex items-center text-xs text-slate-500 font-medium ml-1">
-              <Globe className="w-3.5 h-3.5 mr-1 text-slate-400" />
-              <span className="truncate max-w-[220px]">{tenantSlug}.{PLATFORM_DOMAIN}</span>
-            </div>
+            {hasTenant ? (
+              <div className="hidden lg:flex items-center text-xs text-slate-500 font-medium ml-1">
+                <Globe className="w-3.5 h-3.5 mr-1 text-slate-400" />
+                <span className="truncate max-w-[220px]">{tenantSlug}.{PLATFORM_DOMAIN}</span>
+              </div>
+            ) : (
+              <div className="hidden lg:flex items-center text-xs text-amber-600 font-medium ml-1">
+                <span className="truncate max-w-[220px]">Chưa kích hoạt website</span>
+              </div>
+            )}
 
             {/* Top Switcher Dropdown Modal */}
             {switcherOpen && userTenants && userTenants.length > 0 && (
@@ -648,6 +655,35 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
 
         {/* Page Content */}
         <main className="flex-1 p-4 lg:p-6 overflow-auto">
+          {!hasTenant && (
+            <div className="mb-6 p-6 sm:p-8 bg-white border border-amber-200 rounded-3xl shadow-sm text-center max-w-2xl mx-auto">
+              <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center mx-auto mb-4 text-2xl shadow-xs">
+                🌐
+              </div>
+              <h2 className="text-lg font-black text-slate-800">Tài khoản chưa có Website nào</h2>
+              <p className="text-xs text-slate-500 mt-2 leading-relaxed">
+                {userInfo?.role === 'SUPER_ADMIN'
+                  ? 'Bạn đang đăng nhập bằng tài khoản Quản trị viên Super Admin (chưa có website con). Bạn có thể vào trang Admin để quản trị toàn bộ hệ thống hoặc phê duyệt đơn hàng của khách.'
+                  : 'Website của bạn sẽ xuất hiện tại đây sau khi bạn đặt mua/thuê mẫu giao diện trên Marketplace và được phê duyệt.'}
+              </p>
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+                {userInfo?.role === 'SUPER_ADMIN' && (
+                  <a
+                    href="https://admin.aireviewbds.com"
+                    className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md shadow-indigo-600/20 transition-all"
+                  >
+                    ⚙️ Vào Trang Quản Trị Admin
+                  </a>
+                )}
+                <a
+                  href="https://templates.aireviewbds.com"
+                  className="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-md shadow-amber-500/20 transition-all"
+                >
+                  🛍️ Xem Kho 16+ Giao Diện
+                </a>
+              </div>
+            </div>
+          )}
           {children}
         </main>
       </div>
