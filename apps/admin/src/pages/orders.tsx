@@ -425,7 +425,7 @@ export default function AdminOrders() {
                         ) : order.status === 'COMPLETED' ? (
                           <div className="flex items-center justify-end gap-2">
                             <a
-                              href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'http://localhost:3003'}?tenant=${order.subdomain || order.tenantId || 'hoanggialand'}`}
+                              href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}?tenant=${order.subdomain || order.tenantId || 'hoanggialand'}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-xl text-xs transition-all border border-emerald-200 flex items-center gap-1"
@@ -597,8 +597,8 @@ export default function AdminOrders() {
                       const prefix = selectedOrder.email ? selectedOrder.email.split('@')[0] : '123456';
                       const targetSub = selectedOrder.subdomain || selectedOrder.tenantId;
                       const info = `🎉 THÔNG TIN BÀN GIAO WEBSITE BẤT ĐỘNG SẢN:\n\n` +
-                        `- Website công khai: http://localhost:3003/?tenant=${targetSub}\n` +
-                        `- Trang quản trị CMS: http://localhost:3001\n` +
+                        `- Website công khai: ${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant=${targetSub}\n` +
+                        `- Trang quản trị CMS: ${process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}\n` +
                         `- Email đăng nhập: ${selectedOrder.email}\n` +
                         `- Mật khẩu CMS: ${prefix}\n\n` +
                         `👉 Bạn hãy đăng nhập vào CMS để đổi thông tin và đăng tải dự án ngay!`;
@@ -610,7 +610,7 @@ export default function AdminOrders() {
                   </button>
 
                   <a
-                    href={`http://localhost:3003/?tenant=${selectedOrder.subdomain || selectedOrder.tenantId}`}
+                    href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant=${selectedOrder.subdomain || selectedOrder.tenantId}`}
                     target="_blank"
                     rel="noreferrer"
                     className="w-full sm:w-auto px-4 py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all text-center"
@@ -714,24 +714,24 @@ export default function AdminOrders() {
               <div>
                 <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Website công khai:</span>
                 <a
-                  href={`http://localhost:3003/?tenant=${approvalResult.subdomain || approvalResult.tenantSlug || 'website'}`}
+                  href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant=${approvalResult.subdomain || approvalResult.tenantSlug || 'website'}`}
                   target="_blank"
                   rel="noreferrer"
                   className="text-blue-600 font-bold hover:underline"
                 >
-                  http://localhost:3003/?tenant={approvalResult.subdomain || approvalResult.tenantSlug}
+                  {process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant={approvalResult.subdomain || approvalResult.tenantSlug}
                 </a>
               </div>
 
               <div>
                 <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Trang quản trị CMS:</span>
                 <a
-                  href={process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
+                  href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
                   target="_blank"
                   rel="noreferrer"
                   className="text-indigo-600 font-bold hover:underline"
                 >
-                  {process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
+                  {process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
                 </a>
               </div>
 
@@ -753,8 +753,8 @@ export default function AdminOrders() {
                 onClick={() => {
                   const targetSub = approvalResult.subdomain || approvalResult.tenantSlug || 'website';
                   const info = `🎉 CHÚC MỪNG! WEBSITE CỦA BẠN ĐÃ KÍCH HOẠT THÀNH CÔNG:\n\n` +
-                    `- Website công khai: http://localhost:3003/?tenant=${targetSub}\n` +
-                    `- Quản trị website (CMS): ${process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}\n` +
+                    `- Website công khai: ${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant=${targetSub}\n` +
+                    `- Quản trị website (CMS): ${process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}\n` +
                     `- Email đăng nhập: ${approvalResult.email}\n` +
                     `- Mật khẩu đăng nhập: ${approvalResult.password || '123456'}\n\n` +
                     `👉 Bạn hãy đăng nhập vào CMS để đổi thông tin và đăng tải dự án ngay!`;

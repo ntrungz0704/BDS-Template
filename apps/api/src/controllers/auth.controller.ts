@@ -261,21 +261,23 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     // Tạo CSRF Token chống giả mạo
     const csrfToken = crypto.randomBytes(32).toString('hex');
 
+    // Cài đặt cookie HttpOnly an toàn
+    const isProd = process.env.NODE_ENV === 'production';
+    const sameSiteMode = isProd ? 'none' as const : 'lax' as const;
     const cookieDomain = process.env.COOKIE_DOMAIN || undefined;
 
-    // Cài đặt cookie HttpOnly an toàn
     res.cookie('access_token', accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: isProd,
+      sameSite: sameSiteMode,
       domain: cookieDomain,
       maxAge: 24 * 60 * 60 * 1000,
     });
 
     res.cookie('refresh_token', refreshTokenString, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: isProd,
+      sameSite: sameSiteMode,
       domain: cookieDomain,
       path: '/api/auth/refresh',
       maxAge: REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000,
@@ -283,16 +285,16 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 
     // Cookie CSRF không httpOnly để client đối chiếu
     res.cookie('csrf_token', csrfToken, {
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: isProd,
+      sameSite: sameSiteMode,
       domain: cookieDomain,
       maxAge: 12 * 60 * 60 * 1000,
     });
 
     // Cookie is_logged_in không httpOnly giúp client-side JS nhận biết trạng thái đăng nhập tức thì
     res.cookie('is_logged_in', 'true', {
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: isProd,
+      sameSite: sameSiteMode,
       domain: cookieDomain,
       maxAge: 24 * 60 * 60 * 1000,
     });
@@ -427,17 +429,20 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
     const newAccessToken = generateAccessToken(payload);
 
     // Gửi trả cookie mới đè cookie cũ
+    const isProdRefresh = process.env.NODE_ENV === 'production';
+    const sameSiteModeRefresh = isProdRefresh ? 'none' as const : 'lax' as const;
+
     res.cookie('access_token', newAccessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: isProdRefresh,
+      sameSite: sameSiteModeRefresh,
       maxAge: 15 * 60 * 1000,
     });
 
     res.cookie('refresh_token', newRefreshTokenString, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: isProdRefresh,
+      sameSite: sameSiteModeRefresh,
       path: '/api/auth/refresh',
       maxAge: REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000,
     });

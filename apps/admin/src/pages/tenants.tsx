@@ -170,12 +170,12 @@ export default function AdminTenants() {
                   </td>
                   <td className="px-6 py-4">
                     <a
-                      href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'http://localhost:3003'}?tenant=${tenant.slug}`}
+                      href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}?tenant=${tenant.slug}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-xs font-mono font-bold text-indigo-600 hover:underline"
                     >
-                      {tenant.slug}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'platformbds.vn'}
+                      {tenant.slug}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com'}
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
@@ -223,7 +223,7 @@ export default function AdminTenants() {
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-1.5">
                       <a
-                        href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'http://localhost:3003'}?tenant=${tenant.slug}`}
+                        href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}?tenant=${tenant.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-all"
@@ -232,7 +232,7 @@ export default function AdminTenants() {
                         Xem Web
                       </a>
                       <a
-                        href={process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
+                        href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg transition-all"
@@ -410,14 +410,14 @@ export default function AdminTenants() {
             <div className="w-full mt-6 p-4 bg-slate-50 rounded-2xl border border-slate-200/60 text-left text-xs space-y-3 font-semibold text-slate-700 shadow-inner">
               <div>
                 <span className="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Địa chỉ Website:</span>
-                <a href={`http://${createdCredentials.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'platformbds.vn'}`} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline font-mono">
-                  http://{createdCredentials.subdomain}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'platformbds.vn'}
+                <a href={`https://${createdCredentials.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com'}`} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline font-mono">
+                  https://{createdCredentials.subdomain}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com'}
                 </a>
               </div>
               <div>
                 <span className="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Quản trị Website (CMS):</span>
-                <a href={process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline font-mono">
-                  {process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}
+                <a href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline font-mono">
+                  {process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
                 </a>
               </div>
               <div>
@@ -432,7 +432,7 @@ export default function AdminTenants() {
 
             <button
               onClick={() => {
-                const text = `THÔNG TIN BÀN GIAO WEBSITE BĐS:\n- Địa chỉ Website: http://${createdCredentials.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'platformbds.vn'}\n- Trang quản trị CMS: ${process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'}\n- Email đăng nhập: ${createdCredentials.email}\n- Mật khẩu tạm thời: ${createdCredentials.password}`;
+                const text = `THÔNG TIN BÀN GIAO WEBSITE BĐS:\n- Địa chỉ Website: https://${createdCredentials.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'aireviewbds.com'}\n- Trang quản trị CMS: ${process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}\n- Email đăng nhập: ${createdCredentials.email}\n- Mật khẩu tạm thời: ${createdCredentials.password}`;
                 navigator.clipboard.writeText(text);
                 alert('Đã sao chép thông tin bàn giao vào Clipboard!');
                 setShowResultModal(false);

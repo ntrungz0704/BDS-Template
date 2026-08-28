@@ -44,10 +44,15 @@ export default function LoginPage() {
 
       if (res.data.success) {
         const user = res.data.data.user;
+        const accessToken = res.data.data.accessToken;
         const allowedRoles = ['TENANT_OWNER', 'EDITOR', 'STAFF', 'SUPER_ADMIN', 'ADMIN', 'CUSTOMER', 'CUSTOMER_OWNER', 'USER'];
         if (!allowedRoles.includes(user.role)) {
           setErrorMsg('Tài khoản không hợp lệ.');
           return;
+        }
+        if (accessToken) {
+          localStorage.setItem('platformbds_token', accessToken);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
         }
         // Redirect về trang mà user muốn vào, hoặc trang chủ CMS
         const redirectTo = (router.query.redirect as string) || '/';

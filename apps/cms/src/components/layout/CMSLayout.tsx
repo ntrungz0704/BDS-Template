@@ -197,14 +197,22 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
   // ── Auth Guard: xác minh session ──────────────────────────────────────────
   useEffect(() => {
     const verifySession = async () => {
-      // Kiểm tra nhanh cookie is_logged_in trước khi gọi API
+      const token = localStorage.getItem('platformbds_token');
       const isLoggedInCookie = document.cookie.includes('is_logged_in=true');
-      if (!isLoggedInCookie) {
+      if (!isLoggedInCookie && !token) {
         router.replace('/login');
         return;
       }
       try {
-        const res = await axios.get(`${API_URL}/api/auth/me`, { withCredentials: true });
+        const headers: Record<string, string> = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        const res = await axios.get(`${API_URL}/api/auth/me`, {
+          headers,
+          withCredentials: true,
+          timeout: 5000,
+        });
         const user = res.data?.data?.user;
         if (!user) {
           router.replace('/login');
@@ -466,7 +474,11 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
                 </div>
                 <button
                   onClick={async () => {
-                    await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true });
+                    localStorage.removeItem('platformbds_token');
+                    delete axios.defaults.headers.common['Authorization'];
+                    try {
+                      await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true });
+                    } catch {}
                     window.location.href = '/login';
                   }}
                   className="p-1 rounded-lg text-white/40 hover:text-white hover:bg-white/10 transition-colors"

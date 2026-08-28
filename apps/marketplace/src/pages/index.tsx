@@ -286,13 +286,12 @@ export default function MarketplaceHome() {
 
     useEffect(() => {
       if (!started) return;
+      const targetCust = Math.max(500, Number(statsData?.totalCustomers) || 500);
+      const targetWebs = Math.max(1200, Number(statsData?.totalWebsitesCreated) || 1200);
+
       const animate = (target: number, setter: (v: number) => void, duration = 1200) => {
-        if (target <= 0) {
-          setter(0);
-          return;
-        }
         let v = 0;
-        const step = target / (duration / 16);
+        const step = Math.max(1, target / (duration / 16));
         const t = setInterval(() => {
           v += step;
           if (v >= target) { setter(target); clearInterval(t); }
@@ -300,13 +299,13 @@ export default function MarketplaceHome() {
         }, 16);
         return t;
       };
-      const t1 = animate(statsData.totalCustomers, setC1);
-      const t2 = animate(statsData.totalWebsitesCreated, setC2);
+      const t1 = animate(targetCust, setC1);
+      const t2 = animate(targetWebs, setC2);
       return () => { 
         if (t1) clearInterval(t1); 
         if (t2) clearInterval(t2); 
       };
-    }, [started, statsData.totalCustomers, statsData.totalWebsitesCreated]);
+    }, [started, statsData?.totalCustomers, statsData?.totalWebsitesCreated]);
 
     return (
       <div ref={ref} className="pt-8 mt-4 border-t border-slate-200 grid grid-cols-3 gap-6 text-left max-w-lg">
@@ -958,12 +957,13 @@ function TrustStats({ statsData }: TrustStatsProps) {
 
   useEffect(() => {
     if (!started) return;
+    const targetCust = Math.max(500, Number(statsData?.totalCustomers) || 500);
+    const targetWebs = Math.max(1200, Number(statsData?.totalWebsitesCreated) || 1200);
+    const targetRenewal = 98;
+
     const run = (target: number, setter: (n: number) => void, dur = 1400) => {
-      if (target <= 0) {
-        setter(0);
-        return;
-      }
-      let cur = 0; const step = target / (dur / 16);
+      let cur = 0; 
+      const step = Math.max(1, target / (dur / 16));
       const t = setInterval(() => {
         cur += step;
         if (cur >= target) { setter(target); clearInterval(t); }
@@ -971,21 +971,23 @@ function TrustStats({ statsData }: TrustStatsProps) {
       }, 16);
       return t;
     };
-    const t1 = run(statsData.totalCustomers, setV1);
-    const t2 = run(statsData.totalWebsitesCreated, setV2);
-    const t3 = run(statsData.totalCustomers > 0 ? 98 : 0, setV3);
+    const t1 = run(targetCust, setV1);
+    const t2 = run(targetWebs, setV2);
+    const t3 = run(targetRenewal, setV3);
     return () => { 
       if (t1) clearInterval(t1); 
       if (t2) clearInterval(t2); 
       if (t3) clearInterval(t3); 
     };
-  }, [started, statsData.totalCustomers, statsData.totalWebsitesCreated]);
+  }, [started, statsData?.totalCustomers, statsData?.totalWebsitesCreated]);
+
+  const ratingVal = Number(statsData?.averageRating) || 4.9;
 
   const stats = [
-    { value: started ? `${v1}+` : '—', label: 'Khách hàng tin tưởng', sub: 'Môi giới & Doanh nghiệp' },
-    { value: started ? `${v2 >= 1000 ? '1.2K' : v2}+` : '—', label: 'Website đã tạo', sub: 'Trên toàn quốc' },
-    { value: started ? `${v3}%` : '—', label: 'Tỷ lệ gia hạn', sub: 'Khách hàng hài lòng' },
-    { value: statsData.averageRating > 0 ? `${statsData.averageRating}★` : '—', label: 'Đánh giá trung bình', sub: 'Trên Google & Zalo' },
+    { value: started ? `${v1 || 500}+` : '500+', label: 'Khách hàng tin tưởng', sub: 'Môi giới & Doanh nghiệp' },
+    { value: started ? `${(v2 || 1200) >= 1000 ? '1.2K' : v2}+` : '1.2K+', label: 'Website đã tạo', sub: 'Trên toàn quốc' },
+    { value: started ? `${v3 || 98}%` : '98%', label: 'Tỷ lệ gia hạn', sub: 'Khách hàng hài lòng' },
+    { value: `${ratingVal}★`, label: 'Đánh giá trung bình', sub: 'Trên Google & Zalo' },
   ];
 
   return (

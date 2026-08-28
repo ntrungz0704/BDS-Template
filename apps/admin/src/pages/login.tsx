@@ -44,9 +44,14 @@ export default function LoginPage() {
 
       if (res.data.success) {
         const user = res.data.data.user;
+        const accessToken = res.data.data.accessToken;
         if (user.role !== 'SUPER_ADMIN') {
           setErrorMsg('Tài khoản của bạn không có quyền truy cập trang quản trị Super Admin.');
           return;
+        }
+        if (accessToken) {
+          localStorage.setItem('platformbds_token', accessToken);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
         }
         router.push('/');
       }
@@ -144,6 +149,37 @@ export default function LoginPage() {
               </span>
             ) : 'Đăng Nhập Quản Trị'}
           </button>
+
+          {/* Quick Auto-fill for convenience */}
+          <div className="mt-6 pt-5 border-t border-white/10 text-center">
+            <p className="text-[11px] font-semibold text-slate-400 mb-3">⚡ Đăng nhập nhanh tài khoản Quản trị:</p>
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setValue('email', 'admin@aireviewbds.com');
+                  setValue('password', 'adminsuper@123456');
+                  onSubmit({ email: 'admin@aireviewbds.com', password: 'adminsuper@123456' });
+                }}
+                className="w-full py-2 px-3 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-xs font-semibold flex items-center justify-between transition-colors"
+              >
+                <span>👑 Super Admin (AI Review)</span>
+                <span className="text-[10px] text-indigo-400/80 font-mono">admin@aireviewbds.com</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setValue('email', 'admin@myplatform.com');
+                  setValue('password', 'password123');
+                  onSubmit({ email: 'admin@myplatform.com', password: 'password123' });
+                }}
+                className="w-full py-2 px-3 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-300 text-xs font-semibold flex items-center justify-between transition-colors"
+              >
+                <span>⚡ Platform Admin</span>
+                <span className="text-[10px] text-purple-400/80 font-mono">admin@myplatform.com</span>
+              </button>
+            </div>
+          </div>
         </form>
       </div>
     </div>

@@ -14,7 +14,10 @@ export default function TenantRenderer({ templateSlug, company, theme, projects,
   const slug = templateSlug?.toLowerCase();
 
   // Resolve template component dynamically from Registry (supports 100+ templates)
-  const templateDef = slug ? WebsiteTemplateRegistry.get(slug) : undefined;
+  const templateDef = (slug ? WebsiteTemplateRegistry.get(slug) : undefined) 
+    || WebsiteTemplateRegistry.get('luxury-gold') 
+    || WebsiteTemplateRegistry.list()[0];
+
   if (!templateDef) {
     return <main className="grid min-h-screen place-items-center bg-slate-950 p-6 text-center text-white"><p>Website đang được cấu hình. Vui lòng quay lại sau.</p></main>;
   }

@@ -38,9 +38,15 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
     let isMounted = true;
     const checkAdmin = async () => {
       try {
+        const token = localStorage.getItem('platformbds_token');
+        const headers: Record<string, string> = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
         const res = await axios.get(`${API_URL}/api/auth/me`, {
+          headers,
           withCredentials: true,
-          timeout: 4000,
+          timeout: 5000,
         });
         const user = res.data?.data?.user;
         if (!user || user.role !== 'SUPER_ADMIN') {
@@ -61,6 +67,8 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
 
   const handleLogout = async () => {
     try {
+      localStorage.removeItem('platformbds_token');
+      delete axios.defaults.headers.common['Authorization'];
       await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true });
     } catch {}
     router.push('/login');

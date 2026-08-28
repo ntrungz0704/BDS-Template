@@ -35,9 +35,9 @@ export default function LoginPage() {
   useEffect(() => {
     if (user) {
       if ((user.role as any) === 'SUPER_ADMIN') {
-        window.location.href = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3002';
+        window.location.href = process.env.NEXT_PUBLIC_ADMIN_URL || 'https://admin.aireviewbds.com';
       } else if ((user.role as any) === 'TENANT_OWNER' || (user as any).role === 'CUSTOMER_OWNER' || (user as any).tenantId) {
-        window.location.href = process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001';
+        window.location.href = process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com';
       } else {
         router.replace(redirectUrl);
       }
