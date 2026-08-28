@@ -20,5 +20,17 @@
   },
   "dependencies": {
     "puppeteer": "^25.9.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "bcrypt",
+      "prisma",
+      "puppeteer",
+      "sharp",
+      "msgpackr-extract",
+      "unrs-resolver"
+    ]
   }
 }
