@@ -4,6 +4,7 @@ import {
   getOrders, 
   approveOrder, 
   rejectOrder,
+  deleteOrder,
   getTenants,
   createTenantManually,
   updateTenantStatus,
@@ -41,9 +42,10 @@ router.use(requireRole(['SUPER_ADMIN']));
 router.get('/stats', getDashboardStats);
 router.get('/orders', getOrders);
 
-// Phê duyệt và từ chối đơn hàng yêu cầu chống CSRF
+// Phê duyệt, từ chối và xóa đơn hàng yêu cầu chống CSRF
 router.put('/orders/:id/approve', csrfMiddleware, approveOrder);
 router.put('/orders/:id/reject', csrfMiddleware, rejectOrder);
+router.delete('/orders/:id', csrfMiddleware, deleteOrder);
 
 // Các API quản trị Tenants, Users, Templates mới
 router.get('/tenants', getTenants);

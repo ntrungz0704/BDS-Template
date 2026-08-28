@@ -549,6 +549,26 @@ export async function updateUserStatus(req: Request, res: Response, next: NextFu
   }
 }
 
+export async function deleteOrder(req: Request, res: Response, next: NextFunction) {
+  const { id } = req.params;
+  try {
+    const order = await prisma.order.findUnique({ where: { id } });
+    if (!order) {
+      return res.status(404).json({ success: false, error: { message: 'Không tìm thấy đơn hàng.' } });
+    }
+
+    await prisma.order.delete({ where: { id } });
+    logger.info(`Admin đã xóa đơn hàng ${order.orderNumber} (${id})`);
+
+    res.status(200).json({
+      success: true,
+      message: 'Đã xóa đơn hàng thành công.',
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function deleteUser(req: Request, res: Response, next: NextFunction) {
   const { id } = req.params;
   try {

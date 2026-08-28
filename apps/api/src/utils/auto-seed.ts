@@ -275,8 +275,9 @@ export async function autoSeedDatabase() {
       },
     });
 
-    // 3. Reset toàn bộ tài khoản rác/khách thử nghiệm để Admin test lại từ đầu
+    // 3. Reset toàn bộ tài khoản rác/khách thử nghiệm & đơn hàng để Admin test lại từ đầu
     try {
+      await prisma.order.deleteMany({});
       await prisma.refreshToken.deleteMany({
         where: { userId: { not: superAdmin.id } },
       });
