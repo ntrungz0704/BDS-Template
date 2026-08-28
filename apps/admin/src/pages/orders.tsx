@@ -557,24 +557,24 @@ export default function AdminOrders() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                     <span className="text-slate-500 font-sans">Website Khách Hàng:</span>
                     <a
-                      href={`http://localhost:3003/?tenant=${selectedOrder.subdomain || selectedOrder.tenantId}`}
+                      href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant=${selectedOrder.subdomain || selectedOrder.tenantId}`}
                       target="_blank"
                       rel="noreferrer"
                       className="text-blue-600 font-bold hover:underline font-mono"
                     >
-                      http://localhost:3003/?tenant={selectedOrder.subdomain || selectedOrder.tenantId}
+                      {process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant={selectedOrder.subdomain || selectedOrder.tenantId}
                     </a>
                   </div>
 
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                     <span className="text-slate-500 font-sans">Trang Quản Trị CMS:</span>
                     <a
-                      href="http://localhost:3001"
+                      href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
                       target="_blank"
                       rel="noreferrer"
                       className="text-indigo-600 font-bold hover:underline font-mono"
                     >
-                      http://localhost:3001
+                      {process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
                     </a>
                   </div>
 

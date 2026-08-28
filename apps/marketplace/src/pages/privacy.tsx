@@ -9,8 +9,8 @@ export default function PrivacyPolicyPage() {
   return (
     <div className="flex flex-col min-h-screen bg-slate-100/70 text-slate-900 antialiased font-sans">
       <Head>
-        <title>Chính Sách B?o M?t Thông Tin | PLATFORMBDS</title>
-        <meta name="description" content="Chính sách b?o m?t thông tin khách hàng và d? li?u v?n hành website b?t d?ng s?n t?i PlatformBDS" />
+        <title>Chï¿½nh Sï¿½ch B?o M?t Thï¿½ng Tin | PLATFORMBDS</title>
+        <meta name="description" content="Chï¿½nh sï¿½ch b?o m?t thï¿½ng tin khï¿½ch hï¿½ng vï¿½ d? li?u v?n hï¿½nh website b?t d?ng s?n t?i PlatformBDS" />
       </Head>
 
       <Header />
@@ -24,14 +24,14 @@ export default function PrivacyPolicyPage() {
           </Link>
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded border border-blue-200 inline-block mb-2">
-              VAN B?N PHÁP LÝ
+              VAN B?N PHï¿½P Lï¿½
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Chính Sách B?o M?t Thông Tin
+            Chï¿½nh Sï¿½ch B?o M?t Thï¿½ng Tin
           </h1>
           <p className="text-slate-600 text-xs sm:text-sm mt-1.5 leading-relaxed">
-            Cam k?t b?o v? d? li?u thông tin cá nhân c?a các d?i tác môi gi?i, sàn giao d?ch và doanh nghi?p trên toàn h? th?ng PlatformBDS.
+            Cam k?t b?o v? d? li?u thï¿½ng tin cï¿½ nhï¿½n c?a cï¿½c d?i tï¿½c mï¿½i gi?i, sï¿½n giao d?ch vï¿½ doanh nghi?p trï¿½n toï¿½n h? th?ng PlatformBDS.
           </p>
         </div>
 
@@ -40,25 +40,25 @@ export default function PrivacyPolicyPage() {
           <section className="space-y-2">
             <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-blue-600" />
-              <span>1. Thu th?p thông tin cá nhân</span>
+              <span>1. Thu th?p thï¿½ng tin cï¿½ nhï¿½n</span>
             </h2>
             <p className="text-slate-600">
-              Chúng tôi ch? ti?n hành thu th?p các tru?ng thông tin c?n thi?t ph?c v? cho quá trình dang ký tài kho?n, liên k?t tên mi?n riêng và qu?n lý d?ch v? bao g?m: H? tên, s? di?n tho?i, d?a ch? email (<strong className="text-slate-800">ntrungz0704@gmail.com</strong>) và d?a ch? liên l?c.
+              Chï¿½ng tï¿½i ch? ti?n hï¿½nh thu th?p cï¿½c tru?ng thï¿½ng tin c?n thi?t ph?c v? cho quï¿½ trï¿½nh dang kï¿½ tï¿½i kho?n, liï¿½n k?t tï¿½n mi?n riï¿½ng vï¿½ qu?n lï¿½ d?ch v? bao g?m: H? tï¿½n, s? di?n tho?i, d?a ch? email (<strong className="text-slate-800">ntrungz0704@gmail.com</strong>) vï¿½ d?a ch? liï¿½n l?c.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-blue-600" />
-              <span>2. M?c dích s? d?ng d? li?u</span>
+              <span>2. M?c dï¿½ch s? d?ng d? li?u</span>
             </h2>
             <p className="text-slate-600">
-              Các thông tin du?c thu th?p ch? du?c ph?c v? trong các công tác v?n hành sau:
+              Cï¿½c thï¿½ng tin du?c thu th?p ch? du?c ph?c v? trong cï¿½c cï¿½ng tï¿½c v?n hï¿½nh sau:
             </p>
             <ul className="list-disc pl-5 space-y-1.5 text-slate-600">
-              <li>Xác nh?n dang ký s? h?u mã ngu?n giao di?n BÐS và phân quy?n tài kho?n CMS.</li>
-              <li>T? d?ng c?u hình h? th?ng website, tên mi?n riêng và ch?ng ch? b?o m?t SSL.</li>
-              <li>H? tr? x? lý nhanh các s? c? k? thu?t và nâng c?p tính nang.</li>
+              <li>Xï¿½c nh?n dang kï¿½ s? h?u mï¿½ ngu?n giao di?n Bï¿½S vï¿½ phï¿½n quy?n tï¿½i kho?n CMS.</li>
+              <li>T? d?ng c?u hï¿½nh h? th?ng website, tï¿½n mi?n riï¿½ng vï¿½ ch?ng ch? b?o m?t SSL.</li>
+              <li>H? tr? x? lï¿½ nhanh cï¿½c s? c? k? thu?t vï¿½ nï¿½ng c?p tï¿½nh nang.</li>
             </ul>
           </section>
 
@@ -68,16 +68,16 @@ export default function PrivacyPolicyPage() {
               <span>3. Cam k?t b?o m?t tuy?t d?i</span>
             </h2>
             <p className="text-slate-600">
-              PlatformBDS cam k?t tuy?t d?i không bán, trao d?i ho?c chia s? thông tin d? li?u c?a khách hàng cho b?t k? bên th? ba nào khác ngoài m?c dích th?c hi?n giao d?ch ho?c du?c s? d?ng ý b?ng van b?n c?a chính khách hàng.
+              PlatformBDS cam k?t tuy?t d?i khï¿½ng bï¿½n, trao d?i ho?c chia s? thï¿½ng tin d? li?u c?a khï¿½ch hï¿½ng cho b?t k? bï¿½n th? ba nï¿½o khï¿½c ngoï¿½i m?c dï¿½ch th?c hi?n giao d?ch ho?c du?c s? d?ng ï¿½ b?ng van b?n c?a chï¿½nh khï¿½ch hï¿½ng.
             </p>
           </section>
 
           <section className="space-y-2 pt-4 border-t border-slate-100">
-            <h2 className="text-base font-bold text-slate-900 mb-2">Thông tin liên h? khi?u n?i & h? tr? b?o m?t</h2>
+            <h2 className="text-base font-bold text-slate-900 mb-2">Thï¿½ng tin liï¿½n h? khi?u n?i & h? tr? b?o m?t</h2>
             <div className="bg-slate-50 p-4 rounded-md border border-slate-200 text-xs text-slate-700 space-y-1.5">
               <p><strong>Hotline:</strong> <a href="tel:0919006030" className="text-blue-600 hover:underline">0919 006 030</a> (24/7)</p>
               <p><strong>Email:</strong> <a href="mailto:ntrungz0704@gmail.com" className="text-blue-600 hover:underline">ntrungz0704@gmail.com</a></p>
-              <p><strong>Ð?a ch?:</strong> Tòa nhà PlatformBDS, TP. H? Chí Minh & Hà N?i</p>
+              <p><strong>ï¿½?a ch?:</strong> Tï¿½a nhï¿½ PlatformBDS, TP. H? Chï¿½ Minh & Hï¿½ N?i</p>
             </div>
           </section>
         </div>

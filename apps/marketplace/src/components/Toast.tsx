@@ -50,7 +50,7 @@ export default function Toast() {
         <button
           onClick={hideToast}
           className="text-slate-400 hover:text-white transition-colors p-1 -mr-1 -mt-1 rounded-lg"
-          title="Ðóng"
+          title="ï¿½ï¿½ng"
         >
           <X className="w-4 h-4" />
         </button>
