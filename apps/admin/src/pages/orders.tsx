@@ -5,6 +5,8 @@ import AdminLayout from '../components/AdminLayout';
 import { formatVND } from '@repo/utils';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
+const WEBSITE_APP_URL = 'https://bds-template-website.aireviewbds.com';
+const CMS_APP_URL = 'https://cms.aireviewbds.com';
 
 // Web Audio API beep chime for new orders
 function playOrderAlertSound() {
@@ -29,15 +31,17 @@ function playOrderAlertSound() {
 
 export default function AdminOrders() {
   const queryClient = useQueryClient();
-  const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
-  const [approvalResult, setApprovalResult] = useState<any | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
   const [rejectNotes, setRejectNotes] = useState('');
   const [activeFilter, setActiveFilter] = useState<'ALL' | 'PENDING' | 'COMPLETED' | 'REJECTED'>('ALL');
   const [searchTerm, setSearchTerm] = useState('');
-  const [copiedField, setCopiedField] = useState<string | null>(null);
-  const prevPendingCountRef = useRef<number>(0);
+  const [approvalResult, setApprovalResult] = useState<any>(null);
 
-  // 1. Query danh sách đơn hàng với Realtime Polling mỗi 3 giây
+  // Sound chime tracking
+  const prevPendingCountRef = useRef<number | null>(null);
+
+  // 1. Fetch Danh Sách Đơn Hàng
   const { data: ordersRes, isLoading, dataUpdatedAt } = useQuery({
     queryKey: ['adminOrders'],
     queryFn: async () => {
@@ -46,7 +50,7 @@ export default function AdminOrders() {
       });
       return res.data;
     },
-    refetchInterval: 3000, // Real-time polling 3s
+    refetchInterval: 5000,
   });
 
   const orders: any[] = ordersRes?.data || [];
@@ -60,13 +64,13 @@ export default function AdminOrders() {
 
   // Âm thanh thông báo khi có đơn hàng mới
   useEffect(() => {
-    if (pendingOrders.length > prevPendingCountRef.current && prevPendingCountRef.current !== 0) {
+    if (prevPendingCountRef.current !== null && pendingOrders.length > prevPendingCountRef.current) {
       playOrderAlertSound();
     }
     prevPendingCountRef.current = pendingOrders.length;
   }, [pendingOrders.length]);
 
-  // 2. Mutation phê duyệt đơn hàng & Kích hoạt website
+  // 2. Mutation duyệt đơn hàng & tạo Tenant
   const approveMutation = useMutation({
     mutationFn: async ({ id, version }: { id: string; version: number }) => {
       const csrfToken = document.cookie
@@ -91,21 +95,22 @@ export default function AdminOrders() {
       );
       return res.data;
     },
-    onSuccess: (res) => {
+    onSuccess: (res: any) => {
       setSelectedOrder(null);
       queryClient.invalidateQueries({ queryKey: ['adminOrders'] });
       queryClient.invalidateQueries({ queryKey: ['adminStats'] });
 
-      if (res.data?.status === 'PENDING_SUBDOMAIN_CONFLICT' || res.meta?.conflict) {
-        alert('Phát hiện trùng lặp subdomain. Đơn hàng chuyển sang hàng chờ xử lý đổi slug.');
-      } else {
-        const creds = res.data?.credentials;
-        if (creds) {
-          setApprovalResult(creds);
-        } else {
-          alert('Đã phê duyệt đơn hàng & kích hoạt website thành công!');
-        }
-      }
+      const raw = res?.data || res;
+      const orderCreds = raw?.credentials || raw;
+      const creds = {
+        email: orderCreds?.email || raw?.email,
+        password: orderCreds?.password || orderCreds?.cmsPassword || orderCreds?.email?.split('@')[0] || raw?.email?.split('@')[0] || '123456',
+        cmsPassword: orderCreds?.cmsPassword || orderCreds?.password || orderCreds?.email?.split('@')[0] || raw?.email?.split('@')[0] || '123456',
+        subdomain: orderCreds?.subdomain || orderCreds?.tenantSlug || raw?.subdomain,
+        tenantSlug: orderCreds?.subdomain || orderCreds?.tenantSlug || raw?.subdomain,
+      };
+
+      setApprovalResult(creds);
     },
     onError: (error: any) => {
       alert(error.response?.data?.error?.message || 'Có lỗi xảy ra khi duyệt đơn hàng.');
@@ -619,24 +624,24 @@ export default function AdminOrders() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                     <span className="text-slate-500 font-sans">Website Khách Hàng:</span>
                     <a
-                      href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant=${selectedOrder.subdomain || selectedOrder.tenantId}`}
+                      href={`${WEBSITE_APP_URL}/?tenant=${selectedOrder.subdomain || selectedOrder.tenantId}`}
                       target="_blank"
                       rel="noreferrer"
                       className="text-blue-600 font-bold hover:underline font-mono"
                     >
-                      {process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant={selectedOrder.subdomain || selectedOrder.tenantId}
+                      {WEBSITE_APP_URL}/?tenant={selectedOrder.subdomain || selectedOrder.tenantId}
                     </a>
                   </div>
 
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                     <span className="text-slate-500 font-sans">Trang Quản Trị CMS:</span>
                     <a
-                      href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
+                      href={CMS_APP_URL}
                       target="_blank"
                       rel="noreferrer"
                       className="text-indigo-600 font-bold hover:underline font-mono"
                     >
-                      {process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
+                      {CMS_APP_URL}
                     </a>
                   </div>
 
@@ -659,8 +664,8 @@ export default function AdminOrders() {
                       const prefix = selectedOrder.email ? selectedOrder.email.split('@')[0] : '123456';
                       const targetSub = selectedOrder.subdomain || selectedOrder.tenantId;
                       const info = `🎉 THÔNG TIN BÀN GIAO WEBSITE BẤT ĐỘNG SẢN:\n\n` +
-                        `- Website công khai: ${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant=${targetSub}\n` +
-                        `- Trang quản trị CMS: ${process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}\n` +
+                        `- Website công khai: ${WEBSITE_APP_URL}/?tenant=${targetSub}\n` +
+                        `- Trang quản trị CMS: ${CMS_APP_URL}\n` +
                         `- Email đăng nhập: ${selectedOrder.email}\n` +
                         `- Mật khẩu CMS: ${prefix}\n\n` +
                         `👉 Bạn hãy đăng nhập vào CMS để đổi thông tin và đăng tải dự án ngay!`;
@@ -672,7 +677,7 @@ export default function AdminOrders() {
                   </button>
 
                   <a
-                    href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant=${selectedOrder.subdomain || selectedOrder.tenantId}`}
+                    href={`${WEBSITE_APP_URL}/?tenant=${selectedOrder.subdomain || selectedOrder.tenantId}`}
                     target="_blank"
                     rel="noreferrer"
                     className="w-full sm:w-auto px-4 py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all text-center"
@@ -789,24 +794,24 @@ export default function AdminOrders() {
               <div>
                 <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Website công khai:</span>
                 <a
-                  href={`${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant=${approvalResult.subdomain || approvalResult.tenantSlug || 'website'}`}
+                  href={`${WEBSITE_APP_URL}/?tenant=${approvalResult.subdomain || approvalResult.tenantSlug || 'website'}`}
                   target="_blank"
                   rel="noreferrer"
                   className="text-blue-600 font-bold hover:underline"
                 >
-                  {process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant={approvalResult.subdomain || approvalResult.tenantSlug}
+                  {WEBSITE_APP_URL}/?tenant={approvalResult.subdomain || approvalResult.tenantSlug}
                 </a>
               </div>
 
               <div>
                 <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Trang quản trị CMS:</span>
                 <a
-                  href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
+                  href={CMS_APP_URL}
                   target="_blank"
                   rel="noreferrer"
                   className="text-indigo-600 font-bold hover:underline"
                 >
-                  {process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
+                  {CMS_APP_URL}
                 </a>
               </div>
 
@@ -829,8 +834,8 @@ export default function AdminOrders() {
                   const targetSub = approvalResult.subdomain || approvalResult.tenantSlug || 'website';
                   const pwd = approvalResult.cmsPassword || approvalResult.tempPassword || approvalResult.email?.split('@')[0] || '123456';
                   const info = `🎉 CHÚC MỪNG! WEBSITE CỦA BẠN ĐÃ KÍCH HOẠT THÀNH CÔNG:\n\n` +
-                    `- Website công khai: ${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://bds-template-website.aireviewbds.com'}/?tenant=${targetSub}\n` +
-                    `- Quản trị website (CMS): ${process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}\n` +
+                    `- Website công khai: ${WEBSITE_APP_URL}/?tenant=${targetSub}\n` +
+                    `- Quản trị website (CMS): ${CMS_APP_URL}\n` +
                     `- Email đăng nhập: ${approvalResult.email}\n` +
                     `- Mật khẩu đăng nhập: ${pwd}\n\n` +
                     `👉 Bạn hãy đăng nhập vào CMS để đổi thông tin và đăng tải dự án ngay!`;
