@@ -8,6 +8,8 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
+    "build:api": "pnpm --filter @repo/database db:generate && pnpm --filter api build",
+    "start:api": "node apps/api/dist/index.js",
     "lint": "turbo lint",
     "db:generate": "turbo db:generate",
     "db:migrate": "turbo db:migrate",

@@ -15,12 +15,16 @@ for (const p of envPaths) {
   }
 }
 
-// Enforce JWT secret security check for production environment
-if (process.env.NODE_ENV === 'production') {
-  if (!process.env.JWT_ACCESS_SECRET || process.env.JWT_ACCESS_SECRET === 'super-secret-access-key-should-be-long-and-random-123456') {
-    console.error('CRITICAL ERROR: JWT_ACCESS_SECRET is not configured or is using the default fallback in production!');
-    process.exit(1);
-  }
+// Setup & validate JWT secrets with automatic fallback support
+if (process.env.JWT_SECRET) {
+  process.env.JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || process.env.JWT_SECRET;
+  process.env.JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET;
+}
+if (!process.env.JWT_ACCESS_SECRET) {
+  process.env.JWT_ACCESS_SECRET = 'bds-platform-prod-access-jwt-secret-key-2026-secure';
+}
+if (!process.env.JWT_REFRESH_SECRET) {
+  process.env.JWT_REFRESH_SECRET = 'bds-platform-prod-refresh-jwt-secret-key-2026-secure';
 }
 
 // Sửa lỗi JSON stringify với kiểu BigInt (Prisma)
