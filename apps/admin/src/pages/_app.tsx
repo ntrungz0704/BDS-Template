@@ -2,6 +2,8 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
+import axios from 'axios';
+import Head from 'next/head';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,22 +49,18 @@ if (typeof window !== 'undefined') {
     true
   );
 
-  import('axios').then((axios) => {
-    axios.default.interceptors.request.use((config) => {
-      const match = document.cookie.match(new RegExp('(^| )csrf_token=([^;]+)'));
-      if (match) {
-        config.headers['x-csrf-token'] = match[2];
-      }
-      const token = localStorage.getItem('platformbds_token');
-      if (token && !config.headers['Authorization']) {
-        config.headers['Authorization'] = `Bearer ${token}`;
-      }
-      return config;
-    });
+  axios.interceptors.request.use((config) => {
+    const match = document.cookie.match(new RegExp('(^| )csrf_token=([^;]+)'));
+    if (match) {
+      config.headers['x-csrf-token'] = match[2];
+    }
+    const token = localStorage.getItem('platformbds_token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
   });
 }
-
-import Head from 'next/head';
 
 export default function App({ Component, pageProps }: AppProps) {
   React.useEffect(() => {

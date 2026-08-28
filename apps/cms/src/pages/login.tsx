@@ -126,13 +126,9 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full rounded-lg bg-[#C5A572] py-3 text-sm font-semibold text-white hover:bg-[#B8941F] focus:outline-none disabled:opacity-50 transition-colors shadow-sm"
           >
-            {loading ? 'Đang xác thực...' : 'Đăng Nhập Quản Trị'}
+            {loading ? 'Đang xác thực...' : 'ĐĂNG NHẬP QUẢN TRỊ'}
           </button>
         </form>
-
-        <div className="mt-6 pt-4 border-t border-slate-100 text-center text-xs text-slate-400">
-          Mật khẩu mặc định: <span className="font-bold text-slate-700 font-mono">123456</span> (hoặc mật khẩu bạn đã tạo khi đăng ký)
-        </div>
       </div>
     </div>
   );

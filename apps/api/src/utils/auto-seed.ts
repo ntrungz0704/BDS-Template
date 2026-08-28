@@ -263,7 +263,7 @@ export async function autoSeedDatabase() {
 
     // 2. Tạo DUY NHẤT 1 Super Admin tài khoản chính thức
     const adminPasswordHash = await bcrypt.hash('adminsuper@123456', 10);
-    await prisma.user.upsert({
+    const superAdmin = await prisma.user.upsert({
       where: { email: 'admin@aireviewbds.com' },
       update: { role: 'SUPER_ADMIN', isActive: true, fullName: 'Super Admin AI Review BDS' },
       create: {
@@ -275,14 +275,41 @@ export async function autoSeedDatabase() {
       },
     });
 
-    // 3. Dọn dẹp các tài khoản admin rác hoặc tài khoản khởi tạo thử nghiệm trước đây
-    await prisma.user.deleteMany({
-      where: {
-        email: {
-          in: ['admin@platformbds.vn', 'admin@myplatform.com', 'admin@example.com', 'test@example.com'],
-        },
-      },
-    });
+    // 3. Reset toàn bộ tài khoản rác/khách thử nghiệm để Admin test lại từ đầu
+    try {
+      await prisma.refreshToken.deleteMany({
+        where: { userId: { not: superAdmin.id } },
+      });
+      await prisma.passwordResetToken.deleteMany({
+        where: { userId: { not: superAdmin.id } },
+      });
+      await prisma.emailVerificationToken.deleteMany({
+        where: { userId: { not: superAdmin.id } },
+      });
+      await prisma.customerProfile.deleteMany({
+        where: { userId: { not: superAdmin.id } },
+      });
+      await prisma.cart.deleteMany({
+        where: { userId: { not: superAdmin.id } },
+      });
+      await prisma.wishlist.deleteMany({
+        where: { userId: { not: superAdmin.id } },
+      });
+      await prisma.review.deleteMany({
+        where: { userId: { not: superAdmin.id } },
+      });
+      await prisma.tenantMembership.deleteMany({
+        where: { userId: { not: superAdmin.id } },
+      });
+      await prisma.auditLog.deleteMany({
+        where: { userId: { not: superAdmin.id } },
+      });
+      await prisma.user.deleteMany({
+        where: { id: { not: superAdmin.id } },
+      });
+    } catch (cleanupErr: any) {
+      console.warn('Lỗi phụ khi dọn dẹp data rác:', cleanupErr.message);
+    }
 
     console.log('✅ Đã đồng bộ thành công 16+ Templates và duy nhất 1 tài khoản Super Admin (admin@aireviewbds.com) vào Database!');
   } catch (err: any) {
