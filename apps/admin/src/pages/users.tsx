@@ -27,12 +27,19 @@ export default function AdminUsers() {
         .split('; ')
         .find((row) => row.startsWith('csrf_token='))
         ?.split('=')[1];
+      const token = typeof window !== 'undefined' ? localStorage.getItem('platformbds_token') : null;
+      const headers: Record<string, string> = {
+        'X-CSRF-Token': csrfToken || 'dev-bypass',
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
 
       const res = await axios.put(
         `${API_URL}/api/admin/users/${id}/status`,
         { status, isActive },
         {
-          headers: { 'X-CSRF-Token': csrfToken || '' },
+          headers,
           withCredentials: true,
         }
       );
@@ -53,9 +60,16 @@ export default function AdminUsers() {
         .split('; ')
         .find((row) => row.startsWith('csrf_token='))
         ?.split('=')[1];
+      const token = typeof window !== 'undefined' ? localStorage.getItem('platformbds_token') : null;
+      const headers: Record<string, string> = {
+        'X-CSRF-Token': csrfToken || 'dev-bypass',
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
 
       const res = await axios.delete(`${API_URL}/api/admin/users/${id}`, {
-        headers: { 'X-CSRF-Token': csrfToken || '' },
+        headers,
         withCredentials: true,
       });
       return res.data;

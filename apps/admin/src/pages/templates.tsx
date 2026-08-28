@@ -108,7 +108,7 @@ export default function AdminTemplates() {
   });
 
   return (
-    <AdminLayout title="Quản Lý Mẫu Giao Diện (Master Templates)" subtitle="Quản lý kho 16+ template bất động sản, cấu hình giá bán theo năm và mở Template Studio.">
+    <AdminLayout title="Quản Lý Mẫu Giao Diện (16 Templates)" subtitle="Quản lý kho 16 mẫu template bất động sản cao cấp, cấu hình giá bán và tùy chỉnh nội dung.">
       {/* Search & Filter Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm mb-6">
         <div className="flex flex-wrap items-center gap-3">
@@ -202,12 +202,23 @@ export default function AdminTemplates() {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-1.5">
-                      <Link
-                        href={`/studio?id=${template.id}`}
+                      <a
+                        href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
+                        target="_blank"
+                        rel="noreferrer"
                         className="text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-xl transition-all shadow-sm"
+                        title="Vào CMS để sửa toàn bộ nội dung, hình ảnh, văn bản, dự án và bài viết"
                       >
-                        Studio
-                      </Link>
+                        Sửa Nội Dung (CMS)
+                      </a>
+                      <a
+                        href={`${process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'https://templates.aireviewbds.com'}/demo/${template.slug}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs font-bold text-slate-700 hover:text-blue-600 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl transition-all shadow-sm"
+                      >
+                        Xem Demo
+                      </a>
                       <button
                         onClick={() => {
                           setEditingTemplate(template);

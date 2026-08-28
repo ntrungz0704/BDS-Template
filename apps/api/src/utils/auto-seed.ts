@@ -235,30 +235,16 @@ export async function autoSeedDatabase() {
       });
     }
 
-    // Cập nhật các alias cũ nếu có trong DB để có ảnh đại diện đẹp
-    const aliasThumbnails: Record<string, string> = {
-      'modern-villa': 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
-      'smart-urban': 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800',
-      'green-eco': 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800',
-      'ocean-view': 'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800',
-      'minimal-zen': 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800',
-      'high-rise': 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800',
-      'heritage-classic': 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800',
-      'suburban-family': 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800',
-      'tech-hub': 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800',
-      'lake-sanctuary': 'https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?w=800',
-      'mountain-retreat': 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800',
-      'commercial-plaza': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800',
-      'riverside-mansion': 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800',
-      'golf-residences': 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800',
-      'industrial-logistics': 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800',
-    };
-
-    for (const [slug, thumb] of Object.entries(aliasThumbnails)) {
-      await prisma.template.updateMany({
-        where: { slug, thumbnail: null },
-        data: { thumbnail: thumb },
+    // Xóa toàn bộ các template thừa/cũ/alias để giữ chuẩn xác đúng 16 mẫu
+    const validSlugs = DEFAULT_TEMPLATES.map((t) => t.slug);
+    try {
+      await prisma.template.deleteMany({
+        where: {
+          slug: { notIn: validSlugs },
+        },
       });
+    } catch (tmplErr: any) {
+      console.warn('Lỗi phụ khi dọn dẹp template cũ:', tmplErr.message);
     }
 
     // 2. Tạo DUY NHẤT 1 Super Admin tài khoản chính thức
