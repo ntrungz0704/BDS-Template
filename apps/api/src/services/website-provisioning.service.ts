@@ -267,7 +267,7 @@ export class WebsiteProvisioningService {
             subtitle: templateConfig?.heroSubtitle || 'Kiến trúc hiện đại, tiện ích chuẩn quốc tế, hòa mình cùng thiên nhiên xanh mát.',
             ctaText: 'Nhận Bảng Giá & Ưu Đãi',
             ctaUrl: '#contact',
-            backgroundImage: templateConfig?.heroImg || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600',
+            backgroundImage: templateConfig?.heroImage || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600',
             quickStats: [
               { label: 'Quy mô', value: '45 Hecta' },
               { label: 'Mật độ xanh', value: '82%' },
