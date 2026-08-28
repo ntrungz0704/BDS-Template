@@ -316,10 +316,16 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               Cung cấp giải pháp không gian công nghiệp toàn diện: kho bãi, nhà xưởng xây sẵn và đất công nghiệp với vị trí chiến lược, kết nối giao thương quốc tế.
             </p>
             <div className="flex flex-wrap gap-4">
-              <button className="bg-[#1E40AF] hover:bg-[#1E3A8A] text-white px-8 py-4 font-bold transition-colors flex items-center uppercase tracking-wider">
+              <button 
+                onClick={() => setActivePage('projects')}
+                className="bg-[#1E40AF] hover:bg-[#1E3A8A] text-white px-8 py-4 font-bold transition-colors flex items-center uppercase tracking-wider cursor-pointer"
+              >
                 Tìm Hiểu Các Khu CN <ArrowRight className="ml-2 w-5 h-5" />
               </button>
-              <button className="bg-transparent border-2 border-white hover:bg-white hover:text-[#0F172A] px-8 py-4 font-bold transition-all uppercase tracking-wider">
+              <button 
+                onClick={() => setActivePage('contact')}
+                className="bg-transparent border-2 border-white hover:bg-white hover:text-[#0F172A] px-8 py-4 font-bold transition-all uppercase tracking-wider cursor-pointer"
+              >
                 Nhận Báo Giá Cụm Kho
               </button>
             </div>
@@ -352,7 +358,10 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                 <option>10,000 - 50,000 m2</option>
                 <option>Trên 50,000 m2</option>
               </select>
-              <button className="w-full bg-[#0F172A] hover:bg-[#1e293b] text-white p-3 font-bold transition-colors flex items-center justify-center">
+              <button 
+                onClick={() => setActivePage('projects')}
+                className="w-full bg-[#0F172A] hover:bg-[#1e293b] text-white p-3 font-bold transition-colors flex items-center justify-center cursor-pointer"
+              >
                 <Search className="w-5 h-5 mr-2" /> TÌM KIẾM
               </button>
             </div>
@@ -396,7 +405,10 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                 CỤM CÔNG NGHIỆP NỔI BẬT
               </h2>
             </div>
-            <button className="hidden md:flex text-[#1E40AF] font-bold items-center hover:text-[#0F172A] transition-colors uppercase">
+            <button 
+              onClick={() => setActivePage('projects')}
+              className="hidden md:flex text-[#1E40AF] font-bold items-center hover:text-[#0F172A] transition-colors uppercase cursor-pointer"
+            >
               Xem tất cả dự án <ArrowRight className="ml-2 w-5 h-5" />
             </button>
           </div>
@@ -438,7 +450,10 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                     ))}
                   </div>
                   <div className="border-t border-gray-100 pt-4">
-                    <button className="text-[#1E40AF] font-bold text-sm uppercase flex items-center hover:text-[#F59E0B] transition-colors w-full justify-between">
+                    <button 
+                      onClick={() => setActivePage('projects')}
+                      className="text-[#1E40AF] font-bold text-sm uppercase flex items-center hover:text-[#F59E0B] transition-colors w-full justify-between cursor-pointer"
+                    >
                       Xem Chi Tiết Quy Hoạch <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -489,7 +504,10 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               <p className="text-gray-400 mb-8 leading-relaxed">
                 Chúng tôi cung cấp hệ sinh thái công nghiệp hoàn chỉnh, giúp doanh nghiệp tiết kiệm chi phí vận hành và tối ưu hóa chuỗi cung ứng.
               </p>
-              <button className="bg-[#F59E0B] text-[#0F172A] px-6 py-3 font-bold uppercase hover:bg-white transition-colors">
+              <button 
+                onClick={() => alert('Hồ sơ năng lực đang được tải xuống...')}
+                className="bg-[#F59E0B] text-[#0F172A] px-6 py-3 font-bold uppercase hover:bg-white transition-colors cursor-pointer"
+              >
                 Tải Hồ Sơ Năng Lực (PDF)
               </button>
             </div>
@@ -545,7 +563,10 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                   </li>
                 ))}
               </ul>
-              <button className="border-2 border-[#0F172A] text-[#0F172A] px-8 py-4 font-bold hover:bg-[#0F172A] hover:text-white transition-colors uppercase">
+              <button 
+                onClick={() => setActivePage('about')}
+                className="border-2 border-[#0F172A] text-[#0F172A] px-8 py-4 font-bold hover:bg-[#0F172A] hover:text-white transition-colors uppercase cursor-pointer"
+              >
                 Về Tập Đoàn Chúng Tôi
               </button>
             </div>
@@ -571,7 +592,10 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                 <Maximize className="w-12 h-12 text-[#F59E0B] mx-auto mb-4" />
                 <h3 className="text-2xl text-white font-bold mb-2">MASTER PLAN INTERACTIVE VIEW</h3>
                 <p className="text-gray-400 mb-6">Interactive GIS Map is available in the desktop version.</p>
-                <button className="bg-[#1E40AF] text-white px-6 py-2 font-bold hover:bg-[#F59E0B] hover:text-[#0F172A] transition-colors">
+                <button 
+                  onClick={() => setActivePage('gallery')}
+                  className="bg-[#1E40AF] text-white px-6 py-2 font-bold hover:bg-[#F59E0B] hover:text-[#0F172A] transition-colors cursor-pointer"
+                >
                   VIEW FULL SCREEN
                 </button>
               </div>
@@ -611,7 +635,10 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
             <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: fontHeading }}>
               THƯ VIỆN CƠ SỞ VẬT CHẤT
             </h2>
-            <button className="text-[#F59E0B] font-bold uppercase tracking-wider hover:text-white transition-colors">
+            <button 
+              onClick={() => setActivePage('gallery')}
+              className="text-[#F59E0B] font-bold uppercase tracking-wider hover:text-white transition-colors cursor-pointer"
+            >
               Xem Toàn Bộ Ảnh
             </button>
           </div>
@@ -667,7 +694,10 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                   <h3 className="text-lg font-bold text-[#0F172A] mb-4 group-hover:text-[#1E40AF] transition-colors leading-snug" style={{ fontFamily: fontHeading }}>
                     {news.title}
                   </h3>
-                  <button className="text-[#0F172A] font-bold text-sm uppercase flex items-center hover:text-[#F59E0B] transition-colors">
+                  <button 
+                    onClick={() => setActivePage('news')}
+                    className="text-[#0F172A] font-bold text-sm uppercase flex items-center hover:text-[#F59E0B] transition-colors cursor-pointer"
+                  >
                     Đọc Bài Viết <ArrowRight className="w-4 h-4 ml-1" />
                   </button>
                 </div>
@@ -739,11 +769,18 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
             </div>
             
             <div className="md:w-1/2">
-              <form className="space-y-4">
-                <input type="text" placeholder="Tên Doanh Nghiệp / Người liên hệ *" className="w-full p-4 border border-gray-300 focus:border-[#1E40AF] focus:ring-1 focus:ring-[#1E40AF] outline-none" />
+              <form 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  alert('Gửi yêu cầu báo giá dự án thành công!');
+                  e.currentTarget.reset();
+                }}
+                className="space-y-4"
+              >
+                <input required type="text" placeholder="Tên Doanh Nghiệp / Người liên hệ *" className="w-full p-4 border border-gray-300 focus:border-[#1E40AF] focus:ring-1 focus:ring-[#1E40AF] outline-none" />
                 <div className="grid grid-cols-2 gap-4">
-                  <input type="tel" placeholder="Số điện thoại *" className="w-full p-4 border border-gray-300 focus:border-[#1E40AF] outline-none" />
-                  <input type="email" placeholder="Email *" className="w-full p-4 border border-gray-300 focus:border-[#1E40AF] outline-none" />
+                  <input required type="tel" placeholder="Số điện thoại *" className="w-full p-4 border border-gray-300 focus:border-[#1E40AF] outline-none" />
+                  <input required type="email" placeholder="Email *" className="w-full p-4 border border-gray-300 focus:border-[#1E40AF] outline-none" />
                 </div>
                 <select className="w-full p-4 border border-gray-300 focus:border-[#1E40AF] outline-none text-gray-600">
                   <option>Nhu cầu của bạn (Kho, Xưởng, Đất...)</option>
@@ -751,7 +788,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                   <option>Thuê xưởng xây sẵn</option>
                   <option>Kho logistics</option>
                 </select>
-                <button type="button" className="w-full bg-[#0F172A] text-white font-bold p-4 uppercase tracking-widest hover:bg-[#F59E0B] hover:text-[#0F172A] transition-colors">
+                <button type="submit" className="w-full bg-[#0F172A] text-white font-bold p-4 uppercase tracking-widest hover:bg-[#F59E0B] hover:text-[#0F172A] transition-colors cursor-pointer">
                   Gửi Yêu Cầu
                 </button>
               </form>
@@ -766,12 +803,19 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
           <BarChart3 className="w-12 h-12 text-[#1E40AF] mx-auto mb-4" />
           <h3 className="text-2xl font-bold text-[#0F172A] mb-2" style={{ fontFamily: fontHeading }}>NHẬN BÁO CÁO THỊ TRƯỜNG</h3>
           <p className="text-gray-600 mb-6 max-w-lg mx-auto">Đăng ký email để nhận báo cáo phân tích bất động sản công nghiệp hàng quý từ đội ngũ chuyên gia của chúng tôi.</p>
-          <div className="flex flex-col sm:flex-row justify-center max-w-md mx-auto">
-            <input type="email" placeholder="Nhập email doanh nghiệp..." className="px-4 py-3 border border-gray-300 w-full focus:outline-none focus:border-[#1E40AF]" />
-            <button className="bg-[#1E40AF] text-white px-6 py-3 font-bold uppercase whitespace-nowrap hover:bg-[#0F172A] transition-colors mt-2 sm:mt-0">
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              alert('Đăng ký nhận báo cáo thị trường BĐS công nghiệp thành công!');
+              (e.currentTarget.elements[0] as HTMLInputElement).value = '';
+            }}
+            className="flex flex-col sm:flex-row justify-center max-w-md mx-auto"
+          >
+            <input required type="email" placeholder="Nhập email doanh nghiệp..." className="px-4 py-3 border border-gray-300 w-full focus:outline-none focus:border-[#1E40AF]" />
+            <button type="submit" className="bg-[#1E40AF] text-white px-6 py-3 font-bold uppercase whitespace-nowrap hover:bg-[#0F172A] transition-colors mt-2 sm:mt-0 cursor-pointer">
               Đăng Ký
             </button>
-          </div>
+          </form>
         </div>
       </section>
     </div>
@@ -835,8 +879,11 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               </div>
               <div className="flex items-end">
                 <button 
-                  onClick={() => {}}
-                  className="w-full bg-[#1E40AF] text-white font-bold p-3.5 hover:bg-[#0F172A] transition-colors flex justify-center items-center rounded-sm"
+                  onClick={() => {
+                    const el = document.getElementById('projects-list');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="w-full bg-[#1E40AF] text-white font-bold p-3.5 hover:bg-[#0F172A] transition-colors flex justify-center items-center rounded-sm cursor-pointer shadow-md"
                 >
                   <Search className="w-5 h-5 mr-2" /> TÌM KIẾM ({filtered.length})
                 </button>
@@ -1347,7 +1394,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
           className="fixed inset-0 bg-black bg-opacity-90 z-[99999] flex items-center justify-center p-4 cursor-pointer"
           onClick={() => setSelectedGalleryImg(null)}
         >
-          <button className="absolute top-4 right-4 text-white hover:text-[#F59E0B]">
+          <button onClick={() => setSelectedGalleryImg(null)} className="absolute top-4 right-4 text-white hover:text-[#F59E0B] cursor-pointer">
             <X className="w-8 h-8" />
           </button>
           <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedGalleryImg} alt="Lightbox Preview" className="max-w-full max-h-[85vh] object-contain rounded" />

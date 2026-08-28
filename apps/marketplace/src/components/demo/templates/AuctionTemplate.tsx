@@ -555,7 +555,10 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                     </div>
                   </div>
                   
-                  <button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 text-lg shadow-lg shadow-red-600/30">
+                  <button 
+                    onClick={() => setSelectedAuction(item)}
+                    className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 text-lg shadow-lg shadow-red-600/30 cursor-pointer"
+                  >
                     <Gavel size={20} /> Đặt Giá Ngay
                   </button>
                 </div>
@@ -946,12 +949,19 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
             Đăng ký thành viên ngay hôm nay để nhận thông báo sớm nhất về các phiên đấu giá hấp dẫn và ưu đãi đặc quyền.
           </p>
           
-          <div className="flex flex-col sm:flex-row justify-center gap-4 max-w-lg mx-auto">
-            <input type="email" placeholder="Nhập địa chỉ email của bạn..." className="w-full px-6 py-4 rounded-xl text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-red-400" />
-            <button className="bg-gray-900 hover:bg-black text-white px-8 py-4 rounded-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors shadow-xl shrink-0 whitespace-nowrap">
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              alert('Đăng ký nhận thông tin đấu giá thành công!');
+              (e.currentTarget.elements[0] as HTMLInputElement).value = '';
+            }}
+            className="flex flex-col sm:flex-row justify-center gap-4 max-w-lg mx-auto"
+          >
+            <input required type="email" placeholder="Nhập địa chỉ email của bạn..." className="w-full px-6 py-4 rounded-xl text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-red-400 bg-white" />
+            <button type="submit" className="bg-gray-900 hover:bg-black text-white px-8 py-4 rounded-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors shadow-xl shrink-0 whitespace-nowrap cursor-pointer">
               Đăng Ký Nhận Tin
             </button>
-          </div>
+          </form>
         </div>
       </section>
     </main>
@@ -1131,7 +1141,10 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                     </div>
                   </div>
                   <div className="px-6 pb-6">
-                    <button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 text-lg shadow-lg">
+                    <button 
+                      onClick={() => setSelectedAuction(item)}
+                      className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 text-lg shadow-lg cursor-pointer"
+                    >
                       <Gavel size={20} /> {item.status === 'live' ? 'Đấu Giá / Đặt Cọc' : 'Xem Chi Tiết'}
                     </button>
                   </div>
@@ -1445,7 +1458,10 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                     </div>
                   </div>
                   <div className="px-6 pb-6">
-                    <button className="text-red-600 group-hover:text-red-800 font-bold uppercase tracking-wider text-sm flex items-center gap-2">
+                    <button 
+                      onClick={() => setSelectedArticle(item)}
+                      className="text-red-600 group-hover:text-red-800 font-bold uppercase tracking-wider text-sm flex items-center gap-2 cursor-pointer"
+                    >
                       Đọc Tiếp <ArrowRight size={16} />
                     </button>
                   </div>
@@ -1657,10 +1673,10 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
           </nav>
 
           <div className="hidden lg:flex items-center gap-4">
-             <button className="text-gray-900 font-bold font-['Barlow_Condensed'] uppercase tracking-wider hover:text-red-600 transition-colors">
+             <button onClick={() => navigateTo('contact')} className="text-gray-900 font-bold font-['Barlow_Condensed'] uppercase tracking-wider hover:text-red-600 transition-colors cursor-pointer">
                Đăng Nhập
              </button>
-             <button className="bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-lg font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors shadow-lg shadow-red-600/30">
+             <button onClick={() => navigateTo('contact')} className="bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-lg font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors shadow-lg shadow-red-600/30 cursor-pointer">
                Đăng Ký Ngay
              </button>
           </div>
@@ -1680,10 +1696,10 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
               <NavLinks />
             </div>
             <div className="flex flex-col gap-3 pt-2">
-              <button className="w-full bg-gray-100 text-gray-900 font-bold py-3 rounded-xl font-['Barlow_Condensed'] uppercase tracking-wider">
+              <button onClick={() => navigateTo('contact')} className="w-full bg-gray-100 text-gray-900 font-bold py-3 rounded-xl font-['Barlow_Condensed'] uppercase tracking-wider cursor-pointer">
                 Đăng Nhập
               </button>
-              <button className="w-full bg-red-600 text-white font-bold py-3 rounded-xl font-['Barlow_Condensed'] uppercase tracking-wider">
+              <button onClick={() => navigateTo('contact')} className="w-full bg-red-600 text-white font-bold py-3 rounded-xl font-['Barlow_Condensed'] uppercase tracking-wider cursor-pointer">
                 Đăng Ký
               </button>
             </div>
@@ -1962,10 +1978,10 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
             <div>
               <h3 className="font-['Barlow_Condensed'] text-xl font-bold text-white uppercase tracking-wider mb-6">Chính Sách</h3>
               <ul className="space-y-3 text-gray-400 font-medium text-sm">
-                <li><button className="hover:text-red-500 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Quy chế hoạt động</button></li>
-                <li><button className="hover:text-red-500 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Chính sách bảo mật</button></li>
-                <li><button className="hover:text-red-500 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Cơ chế giải quyết tranh chấp</button></li>
-                <li><button className="hover:text-red-500 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Hướng dẫn thanh toán</button></li>
+                <li><button onClick={() => navigateTo('about')} className="hover:text-red-500 transition-colors flex items-center gap-2 cursor-pointer"><ChevronRight size={14}/> Quy chế hoạt động</button></li>
+                <li><button onClick={() => navigateTo('about')} className="hover:text-red-500 transition-colors flex items-center gap-2 cursor-pointer"><ChevronRight size={14}/> Chính sách bảo mật</button></li>
+                <li><button onClick={() => navigateTo('about')} className="hover:text-red-500 transition-colors flex items-center gap-2 cursor-pointer"><ChevronRight size={14}/> Cơ chế giải quyết tranh chấp</button></li>
+                <li><button onClick={() => navigateTo('about')} className="hover:text-red-500 transition-colors flex items-center gap-2 cursor-pointer"><ChevronRight size={14}/> Hướng dẫn thanh toán</button></li>
               </ul>
             </div>
           </div>

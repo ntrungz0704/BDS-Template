@@ -620,7 +620,15 @@ function SearchBar({ cfg, floating }: { cfg: StudioConfig; floating: boolean }) 
         </select>
       </div>
       <div className="flex items-end">
-        <button className="w-full px-7 py-3 text-xs font-black text-white rounded-xl shadow-lg transition hover:brightness-110 flex items-center justify-center gap-2" style={{ background: cfg.primary }}>
+        <button 
+          type="button"
+          onClick={() => {
+            const el = document.getElementById('du-an-noi-bat');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="w-full px-7 py-3 text-xs font-black text-white rounded-xl shadow-lg transition hover:brightness-110 flex items-center justify-center gap-2 cursor-pointer" 
+          style={{ background: cfg.primary }}
+        >
           <Search className="w-4 h-4" /> Tìm Kiếm
         </button>
       </div>
@@ -642,7 +650,15 @@ function SearchSidebar({ cfg }: { cfg: StudioConfig }) {
           </select>
         </label>
       ))}
-      <button className="mt-6 w-full py-3.5 text-xs font-black text-white rounded-xl shadow-md transition hover:brightness-110" style={{ background: cfg.primary }}>
+      <button 
+        type="button"
+        onClick={() => {
+          const el = document.getElementById('du-an-noi-bat');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }}
+        className="mt-6 w-full py-3.5 text-xs font-black text-white rounded-xl shadow-md transition hover:brightness-110 cursor-pointer" 
+        style={{ background: cfg.primary }}
+      >
         Áp Dụng Bộ Lọc
       </button>
     </aside>
@@ -849,7 +865,7 @@ function LeadSection({ cfg }: { cfg: StudioConfig }) {
               <label className="block text-xs font-bold uppercase opacity-70 mb-1">Số điện thoại / Zalo (*)</label>
               <input required type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full border border-slate-200 bg-white rounded-xl p-3.5 text-xs font-bold text-blue-600 focus:outline-none focus:border-blue-500" placeholder="Ví dụ: 0919 006 030..." />
             </div>
-            <button className="py-4 text-xs font-black text-white rounded-xl shadow-lg transition hover:brightness-110 mt-2" style={{ background: cfg.primary }}>
+            <button type="submit" className="py-4 text-xs font-black text-white rounded-xl shadow-lg transition hover:brightness-110 mt-2 cursor-pointer" style={{ background: cfg.primary }}>
               🚀 GỬI YÊU CẦU NHẬN BẢNG GIÁ VIP
             </button>
             <p className="text-[10px] text-center opacity-50">🔒 Thông tin được bảo mật 100% theo tiêu chuẩn chủ đầu tư.</p>

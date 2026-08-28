@@ -656,7 +656,10 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                     <span className="flex items-center gap-1"><Bath size={18} className="text-violet-400"/> {item.baths} WC</span>
                     <span className="flex items-center gap-1"><Maximize size={18} className="text-violet-400"/> {item.area}</span>
                   </div>
-                  <button className="w-full text-violet-600 font-bold flex items-center justify-center gap-2 group-hover:text-amber-500 transition">
+                  <button 
+                    onClick={() => { setSelectedApartment(item); }}
+                    className="w-full text-violet-600 font-bold flex items-center justify-center gap-2 group-hover:text-amber-500 transition cursor-pointer"
+                  >
                     Xem chi tiết <ArrowRight size={18} />
                   </button>
                 </div>
@@ -1098,8 +1101,8 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
       <div className={`${MAX_W} px-4 border-t border-violet-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-sm opacity-60 font-medium`}>
         <p>&copy; 2026 SmartUrban. Phát triển bởi PlatformBDS.</p>
         <div className="flex gap-8">
-          <a href="#" className="hover:text-white transition">Điều khoản sử dụng</a>
-          <a href="#" className="hover:text-white transition">Chính sách bảo mật</a>
+          <button onClick={() => navigateTo('about')} className="hover:text-white transition cursor-pointer">Điều khoản sử dụng</button>
+          <button onClick={() => navigateTo('about')} className="hover:text-white transition cursor-pointer">Chính sách bảo mật</button>
         </div>
       </div>
     </footer>
@@ -1980,7 +1983,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
       {selectedGalleryImg && (
         <div className="fixed inset-0 z-[100] bg-violet-950/95 flex items-center justify-center p-4 backdrop-blur-md" onClick={() => setSelectedGalleryImg(null)}>
           <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedGalleryImg} className="max-w-[95vw] max-h-[95vh] rounded-2xl shadow-2xl object-contain bg-white" alt="Lightbox View" />
-          <button className="absolute top-8 right-8 text-white hover:text-amber-500 bg-violet-900/50 p-4 rounded-full backdrop-blur-md transition"><X size={32}/></button>
+          <button onClick={() => setSelectedGalleryImg(null)} className="absolute top-8 right-8 text-white hover:text-amber-500 bg-violet-900/50 p-4 rounded-full backdrop-blur-md transition cursor-pointer"><X size={32}/></button>
         </div>
       )}
     </div>

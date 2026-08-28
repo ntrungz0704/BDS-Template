@@ -246,7 +246,7 @@ export default function VietnameseProjectTemplate({ template, initialPage = 'hom
                 <form onSubmit={handleSubmit} className="space-y-3 pt-2">
                   <input required placeholder="Họ và tên quý khách..." value={leadName} onChange={e => setLeadName(e.target.value)} className="w-full p-3 rounded-xl border border-slate-300 text-xs font-medium focus:outline-none focus:border-blue-500" />
                   <input required type="tel" placeholder="Số điện thoại / Zalo..." value={leadPhone} onChange={e => setLeadPhone(e.target.value)} className="w-full p-3 rounded-xl border border-slate-300 text-xs font-bold text-blue-600 focus:outline-none focus:border-blue-500" />
-                  <button className="w-full py-3.5 text-xs font-black text-white rounded-xl shadow-lg transition hover:brightness-110" style={{ background: palette.ink }}>
+                  <button type="submit" className="w-full py-3.5 text-xs font-black text-white rounded-xl shadow-lg transition hover:brightness-110 cursor-pointer" style={{ background: palette.ink }}>
                     GỬI QUA ZALO NGAY 🚀
                   </button>
                 </form>
@@ -441,7 +441,7 @@ export default function VietnameseProjectTemplate({ template, initialPage = 'hom
                   <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Số điện thoại / Zalo (*)</label>
                   <input required type="tel" value={leadPhone} onChange={e => setLeadPhone(e.target.value)} className="w-full border border-slate-200 bg-white rounded-xl p-3.5 text-xs font-bold text-blue-600 focus:outline-none focus:border-blue-500" placeholder="Ví dụ: 0919 006 030..." />
                 </div>
-                <button className="w-full py-4 text-xs font-black text-white rounded-xl shadow-lg transition hover:brightness-110 mt-2" style={{ background: palette.ink }}>
+                <button type="submit" className="w-full py-4 text-xs font-black text-white rounded-xl shadow-lg transition hover:brightness-110 mt-2 cursor-pointer" style={{ background: palette.ink }}>
                   🚀 GỬI YÊU CẦU NHẬN BẢNG GIÁ VIP
                 </button>
               </form>

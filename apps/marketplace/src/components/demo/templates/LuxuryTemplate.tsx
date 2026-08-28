@@ -501,12 +501,20 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
   // ─ FLOATING CTA ──────────────────────────────────────────────────────────────
   const renderFloatingCTA = () => (
     <div className="fixed right-6 bottom-8 z-40 flex flex-col gap-3">
-      <button className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110"
-        style={{ backgroundColor: '#25D366' }} title="Zalo / WhatsApp">
+      <button 
+        onClick={() => alert('Đang kết nối Zalo / Hotline: 0901 234 567')}
+        className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 cursor-pointer"
+        style={{ backgroundColor: '#25D366' }} 
+        title="Zalo / WhatsApp"
+      >
         <Phone className="w-5 h-5 text-white" />
       </button>
-      <button className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110"
-        style={{ backgroundColor: GOLD }} title="Tư vấn">
+      <button 
+        onClick={() => { setCurrentPage('contact'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+        className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 cursor-pointer"
+        style={{ backgroundColor: GOLD }} 
+        title="Tư vấn"
+      >
         <Mail className="w-5 h-5" style={{ color: DARK }} />
       </button>
     </div>
@@ -1637,7 +1645,12 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             </p>
             <div className="flex gap-4">
               {[Facebook, Youtube, Instagram].map((Icon, i) => (
-                <button key={i} className="w-9 h-9 flex items-center justify-center transition-all border border-zinc-800 hover:border-[#C9A84C]" style={{ backgroundColor: 'transparent' }}>
+                <button 
+                  key={i} 
+                  onClick={() => alert('Mở liên kết mạng xã hội')}
+                  className="w-9 h-9 flex items-center justify-center transition-all border border-zinc-800 hover:border-[#C9A84C] cursor-pointer" 
+                  style={{ backgroundColor: 'transparent' }}
+                >
                   <Icon className="w-4 h-4" style={{ color: MUTED }} />
                 </button>
               ))}
@@ -1709,9 +1722,9 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             © 2026 {projectName} Group. All rights reserved.
           </p>
           <div className="flex gap-6 text-xs" style={{ color: 'rgba(154,154,168,0.5)', fontFamily: FONT_BODY }}>
-            <a href="#" className="hover:text-white transition-colors">Điều khoản sử dụng</a>
-            <a href="#" className="hover:text-white transition-colors">Chính sách bảo mật</a>
-            <a href="#" className="hover:text-white transition-colors">Cookie</a>
+            <button onClick={() => { setCurrentPage('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition-colors cursor-pointer">Điều khoản sử dụng</button>
+            <button onClick={() => { setCurrentPage('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition-colors cursor-pointer">Chính sách bảo mật</button>
+            <button onClick={() => { setCurrentPage('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition-colors cursor-pointer">Cookie</button>
           </div>
         </div>
       </div>

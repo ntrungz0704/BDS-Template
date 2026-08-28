@@ -911,9 +911,13 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
             </button>
             <div className="flex gap-2">
               {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
-                <a key={i} href="#" className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-gray-400 hover:text-[#BE185D] hover:shadow-md transition-all">
+                <button 
+                  key={i} 
+                  onClick={() => alert('Mở liên kết mạng xã hội')}
+                  className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-gray-400 hover:text-[#BE185D] hover:shadow-md transition-all cursor-pointer"
+                >
                   <Icon className="w-5 h-5" />
-                </a>
+                </button>
               ))}
             </div>
           </div>
@@ -1250,10 +1254,10 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
         <div>
           <h4 className="text-white font-bold mb-6 text-lg">Hỗ Trợ</h4>
           <ul className="space-y-3 text-sm">
-            <li><a href="#" className="hover:text-white transition-colors">Chính Sách Bảo Mật</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Điều Khoản Sử Dụng</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Câu Hỏi Thường Gặp</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Quy hoạch 2026</a></li>
+            <li><button onClick={() => { setCurrentPage('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition-colors cursor-pointer text-left">Chính Sách Bảo Mật</button></li>
+            <li><button onClick={() => { setCurrentPage('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition-colors cursor-pointer text-left">Điều Khoản Sử Dụng</button></li>
+            <li><button onClick={() => { setCurrentPage('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition-colors cursor-pointer text-left">Câu Hỏi Thường Gặp</button></li>
+            <li><button onClick={() => { setCurrentPage('projects'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition-colors cursor-pointer text-left">Quy hoạch 2026</button></li>
           </ul>
         </div>
         <div>
@@ -1586,9 +1590,13 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                   <p className="text-gray-500 text-sm mb-6 leading-relaxed">{leader.bio}</p>
                   <div className="flex gap-3 justify-center">
                     {[Facebook, Linkedin, Mail].map((Icon, idx) => (
-                      <a key={idx} href="#" className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-[#BE185D] hover:bg-pink-50 transition-all">
+                      <button 
+                        key={idx} 
+                        onClick={() => alert('Liên hệ trực tiếp với chuyên gia')}
+                        className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-[#BE185D] hover:bg-pink-50 transition-all cursor-pointer"
+                      >
                         <Icon className="w-4 h-4" />
-                      </a>
+                      </button>
                     ))}
                   </div>
                 </div>

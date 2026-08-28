@@ -472,7 +472,10 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
               {link.name}
             </button>
           ))}
-          <button className="mt-4 bg-gradient-to-r from-[#38BDF8] to-[#818CF8] text-[#020617] px-4 py-3 rounded-lg font-bold text-center">
+          <button 
+            onClick={() => navigateTo('contact')}
+            className="mt-4 bg-gradient-to-r from-[#38BDF8] to-[#818CF8] text-[#020617] px-4 py-3 rounded-lg font-bold text-center cursor-pointer"
+          >
             Đăng nhập
           </button>
         </div>
@@ -1243,10 +1246,10 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             </div>
             <p className="mb-6 leading-relaxed">Nền tảng giao dịch bất động sản cao cấp hàng đầu Việt Nam. Nơi hội tụ những dự án tinh hoa và cơ hội đầu tư sinh lời bền vững.</p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors"><Facebook size={18}/></a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors"><Twitter size={18}/></a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors"><Linkedin size={18}/></a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors"><Instagram size={18}/></a>
+              <button onClick={() => alert('Mở Facebook')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors cursor-pointer"><Facebook size={18}/></button>
+              <button onClick={() => alert('Mở Twitter')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors cursor-pointer"><Twitter size={18}/></button>
+              <button onClick={() => alert('Mở LinkedIn')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors cursor-pointer"><Linkedin size={18}/></button>
+              <button onClick={() => alert('Mở Instagram')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors cursor-pointer"><Instagram size={18}/></button>
             </div>
           </div>
           
@@ -1309,8 +1312,8 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
           <p>&copy; 2026 PlatformBDS. All rights reserved.</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-white transition-colors">Điều khoản sử dụng</a>
-            <a href="#" className="hover:text-white transition-colors">Chính sách bảo mật</a>
+            <button onClick={() => navigateTo('about')} className="hover:text-white transition-colors cursor-pointer">Điều khoản sử dụng</button>
+            <button onClick={() => navigateTo('about')} className="hover:text-white transition-colors cursor-pointer">Chính sách bảo mật</button>
           </div>
         </div>
       </div>
@@ -1732,7 +1735,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#38BDF8] outline-none transition-colors"
                     ></textarea>
                   </div>
-                  <button className="w-full bg-[#38BDF8] text-[#020617] font-bold py-4 rounded-xl hover:bg-[#0EA5E9] transition-all hover:shadow-[0_0_15px_rgba(56,189,248,0.3)]">Gửi liên hệ</button>
+                    <button type="submit" className="w-full bg-[#38BDF8] text-[#020617] font-bold py-4 rounded-xl hover:bg-[#0EA5E9] transition-all hover:shadow-[0_0_15px_rgba(56,189,248,0.3)] cursor-pointer">Gửi liên hệ</button>
                 </form>
               </div>
             )}

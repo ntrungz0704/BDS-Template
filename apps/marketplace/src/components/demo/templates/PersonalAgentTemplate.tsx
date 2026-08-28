@@ -350,18 +350,18 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               Chuyên gia tư vấn bất động sản cao cấp, mang đến giải pháp an cư và đầu tư sinh lời vượt trội cho khách hàng tại thị trường TP.HCM.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors">
+              <button onClick={() => alert('Mở Facebook')} className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors cursor-pointer">
                 <Facebook size={18} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors">
+              </button>
+              <button onClick={() => alert('Mở Instagram')} className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors cursor-pointer">
                 <Instagram size={18} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors">
+              </button>
+              <button onClick={() => alert('Mở LinkedIn')} className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors cursor-pointer">
                 <Linkedin size={18} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors">
+              </button>
+              <button onClick={() => alert('Mở Twitter')} className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors cursor-pointer">
                 <Twitter size={18} />
-              </a>
+              </button>
             </div>
           </div>
 
@@ -941,7 +941,14 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                     <label className="block text-sm font-medium text-gray-700 mb-1">Lời nhắn</label>
                     <textarea rows={4} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent" placeholder="Bạn cần tôi hỗ trợ thêm điều gì?"></textarea>
                   </div>
-                  <button type="button" className="w-full bg-gray-900 text-white font-bold py-4 rounded-xl hover:bg-indigo-600 transition-colors mt-4">
+                  <button 
+                    type="submit" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      alert('Gửi yêu cầu tư vấn thành công! Tôi sẽ liên hệ lại sớm nhất.');
+                    }}
+                    className="w-full bg-gray-900 text-white font-bold py-4 rounded-xl hover:bg-indigo-600 transition-colors mt-4 cursor-pointer"
+                  >
                     Gửi Yêu Cầu Tư Vấn
                   </button>
                 </form>
@@ -957,12 +964,19 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
           <Mail size={40} className="mx-auto text-indigo-300 mb-6" />
           <h3 className="text-2xl font-bold text-gray-900 mb-4">Nhận Bản Tin Thị Trường BĐS</h3>
           <p className="text-gray-600 mb-8">Đăng ký email để nhận các báo cáo phân tích độc quyền và thông tin dự án mới nhất từ tôi.</p>
-          <div className="flex gap-2 max-w-md mx-auto">
-            <input type="email" placeholder="Địa chỉ email của bạn..." className="flex-1 px-6 py-4 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600" />
-            <button className="px-8 py-4 bg-indigo-600 text-white rounded-full font-bold hover:bg-indigo-700 transition-colors whitespace-nowrap">
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              alert('Đăng ký nhận bản tin thành công!');
+              (e.currentTarget.elements[0] as HTMLInputElement).value = '';
+            }}
+            className="flex gap-2 max-w-md mx-auto"
+          >
+            <input required type="email" placeholder="Địa chỉ email của bạn..." className="flex-1 px-6 py-4 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+            <button type="submit" className="px-8 py-4 bg-indigo-600 text-white rounded-full font-bold hover:bg-indigo-700 transition-colors whitespace-nowrap cursor-pointer">
               Đăng Ký
             </button>
-          </div>
+          </form>
         </div>
       </section>
     </div>

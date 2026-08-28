@@ -486,9 +486,9 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
           <ul className="space-y-3">
             {['BĐS Thương mại', 'BĐS Nghỉ dưỡng', 'BĐS Công nghiệp', 'Căn hộ Hạng sang', 'Quản lý tài sản'].map(item => (
               <li key={item}>
-                <a href="#" className="text-gray-400 hover:text-[#10B981] text-sm transition-colors flex items-center gap-2">
+                <button onClick={() => navigateTo('projects')} className="text-gray-400 hover:text-[#10B981] text-sm transition-colors flex items-center gap-2 cursor-pointer">
                   <ChevronRight size={14} /> {item}
-                </a>
+                </button>
               </li>
             ))}
           </ul>
@@ -499,9 +499,9 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
           <ul className="space-y-3">
             {['Hồ sơ năng lực (PDF)', 'Báo cáo thị trường Q2/2026', 'Chính sách bảo mật', 'Điều khoản sử dụng', 'Cơ hội nghề nghiệp'].map(item => (
               <li key={item}>
-                <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors flex items-center gap-2">
+                <button onClick={() => navigateTo('about')} className="text-gray-400 hover:text-white text-sm transition-colors flex items-center gap-2 cursor-pointer">
                   <ChevronRight size={14} /> {item}
-                </a>
+                </button>
               </li>
             ))}
           </ul>
@@ -755,7 +755,10 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                       <p className="text-xs text-gray-500 mb-1">Vốn tối thiểu</p>
                       <p className="font-bold text-[#1E40AF]">{project.minInvest}</p>
                     </div>
-                    <button className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#1E40AF] group-hover:bg-[#1E40AF] group-hover:text-white transition-colors">
+                    <button 
+                      onClick={() => setSelectedProject(project)}
+                      className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#1E40AF] group-hover:bg-[#1E40AF] group-hover:text-white transition-colors cursor-pointer"
+                    >
                       <ArrowUpRight size={18} />
                     </button>
                   </div>
@@ -1419,7 +1422,10 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                       <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">Vốn tối thiểu</p>
                       <p className="font-bold text-[#1E40AF]">{project.minInvest}</p>
                     </div>
-                    <button className="text-sm font-semibold text-[#10B981] flex items-center gap-1 hover:underline">
+                    <button 
+                      onClick={() => setSelectedProject(project)}
+                      className="text-sm font-semibold text-[#10B981] flex items-center gap-1 hover:underline cursor-pointer"
+                    >
                       Chi tiết <ChevronRight size={14}/>
                     </button>
                   </div>

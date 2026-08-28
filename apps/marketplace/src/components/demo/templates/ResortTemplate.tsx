@@ -505,10 +505,10 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
           <h3 className="text-2xl font-bold text-white mb-6" style={fontHead}>Resort Paradise</h3>
           <p className="mb-6 opacity-80 leading-relaxed text-sm font-light">Tiên phong kiến tạo chuẩn mực sống sang trọng nơi thiên đường nghỉ dưỡng ven biển.</p>
           <div className="flex space-x-4">
-            <button className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all"><Facebook size={18} /></button>
-            <button className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all"><Instagram size={18} /></button>
-            <button className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all"><Twitter size={18} /></button>
-            <button className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all"><Linkedin size={18} /></button>
+            <button onClick={() => alert('Mở Facebook')} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all cursor-pointer"><Facebook size={18} /></button>
+            <button onClick={() => alert('Mở Instagram')} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all cursor-pointer"><Instagram size={18} /></button>
+            <button onClick={() => alert('Mở Twitter')} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all cursor-pointer"><Twitter size={18} /></button>
+            <button onClick={() => alert('Mở LinkedIn')} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all cursor-pointer"><Linkedin size={18} /></button>
           </div>
         </div>
         

@@ -1488,9 +1488,9 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
                 Đơn vị tiên phong kiến tạo những bất động sản hạng sang mang đậm dấu ấn di sản và nghệ thuật kiến trúc vượt thời gian.
               </p>
               <div className="flex gap-4">
-                <a href="#" className="hover:text-white transition-colors" aria-label="Facebook"><Facebook size={20} /></a>
-                <a href="#" className="hover:text-white transition-colors" aria-label="Instagram"><Instagram size={20} /></a>
-                <a href="#" className="hover:text-white transition-colors" aria-label="Youtube"><Youtube size={20} /></a>
+                <button onClick={() => alert('Mở Facebook')} className="hover:text-white transition-colors cursor-pointer" aria-label="Facebook"><Facebook size={20} /></button>
+                <button onClick={() => alert('Mở Instagram')} className="hover:text-white transition-colors cursor-pointer" aria-label="Instagram"><Instagram size={20} /></button>
+                <button onClick={() => alert('Mở Youtube')} className="hover:text-white transition-colors cursor-pointer" aria-label="Youtube"><Youtube size={20} /></button>
               </div>
             </div>
             <div>
@@ -1523,8 +1523,8 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
           <div className="pt-8 border-t border-white/10 text-sm text-center flex flex-col md:flex-row justify-between items-center gap-4">
             <p>&copy; {new Date().getFullYear()} Heritage Real Estate. All rights reserved.</p>
             <div className="flex gap-6 text-xs">
-              <a href="#" className="hover:text-white transition-colors">Điều khoản dịch vụ</a>
-              <a href="#" className="hover:text-white transition-colors">Chính sách bảo mật</a>
+              <button onClick={() => navigate('about')} className="hover:text-white transition-colors cursor-pointer">Điều khoản dịch vụ</button>
+              <button onClick={() => navigate('about')} className="hover:text-white transition-colors cursor-pointer">Chính sách bảo mật</button>
             </div>
           </div>
         </div>

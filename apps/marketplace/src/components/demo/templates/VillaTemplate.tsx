@@ -1667,7 +1667,10 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                     </div>
                     <h3 className="text-xl sm:text-2xl font-serif font-bold text-[#92400E] mb-3 group-hover:text-[#F59E0B] transition-colors line-clamp-2">{news.title}</h3>
                     <p className="text-gray-600 text-xs leading-relaxed mb-4 line-clamp-2">{news.excerpt}</p>
-                    <button className="text-[#92400E] font-bold text-xs uppercase tracking-wider flex items-center hover:text-[#F59E0B] transition-colors mt-auto">
+                    <button 
+                      onClick={() => setSelectedArticle(news)}
+                      className="text-[#92400E] font-bold text-xs uppercase tracking-wider flex items-center hover:text-[#F59E0B] transition-colors mt-auto cursor-pointer"
+                    >
                       Đọc tiếp bài viết <ArrowRight className="ml-1.5 h-4 w-4" />
                     </button>
                   </div>

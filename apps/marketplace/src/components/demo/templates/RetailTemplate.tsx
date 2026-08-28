@@ -1443,9 +1443,9 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
               Tổ hợp thương mại đỉnh cao, nơi hội tụ các thương hiệu lớn và kiến tạo cơ hội đầu tư sinh lời bền vững tại trung tâm thành phố.
             </p>
             <div className="flex gap-4">
-              <button className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors"><Facebook size={18}/></button>
-              <button className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors"><Instagram size={18}/></button>
-              <button className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors"><Twitter size={18}/></button>
+              <button onClick={() => alert('Mở Facebook')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors cursor-pointer"><Facebook size={18}/></button>
+              <button onClick={() => alert('Mở Instagram')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors cursor-pointer"><Instagram size={18}/></button>
+              <button onClick={() => alert('Mở Twitter')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors cursor-pointer"><Twitter size={18}/></button>
             </div>
           </div>
           
@@ -1466,10 +1466,10 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
           <div>
             <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Thông Tin Pháp Lý</h4>
             <ul className="space-y-3 text-sm">
-              <li><button className="hover:text-amber-400 transition-colors">Chính sách bảo mật</button></li>
-              <li><button className="hover:text-amber-400 transition-colors">Điều khoản sử dụng</button></li>
-              <li><button className="hover:text-amber-400 transition-colors">Quy định giao dịch</button></li>
-              <li><button className="hover:text-amber-400 transition-colors">Sổ tay cư dân & khách thuê</button></li>
+              <li><button onClick={() => setCurrentPage('about')} className="hover:text-amber-400 transition-colors cursor-pointer">Chính sách bảo mật</button></li>
+              <li><button onClick={() => setCurrentPage('about')} className="hover:text-amber-400 transition-colors cursor-pointer">Điều khoản sử dụng</button></li>
+              <li><button onClick={() => setCurrentPage('about')} className="hover:text-amber-400 transition-colors cursor-pointer">Quy định giao dịch</button></li>
+              <li><button onClick={() => setCurrentPage('about')} className="hover:text-amber-400 transition-colors cursor-pointer">Sổ tay cư dân & khách thuê</button></li>
             </ul>
           </div>
 

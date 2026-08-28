@@ -142,7 +142,11 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           )}
 
           {!isSmall && (
-            <button className="px-6 py-2.5 font-medium text-sm uppercase tracking-wide text-white transition-opacity hover:opacity-90 flex items-center" style={{ backgroundColor: colors.primary }}>
+            <button 
+              onClick={() => handleNavClick('contact')} 
+              className="px-6 py-2.5 font-medium text-sm uppercase tracking-wide text-white transition-opacity hover:opacity-90 flex items-center cursor-pointer shadow-md" 
+              style={{ backgroundColor: colors.primary }}
+            >
               Nhận Báo Giá <ArrowRight size={16} className="ml-2" />
             </button>
           )}
@@ -172,7 +176,11 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                 {item.label}
               </button>
             ))}
-            <button className="mx-6 mt-6 py-3 font-medium text-sm uppercase text-white flex justify-center items-center" style={{ backgroundColor: colors.primary }}>
+            <button 
+              onClick={() => handleNavClick('contact')}
+              className="mx-6 mt-6 py-3 font-medium text-sm uppercase text-white flex justify-center items-center cursor-pointer" 
+              style={{ backgroundColor: colors.primary }}
+            >
               Nhận Báo Giá
             </button>
           </div>
@@ -206,10 +214,18 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
               Hơn hai thập kỷ tiên phong định hình không gian sống và không gian làm việc chuẩn quốc tế tại Việt Nam.
             </p>
             <div className="flex flex-wrap gap-4">
-              <button className="px-8 py-4 text-white font-medium uppercase tracking-wide transition-colors hover:bg-opacity-90 flex items-center" style={{ backgroundColor: colors.primary }}>
+              <button 
+                onClick={() => handleNavClick('projects')}
+                className="px-8 py-4 text-white font-medium uppercase tracking-wide transition-colors hover:bg-opacity-90 flex items-center cursor-pointer shadow-lg" 
+                style={{ backgroundColor: colors.primary }}
+              >
                 Khám Phá Dự Án <ChevronRight size={20} className="ml-2" />
               </button>
-              <button className="px-8 py-4 font-medium uppercase tracking-wide transition-colors bg-white hover:bg-gray-100 flex items-center" style={{ color: colors.primary }}>
+              <button 
+                onClick={() => handleNavClick('about')}
+                className="px-8 py-4 font-medium uppercase tracking-wide transition-colors bg-white hover:bg-gray-100 flex items-center cursor-pointer shadow" 
+                style={{ color: colors.primary }}
+              >
                 Hồ Sơ Năng Lực
               </button>
             </div>
@@ -260,7 +276,11 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                 <input type="text" placeholder="Tên dự án..." className="w-full bg-transparent border-b border-white/30 text-white py-2 placeholder-white/50 focus:outline-none focus:border-white" />
               </div>
             </div>
-            <button className="px-10 py-6 md:py-0 flex items-center justify-center transition-colors hover:bg-opacity-90 text-white font-bold uppercase tracking-wider h-auto" style={{ backgroundColor: colors.accent }}>
+            <button 
+              onClick={() => handleNavClick('projects')}
+              className="px-10 py-6 md:py-0 flex items-center justify-center transition-colors hover:bg-opacity-90 text-white font-bold uppercase tracking-wider h-auto cursor-pointer" 
+              style={{ backgroundColor: colors.accent }}
+            >
               <Search className="mr-2" />
               Tìm Kiếm
             </button>
@@ -281,7 +301,11 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                 Dự Án Trọng Điểm
               </h3>
             </div>
-            <button className="mt-4 md:mt-0 font-medium uppercase tracking-wide text-sm flex items-center hover:underline" style={{ color: colors.primary }}>
+            <button 
+              onClick={() => handleNavClick('projects')}
+              className="mt-4 md:mt-0 font-medium uppercase tracking-wide text-sm flex items-center hover:underline cursor-pointer" 
+              style={{ color: colors.primary }}
+            >
               Xem tất cả dự án <ArrowRight size={16} className="ml-2" />
             </button>
           </div>
@@ -326,7 +350,11 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                     <MapPin size={16} className="mr-1" /> {project.location}
                   </div>
                   <div className="w-full h-px mb-4" style={{ backgroundColor: colors.border }}></div>
-                  <button className="text-sm font-semibold uppercase flex items-center transition-colors group-hover:text-amber-500" style={{ color: colors.primary }}>
+                  <button 
+                    onClick={() => handleNavClick('projects')}
+                    className="text-sm font-semibold uppercase flex items-center transition-colors group-hover:text-amber-500 cursor-pointer" 
+                    style={{ color: colors.primary }}
+                  >
                     Chi tiết dự án <ChevronRight size={16} className="ml-1" />
                   </button>
                 </div>
@@ -382,7 +410,11 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                   </div>
                 </div>
               </div>
-              <button className="px-8 py-4 text-white font-medium uppercase tracking-wide transition-all hover:-translate-y-1 shadow-lg flex items-center" style={{ backgroundColor: colors.primary }}>
+              <button 
+                onClick={() => handleNavClick('about')}
+                className="px-8 py-4 text-white font-medium uppercase tracking-wide transition-all hover:-translate-y-1 shadow-lg flex items-center cursor-pointer" 
+                style={{ backgroundColor: colors.primary }}
+              >
                 Đọc Thêm Về Chúng Tôi <ArrowRight size={18} className="ml-2" />
               </button>
             </div>
@@ -472,7 +504,11 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                   </li>
                 ))}
               </ul>
-              <button className="px-6 py-3 border-2 font-medium uppercase tracking-wide transition-colors" style={{ borderColor: colors.primary, color: colors.primary }}>
+              <button 
+                onClick={() => handleNavClick('about')}
+                className="px-6 py-3 border-2 font-medium uppercase tracking-wide transition-colors cursor-pointer" 
+                style={{ borderColor: colors.primary, color: colors.primary }}
+              >
                 Khám phá hệ sinh thái
               </button>
             </div>
@@ -498,20 +534,24 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-4">
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80" alt="Gallery" className="w-full h-80 object-cover rounded hover:opacity-90 transition-opacity cursor-pointer" />
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80" alt="Gallery" className="w-full h-48 object-cover rounded hover:opacity-90 transition-opacity cursor-pointer" />
+              <img onClick={() => handleNavClick('gallery')} onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80" alt="Gallery" className="w-full h-80 object-cover rounded hover:opacity-90 transition-opacity cursor-pointer" />
+              <img onClick={() => handleNavClick('gallery')} onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80" alt="Gallery" className="w-full h-48 object-cover rounded hover:opacity-90 transition-opacity cursor-pointer" />
             </div>
             <div className="space-y-4">
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1554469384-e58fac16e23a?w=800&q=80" alt="Gallery" className="w-full h-48 object-cover rounded hover:opacity-90 transition-opacity cursor-pointer" />
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="Gallery" className="w-full h-80 object-cover rounded hover:opacity-90 transition-opacity cursor-pointer" />
+              <img onClick={() => handleNavClick('gallery')} onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1554469384-e58fac16e23a?w=800&q=80" alt="Gallery" className="w-full h-48 object-cover rounded hover:opacity-90 transition-opacity cursor-pointer" />
+              <img onClick={() => handleNavClick('gallery')} onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="Gallery" className="w-full h-80 object-cover rounded hover:opacity-90 transition-opacity cursor-pointer" />
             </div>
             <div className="space-y-4">
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600607687920-4e2a09c15ffa?w=800&q=80" alt="Gallery" className="w-full h-80 object-cover rounded hover:opacity-90 transition-opacity cursor-pointer" />
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" alt="Gallery" className="w-full h-48 object-cover rounded hover:opacity-90 transition-opacity cursor-pointer" />
+              <img onClick={() => handleNavClick('gallery')} onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600607687920-4e2a09c15ffa?w=800&q=80" alt="Gallery" className="w-full h-80 object-cover rounded hover:opacity-90 transition-opacity cursor-pointer" />
+              <img onClick={() => handleNavClick('gallery')} onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" alt="Gallery" className="w-full h-48 object-cover rounded hover:opacity-90 transition-opacity cursor-pointer" />
             </div>
           </div>
           <div className="text-center mt-12">
-            <button className="px-8 py-3 text-sm font-bold uppercase tracking-widest text-white transition-opacity hover:opacity-90 shadow" style={{ backgroundColor: colors.primary }}>
+            <button 
+              onClick={() => handleNavClick('gallery')}
+              className="px-8 py-3 text-sm font-bold uppercase tracking-widest text-white transition-opacity hover:opacity-90 shadow cursor-pointer" 
+              style={{ backgroundColor: colors.primary }}
+            >
               Xem Toàn Bộ Thư Viện
             </button>
           </div>
@@ -594,7 +634,11 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                 Tin Tức & Sự Kiện
               </h3>
             </div>
-            <button className="mt-4 md:mt-0 font-medium uppercase tracking-wide text-sm flex items-center hover:underline" style={{ color: colors.primary }}>
+            <button 
+              onClick={() => handleNavClick('news')}
+              className="mt-4 md:mt-0 font-medium uppercase tracking-wide text-sm flex items-center hover:underline cursor-pointer" 
+              style={{ color: colors.primary }}
+            >
               Xem tất cả bài viết <ArrowRight size={16} className="ml-2" />
             </button>
           </div>
@@ -613,10 +657,18 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                   <div className="flex items-center text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: colors.accent }}>
                     <Calendar size={14} className="mr-2" /> {news.date}
                   </div>
-                  <h4 className="font-bold text-xl mb-4 leading-snug group-hover:text-blue-700 transition-colors cursor-pointer" style={{ color: colors.text, fontFamily: fonts.heading }}>
+                  <h4 
+                    onClick={() => handleNavClick('news')}
+                    className="font-bold text-xl mb-4 leading-snug group-hover:text-blue-700 transition-colors cursor-pointer" 
+                    style={{ color: colors.text, fontFamily: fonts.heading }}
+                  >
                     {news.title}
                   </h4>
-                  <button className="text-sm font-semibold uppercase flex items-center transition-colors hover:opacity-70" style={{ color: colors.primary }}>
+                  <button 
+                    onClick={() => handleNavClick('news')}
+                    className="text-sm font-semibold uppercase flex items-center transition-colors hover:opacity-70 cursor-pointer" 
+                    style={{ color: colors.primary }}
+                  >
                     Đọc tiếp <ArrowRight size={14} className="ml-1" />
                   </button>
                 </div>
@@ -777,7 +829,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                <div className="p-6">
                  <h4 className="text-xl font-bold mb-2" style={{ color: colors.primary }}>Dự án tiêu biểu #{i}</h4>
                  <p className="text-sm mb-4" style={{ color: colors.muted }}>Hà Nội, Việt Nam</p>
-                 <button className="text-sm font-bold uppercase text-blue-600 hover:underline">Xem Chi Tiết</button>
+                 <button onClick={() => handleNavClick('contact')} className="text-sm font-bold uppercase text-blue-600 hover:underline cursor-pointer">Xem Chi Tiết</button>
                </div>
              </div>
           ))}
@@ -824,7 +876,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                 <p className="text-sm font-bold text-amber-500 mb-2">15 Tháng 10, 2026</p>
                 <h3 className="text-2xl font-bold mb-4" style={{ color: colors.primary }}>Thông cáo báo chí: Khai trương dự án mới #{i}</h3>
                 <p className="text-gray-600 mb-4">Buổi lễ khai trương đã diễn ra thành công tốt đẹp với sự góp mặt của hàng trăm quan khách và nhà đầu tư chiến lược...</p>
-                <button className="font-bold text-blue-800 uppercase text-sm hover:underline">Đọc tiếp</button>
+                <button onClick={() => handleNavClick('contact')} className="font-bold text-blue-800 uppercase text-sm hover:underline cursor-pointer">Đọc tiếp</button>
               </div>
             </div>
           ))}
@@ -835,9 +887,9 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
 
   const renderContact = () => (
     <div className="py-20 animate-in fade-in">
-      <div className={`${MAX_W} mx-auto px-4 max-w-5xl`}>
+      <div className={`${MAX_W} mx-auto px-4`}>
         <h2 className="text-4xl font-bold mb-10 text-center" style={{ color: colors.text, fontFamily: fonts.heading }}>Liên Hệ Với Chúng Tôi</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
           <div>
             <h3 className="text-2xl font-bold mb-6">Trụ Sở Chính</h3>
             <div className="space-y-6 text-gray-700">
@@ -901,7 +953,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                 <input required type="tel" placeholder="Số điện thoại *" className="w-full p-3 border rounded focus:outline-none focus:border-blue-800" />
                 <input required type="email" placeholder="Email *" className="w-full p-3 border rounded focus:outline-none focus:border-blue-800" />
                 <textarea placeholder="Nội dung" rows={4} className="w-full p-3 border rounded focus:outline-none focus:border-blue-800"></textarea>
-                <button type="submit" className="px-8 py-3 bg-blue-900 text-white font-bold w-full rounded hover:bg-blue-800 transition-colors">GỬI LIÊN HỆ</button>
+                <button type="submit" className="px-8 py-3 bg-blue-900 text-white font-bold w-full rounded hover:bg-blue-800 transition-colors cursor-pointer">GỬI LIÊN HỆ</button>
               </form>
             )}
           </div>
@@ -921,10 +973,17 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
               <h4 className="text-2xl font-bold mb-2">Đăng Ký Nhận Bản Tin Đầu Tư</h4>
               <p className="text-gray-400">Cập nhật những thông tin mới nhất về thị trường và dự án của VinaCorp.</p>
             </div>
-            <div className="flex w-full md:w-auto">
-              <input type="email" placeholder="Địa chỉ email của bạn" className="px-4 py-3 text-gray-900 w-full md:w-80 focus:outline-none" />
-              <button className="px-6 py-3 font-bold uppercase" style={{ backgroundColor: colors.accent, color: colors.header }}>Đăng Ký</button>
-            </div>
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                alert('Cảm ơn bạn đã đăng ký nhận bản tin đầu tư từ VinaCorp!');
+                (e.currentTarget.elements[0] as HTMLInputElement).value = '';
+              }}
+              className="flex w-full md:w-auto"
+            >
+              <input required type="email" placeholder="Địa chỉ email của bạn" className="px-4 py-3 text-gray-900 w-full md:w-80 focus:outline-none bg-white" />
+              <button type="submit" className="px-6 py-3 font-bold uppercase cursor-pointer" style={{ backgroundColor: colors.accent, color: colors.header }}>Đăng Ký</button>
+            </form>
           </div>
         </div>
       </div>
@@ -962,22 +1021,22 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           <div>
             <h4 className="text-lg font-bold mb-6" style={{ color: colors.surface }}>Liên Kết Nhanh</h4>
             <ul className="space-y-3 text-gray-400 text-sm">
-              <li><button onClick={() => handleNavClick('about')} className="hover:text-white transition-colors">Về Chúng Tôi</button></li>
-              <li><button onClick={() => handleNavClick('projects')} className="hover:text-white transition-colors">Dự Án Tiêu Biểu</button></li>
-              <li><button onClick={() => handleNavClick('news')} className="hover:text-white transition-colors">Quan Hệ Nhà Đầu Tư</button></li>
-              <li><button className="hover:text-white transition-colors">Phát Triển Bền Vững (ESG)</button></li>
-              <li><button className="hover:text-white transition-colors">Tuyển Dụng</button></li>
+              <li><button onClick={() => handleNavClick('about')} className="hover:text-white transition-colors cursor-pointer">Về Chúng Tôi</button></li>
+              <li><button onClick={() => handleNavClick('projects')} className="hover:text-white transition-colors cursor-pointer">Dự Án Tiêu Biểu</button></li>
+              <li><button onClick={() => handleNavClick('news')} className="hover:text-white transition-colors cursor-pointer">Quan Hệ Nhà Đầu Tư</button></li>
+              <li><button onClick={() => handleNavClick('about')} className="hover:text-white transition-colors cursor-pointer">Phát Triển Bền Vững (ESG)</button></li>
+              <li><button onClick={() => handleNavClick('contact')} className="hover:text-white transition-colors cursor-pointer">Tuyển Dụng</button></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-lg font-bold mb-6" style={{ color: colors.surface }}>Lĩnh Vực Hoạt Động</h4>
             <ul className="space-y-3 text-gray-400 text-sm">
-              <li><button className="hover:text-white transition-colors">Bất Động Sản Thương Mại</button></li>
-              <li><button className="hover:text-white transition-colors">Bất Động Sản Công Nghiệp</button></li>
-              <li><button className="hover:text-white transition-colors">Khu Đô Thị Phức Hợp</button></li>
-              <li><button className="hover:text-white transition-colors">Quản Lý Vận Hành Tòa Nhà</button></li>
-              <li><button className="hover:text-white transition-colors">Đầu Tư Tài Chính BĐS</button></li>
+              <li><button onClick={() => handleNavClick('projects')} className="hover:text-white transition-colors cursor-pointer">Bất Động Sản Thương Mại</button></li>
+              <li><button onClick={() => handleNavClick('projects')} className="hover:text-white transition-colors cursor-pointer">Bất Động Sản Công Nghiệp</button></li>
+              <li><button onClick={() => handleNavClick('projects')} className="hover:text-white transition-colors cursor-pointer">Khu Đô Thị Phức Hợp</button></li>
+              <li><button onClick={() => handleNavClick('about')} className="hover:text-white transition-colors cursor-pointer">Quản Lý Vận Hành Tòa Nhà</button></li>
+              <li><button onClick={() => handleNavClick('projects')} className="hover:text-white transition-colors cursor-pointer">Đầu Tư Tài Chính BĐS</button></li>
             </ul>
           </div>
 
