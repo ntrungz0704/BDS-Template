@@ -134,7 +134,7 @@ export class WebsiteProvisioningService {
       // a. Create Tenant
       const isTrial = plan === 'TRIAL';
       const oneYearLater = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
-      const threeDaysLater = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+      const sevenDaysLater = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
       const tenant = await tx.tenant.create({
         data: {
@@ -147,7 +147,7 @@ export class WebsiteProvisioningService {
           activatedAt: new Date(),
           trialStatus: isTrial ? 'ACTIVE' : null,
           trialStartAt: isTrial ? new Date() : null,
-          trialEndAt: isTrial ? threeDaysLater : null,
+          trialEndAt: isTrial ? sevenDaysLater : null,
           trialSaveLimit: isTrial ? 3 : 999999,
           trialSaveCount: 0,
         },

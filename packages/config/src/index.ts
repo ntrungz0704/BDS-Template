@@ -8,7 +8,7 @@ export const SYSTEM_CONFIG = {
 
 export const BUSINESS_CONFIG = {
   // Trial System
-  TRIAL_DURATION_DAYS: 3,
+  TRIAL_DURATION_DAYS: 7,
   TRIAL_SAVE_LIMIT: 3,
   TRIAL_WARNING_HOURS: 24,
   

@@ -21,8 +21,8 @@ export async function getDashboardStats(req: Request, res: Response, next: NextF
       },
     });
     const expiredTrials = await prisma.tenant.count({ where: { trialStatus: 'EXPIRED', deletedAt: null } });
-    const activeSubscriptions = await prisma.subscription.count({ where: { status: 'ACTIVE' } });
-    const totalUsers = await prisma.user.count({ where: { deletedAt: null } });
+    const activeSubscriptions = await prisma.subscription.count({ where: { status: 'ACTIVE', tenant: { deletedAt: null } } });
+    const totalUsers = await prisma.user.count({ where: { deletedAt: null, role: { not: 'SUPER_ADMIN' } } });
     const totalOrders = await prisma.order.count();
     
     // Tính tổng doanh thu từ các đơn hàng đã thành công (COMPLETED)
@@ -374,21 +374,24 @@ export async function createTenantManually(req: Request, res: Response, next: Ne
       plan: plan || 'STARTER',
     });
 
-    // Cập nhật trial parameters nếu cần thiết sau khi provision
-    const now = new Date();
-    const trialDurationDays = BUSINESS_CONFIG.TRIAL_DURATION_DAYS || 3;
-    const trialEndAt = new Date(now.getTime() + trialDurationDays * 24 * 60 * 60 * 1000);
-    
-    await prisma.tenant.update({
-      where: { id: provResult.tenant.id },
-      data: {
-        trialStartAt: now,
-        trialEndAt: trialEndAt,
-        trialSaveLimit: BUSINESS_CONFIG.TRIAL_SAVE_LIMIT || 3,
-        trialSaveCount: 0,
-        trialStatus: 'ACTIVE',
-      }
-    });
+    // Cập nhật trial parameters nếu là gói TRIAL
+    const isTrial = plan === 'TRIAL';
+    if (isTrial) {
+      const now = new Date();
+      const trialDurationDays = BUSINESS_CONFIG.TRIAL_DURATION_DAYS || 7;
+      const trialEndAt = new Date(now.getTime() + trialDurationDays * 24 * 60 * 60 * 1000);
+      
+      await prisma.tenant.update({
+        where: { id: provResult.tenant.id },
+        data: {
+          trialStartAt: now,
+          trialEndAt: trialEndAt,
+          trialSaveLimit: BUSINESS_CONFIG.TRIAL_SAVE_LIMIT || 3,
+          trialSaveCount: 0,
+          trialStatus: 'ACTIVE',
+        }
+      });
+    }
 
     const tempPassword = provResult.credentials.tempPassword;
 
@@ -1327,7 +1330,7 @@ export async function extendTrial(req: Request, res: Response, next: NextFunctio
   try {
     const { id } = req.params; // This is User ID from /customers/:id/extend-trial
     const { days, extraDays, extraSaves = 0 } = req.body;
-    const daysToAdd = days || extraDays || 3;
+    const daysToAdd = days || extraDays || 7;
 
     // Find tenant via user's membership (since route uses User ID)
     const user = await prisma.user.findUnique({

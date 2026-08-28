@@ -68,7 +68,7 @@ export default function AdminDashboard() {
             <span className="text-2xl font-black text-indigo-600 tracking-tight">{stats.activeTenants}</span>
             <span className="text-xs font-bold text-slate-500">/ {stats.totalTenants} tổng website</span>
           </div>
-          <p className="text-xs text-indigo-600 font-semibold mt-2">{stats.activeSubscriptions} gói thuê năm</p>
+          <p className="text-xs text-indigo-600 font-semibold mt-2">{stats.activeSubscriptions} website trả phí</p>
         </div>
 
         {/* Stat 3 */}

@@ -254,11 +254,11 @@ export default function CustomersPage() {
                           </Link>
                           {u.tenant?.trialStatus === 'ACTIVE' && (
                             <button
-                              onClick={() => extendTrialMutation.mutate({ userId: u.id, days: 3 })}
-                              title="Gia hạn dùng thử +3 ngày"
+                              onClick={() => extendTrialMutation.mutate({ userId: u.id, days: 7 })}
+                              title="Gia hạn dùng thử +7 ngày"
                               className="px-2 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-bold rounded-lg transition-colors"
                             >
-                              +3 Ngày Trial
+                              +7 Ngày Trial
                             </button>
                           )}
                           <button
@@ -308,7 +308,7 @@ export default function CustomersPage() {
                       </svg>
                     </div>
                     <h3 className="text-lg font-bold text-slate-900">Khởi Tạo Khách Hàng Thành Công!</h3>
-                    <p className="text-xs text-slate-500 mt-1">Website và thời gian dùng thử (3 ngày, 3 lần lưu) đã được kích hoạt.</p>
+                    <p className="text-xs text-slate-500 mt-1">Website và thời gian dùng thử (7 ngày, 3 lần lưu) đã được kích hoạt.</p>
                   </div>
 
                   <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs font-mono space-y-2 select-all">
