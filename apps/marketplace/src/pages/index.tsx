@@ -198,90 +198,78 @@ export default function MarketplaceHome() {
     return { count, ref };
   };
 
-  const SLUG_CANONICAL_MAP: Record<string, string> = {
-    'modern-villa': 'villa-premium',
-    'luxury-villa': 'villa-premium',
-    'smart-urban': 'urban-city',
-    'high-rise': 'urban-city',
-    'green-eco': 'eco-green',
-    'eco-living': 'eco-green',
-    'ocean-view': 'resort-paradise',
-    'minimal-zen': 'minimal-white',
-    'heritage-classic': 'classic-elegant',
-    'classic-heritage': 'classic-elegant',
-    'tech-hub': 'investment-pro',
-    'suburban-family': 'agency-onepage',
-    'riverside-mansion': 'mega-developer',
-    'listing-portal': 'mega-developer',
-    'lake-sanctuary': 'auction-template',
-    'auction-bds': 'auction-template',
-    'mountain-retreat': 'landplot-template',
-    'land-plot': 'landplot-template',
-    'commercial-plaza': 'retail-podium',
-    'retail-commercial': 'retail-podium',
-    'golf-residences': 'personal-agent',
-    'industrial-logistics': 'industrial-estate',
+  const LEGACY_TO_BDS_MAP: Record<string, string> = {
+    'luxury-gold': 'bds-01',
+    'minimal-white': 'bds-02',
+    'minimal-zen': 'bds-02',
+    'modern-corporate': 'bds-03',
+    'resort-paradise': 'bds-04',
+    'ocean-view': 'bds-04',
+    'urban-city': 'bds-05',
+    'smart-urban': 'bds-05',
+    'high-rise': 'bds-05',
+    'industrial-estate': 'bds-06',
+    'industrial-logistics': 'bds-06',
+    'villa-premium': 'bds-07',
+    'modern-villa': 'bds-07',
+    'luxury-villa': 'bds-07',
+    'eco-green': 'bds-08',
+    'eco-living': 'bds-08',
+    'green-eco': 'bds-08',
+    'classic-elegant': 'bds-09',
+    'heritage-classic': 'bds-09',
+    'classic-heritage': 'bds-09',
+    'investment-pro': 'bds-10',
+    'tech-hub': 'bds-10',
+    'agency-onepage': 'bds-11',
+    'suburban-family': 'bds-11',
+    'mega-developer': 'bds-12',
+    'riverside-mansion': 'bds-12',
+    'listing-portal': 'bds-12',
+    'auction-template': 'bds-13',
+    'lake-sanctuary': 'bds-13',
+    'auction-bds': 'bds-13',
+    'landplot-template': 'bds-14',
+    'mountain-retreat': 'bds-14',
+    'land-plot': 'bds-14',
+    'retail-podium': 'bds-15',
+    'commercial-plaza': 'bds-15',
+    'retail-commercial': 'bds-15',
+    'personal-agent': 'bds-16',
+    'golf-residences': 'bds-16',
+    'vinhomes': 'bds-17',
+    'masterise': 'bds-18',
+    'novaland': 'bds-19',
+    'sungroup': 'bds-20',
   };
 
-  // Mock premium templates — each with unique identity
-  const mockTemplates = ALL_TEMPLATES;
-
   const dbTemplates = templatesRes?.data || [];
-  const mergedTemplates = [...mockTemplates];
-  dbTemplates.forEach((dbTpl: any) => {
-    const canonicalSlug = SLUG_CANONICAL_MAP[dbTpl.slug] || dbTpl.slug;
-    const idx = mergedTemplates.findIndex(m => m.slug === canonicalSlug || m.slug === dbTpl.slug);
-    if (idx !== -1) {
-      const original = mergedTemplates[idx];
-      const merged = { ...original, ...dbTpl, slug: original.slug };
-      
-      // Khôi phục các trường thông tin chi tiết từ mock nếu DB trống/null
-      if (!dbTpl.thumbnail) merged.thumbnail = original.thumbnail;
-      if (!dbTpl.features || (Array.isArray(dbTpl.features) && dbTpl.features.length === 0)) {
-        merged.features = original.features;
-      }
-      if (!dbTpl.screenshots || (Array.isArray(dbTpl.screenshots) && dbTpl.screenshots.length === 0)) {
-        merged.screenshots = original.screenshots;
-      }
-      if (!dbTpl.targetAudience || (Array.isArray(dbTpl.targetAudience) && dbTpl.targetAudience.length === 0)) {
-        merged.targetAudience = original.targetAudience;
-      }
-      if (!dbTpl.highlights || (Array.isArray(dbTpl.highlights) && dbTpl.highlights.length === 0)) {
-        merged.highlights = original.highlights;
-      }
-      if (!dbTpl.availablePages || (Array.isArray(dbTpl.availablePages) && dbTpl.availablePages.length === 0)) {
-        merged.availablePages = original.availablePages;
-      }
-      if (!dbTpl.modules || (Array.isArray(dbTpl.modules) && dbTpl.modules.length === 0)) {
-        merged.modules = original.modules;
-      }
-      if (!dbTpl.priceBuySource) {
-        merged.priceBuySource = (original as any)?.priceBuySource || (original as any)?.price || 799000;
-      }
-      if (!dbTpl.priceBuy) {
-        merged.priceBuy = (original as any)?.priceBuy || (original as any)?.price || 499000;
-      }
-
-      mergedTemplates[idx] = merged;
-    } else {
-      mergedTemplates.push(dbTpl);
+  const mergedTemplates = ALL_TEMPLATES.map((tpl) => {
+    const dbTpl = dbTemplates.find((d: any) => d.slug === tpl.slug || LEGACY_TO_BDS_MAP[d.slug] === tpl.slug);
+    if (dbTpl) {
+      return {
+        ...tpl,
+        priceBuy: dbTpl.priceBuy || tpl.priceBuy,
+        priceRentMonthly: dbTpl.priceRentMonthly || tpl.priceRentMonthly,
+      };
     }
+    return tpl;
   });
 
   const filteredTemplates = mergedTemplates.filter((tpl: any) => {
-    if (searchQuery && !tpl.name.toLowerCase().includes(searchQuery.toLowerCase()) && !tpl.description.toLowerCase().includes(searchQuery.toLowerCase())) {
+    if (searchQuery && !tpl.name.toLowerCase().includes(searchQuery.toLowerCase()) && !tpl.description.toLowerCase().includes(searchQuery.toLowerCase()) && !tpl.slug.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
     }
     if (selectedCategory !== 'ALL') {
       const slug = tpl.slug;
       const col = tpl.collectionSlug;
-      if (selectedCategory === 'BIET_THU' && col !== 'luxury' && col !== 'villa' && col !== 'classic' && slug !== 'luxury-gold' && slug !== 'villa-premium' && slug !== 'classic-elegant' && slug !== 'mega-developer') return false;
-      if (selectedCategory === 'CHUNG_CU' && col !== 'apartment' && col !== 'minimal' && slug !== 'urban-city' && slug !== 'modern-corporate' && slug !== 'minimal-white') return false;
-      if (selectedCategory === 'NGHI_DUONG' && col !== 'resort' && col !== 'eco' && slug !== 'resort-paradise' && slug !== 'eco-green') return false;
-      if (selectedCategory === 'DAT_THUONG_MAI' && col !== 'industrial' && col !== 'investment' && col !== 'retail' && slug !== 'industrial-estate' && slug !== 'investment-pro' && slug !== 'retail-podium') return false;
-      if (selectedCategory === 'CA_NHAN' && col !== 'minimal' && col !== 'agency' && col !== 'agent' && slug !== 'minimal-white' && slug !== 'agency-onepage' && slug !== 'personal-agent') return false;
-      if (selectedCategory === 'KCN_NHA_XUONG' && col !== 'industrial' && slug !== 'industrial-estate') return false;
-      if (selectedCategory === 'CORPORATE' && col !== 'corporate' && col !== 'developer') return false;
+      if (selectedCategory === 'BIET_THU' && !['luxury', 'villa', 'classic'].includes(col) && !['bds-01', 'bds-07', 'bds-09', 'bds-21', 'bds-25', 'bds-27'].includes(slug)) return false;
+      if (selectedCategory === 'CHUNG_CU' && !['apartment', 'minimal'].includes(col) && !['bds-02', 'bds-05', 'bds-18', 'bds-22'].includes(slug)) return false;
+      if (selectedCategory === 'NGHI_DUONG' && !['resort', 'eco'].includes(col) && !['bds-04', 'bds-08', 'bds-20', 'bds-23', 'bds-26'].includes(slug)) return false;
+      if (selectedCategory === 'DAT_THUONG_MAI' && !['industrial', 'investment', 'retail', 'project'].includes(col) && !['bds-06', 'bds-10', 'bds-14', 'bds-15', 'bds-19', 'bds-24', 'bds-31', 'bds-32'].includes(slug)) return false;
+      if (selectedCategory === 'CA_NHAN' && !['minimal', 'agency', 'agent'].includes(col) && !['bds-11', 'bds-16', 'bds-28'].includes(slug)) return false;
+      if (selectedCategory === 'KCN_NHA_XUONG' && col !== 'industrial' && !['bds-06', 'bds-24'].includes(slug)) return false;
+      if (selectedCategory === 'CORPORATE' && !['corporate', 'developer'].includes(col) && !['bds-03', 'bds-12', 'bds-17', 'bds-30'].includes(slug)) return false;
     }
     return true;
   });
