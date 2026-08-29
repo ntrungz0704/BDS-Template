@@ -1635,6 +1635,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "TUYỆT TÁC DINH THỰ DÀNH CHO GIỚI TINH HOA",
       heroSubtitle: "Bộ sưu tập bất động sản triệu đô sở hữu vị thế độc tôn."
     }
+  },
+  // ─── PORTAL 04. DENSITY RAOVAT PRO ─────────────────────────────────────────
+  {
+    id: "portal-04",
+    name: "Template #04 - Density RaoVat Pro",
+    slug: "portal-04",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #04",
+    badgeBg: "#059669",
+    badgeColor: "#FFFFFF",
+    accentColor: "#059669",
+    description: "Cổng thông tin rao vặt nhà đất mật độ cao kinh điển. Bố cục 3 cột (2 Sidebar hai bên), hiển thị hàng chục tin đăng trên một màn hình với mức giá đỏ nổi bật, thông số tóm tắt trực quan và bộ lọc chuyên sâu.",
+    shortDescription: "Cổng rao vặt mật độ cao · Bố cục 3 cột · Tối ưu hiển thị",
+    thumbnail: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục 3 cột cổ điển (Sidebar Trái + Danh sách + Sidebar Phải)",
+      "Thẻ tin dạng Ultra-Compact Rows hiển thị dày đặc",
+      "Mức giá đỏ đậm nổi bật kèm thời gian đăng theo phút",
+      "Sidebar ký gửi nhanh và danh sách BĐS theo quận huyện sôi động",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án, Tin tức, Giới thiệu, Liên hệ",
+      "Tối ưu tốc độ tải trang cực nhanh với mật độ thông tin cao"
+    ],
+    priceBuy: 699000,
+    priceBuySource: 1990000,
+    priceRentMonthly: 149000,
+    isActive: true,
+    sortOrder: 28,
+    targetAudience: ["Cổng thông tin rao vặt nhà đất địa phương", "Sàn BĐS bình dân & thứ cấp", "Môi giới nhà trọ & căn hộ cho thuê sinh viên", "Đội ngũ sale nhà phố riêng lẻ"],
+    highlights: ["3-Column Density Layout", "Ultra-Compact Rows", "Dual Sidebars Integration", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["DensityRowModule", "DualSidebarModule", "QuickConsignModule", "CompactFilterModule"],
+    benefits: ["Hiển thị nhiều tin đăng nhất trên mỗi lượt xem", "Tăng 300% lượng click xem tin vãng lai", "Giao diện quen thuộc, dễ sử dụng cho mọi lứa tuổi"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#059669",
+      secondaryColor: "#065F46",
+      accentColor: "#DC2626",
+      bgColor: "#F3F4F6",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "0.375rem",
+      shadowToken: "0 1px 3px 0 rgba(0, 0, 0, 0.1)"
+    },
+    layoutConfig: {
+      heroStyle: "Compact Search Bar Top Header",
+      navigationStyle: "Classic Green Navigation Bar",
+      cardStyle: "Ultra-Compact Dense Row (Ảnh trái nhỏ, thông số phải)",
+      galleryStyle: "Compact Gallery Grid",
+      ctaStyle: "Red Fast Action Button",
+      spacingScale: "Tight Density Spacing"
+    },
+    wireframe: ["HeaderRaoVat", "SearchCompact", "ThreeColumnDensityLayout", "FooterRaoVat"],
+    sectionConfig: {
+      sourceSlug: "portal-04",
+      heroTitle: "MẠNG RAO VẶT BẤT ĐỘNG SẢN CHÍNH CHỦ SỐ 1 VIỆT NAM",
+      heroSubtitle: "Hàng ngàn tin đăng nhà đất mới mỗi ngày, kết nối người mua và người bán trực tiếp."
+    }
   }
 ];
 
@@ -1668,6 +1732,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-03': 'portal-03',
   'portal-luxury': 'portal-03',
   'prestige-realty': 'portal-03',
+  'portal-04': 'portal-04',
+  'portal-density': 'portal-04',
+  'nhadatso-pro': 'portal-04',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
