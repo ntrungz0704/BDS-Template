@@ -2275,6 +2275,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "CỔNG ĐẤU GIÁ & THANH LÝ BẤT ĐỘNG SẢN PHÁT MÃI",
       heroSubtitle: "Hơn 1.800 tài sản phát mãi ngân hàng, bất động sản thi hành án và quỹ đất công đấu giá trên toàn quốc."
     }
+  },
+  // ─── PORTAL 14. LANDPLOT & FARMLAND EXCHANGE PORTAL ────────────────────────
+  {
+    id: "portal-14",
+    name: "Template #14 - Landplot & Farmland Exchange Portal",
+    slug: "portal-14",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #14",
+    badgeBg: "#854D0E",
+    badgeColor: "#FFFFFF",
+    accentColor: "#854D0E",
+    description: "Sàn giao dịch đất nền phân lô sổ đỏ sẵn, đất vườn nghỉ dưỡng ven suối và farmstay nông nghiệp sinh thái. Hiển thị chi tiết trích lục địa chính, diện tích thổ cư ONT/ODT, mặt tiền m và đường ô tô vào tận nơi.",
+    shortDescription: "Đất nền sổ sẵn · Đất vườn ven suối · Farmstay nghỉ dưỡng sinh thái",
+    thumbnail: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục sinh thái điền viên với tông Đất Nâu Trù Phú & Xanh Đồng Quê",
+      "Thẻ tin Cadastral Survey Card hiển thị diện tích thổ cư ONT và đường ô tô m",
+      "Bộ lọc đất theo địa bàn: Bảo Lộc, Củ Chi, Đồng Nai, Bình Phước, Tây Ninh",
+      "Trang chi tiết lô đất kèm trích lục địa chính & quy hoạch chuyển mục đích",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Làng sinh thái, Cẩm nang, Giới thiệu, Liên hệ",
+      "Tích hợp form đăng ký tham gia tour xe đưa đón săn đất cuối tuần miễn phí"
+    ],
+    priceBuy: 699000,
+    priceBuySource: 1990000,
+    priceRentMonthly: 149000,
+    isActive: true,
+    sortOrder: 38,
+    targetAudience: ["Sàn giao dịch đất nền vùng ven & bất động sản sinh thái", "Đội ngũ sales chuyên đất sào mẫu Bảo Lộc, Long An, Củ Chi", "Chủ đầu tư phát triển cụm làng sinh thái & farmstay"],
+    highlights: ["Cadastral Survey Cards", "Farmland & Farmstay Filters", "Weekend Land Tour Booking", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["CadastralCardModule", "LandTourModule", "EcoVillageModule", "CadastralLegalModule"],
+    benefits: ["Đánh trúng xu hướng bỏ phố về vườn và săn đất đón sóng hạ tầng", "Cung cấp trích lục địa chính minh bạch 100%", "Thu hút hàng ngàn khách tham gia tour săn đất"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#854D0E",
+      secondaryColor: "#713F12",
+      accentColor: "#15803D",
+      bgColor: "#FEFCE8",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "1rem",
+      shadowToken: "0 10px 15px -3px rgba(133, 77, 14, 0.15)"
+    },
+    layoutConfig: {
+      heroStyle: "Farmland Eco Hero với Search Bar diện tích sào mẫu",
+      navigationStyle: "Earth Brown Rounded Navbar",
+      cardStyle: "Cadastral Survey Card (Grid diện tích thổ cư ONT, mặt tiền)",
+      galleryStyle: "Countryside Landscape Slider",
+      ctaStyle: "Fertile Soil Action Button",
+      spacingScale: "Expansive Farm Spacing"
+    },
+    wireframe: ["HeaderDatVuonPro", "HeroFarmlandSearch", "CadastralListingsGrid", "TopEcoVillages", "FooterDatVuonPro"],
+    sectionConfig: {
+      sourceSlug: "portal-14",
+      heroTitle: "SÀN ĐẤT NỀN PHÂN LÔ, ĐẤT VƯỜN & FARMSTAY",
+      heroSubtitle: "Hơn 4.000 lô đất có sẵn thổ cư, đất vườn sầu riêng ven suối và trang trại nghỉ dưỡng sổ hồng riêng."
+    }
   }
 ];
 
@@ -2338,6 +2402,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-13': 'portal-13',
   'portal-auction': 'portal-13',
   'auction-pro': 'portal-13',
+  'portal-14': 'portal-14',
+  'portal-landplot': 'portal-14',
+  'datvuon-pro': 'portal-14',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
