@@ -770,23 +770,75 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     };
   }, [selectedProperty, loanPercent, loanYears, interestRate]);
 
+  const activeHotline = company?.phone || '0905.56.xxxx';
+  const hotlineTel = activeHotline.replace(/[^0-9]/g, '') || '0905560000';
+  const activeEmail = company?.email || 'hotro@webdemo.com';
+  const socialLinks = {
+    facebook: company?.social?.facebook || 'https://facebook.com',
+    instagram: company?.social?.instagram || 'https://instagram.com',
+    twitter: company?.social?.twitter || 'https://twitter.com',
+    youtube: company?.social?.youtube || 'https://youtube.com',
+  };
+
   const renderHeader = () => (
     <header className="w-full bg-white text-slate-800 border-b border-slate-200 sticky top-0 z-40 shadow-xs">
       <div className="bg-slate-50 border-b border-slate-100 text-xs py-1.5 px-4 text-slate-500">
         <div className={`${MAX_W} mx-auto flex justify-between items-center`}>
           <div className="flex items-center gap-4">
             <span className="hidden sm:inline">Công ty TNHH Bất động sản {company?.name || 'PlatformBDS'}</span>
-            <span className="flex items-center gap-1"><Mail size={12} className="text-blue-600" /> {company?.email || 'hotro@webdemo.com'}</span>
+            <a
+              href={`mailto:${activeEmail}`}
+              title="Gửi Email liên hệ"
+              className="flex items-center gap-1 hover:text-blue-600 transition"
+            >
+              <Mail size={12} className="text-blue-600" /> {activeEmail}
+            </a>
           </div>
           <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1 font-bold text-slate-700">
-              <Phone size={12} className="text-blue-600" /> {company?.phone || '0905.56.xxxx'}
-            </span>
-            <div className="hidden md:flex items-center gap-2 text-slate-400">
-              <Facebook size={13} className="hover:text-blue-600 cursor-pointer" />
-              <Instagram size={13} className="hover:text-pink-600 cursor-pointer" />
-              <Twitter size={13} className="hover:text-sky-500 cursor-pointer" />
-              <Youtube size={13} className="hover:text-red-600 cursor-pointer" />
+            <a
+              href={`tel:${hotlineTel}`}
+              title="Gọi Hotline tư vấn"
+              className="flex items-center gap-1 font-bold text-slate-700 hover:text-blue-600 transition"
+            >
+              <Phone size={12} className="text-blue-600" /> {activeHotline}
+            </a>
+            <div className="hidden md:flex items-center gap-2.5 text-slate-400">
+              <a
+                href={socialLinks.facebook}
+                target="_blank"
+                rel="noreferrer"
+                title="Theo dõi Fanpage Facebook"
+                className="hover:text-blue-600 transition cursor-pointer"
+              >
+                <Facebook size={13} />
+              </a>
+              <a
+                href={socialLinks.instagram}
+                target="_blank"
+                rel="noreferrer"
+                title="Theo dõi Instagram"
+                className="hover:text-pink-600 transition cursor-pointer"
+              >
+                <Instagram size={13} />
+              </a>
+              <a
+                href={socialLinks.twitter}
+                target="_blank"
+                rel="noreferrer"
+                title="Theo dõi Twitter"
+                className="hover:text-sky-500 transition cursor-pointer"
+              >
+                <Twitter size={13} />
+              </a>
+              <a
+                href={socialLinks.youtube}
+                target="_blank"
+                rel="noreferrer"
+                title="Theo dõi Kênh YouTube"
+                className="hover:text-red-600 transition cursor-pointer"
+              >
+                <Youtube size={13} />
+              </a>
             </div>
           </div>
         </div>
@@ -794,11 +846,11 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
       <div className={`${MAX_W} mx-auto px-4 py-3.5 flex items-center justify-between`}>
         <div onClick={() => navigate('home')} className="flex items-center gap-3 cursor-pointer group">
-          <div className="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center text-white shadow-md">
+          <div className="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center text-white shadow-md group-hover:bg-blue-800 transition">
             <Building2 size={24} />
           </div>
           <div>
-            <div className="text-lg font-black tracking-tight text-slate-900 leading-tight">
+            <div className="text-lg font-black tracking-tight text-slate-900 group-hover:text-blue-600 transition leading-tight">
               {company?.name || 'REAL ESTATE'}
             </div>
             <div className="text-[9px] tracking-widest text-slate-400 font-extrabold uppercase">Group Platform</div>
@@ -806,22 +858,28 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
 
         <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-slate-700">
-          <button onClick={() => navigate('home')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'home' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Trang Chủ</button>
-          <button onClick={() => navigate('about')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'about' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Giới Thiệu</button>
-          <button onClick={() => navigate('can-ho')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'can-ho' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Căn Hộ</button>
-          <button onClick={() => navigate('nha-pho')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'nha-pho' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Nhà Phố</button>
-          <button onClick={() => navigate('biet-thu')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'biet-thu' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Biệt Thự</button>
-          <button onClick={() => navigate('chung-cu')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'chung-cu' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Chung Cư</button>
-          <button onClick={() => navigate('van-phong')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'van-phong' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Văn Phòng</button>
-          <button onClick={() => navigate('news')} className={`px-3 py-2 rounded-lg transition ${['news', 'news-detail'].includes(currentPage) ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Tin Tức</button>
-          <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'contact' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Liên Hệ</button>
+          <button onClick={() => navigate('home')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${currentPage === 'home' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Trang Chủ</button>
+          <button onClick={() => navigate('about')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${currentPage === 'about' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Giới Thiệu</button>
+          <button onClick={() => navigate('can-ho')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${currentPage === 'can-ho' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Căn Hộ</button>
+          <button onClick={() => navigate('nha-pho')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${currentPage === 'nha-pho' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Nhà Phố</button>
+          <button onClick={() => navigate('biet-thu')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${currentPage === 'biet-thu' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Biệt Thự</button>
+          <button onClick={() => navigate('chung-cu')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${currentPage === 'chung-cu' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Chung Cư</button>
+          <button onClick={() => navigate('van-phong')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${currentPage === 'van-phong' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Văn Phòng</button>
+          <button onClick={() => navigate('news')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${['news', 'news-detail'].includes(currentPage) ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Tin Tức</button>
+          <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${currentPage === 'contact' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Liên Hệ</button>
         </nav>
 
         <div className="flex items-center gap-2">
-          <button onClick={() => navigate('ky-gui')} className="hidden sm:flex px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg shadow-sm transition items-center gap-1.5">
+          <button
+            onClick={() => navigate('ky-gui')}
+            className="hidden sm:flex px-4 py-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold text-xs rounded-lg shadow-sm transition items-center gap-1.5 cursor-pointer"
+          >
             <UploadCloud size={14} /> Ký Gửi Nhà Đất
           </button>
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-lg">
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-lg cursor-pointer"
+          >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
@@ -829,16 +887,16 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white border-t border-slate-200 px-4 py-3 space-y-1 text-xs font-bold uppercase text-slate-700 shadow-xl">
-          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg">Trang Chủ</button>
-          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg">Giới Thiệu</button>
-          <button onClick={() => navigate('can-ho')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg">Căn Hộ</button>
-          <button onClick={() => navigate('nha-pho')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg">Nhà Phố</button>
-          <button onClick={() => navigate('biet-thu')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg">Biệt Thự</button>
-          <button onClick={() => navigate('chung-cu')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg">Chung Cư</button>
-          <button onClick={() => navigate('van-phong')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg">Văn Phòng</button>
-          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg">Tin Tức</button>
-          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg">Liên Hệ</button>
-          <button onClick={() => navigate('ky-gui')} className="block w-full text-left py-2 px-3 bg-blue-50 text-blue-700 rounded-lg font-black">Ký Gửi Nhà Đất</button>
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Trang Chủ</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Giới Thiệu</button>
+          <button onClick={() => navigate('can-ho')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Căn Hộ</button>
+          <button onClick={() => navigate('nha-pho')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Nhà Phố</button>
+          <button onClick={() => navigate('biet-thu')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Biệt Thự</button>
+          <button onClick={() => navigate('chung-cu')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Chung Cư</button>
+          <button onClick={() => navigate('van-phong')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Văn Phòng</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Tin Tức</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Liên Hệ</button>
+          <button onClick={() => navigate('ky-gui')} className="block w-full text-left py-2 px-3 bg-blue-50 text-blue-700 rounded-lg font-black cursor-pointer">Ký Gửi Nhà Đất</button>
         </div>
       )}
     </header>
