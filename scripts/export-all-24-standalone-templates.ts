@@ -433,6 +433,14 @@ export default function HomePage() {
           <div>✉️ Email: <a href="mailto:ntrungz0704@gmail.com" class="text-white hover:text-blue-400">ntrungz0704@gmail.com</a></div>
           <div>⏰ Giờ làm việc: <strong class="text-white font-medium">8:00 - 20:00 (T2 - CN)</strong></div>
         </div>
+
+        <!-- 4 Social Icons -->
+        <div class="flex items-center gap-2.5 pt-2">
+          <a href="https://zalo.me/0919006030" target="_blank" class="w-9 h-9 rounded-2xl bg-[#0068FF] text-white flex items-center justify-center font-black text-[10px]">ZALO</a>
+          <a href="https://www.facebook.com/groups/847532091275214" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1877F2] text-white flex items-center justify-center font-bold text-sm">f</a>
+          <a href="https://www.youtube.com/@tungchuofficial" target="_blank" class="w-9 h-9 rounded-2xl bg-[#E62117] text-white flex items-center justify-center text-xs">▶</a>
+          <a href="https://www.tiktok.com/@editnhadat" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1E293B] text-[#A78BFA] flex items-center justify-center text-xs">🎵</a>
+        </div>
       </div>
 
       <!-- Cột 2: VỀ CHÚNG TÔI -->
@@ -659,6 +667,14 @@ if ($pdo) {
           <div>📞 Hotline 2: <a href="tel:0983312219" class="text-white font-bold font-mono hover:text-emerald-400">0983 312 219</a> (24/7)</div>
           <div>✉️ Email: <a href="mailto:ntrungz0704@gmail.com" class="text-white hover:text-blue-400">ntrungz0704@gmail.com</a></div>
           <div>⏰ Giờ làm việc: <strong class="text-white font-medium">8:00 - 20:00 (T2 - CN)</strong></div>
+        </div>
+
+        <!-- 4 Social Icons -->
+        <div class="flex items-center gap-2.5 pt-2">
+          <a href="https://zalo.me/0919006030" target="_blank" class="w-9 h-9 rounded-2xl bg-[#0068FF] text-white flex items-center justify-center font-black text-[10px]">ZALO</a>
+          <a href="https://www.facebook.com/groups/847532091275214" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1877F2] text-white flex items-center justify-center font-bold text-sm">f</a>
+          <a href="https://www.youtube.com/@tungchuofficial" target="_blank" class="w-9 h-9 rounded-2xl bg-[#E62117] text-white flex items-center justify-center text-xs">▶</a>
+          <a href="https://www.tiktok.com/@editnhadat" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1E293B] text-[#A78BFA] flex items-center justify-center text-xs">🎵</a>
         </div>
       </div>
 
