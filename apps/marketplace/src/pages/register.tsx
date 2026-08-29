@@ -276,10 +276,3 @@ export default function RegisterPage() {
   );
 }
 
-export const getServerSideProps = async () => ({
-  redirect: {
-    destination: '/login?reason=admin-created-account',
-    permanent: false,
-  },
-});
-
