@@ -46,7 +46,8 @@ import {
   Filter,
   SlidersHorizontal,
   ChevronDown,
-  Navigation
+  Navigation,
+  ArrowUp
 } from 'lucide-react';
 
 interface TemplateProps {
@@ -626,6 +627,10 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 4000);
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navigate = (page: string, slug?: string) => {
@@ -1888,8 +1893,52 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     </div>
   );
 
+  const defaultFooterCols = [
+    {
+      title: 'Thông tin liên hệ',
+      items: [
+        { label: `📍 Địa chỉ: ${company?.address || '180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội'}`, isInfo: true },
+        { label: `📞 Hotline: ${company?.phone || '0905.56.xxxx'}`, isInfo: true },
+        { label: `✉️ Email: ${company?.email || 'webdemo@gmail.com'}`, isInfo: true },
+        { label: '⏰ Giờ làm việc: 8:00 - 20:00 (T2 - CN)', isInfo: true }
+      ]
+    },
+    {
+      title: 'Về chúng tôi',
+      items: [
+        { label: 'Trang chủ', page: 'home' },
+        { label: 'Giới thiệu', page: 'about' },
+        { label: 'Tin tức & Cẩm nang', page: 'news' },
+        { label: 'Ký gửi nhà đất', page: 'ky-gui' },
+        { label: 'Liên hệ tư vấn', page: 'contact' }
+      ]
+    },
+    {
+      title: 'Dự án mới nhất',
+      items: [
+        { label: 'Căn hộ chung cư', page: 'can-ho' },
+        { label: 'Nhà phố thương mại', page: 'nha-pho' },
+        { label: 'Biệt thự sân vườn', page: 'biet-thu' },
+        { label: 'Chung cư cao cấp', page: 'chung-cu' },
+        { label: 'Văn phòng cho thuê', page: 'van-phong' }
+      ]
+    },
+    {
+      title: 'Chính sách & Quy định',
+      items: [
+        { label: 'Chính sách bán hàng & hoa hồng', page: 'about' },
+        { label: 'Điều khoản sử dụng dịch vụ', page: 'about' },
+        { label: 'Quy trình ký gửi & mua bán', page: 'ky-gui' },
+        { label: 'Chính sách bảo mật thông tin', page: 'about' },
+        { label: 'Câu hỏi thường gặp (FAQ)', page: 'contact' }
+      ]
+    }
+  ];
+
+  const footerCols = company?.footerColumns || defaultFooterCols;
+
   const renderFooter = () => (
-    <footer className="w-full">
+    <footer className="w-full relative">
       <div className="bg-[#1E60B8] py-6 px-4 text-white">
         <div className={`${MAX_W} mx-auto flex flex-col md:flex-row justify-between items-center gap-4`}>
           <div>
@@ -1914,43 +1963,65 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
       <div className="bg-[#0B192C] text-slate-400 text-xs py-10 px-4">
         <div className={`${MAX_W} mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8`}>
-          <div className="space-y-3">
-            <div className="text-base font-black text-white">Về chúng tôi</div>
-            <p className="text-[11px] leading-relaxed">
-              📍 Địa chỉ: {company?.address || '180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội'}
-            </p>
-            <p className="text-[11px]">📞 Điện thoại: {company?.phone || '0905.56.xxxx'}</p>
-            <p className="text-[11px]">✉️ Email: {company?.email || 'webdemo@gmail.com'}</p>
-          </div>
-
-          <div className="space-y-2">
-            <div className="text-sm font-bold text-white">Về chúng tôi</div>
-            <div onClick={() => navigate('home')} className="hover:text-white cursor-pointer">• Trang chủ</div>
-            <div onClick={() => navigate('about')} className="hover:text-white cursor-pointer">• Giới thiệu</div>
-            <div onClick={() => navigate('news')} className="hover:text-white cursor-pointer">• Tin tức</div>
-            <div onClick={() => navigate('contact')} className="hover:text-white cursor-pointer">• Liên hệ</div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="text-sm font-bold text-white">Dự án mới nhất</div>
-            <div onClick={() => navigate('can-ho')} className="hover:text-white cursor-pointer">• Căn hộ</div>
-            <div onClick={() => navigate('nha-pho')} className="hover:text-white cursor-pointer">• Nhà phố</div>
-            <div onClick={() => navigate('biet-thu')} className="hover:text-white cursor-pointer">• Biệt thự</div>
-            <div onClick={() => navigate('chung-cu')} className="hover:text-white cursor-pointer">• Chung cư</div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="text-sm font-bold text-white">Chính sách & Quy định</div>
-            <div className="hover:text-white cursor-pointer">• Chính sách bán hàng</div>
-            <div className="hover:text-white cursor-pointer">• Điều khoản sử dụng</div>
-            <div className="hover:text-white cursor-pointer">• Quy trình mua bán</div>
-            <div className="hover:text-white cursor-pointer">• Câu hỏi thường gặp</div>
-          </div>
+          {footerCols.map((col: any, idx: number) => (
+            <div key={idx} className="space-y-2.5">
+              <div className="text-sm font-black text-white tracking-wide uppercase">{col.title}</div>
+              <ul className="space-y-1.5">
+                {col.items.map((item: any, i: number) => (
+                  <li key={i}>
+                    {item.isInfo ? (
+                      <span className="text-[11px] text-slate-300 leading-relaxed block">{item.label}</span>
+                    ) : (
+                      <div
+                        onClick={() => navigate(item.page || 'home')}
+                        className="hover:text-white cursor-pointer transition text-[11px] flex items-center gap-1.5"
+                      >
+                        <span className="text-blue-500">•</span> {item.label}
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </div>
 
-      <div className="bg-[#07101E] text-slate-500 text-[11px] py-3 px-4 text-center border-t border-slate-800">
-        © Thiết kế web bởi PlatformBDS — Template BDS-01 Real Estate Group
+      <div className="bg-[#07101E] text-slate-400 text-[11px] py-4 px-4 text-center border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center max-w-7xl mx-auto gap-2">
+        <div>
+          © Bản quyền thuộc về <strong className="text-white font-black">TEMPLATEBDS</strong> — Nền tảng phân phối & Thiết kế Website Bất Động Sản Chuyên Nghiệp.
+        </div>
+        <div className="text-[10px] text-slate-500">
+          Mẫu Giao Diện: <strong>BDS-01 (Real Estate Group Pro)</strong>
+        </div>
+      </div>
+
+      <div className="fixed bottom-6 right-5 z-40 flex flex-col items-center gap-3">
+        <a
+          href={`https://zalo.me/${selectedProperty?.author?.zalo || '0905560000'}`}
+          target="_blank"
+          rel="noreferrer"
+          title="Chat Zalo Tư Vấn"
+          className="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-2xl hover:scale-110 transition animate-pulse"
+        >
+          <span className="text-[10px] font-black tracking-tighter">ZALO</span>
+        </a>
+
+        <a
+          href={`tel:${company?.phone || '0905560000'}`}
+          title="Gọi Hotline Ngay"
+          className="w-12 h-12 rounded-full bg-amber-700 hover:bg-amber-800 text-white flex items-center justify-center shadow-2xl hover:scale-110 transition"
+        >
+          <Phone size={20} />
+        </a>
+
+        <button
+          onClick={scrollToTop}
+          title="Lên đầu trang"
+          className="w-10 h-10 rounded-full bg-slate-900/90 hover:bg-slate-950 text-white flex items-center justify-center shadow-lg hover:scale-105 transition"
+        >
+          <ArrowUp size={18} />
+        </button>
       </div>
     </footer>
   );
@@ -1958,7 +2029,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
   return (
     <div className={`min-h-screen bg-slate-50 font-sans antialiased text-slate-800 relative ${isSmall ? 'text-xs' : ''}`}>
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce">
+        <div className="fixed bottom-24 right-6 z-50 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce">
           <CheckCircle size={16} /> {toastMessage}
         </div>
       )}

@@ -47,7 +47,8 @@ import {
   Filter,
   SlidersHorizontal,
   ChevronDown,
-  Navigation
+  Navigation,
+  ArrowUp
 } from 'lucide-react';
 import { MAX_W } from '../lib/design-system';
 
@@ -61,12 +62,6 @@ interface TemplateProps {
   posts?: any[];
 }
 
-// ── COLOR THEME ─────────────────────────────────────────────────────────────
-const PRIMARY_BLUE = '#1E60B8';
-const PRIMARY_DARK = '#0F3C78';
-const ACCENT_ORANGE = '#EA580C';
-
-// ── COMPREHENSIVE VIETNAMESE DATA ENGINE FOR BDS-01 ─────────────────────────
 export interface PropertyItem {
   id: number;
   title: string;
@@ -613,30 +608,30 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
   const [selectedProperty, setSelectedProperty] = useState<PropertyItem>(INITIAL_PROPERTIES[0]);
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(NEWS_ARTICLES[0]);
   
-  // Search & Filter state
   const [searchCategory, setSearchCategory] = useState<string>('all');
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [filterCity, setFilterCity] = useState<string>('all');
   const [filterPriceRange, setFilterPriceRange] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('default');
   
-  // Mobile & Modal state
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Mortgage Calculator state
   const [loanPercent, setLoanPercent] = useState<number>(70);
   const [loanYears, setLoanYears] = useState<number>(20);
   const [interestRate, setInterestRate] = useState<number>(7.5);
 
-  // Forms state
   const [contactForm, setContactForm] = useState({ name: '', phone: '', email: '', message: '' });
   const [consignmentForm, setConsignmentForm] = useState({ name: '', phone: '', propType: 'Căn hộ', address: '', expectedPrice: '', note: '' });
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 4000);
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navigate = (page: string, slug?: string) => {
@@ -686,7 +681,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     return () => window.removeEventListener('popstate', handlePopState);
   }, [tSlug]);
 
-  // Merge default + CMS dynamic properties
   const allPropertyList = useMemo(() => {
     let list = [...INITIAL_PROPERTIES, ...RENT_PROPERTIES];
 
@@ -730,14 +724,12 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       list = [...dynamicList, ...list];
     }
 
-    // Filter by page
     if (currentPage === 'can-ho') list = list.filter(p => p.type === 'Căn hộ');
     else if (currentPage === 'nha-pho') list = list.filter(p => p.type === 'Nhà phố');
     else if (currentPage === 'biet-thu') list = list.filter(p => p.type === 'Biệt thự');
     else if (currentPage === 'chung-cu') list = list.filter(p => p.type === 'Chung cư');
     else if (currentPage === 'van-phong') list = list.filter(p => p.type === 'Văn phòng');
 
-    // Filter by search dropdown
     if (searchCategory !== 'all') {
       if (searchCategory === 'can-ho') list = list.filter(p => p.type === 'Căn hộ');
       else if (searchCategory === 'nha-pho') list = list.filter(p => p.type === 'Nhà phố');
@@ -745,17 +737,14 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       else if (searchCategory === 'chung-cu') list = list.filter(p => p.type === 'Chung cư');
     }
 
-    // Filter by city
     if (filterCity !== 'all') {
       list = list.filter(p => p.city === filterCity);
     }
 
-    // Filter by price
     if (filterPriceRange === 'under-5') list = list.filter(p => p.priceNum < 5);
     else if (filterPriceRange === '5-10') list = list.filter(p => p.priceNum >= 5 && p.priceNum <= 10);
     else if (filterPriceRange === 'above-10') list = list.filter(p => p.priceNum > 10);
 
-    // Filter by search keyword
     if (searchKeyword.trim()) {
       const q = searchKeyword.toLowerCase();
       list = list.filter(p => 
@@ -766,7 +755,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       );
     }
 
-    // Sort
     if (sortBy === 'price-asc') list.sort((a, b) => a.priceNum - b.priceNum);
     else if (sortBy === 'price-desc') list.sort((a, b) => b.priceNum - a.priceNum);
     else if (sortBy === 'area-desc') list.sort((a, b) => b.areaNum - a.areaNum);
@@ -774,14 +762,12 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     return list;
   }, [currentPage, searchCategory, filterCity, filterPriceRange, searchKeyword, sortBy, projects, company]);
 
-  // Mortgage calculations
   const calculatedLoan = useMemo(() => {
     const propertyPrice = (selectedProperty?.priceNum || 10) * 1_000_000_000;
     const loanAmount = propertyPrice * (loanPercent / 100);
     const monthlyRate = interestRate / 100 / 12;
     const totalMonths = loanYears * 12;
     
-    // Monthly payment formula (Amortization)
     const monthlyPayment = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
     const totalPayment = monthlyPayment * totalMonths;
     const totalInterest = totalPayment - loanAmount;
@@ -820,7 +806,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
       {/* Main navigation */}
       <div className={`${MAX_W} mx-auto px-4 py-3.5 flex items-center justify-between`}>
-        {/* Brand Logo */}
         <div onClick={() => navigate('home')} className="flex items-center gap-3 cursor-pointer group">
           <div className="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center text-white shadow-md">
             <Building2 size={24} />
@@ -833,7 +818,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           </div>
         </div>
 
-        {/* Desktop Menu */}
         <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-slate-700">
           <button onClick={() => navigate('home')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'home' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Trang Chủ</button>
           <button onClick={() => navigate('about')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'about' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Giới Thiệu</button>
@@ -846,7 +830,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'contact' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Liên Hệ</button>
         </nav>
 
-        {/* Action Button & Mobile Toggle */}
         <div className="flex items-center gap-2">
           <button onClick={() => navigate('ky-gui')} className="hidden sm:flex px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg shadow-sm transition items-center gap-1.5">
             <UploadCloud size={14} /> Ký Gửi Nhà Đất
@@ -857,7 +840,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </div>
 
-      {/* Mobile dropdown */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white border-t border-slate-200 px-4 py-3 space-y-1 text-xs font-bold uppercase text-slate-700 shadow-xl">
           <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg">Trang Chủ</button>
@@ -875,7 +857,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     </header>
   );
 
-  // ── 2. CARD VIEW (EXACT MATCH IMAGE 1 & 2) ──────────────────────────────────
   const renderCard = (item: PropertyItem) => (
     <div
       key={item.id}
@@ -921,7 +902,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     </div>
   );
 
-  // ── 3. HOME PAGE VIEW (EXACT MATCH IMAGE 1) ─────────────────────────────────
   const renderHomePage = () => (
     <div className="bg-[#F8FAFC] space-y-12 pb-12">
       {/* ── HERO BANNER WITH SEARCH ── */}
@@ -931,7 +911,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             TRANG TIN BẤT ĐỘNG SẢN SỐ 1 VIỆT NAM
           </h1>
 
-          {/* Search Box */}
           <div className="bg-white/10 backdrop-blur-md p-2 rounded-xl border border-white/20 shadow-2xl flex flex-col md:flex-row gap-2 max-w-2xl mx-auto">
             <select
               value={searchCategory}
@@ -960,7 +939,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             </button>
           </div>
 
-          {/* Category Icons Row */}
           <div className="grid grid-cols-5 gap-3 max-w-xl mx-auto mt-8">
             {[
               { label: 'Toàn bộ', icon: Building2, page: 'can-ho' },
@@ -987,7 +965,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </section>
 
-      {/* ── SECTION 1: BẤT ĐỘNG SẢN ĐANG BÁN (4 COLUMNS x 2 ROWS) ── */}
+      {/* ── SECTION 1: BẤT ĐỘNG SẢN ĐANG BÁN ── */}
       <section className={`${MAX_W} mx-auto px-4`}>
         <div className="text-center mb-6">
           <h2 className="text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
@@ -1001,7 +979,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </section>
 
-      {/* ── SECTION 2: DỰ ÁN NỔI BẬT SINGLE PROJECT BANNER ── */}
+      {/* ── SECTION 2: DỰ ÁN NỔI BẬT SINGLE PROJECT ── */}
       <section className={`${MAX_W} mx-auto px-4`}>
         <div className="text-center mb-6">
           <h2 className="text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
@@ -1044,7 +1022,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </section>
 
-      {/* ── SECTION 3: BẤT ĐỘNG SẢN CHO THUÊ (2 COLUMNS x 4 ROWS) ── */}
+      {/* ── SECTION 3: BẤT ĐỘNG SẢN CHO THUÊ ── */}
       <section className={`${MAX_W} mx-auto px-4`}>
         <div className="text-center mb-6">
           <h2 className="text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
@@ -1089,7 +1067,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </section>
 
-      {/* ── SECTION 4: CÁC DỰ ÁN TẠI CÁC THÀNH PHỐ LỚN (BENTO GRID) ── */}
+      {/* ── SECTION 4: CÁC DỰ ÁN TẠI CÁC THÀNH PHỐ LỚN ── */}
       <section className={`${MAX_W} mx-auto px-4`}>
         <div className="text-center mb-6">
           <h2 className="text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
@@ -1122,7 +1100,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </section>
 
-      {/* ── SECTION 5: TIN TỨC & AD BANNER (EXACT MATCH IMAGE 1) ── */}
+      {/* ── SECTION 5: TIN TỨC & AD BANNER ── */}
       <section className={`${MAX_W} mx-auto px-4`}>
         <div className="flex items-center justify-between mb-4 border-b border-slate-200 pb-2">
           <h2 className="text-base font-black text-blue-700 uppercase">Tin tức</h2>
@@ -1132,7 +1110,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Main Featured News (Col 1 - 4 Cols) */}
           <div
             onClick={() => handleOpenArticle(NEWS_ARTICLES[0])}
             className="md:col-span-4 bg-white rounded-lg border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer group"
@@ -1153,7 +1130,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             </div>
           </div>
 
-          {/* 3 Smaller News Items (Col 2 - 5 Cols) */}
           <div className="md:col-span-5 space-y-3">
             {NEWS_ARTICLES.slice(1, 4).map(art => (
               <div
@@ -1174,7 +1150,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             ))}
           </div>
 
-          {/* Ad Banner Widget (Col 3 - 3 Cols) */}
           <div className="md:col-span-3 bg-gradient-to-b from-slate-900 to-blue-950 rounded-xl overflow-hidden p-6 text-white text-center flex flex-col justify-between relative shadow-lg">
             <div className="space-y-3">
               <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20">
@@ -1195,10 +1170,8 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     </div>
   );
 
-  // ── 4. RIGHT SIDEBAR (EXACT MATCH IMAGE 2 & 3) ──────────────────────────────
   const renderRightSidebar = () => (
     <aside className="space-y-6">
-      {/* Widget 1: Danh mục */}
       <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-xs">
         <h3 className="font-black text-xs text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3">
           Danh mục
@@ -1222,7 +1195,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </div>
 
-      {/* Widget 2: Các dự án bạn vừa xem */}
       <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-xs">
         <h3 className="font-black text-xs text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3">
           Các dự án bạn vừa xem
@@ -1245,7 +1217,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </div>
 
-      {/* Widget 3: Tin tức mới nhất */}
       <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-xs">
         <h3 className="font-black text-xs text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3">
           Tin tức mới nhất
@@ -1270,11 +1241,9 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     </aside>
   );
 
-  // ── 5. LISTING CATALOG SUBPAGE (EXACT MATCH IMAGE 2) ────────────────────────
   const renderListingCatalogPage = () => (
     <div className="py-6 bg-[#F8FAFC] min-h-screen">
       <div className={`${MAX_W} mx-auto px-4 space-y-4`}>
-        {/* Breadcrumb */}
         <div className="text-xs text-slate-500 flex items-center gap-1.5">
           <span onClick={() => navigate('home')} className="hover:text-blue-600 cursor-pointer">Trang chủ</span>
           <span>/</span>
@@ -1284,7 +1253,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <h1 className="text-xl font-black text-slate-900 capitalize">{currentPage.replace('-', ' ')}</h1>
 
-          {/* Quick Filter Controls */}
           <div className="flex flex-wrap items-center gap-2 text-xs">
             <select
               value={filterCity}
@@ -1321,14 +1289,11 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           </div>
         </div>
 
-        {/* Count result */}
         <div className="text-xs text-slate-500 border-b border-slate-200 pb-2">
           Hiển thị tất cả <strong>{allPropertyList.length}</strong> kết quả phù hợp
         </div>
 
-        {/* Main Grid + Sidebar Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
-          {/* Left Grid (8 Cols - 3 Column Property Cards) */}
           <div className="lg:col-span-8">
             {allPropertyList.length === 0 ? (
               <div className="bg-white p-12 rounded-xl text-center border border-slate-200">
@@ -1347,7 +1312,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             )}
           </div>
 
-          {/* Right Sidebar (4 Cols) */}
           <div className="lg:col-span-4">
             {renderRightSidebar()}
           </div>
@@ -1356,11 +1320,9 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     </div>
   );
 
-  // ── 6. NEWS SUBPAGE (EXACT MATCH IMAGE 3) ───────────────────────────────────
   const renderNewsPage = () => (
     <div className="py-6 bg-[#F8FAFC] min-h-screen">
       <div className={`${MAX_W} mx-auto px-4 space-y-4`}>
-        {/* Breadcrumb */}
         <div className="text-xs text-slate-500 flex items-center gap-1.5">
           <span onClick={() => navigate('home')} className="hover:text-blue-600 cursor-pointer">Trang chủ</span>
           <span>/</span>
@@ -1370,7 +1332,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         <h1 className="text-xl font-black text-slate-900">Tin tức & Cẩm nang BĐS</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
-          {/* Left Articles Grid (8 Cols - 3 Column Articles) */}
           <div className="lg:col-span-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
               {NEWS_ARTICLES.map(art => (
@@ -1404,7 +1365,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             </div>
           </div>
 
-          {/* Right Sidebar (4 Cols) */}
           <div className="lg:col-span-4">
             {renderRightSidebar()}
           </div>
@@ -1413,13 +1373,11 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     </div>
   );
 
-  // ── 7. PROPERTY DETAIL VIEW WITH MAP, MORTGAGE & CONTACT ────────────────────
   const renderPropertyDetailPage = () => {
     if (!selectedProperty) return null;
     return (
       <div className="py-6 bg-[#F8FAFC] min-h-screen">
         <div className={`${MAX_W} mx-auto px-4 space-y-6 max-w-6xl`}>
-          {/* Breadcrumb */}
           <div className="text-xs text-slate-500 flex items-center gap-1.5">
             <span onClick={() => navigate('home')} className="hover:text-blue-600 cursor-pointer">Trang chủ</span>
             <span>/</span>
@@ -1428,9 +1386,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             <span className="text-slate-800 font-bold truncate">{selectedProperty.title}</span>
           </div>
 
-          {/* Top Main Details Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 bg-white p-6 md:p-8 rounded-xl border border-slate-200 shadow-sm">
-            {/* Gallery on Left (7 Cols) */}
             <div className="lg:col-span-7 space-y-3">
               <div className="h-80 md:h-[400px] rounded-lg overflow-hidden bg-slate-100 relative">
                 <img
@@ -1462,7 +1418,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
               )}
             </div>
 
-            {/* Details on Right (5 Cols) */}
             <div className="lg:col-span-5 space-y-4 flex flex-col justify-between">
               <div className="space-y-3">
                 <h1 className="text-xl md:text-2xl font-black text-slate-900 leading-snug">
@@ -1492,7 +1447,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 </p>
               </div>
 
-              {/* Action Buttons */}
               <div className="space-y-2 pt-2 border-t border-slate-100">
                 <div className="flex gap-2">
                   <a
@@ -1520,10 +1474,8 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             </div>
           </div>
 
-          {/* Detailed Content & Features */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-8 space-y-6">
-              {/* Detailed Description */}
               <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
                 <h3 className="font-black text-base text-slate-900 border-b border-slate-100 pb-2">
                   Mô tả chi tiết
@@ -1533,7 +1485,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                   <p>Môi trường sống an ninh, dân trí cao, không gian trong lành với hệ thống cây xanh và công viên bao bọc.</p>
                 </div>
 
-                {/* Features Badges */}
                 <h4 className="font-bold text-xs text-slate-900 pt-2">Đặc điểm nổi bật & Tiện ích đi kèm:</h4>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1">
                   {selectedProperty.features.map((f, i) => (
@@ -1545,7 +1496,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 </div>
               </div>
 
-              {/* Embedded Interactive Google Map */}
               <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-3">
                 <h3 className="font-black text-base text-slate-900 flex items-center gap-2">
                   <MapPin size={16} className="text-red-500" /> Vị trí trên bản đồ
@@ -1563,7 +1513,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 </div>
               </div>
 
-              {/* Bank Loan Calculator (Interactive) */}
               <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
                 <h3 className="font-black text-base text-slate-900 flex items-center gap-2">
                   <Calculator size={16} className="text-blue-600" /> Bảng tính lãi vay ngân hàng dự kiến
@@ -1609,7 +1558,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                   </div>
                 </div>
 
-                {/* Calculation Result */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
                   <div className="p-3 bg-blue-50 border border-blue-100 rounded-lg text-center">
                     <span className="text-[11px] text-slate-500 font-bold block">Số tiền vay:</span>
@@ -1627,9 +1575,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
               </div>
             </div>
 
-            {/* Right Broker Card & Fast Consultation Form */}
             <div className="lg:col-span-4 space-y-6">
-              {/* Broker Profile */}
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                 <div className="flex items-center gap-3">
                   <img
@@ -1662,7 +1608,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 </div>
               </div>
 
-              {/* Consultation Form */}
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
                 <h4 className="font-black text-xs text-slate-900 uppercase tracking-wider">
                   Yêu cầu tư vấn & Nhận bảng giá
@@ -1706,7 +1651,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 </div>
               </div>
 
-              {/* Related Properties */}
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
                 <h4 className="font-black text-xs text-slate-900 uppercase tracking-wider">
                   Bất động sản cùng khu vực
@@ -1738,7 +1682,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     );
   };
 
-  // ── 8. ARTICLE DETAIL VIEW ──────────────────────────────────────────────────
   const renderArticleDetailPage = () => {
     if (!selectedArticle) return null;
     return (
@@ -1783,7 +1726,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
               ))}
             </div>
 
-            {/* Tags */}
             <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
               <span className="text-xs text-slate-400 font-bold">Từ khóa:</span>
               {selectedArticle.tags.map((tag, i) => (
@@ -1798,7 +1740,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     );
   };
 
-  // ── 9. CONSIGNMENT (KÝ GỬI NHÀ ĐẤT) SUBPAGE ──────────────────────────────────
   const renderConsignmentPage = () => (
     <div className="py-8 bg-[#F8FAFC] min-h-screen">
       <div className={`${MAX_W} mx-auto px-4 space-y-6 max-w-3xl`}>
@@ -1902,14 +1843,13 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     </div>
   );
 
-  // ── 10. ABOUT US & CONTACT VIEWS ────────────────────────────────────────────
   const renderAboutPage = () => (
     <div className="py-8 bg-[#F8FAFC] min-h-screen">
       <div className={`${MAX_W} mx-auto px-4 space-y-6 max-w-4xl`}>
-        <h1 className="text-2xl font-black text-slate-900">Về Chúng Tôi — Real Estate Group</h1>
+        <h1 className="text-2xl font-black text-slate-900">Về Chúng Tôi — {company?.name || 'Real Estate Group'}</h1>
         <div className="bg-white p-6 md:p-8 rounded-xl border border-slate-200 shadow-sm space-y-4 text-xs md:text-sm text-slate-700 leading-relaxed">
           <p>
-            <strong>Real Estate Group</strong> là đơn vị phân phối và tiếp thị bất động sản hàng đầu tại Việt Nam, mang đến cho khách hàng hàng ngàn lựa chọn căn hộ, biệt thự, nhà phố và bất động sản thương mại cao cấp với pháp lý minh bạch và giá trị sinh lời bền vững.
+            <strong>{company?.name || 'Real Estate Group'}</strong> là đơn vị phân phối và tiếp thị bất động sản hàng đầu tại Việt Nam, mang đến cho khách hàng hàng ngàn lựa chọn căn hộ, biệt thự, nhà phố và bất động sản thương mại cao cấp với pháp lý minh bạch và giá trị sinh lời bền vững.
           </p>
           <div className="grid grid-cols-3 gap-4 text-center py-6 border-t border-b border-slate-100">
             <div>
@@ -1993,9 +1933,53 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     </div>
   );
 
-  // ── 11. FOOTER ──────────────────────────────────────────────────────────────
+  // ── 11. DYNAMIC & CUSTOMIZABLE FOOTER WITH TEMPLATEBDS COPYRIGHT ───────────
+  const defaultFooterCols = [
+    {
+      title: 'Thông tin liên hệ',
+      items: [
+        { label: `📍 Địa chỉ: ${company?.address || '180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội'}`, isInfo: true },
+        { label: `📞 Hotline: ${company?.phone || '0905.56.xxxx'}`, isInfo: true },
+        { label: `✉️ Email: ${company?.email || 'webdemo@gmail.com'}`, isInfo: true },
+        { label: '⏰ Giờ làm việc: 8:00 - 20:00 (T2 - CN)', isInfo: true }
+      ]
+    },
+    {
+      title: 'Về chúng tôi',
+      items: [
+        { label: 'Trang chủ', page: 'home' },
+        { label: 'Giới thiệu', page: 'about' },
+        { label: 'Tin tức & Cẩm nang', page: 'news' },
+        { label: 'Ký gửi nhà đất', page: 'ky-gui' },
+        { label: 'Liên hệ tư vấn', page: 'contact' }
+      ]
+    },
+    {
+      title: 'Dự án mới nhất',
+      items: [
+        { label: 'Căn hộ chung cư', page: 'can-ho' },
+        { label: 'Nhà phố thương mại', page: 'nha-pho' },
+        { label: 'Biệt thự sân vườn', page: 'biet-thu' },
+        { label: 'Chung cư cao cấp', page: 'chung-cu' },
+        { label: 'Văn phòng cho thuê', page: 'van-phong' }
+      ]
+    },
+    {
+      title: 'Chính sách & Quy định',
+      items: [
+        { label: 'Chính sách bán hàng & hoa hồng', page: 'about' },
+        { label: 'Điều khoản sử dụng dịch vụ', page: 'about' },
+        { label: 'Quy trình ký gửi & mua bán', page: 'ky-gui' },
+        { label: 'Chính sách bảo mật thông tin', page: 'about' },
+        { label: 'Câu hỏi thường gặp (FAQ)', page: 'contact' }
+      ]
+    }
+  ];
+
+  const footerCols = company?.footerColumns || defaultFooterCols;
+
   const renderFooter = () => (
-    <footer className="w-full">
+    <footer className="w-full relative">
       {/* Blue Newsletter Strip */}
       <div className="bg-[#1E60B8] py-6 px-4 text-white">
         <div className={`${MAX_W} mx-auto flex flex-col md:flex-row justify-between items-center gap-4`}>
@@ -2019,56 +2003,82 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </div>
 
-      {/* Main 4-Column Footer */}
+      {/* Main 4-Column Footer (Customizable & Editable in CMS) */}
       <div className="bg-[#0B192C] text-slate-400 text-xs py-10 px-4">
         <div className={`${MAX_W} mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8`}>
-          <div className="space-y-3">
-            <div className="text-base font-black text-white">Về chúng tôi</div>
-            <p className="text-[11px] leading-relaxed">
-              📍 Địa chỉ: {company?.address || '180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội'}
-            </p>
-            <p className="text-[11px]">📞 Điện thoại: {company?.phone || '0905.56.xxxx'}</p>
-            <p className="text-[11px]">✉️ Email: {company?.email || 'webdemo@gmail.com'}</p>
-          </div>
-
-          <div className="space-y-2">
-            <div className="text-sm font-bold text-white">Về chúng tôi</div>
-            <div onClick={() => navigate('home')} className="hover:text-white cursor-pointer">• Trang chủ</div>
-            <div onClick={() => navigate('about')} className="hover:text-white cursor-pointer">• Giới thiệu</div>
-            <div onClick={() => navigate('news')} className="hover:text-white cursor-pointer">• Tin tức</div>
-            <div onClick={() => navigate('contact')} className="hover:text-white cursor-pointer">• Liên hệ</div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="text-sm font-bold text-white">Dự án mới nhất</div>
-            <div onClick={() => navigate('can-ho')} className="hover:text-white cursor-pointer">• Căn hộ</div>
-            <div onClick={() => navigate('nha-pho')} className="hover:text-white cursor-pointer">• Nhà phố</div>
-            <div onClick={() => navigate('biet-thu')} className="hover:text-white cursor-pointer">• Biệt thự</div>
-            <div onClick={() => navigate('chung-cu')} className="hover:text-white cursor-pointer">• Chung cư</div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="text-sm font-bold text-white">Chính sách & Quy định</div>
-            <div className="hover:text-white cursor-pointer">• Chính sách bán hàng</div>
-            <div className="hover:text-white cursor-pointer">• Điều khoản sử dụng</div>
-            <div className="hover:text-white cursor-pointer">• Quy trình mua bán</div>
-            <div className="hover:text-white cursor-pointer">• Câu hỏi thường gặp</div>
-          </div>
+          {footerCols.map((col: any, idx: number) => (
+            <div key={idx} className="space-y-2.5">
+              <div className="text-sm font-black text-white tracking-wide uppercase">{col.title}</div>
+              <ul className="space-y-1.5">
+                {col.items.map((item: any, i: number) => (
+                  <li key={i}>
+                    {item.isInfo ? (
+                      <span className="text-[11px] text-slate-300 leading-relaxed block">{item.label}</span>
+                    ) : (
+                      <div
+                        onClick={() => navigate(item.page || 'home')}
+                        className="hover:text-white cursor-pointer transition text-[11px] flex items-center gap-1.5"
+                      >
+                        <span className="text-blue-500">•</span> {item.label}
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Copyright */}
-      <div className="bg-[#07101E] text-slate-500 text-[11px] py-3 px-4 text-center border-t border-slate-800">
-        © Thiết kế web bởi PlatformBDS — Template BDS-01 Real Estate Group
+      {/* Copyright Strip Belonging to TEMPLATEBDS */}
+      <div className="bg-[#07101E] text-slate-400 text-[11px] py-4 px-4 text-center border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center max-w-7xl mx-auto gap-2">
+        <div>
+          © Bản quyền thuộc về <strong className="text-white font-black">TEMPLATEBDS</strong> — Nền tảng phân phối & Thiết kế Website Bất Động Sản Chuyên Nghiệp.
+        </div>
+        <div className="text-[10px] text-slate-500">
+          Mẫu Giao Diện: <strong>BDS-01 (Real Estate Group Pro)</strong>
+        </div>
+      </div>
+
+      {/* Floating Action Buttons on the Right */}
+      <div className="fixed bottom-6 right-5 z-40 flex flex-col items-center gap-3">
+        {/* Zalo Button */}
+        <a
+          href={`https://zalo.me/${selectedProperty?.author?.zalo || '0905560000'}`}
+          target="_blank"
+          rel="noreferrer"
+          title="Chat Zalo Tư Vấn"
+          className="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-2xl hover:scale-110 transition animate-pulse"
+        >
+          <span className="text-[10px] font-black tracking-tighter">ZALO</span>
+        </a>
+
+        {/* Hotline Call Button */}
+        <a
+          href={`tel:${company?.phone || '0905560000'}`}
+          title="Gọi Hotline Ngay"
+          className="w-12 h-12 rounded-full bg-amber-700 hover:bg-amber-800 text-white flex items-center justify-center shadow-2xl hover:scale-110 transition"
+        >
+          <Phone size={20} />
+        </a>
+
+        {/* Scroll To Top */}
+        <button
+          onClick={scrollToTop}
+          title="Lên đầu trang"
+          className="w-10 h-10 rounded-full bg-slate-900/90 hover:bg-slate-950 text-white flex items-center justify-center shadow-lg hover:scale-105 transition"
+        >
+          <ArrowUp size={18} />
+        </button>
       </div>
     </footer>
   );
 
   return (
     <div className={`min-h-screen bg-slate-50 font-sans antialiased text-slate-800 relative ${isSmall ? 'text-xs' : ''}`}>
-      {/* Toast notification feedback */}
+      {/* Toast feedback */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce">
+        <div className="fixed bottom-24 right-6 z-50 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce">
           <CheckCircle size={16} /> {toastMessage}
         </div>
       )}
