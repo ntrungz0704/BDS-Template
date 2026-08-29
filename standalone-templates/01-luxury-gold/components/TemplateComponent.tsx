@@ -815,14 +815,14 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     };
   }, [selectedProperty, loanPercent, loanYears, interestRate]);
 
-  const activeHotline = company?.phone || '0905.56.xxxx';
-  const hotlineTel = activeHotline.replace(/[^0-9]/g, '') || '0905560000';
-  const activeEmail = company?.email || 'hotro@webdemo.com';
+  const activeHotline = company?.phone || '0919 006 030';
+  const hotlineTel = activeHotline.replace(/[^0-9]/g, '') || '0919006030';
+  const activeEmail = company?.email || 'ntrungz0704@gmail.com';
   const socialLinks = {
-    facebook: company?.social?.facebook || 'https://facebook.com',
+    facebook: company?.social?.facebook || 'https://www.facebook.com/groups/847532091275214',
     instagram: company?.social?.instagram || 'https://instagram.com',
     twitter: company?.social?.twitter || 'https://twitter.com',
-    youtube: company?.social?.youtube || 'https://youtube.com',
+    youtube: company?.social?.youtube || 'https://www.youtube.com/@tungchuofficial',
   };
 
   const renderHeader = () => (
@@ -830,7 +830,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       <div className="bg-slate-50 border-b border-slate-100 text-xs py-1.5 px-3 sm:px-4 text-slate-500">
         <div className={`${MAX_W} mx-auto flex flex-wrap justify-between items-center gap-2`}>
           <div className="flex items-center gap-3 sm:gap-4 truncate">
-            <span className="hidden md:inline font-medium truncate">Công ty TNHH Bất động sản {company?.name || 'PlatformBDS'}</span>
+            <span className="hidden md:inline font-medium truncate">KHO MẪU WEBSITE BẤT ĐỘNG SẢN CAO CẤP SỐ 1 VIỆT NAM — {company?.name || 'TEMPLATESBDS'}</span>
             <a
               href={`mailto:${activeEmail}`}
               title="Gửi Email liên hệ"
@@ -858,24 +858,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 <Facebook size={13} />
               </a>
               <a
-                href={socialLinks.instagram}
-                target="_blank"
-                rel="noreferrer"
-                title="Theo dõi Instagram"
-                className="hover:text-pink-600 transition cursor-pointer"
-              >
-                <Instagram size={13} />
-              </a>
-              <a
-                href={socialLinks.twitter}
-                target="_blank"
-                rel="noreferrer"
-                title="Theo dõi Twitter"
-                className="hover:text-sky-500 transition cursor-pointer"
-              >
-                <Twitter size={13} />
-              </a>
-              <a
                 href={socialLinks.youtube}
                 target="_blank"
                 rel="noreferrer"
@@ -891,14 +873,14 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
       <div className={`${MAX_W} mx-auto px-4 py-3.5 flex items-center justify-between`}>
         <div onClick={() => navigate('home')} className="flex items-center gap-3 cursor-pointer group">
-          <div className="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center text-white shadow-md group-hover:bg-blue-800 transition">
-            <Building2 size={24} />
+          <div className="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center text-white shadow-md group-hover:bg-blue-800 transition font-black text-sm">
+            TB
           </div>
           <div>
             <div className="text-lg font-black tracking-tight text-slate-900 group-hover:text-blue-600 transition leading-tight">
-              {company?.name || 'REAL ESTATE'}
+              {company?.name || 'TEMPLATESBDS'}
             </div>
-            <div className="text-[9px] tracking-widest text-slate-400 font-extrabold uppercase">Group Platform</div>
+            <div className="text-[9px] tracking-widest text-slate-400 font-extrabold uppercase">Kho Mẫu Website Bất Động Sản</div>
           </div>
         </div>
 

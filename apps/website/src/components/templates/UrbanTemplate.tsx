@@ -457,26 +457,26 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
     });
   }, [currentPage, filterType, filterCity, filterPrice, filterBedrooms, filterArea]);
 
-  const activeHotline = company?.phone || '098 997 6448';
-  const hotlineTel = activeHotline.replace(/[^0-9]/g, '') || '0989976448';
-  const activeEmail = company?.email || 'bietthuanvien@gmail.com';
-  const activeAddress = company?.address || 'Võ Thị Sáu — TP. Nha Trang, Khánh Hòa';
+  const activeHotline = company?.phone || '0919 006 030';
+  const hotlineTel = activeHotline.replace(/[^0-9]/g, '') || '0919006030';
+  const activeEmail = company?.email || 'ntrungz0704@gmail.com';
+  const activeAddress = company?.address || '180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội';
 
   // ── HEADER ──
   const renderHeader = () => (
     <header className="w-full bg-white text-slate-800 sticky top-0 z-40 border-b border-slate-200 shadow-sm">
       <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between`}>
-        {/* Brand Logo: Houzez / Biệt Thự An Viên */}
+        {/* Brand Logo: TEMPLATESBDS */}
         <div onClick={() => navigate('home')} className="flex items-center gap-2.5 cursor-pointer group">
-          <div className="w-9 h-9 rounded-full bg-[#0084FF] text-white flex items-center justify-center font-black text-lg shadow-sm group-hover:scale-105 transition">
-            <Home size={20} />
+          <div className="w-9 h-9 rounded-xl bg-[#0084FF] text-white flex items-center justify-center font-black text-sm shadow-sm group-hover:scale-105 transition">
+            TB
           </div>
           <div>
             <div className="text-xl sm:text-2xl font-black tracking-tight text-[#0084FF] leading-none group-hover:text-blue-700 transition">
-              {company?.name || 'houzez'}
+              {company?.name || 'TEMPLATESBDS'}
             </div>
             <div className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider mt-0.5">
-              {company?.slogan || 'Biệt Thự Nghỉ Dưỡng An Viên'}
+              {company?.slogan || 'Kho Mẫu Website Bất Động Sản Cao Cấp Số 1 Việt Nam'}
             </div>
           </div>
         </div>

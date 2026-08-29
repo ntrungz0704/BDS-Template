@@ -20,6 +20,7 @@ const LuxuryTemplate = dynamic(() => import('./templates/LuxuryTemplate'), { loa
 const MinimalTemplate = dynamic(() => import('./templates/MinimalTemplate'), { loading: () => <LoadingSkeleton /> });
 const CorporateTemplate = dynamic(() => import('./templates/CorporateTemplate'), { loading: () => <LoadingSkeleton /> });
 const ResortTemplate = dynamic(() => import('./templates/ResortTemplate'), { loading: () => <LoadingSkeleton /> });
+const UrbanTemplate = dynamic(() => import('./templates/UrbanTemplate'), { loading: () => <LoadingSkeleton /> });
 const ApartmentTemplate = dynamic(() => import('./templates/ApartmentTemplate'), { loading: () => <LoadingSkeleton /> });
 const IndustrialTemplate = dynamic(() => import('./templates/IndustrialTemplate'), { loading: () => <LoadingSkeleton /> });
 const VillaTemplate = dynamic(() => import('./templates/VillaTemplate'), { loading: () => <LoadingSkeleton /> });
@@ -1106,9 +1107,9 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
     if (['04', 'bds-04', 'portal-04', 'resort-paradise', 'ocean-view'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
       return <ResortTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    // 05. Smart Urban City
+    // 05. Smart Urban City (An Viên Nha Trang)
     if (['05', 'bds-05', 'portal-05', 'urban-city', 'smart-urban', 'smartcity'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <ApartmentTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <UrbanTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 06. Industrial Estate
     if (['06', 'bds-06', 'portal-06', 'industrial-estate', 'industrial-logistics'].some(k => slug.includes(k) || sourceSlug.includes(k))) {

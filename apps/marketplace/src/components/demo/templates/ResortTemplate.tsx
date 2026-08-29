@@ -338,9 +338,9 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
     setVipForm({ name: '', phone: '', email: '', unitType: 'Căn hộ 2 Phòng Ngủ', note: '' });
   };
 
-  const activeHotline = company?.phone || '0909.888.666';
-  const hotlineTel = activeHotline.replace(/[^0-9]/g, '') || '0909888666';
-  const activeEmail = company?.email || 'sales.sunshine@gmail.com';
+  const activeHotline = company?.phone || '0919 006 030';
+  const hotlineTel = activeHotline.replace(/[^0-9]/g, '') || '0919006030';
+  const activeEmail = company?.email || 'ntrungz0704@gmail.com';
 
   // ── HEADER ──
   const renderHeader = () => (
@@ -349,14 +349,14 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
         {/* Brand Logo with Gold Emblem */}
         <div onClick={() => navigate('home')} className="flex items-center gap-3 cursor-pointer group">
           <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#C5A059] to-[#E6CA65] flex items-center justify-center text-[#07132B] font-black text-xl shadow-md group-hover:scale-105 transition">
-            SS
+            TB
           </div>
           <div>
             <div className="text-base sm:text-lg font-black tracking-widest text-[#E6CA65] uppercase leading-none font-serif group-hover:text-white transition">
-              {company?.name || 'SUNSHINE CITY SAIGON'}
+              {company?.name || 'TEMPLATESBDS'}
             </div>
             <div className="text-[9px] text-[#C5A059] font-bold tracking-widest uppercase mt-0.5">
-              {company?.slogan || 'Đỉnh Cao Căn Hộ Thông Minh Dát Vàng'}
+              {company?.slogan || 'Kho Mẫu Website Bất Động Sản Cao Cấp Số 1 Việt Nam'}
             </div>
           </div>
         </div>

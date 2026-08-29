@@ -26,8 +26,9 @@ if ($pdo) {
   <!-- Header PHP -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <a href="index.php" class="font-black text-xl text-blue-600 uppercase">
-        Agency Marketing OnePage
+      <a href="index.php" class="flex items-center gap-2 font-black text-xl text-blue-600">
+        <span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-xs">TB</span>
+        <span>TEMPLATES<strong class="text-slate-900">BDS</strong></span>
       </a>
       <div class="flex items-center gap-3">
         <a href="tel:0919006030" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow">

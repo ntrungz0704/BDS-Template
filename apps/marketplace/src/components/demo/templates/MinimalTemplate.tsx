@@ -512,14 +512,14 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
     };
   }, [selectedProperty, loanPercent, loanYears, interestRate]);
 
-  const activeHotline = company?.phone || '0972.939.xxx';
-  const hotlineTel = activeHotline.replace(/[^0-9]/g, '') || '0972939000';
-  const activeEmail = company?.email || 'webdemo@gmail.com';
+  const activeHotline = company?.phone || '0919 006 030';
+  const hotlineTel = activeHotline.replace(/[^0-9]/g, '') || '0919006030';
+  const activeEmail = company?.email || 'ntrungz0704@gmail.com';
   const socialLinks = {
-    facebook: company?.social?.facebook || 'https://facebook.com',
+    facebook: company?.social?.facebook || 'https://www.facebook.com/groups/847532091275214',
     instagram: company?.social?.instagram || 'https://instagram.com',
     twitter: company?.social?.twitter || 'https://twitter.com',
-    youtube: company?.social?.youtube || 'https://youtube.com',
+    youtube: company?.social?.youtube || 'https://www.youtube.com/@tungchuofficial',
   };
 
   const PAGE_NAMES_VN: Record<string, string> = {
@@ -544,15 +544,15 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
       <div className={`${MAX_W} mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3`}>
         {/* Left: Brand Logo */}
         <div onClick={() => navigate('home')} className="flex items-center gap-3 cursor-pointer group">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-red-600 to-rose-500 flex items-center justify-center text-white font-black text-2xl shadow-md group-hover:scale-105 transition">
-            N
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-700 to-blue-600 flex items-center justify-center text-white font-black text-xl shadow-md group-hover:scale-105 transition">
+            TB
           </div>
           <div>
-            <div className="text-xl font-black tracking-tight text-[#0D3F8D] flex items-center gap-1 group-hover:text-red-600 transition">
-              {company?.name || 'NOVIHOME'}
+            <div className="text-xl font-black tracking-tight text-[#0D3F8D] flex items-center gap-1 group-hover:text-blue-700 transition">
+              {company?.name || 'TEMPLATESBDS'}
             </div>
             <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
-              {company?.slogan || 'Mua bán & Ký gửi nhà đất chuyên nghiệp'}
+              {company?.slogan || 'Kho Mẫu Website Bất Động Sản Cao Cấp Số 1 Việt Nam'}
             </div>
           </div>
         </div>

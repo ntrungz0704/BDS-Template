@@ -582,9 +582,9 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
     });
   }, [currentPage, filterCategory, filterLocation, searchKeyword, filterPrice, filterArea]);
 
-  const activeHotline = company?.phone || '0909.568.888';
-  const hotlineTel = activeHotline.replace(/[^0-9]/g, '') || '0909568888';
-  const activeEmail = company?.email || 'bds.tuannhan@gmail.com';
+  const activeHotline = company?.phone || '0919 006 030';
+  const hotlineTel = activeHotline.replace(/[^0-9]/g, '') || '0919006030';
+  const activeEmail = company?.email || 'ntrungz0704@gmail.com';
 
   // ── RENDER HEADER ──
   const renderHeader = () => (
@@ -593,7 +593,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
       <div className="bg-[#351C0A] border-b border-white/10 text-xs py-1.5 px-4 text-amber-100/80">
         <div className={`${MAX_W} mx-auto flex flex-wrap justify-between items-center gap-2`}>
           <div className="flex items-center gap-4 text-[11px] truncate">
-            <span className="hidden sm:inline font-semibold">BẤT ĐỘNG SẢN NGHỈ DƯỠNG & ĐẤT VƯỜN LÂM ĐỒNG</span>
+            <span className="hidden sm:inline font-semibold">KHO MẪU WEBSITE BẤT ĐỘNG SẢN CAO CẤP SỐ 1 VIỆT NAM</span>
             <a href={`mailto:${activeEmail}`} className="hover:text-amber-300 transition flex items-center gap-1">
               <Mail size={11} className="text-amber-400" /> {activeEmail}
             </a>
@@ -611,14 +611,14 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
         {/* Brand Logo */}
         <div onClick={() => navigate('home')} className="flex items-center gap-3 cursor-pointer group">
           <div className="w-10 h-10 rounded-lg bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-[#4A2810] font-black text-xl shadow-md group-hover:scale-105 transition">
-            TN
+            TB
           </div>
           <div>
             <div className="text-base sm:text-lg font-black tracking-wider text-amber-300 uppercase leading-none group-hover:text-white transition">
-              {company?.name || 'BẤT ĐỘNG SẢN TUẤN NHÂN'}
+              {company?.name || 'TEMPLATESBDS'}
             </div>
             <div className="text-[10px] text-amber-100/70 font-semibold tracking-wider mt-0.5">
-              {company?.slogan || 'Đầu tư sinh lời — An cư nghỉ dưỡng vững bền'}
+              {company?.slogan || 'Kho Mẫu Website Bất Động Sản Cao Cấp Số 1 Việt Nam'}
             </div>
           </div>
         </div>
