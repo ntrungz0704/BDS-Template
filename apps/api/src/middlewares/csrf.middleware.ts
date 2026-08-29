@@ -2,9 +2,12 @@ import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
 
 const EXEMPT_PUBLIC_AUTH_PATHS = new Set([
+  '/api/auth/register',
   '/api/auth/login',
   '/api/auth/forgot-password',
   '/api/auth/reset-password',
+  '/api/auth/verify-email',
+  '/api/auth/resend-verification',
 ]);
 
 function tokensMatch(cookieToken: unknown, headerToken: unknown): boolean {

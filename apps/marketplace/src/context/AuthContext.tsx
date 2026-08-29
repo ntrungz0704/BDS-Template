@@ -287,8 +287,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (data: { fullName: string; email: string; phone?: string; password: string }): Promise<boolean> => {
     try {
+      const csrfToken = typeof document !== 'undefined' ? document.cookie.match(new RegExp('(^| )csrf_token=([^;]+)'))?.[2] : null;
       const res = await axios.post(`${API_URL}/api/auth/register`, data, {
-        timeout: 5000,
+        timeout: 10000,
+        withCredentials: true,
+        headers: csrfToken ? { 'x-csrf-token': decodeURIComponent(csrfToken) } : {},
       });
       return res.data?.success ?? true;
     } catch (err: any) {
