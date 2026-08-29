@@ -2595,6 +2595,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "BẤT ĐỘNG SẢN VEN SÔNG & TRUNG TÂM SÀI GÒN",
       heroSubtitle: "Khám phá hơn 8.000 căn hộ cao cấp Thủ Thiêm, shophouse trung tâm Quận 1 và biệt thự ven sông Thảo Điền."
     }
+  },
+  // ─── PORTAL 19. CENTRAL COAST SCENIC PORTAL ────────────────────────────────
+  {
+    id: "portal-19",
+    name: "Template #19 - Central Coast Scenic Portal",
+    slug: "portal-19",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #19",
+    badgeBg: "#0284C7",
+    badgeColor: "#FFFFFF",
+    accentColor: "#0284C7",
+    description: "Cổng thông tin bất động sản duyên hải miền Trung (Đà Nẵng, Nha Trang, Quy Nhơn, Phú Yên, Phan Thiết). Chuyên biệt thự mặt biển trực diện, condotel 5 sao vận hành quốc tế, shophouse phố đi bộ biển và đất nền ven biển có sổ.",
+    shortDescription: "Villa view vịnh biển · Condotel 5 sao · BĐS duyên hải miền Trung",
+    thumbnail: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục duyên hải phóng khoáng với tông Xanh Ngọc Vịnh Biển & Vàng San Hô",
+      "Thẻ tin Bay View Resort Card hiển thị view vịnh biển & chia sẻ doanh thu 85/15",
+      "Bộ lọc BĐS 5 thiên đường biển: Đà Nẵng, Nha Trang, Cam Ranh, Quy Nhơn, Phú Yên",
+      "Trang chi tiết BĐS kèm bài toán khai thác cho thuê phòng & đêm nghỉ dưỡng miễn phí",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Quần thể Resort, Cẩm nang, Giới thiệu, Liên hệ",
+      "Tích hợp form đăng ký tour trải nghiệm nghỉ dưỡng vịnh biển miễn phí"
+    ],
+    priceBuy: 749000,
+    priceBuySource: 2190000,
+    priceRentMonthly: 169000,
+    isActive: true,
+    sortOrder: 43,
+    targetAudience: ["Sàn phân phối BĐS nghỉ dưỡng ven biển miền Trung", "Đại lý chiến lược các quần thể resort Đà Nẵng / Nha Trang / Quy Nhơn", "Nhà đầu tư second-home & dòng tiền khai thác du lịch"],
+    highlights: ["Bay View Resort Cards", "Central Coast 5 Beach Cities", "Rental Profit Sharing Specs", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["BayViewCardModule", "BeachCityNavigatorModule", "ResortProjectModule", "TourismEconomyModule"],
+    benefits: ["Nâng tầm xúc tiến bán hàng các siêu phẩm resort vịnh biển miền Trung", "Định lượng bài toán sinh lời du lịch minh bạch", "Tăng 370% lượng khách đăng ký tour trải nghiệm"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#0284C7",
+      secondaryColor: "#0369A1",
+      accentColor: "#F59E0B",
+      bgColor: "#F0F9FF",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "1.5rem",
+      shadowToken: "0 10px 15px -3px rgba(2, 132, 199, 0.15)"
+    },
+    layoutConfig: {
+      heroStyle: "Central Coast Scenic Hero với Search Bar thành phố biển",
+      navigationStyle: "Sky Ocean Rounded Navbar",
+      cardStyle: "Bay View Resort Card (Ảnh 16:9, badge view vịnh biển m)",
+      galleryStyle: "Scenic Coastal Landscape Slider",
+      ctaStyle: "Scenic Ocean Blue Action Button",
+      spacingScale: "Tropical Coastal Spacing"
+    },
+    wireframe: ["HeaderCentralCoast", "HeroCoastalSearch", "BayViewListingsGrid", "TopResortComplexes", "FooterCentralCoast"],
+    sectionConfig: {
+      sourceSlug: "portal-19",
+      heroTitle: "BẤT ĐỘNG SẢN DUYÊN HẢI MIỀN TRUNG TUYỆT MỸ",
+      heroSubtitle: "Khám phá hơn 6.000 biệt thự biển, condotel 5 sao và shophouse phố đêm du lịch tại Đà Nẵng, Nha Trang, Quy Nhơn."
+    }
   }
 ];
 
@@ -2673,6 +2737,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-18': 'portal-18',
   'portal-saigon': 'portal-18',
   'saigon-estate': 'portal-18',
+  'portal-19': 'portal-19',
+  'portal-central-coast': 'portal-19',
+  'central-coast': 'portal-19',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
