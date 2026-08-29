@@ -2467,6 +2467,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "CỐ VẤN BẤT ĐỘNG SẢN CAO CẤP RIÊNG BIỆT",
       heroSubtitle: "Hơn 10 năm kinh nghiệm đồng hành cùng 500+ gia tộc thượng lưu và nhà đầu tư cá nhân VIP tại Việt Nam."
     }
+  },
+  // ─── PORTAL 17. NORTHERN CAPITAL HERITAGE PORTAL ───────────────────────────
+  {
+    id: "portal-17",
+    name: "Template #17 - Northern Capital Heritage Portal",
+    slug: "portal-17",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #17",
+    badgeBg: "#B91C1C",
+    badgeColor: "#FEF3C7",
+    accentColor: "#B91C1C",
+    description: "Cổng thông tin bất động sản kinh kỳ thủ đô Hà Nội. Chuyên nhà mặt phố cổ Hoàn Kiếm, biệt thự Pháp cổ Ba Đình, căn hộ cao cấp view trọn Hồ Tây và nhà ngõ nông nội thành. Hiển thị cự ly ra Hồ Gươm m, bề rộng ngõ ô tô và sổ đỏ chính chủ.",
+    shortDescription: "Nhà phố cổ Hoàn Kiếm · Biệt thự Ba Đình · Căn hộ view Hồ Tây",
+    thumbnail: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục đậm chất văn hóa kinh kỳ với tông Đỏ Thăng Long & Nâu Trầm Cổ Kính",
+      "Thẻ tin Hanoi Old Quarter Card hiển thị cự ly ra Hồ Gươm & bề rộng ngõ ô tô",
+      "Bộ lọc nhà đất 12 quận nội thành: Hoàn Kiếm, Ba Đình, Tây Hồ, Cầu Giấy, Đống Đa",
+      "Trang chi tiết BĐS kèm trích lục sổ đỏ chính chủ lâu năm và hồ sơ quy hoạch nội đô",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án Hồ Tây, Cẩm nang, Giới thiệu, Liên hệ",
+      "Kết nối mạng lưới môi giới thổ địa Hà Thành am hiểu từng ngõ phố"
+    ],
+    priceBuy: 749000,
+    priceBuySource: 2190000,
+    priceRentMonthly: 169000,
+    isActive: true,
+    sortOrder: 41,
+    targetAudience: ["Sàn môi giới nhà phố & thổ cư tại Hà Nội", "Đội ngũ sale chuyên biệt thự Ba Đình / Tây Hồ / Hoàn Kiếm", "Khách hàng tìm mua nhà đất giữ tiền tại trung tâm thủ đô"],
+    highlights: ["Hanoi Old Quarter Cards", "12 Hanoi Urban District Filters", "Thang Long Heritage Theme", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["HanoiCardModule", "DistrictNavigatorModule", "WestLakeProjectModule", "HanoiHeritageModule"],
+    benefits: ["Tạo sự đồng cảm sâu sắc với khách hàng mua nhà đất tại Hà Nội", "Cung cấp đầy đủ thông tin ngõ phố, mặt tiền đặc thù của thủ đô", "Tăng 350% tỷ lệ liên hệ"],
+    themeConfig: {
+      fontHeading: "'Playfair Display', serif",
+      fontBody: "'Lora', serif",
+      primaryColor: "#B91C1C",
+      secondaryColor: "#991B1B",
+      accentColor: "#78350F",
+      bgColor: "#FEF9EE",
+      cardBgColor: "#FFFDF7",
+      textColor: "#451A03",
+      radiusToken: "1rem",
+      shadowToken: "0 10px 15px -3px rgba(185, 28, 28, 0.15)"
+    },
+    layoutConfig: {
+      heroStyle: "Thang Long Heritage Hero với Search Bar quận nội thành",
+      navigationStyle: "Capital Red Traditional Navbar",
+      cardStyle: "Hanoi Old Quarter Card (Khung viền truyền thống, badge Hồ Gươm)",
+      galleryStyle: "Hanoi Ancient Slider",
+      ctaStyle: "Capital Red Action Button",
+      spacingScale: "Classic Urban Spacing"
+    },
+    wireframe: ["HeaderHanoiEstate", "HeroThangLongSearch", "HanoiListingsGrid", "TopWestLakeProjects", "FooterHanoiEstate"],
+    sectionConfig: {
+      sourceSlug: "portal-17",
+      heroTitle: "CỔNG BẤT ĐỘNG SẢN THỦ ĐÔ HÀ NỘI",
+      heroSubtitle: "Tổng hợp hơn 5.000 căn nhà phố cổ Hoàn Kiếm, biệt thự Pháp cổ Ba Đình và căn hộ cao cấp view trọn Hồ Tây."
+    }
   }
 ];
 
@@ -2539,6 +2603,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-16': 'portal-16',
   'portal-broker': 'portal-16',
   'elite-broker': 'portal-16',
+  'portal-17': 'portal-17',
+  'portal-hanoi': 'portal-17',
+  'hanoi-estate': 'portal-17',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
