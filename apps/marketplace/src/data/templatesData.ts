@@ -2659,6 +2659,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "BẤT ĐỘNG SẢN DUYÊN HẢI MIỀN TRUNG TUYỆT MỸ",
       heroSubtitle: "Khám phá hơn 6.000 biệt thự biển, condotel 5 sao và shophouse phố đêm du lịch tại Đà Nẵng, Nha Trang, Quy Nhơn."
     }
+  },
+  // ─── PORTAL 20. MOUNTAIN & HIGHLAND RETREAT PORTAL ─────────────────────────
+  {
+    id: "portal-20",
+    name: "Template #20 - Mountain & Highland Retreat Portal",
+    slug: "portal-20",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #20",
+    badgeBg: "#166534",
+    badgeColor: "#FEFCE8",
+    accentColor: "#166534",
+    description: "Cổng thông tin bất động sản nghỉ dưỡng cao nguyên sương mờ và chữa lành (Đà Lạt, Bảo Lộc, Măng Đen, Sa Pa, Tam Đảo). Chuyên biệt thự đồi thông săn mây cao 1.500m, bungalow suối rừng, đồi chè sinh thái và khuôn viên homestay kinh doanh.",
+    shortDescription: "Biệt thự đồi thông · View săn mây cao nguyên · Nghỉ dưỡng chữa lành",
+    thumbnail: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục đồi thông mộc mạc Rustic với tông Xanh Thông Rừng Rậm & Nâu Gỗ Cedar",
+      "Thẻ tin Highland Mist Card hiển thị độ cao 1.500m & nhiệt độ bình quân 18°C",
+      "Bộ lọc 5 thủ phủ nghỉ dưỡng sương mù: Đà Lạt, Bảo Lộc, Măng Đen, Sa Pa, Tam Đảo",
+      "Trang chi tiết BĐS kèm thông tin thổ nhưỡng, nguồn nước suối tự nhiên & giấy phép xây dựng homestay",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Làng thông, Cẩm nang, Giới thiệu, Liên hệ",
+      "Tích hợp tour săn mây cao nguyên cuối tuần trải nghiệm khí hậu trong lành"
+    ],
+    priceBuy: 749000,
+    priceBuySource: 2190000,
+    priceRentMonthly: 169000,
+    isActive: true,
+    sortOrder: 44,
+    targetAudience: ["Sàn môi giới BĐS nghỉ dưỡng Đà Lạt, Lâm Đồng, Tây Nguyên, Tây Bắc", "Chủ đầu tư các cụm làng sinh thái & farmstay đồi thông", "Khách hàng tìm kiếm ngôi nhà thứ 2 để tĩnh dưỡng và chữa lành"],
+    highlights: ["Highland Mist Retreat Cards", "1500m Altitude & Cloud Hunting Specs", "Rustic Eco-Chalet Design", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["HighlandMistCardModule", "AltitudeClimateNavigatorModule", "PineVillageProjectModule", "WellnessRetreatModule"],
+    benefits: ["Đánh trúng thị hiếu bất động sản nghỉ dưỡng núi rừng và xu hướng chữa lành", "Gia tăng 350% tỷ lệ giữ chân người xem với trải nghiệm hình ảnh mộng mơ", "Khẳng định vị thế chuyên gia cao nguyên"],
+    themeConfig: {
+      fontHeading: "'Playfair Display', serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#166534",
+      secondaryColor: "#14532D",
+      accentColor: "#854D0E",
+      bgColor: "#F0FDF4",
+      cardBgColor: "#FFFDF7",
+      textColor: "#052E16",
+      radiusToken: "1.5rem",
+      shadowToken: "0 10px 15px -3px rgba(22, 101, 52, 0.15)"
+    },
+    layoutConfig: {
+      heroStyle: "Highland Mist Cloud Hunting Hero với Search Bar độ cao & view đồi",
+      navigationStyle: "Pine Forest Green Rounded Navbar",
+      cardStyle: "Highland Mist Retreat Card (Viền xanh thông, badge săn mây)",
+      galleryStyle: "Mist Forest Panorama Slider",
+      ctaStyle: "Pine Forest Green Action Button",
+      spacingScale: "Rustic Mountain Spacing"
+    },
+    wireframe: ["HeaderHighlandRetreat", "HeroHighlandSearch", "HighlandListingsGrid", "TopPineEcoVillages", "FooterHighlandRetreat"],
+    sectionConfig: {
+      sourceSlug: "portal-20",
+      heroTitle: "BẤT ĐỘNG SẢN NGHỈ DƯỠNG CAO NGUYÊN SƯƠNG MỜ",
+      heroSubtitle: "Hơn 3.500 biệt thự đồi săn mây, bungalow suối rừng và homestay sinh thái tại Đà Lạt, Bảo Lộc, Măng Đen, Sa Pa."
+    }
   }
 ];
 
@@ -2740,6 +2804,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-19': 'portal-19',
   'portal-central-coast': 'portal-19',
   'central-coast': 'portal-19',
+  'portal-20': 'portal-20',
+  'portal-highland': 'portal-20',
+  'highland-retreat': 'portal-20',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
