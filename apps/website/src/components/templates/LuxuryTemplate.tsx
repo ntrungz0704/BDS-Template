@@ -797,27 +797,27 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
   const renderHeader = () => (
     <header className="w-full bg-white text-slate-800 border-b border-slate-200 sticky top-0 z-40 shadow-xs">
-      <div className="bg-slate-50 border-b border-slate-100 text-xs py-1.5 px-4 text-slate-500">
-        <div className={`${MAX_W} mx-auto flex justify-between items-center`}>
-          <div className="flex items-center gap-4">
-            <span className="hidden sm:inline">Công ty TNHH Bất động sản {company?.name || 'PlatformBDS'}</span>
+      <div className="bg-slate-50 border-b border-slate-100 text-xs py-1.5 px-3 sm:px-4 text-slate-500">
+        <div className={`${MAX_W} mx-auto flex flex-wrap justify-between items-center gap-2`}>
+          <div className="flex items-center gap-3 sm:gap-4 truncate">
+            <span className="hidden md:inline font-medium truncate">Công ty TNHH Bất động sản {company?.name || 'PlatformBDS'}</span>
             <a
               href={`mailto:${activeEmail}`}
               title="Gửi Email liên hệ"
-              className="flex items-center gap-1 hover:text-blue-600 transition"
+              className="flex items-center gap-1 hover:text-blue-600 transition truncate"
             >
-              <Mail size={12} className="text-blue-600" /> {activeEmail}
+              <Mail size={12} className="text-blue-600 shrink-0" /> <span className="truncate">{activeEmail}</span>
             </a>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
             <a
               href={`tel:${hotlineTel}`}
               title="Gọi Hotline tư vấn"
               className="flex items-center gap-1 font-bold text-slate-700 hover:text-blue-600 transition"
             >
-              <Phone size={12} className="text-blue-600" /> {activeHotline}
+              <Phone size={12} className="text-blue-600 shrink-0" /> {activeHotline}
             </a>
-            <div className="hidden md:flex items-center gap-2.5 text-slate-400">
+            <div className="hidden sm:flex items-center gap-2.5 text-slate-400">
               <a
                 href={socialLinks.facebook}
                 target="_blank"
@@ -968,41 +968,49 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     <div
       key={item.id}
       onClick={() => handleOpenProperty(item)}
-      className="bg-white rounded-lg border border-slate-200 hover:border-blue-500 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 group cursor-pointer flex flex-col justify-between"
+      className="bg-white rounded-xl border border-slate-200 hover:border-blue-500 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 group cursor-pointer flex flex-col justify-between"
     >
       <div>
-        <div className="h-44 relative overflow-hidden bg-slate-100">
-          <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+        <div className="h-44 sm:h-48 relative overflow-hidden bg-slate-100">
+          <img
+            src={item.image}
+            alt={item.title}
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80';
+            }}
+            className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+          />
           {item.discount && (
-            <span className="absolute top-2 left-2 px-2 py-0.5 bg-red-600 text-white font-black text-[11px] rounded shadow">
+            <span className="absolute top-2 left-2 px-2.5 py-0.5 bg-red-600 text-white font-black text-[11px] rounded-md shadow-sm">
               {item.discount}
             </span>
           )}
-          <span className="absolute bottom-2 right-2 px-2 py-0.5 bg-black/60 backdrop-blur-md text-white font-bold text-[10px] rounded">
+          <span className="absolute bottom-2 right-2 px-2.5 py-0.5 bg-slate-950/75 backdrop-blur-xs text-white font-bold text-[10px] rounded-md">
             {item.type}
           </span>
         </div>
 
-        <div className="p-3.5 space-y-2">
-          <h3 className="font-bold text-xs text-slate-900 group-hover:text-blue-600 transition line-clamp-1 leading-snug">
+        <div className="p-4 space-y-2">
+          <h3 className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-blue-600 transition line-clamp-1 leading-snug">
             {item.title}
           </h3>
 
           <p className="text-[11px] text-slate-500 truncate flex items-center gap-1">
-            <MapPin size={11} className="text-red-500 shrink-0" /> {item.location}
+            <MapPin size={12} className="text-red-500 shrink-0" /> {item.location}
           </p>
 
-          <div className="text-[11px] text-slate-600 space-y-0.5 pt-1 border-t border-slate-50">
-            <div className="flex items-center gap-1.5"><Bed size={12} className="text-blue-500" /> Phòng ngủ: {item.bedrooms}</div>
-            <div className="flex items-center gap-1.5"><Bath size={12} className="text-blue-500" /> Phòng tắm: {item.bathrooms}</div>
-            <div className="flex items-center gap-1.5"><Maximize2 size={12} className="text-blue-500" /> Diện tích: {item.area}</div>
+          <div className="text-[11px] text-slate-600 space-y-1 pt-1.5 border-t border-slate-100">
+            <div className="flex items-center gap-1.5"><Bed size={12} className="text-blue-500 shrink-0" /> Phòng ngủ: <strong>{item.bedrooms}</strong></div>
+            <div className="flex items-center gap-1.5"><Bath size={12} className="text-blue-500 shrink-0" /> Phòng tắm: <strong>{item.bathrooms}</strong></div>
+            <div className="flex items-center gap-1.5"><Maximize2 size={12} className="text-blue-500 shrink-0" /> Diện tích: <strong>{item.area}</strong></div>
           </div>
         </div>
       </div>
 
-      <div className="p-3.5 pt-0 flex items-center justify-between border-t border-slate-100 mt-2">
-        <span className="font-bold text-xs text-blue-700">{item.price}</span>
-        <button className="text-[11px] font-bold text-slate-500 hover:text-blue-600 border border-slate-200 hover:border-blue-400 px-2.5 py-1 rounded transition">
+      <div className="p-4 pt-0 flex items-center justify-between border-t border-slate-100 mt-2 gap-2">
+        <span className="font-extrabold text-xs sm:text-sm text-blue-700 truncate">{item.price}</span>
+        <button className="text-[11px] font-bold text-slate-600 hover:text-white hover:bg-blue-600 border border-slate-200 hover:border-blue-600 px-3 py-1.5 rounded-lg transition shrink-0 whitespace-nowrap cursor-pointer">
           Xem ngay &gt;
         </button>
       </div>
@@ -1011,17 +1019,17 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
   const renderHomePage = () => (
     <div className="bg-[#F8FAFC] space-y-12 pb-12">
-      <section className="relative pt-16 pb-20 px-4 bg-cover bg-center text-white" style={{ backgroundImage: 'linear-gradient(rgba(15, 60, 120, 0.85), rgba(30, 96, 184, 0.9)), url(https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80)' }}>
-        <div className={`${MAX_W} mx-auto text-center max-w-3xl mb-8`}>
-          <h1 className="text-2xl md:text-4xl font-black uppercase tracking-wider text-white mb-6">
+      <section className="relative pt-12 sm:pt-16 pb-16 sm:pb-20 px-4 bg-cover bg-center text-white" style={{ backgroundImage: 'linear-gradient(rgba(15, 60, 120, 0.85), rgba(30, 96, 184, 0.9)), url(https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80)' }}>
+        <div className={`${MAX_W} mx-auto text-center max-w-3xl mb-6`}>
+          <h1 className="text-xl sm:text-3xl md:text-4xl font-black uppercase tracking-wider text-white mb-6 leading-tight">
             TRANG TIN BẤT ĐỘNG SẢN SỐ 1 VIỆT NAM
           </h1>
 
-          <div className="bg-white/10 backdrop-blur-md p-2 rounded-xl border border-white/20 shadow-2xl flex flex-col md:flex-row gap-2 max-w-2xl mx-auto">
+          <div className="bg-white/15 backdrop-blur-md p-2.5 rounded-2xl border border-white/25 shadow-2xl flex flex-col sm:flex-row gap-2 max-w-2xl mx-auto">
             <select
               value={searchCategory}
               onChange={e => setSearchCategory(e.target.value)}
-              className="bg-white text-slate-800 text-xs px-3 py-2.5 rounded-lg font-bold focus:outline-none"
+              className="bg-white text-slate-800 text-xs px-3 py-2.5 rounded-xl font-bold focus:outline-none cursor-pointer"
             >
               <option value="all">Tất cả danh mục</option>
               <option value="can-ho">Căn hộ</option>
@@ -1035,17 +1043,17 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
               value={searchKeyword}
               onChange={e => setSearchKeyword(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') navigate('can-ho'); }}
-              className="bg-white text-slate-800 text-xs px-4 py-2.5 rounded-lg flex-1 focus:outline-none"
+              className="bg-white text-slate-800 text-xs px-4 py-2.5 rounded-xl flex-1 focus:outline-none"
             />
             <button
               onClick={() => navigate('can-ho')}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-6 py-2.5 rounded-lg shadow transition flex items-center justify-center gap-1.5"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
             >
               <Search size={14} /> Tìm kiếm
             </button>
           </div>
 
-          <div className="grid grid-cols-5 gap-3 max-w-xl mx-auto mt-8">
+          <div className="grid grid-cols-5 gap-2 sm:gap-3 max-w-xl mx-auto mt-6 sm:mt-8">
             {[
               { label: 'Toàn bộ', icon: Building2, page: 'can-ho' },
               { label: 'Biệt thự', icon: Home, page: 'biet-thu' },
@@ -1058,12 +1066,12 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 <div
                   key={idx}
                   onClick={() => navigate(cat.page)}
-                  className="flex flex-col items-center gap-2 cursor-pointer group"
+                  className="flex flex-col items-center gap-1.5 sm:gap-2 cursor-pointer group"
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-white/15 border border-white/20 group-hover:bg-blue-600 group-hover:scale-110 transition flex items-center justify-center text-white">
-                    <Icon size={20} />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white/15 border border-white/20 group-hover:bg-blue-600 group-hover:scale-110 transition flex items-center justify-center text-white shadow-sm">
+                    <Icon size={18} />
                   </div>
-                  <span className="text-[11px] font-bold text-white/90 group-hover:text-white">{cat.label}</span>
+                  <span className="text-[10px] sm:text-[11px] font-bold text-white/90 group-hover:text-white truncate">{cat.label}</span>
                 </div>
               );
             })}
@@ -1073,51 +1081,55 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
       <section className={`${MAX_W} mx-auto px-4`}>
         <div className="text-center mb-6">
-          <h2 className="text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
+          <h2 className="text-lg sm:text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
             BẤT ĐỘNG SẢN ĐANG BÁN
           </h2>
           <div className="w-8 h-1 bg-blue-600 mx-auto mt-1 rounded-full" />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {allPropertyList.filter(p => p.category === 'ban').slice(0, 8).map(renderCard)}
         </div>
       </section>
 
       <section className={`${MAX_W} mx-auto px-4`}>
         <div className="text-center mb-6">
-          <h2 className="text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
+          <h2 className="text-lg sm:text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
             DỰ ÁN NỔI BẬT
           </h2>
           <div className="w-8 h-1 bg-blue-600 mx-auto mt-1 rounded-full" />
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-md grid grid-cols-1 md:grid-cols-12 items-center">
-          <div className="md:col-span-7 h-72 md:h-96 relative overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-md grid grid-cols-1 lg:grid-cols-12 items-center">
+          <div className="lg:col-span-7 h-64 sm:h-80 lg:h-96 relative overflow-hidden">
             <img
               src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80"
               alt="Vinhomes Green Bay"
-              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80';
+              }}
+              className="w-full h-full object-cover hover:scale-105 transition duration-700"
             />
           </div>
-          <div className="md:col-span-5 p-6 md:p-8 space-y-4">
-            <span className="px-2.5 py-1 bg-blue-50 text-blue-700 font-bold text-[11px] rounded">
+          <div className="lg:col-span-5 p-5 sm:p-7 space-y-3.5">
+            <span className="px-2.5 py-1 bg-blue-50 text-blue-700 font-bold text-[11px] rounded-lg">
               Dự Án Tâm Điểm Phía Tây
             </span>
-            <h3 className="text-xl md:text-2xl font-black text-slate-900">Chung cư Vinhomes Green Bay</h3>
+            <h3 className="text-xl sm:text-2xl font-black text-slate-900 leading-snug">Chung cư Vinhomes Green Bay</h3>
             <p className="text-xs text-slate-500 flex items-center gap-1.5">
-              <MapPin size={14} className="text-red-500" /> Số 7 Đại lộ Thăng Long, Nam Từ Liêm, Hà Nội
+              <MapPin size={14} className="text-red-500 shrink-0" /> Số 7 Đại lộ Thăng Long, Nam Từ Liêm, Hà Nội
             </p>
             <div className="text-xs text-slate-600 space-y-1.5 border-t border-b border-slate-100 py-3">
               <div>Phòng ngủ: <strong>04 Phòng ngủ</strong></div>
               <div>Phòng tắm: <strong>03 Phòng tắm</strong></div>
               <div>Diện tích: <strong>Trên 300 m²</strong></div>
             </div>
-            <div className="flex items-center justify-between pt-2">
-              <span className="text-lg font-black text-blue-700">8.900.000.000 đồng</span>
+            <div className="flex items-center justify-between pt-2 gap-2">
+              <span className="text-base sm:text-lg font-black text-blue-700 truncate">8.900.000.000 đồng</span>
               <button
                 onClick={() => handleOpenProperty(INITIAL_PROPERTIES[6])}
-                className="text-xs font-bold text-slate-600 hover:text-blue-600 border border-slate-300 hover:border-blue-500 px-3.5 py-1.5 rounded transition"
+                className="text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition shrink-0 cursor-pointer shadow-sm active:scale-95"
               >
                 Xem ngay &gt;
               </button>
@@ -1128,7 +1140,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
       <section className={`${MAX_W} mx-auto px-4`}>
         <div className="text-center mb-6">
-          <h2 className="text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
+          <h2 className="text-lg sm:text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
             BẤT ĐỘNG SẢN CHO THUÊ
           </h2>
           <div className="w-8 h-1 bg-blue-600 mx-auto mt-1 rounded-full" />
@@ -1139,20 +1151,28 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             <div
               key={item.id}
               onClick={() => handleOpenProperty(item)}
-              className="bg-white rounded-lg border border-slate-200 hover:border-blue-500 overflow-hidden shadow-xs hover:shadow-md transition p-3 flex gap-4 cursor-pointer group"
+              className="bg-white rounded-xl border border-slate-200 hover:border-blue-500 overflow-hidden shadow-xs hover:shadow-md transition p-3.5 flex flex-col sm:flex-row gap-4 cursor-pointer group"
             >
-              <div className="w-36 h-28 shrink-0 rounded-md overflow-hidden bg-slate-100">
-                <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition" />
+              <div className="w-full sm:w-40 h-36 sm:h-28 shrink-0 rounded-lg overflow-hidden bg-slate-100">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80';
+                  }}
+                  className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                />
               </div>
-              <div className="flex flex-col justify-between flex-1">
+              <div className="flex flex-col justify-between flex-1 space-y-2 sm:space-y-0">
                 <div>
-                  <h4 className="font-bold text-xs text-slate-900 group-hover:text-blue-600 transition line-clamp-1">
+                  <h4 className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-blue-600 transition line-clamp-1">
                     {item.title}
                   </h4>
-                  <p className="text-[10px] text-slate-500 truncate flex items-center gap-1 mt-0.5">
-                    <MapPin size={10} className="text-red-500" /> {item.location}
+                  <p className="text-[11px] text-slate-500 truncate flex items-center gap-1 mt-1">
+                    <MapPin size={11} className="text-red-500 shrink-0" /> {item.location}
                   </p>
-                  <div className="text-[10px] text-slate-600 mt-1 flex gap-3">
+                  <div className="text-[11px] text-slate-600 mt-1.5 flex flex-wrap gap-2.5">
                     <span>{item.bedrooms} PN</span>
                     <span>•</span>
                     <span>{item.bathrooms} WC</span>
@@ -1160,9 +1180,9 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                     <span>{item.area}</span>
                   </div>
                 </div>
-                <div className="flex items-center justify-between pt-2 border-t border-slate-50">
-                  <span className="font-bold text-xs text-blue-700">{item.price}</span>
-                  <span className="text-[10px] font-bold text-slate-400 group-hover:text-blue-600">Xem ngay &gt;</span>
+                <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                  <span className="font-black text-xs sm:text-sm text-blue-700">{item.price}</span>
+                  <span className="text-[11px] font-bold text-slate-500 group-hover:text-blue-600 flex items-center gap-0.5">Xem ngay &gt;</span>
                 </div>
               </div>
             </div>
