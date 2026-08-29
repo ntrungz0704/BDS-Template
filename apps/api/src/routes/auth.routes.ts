@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, refresh, logout, getMe, getUserTenants, switchTenant, updateProfile } from '../controllers/auth.controller';
+import { login, register, refresh, logout, getMe, getUserTenants, switchTenant, updateProfile } from '../controllers/auth.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import rateLimit from 'express-rate-limit';
 
@@ -25,13 +25,7 @@ const router = Router();
 router.use('/', passwordRoutes);
 router.use('/', emailVerificationRoutes);
 
-router.all('/register', (_req, res) => res.status(410).json({
-  success: false,
-  error: {
-    code: 'PUBLIC_REGISTRATION_DISABLED',
-    message: 'Tài khoản chỉ được tạo bởi Super Admin sau khi xác minh nhu cầu khách hàng.',
-  },
-}));
+router.post('/register', loginLimiter, register);
 router.post('/login', loginLimiter, login);
 router.post('/refresh', refresh);
 

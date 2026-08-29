@@ -49,10 +49,9 @@ describe('Phase 2 authentication security', () => {
     await prisma.user.deleteMany({ where: { id: user.id } });
   });
 
-  it('disables public registration and direct password reset', async () => {
-    const register = await request(app).post('/api/auth/register').send({ email: 'x@example.test' });
-    expect(register.status).toBe(410);
-    expect(register.body.error.code).toBe('PUBLIC_REGISTRATION_DISABLED');
+  it('validates public registration and disables direct password reset', async () => {
+    const register = await request(app).post('/api/auth/register').send({ email: 'invalid-email' });
+    expect(register.status).toBe(400);
 
     const directReset = await request(app)
       .post('/api/auth/direct-reset-password')
