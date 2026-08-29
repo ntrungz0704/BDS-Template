@@ -1507,6 +1507,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "TÌM KIẾM NGÔI NHÀ MƠ ƯỚC CỦA BẠN",
       heroSubtitle: "Hơn 100.000+ bất động sản chính chủ, giá tốt, pháp lý minh bạch."
     }
+  },
+  // ─── PORTAL 02. MODERN METRO PORTAL ───────────────────────────────────────
+  {
+    id: "portal-02",
+    name: "Template #02 - Modern Metro Portal",
+    slug: "portal-02",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #02",
+    badgeBg: "#1E40AF",
+    badgeColor: "#FFFFFF",
+    accentColor: "#06B6D4",
+    description: "Sàn giao dịch bất động sản đô thị thông minh hiện đại. Bố cục Fullwidth tràn viền, thanh tìm kiếm Glassmorphism nổi bật, lưới thẻ listing 3 cột hiện đại tỉ lệ 16:10, tối ưu cho căn hộ cao cấp và smart city.",
+    shortDescription: "Sàn BĐS đô thị hiện đại · Grid 3 cột · Fullwidth thoáng đãng",
+    thumbnail: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục Fullwidth hiện đại không dùng sidebar cố định",
+      "Thanh tìm kiếm Glassmorphism với bộ lọc đa tiêu chí linh hoạt",
+      "Lưới thẻ listing 3 cột (Modern Grid 16:10) hiển thị rõ nét",
+      "Trang chi tiết căn hộ với thông số kỹ thuật và bản đồ tích hợp",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án, Tin tức, Giới thiệu, Liên hệ",
+      "Tối ưu 100% trải nghiệm chạm lướt trên thiết bị di động"
+    ],
+    priceBuy: 699000,
+    priceBuySource: 1990000,
+    priceRentMonthly: 149000,
+    isActive: true,
+    sortOrder: 26,
+    targetAudience: ["Sàn phân phối căn hộ chung cư", "Công ty BĐS công nghệ (PropTech)", "Đội ngũ môi giới dự án đô thị mới", "Sàn cho thuê căn hộ dịch vụ cao cấp"],
+    highlights: ["Modern 3-Column Grid", "Glassmorphism Hero Filter", "Fullwidth Clean Layout", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["GlassmorphismSearchModule", "ModernGridCardModule", "UrbanProjectModule", "SmartAmenityModule", "InteractiveMapModule"],
+    benefits: ["Tăng 280% thời gian on-site của khách hàng trẻ", "Thiết kế hiện đại chuẩn quốc tế", "Đồng bộ URL slug chuẩn SEO"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#1E40AF",
+      secondaryColor: "#06B6D4",
+      accentColor: "#0F172A",
+      bgColor: "#F8FAFC",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "1rem",
+      shadowToken: "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
+    },
+    layoutConfig: {
+      heroStyle: "Modern Skyline Hero với Search Bar Glassmorphism nổi",
+      navigationStyle: "White Floating Glass Navbar",
+      cardStyle: "Modern Grid Card 3 Cột (Tỉ lệ 16:10, góc bo tròn mềm)",
+      galleryStyle: "Modern Fullwidth Slider",
+      ctaStyle: "Gradient Coban to Cyan Button",
+      spacingScale: "Spacious Modern Grid"
+    },
+    wireframe: ["HeaderMetro", "HeroGlassSearch", "UrbanCategoryPills", "Featured3GridListings", "SmartProjectsPanorama", "CityCards4Grid", "NewsGridAndNewsletter", "FooterMetro"],
+    sectionConfig: {
+      sourceSlug: "portal-02",
+      heroTitle: "KHÔNG GIAN SỐNG CHUẨN MỰC CHO GIA ĐÌNH HIỆN ĐẠI",
+      heroSubtitle: "Hơn 25.000 căn hộ cao cấp, duplex, penthouse và nhà phố đô thị."
+    }
   }
 ];
 
@@ -1534,6 +1598,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-01': 'portal-01',
   'portal-classic': 'portal-01',
   'batdongsan-classic': 'portal-01',
+  'portal-02': 'portal-02',
+  'portal-modern': 'portal-02',
+  'metro-estate': 'portal-02',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
