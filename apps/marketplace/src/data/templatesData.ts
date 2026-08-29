@@ -2339,6 +2339,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "SÀN ĐẤT NỀN PHÂN LÔ, ĐẤT VƯỜN & FARMSTAY",
       heroSubtitle: "Hơn 4.000 lô đất có sẵn thổ cư, đất vườn sầu riêng ven suối và trang trại nghỉ dưỡng sổ hồng riêng."
     }
+  },
+  // ─── PORTAL 15. COMMERCIAL & RETAIL PODIUM PORTAL ──────────────────────────
+  {
+    id: "portal-15",
+    name: "Template #15 - Commercial & Retail Podium Portal",
+    slug: "portal-15",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #15",
+    badgeBg: "#EA580C",
+    badgeColor: "#FFFFFF",
+    accentColor: "#EA580C",
+    description: "Sàn giao dịch shophouse khối đế chung cư, mặt bằng bán lẻ trung tâm thương mại và nhà phố góc 2 mặt tiền sầm uất. Hiển thị thông số lưu lượng người qua lại Footfall lượt/ngày, bề rộng vỉa hè m và ngành nghề kinh doanh tối ưu.",
+    shortDescription: "Shophouse khối đế · Mặt bằng bán lẻ TTTM · Footfall 45.000 lượt/ngày",
+    thumbnail: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục thương mại bán lẻ năng động với tông Đỏ Cam & Xanh Tím Hiện Đại",
+      "Thẻ tin Commercial Retail Card hiển thị lưu lượng khách Footfall & vỉa hè m",
+      "Bộ lọc mặt bằng theo ngành nghề: F&B, Ngân hàng, Spa, Siêu thị, Thời trang",
+      "Trang chi tiết mặt bằng kèm thông số kỹ thuật điện 3 pha & bãi đỗ xe",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án TTTM, Tin tức, Giới thiệu, Liên hệ",
+      "Tích hợp form gửi yêu cầu tìm kiếm mặt bằng mở chuỗi trên toàn quốc"
+    ],
+    priceBuy: 749000,
+    priceBuySource: 2190000,
+    priceRentMonthly: 169000,
+    isActive: true,
+    sortOrder: 39,
+    targetAudience: ["Chuỗi thương hiệu F&B, thời trang & bán lẻ mở rộng chuỗi", "Sàn môi giới chuyên shophouse khối đế chung cư & TTTM", "Chủ sở hữu nhà phố mặt tiền kinh doanh"],
+    highlights: ["Footfall & Traffic Metrics", "Retail Chain Request Forms", "Sidewalk & Parking Specs", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["RetailCardModule", "FootfallTrackerModule", "RetailProjectModule", "RetailInsightModule"],
+    benefits: ["Tối ưu hóa khả năng tìm kiếm mặt bằng cho các chuỗi nhượng quyền lớn", "Định lượng giá trị mặt bằng bằng dữ liệu lưu lượng thực tế", "Gia tăng 340% tỷ lệ kết nối chủ nhà với chuỗi bán lẻ"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#EA580C",
+      secondaryColor: "#C2410C",
+      accentColor: "#4F46E5",
+      bgColor: "#FFF7ED",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "1rem",
+      shadowToken: "0 10px 15px -3px rgba(234, 88, 12, 0.15)"
+    },
+    layoutConfig: {
+      heroStyle: "Retail Commercial Hero với Search Bar ngành nghề F&B",
+      navigationStyle: "Orange Dynamic Rounded Navbar",
+      cardStyle: "Commercial Retail Card (Grid footfall khách/ngày, vỉa hè)",
+      galleryStyle: "Commercial Streetview Slider",
+      ctaStyle: "Commercial Orange Action Button",
+      spacingScale: "Dynamic Commercial Spacing"
+    },
+    wireframe: ["HeaderRetailPodium", "HeroRetailSearch", "RetailListingsGrid", "TopCommercialHubs", "FooterRetailPodium"],
+    sectionConfig: {
+      sourceSlug: "portal-15",
+      heroTitle: "SÀN SHOPHOUSE KHỐI ĐẾ & MẶT BẰNG THƯƠNG MẠI",
+      heroSubtitle: "Hơn 2.500 mặt bằng khối đế chung cư cư dân đông đúc, nhà phố ngã tư góc 2 mặt tiền và TTTM sầm uất."
+    }
   }
 ];
 
@@ -2405,6 +2469,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-14': 'portal-14',
   'portal-landplot': 'portal-14',
   'datvuon-pro': 'portal-14',
+  'portal-15': 'portal-15',
+  'portal-commercial': 'portal-15',
+  'retail-podium-portal': 'portal-15',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
