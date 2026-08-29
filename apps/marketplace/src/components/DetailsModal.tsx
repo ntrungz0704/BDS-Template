@@ -854,18 +854,29 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
               <div className="rounded-xl border p-4" style={{ borderColor: accent + '30', backgroundColor: '#fff' }}>
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Giá dịch vụ</p>
 
-                <div className="mb-3">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <span className="text-xs text-slate-400 line-through font-semibold">799.000đ</span>
-                    <span className="text-[10px] bg-rose-50 text-rose-600 font-extrabold px-1.5 py-0.5 rounded border border-rose-200">
-                      Ưu đãi -38%
-                    </span>
-                  </div>
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-2xl font-black text-blue-600">499.000đ</span>
-                    <span className="text-xs text-slate-500 font-bold">/ trọn gói</span>
-                  </div>
-                </div>
+                {(() => {
+                  const buyPrice = template.priceBuy || 399000;
+                  const originalPrice = buyPrice <= 399000 ? 799000 : 999000;
+                  const discountPercent = Math.round(((originalPrice - buyPrice) / originalPrice) * 100);
+                  return (
+                    <div className="mb-3">
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <span className="text-xs text-slate-400 line-through font-semibold">
+                          {new Intl.NumberFormat('vi-VN').format(originalPrice)}đ
+                        </span>
+                        <span className="text-[10px] bg-rose-50 text-rose-600 font-extrabold px-1.5 py-0.5 rounded border border-rose-200">
+                          Ưu đãi -{discountPercent}%
+                        </span>
+                      </div>
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="text-2xl font-black text-blue-600">
+                          {new Intl.NumberFormat('vi-VN').format(buyPrice)}đ
+                        </span>
+                        <span className="text-xs text-slate-500 font-bold">/ trọn gói</span>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 <div className="space-y-2">
                   <button

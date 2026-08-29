@@ -19,7 +19,7 @@ export default function PricingPage() {
   const faqs = [
     {
       q: "Website sau khi thiết kế tôi có được sở hữu vĩnh viễn không?",
-      a: "Có! Với gói Thiết kế Website Chuyên Nghiệp 499.000đ, bạn sở hữu vĩnh viễn 100% giao diện và mã nguồn đã chọn. Bạn có toàn quyền cấu hình, đăng bài và vận hành lâu dài."
+      a: "Có! Với gói Mua Template BĐS chỉ từ 399.000đ - 499.000đ, bạn sở hữu vĩnh viễn 100% giao diện và mã nguồn đã chọn. Bạn có toàn quyền cấu hình, đăng bài và vận hành lâu dài."
     },
     {
       q: "Hosting và Domain có bắt đầu sử dụng ngay được không?",
@@ -31,7 +31,7 @@ export default function PricingPage() {
     },
     {
       q: "Tôi đã có sẵn Hosting và Tên miền riêng, tôi có thể chỉ mua gói thiết kế không?",
-      a: "Được chứ! Bạn chỉ cần chọn gói Thiết kế giao diện 499.000đ, chúng tôi hỗ trợ đóng gói và chuyển giao toàn bộ mã nguồn ZIP hoặc hỗ trợ cài đặt thẳng lên máy chủ/hosting hiện có của bạn hoàn toàn miễn phí."
+      a: "Được chứ! Bạn chỉ cần chọn gói Template BĐS từ 399.000đ - 499.000đ, chúng tôi hỗ trợ đóng gói và chuyển giao toàn bộ mã nguồn ZIP hoặc hỗ trợ cài đặt thẳng lên máy chủ/hosting hiện có của bạn hoàn toàn miễn phí."
     }
   ];
 
@@ -86,10 +86,10 @@ export default function PricingPage() {
               </div>
               <div className="mb-6">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl sm:text-5xl font-black text-slate-900">499.000đ</span>
-                  <span className="text-xs font-bold text-blue-600 ml-1">/ TRỌN GÓI</span>
+                  <span className="text-4xl sm:text-5xl font-black text-slate-900">399.000đ</span>
+                  <span className="text-xs font-bold text-blue-600 ml-1">/ CHỈ TỪ (399K - 499K)</span>
                 </div>
-                <div className="text-[11px] font-bold text-emerald-600 mt-1">🎁 Bàn giao nhanh – Hỗ trợ tận tâm</div>
+                <div className="text-[11px] font-bold text-emerald-600 mt-1">🎁 Bàn giao ngay – Sở hữu trọn đời</div>
               </div>
               <p className="text-sm text-slate-600 font-medium leading-relaxed border-b border-slate-100 pb-5 mb-6">
                 Thiết kế chuẩn chỉnh, tối ưu hiển thị, sẵn sàng kết nối dự án và giới thiệu thông tin của bạn chuyên nghiệp.

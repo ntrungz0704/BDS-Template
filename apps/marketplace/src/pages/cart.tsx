@@ -42,7 +42,7 @@ export default function CartPage() {
 
   // Pricing calculator helper (Tính theo NĂM - Không bán theo tháng)
   const getItemPrice = (item: any) => {
-    let price = item.template?.priceBuy || 499000;
+    let price = item.template?.priceBuy || 399000;
     const id = item.template?.id || item.template?.slug;
     if (includeMaintenance[id]) {
       price += 299000; // Bảo trì website 299k/năm
@@ -53,9 +53,17 @@ export default function CartPage() {
     return price;
   };
 
-  const originalTotal = cart.length * 799000;
+  const originalTotal = cart.reduce((sum, item) => {
+    const buyPrice = item.template?.priceBuy || 399000;
+    const orig = buyPrice <= 399000 ? 799000 : 999000;
+    const id = item.template?.id || item.template?.slug;
+    let total = orig;
+    if (includeMaintenance[id]) total += 299000;
+    if (includeHosting[id]) total += 499000;
+    return sum + total;
+  }, 0);
   const totalAmount = cart.reduce((sum, item) => sum + getItemPrice(item), 0);
-  const discountTotal = originalTotal - (cart.length * 499000);
+  const discountTotal = originalTotal - totalAmount;
 
   // Mutator for creating orders
   const createOrderMutation = useMutation({

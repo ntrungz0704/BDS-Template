@@ -333,14 +333,14 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
             <div>
               <div className="flex items-center gap-1.5 mb-0.5">
                 <span className="text-[11px] text-slate-400 line-through font-semibold">
-                  {fmt(template.priceBuySource || 799000)}
+                  {fmt((template.priceBuy || 399000) <= 399000 ? 799000 : 999000)}
                 </span>
-                <span className="text-[9px] bg-rose-50 text-rose-600 font-extrabold px-1 py-0.2 rounded border border-rose-200">
-                  -38%
+                <span className="text-[9px] bg-rose-50 text-rose-600 font-extrabold px-1.5 py-0.5 rounded border border-rose-200">
+                  -50%
                 </span>
               </div>
               <span className="text-xl font-extrabold text-blue-600">
-                {fmt(template.priceBuy || 499000)}
+                {fmt(template.priceBuy || 399000)}
               </span>
             </div>
             <span className={`text-[10px] ${owned ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-emerald-50 text-emerald-700 border-emerald-200'} font-bold px-2 py-0.5 rounded-md border`}>
