@@ -35,6 +35,7 @@ const LuxuryTemplate = dynamic(() => import('../components/templates/LuxuryTempl
 const MinimalTemplate = dynamic(() => import('../components/templates/MinimalTemplate'), { loading: () => <LoadingSkeleton /> });
 const CorporateTemplate = dynamic(() => import('../components/templates/CorporateTemplate'), { loading: () => <LoadingSkeleton /> });
 const ResortTemplate = dynamic(() => import('../components/templates/ResortTemplate'), { loading: () => <LoadingSkeleton /> });
+const UrbanTemplate = dynamic(() => import('../components/templates/UrbanTemplate'), { loading: () => <LoadingSkeleton /> });
 const ApartmentTemplate = dynamic(() => import('../components/templates/ApartmentTemplate'), { loading: () => <LoadingSkeleton /> });
 const IndustrialTemplate = dynamic(() => import('../components/templates/IndustrialTemplate'), { loading: () => <LoadingSkeleton /> });
 const VillaTemplate = dynamic(() => import('../components/templates/VillaTemplate'), { loading: () => <LoadingSkeleton /> });
@@ -103,12 +104,12 @@ const INITIAL_TEMPLATES: TemplateDefinition[] = [
   { id: 'template-ocean-blue', slug: 'ocean-blue', name: 'Ocean Blue Style', category: 'resort', version: '1.0.0', component: ResortTemplate },
   { id: 'template-4', slug: 'template-4', name: 'Resort Paradise', category: 'resort', version: '1.0.0', component: ResortTemplate },
 
-  // 5. Urban City
-  { id: 'bds-05', slug: 'bds-05', name: 'BĐS 05 — Đại Đô Thị Thông Minh', category: 'apartment', version: '1.0.0', component: ApartmentTemplate },
-  { id: 'template-urban-city', slug: 'urban-city', name: 'Urban City', category: 'apartment', version: '1.0.0', component: ApartmentTemplate },
-  { id: 'template-smart-urban', slug: 'smart-urban', name: 'Smart Urban City', category: 'apartment', version: '1.0.0', component: ApartmentTemplate },
-  { id: 'template-high-rise', slug: 'high-rise', name: 'High-Rise Skyscraper', category: 'apartment', version: '1.0.0', component: ApartmentTemplate },
-  { id: 'template-5', slug: 'template-5', name: 'Smart Urban', category: 'apartment', version: '1.0.0', component: ApartmentTemplate },
+  // 5. Urban City (An Viên Nha Trang)
+  { id: 'bds-05', slug: 'bds-05', name: 'BĐS 05 — Đại Đô Thị Thông Minh', category: 'apartment', version: '1.0.0', component: UrbanTemplate },
+  { id: 'template-urban-city', slug: 'urban-city', name: 'Urban City', category: 'apartment', version: '1.0.0', component: UrbanTemplate },
+  { id: 'template-smart-urban', slug: 'smart-urban', name: 'Smart Urban City', category: 'apartment', version: '1.0.0', component: UrbanTemplate },
+  { id: 'template-high-rise', slug: 'high-rise', name: 'High-Rise Skyscraper', category: 'apartment', version: '1.0.0', component: UrbanTemplate },
+  { id: 'template-5', slug: 'template-5', name: 'Smart Urban', category: 'apartment', version: '1.0.0', component: UrbanTemplate },
 
   // 6. Industrial Estate
   { id: 'bds-06', slug: 'bds-06', name: 'BĐS 06 — Khu Công Nghiệp Hiện Đại', category: 'industrial', version: '1.0.0', component: IndustrialTemplate },
