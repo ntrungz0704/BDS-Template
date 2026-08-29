@@ -47,10 +47,10 @@ import {
   Filter,
   SlidersHorizontal,
   ChevronDown,
-  Navigation,
-  ArrowUp
+  Navigation
 } from 'lucide-react';
 import { MAX_W } from '../lib/design-system';
+import UniversalTemplateFooter from '../UniversalTemplateFooter';
 
 interface TemplateProps {
   template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
@@ -616,7 +616,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
   
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const [loanPercent, setLoanPercent] = useState<number>(70);
   const [loanYears, setLoanYears] = useState<number>(20);
@@ -624,15 +623,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
   const [contactForm, setContactForm] = useState({ name: '', phone: '', email: '', message: '' });
   const [consignmentForm, setConsignmentForm] = useState({ name: '', phone: '', propType: 'Căn hộ', address: '', expectedPrice: '', note: '' });
-
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 4000);
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   const navigate = (page: string, slug?: string) => {
     setCurrentPageState(page);
@@ -780,10 +770,8 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     };
   }, [selectedProperty, loanPercent, loanYears, interestRate]);
 
-  // ── 1. TOP BAR & MAIN HEADER ───────────────────────────────────────────────
   const renderHeader = () => (
     <header className="w-full bg-white text-slate-800 border-b border-slate-200 sticky top-0 z-40 shadow-xs">
-      {/* Top bar */}
       <div className="bg-slate-50 border-b border-slate-100 text-xs py-1.5 px-4 text-slate-500">
         <div className={`${MAX_W} mx-auto flex justify-between items-center`}>
           <div className="flex items-center gap-4">
@@ -804,7 +792,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </div>
 
-      {/* Main navigation */}
       <div className={`${MAX_W} mx-auto px-4 py-3.5 flex items-center justify-between`}>
         <div onClick={() => navigate('home')} className="flex items-center gap-3 cursor-pointer group">
           <div className="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center text-white shadow-md">
@@ -904,7 +891,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
   const renderHomePage = () => (
     <div className="bg-[#F8FAFC] space-y-12 pb-12">
-      {/* ── HERO BANNER WITH SEARCH ── */}
       <section className="relative pt-16 pb-20 px-4 bg-cover bg-center text-white" style={{ backgroundImage: 'linear-gradient(rgba(15, 60, 120, 0.85), rgba(30, 96, 184, 0.9)), url(https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80)' }}>
         <div className={`${MAX_W} mx-auto text-center max-w-3xl mb-8`}>
           <h1 className="text-2xl md:text-4xl font-black uppercase tracking-wider text-white mb-6">
@@ -965,7 +951,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </section>
 
-      {/* ── SECTION 1: BẤT ĐỘNG SẢN ĐANG BÁN ── */}
       <section className={`${MAX_W} mx-auto px-4`}>
         <div className="text-center mb-6">
           <h2 className="text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
@@ -979,7 +964,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </section>
 
-      {/* ── SECTION 2: DỰ ÁN NỔI BẬT SINGLE PROJECT ── */}
       <section className={`${MAX_W} mx-auto px-4`}>
         <div className="text-center mb-6">
           <h2 className="text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
@@ -1022,7 +1006,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </section>
 
-      {/* ── SECTION 3: BẤT ĐỘNG SẢN CHO THUÊ ── */}
       <section className={`${MAX_W} mx-auto px-4`}>
         <div className="text-center mb-6">
           <h2 className="text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
@@ -1067,7 +1050,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </section>
 
-      {/* ── SECTION 4: CÁC DỰ ÁN TẠI CÁC THÀNH PHỐ LỚN ── */}
       <section className={`${MAX_W} mx-auto px-4`}>
         <div className="text-center mb-6">
           <h2 className="text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
@@ -1100,7 +1082,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </section>
 
-      {/* ── SECTION 5: TIN TỨC & AD BANNER ── */}
       <section className={`${MAX_W} mx-auto px-4`}>
         <div className="flex items-center justify-between mb-4 border-b border-slate-200 pb-2">
           <h2 className="text-base font-black text-blue-700 uppercase">Tin tức</h2>
@@ -1641,7 +1622,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                         alert('Vui lòng nhập số điện thoại để nhận tư vấn!');
                         return;
                       }
-                      showToast('✓ Cảm ơn bạn! Chuyên viên tư vấn sẽ liên hệ lại ngay trong 5 phút.');
+                      alert('✓ Cảm ơn bạn! Chuyên viên tư vấn sẽ liên hệ lại ngay trong 5 phút.');
                       setContactForm({ name: '', phone: '', email: '', message: '' });
                     }}
                     className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase rounded transition shadow-sm"
@@ -1831,7 +1812,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 alert('Vui lòng điền số điện thoại và địa chỉ bất động sản cần ký gửi!');
                 return;
               }
-              showToast('✓ Tiếp nhận thông tin ký gửi thành công! Đội ngũ chuyên viên sẽ liên hệ khảo sát thực tế ngay.');
+              alert('✓ Tiếp nhận thông tin ký gửi thành công! Đội ngũ chuyên viên sẽ liên hệ khảo sát thực tế ngay.');
               setConsignmentForm({ name: '', phone: '', propType: 'Căn hộ', address: '', expectedPrice: '', note: '' });
             }}
             className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase rounded-lg shadow-lg transition"
@@ -1920,7 +1901,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                   alert('Vui lòng nhập số điện thoại liên hệ!');
                   return;
                 }
-                showToast('✓ Gửi liên hệ thành công! Chúng tôi sẽ phản hồi trong ít phút.');
+                alert('✓ Gửi liên hệ thành công! Chúng tôi sẽ phản hồi trong ít phút.');
                 setContactForm({ name: '', phone: '', email: '', message: '' });
               }}
               className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded transition shadow-sm"
@@ -1933,156 +1914,8 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     </div>
   );
 
-  // ── 11. DYNAMIC & CUSTOMIZABLE FOOTER WITH TEMPLATEBDS COPYRIGHT ───────────
-  const defaultFooterCols = [
-    {
-      title: 'Thông tin liên hệ',
-      items: [
-        { label: `📍 Địa chỉ: ${company?.address || '180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội'}`, isInfo: true },
-        { label: `📞 Hotline: ${company?.phone || '0905.56.xxxx'}`, isInfo: true },
-        { label: `✉️ Email: ${company?.email || 'webdemo@gmail.com'}`, isInfo: true },
-        { label: '⏰ Giờ làm việc: 8:00 - 20:00 (T2 - CN)', isInfo: true }
-      ]
-    },
-    {
-      title: 'Về chúng tôi',
-      items: [
-        { label: 'Trang chủ', page: 'home' },
-        { label: 'Giới thiệu', page: 'about' },
-        { label: 'Tin tức & Cẩm nang', page: 'news' },
-        { label: 'Ký gửi nhà đất', page: 'ky-gui' },
-        { label: 'Liên hệ tư vấn', page: 'contact' }
-      ]
-    },
-    {
-      title: 'Dự án mới nhất',
-      items: [
-        { label: 'Căn hộ chung cư', page: 'can-ho' },
-        { label: 'Nhà phố thương mại', page: 'nha-pho' },
-        { label: 'Biệt thự sân vườn', page: 'biet-thu' },
-        { label: 'Chung cư cao cấp', page: 'chung-cu' },
-        { label: 'Văn phòng cho thuê', page: 'van-phong' }
-      ]
-    },
-    {
-      title: 'Chính sách & Quy định',
-      items: [
-        { label: 'Chính sách bán hàng & hoa hồng', page: 'about' },
-        { label: 'Điều khoản sử dụng dịch vụ', page: 'about' },
-        { label: 'Quy trình ký gửi & mua bán', page: 'ky-gui' },
-        { label: 'Chính sách bảo mật thông tin', page: 'about' },
-        { label: 'Câu hỏi thường gặp (FAQ)', page: 'contact' }
-      ]
-    }
-  ];
-
-  const footerCols = company?.footerColumns || defaultFooterCols;
-
-  const renderFooter = () => (
-    <footer className="w-full relative">
-      {/* Blue Newsletter Strip */}
-      <div className="bg-[#1E60B8] py-6 px-4 text-white">
-        <div className={`${MAX_W} mx-auto flex flex-col md:flex-row justify-between items-center gap-4`}>
-          <div>
-            <h3 className="text-sm md:text-base font-black">Đăng ký nhận thông tin từ chúng tôi</h3>
-            <p className="text-xs text-blue-100">Chúng tôi sẽ gửi bạn những thông tin bất động sản mới nhất</p>
-          </div>
-          <div className="flex w-full md:w-auto gap-2">
-            <input
-              type="email"
-              placeholder="Nhập địa chỉ Email của bạn..."
-              className="bg-white text-slate-800 text-xs px-4 py-2.5 rounded-lg w-full md:w-72 focus:outline-none"
-            />
-            <button
-              onClick={() => showToast('✓ Đăng ký email nhận bảng tin BĐS thành công!')}
-              className="bg-blue-800 hover:bg-blue-900 text-white font-bold text-xs px-5 py-2.5 rounded-lg whitespace-nowrap transition flex items-center gap-1"
-            >
-              <Send size={12} /> Đăng ký ngay
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main 4-Column Footer (Customizable & Editable in CMS) */}
-      <div className="bg-[#0B192C] text-slate-400 text-xs py-10 px-4">
-        <div className={`${MAX_W} mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8`}>
-          {footerCols.map((col: any, idx: number) => (
-            <div key={idx} className="space-y-2.5">
-              <div className="text-sm font-black text-white tracking-wide uppercase">{col.title}</div>
-              <ul className="space-y-1.5">
-                {col.items.map((item: any, i: number) => (
-                  <li key={i}>
-                    {item.isInfo ? (
-                      <span className="text-[11px] text-slate-300 leading-relaxed block">{item.label}</span>
-                    ) : (
-                      <div
-                        onClick={() => navigate(item.page || 'home')}
-                        className="hover:text-white cursor-pointer transition text-[11px] flex items-center gap-1.5"
-                      >
-                        <span className="text-blue-500">•</span> {item.label}
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Copyright Strip Belonging to TEMPLATEBDS */}
-      <div className="bg-[#07101E] text-slate-400 text-[11px] py-4 px-4 text-center border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center max-w-7xl mx-auto gap-2">
-        <div>
-          © Bản quyền thuộc về <strong className="text-white font-black">TEMPLATEBDS</strong> — Nền tảng phân phối & Thiết kế Website Bất Động Sản Chuyên Nghiệp.
-        </div>
-        <div className="text-[10px] text-slate-500">
-          Mẫu Giao Diện: <strong>BDS-01 (Real Estate Group Pro)</strong>
-        </div>
-      </div>
-
-      {/* Floating Action Buttons on the Right */}
-      <div className="fixed bottom-6 right-5 z-40 flex flex-col items-center gap-3">
-        {/* Zalo Button */}
-        <a
-          href={`https://zalo.me/${selectedProperty?.author?.zalo || '0905560000'}`}
-          target="_blank"
-          rel="noreferrer"
-          title="Chat Zalo Tư Vấn"
-          className="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-2xl hover:scale-110 transition animate-pulse"
-        >
-          <span className="text-[10px] font-black tracking-tighter">ZALO</span>
-        </a>
-
-        {/* Hotline Call Button */}
-        <a
-          href={`tel:${company?.phone || '0905560000'}`}
-          title="Gọi Hotline Ngay"
-          className="w-12 h-12 rounded-full bg-amber-700 hover:bg-amber-800 text-white flex items-center justify-center shadow-2xl hover:scale-110 transition"
-        >
-          <Phone size={20} />
-        </a>
-
-        {/* Scroll To Top */}
-        <button
-          onClick={scrollToTop}
-          title="Lên đầu trang"
-          className="w-10 h-10 rounded-full bg-slate-900/90 hover:bg-slate-950 text-white flex items-center justify-center shadow-lg hover:scale-105 transition"
-        >
-          <ArrowUp size={18} />
-        </button>
-      </div>
-    </footer>
-  );
-
   return (
     <div className={`min-h-screen bg-slate-50 font-sans antialiased text-slate-800 relative ${isSmall ? 'text-xs' : ''}`}>
-      {/* Toast feedback */}
-      {toastMessage && (
-        <div className="fixed bottom-24 right-6 z-50 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce">
-          <CheckCircle size={16} /> {toastMessage}
-        </div>
-      )}
-
       {renderHeader()}
       <main>
         {currentPage === 'home' && renderHomePage()}
@@ -2094,7 +1927,13 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         {currentPage === 'about' && renderAboutPage()}
         {currentPage === 'contact' && renderContactPage()}
       </main>
-      {renderFooter()}
+      <UniversalTemplateFooter
+        company={company}
+        templateName="BDS-01 (Real Estate Group Pro)"
+        onNavigate={navigate}
+        zaloPhone={selectedProperty?.author?.zalo}
+        hotlinePhone={company?.phone}
+      />
     </div>
   );
 }
