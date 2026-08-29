@@ -1699,6 +1699,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "MẠNG RAO VẶT BẤT ĐỘNG SẢN CHÍNH CHỦ SỐ 1 VIỆT NAM",
       heroSubtitle: "Hàng ngàn tin đăng nhà đất mới mỗi ngày, kết nối người mua và người bán trực tiếp."
     }
+  },
+  // ─── PORTAL 05. MAP-CENTRIC INTERACTIVE PORTAL ─────────────────────────────
+  {
+    id: "portal-05",
+    name: "Template #05 - Map-Centric Interactive Portal",
+    slug: "portal-05",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #05",
+    badgeBg: "#4F46E5",
+    badgeColor: "#FFFFFF",
+    accentColor: "#4F46E5",
+    description: "Cổng tìm kiếm và tra cứu bất động sản tương tác bản đồ thông minh (Split View 50/50 Map & Listing tương tự Airbnb / Compass). Đồng bộ tức thì giữa thẻ tin đăng và ghim vị trí trên bản đồ vệ tinh.",
+    shortDescription: "Bản đồ tương tác Split View · Tra cứu theo tọa độ · Bản đồ quy hoạch",
+    thumbnail: "https://images.unsplash.com/photo-1524813686514-a57563d77d61?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1524813686514-a57563d77d61?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục Split View 50/50: Bản đồ tương tác trực quan bên phải + Danh sách cuộn bên trái",
+      "Đồng bộ hóa hover giữa thẻ tin và vị trí ghim trên bản đồ",
+      "Lớp bản đồ chuyên sâu: Tuyến Metro, Trường học, Bệnh viện, Quy hoạch 1/500",
+      "Trang chi tiết BĐS kèm bản đồ vệ tinh và cự ly tiện ích lân cận",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án, Tin quy hoạch, Giới thiệu, Liên hệ",
+      "Tương thích hoàn hảo cả trên giao diện màn hình cảm ứng di động"
+    ],
+    priceBuy: 749000,
+    priceBuySource: 2190000,
+    priceRentMonthly: 169000,
+    isActive: true,
+    sortOrder: 29,
+    targetAudience: ["Sàn BĐS ứng dụng công nghệ bản đồ (GIS)", "Công ty tư vấn quy hoạch & dự án hạ tầng", "Môi giới BĐS gần tuyến Metro và đường vành đai"],
+    highlights: ["Split Map View 50/50", "Interactive Google Map", "Infrastructure Layers", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["SplitMapModule", "InteractiveGISModule", "MapCardSyncModule", "InfrastructureLayerModule"],
+    benefits: ["Tăng 380% trải nghiệm tương tác vị trí của người mua", "Định vị chính xác từng lô đất, dự án và tiện ích", "Chuẩn SEO địa điểm địa lý"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#4F46E5",
+      secondaryColor: "#06B6D4",
+      accentColor: "#3730A3",
+      bgColor: "#F8FAFC",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "1rem",
+      shadowToken: "0 4px 6px -1px rgba(79, 70, 229, 0.1)"
+    },
+    layoutConfig: {
+      heroStyle: "Interactive Split Map Screen",
+      navigationStyle: "Map Centric Clean Navbar",
+      cardStyle: "Map Synchronized Card (Góc bo mềm, hover sáng viền)",
+      galleryStyle: "Split Screen Gallery Slider",
+      ctaStyle: "Indigo Gradient Action Button",
+      spacingScale: "Fluid Screen Spacing"
+    },
+    wireframe: ["HeaderMapEstate", "SplitMapContainer", "InteractiveMapViewer", "FooterMapEstate"],
+    sectionConfig: {
+      sourceSlug: "portal-05",
+      heroTitle: "CỔNG BẤT ĐỘNG SẢN TƯƠNG TÁC BẢN ĐỒ THÔNG MINH",
+      heroSubtitle: "Khám phá hàng ngàn bất động sản chính xác theo tọa độ và quy hoạch hạ tầng."
+    }
   }
 ];
 
@@ -1735,6 +1799,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-04': 'portal-04',
   'portal-density': 'portal-04',
   'nhadatso-pro': 'portal-04',
+  'portal-05': 'portal-05',
+  'portal-map': 'portal-05',
+  'map-estate': 'portal-05',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
