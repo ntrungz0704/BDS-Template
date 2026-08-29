@@ -2083,6 +2083,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "ĐẦU TƯ BẤT ĐỘNG SẢN DÒNG TIỀN THU NHẬP 8% - 15%/NĂM",
       heroSubtitle: "Hơn 3.500 tòa nhà căn hộ dịch vụ (CHDV), shophouse khối đế và văn phòng cho thuê sẵn hợp đồng."
     }
+  },
+  // ─── PORTAL 11. MODERN VILLA & WATERFRONT ESTATE ───────────────────────────
+  {
+    id: "portal-11",
+    name: "Template #11 - Modern Villa & Waterfront Estate",
+    slug: "portal-11",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #11",
+    badgeBg: "#0F766E",
+    badgeColor: "#FFFFFF",
+    accentColor: "#0F766E",
+    description: "Sàn phân phối biệt thự ven sông, dinh thự compound khép kín và bến du thuyền riêng biệt. Bố cục Waterfront góc rộng 16:9 với tông Xanh Ngọc Ven Sông & Xanh Marine, hiển thị chiều dài mặt sông m và bến đỗ cano.",
+    shortDescription: "Biệt thự ven sông · Bến du thuyền riêng · Compound an ninh khép kín",
+    thumbnail: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục Panorama thoáng đãng với tông Xanh Ngọc Ven Sông & Xanh Marine",
+      "Thẻ tin Waterfront Panorama Card hiển thị chiều dài mặt sông (20m - 50m)",
+      "Bộ lọc BĐS theo cự ly lưu vực sông: Sông Sài Gòn, Sông Đồng Nai, Sông Hồng",
+      "Trang chi tiết dinh thự kèm sơ đồ bến du thuyền và cảnh quan hồ bơi vô cực",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án ven sông, Tin tức, Giới thiệu, Liên hệ",
+      "Tích hợp form đặt lịch cano & du thuyền riêng khảo sát vị trí mặt nước"
+    ],
+    priceBuy: 799000,
+    priceBuySource: 2490000,
+    priceRentMonthly: 199000,
+    isActive: true,
+    sortOrder: 35,
+    targetAudience: ["Sàn phân phối dinh thự ven sông & compound cao cấp", "Đại lý F1 biệt thự The Rivus / SwanBay / Aqua City / Eco Village", "Khách hàng siêu giàu yêu thích phong cách sống bến thuyền"],
+    highlights: ["Waterfront 16:9 Panorama Cards", "Private Marina & River Frontage", "Cano Survey Booking", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["WaterfrontCardModule", "MarinaBookingModule", "RiverfrontProjectModule", "WaterfrontLifestyleModule"],
+    benefits: ["Định vị phân khúc dinh thự ven sông siêu sang", "Tăng 360% lượt đăng ký trải nghiệm cano thực tế", "Giao diện tràn viền sang trọng đỉnh cao"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#0F766E",
+      secondaryColor: "#115E59",
+      accentColor: "#0369A1",
+      bgColor: "#F0FDFA",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "1.5rem",
+      shadowToken: "0 10px 15px -3px rgba(15, 118, 110, 0.1)"
+    },
+    layoutConfig: {
+      heroStyle: "Waterfront River Hero với Search Bar bến du thuyền",
+      navigationStyle: "Teal Marine Rounded Navbar",
+      cardStyle: "Waterfront Panorama Card (Ảnh 16:9, badge mặt sông m)",
+      galleryStyle: "Riverfront Landscape Slider",
+      ctaStyle: "Waterfront Teal Action Button",
+      spacingScale: "Expansive River Spacing"
+    },
+    wireframe: ["HeaderWaterfrontVilla", "HeroWaterfrontSearch", "WaterfrontListingsGrid", "TopRiverfrontEstates", "FooterWaterfrontVilla"],
+    sectionConfig: {
+      sourceSlug: "portal-11",
+      heroTitle: "TUYỆT TÁC BIỆT THỰ & DINH THỰ VEN SÔNG BIỂU TƯỢNG",
+      heroSubtitle: "Bộ sưu tập dinh thự có bến đỗ du thuyền riêng, view panorama sông lớn và an ninh compound."
+    }
   }
 ];
 
@@ -2137,6 +2201,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-10': 'portal-10',
   'portal-investment': 'portal-10',
   'invest-pro': 'portal-10',
+  'portal-11': 'portal-11',
+  'portal-waterfront': 'portal-11',
+  'waterfront-villa': 'portal-11',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
