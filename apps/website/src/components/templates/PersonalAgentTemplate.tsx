@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import Link from 'next/link';
 import { 
   Menu, X, Phone, Mail, MapPin, ChevronRight, CheckCircle2, 
@@ -194,16 +195,27 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
   useEffect(() => {
     setCurrentPageState(normalizePersonalAgentPage(initialPage));
   }, [initialPage]);
-  const setCurrentPage = (p: string) => {
+
+  const setCurrentPage = (p: string, customSlug?: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
     if (typeof setSelectedArticle === "function") setSelectedArticle(null);
 
     setCurrentPageState(p);
-    if (typeof window !== 'undefined') {
-      const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
-    }
+    const tSlug = template?.slug || 'bds-16';
+    syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-16') ? parts[1] : 'home');
+      if (sub) {
+        setCurrentPageState(normalizePersonalAgentPage(sub));
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [template?.slug]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
@@ -252,9 +264,9 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
   // 1. Header
   const renderHeader = () => (
     <header className="sticky top-4 w-full z-50 px-4">
-      <div className={`mx-auto bg-white/90 backdrop-blur-md shadow-lg rounded-full px-6 py-3 flex items-center justify-between ${MAX_W}`}>
+      <div className={`mx-auto bg-white/90 backdrop-blur-md shadow-lg rounded-sm px-6 py-3 flex items-center justify-between ${MAX_W}`}>
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigateTo('home')}>
-          <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+          <div className="w-10 h-10 bg-indigo-600 rounded-sm flex items-center justify-center text-white font-bold text-xl">
             T
           </div>
           <span className="text-xl font-bold text-gray-900 tracking-tight">Trần Anh <span className="text-indigo-600">Tuấn</span></span>
@@ -287,7 +299,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
         {!isMobile && !isTablet && (
           <button 
             onClick={() => navigateTo('contact')}
-            className="bg-indigo-600 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-indigo-700 transition-colors flex items-center gap-2"
+            className="bg-indigo-600 text-white px-6 py-2.5 rounded-sm text-sm font-medium hover:bg-indigo-700 transition-colors flex items-center gap-2"
           >
             <Phone size={16} />
             090 123 4567
@@ -303,7 +315,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
 
       {/* Mobile Menu */}
       {(isMobile || isTablet) && isMobileMenuOpen && (
-        <div className="absolute top-20 left-4 right-4 bg-white rounded-2xl shadow-xl p-4 flex flex-col gap-4">
+        <div className="absolute top-20 left-4 right-4 bg-white rounded-sm shadow-xl p-4 flex flex-col gap-4">
           {[
             { id: 'home', label: 'Trang chủ' },
             { id: 'projects', label: 'Dự án' },
@@ -324,7 +336,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
           ))}
           <button 
             onClick={() => navigateTo('contact')}
-            className="w-full bg-indigo-600 text-white px-6 py-3 rounded-xl text-base font-medium mt-2 flex justify-center items-center gap-2"
+            className="w-full bg-indigo-600 text-white px-6 py-3 rounded-sm text-base font-medium mt-2 flex justify-center items-center gap-2"
           >
             <Phone size={18} />
             Gọi ngay 090 123 4567
@@ -341,7 +353,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div>
             <div className="flex items-center gap-2 mb-6">
-              <div className="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+              <div className="w-10 h-10 bg-indigo-500 rounded-sm flex items-center justify-center text-white font-bold text-xl">
                 T
               </div>
               <span className="text-2xl font-bold text-white tracking-tight">Trần Anh Tuấn</span>
@@ -350,16 +362,16 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               Chuyên gia tư vấn bất động sản cao cấp, mang đến giải pháp an cư và đầu tư sinh lời vượt trội cho khách hàng tại thị trường TP.HCM.
             </p>
             <div className="flex gap-4">
-              <button onClick={() => alert('Mở Facebook')} className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors cursor-pointer">
+              <button onClick={() => alert('Mở Facebook')} className="w-10 h-10 rounded-sm bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors cursor-pointer">
                 <Facebook size={18} />
               </button>
-              <button onClick={() => alert('Mở Instagram')} className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors cursor-pointer">
+              <button onClick={() => alert('Mở Instagram')} className="w-10 h-10 rounded-sm bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors cursor-pointer">
                 <Instagram size={18} />
               </button>
-              <button onClick={() => alert('Mở LinkedIn')} className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors cursor-pointer">
+              <button onClick={() => alert('Mở LinkedIn')} className="w-10 h-10 rounded-sm bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors cursor-pointer">
                 <Linkedin size={18} />
               </button>
-              <button onClick={() => alert('Mở Twitter')} className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors cursor-pointer">
+              <button onClick={() => alert('Mở Twitter')} className="w-10 h-10 rounded-sm bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors cursor-pointer">
                 <Twitter size={18} />
               </button>
             </div>
@@ -433,14 +445,14 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
       <section className="relative min-h-[90vh] flex items-center pt-24 pb-16 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute top-0 right-0 w-2/3 h-full bg-indigo-50 rounded-bl-[100px] transform translate-x-1/4"></div>
-          <div className="absolute top-20 right-20 w-64 h-64 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
-          <div className="absolute bottom-20 left-20 w-72 h-72 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
+          <div className="absolute top-20 right-20 w-64 h-64 bg-indigo-100 rounded-sm mix-blend-multiply filter blur-3xl opacity-70"></div>
+          <div className="absolute bottom-20 left-20 w-72 h-72 bg-blue-100 rounded-sm mix-blend-multiply filter blur-3xl opacity-70"></div>
         </div>
         
         <div className={`mx-auto px-4 w-full relative z-10 ${MAX_W}`}>
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
             <div className="flex-1 text-center lg:text-left mt-12 lg:mt-0">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 font-medium text-sm mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-indigo-100 text-indigo-700 font-medium text-sm mb-6">
                 <Star size={16} fill="currentColor" />
                 Chuyên gia tư vấn BĐS cao cấp
               </div>
@@ -453,10 +465,10 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10">
-                <button onClick={() => navigateTo('projects')} className="px-8 py-4 bg-indigo-600 text-white rounded-xl font-bold text-lg hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2">
+                <button onClick={() => navigateTo('projects')} className="px-8 py-4 bg-indigo-600 text-white rounded-sm font-bold text-lg hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2">
                   Xem Dự Án <ArrowUpRight size={20} />
                 </button>
-                <button onClick={() => navigateTo('contact')} className="px-8 py-4 bg-white text-gray-900 rounded-xl font-bold text-lg border-2 border-gray-200 hover:border-indigo-600 transition-all flex items-center justify-center gap-2">
+                <button onClick={() => navigateTo('contact')} className="px-8 py-4 bg-white text-gray-900 rounded-sm font-bold text-lg border-2 border-gray-200 hover:border-indigo-600 transition-all flex items-center justify-center gap-2">
                   Liên Hệ Tư Vấn <Phone size={20} />
                 </button>
               </div>
@@ -478,8 +490,8 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               </div>
               
               {/* Floating badges */}
-              <div className="absolute top-10 -left-10 bg-white p-4 rounded-xl shadow-xl hidden md:flex items-center gap-4 animate-bounce-slow">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600">
+              <div className="absolute top-10 -left-10 bg-white p-4 rounded-sm shadow-xl hidden md:flex items-center gap-4 animate-bounce-slow">
+                <div className="w-12 h-12 bg-green-100 rounded-sm flex items-center justify-center text-green-600">
                   <CheckCircle2 size={24} />
                 </div>
                 <div>
@@ -488,8 +500,8 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 </div>
               </div>
               
-              <div className="absolute bottom-20 -right-10 bg-white p-4 rounded-xl shadow-xl hidden md:flex items-center gap-4">
-                <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600">
+              <div className="absolute bottom-20 -right-10 bg-white p-4 rounded-sm shadow-xl hidden md:flex items-center gap-4">
+                <div className="w-12 h-12 bg-yellow-100 rounded-sm flex items-center justify-center text-yellow-600">
                   <Star size={24} fill="currentColor" />
                 </div>
                 <div>
@@ -503,7 +515,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
       </section>
 
       {/* 3. Stats */}
-      <section className="bg-indigo-900 py-16 text-white relative z-20 -mt-10 mx-4 md:mx-auto max-w-6xl rounded-3xl shadow-2xl overflow-hidden">
+      <section className="bg-indigo-900 py-16 text-white relative z-20 -mt-10 mx-4 md:mx-auto max-w-6xl rounded-md shadow-2xl overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
         <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-8 px-8">
           {[
@@ -550,12 +562,12 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 img: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&q=80'
               }
             ].map((spec, i) => (
-              <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-lg group hover:shadow-2xl transition-all duration-300">
+              <div key={i} className="bg-white rounded-sm overflow-hidden shadow-lg group hover:shadow-2xl transition-all duration-300">
                 <div className="h-48 overflow-hidden">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={spec.img} alt={spec.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 </div>
                 <div className="p-8 relative">
-                  <div className="absolute -top-10 left-8 bg-white p-3 rounded-xl shadow-md">
+                  <div className="absolute -top-10 left-8 bg-white p-3 rounded-sm shadow-md">
                     {spec.icon}
                   </div>
                   <h4 className="text-xl font-bold text-gray-900 mt-4 mb-3">{spec.title}</h4>
@@ -578,21 +590,21 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               <h2 className="text-sm font-bold text-indigo-600 tracking-widest uppercase mb-2">Bất Động Sản Nổi Bật</h2>
               <h3 className="text-3xl md:text-4xl font-bold text-gray-900">Danh Mục Đầu Tư Phân Bổ</h3>
             </div>
-            <button onClick={() => navigateTo('projects')} className="px-6 py-3 border border-gray-200 rounded-full font-medium hover:border-indigo-600 hover:text-indigo-600 transition-colors flex items-center gap-2">
+            <button onClick={() => navigateTo('projects')} className="px-6 py-3 border border-gray-200 rounded-sm font-medium hover:border-indigo-600 hover:text-indigo-600 transition-colors flex items-center gap-2">
               Xem tất cả <ArrowRight size={18} />
             </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {mockListings.slice(0, 3).map((listing, i) => (
-              <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-xl transition-all">
+              <div key={i} className="bg-white rounded-sm shadow-sm border border-gray-100 overflow-hidden group hover:shadow-xl transition-all">
                 <div className="relative h-64 overflow-hidden">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={listing.img} alt={listing.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                  <div className="absolute top-4 left-4 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                  <div className="absolute top-4 left-4 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-sm uppercase tracking-wider">
                     {listing.type}
                   </div>
                   {listing.featured && (
-                    <div className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    <div className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-sm uppercase tracking-wider">
                       Độc Quyền
                     </div>
                   )}
@@ -608,7 +620,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   </p>
                   <div className="border-t border-gray-100 pt-4 flex justify-between items-center text-sm font-medium text-gray-700">
                     <span>{listing.specs}</span>
-                    <button onClick={() => setSelectedProject(listing)} className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors">
+                    <button onClick={() => setSelectedProject(listing)} className="w-8 h-8 rounded-sm bg-indigo-50 flex items-center justify-center text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors">
                       <ChevronRight size={18} />
                     </button>
                   </div>
@@ -624,19 +636,19 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
         <div className={`mx-auto px-4 ${MAX_W}`}>
           <div className="flex flex-col lg:flex-row items-center gap-16">
             <div className="w-full lg:w-1/2 relative">
-              <div className="aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl relative z-10">
+              <div className="aspect-[3/4] rounded-md overflow-hidden shadow-2xl relative z-10">
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
                   src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=800&q=80" 
                   alt="About Agent" 
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="absolute top-1/2 -right-8 lg:-right-12 bg-white p-6 rounded-2xl shadow-xl z-20">
+              <div className="absolute top-1/2 -right-8 lg:-right-12 bg-white p-6 rounded-sm shadow-xl z-20">
                 <p className="text-4xl font-extrabold text-indigo-600 mb-1">10+</p>
                 <p className="text-gray-900 font-bold mb-2">Năm Kinh Nghiệm</p>
                 <p className="text-sm text-gray-500">Trong thị trường BĐS hạng sang</p>
               </div>
-              <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-indigo-200 rounded-full mix-blend-multiply opacity-50 z-0 blur-2xl"></div>
+              <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-indigo-200 rounded-sm mix-blend-multiply opacity-50 z-0 blur-2xl"></div>
             </div>
             
             <div className="w-full lg:w-1/2">
@@ -646,12 +658,12 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 Chào bạn, tôi là Trần Anh Tuấn. Khởi nghiệp từ năm 2013 với niềm đam mê cháy bỏng dành cho kiến trúc và không gian sống, tôi đã có hơn một thập kỷ đắm mình trong phân khúc bất động sản hạng sang.
               </p>
               <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-                 Triết lý của tôi rất đơn giản: <strong>“Bán nhà không chỉ là bán những bức tường, mà là bán phong cách sống và tầm nhìn tương lai.”</strong> Tôi luôn đặt mình vào vị trí của khách hàng để tìm kiếm những tài sản phù hợp nhất với nhu cầu, sở thích và định hướng tài chính.
+                Triết lý của tôi rất đơn giản: <strong>"Bán nhà không chỉ là bán những bức tường, mà là bán phong cách sống và tầm nhìn tương lai."</strong> Tôi luôn đặt mình vào vị trí của khách hàng để tìm kiếm những tài sản phù hợp nhất với nhu cầu, sở thích và định hướng tài chính.
               </p>
               
               <div className="grid grid-cols-2 gap-6 mb-10">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0 text-indigo-600">
+                  <div className="w-12 h-12 bg-indigo-100 rounded-sm flex items-center justify-center flex-shrink-0 text-indigo-600">
                     <Award size={24} />
                   </div>
                   <div>
@@ -660,7 +672,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0 text-indigo-600">
+                  <div className="w-12 h-12 bg-indigo-100 rounded-sm flex items-center justify-center flex-shrink-0 text-indigo-600">
                     <Shield size={24} />
                   </div>
                   <div>
@@ -689,8 +701,8 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               { icon: <Briefcase size={32}/>, title: 'Quản Lý Đầu Tư', desc: 'Phân tích thị trường, lập kế hoạch dòng tiền và tối ưu hóa lợi nhuận danh mục.' },
               { icon: <Shield size={32}/>, title: 'Hỗ Trợ Pháp Lý', desc: 'Kiểm tra quy hoạch, hợp đồng, hoàn thiện thủ tục công chứng sang tên nhanh chóng.' }
             ].map((srv, i) => (
-              <div key={i} className="border border-gray-100 p-8 rounded-2xl hover:shadow-xl hover:border-indigo-100 transition-all bg-white group">
-                <div className="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+              <div key={i} className="border border-gray-100 p-8 rounded-sm hover:shadow-xl hover:border-indigo-100 transition-all bg-white group">
+                <div className="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-sm flex items-center justify-center mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                   {srv.icon}
                 </div>
                 <h4 className="text-xl font-bold text-gray-900 mb-3">{srv.title}</h4>
@@ -712,13 +724,13 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
 
           <div className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory hide-scrollbar">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="min-w-[320px] md:min-w-[400px] snap-center bg-gray-800 p-8 rounded-2xl border border-gray-700">
+              <div key={i} className="min-w-[320px] md:min-w-[400px] snap-center bg-gray-800 p-8 rounded-sm border border-gray-700">
                 <Quote size={40} className="text-indigo-500 mb-6 opacity-50" />
                 <p className="text-gray-300 mb-8 italic leading-relaxed">
-                  “Tuấn không chỉ là một môi giới, mà là một cố vấn đích thực. Cậu ấy hiểu rõ gu của tôi và đã giúp gia đình tôi tìm được căn penthouse hoàn hảo tại Thủ Thiêm. Rất chuyên nghiệp và tận tâm!”
+                  "Tuấn không chỉ là một môi giới, mà là một cố vấn đích thực. Cậu ấy hiểu rõ gu của tôi và đã giúp gia đình tôi tìm được căn penthouse hoàn hảo tại Thủ Thiêm. Rất chuyên nghiệp và tận tâm!"
                 </p>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gray-600 rounded-full overflow-hidden">
+                  <div className="w-12 h-12 bg-gray-600 rounded-sm overflow-hidden">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={`https://i.pravatar.cc/150?img=${i+10}`} alt="Client" />
                   </div>
                   <div>
@@ -787,22 +799,22 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 h-[600px]">
-            <div className="col-span-2 row-span-2 relative group rounded-2xl overflow-hidden">
+            <div className="col-span-2 row-span-2 relative group rounded-sm overflow-hidden">
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80" alt="Gal 1" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <span className="text-white font-bold text-xl bg-indigo-600/90 px-6 py-2 rounded-full">Đã Bán - 45 Tỷ</span>
+                <span className="text-white font-bold text-xl bg-indigo-600/90 px-6 py-2 rounded-sm">Đã Bán - 45 Tỷ</span>
               </div>
             </div>
-            <div className="relative group rounded-2xl overflow-hidden">
+            <div className="relative group rounded-sm overflow-hidden">
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80" alt="Gal 2" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
             </div>
-            <div className="relative group rounded-2xl overflow-hidden">
+            <div className="relative group rounded-sm overflow-hidden">
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=800&q=80" alt="Gal 3" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
             </div>
-            <div className="col-span-2 relative group rounded-2xl overflow-hidden">
+            <div className="col-span-2 relative group rounded-sm overflow-hidden">
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600047509358-9dc75507daeb?w=800&q=80" alt="Gal 4" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <span className="text-white font-bold text-xl bg-indigo-600/90 px-6 py-2 rounded-full">Cho Thuê - $5,000/tháng</span>
+                <span className="text-white font-bold text-xl bg-indigo-600/90 px-6 py-2 rounded-sm">Cho Thuê - $5,000/tháng</span>
               </div>
             </div>
           </div>
@@ -830,7 +842,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {mockArticles.slice(0, 3).map((news, i) => (
               <div key={i} className="group cursor-pointer" onClick={() => setSelectedArticle(news)}>
-                <div className="rounded-2xl overflow-hidden mb-6 aspect-video">
+                <div className="rounded-sm overflow-hidden mb-6 aspect-video">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={news.img} alt={news.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 </div>
                 <div className="flex items-center gap-4 text-xs font-bold text-gray-500 mb-3 uppercase tracking-wider">
@@ -859,7 +871,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               { q: 'Phí dịch vụ của anh như thế nào?', a: 'Đối với khách mua/thuê, tôi hỗ trợ tư vấn hoàn toàn miễn phí (phí dịch vụ được chủ nhà/chủ đầu tư chi trả). Đối với khách ký gửi bán/cho thuê, phí môi giới áp dụng theo mức tiêu chuẩn của thị trường (1-2%).' },
               { q: 'Anh có hỗ trợ làm thủ tục vay ngân hàng không?', a: 'Có. Tôi có mạng lưới đối tác là các chuyên viên tín dụng cấp cao tại các ngân hàng lớn (Vietcombank, Techcombank, MB...), sẽ hỗ trợ bạn gói vay với lãi suất ưu đãi nhất và thủ tục nhanh gọn nhất.' },
             ].map((faq, i) => (
-              <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div key={i} className="bg-white rounded-sm shadow-sm border border-gray-100 overflow-hidden">
                 <button 
                   onClick={() => toggleFaq(i)}
                   className="w-full px-6 py-5 text-left font-bold text-gray-900 flex justify-between items-center hover:bg-gray-50 transition-colors"
@@ -882,7 +894,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
       <section className="py-24 bg-white">
         <div className={`mx-auto px-4 ${MAX_W}`}>
           <div className="bg-indigo-600 rounded-[3rem] p-8 md:p-16 flex flex-col lg:flex-row gap-16 relative overflow-hidden shadow-2xl">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+            <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-sm blur-3xl -translate-y-1/2 translate-x-1/3"></div>
             
             <div className="w-full lg:w-5/12 relative z-10 text-white">
               <h2 className="text-4xl md:text-5xl font-bold mb-6">Bạn đã sẵn sàng để sở hữu BĐS trong mơ?</h2>
@@ -890,7 +902,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-white/20 rounded-sm flex items-center justify-center">
                     <Phone size={20} />
                   </div>
                   <div>
@@ -899,7 +911,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-white/20 rounded-sm flex items-center justify-center">
                     <Mail size={20} />
                   </div>
                   <div>
@@ -911,26 +923,26 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
             </div>
 
             <div className="w-full lg:w-7/12 relative z-10">
-              <div className="bg-white rounded-3xl p-8 shadow-xl">
+              <div className="bg-white rounded-md p-8 shadow-xl">
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">Đặt Lịch Tư Vấn</h3>
                 <form className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Họ và tên *</label>
-                      <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent" placeholder="Nguyễn Văn A" />
+                      <input type="text" className="w-full px-4 py-3 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent" placeholder="Nguyễn Văn A" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại *</label>
-                      <input type="tel" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent" placeholder="090..." />
+                      <input type="tel" className="w-full px-4 py-3 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent" placeholder="090..." />
                     </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent" placeholder="email@example.com" />
+                    <input type="email" className="w-full px-4 py-3 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent" placeholder="email@example.com" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Nhu cầu quan tâm</label>
-                    <select className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent">
+                    <select className="w-full px-4 py-3 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent">
                       <option>Mua nhà/căn hộ để ở</option>
                       <option>Đầu tư dự án</option>
                       <option>Ký gửi bán/cho thuê</option>
@@ -939,7 +951,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Lời nhắn</label>
-                    <textarea rows={4} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent" placeholder="Bạn cần tôi hỗ trợ thêm điều gì?"></textarea>
+                    <textarea rows={4} className="w-full px-4 py-3 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent" placeholder="Bạn cần tôi hỗ trợ thêm điều gì?"></textarea>
                   </div>
                   <button 
                     type="submit" 
@@ -947,7 +959,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                       e.preventDefault();
                       alert('Gửi yêu cầu tư vấn thành công! Tôi sẽ liên hệ lại sớm nhất.');
                     }}
-                    className="w-full bg-gray-900 text-white font-bold py-4 rounded-xl hover:bg-indigo-600 transition-colors mt-4 cursor-pointer"
+                    className="w-full bg-gray-900 text-white font-bold py-4 rounded-sm hover:bg-indigo-600 transition-colors mt-4 cursor-pointer"
                   >
                     Gửi Yêu Cầu Tư Vấn
                   </button>
@@ -972,8 +984,8 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
             }}
             className="flex gap-2 max-w-md mx-auto"
           >
-            <input required type="email" placeholder="Địa chỉ email của bạn..." className="flex-1 px-6 py-4 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600" />
-            <button type="submit" className="px-8 py-4 bg-indigo-600 text-white rounded-full font-bold hover:bg-indigo-700 transition-colors whitespace-nowrap cursor-pointer">
+            <input required type="email" placeholder="Địa chỉ email của bạn..." className="flex-1 px-6 py-4 bg-gray-50 border border-gray-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+            <button type="submit" className="px-8 py-4 bg-indigo-600 text-white rounded-sm font-bold hover:bg-indigo-700 transition-colors whitespace-nowrap cursor-pointer">
               Đăng Ký
             </button>
           </form>
@@ -1011,7 +1023,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
           </div>
 
           {/* Search & Filters */}
-          <div className="bg-white rounded-3xl p-6 shadow-md mb-8">
+          <div className="bg-white rounded-md p-6 shadow-md mb-8">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
               {/* Search input */}
               <div className="relative">
@@ -1021,7 +1033,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   placeholder="Tìm kiếm dự án, địa điểm..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm"
+                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm"
                 />
               </div>
 
@@ -1030,7 +1042,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 <select
                   value={dropdownFilters.type}
                   onChange={(e) => setDropdownFilters({ ...dropdownFilters, type: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm appearance-none cursor-pointer"
                 >
                   <option value="all">Tất cả loại hình</option>
                   <option value="Penthouse">Penthouse</option>
@@ -1045,7 +1057,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 <select
                   value={dropdownFilters.priceRange}
                   onChange={(e) => setDropdownFilters({ ...dropdownFilters, priceRange: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm appearance-none cursor-pointer"
                 >
                   <option value="all">Tất cả mức giá</option>
                   <option value="<30">Dưới 30 Tỷ</option>
@@ -1059,7 +1071,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 <select
                   value={dropdownFilters.region}
                   onChange={(e) => setDropdownFilters({ ...dropdownFilters, region: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm appearance-none cursor-pointer"
                 >
                   <option value="all">Tất cả khu vực</option>
                   <option value="Quận 1">Quận 1</option>
@@ -1092,14 +1104,14 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
 
           {/* Listings Grid */}
           {filteredProjects.length === 0 ? (
-            <div className="bg-white rounded-3xl p-12 text-center shadow-sm">
+            <div className="bg-white rounded-md p-12 text-center shadow-sm">
               <p className="text-gray-500 text-lg font-medium mb-4">Không tìm thấy bất động sản nào phù hợp với bộ lọc hiện tại.</p>
               <button
                 onClick={() => {
                   setSearchQuery('');
                   setDropdownFilters({ type: 'all', priceRange: 'all', region: 'all' });
                 }}
-                className="px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-full hover:bg-indigo-700 transition-colors"
+                className="px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-sm hover:bg-indigo-700 transition-colors"
               >
                 Đặt lại bộ lọc
               </button>
@@ -1107,14 +1119,14 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredProjects.map((listing) => (
-                <div key={listing.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-xl transition-all">
+                <div key={listing.id} className="bg-white rounded-sm shadow-sm border border-gray-100 overflow-hidden group hover:shadow-xl transition-all">
                   <div className="relative h-64 overflow-hidden">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={listing.img} alt={listing.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                    <div className="absolute top-4 left-4 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    <div className="absolute top-4 left-4 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-sm uppercase tracking-wider">
                       {listing.type}
                     </div>
                     {listing.featured && (
-                      <div className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                      <div className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-sm uppercase tracking-wider">
                         Độc Quyền
                       </div>
                     )}
@@ -1131,7 +1143,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                     <p className="text-gray-600 text-sm line-clamp-2 mb-4 leading-relaxed">{listing.desc}</p>
                     <div className="border-t border-gray-100 pt-4 flex justify-between items-center text-sm font-medium text-gray-700">
                       <span>{listing.specs}</span>
-                      <button onClick={() => setSelectedProject(listing)} className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-colors text-xs font-bold text-center">
+                      <button onClick={() => setSelectedProject(listing)} className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-sm hover:bg-indigo-600 hover:text-white transition-colors text-xs font-bold text-center">
                         Chi tiết
                       </button>
                     </div>
@@ -1158,7 +1170,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
           {/* Main profile section */}
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20 mb-24">
             <div className="w-full lg:w-1/2">
-              <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl">
+              <div className="relative aspect-[3/4] rounded-md overflow-hidden shadow-2xl">
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
                   src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80" 
                   alt="Trần Anh Tuấn" 
@@ -1178,19 +1190,19 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
 
               {/* Core Values grid */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 border border-indigo-50 rounded-2xl bg-indigo-50/30">
+                <div className="p-4 border border-indigo-50 rounded-sm bg-indigo-50/30">
                   <h4 className="font-bold text-indigo-900 mb-1">Minh Bạch</h4>
                   <p className="text-xs text-gray-500">Mọi thông tin về quy hoạch, giá bán đều được công khai đầy đủ.</p>
                 </div>
-                <div className="p-4 border border-indigo-50 rounded-2xl bg-indigo-50/30">
+                <div className="p-4 border border-indigo-50 rounded-sm bg-indigo-50/30">
                   <h4 className="font-bold text-indigo-900 mb-1">Tận Tâm</h4>
                   <p className="text-xs text-gray-500">Sẵn sàng tư vấn và đồng hành cùng khách hàng trong mọi giai đoạn.</p>
                 </div>
-                <div className="p-4 border border-indigo-50 rounded-2xl bg-indigo-50/30">
+                <div className="p-4 border border-indigo-50 rounded-sm bg-indigo-50/30">
                   <h4 className="font-bold text-indigo-900 mb-1">Chuyên Nghiệp</h4>
                   <p className="text-xs text-gray-500">Quy trình làm việc rõ ràng, nhanh chóng và bảo mật thông tin.</p>
                 </div>
-                <div className="p-4 border border-indigo-50 rounded-2xl bg-indigo-50/30">
+                <div className="p-4 border border-indigo-50 rounded-sm bg-indigo-50/30">
                   <h4 className="font-bold text-indigo-900 mb-1">Uy Tín</h4>
                   <p className="text-xs text-gray-500">Xây dựng mối quan hệ tin cậy bền vững cùng khách hàng.</p>
                 </div>
@@ -1199,7 +1211,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
           </div>
 
           {/* Working Tabs Section */}
-          <div className="mb-24 bg-gray-50 rounded-3xl p-8 lg:p-12 shadow-sm">
+          <div className="mb-24 bg-gray-50 rounded-md p-8 lg:p-12 shadow-sm">
             <div className="flex border-b border-gray-200 mb-8 overflow-x-auto">
               {aboutTabs.map((tab) => (
                 <button
@@ -1232,13 +1244,13 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               ].map((milestone, idx) => (
                 <div key={idx} className="mb-12 ml-6 md:ml-12 relative">
                   {/* Dot */}
-                  <span className="absolute -left-[31px] md:-left-[55px] top-1.5 bg-indigo-600 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center border-4 border-white shadow-md ring-2 ring-indigo-100">
+                  <span className="absolute -left-[31px] md:-left-[55px] top-1.5 bg-indigo-600 text-white text-xs font-bold w-6 h-6 rounded-sm flex items-center justify-center border-4 border-white shadow-md ring-2 ring-indigo-100">
                     ✓
                   </span>
                   {/* Year badge on the left for medium screens */}
                   <span className="hidden md:block absolute -left-[140px] top-1 text-xl font-extrabold text-indigo-600">{milestone.year}</span>
                   {/* Content card */}
-                  <div className="bg-gray-50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="bg-gray-50 rounded-sm p-6 shadow-sm hover:shadow-md transition-shadow">
                     <span className="inline-block md:hidden text-indigo-600 font-extrabold text-lg mb-2">{milestone.year}</span>
                     <h4 className="text-xl font-bold text-gray-900 mb-2">{milestone.title}</h4>
                     <p className="text-gray-600 text-sm leading-relaxed">{milestone.desc}</p>
@@ -1257,8 +1269,8 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 { name: 'Lê Thị Minh Thư', role: 'Giám đốc Pháp lý', desc: 'Hơn 15 năm kinh nghiệm giải quyết hồ sơ pháp lý phức tạp.', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80' },
                 { name: 'Nguyễn Hoàng Nam', role: 'Trưởng bộ phận Marketing', desc: 'Chuyên gia xây dựng hình ảnh và truyền thông dự án hạng sang.', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80' }
               ].map((member, i) => (
-                <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100 group text-center hover:shadow-xl transition-all p-6">
-                  <div className="w-32 h-32 rounded-full overflow-hidden mx-auto mb-6 border-4 border-indigo-50 group-hover:border-indigo-600 transition-colors">
+                <div key={i} className="bg-white rounded-sm overflow-hidden shadow-md border border-gray-100 group text-center hover:shadow-xl transition-all p-6">
+                  <div className="w-32 h-32 rounded-sm overflow-hidden mx-auto mb-6 border-4 border-indigo-50 group-hover:border-indigo-600 transition-colors">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={member.img} alt={member.name} className="w-full h-full object-cover" />
                   </div>
                   <h4 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h4>
@@ -1294,7 +1306,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               <button
                 key={tab}
                 onClick={() => setSelectedGalleryTab(tab)}
-                className={`px-6 py-2.5 rounded-full font-bold text-sm transition-all whitespace-nowrap shadow-sm ${
+                className={`px-6 py-2.5 rounded-sm font-bold text-sm transition-all whitespace-nowrap shadow-sm ${
                   selectedGalleryTab === tab
                     ? 'bg-indigo-600 text-white shadow-indigo-600/20'
                     : 'bg-white text-gray-600 hover:bg-gray-100'
@@ -1311,7 +1323,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               <div 
                 key={photo.id} 
                 onClick={() => setSelectedGalleryImg(photo.img)}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer group relative aspect-square"
+                className="bg-white rounded-sm overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer group relative aspect-square"
               >
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
                   src={photo.img} 
@@ -1355,18 +1367,18 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 placeholder="Tìm bài viết, chủ đề..."
                 value={searchNewsQuery}
                 onChange={(e) => setSearchNewsQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-white shadow-sm border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm"
+                className="w-full pl-12 pr-4 py-3 bg-white shadow-sm border border-gray-100 rounded-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm"
               />
             </div>
           </div>
 
           {/* News list */}
           {filteredNews.length === 0 ? (
-            <div className="bg-white rounded-3xl p-12 text-center shadow-sm max-w-xl mx-auto">
+            <div className="bg-white rounded-md p-12 text-center shadow-sm max-w-xl mx-auto">
               <p className="text-gray-500 text-lg font-medium mb-4">Không tìm thấy bài viết nào phù hợp.</p>
               <button
                 onClick={() => setSearchNewsQuery('')}
-                className="px-6 py-2 bg-indigo-600 text-white font-medium rounded-full hover:bg-indigo-700 transition-colors"
+                className="px-6 py-2 bg-indigo-600 text-white font-medium rounded-sm hover:bg-indigo-700 transition-colors"
               >
                 Tất cả bài viết
               </button>
@@ -1377,7 +1389,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 <div 
                   key={article.id} 
                   onClick={() => setSelectedArticle(article)}
-                  className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col h-full border border-gray-100"
+                  className="bg-white rounded-sm overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col h-full border border-gray-100"
                 >
                   <div className="aspect-video overflow-hidden">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
@@ -1471,12 +1483,12 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Left: General Contact info + General Contact Form */}
             <div>
-              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-8">
+              <div className="bg-white rounded-md p-8 shadow-sm border border-gray-100 mb-8">
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">Gửi Yêu Cầu Liên Hệ</h3>
                 
                 {contactSubmitted ? (
                   <div className="text-center py-8">
-                    <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <div className="w-16 h-16 bg-green-100 text-green-600 rounded-sm flex items-center justify-center mx-auto mb-6">
                       <CheckCircle2 size={32} />
                     </div>
                     <h4 className="text-2xl font-bold text-gray-900 mb-3">Gửi Yêu Cầu Thành Công!</h4>
@@ -1486,7 +1498,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                         setContactForm({ name: '', phone: '', email: '', interest: 'Mua nhà/căn hộ để ở', message: '' });
                         setContactSubmitted(false);
                       }}
-                      className="px-6 py-2.5 bg-indigo-600 text-white font-semibold rounded-full hover:bg-indigo-700 transition-colors"
+                      className="px-6 py-2.5 bg-indigo-600 text-white font-semibold rounded-sm hover:bg-indigo-700 transition-colors"
                     >
                       Gửi yêu cầu khác
                     </button>
@@ -1500,7 +1512,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                         required
                         value={contactForm.name}
                         onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600" 
+                        className="w-full px-4 py-3 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600" 
                         placeholder="Nguyễn Văn A" 
                       />
                     </div>
@@ -1513,7 +1525,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                           required
                           value={contactForm.phone}
                           onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600" 
+                          className="w-full px-4 py-3 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600" 
                           placeholder="090..." 
                         />
                       </div>
@@ -1523,7 +1535,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                           type="email" 
                           value={contactForm.email}
                           onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600" 
+                          className="w-full px-4 py-3 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600" 
                           placeholder="email@example.com" 
                         />
                       </div>
@@ -1534,7 +1546,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                       <select 
                         value={contactForm.interest}
                         onChange={(e) => setContactForm({ ...contactForm, interest: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                        className="w-full px-4 py-3 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600"
                       >
                         <option>Mua nhà/căn hộ để ở</option>
                         <option>Đầu tư dự án</option>
@@ -1549,12 +1561,12 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                         rows={4} 
                         value={contactForm.message}
                         onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600" 
+                        className="w-full px-4 py-3 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600" 
                         placeholder="Bạn cần tôi hỗ trợ thêm thông tin gì?"
                       ></textarea>
                     </div>
 
-                    <button type="submit" className="w-full bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 transition-colors">
+                    <button type="submit" className="w-full bg-indigo-600 text-white font-bold py-4 rounded-sm hover:bg-indigo-700 transition-colors">
                       Gửi Yêu Cầu Tư Vấn
                     </button>
                   </form>
@@ -1562,7 +1574,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               </div>
 
               {/* General Contact Info Card */}
-              <div className="bg-gray-900 text-white rounded-3xl p-8 shadow-sm">
+              <div className="bg-gray-900 text-white rounded-md p-8 shadow-sm">
                 <h4 className="text-xl font-bold mb-6">Thông Tin Văn Phòng</h4>
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
@@ -1584,7 +1596,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 </div>
 
                 {/* Interactive Google Map */}
-                <div className="mt-6 rounded-2xl overflow-hidden border border-slate-700 shadow-md flex flex-col h-48 bg-slate-800">
+                <div className="mt-6 rounded-sm overflow-hidden border border-slate-700 shadow-md flex flex-col h-48 bg-slate-800">
                   <div className="px-3.5 py-2 bg-slate-950 text-white flex items-center justify-between text-xs">
                     <span className="font-bold truncate">Bitexco Tower, Quận 1, TP.HCM</span>
                     <a
@@ -1610,17 +1622,17 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
             </div>
 
             {/* Right: Booking Calendar */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 h-full">
+            <div className="bg-white rounded-md p-8 shadow-sm border border-gray-100 h-full">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Đặt Lịch Hẹn Trực Tuyến</h3>
               <p className="text-gray-500 text-sm mb-6">Chọn ngày và giờ phù hợp để nhận cuộc gọi tư vấn sâu qua Zoom/Meet hoặc gặp mặt trực tiếp.</p>
 
               {bookingSubmitted ? (
                 <div className="text-center py-12">
-                  <div className="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-sm flex items-center justify-center mx-auto mb-6">
                     <CheckCircle2 size={32} />
                   </div>
                   <h4 className="text-2xl font-bold text-gray-900 mb-3">Lịch Hẹn Đã Được Ghi Nhận!</h4>
-                  <div className="bg-indigo-50/50 rounded-2xl p-6 text-left mb-6 border border-indigo-50">
+                  <div className="bg-indigo-50/50 rounded-sm p-6 text-left mb-6 border border-indigo-50">
                     <p className="text-gray-700 mb-2 font-medium">Chi tiết lịch đặt của bạn:</p>
                     <p className="text-sm text-gray-600 mb-1"><span className="font-bold">Khách hàng:</span> {bookingName}</p>
                     <p className="text-sm text-gray-600 mb-1"><span className="font-bold">Số điện thoại:</span> {bookingPhone}</p>
@@ -1637,7 +1649,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                       setBookingNotes('');
                       setBookingSubmitted(false);
                     }}
-                    className="px-6 py-2.5 bg-indigo-600 text-white font-semibold rounded-full hover:bg-indigo-700 transition-colors"
+                    className="px-6 py-2.5 bg-indigo-600 text-white font-semibold rounded-sm hover:bg-indigo-700 transition-colors"
                   >
                     Đặt lịch hẹn khác
                   </button>
@@ -1655,7 +1667,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                             key={day.value}
                             type="button"
                             onClick={() => setBookingDate(day.value)}
-                            className={`flex flex-col items-center justify-center p-2.5 rounded-xl border text-center transition-all ${
+                            className={`flex flex-col items-center justify-center p-2.5 rounded-sm border text-center transition-all ${
                               isSelected
                                 ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-600/10'
                                 : 'bg-gray-50 border-gray-100 text-gray-700 hover:border-gray-300'
@@ -1680,7 +1692,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                             key={slot}
                             type="button"
                             onClick={() => setBookingTimeSlot(slot)}
-                            className={`px-3 py-3 text-xs font-bold rounded-xl border text-center transition-all ${
+                            className={`px-3 py-3 text-xs font-bold rounded-sm border text-center transition-all ${
                               isSelected
                                 ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-600/10'
                                 : 'bg-gray-50 border-gray-100 text-gray-700 hover:border-gray-300'
@@ -1701,7 +1713,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                         type="text" 
                         value={bookingName}
                         onChange={(e) => setBookingName(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm" 
+                        className="w-full px-4 py-3 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm" 
                         placeholder="Họ và tên của bạn *" 
                       />
                     </div>
@@ -1710,7 +1722,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                         type="tel" 
                         value={bookingPhone}
                         onChange={(e) => setBookingPhone(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm" 
+                        className="w-full px-4 py-3 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm" 
                         placeholder="Số điện thoại liên hệ *" 
                       />
                     </div>
@@ -1719,7 +1731,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                         rows={2}
                         value={bookingNotes}
                         onChange={(e) => setBookingNotes(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm" 
+                        className="w-full px-4 py-3 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm" 
                         placeholder="Ghi chú thêm về nhu cầu của bạn (dự án muốn xem, hình thức tư vấn...)"
                       ></textarea>
                     </div>
@@ -1729,7 +1741,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                     <p className="text-red-500 text-sm font-bold">{bookingError}</p>
                   )}
 
-                  <button type="submit" className="w-full bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/15">
+                  <button type="submit" className="w-full bg-indigo-600 text-white font-bold py-4 rounded-sm hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/15">
                     Xác Nhận Đặt Lịch
                   </button>
                 </form>
@@ -1782,10 +1794,10 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
       {/* 1. Project Detail Modal */}
       {selectedProject && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+          <div className="bg-white rounded-md max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
             <button 
               onClick={() => setSelectedProject(null)}
-              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-gray-700 flex items-center justify-center shadow"
+              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-sm bg-white/80 hover:bg-white text-gray-700 flex items-center justify-center shadow"
             >
               <X size={20} />
             </button>
@@ -1793,7 +1805,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedProject.img} alt={selectedProject.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               <div className="absolute bottom-6 left-6 right-6 text-white">
-                <span className="bg-indigo-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">{selectedProject.type}</span>
+                <span className="bg-indigo-600 px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-wider">{selectedProject.type}</span>
                 <h3 className="text-2xl sm:text-3xl font-extrabold mt-2">{selectedProject.title}</h3>
               </div>
             </div>
@@ -1811,7 +1823,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
 
               <div className="mb-6">
                 <h4 className="font-bold text-gray-900 mb-2">Thông Số Chi Tiết</h4>
-                <div className="bg-gray-50 rounded-2xl p-4 text-gray-700 font-medium text-sm">
+                <div className="bg-gray-50 rounded-sm p-4 text-gray-700 font-medium text-sm">
                   {selectedProject.specs}
                 </div>
               </div>
@@ -1822,14 +1834,14 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               </div>
 
               {/* Inquiry form */}
-              <div className="bg-indigo-50/50 rounded-2xl p-6 border border-indigo-50">
+              <div className="bg-indigo-50/50 rounded-sm p-6 border border-indigo-50">
                 <h4 className="font-bold text-indigo-900 mb-3">Yêu Cầu Tư Vấn Riêng</h4>
                 <form onSubmit={(e) => { e.preventDefault(); alert('Cảm ơn bạn! Yêu cầu tư vấn đã được gửi đi. Tôi sẽ phản hồi ngay lập tức.'); setSelectedProject(null); }} className="space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input type="text" required placeholder="Họ và tên *" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm bg-white" />
-                    <input type="tel" required placeholder="Số điện thoại *" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm bg-white" />
+                    <input type="text" required placeholder="Họ và tên *" className="w-full px-4 py-2.5 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm bg-white" />
+                    <input type="tel" required placeholder="Số điện thoại *" className="w-full px-4 py-2.5 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm bg-white" />
                   </div>
-                  <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl text-sm transition-colors shadow">
+                  <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-sm text-sm transition-colors shadow">
                     Gửi yêu cầu
                   </button>
                 </form>
@@ -1844,7 +1856,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" onClick={() => setSelectedGalleryImg(null)}>
           <button 
             onClick={() => setSelectedGalleryImg(null)}
-            className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center"
+            className="absolute top-6 right-6 w-12 h-12 rounded-sm bg-white/10 hover:bg-white/20 text-white flex items-center justify-center"
           >
             <X size={24} />
           </button>
@@ -1857,10 +1869,10 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
       {/* 3. News Article Modal */}
       {selectedArticle && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+          <div className="bg-white rounded-md max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
             <button 
               onClick={() => setSelectedArticle(null)}
-              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-gray-700 flex items-center justify-center shadow"
+              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-sm bg-white/80 hover:bg-white text-gray-700 flex items-center justify-center shadow"
             >
               <X size={20} />
             </button>

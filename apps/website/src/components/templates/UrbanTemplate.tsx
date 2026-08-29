@@ -468,7 +468,7 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
       <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between`}>
         {/* Brand Logo: TEMPLATESBDS */}
         <div onClick={() => navigate('home')} className="flex items-center gap-2.5 cursor-pointer group">
-          <div className="w-9 h-9 rounded-xl bg-[#0084FF] text-white flex items-center justify-center font-black text-sm shadow-sm group-hover:scale-105 transition">
+          <div className="w-9 h-9 rounded-sm bg-[#0084FF] text-white flex items-center justify-center font-black text-sm shadow-sm group-hover:scale-105 transition">
             TB
           </div>
           <div>
@@ -482,7 +482,7 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
         </div>
 
         {/* Navigation Menu */}
-        <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider">
+        <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider whitespace-nowrap">
           {[
             { id: 'home', label: 'Trang Chủ' },
             { id: 'dat-du-an', label: 'Đất Dự Án' },
@@ -496,7 +496,7 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
               <button
                 key={navItem.id}
                 onClick={() => navigate(navItem.id)}
-                className={`px-3.5 py-2 rounded-md transition-all cursor-pointer ${
+                className={`whitespace-nowrap px-3 py-2 rounded-md transition-all cursor-pointer ${
                   isActive
                     ? 'text-[#0084FF] font-black border-b-2 border-[#0084FF] rounded-none'
                     : 'text-slate-600 hover:text-[#0084FF] hover:bg-slate-50'
@@ -509,16 +509,16 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
         </nav>
 
         {/* Right Action Buttons */}
-        <div className="hidden sm:flex items-center gap-2.5">
+        <div className="hidden sm:flex items-center gap-2.5 shrink-0">
           <button
             onClick={() => navigate('contact')}
-            className="px-4 py-2 bg-[#0084FF] hover:bg-blue-600 text-white font-bold text-xs uppercase tracking-wider rounded-full shadow-sm transition active:scale-95 cursor-pointer"
+            className="px-4 py-2 bg-[#0084FF] hover:bg-blue-600 text-white font-bold text-xs uppercase tracking-wider rounded-sm shadow-sm transition active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
           >
             LIÊN HỆ NGAY
           </button>
           <button
             onClick={() => navigate('contact')}
-            className="px-4 py-2 bg-[#D83A3A] hover:bg-red-600 text-white font-bold text-xs uppercase tracking-wider rounded-full shadow-sm transition active:scale-95 cursor-pointer"
+            className="px-4 py-2 bg-[#D83A3A] hover:bg-red-600 text-white font-bold text-xs uppercase tracking-wider rounded-sm shadow-sm transition active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
           >
             NHẬN ƯU ĐÃI
           </button>
@@ -577,7 +577,7 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
       href={`tel:${hotlineTel}`}
       className="hidden md:flex fixed left-0 top-1/2 -translate-y-1/2 z-50 bg-[#E65100] hover:bg-[#F57C00] text-white px-3.5 py-2.5 rounded-r-full shadow-2xl items-center gap-2 text-xs font-black tracking-wide cursor-pointer transition transform hover:scale-105"
     >
-      <div className="w-7 h-7 rounded-full bg-white text-[#E65100] flex items-center justify-center shadow-inner">
+      <div className="w-7 h-7 rounded-sm bg-white text-[#E65100] flex items-center justify-center shadow-inner">
         <Phone size={14} />
       </div>
       <div>
@@ -597,7 +597,7 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
     >
       {/* Floating Filter Bar */}
       <div className={`${MAX_W} mx-auto w-full px-4`}>
-        <div className="bg-white/95 backdrop-blur-md p-3 sm:p-4 rounded-xl shadow-2xl border border-white/40 max-w-5xl mx-auto">
+        <div className="bg-white/95 backdrop-blur-md p-3 sm:p-4 rounded-sm shadow-2xl border border-white/40 max-w-5xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-2 text-xs">
             <select
               value={filterType}
@@ -672,7 +672,7 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
     <div
       key={item.id}
       onClick={() => handleOpenProperty(item)}
-      className="bg-white rounded-xl border border-slate-200 hover:border-[#0084FF] overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 group cursor-pointer flex flex-col justify-between relative"
+      className="bg-white rounded-sm border border-slate-200 hover:border-[#0084FF] overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 group cursor-pointer flex flex-col justify-between relative"
     >
       <div>
         <div className="h-44 relative overflow-hidden bg-slate-100">
@@ -775,7 +775,7 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
             <div
               key={art.id}
               onClick={() => handleOpenArticle(art)}
-              className="bg-white rounded-xl border border-slate-200 hover:border-[#0084FF] overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer group flex flex-col justify-between"
+              className="bg-white rounded-sm border border-slate-200 hover:border-[#0084FF] overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer group flex flex-col justify-between"
             >
               <div className="h-44 overflow-hidden bg-slate-100">
                 <img
@@ -834,7 +834,7 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
                 <div
                   key={art.id}
                   onClick={() => handleOpenArticle(art)}
-                  className="bg-white rounded-xl border border-slate-200 hover:border-[#0084FF] p-4 shadow-xs hover:shadow-md transition cursor-pointer flex flex-col sm:flex-row gap-4 items-start group"
+                  className="bg-white rounded-sm border border-slate-200 hover:border-[#0084FF] p-4 shadow-xs hover:shadow-md transition cursor-pointer flex flex-col sm:flex-row gap-4 items-start group"
                 >
                   {/* Image with Date Badge */}
                   <div className="w-full sm:w-48 h-36 relative shrink-0 rounded-lg overflow-hidden bg-slate-100">
@@ -868,7 +868,7 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
           {/* Right Sidebar (30%) */}
           <div className="lg:col-span-4 space-y-6">
             {/* Widget 1: DANH MỤC BIỆT THỰ */}
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+            <div className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs">
               <div className="bg-[#0084FF] px-4 py-2.5 text-white font-black text-xs uppercase tracking-wider">
                 DANH MỤC BIỆT THỰ
               </div>
@@ -892,7 +892,7 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
             </div>
 
             {/* Widget 2: CÓ THỂ BẠN THÍCH */}
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+            <div className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs">
               <div className="bg-[#0084FF] px-4 py-2.5 text-white font-black text-xs uppercase tracking-wider">
                 CÓ THỂ BẠN THÍCH
               </div>
@@ -940,8 +940,8 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8 space-y-6">
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-3">
-              <span className="px-3 py-1 bg-red-100 text-red-700 font-black text-xs rounded-full">
+            <div className="bg-white rounded-sm border border-slate-200 p-6 shadow-xs space-y-3">
+              <span className="px-3 py-1 bg-red-100 text-red-700 font-black text-xs rounded-sm">
                 {selectedProperty.badge}
               </span>
               <h1 className="text-xl sm:text-2xl font-black text-slate-900 leading-snug">
@@ -963,7 +963,7 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
             </div>
 
             {/* Gallery */}
-            <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs space-y-3">
+            <div className="bg-white rounded-sm border border-slate-200 p-4 shadow-xs space-y-3">
               <div className="h-80 sm:h-96 rounded-lg overflow-hidden bg-slate-100">
                 <img
                   src={selectedProperty.gallery[activeGalleryIdx] || selectedProperty.image}
@@ -988,7 +988,7 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
             </div>
 
             {/* Specs & Desc */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-3 text-xs sm:text-sm">
+            <div className="bg-white rounded-sm border border-slate-200 p-6 shadow-xs space-y-3 text-xs sm:text-sm">
               <h3 className="font-black text-sm text-[#C05621] uppercase border-b border-slate-100 pb-2">
                 THÔNG TIN CHI TIẾT BẤT ĐỘNG SẢN
               </h3>
@@ -1003,7 +1003,7 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
           </div>
 
           <div className="lg:col-span-4 space-y-6">
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+            <div className="bg-white rounded-sm border border-slate-200 p-6 shadow-xs space-y-4">
               <h3 className="font-black text-base text-slate-900 uppercase">
                 Liên Hệ Tư Vấn BĐS Này
               </h3>
@@ -1057,8 +1057,8 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
           <span className="text-[#0084FF] font-bold truncate">{selectedArticle.title}</span>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
-          <span className="px-3 py-1 bg-blue-100 text-[#0084FF] font-bold text-xs rounded-full">
+        <div className="bg-white rounded-sm border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
+          <span className="px-3 py-1 bg-blue-100 text-[#0084FF] font-bold text-xs rounded-sm">
             {selectedArticle.category}
           </span>
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
@@ -1070,7 +1070,7 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
             <span>{selectedArticle.views} lượt xem</span>
           </div>
 
-          <div className="rounded-xl overflow-hidden shadow-xs">
+          <div className="rounded-sm overflow-hidden shadow-xs">
             <img
               src={selectedArticle.image}
               alt={selectedArticle.title}

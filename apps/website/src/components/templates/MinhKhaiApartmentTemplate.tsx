@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import {
   Search, MapPin, Building, Phone, Mail, ArrowRight, ChevronRight, ChevronLeft,
   CheckCircle2, Calendar, X, Share2, Heart, Eye, Clock, Award, Users, Plus, Minus,
@@ -258,16 +259,27 @@ export const MinhKhaiApartmentTemplate: React.FC<MinhKhaiApartmentTemplateProps>
 
   const navigate = (page: string, slugParam?: string) => {
     setCurrentPage(page);
+    const targetSlug = page === 'home' ? '' : (slugParam ? `${page}/${slugParam}` : page);
+    syncDemoUrl(targetSlug, 'bds-20');
     if (typeof window !== 'undefined') {
-      const basePath = window.location.pathname.split('/').slice(0, 3).join('/');
-      let newUrl = basePath;
-      if (page !== 'home') {
-        newUrl += slugParam ? `/${page}/${slugParam}` : `/${page}`;
-      }
-      window.history.pushState(null, '', newUrl);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts.slice(2).join('/') : (parts[1] !== 'bds-20' ? parts[1] : 'home');
+      if (sub) {
+        const r = resolveRoute(sub);
+        setCurrentPage(r.page);
+        if (r.proj) setSelectedProject(r.proj);
+        if (r.article) setSelectedArticle(r.article);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const handleSelectProject = (proj: any) => {
     setSelectedProject(proj);
@@ -278,6 +290,8 @@ export const MinhKhaiApartmentTemplate: React.FC<MinhKhaiApartmentTemplateProps>
     setSelectedArticle(art);
     navigate('tin-tuc', art.slug || art.id);
   };
+
+  const isHome = currentPage === 'home' || (!['about', 'projects', 'news', 'gallery', 'knowledge', 'career', 'contact', 'project-detail', 'news-detail', 'du-an', 'tin-tuc'].includes(currentPage) && !currentPage.startsWith('du-an') && !currentPage.startsWith('tin-tuc'));
 
   return (
     <div className="min-h-screen bg-white font-sans text-slate-800 flex flex-col">
@@ -313,7 +327,7 @@ export const MinhKhaiApartmentTemplate: React.FC<MinhKhaiApartmentTemplateProps>
       </header>
 
       {/* 2. HERO (CHỈ Ở HOME) */}
-      {currentPage === 'home' && (
+      {isHome && (
         <section className="relative h-[520px] sm:h-[620px] bg-slate-950 overflow-hidden flex items-center justify-center text-center text-white">
           <img
             src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=1600&q=80"
@@ -333,7 +347,7 @@ export const MinhKhaiApartmentTemplate: React.FC<MinhKhaiApartmentTemplateProps>
       )}
 
       {/* 3. HOME VIEW */}
-      {currentPage === 'home' && (
+      {isHome && (
         <main className="max-w-[1360px] mx-auto px-4 py-12 space-y-16 flex-1">
           {/* SECTION 1: 8 DỰ ÁN CĂN HỘ */}
           <section>

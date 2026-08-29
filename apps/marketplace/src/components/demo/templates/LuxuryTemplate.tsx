@@ -873,7 +873,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
       <div className={`${MAX_W} mx-auto px-4 py-3.5 flex items-center justify-between`}>
         <div onClick={() => navigate('home')} className="flex items-center gap-3 cursor-pointer group">
-          <div className="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center text-white shadow-md group-hover:bg-blue-800 transition font-black text-sm">
+          <div className="w-10 h-10 rounded-sm bg-blue-700 flex items-center justify-center text-white shadow-md group-hover:bg-blue-800 transition font-black text-sm">
             TB
           </div>
           <div>
@@ -884,7 +884,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           </div>
         </div>
 
-        <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-slate-700">
+        <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-slate-700 whitespace-nowrap">
           {[
             { id: 'home', label: 'Trang Chủ' },
             { id: 'about', label: 'Giới Thiệu' },
@@ -901,7 +901,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
               <button
                 key={navItem.id}
                 onClick={() => navigate(navItem.id)}
-                className={`px-3 py-1.5 rounded-lg cursor-pointer transition-all duration-200 ${
+                className={`whitespace-nowrap px-3 py-1.5 rounded-lg cursor-pointer transition-all duration-200 ${
                   isActive
                     ? 'bg-blue-600 text-white font-black shadow-sm ring-2 ring-blue-600/30'
                     : 'text-slate-700 hover:text-blue-600 hover:bg-slate-100/80 font-bold'
@@ -913,10 +913,10 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           })}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => navigate('ky-gui')}
-            className={`hidden sm:flex px-4 py-2 text-white font-bold text-xs rounded-lg shadow-sm transition items-center gap-1.5 cursor-pointer ${
+            className={`hidden sm:flex px-4 py-2 text-white font-bold text-xs rounded-lg shadow-sm transition items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
               currentPage === 'ky-gui'
                 ? 'bg-amber-500 hover:bg-amber-600 ring-2 ring-amber-400 font-black'
                 : 'bg-blue-600 hover:bg-blue-700 active:scale-95'
@@ -980,7 +980,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     <div
       key={item.id}
       onClick={() => handleOpenProperty(item)}
-      className="bg-white rounded-xl border border-slate-200 hover:border-blue-500 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 group cursor-pointer flex flex-col justify-between"
+      className="bg-white rounded-sm border border-slate-200 hover:border-blue-500 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 group cursor-pointer flex flex-col justify-between"
     >
       <div>
         <div className="h-44 sm:h-48 relative overflow-hidden bg-slate-100">
@@ -1037,11 +1037,11 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             TRANG TIN BẤT ĐỘNG SẢN SỐ 1 VIỆT NAM
           </h1>
 
-          <div className="bg-white/15 backdrop-blur-md p-2.5 rounded-2xl border border-white/25 shadow-2xl flex flex-col sm:flex-row gap-2 max-w-2xl mx-auto">
+          <div className="bg-white/15 backdrop-blur-md p-2.5 rounded-sm border border-white/25 shadow-2xl flex flex-col sm:flex-row gap-2 max-w-2xl mx-auto">
             <select
               value={searchCategory}
               onChange={e => setSearchCategory(e.target.value)}
-              className="bg-white text-slate-800 text-xs px-3 py-2.5 rounded-xl font-bold focus:outline-none cursor-pointer"
+              className="bg-white text-slate-800 text-xs px-3 py-2.5 rounded-sm font-bold focus:outline-none cursor-pointer"
             >
               <option value="all">Tất cả danh mục</option>
               <option value="can-ho">Căn hộ</option>
@@ -1055,11 +1055,11 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
               value={searchKeyword}
               onChange={e => setSearchKeyword(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') navigate('can-ho'); }}
-              className="bg-white text-slate-800 text-xs px-4 py-2.5 rounded-xl flex-1 focus:outline-none"
+              className="bg-white text-slate-800 text-xs px-4 py-2.5 rounded-sm flex-1 focus:outline-none"
             />
             <button
               onClick={() => navigate('can-ho')}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-6 py-2.5 rounded-sm shadow transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
             >
               <Search size={14} /> Tìm kiếm
             </button>
@@ -1080,7 +1080,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                   onClick={() => navigate(cat.page)}
                   className="flex flex-col items-center gap-1.5 sm:gap-2 cursor-pointer group"
                 >
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white/15 border border-white/20 group-hover:bg-blue-600 group-hover:scale-110 transition flex items-center justify-center text-white shadow-sm">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-sm sm:rounded-sm bg-white/15 border border-white/20 group-hover:bg-blue-600 group-hover:scale-110 transition flex items-center justify-center text-white shadow-sm">
                     <Icon size={18} />
                   </div>
                   <span className="text-[10px] sm:text-[11px] font-bold text-white/90 group-hover:text-white truncate">{cat.label}</span>
@@ -1096,7 +1096,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           <h2 className="text-lg sm:text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
             BẤT ĐỘNG SẢN ĐANG BÁN
           </h2>
-          <div className="w-8 h-1 bg-blue-600 mx-auto mt-1 rounded-full" />
+          <div className="w-8 h-1 bg-blue-600 mx-auto mt-1 rounded-sm" />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -1109,10 +1109,10 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           <h2 className="text-lg sm:text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
             DỰ ÁN NỔI BẬT
           </h2>
-          <div className="w-8 h-1 bg-blue-600 mx-auto mt-1 rounded-full" />
+          <div className="w-8 h-1 bg-blue-600 mx-auto mt-1 rounded-sm" />
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-md grid grid-cols-1 lg:grid-cols-12 items-center">
+        <div className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-md grid grid-cols-1 lg:grid-cols-12 items-center">
           <div className="lg:col-span-7 h-64 sm:h-80 lg:h-96 relative overflow-hidden">
             <img
               src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80"
@@ -1155,7 +1155,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           <h2 className="text-lg sm:text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
             BẤT ĐỘNG SẢN CHO THUÊ
           </h2>
-          <div className="w-8 h-1 bg-blue-600 mx-auto mt-1 rounded-full" />
+          <div className="w-8 h-1 bg-blue-600 mx-auto mt-1 rounded-sm" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1163,7 +1163,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             <div
               key={item.id}
               onClick={() => handleOpenProperty(item)}
-              className="bg-white rounded-xl border border-slate-200 hover:border-blue-500 overflow-hidden shadow-xs hover:shadow-md transition p-3.5 flex flex-col sm:flex-row gap-4 cursor-pointer group"
+              className="bg-white rounded-sm border border-slate-200 hover:border-blue-500 overflow-hidden shadow-xs hover:shadow-md transition p-3.5 flex flex-col sm:flex-row gap-4 cursor-pointer group"
             >
               <div className="w-full sm:w-40 h-36 sm:h-28 shrink-0 rounded-lg overflow-hidden bg-slate-100">
                 <img
@@ -1207,7 +1207,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           <h2 className="text-xl font-black text-blue-700 uppercase tracking-wider inline-flex items-center gap-2">
             Các dự án tại các thành phố lớn
           </h2>
-          <div className="w-8 h-1 bg-blue-600 mx-auto mt-1 rounded-full" />
+          <div className="w-8 h-1 bg-blue-600 mx-auto mt-1 rounded-sm" />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
@@ -1218,7 +1218,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 setFilterCity(city.cityCode);
                 navigate('can-ho');
               }}
-              className="h-48 md:h-56 relative rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group cursor-pointer border border-slate-100"
+              className="h-48 md:h-56 relative rounded-sm overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group cursor-pointer border border-slate-100"
             >
               <img
                 src={city.image}
@@ -1235,7 +1235,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                   <h3 className="font-black text-base md:text-lg tracking-wider group-hover:text-blue-300 transition">{city.name}</h3>
                   <p className="text-xs text-slate-300 mt-0.5 font-medium">{city.count}</p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center group-hover:bg-blue-600 transition">
+                <div className="w-8 h-8 rounded-sm bg-white/20 backdrop-blur-xs flex items-center justify-center group-hover:bg-blue-600 transition">
                   <ChevronRight size={16} className="group-hover:translate-x-0.5 transition" />
                 </div>
               </div>
@@ -1293,9 +1293,9 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             ))}
           </div>
 
-          <div className="md:col-span-3 bg-gradient-to-b from-slate-900 to-blue-950 rounded-xl overflow-hidden p-6 text-white text-center flex flex-col justify-between relative shadow-lg">
+          <div className="md:col-span-3 bg-gradient-to-b from-slate-900 to-blue-950 rounded-sm overflow-hidden p-6 text-white text-center flex flex-col justify-between relative shadow-lg">
             <div className="space-y-3">
-              <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20">
+              <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 bg-amber-400/10 px-3 py-1 rounded-sm border border-amber-400/20">
                 Ưu Đãi Đặc Biệt
               </span>
               <h4 className="text-xl font-black text-white leading-snug">GÓI VAY 0% LÃI SUẤT</h4>
@@ -1329,10 +1329,10 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
   const renderRightSidebar = () => (
     <aside className="space-y-6">
-      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
+      <div className="bg-white rounded-sm border border-slate-200 p-4 shadow-xs">
         <h3 className="font-black text-xs text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3 flex items-center justify-between">
           <span>DANH MỤC SẢN PHẨM</span>
-          <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+          <span className="w-2 h-2 rounded-sm bg-blue-600"></span>
         </h3>
         <div className="space-y-1.5 text-xs font-bold text-slate-700">
           {[
@@ -1364,7 +1364,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
+      <div className="bg-white rounded-sm border border-slate-200 p-4 shadow-xs">
         <h3 className="font-black text-xs text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3">
           CÁC DỰ ÁN BẠN VỪA XEM
         </h3>
@@ -1386,7 +1386,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
+      <div className="bg-white rounded-sm border border-slate-200 p-4 shadow-xs">
         <h3 className="font-black text-xs text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3">
           TIN TỨC MỚI NHẤT
         </h3>
@@ -1478,7 +1478,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
             <div className="lg:col-span-8">
               {allPropertyList.length === 0 ? (
-                <div className="bg-white p-12 rounded-xl text-center border border-slate-200 shadow-xs">
+                <div className="bg-white p-12 rounded-sm text-center border border-slate-200 shadow-xs">
                   <p className="text-sm font-bold text-slate-600">Không tìm thấy bất động sản phù hợp với tiêu chí lọc.</p>
                   <button
                     onClick={() => { setFilterCity('all'); setFilterPriceRange('all'); setSearchKeyword(''); }}
@@ -1569,7 +1569,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             <span className="text-slate-800 font-bold truncate">{selectedProperty.title}</span>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 bg-white p-6 md:p-8 rounded-xl border border-slate-200 shadow-sm">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 bg-white p-6 md:p-8 rounded-sm border border-slate-200 shadow-sm">
             <div className="lg:col-span-7 space-y-3">
               <div className="h-80 md:h-[400px] rounded-lg overflow-hidden bg-slate-100 relative">
                 <img
@@ -1659,7 +1659,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-8 space-y-6">
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+              <div className="bg-white p-6 rounded-sm border border-slate-200 shadow-sm space-y-4">
                 <h3 className="font-black text-base text-slate-900 border-b border-slate-100 pb-2">
                   Mô tả chi tiết
                 </h3>
@@ -1679,7 +1679,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-3">
+              <div className="bg-white p-6 rounded-sm border border-slate-200 shadow-sm space-y-3">
                 <h3 className="font-black text-base text-slate-900 flex items-center gap-2">
                   <MapPin size={16} className="text-red-500" /> Vị trí trên bản đồ
                 </h3>
@@ -1696,7 +1696,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+              <div className="bg-white p-6 rounded-sm border border-slate-200 shadow-sm space-y-4">
                 <h3 className="font-black text-base text-slate-900 flex items-center gap-2">
                   <Calculator size={16} className="text-blue-600" /> Bảng tính lãi vay ngân hàng dự kiến
                 </h3>
@@ -1759,12 +1759,12 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             </div>
 
             <div className="lg:col-span-4 space-y-6">
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+              <div className="bg-white p-5 rounded-sm border border-slate-200 shadow-sm space-y-4">
                 <div className="flex items-center gap-3">
                   <img
                     src={selectedProperty.author.avatar}
                     alt={selectedProperty.author.name}
-                    className="w-14 h-14 rounded-full object-cover border-2 border-blue-600"
+                    className="w-14 h-14 rounded-sm object-cover border-2 border-blue-600"
                   />
                   <div>
                     <h4 className="font-black text-sm text-slate-900">{selectedProperty.author.name}</h4>
@@ -1791,7 +1791,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 </div>
               </div>
 
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+              <div className="bg-white p-5 rounded-sm border border-slate-200 shadow-sm space-y-3">
                 <h4 className="font-black text-xs text-slate-900 uppercase tracking-wider">
                   Yêu cầu tư vấn & Nhận bảng giá
                 </h4>
@@ -1834,7 +1834,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 </div>
               </div>
 
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+              <div className="bg-white p-5 rounded-sm border border-slate-200 shadow-sm space-y-3">
                 <h4 className="font-black text-xs text-slate-900 uppercase tracking-wider">
                   Bất động sản cùng khu vực
                 </h4>
@@ -1878,7 +1878,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             <span className="text-slate-800 font-bold truncate">{selectedArticle.title}</span>
           </div>
 
-          <div className="bg-white p-6 md:p-8 rounded-xl border border-slate-200 shadow-sm space-y-6">
+          <div className="bg-white p-6 md:p-8 rounded-sm border border-slate-200 shadow-sm space-y-6">
             <div className="space-y-2">
               <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded">
                 {selectedArticle.category}
@@ -1935,7 +1935,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           </p>
         </div>
 
-        <div className="bg-white p-6 md:p-8 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        <div className="bg-white p-6 md:p-8 rounded-sm border border-slate-200 shadow-sm space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="text-xs font-bold text-slate-700 block mb-1">Họ và tên chủ nhà *</label>
@@ -2030,7 +2030,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     <div className="py-8 bg-[#F8FAFC] min-h-screen">
       <div className={`${MAX_W} mx-auto px-4 space-y-6 max-w-4xl`}>
         <h1 className="text-2xl font-black text-slate-900">Về Chúng Tôi — {company?.name || 'Real Estate Group'}</h1>
-        <div className="bg-white p-6 md:p-8 rounded-xl border border-slate-200 shadow-sm space-y-4 text-xs md:text-sm text-slate-700 leading-relaxed">
+        <div className="bg-white p-6 md:p-8 rounded-sm border border-slate-200 shadow-sm space-y-4 text-xs md:text-sm text-slate-700 leading-relaxed">
           <p>
             <strong>{company?.name || 'Real Estate Group'}</strong> là đơn vị phân phối và tiếp thị bất động sản hàng đầu tại Việt Nam, mang đến cho khách hàng hàng ngàn lựa chọn căn hộ, biệt thự, nhà phố và bất động sản thương mại cao cấp với pháp lý minh bạch và giá trị sinh lời bền vững.
           </p>
@@ -2057,7 +2057,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     <div className="py-8 bg-[#F8FAFC] min-h-screen">
       <div className={`${MAX_W} mx-auto px-4 space-y-6 max-w-4xl`}>
         <h1 className="text-2xl font-black text-slate-900">Liên Hệ Chúng Tôi</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 md:p-8 rounded-xl border border-slate-200 shadow-sm">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 md:p-8 rounded-sm border border-slate-200 shadow-sm">
           <div className="space-y-4 text-xs text-slate-700">
             <h3 className="font-bold text-sm text-slate-900">Thông Tin Liên Hệ</h3>
             <p className="flex items-start gap-2"><MapPin size={14} className="text-blue-600 shrink-0 mt-0.5" /> 180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội</p>

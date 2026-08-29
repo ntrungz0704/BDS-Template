@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import {
   Search, MapPin, Building, Phone, Mail, ArrowRight, ChevronRight,
   CheckCircle2, X, Eye, BookOpen, User, Send, Heart, Share2, Home,
@@ -295,16 +296,27 @@ export const HomeoMultiThumbnailTemplate: React.FC<HomeoMultiThumbnailTemplatePr
 
   const navigate = (page: string, slugParam?: string) => {
     setCurrentPage(page);
+    const targetSlug = page === 'home' ? '' : (slugParam ? `${page}/${slugParam}` : page);
+    syncDemoUrl(targetSlug, 'bds-23');
     if (typeof window !== 'undefined') {
-      const basePath = window.location.pathname.split('/').slice(0, 3).join('/');
-      let newUrl = basePath;
-      if (page !== 'home') {
-        newUrl += slugParam ? `/${page}/${slugParam}` : `/${page}`;
-      }
-      window.history.pushState(null, '', newUrl);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts.slice(2).join('/') : (parts[1] !== 'bds-23' ? parts[1] : 'home');
+      if (sub) {
+        const r = resolveRoute(sub);
+        setCurrentPage(r.page);
+        if (r.item) { setSelectedItem(r.item); setActiveThumbImg(r.item.mainImg); }
+        if (r.article) setSelectedArticle(r.article);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const handleSelectItem = (item: any) => {
     setSelectedItem(item);
@@ -319,6 +331,7 @@ export const HomeoMultiThumbnailTemplate: React.FC<HomeoMultiThumbnailTemplatePr
 
   const isProjectDetail = currentPage === 'project-detail' || currentPage === 'du-an' || currentPage.startsWith('du-an');
   const isNewsDetail = currentPage === 'news-detail' || currentPage === 'tin-tuc' || currentPage.startsWith('tin-tuc');
+  const isHome = currentPage === 'home' || (!['projects', 'sale', 'rent', 'news', 'contact', 'about', 'gioi-thieu', 'project-detail', 'news-detail', 'du-an', 'tin-tuc'].includes(currentPage) && !isProjectDetail && !isNewsDetail);
 
   return (
     <div className="min-h-screen bg-white font-sans text-slate-800 flex flex-col">
@@ -391,7 +404,7 @@ export const HomeoMultiThumbnailTemplate: React.FC<HomeoMultiThumbnailTemplatePr
       </header>
 
       {/* 2. HERO SPLIT SECTION — KHỚP 100% ẢNH CHỤP BDS-23 */}
-      {currentPage === 'home' && (
+      {isHome && (
         <section className="relative w-full h-[480px] sm:h-[560px] bg-slate-950 overflow-hidden flex items-center justify-end text-white">
           <img
             src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=90"
@@ -431,7 +444,7 @@ export const HomeoMultiThumbnailTemplate: React.FC<HomeoMultiThumbnailTemplatePr
       )}
 
       {/* 3. HOME VIEW — 3 CỘT (DỰ ÁN MỚI, BÁN NHÀ, CHO THUÊ, CẨM NANG) */}
-      {currentPage === 'home' && (
+      {isHome && (
         <main className="max-w-[1360px] mx-auto px-4 sm:px-8 py-16 space-y-20 flex-1">
           {/* DỰ ÁN MỚI */}
           <section id="projects-grid">
@@ -795,6 +808,54 @@ export const HomeoMultiThumbnailTemplate: React.FC<HomeoMultiThumbnailTemplatePr
                 </div>
               </div>
             ))}
+          </div>
+        </main>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          PAGE: GIỚI THIỆU (ABOUT)
+      ───────────────────────────────────────────────────────────── */}
+      {(currentPage === 'about' || currentPage === 'gioi-thieu') && (
+        <main className="max-w-[1200px] mx-auto px-4 sm:px-8 py-12 space-y-8 flex-1 w-full">
+          <div className="bg-white p-8 border border-slate-200 shadow-xs space-y-6">
+            <div className="border-b border-slate-200 pb-4">
+              <span className="text-xs font-bold text-[#881337] uppercase tracking-widest block mb-1">VỀ CHÚNG TÔI</span>
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 font-serif">Nền Tảng Bất Động Sản Cao Cấp Homeo</h1>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-7 space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <p>
+                  <strong>Homeo</strong> là thương hiệu bất động sản uy tín, chuyên cung cấp các giải pháp giao dịch nhà phố, biệt thự, căn hộ cao cấp và bất động sản cho thuê tại các đô thị trọng điểm.
+                </p>
+                <p>
+                  Với tôn chỉ minh bạch, chuyên nghiệp và tận tâm, Homeo mang đến trải nghiệm tìm kiếm bất động sản khác biệt với hình ảnh đa góc chụp, pháp lý rõ ràng và dịch vụ tư vấn tận nơi.
+                </p>
+                <div className="grid grid-cols-3 gap-4 pt-2 text-center">
+                  <div className="p-3 bg-rose-50 border border-rose-100 rounded">
+                    <strong className="text-lg font-black text-[#881337] block">15.000+</strong>
+                    <span className="text-[10px] text-slate-500">Khách hàng tin tưởng</span>
+                  </div>
+                  <div className="p-3 bg-rose-50 border border-rose-100 rounded">
+                    <strong className="text-lg font-black text-[#881337] block">98%</strong>
+                    <span className="text-[10px] text-slate-500">Hài lòng dịch vụ</span>
+                  </div>
+                  <div className="p-3 bg-rose-50 border border-rose-100 rounded">
+                    <strong className="text-lg font-black text-[#881337] block">TOP 10</strong>
+                    <span className="text-[10px] text-slate-500">Sàn phân phối BĐS</span>
+                  </div>
+                </div>
+              </div>
+              <div className="lg:col-span-5">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Homeo team" className="w-full h-56 object-cover border border-slate-200 shadow-sm" />
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-200">
+              <button onClick={() => navigate('home')} className="text-xs font-bold text-[#881337] hover:underline">
+                ← Quay lại trang chủ
+              </button>
+            </div>
           </div>
         </main>
       )}

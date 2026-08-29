@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THEME WP — Sàn Phân Phối Bất Động Sản Cao Cấp | Hưng Lộc Phát Land & NovaWorld</title>
+  <meta name="description" content="Sàn phân phối BĐS cao cấp F1: Căn hộ Golden Star Quận 7, Green Star, Eco Green, Hưng Phát Silver Star Nhà Bè, NovaWorld Phan Thiết. Thanh toán ban đầu chỉ 500 triệu.">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .pulse-hotline {
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+  </style>
+</head>
+<body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col justify-between selection:bg-[#16A34A] selection:text-white">
+
+  <!-- LEFT FLOATING ACTION PILLS -->
+  <div class="fixed left-4 top-1/2 -translate-y-1/2 z-40 hidden sm:flex flex-col gap-2.5">
+    <a href="https://zalo.me/0919006030" target="_blank" class="px-3.5 py-1.5 rounded-sm bg-[#16A34A] hover:bg-[#15803D] text-white text-xs font-bold shadow-lg transition flex items-center gap-1.5 hover:scale-105">
+      <i data-lucide="message-square" class="w-3.5 h-3.5"></i> Chat Zalo
+    </a>
+    <a href="https://www.facebook.com/groups/847532091275214" target="_blank" class="px-3.5 py-1.5 rounded-sm bg-[#0284C7] hover:bg-[#0369A1] text-white text-xs font-bold shadow-lg transition flex items-center gap-1.5 hover:scale-105">
+      <i data-lucide="share-2" class="w-3.5 h-3.5"></i> Chat Facebook
+    </a>
+    <a href="tel:0919006030" class="px-3.5 py-1.5 rounded-sm bg-[#E11D48] hover:bg-[#BE123C] text-white text-xs font-black shadow-lg transition flex items-center gap-1.5 hover:scale-105">
+      <i data-lucide="phone" class="w-3.5 h-3.5 animate-pulse"></i> Hotline: 0919 006 030
+    </a>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────────────────────
+       HEADER & NAVIGATION
+  ───────────────────────────────────────────────────────────────────────────── -->
+  <header class="sticky top-0 z-40 bg-white text-slate-800 shadow-md border-b border-slate-200">
+    <!-- Top Cyan Micro Bar -->
+    <div class="bg-[#48C0D8] text-white text-xs py-1.5 px-4 hidden md:block font-medium">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-6">
+          <a href="mailto:admin@templatebds.com" class="flex items-center gap-1.5 hover:underline text-white">
+            <i data-lucide="mail" class="w-3.5 h-3.5"></i> admin@templatebds.com
+          </a>
+          <span class="opacity-70">|</span>
+          <span>Hotline 24/7: <strong>0919 006 030</strong></span>
+        </div>
+        <div class="flex items-center gap-4">
+          <a href="#lien-he" class="hover:underline">Liên hệ</a>
+          <span class="opacity-50">|</span>
+          <a href="#dang-nhap" onclick="alert('Hệ thống đăng nhập thành viên CMS sẵn sàng tích hợp!')" class="hover:underline">Đăng nhập</a>
+          <i data-lucide="search" class="w-3.5 h-3.5 cursor-pointer hover:scale-110 transition"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Navbar -->
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center gap-3 group shrink-0">
+        <div class="w-11 h-11 rounded-sm bg-gradient-to-br from-[#0284C7] via-[#16A34A] to-[#EAB308] flex items-center justify-center text-white font-black shadow-md group-hover:scale-105 transition p-2 shrink-0">
+          <i data-lucide="building-2" class="w-6 h-6 text-white"></i>
+        </div>
+        <div class="whitespace-nowrap">
+          <div class="flex items-center gap-1">
+            <span class="text-lg sm:text-xl font-black tracking-tight text-[#0284C7] group-hover:text-[#0369A1] transition">
+              THEME
+            </span>
+            <span class="text-lg sm:text-xl font-black tracking-tight text-[#E11D48]">
+              WP
+            </span>
+          </div>
+          <span class="text-[9px] sm:text-[10px] tracking-widest text-[#15803D] block uppercase font-extrabold">
+            SÀN PHÂN PHỐI BẤT ĐỘNG SẢN CAO CẤP
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Menu -->
+      <nav class="hidden lg:flex items-center gap-1.5 xl:gap-3 text-[11px] xl:text-xs font-bold uppercase tracking-wider text-slate-700 whitespace-nowrap">
+        <a href="index.html" class="whitespace-nowrap px-2.5 py-1.5 text-[#16A34A] font-extrabold border-b-2 border-[#16A34A]">Trang Chủ</a>
+        <a href="#gioi-thieu" class="whitespace-nowrap px-2.5 py-1.5 hover:text-[#16A34A] transition">Giới Thiệu</a>
+        <a href="#du-an" class="whitespace-nowrap px-2.5 py-1.5 hover:text-[#16A34A] transition">Dự Án</a>
+        <a href="#tin-tuc" class="whitespace-nowrap px-2.5 py-1.5 hover:text-[#16A34A] transition">Tin Tức</a>
+        <a href="#hoat-dong" class="whitespace-nowrap px-2.5 py-1.5 hover:text-[#16A34A] transition">Hoạt Động Công Ty</a>
+        <a href="#tuyen-dung" class="whitespace-nowrap px-2.5 py-1.5 hover:text-[#16A34A] transition">Tuyển Dụng</a>
+        <a href="#lien-he" class="whitespace-nowrap px-2.5 py-1.5 hover:text-[#16A34A] transition">Liên Hệ</a>
+      </nav>
+
+      <!-- CTA -->
+      <div class="flex items-center gap-2.5 shrink-0">
+        <a href="tel:0919006030" class="hidden xl:flex items-center gap-1.5 px-3.5 py-2 rounded-sm bg-emerald-50 text-[#15803D] border border-emerald-200 text-xs font-black whitespace-nowrap shrink-0 hover:bg-emerald-100 transition">
+          <i data-lucide="phone" class="w-3.5 h-3.5 text-[#16A34A] pulse-hotline shrink-0"></i>
+          <span>0919 006 030</span>
+        </a>
+        <a href="#tai-bao-gia" class="px-3.5 py-2 bg-gradient-to-r from-[#16A34A] to-[#15803D] hover:from-[#15803D] hover:to-[#166534] text-white text-xs font-black rounded-sm shadow-md transition uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105">
+          Tải Báo Giá VIP
+        </a>
+        <button onclick="toggleMobileMenu()" class="p-2 rounded-sm bg-slate-100 text-slate-800 lg:hidden shrink-0">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div id="mobileMenu" class="hidden lg:hidden bg-white border-b border-slate-200 px-6 py-5 space-y-2 shadow-xl">
+      <div class="grid grid-cols-2 gap-2 text-xs font-bold uppercase">
+        <a href="index.html" class="p-2.5 rounded-lg text-left bg-emerald-50 text-emerald-700">Trang Chủ</a>
+        <a href="#gioi-thieu" onclick="toggleMobileMenu()" class="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50">Giới Thiệu</a>
+        <a href="#du-an" onclick="toggleMobileMenu()" class="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50">Dự Án</a>
+        <a href="#tin-tuc" onclick="toggleMobileMenu()" class="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50">Tin Tức</a>
+        <a href="#hoat-dong" onclick="toggleMobileMenu()" class="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50">Hoạt Động</a>
+        <a href="#tuyen-dung" onclick="toggleMobileMenu()" class="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50">Tuyển Dụng</a>
+        <a href="#lien-he" onclick="toggleMobileMenu()" class="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50">Liên Hệ</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─────────────────────────────────────────────────────────────────────────────
+       MAIN CONTENT
+  ───────────────────────────────────────────────────────────────────────────── -->
+  <main class="flex-1 w-full space-y-0">
+
+    <!-- HERO PANORAMIC GOLF RESORT BANNER -->
+    <section class="relative min-h-[380px] sm:min-h-[460px] lg:min-h-[500px] flex items-center justify-end text-white overflow-hidden bg-slate-900">
+      <img src="https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=1600&q=80" alt="Golf Banner" class="absolute inset-0 w-full h-full object-cover object-center">
+      <div class="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-[#0284C7]/80"></div>
+
+      <div class="absolute top-8 left-8 sm:left-16 text-white/90 text-2xl sm:text-4xl font-serif italic drop-shadow-md select-none">
+        Just for you
+      </div>
+
+      <div class="relative z-20 max-w-7xl mx-auto px-4 py-12 flex justify-end w-full">
+        <div class="max-w-md lg:max-w-lg text-right space-y-4">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0284C7] text-white text-xs font-bold shadow-md">
+            <i data-lucide="building-2" class="w-3.5 h-3.5"></i> Đầu Tư Bất Động Sản
+          </div>
+
+          <h1 class="text-2xl sm:text-4xl lg:text-5xl font-serif italic text-white font-black leading-tight drop-shadow-lg">
+            Thanh toán ban đầu chỉ <span class="text-amber-300 not-italic font-sans font-black">500 triệu</span>
+          </h1>
+
+          <div class="inline-block px-5 py-2 rounded-sm bg-[#15803D] text-[#FDE047] text-xs sm:text-sm font-black tracking-wider uppercase shadow-xl border border-emerald-300/40">
+            ★ SINH LỜI TỪ 12–15% MỖI NĂM ★
+          </div>
+
+          <div class="pt-2 flex justify-end">
+            <a href="tel:0919006030" class="inline-flex items-center gap-2 px-5 py-3 rounded-sm bg-white text-slate-900 hover:bg-slate-100 transition shadow-2xl font-black text-sm sm:text-base border-2 border-emerald-500">
+              <i data-lucide="phone" class="w-4 h-4 text-[#16A34A] pulse-hotline"></i>
+              <span>0919.006.030</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DỰ ÁN BĐS ĐANG PHÂN PHỐI (6 CARDS + RIGHT SIDEBAR) -->
+    <section id="du-an" class="py-12 bg-white text-slate-800">
+      <div class="max-w-7xl mx-auto px-4">
+        
+        <div class="text-center max-w-2xl mx-auto mb-10 space-y-1">
+          <h2 class="text-xl sm:text-2xl font-black tracking-tight text-[#15803D] uppercase">
+            DỰ ÁN BẤT ĐỘNG SẢN ĐANG PHÂN PHỐI
+          </h2>
+          <div class="w-24 h-1 bg-[#16A34A] mx-auto rounded-sm"></div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          <!-- LEFT 8 COLS: 6 CARDS -->
+          <div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+            
+            <!-- Card 1 -->
+            <div class="group bg-white rounded-sm overflow-hidden border border-slate-200 hover:border-emerald-500 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+              <div>
+                <div class="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                  <img src="https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=800&q=80" alt="Phố Mỹ Gold City" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                  <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-[#15803D] text-white text-[10px] font-bold shadow">
+                    Dự án đang phân phối
+                  </div>
+                </div>
+                <div class="p-3.5 space-y-2">
+                  <h3 class="text-xs font-black text-slate-800 group-hover:text-[#16A34A] leading-snug line-clamp-2 uppercase min-h-[34px]">
+                    DỰ ÁN PHỐ MỸ GOLD CITY BÀ RỊA VŨNG TÀU
+                  </h3>
+                  <div class="text-[11px] text-slate-500 flex items-center gap-1">
+                    <i data-lucide="map-pin" class="w-3 h-3 text-emerald-600 shrink-0"></i>
+                    <span class="truncate">TX. Phú Mỹ, Bà Rịa - Vũng Tàu</span>
+                  </div>
+                </div>
+              </div>
+              <div class="px-3.5 pb-3.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="font-extrabold text-[#E11D48] text-sm">1.85 Tỷ VNĐ</span>
+                <span class="text-[11px] font-bold text-slate-400">105 m²</span>
+              </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="group bg-white rounded-sm overflow-hidden border border-slate-200 hover:border-emerald-500 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+              <div>
+                <div class="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                  <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" alt="Golden Star" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                  <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-[#15803D] text-white text-[10px] font-bold shadow">
+                    Dự án đang phân phối
+                  </div>
+                </div>
+                <div class="p-3.5 space-y-2">
+                  <h3 class="text-xs font-black text-slate-800 group-hover:text-[#16A34A] leading-snug line-clamp-2 uppercase min-h-[34px]">
+                    DỰ ÁN CĂN HỘ GOLDEN STAR QUẬN 7, TP.HCM
+                  </h3>
+                  <div class="text-[11px] text-slate-500 flex items-center gap-1">
+                    <i data-lucide="map-pin" class="w-3 h-3 text-emerald-600 shrink-0"></i>
+                    <span class="truncate">Nguyễn Thị Thập, Quận 7</span>
+                  </div>
+                </div>
+              </div>
+              <div class="px-3.5 pb-3.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="font-extrabold text-[#E11D48] text-sm">3.45 Tỷ VNĐ</span>
+                <span class="text-[11px] font-bold text-slate-400">68 m²</span>
+              </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="group bg-white rounded-sm overflow-hidden border border-slate-200 hover:border-emerald-500 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+              <div>
+                <div class="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                  <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80" alt="Green Star" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                  <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-[#15803D] text-white text-[10px] font-bold shadow">
+                    Dự án đang phân phối
+                  </div>
+                </div>
+                <div class="p-3.5 space-y-2">
+                  <h3 class="text-xs font-black text-slate-800 group-hover:text-[#16A34A] leading-snug line-clamp-2 uppercase min-h-[34px]">
+                    DỰ ÁN CĂN HỘ GREEN STAR TP. QUẬN 7, TP.HCM
+                  </h3>
+                  <div class="text-[11px] text-slate-500 flex items-center gap-1">
+                    <i data-lucide="map-pin" class="w-3 h-3 text-emerald-600 shrink-0"></i>
+                    <span class="truncate">Phạm Hữu Lầu, Quận 7</span>
+                  </div>
+                </div>
+              </div>
+              <div class="px-3.5 pb-3.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="font-extrabold text-[#E11D48] text-sm">3.90 Tỷ VNĐ</span>
+                <span class="text-[11px] font-bold text-slate-400">75 m²</span>
+              </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="group bg-white rounded-sm overflow-hidden border border-slate-200 hover:border-emerald-500 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+              <div>
+                <div class="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                  <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80" alt="Eco Green" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                  <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-[#15803D] text-white text-[10px] font-bold shadow">
+                    Dự án đang phân phối
+                  </div>
+                </div>
+                <div class="p-3.5 space-y-2">
+                  <h3 class="text-xs font-black text-slate-800 group-hover:text-[#16A34A] leading-snug line-clamp-2 uppercase min-h-[34px]">
+                    DỰ ÁN CĂN HỘ ECO GREEN QUẬN 7, TP.HCM (MỚI NHẤT)
+                  </h3>
+                  <div class="text-[11px] text-slate-500 flex items-center gap-1">
+                    <i data-lucide="map-pin" class="w-3 h-3 text-emerald-600 shrink-0"></i>
+                    <span class="truncate">Nguyễn Văn Linh, Quận 7</span>
+                  </div>
+                </div>
+              </div>
+              <div class="px-3.5 pb-3.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="font-extrabold text-[#E11D48] text-sm">4.20 Tỷ VNĐ</span>
+                <span class="text-[11px] font-bold text-slate-400">80 m²</span>
+              </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="group bg-white rounded-sm overflow-hidden border border-slate-200 hover:border-emerald-500 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+              <div>
+                <div class="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                  <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80" alt="Hưng Phát Silver Star" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                  <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-[#15803D] text-white text-[10px] font-bold shadow">
+                    Dự án đang phân phối
+                  </div>
+                </div>
+                <div class="p-3.5 space-y-2">
+                  <h3 class="text-xs font-black text-slate-800 group-hover:text-[#16A34A] leading-snug line-clamp-2 uppercase min-h-[34px]">
+                    DỰ ÁN CĂN HỘ HƯNG PHÁT SILVER STAR NHÀ BÈ
+                  </h3>
+                  <div class="text-[11px] text-slate-500 flex items-center gap-1">
+                    <i data-lucide="map-pin" class="w-3 h-3 text-emerald-600 shrink-0"></i>
+                    <span class="truncate">Nguyễn Hữu Thọ, Nhà Bè</span>
+                  </div>
+                </div>
+              </div>
+              <div class="px-3.5 pb-3.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="font-extrabold text-[#E11D48] text-sm">2.85 Tỷ VNĐ</span>
+                <span class="text-[11px] font-bold text-slate-400">72 m²</span>
+              </div>
+            </div>
+
+            <!-- Card 6 -->
+            <div class="group bg-white rounded-sm overflow-hidden border border-slate-200 hover:border-emerald-500 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+              <div>
+                <div class="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                  <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80" alt="Diamond Island Condotel" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                  <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-[#15803D] text-white text-[10px] font-bold shadow">
+                    Dự án đang phân phối
+                  </div>
+                </div>
+                <div class="p-3.5 space-y-2">
+                  <h3 class="text-xs font-black text-slate-800 group-hover:text-[#16A34A] leading-snug line-clamp-2 uppercase min-h-[34px]">
+                    DỰ ÁN DIAMOND ISLAND CONDOTEL HƯNG LỘC PHÁT
+                  </h3>
+                  <div class="text-[11px] text-slate-500 flex items-center gap-1">
+                    <i data-lucide="map-pin" class="w-3 h-3 text-emerald-600 shrink-0"></i>
+                    <span class="truncate">Mũi Né, Phan Thiết</span>
+                  </div>
+                </div>
+              </div>
+              <div class="px-3.5 pb-3.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="font-extrabold text-[#E11D48] text-sm">1.65 Tỷ VNĐ</span>
+                <span class="text-[11px] font-bold text-slate-400">45 m²</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT 4 COLS: SIDEBAR -->
+          <div class="lg:col-span-4 space-y-4">
+            
+            <!-- Button 1: Green Gradient -->
+            <a href="#tai-bao-gia" class="w-full py-3.5 px-5 rounded-sm bg-gradient-to-r from-[#16A34A] to-[#15803D] hover:from-[#15803D] hover:to-[#166534] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 hover:scale-[1.02]">
+              <i data-lucide="download" class="w-4 h-4"></i> TẢI BÁO GIÁ DỰ ÁN
+            </a>
+
+            <!-- Button 2: Sky Blue Gradient -->
+            <a href="#tai-bao-gia" class="w-full py-3.5 px-5 rounded-sm bg-gradient-to-r from-[#0284C7] to-[#0369A1] hover:from-[#0369A1] hover:to-[#075985] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 hover:scale-[1.02]">
+              <i data-lucide="gift" class="w-4 h-4"></i> THÔNG TIN ƯU ĐÃI
+            </a>
+
+            <!-- Banner 3: Orange Hotline Box -->
+            <div class="w-full p-4 rounded-sm bg-gradient-to-r from-[#F59E0B] to-[#EA580C] text-white text-center shadow-lg space-y-1">
+              <span class="text-[11px] font-extrabold uppercase tracking-widest block opacity-90">TƯ VẤN 24/7</span>
+              <a href="tel:0919006030" class="text-xl sm:text-2xl font-black block tracking-tight hover:underline">
+                0919.006.030
+              </a>
+            </div>
+
+            <!-- Box: Có Thể Bạn Quan Tâm -->
+            <div class="bg-slate-50 border border-slate-200 rounded-sm p-4 space-y-3">
+              <h4 class="text-xs font-black uppercase text-[#15803D] tracking-wider border-b border-slate-200 pb-2">
+                CÓ THỂ BẠN QUAN TÂM
+              </h4>
+              <div class="space-y-3">
+                <a href="#du-an" class="flex items-center gap-3 group hover:bg-white p-1.5 rounded-sm transition">
+                  <img src="https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=200&q=80" alt="Thumb" class="w-12 h-12 rounded-sm object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition">
+                  <span class="text-[11px] font-bold text-slate-700 group-hover:text-[#16A34A] leading-snug line-clamp-2 uppercase">
+                    DỰ ÁN PHỐ MỸ GOLD CITY BÀ RỊA VŨNG TÀU
+                  </span>
+                </a>
+                <a href="#du-an" class="flex items-center gap-3 group hover:bg-white p-1.5 rounded-sm transition">
+                  <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=200&q=80" alt="Thumb" class="w-12 h-12 rounded-sm object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition">
+                  <span class="text-[11px] font-bold text-slate-700 group-hover:text-[#16A34A] leading-snug line-clamp-2 uppercase">
+                    DỰ ÁN CĂN HỘ GOLDEN STAR QUẬN 7, TP.HCM
+                  </span>
+                </a>
+                <a href="#du-an" class="flex items-center gap-3 group hover:bg-white p-1.5 rounded-sm transition">
+                  <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=200&q=80" alt="Thumb" class="w-12 h-12 rounded-sm object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition">
+                  <span class="text-[11px] font-bold text-slate-700 group-hover:text-[#16A34A] leading-snug line-clamp-2 uppercase">
+                    DỰ ÁN CĂN HỘ GREEN STAR TP. QUẬN 7, TP.HCM
+                  </span>
+                </a>
+                <a href="#du-an" class="flex items-center gap-3 group hover:bg-white p-1.5 rounded-sm transition">
+                  <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=200&q=80" alt="Thumb" class="w-12 h-12 rounded-sm object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition">
+                  <span class="text-[11px] font-bold text-slate-700 group-hover:text-[#16A34A] leading-snug line-clamp-2 uppercase">
+                    DỰ ÁN CĂN HỘ BLUE STAR HƯNG LỘC PHÁT
+                  </span>
+                </a>
+                <a href="#du-an" class="flex items-center gap-3 group hover:bg-white p-1.5 rounded-sm transition">
+                  <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=200&q=80" alt="Thumb" class="w-12 h-12 rounded-sm object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition">
+                  <span class="text-[11px] font-bold text-slate-700 group-hover:text-[#16A34A] leading-snug line-clamp-2 uppercase">
+                    DỰ ÁN CĂN HỘ HƯNG PHÁT SILVER STAR NHÀ BÈ
+                  </span>
+                </a>
+                <a href="#du-an" class="flex items-center gap-3 group hover:bg-white p-1.5 rounded-sm transition">
+                  <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200&q=80" alt="Thumb" class="w-12 h-12 rounded-sm object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition">
+                  <span class="text-[11px] font-bold text-slate-700 group-hover:text-[#16A34A] leading-snug line-clamp-2 uppercase">
+                    DỰ ÁN DIAMOND LAND MŨI NÉ PHAN THIẾT
+                  </span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CONSULTANT PROFILE STRIP -->
+    <section id="gioi-thieu" class="py-8 bg-[#F8FAFC] border-y border-slate-200">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="bg-white rounded-md p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row items-center gap-6 lg:gap-10">
+          
+          <div class="flex items-center gap-4 shrink-0">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80" alt="Trần Thanh Phương" class="w-20 h-20 rounded-sm object-cover border-4 border-emerald-100 shadow-md shrink-0">
+            <div>
+              <h4 class="text-base font-black text-slate-900">Trần Thanh Phương</h4>
+              <p class="text-xs text-slate-500 font-medium">Trưởng phòng kinh doanh</p>
+              <a href="tel:0919006030" class="text-xs font-black text-[#E11D48] hover:underline block mt-0.5">
+                Hotline: 0919 006 030
+              </a>
+            </div>
+          </div>
+
+          <div class="hidden md:block w-px h-16 bg-slate-200 shrink-0"></div>
+
+          <div class="space-y-1 text-center md:text-left">
+            <h5 class="text-xs font-black text-[#15803D] uppercase tracking-wider">
+              CHUYÊN VIÊN TƯ VẤN LÂU NĂM KINH NGHIỆM
+            </h5>
+            <p class="text-xs text-slate-600 leading-relaxed max-w-3xl">
+              Chuyên viên tư vấn của Hưng Lộc Phát Land là những người dày dặn kinh nghiệm, am hiểu sâu sắc trong lĩnh vực bất động sản và luôn tận tâm, nhiệt tình tư vấn giúp mang lại lợi ích và sự thỏa mãn tối đa cho mọi khách hàng.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 COLUMNS: TIN TỨC - HOẠT ĐỘNG - GIẢI THƯỞNG -->
+    <section id="tin-tuc" class="py-12 bg-white text-slate-800">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          
+          <!-- Cột 1: Tin tức - sự kiện -->
+          <div class="space-y-4">
+            <h3 class="text-sm font-black text-slate-900 uppercase border-b-2 border-[#16A34A] pb-2">
+              Tin tức — sự kiện
+            </h3>
+            <div class="space-y-3">
+              <a href="#tin-tuc" class="flex gap-3 group p-1.5 rounded-sm hover:bg-slate-50 transition">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&q=80" alt="News" class="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition">
+                <div class="space-y-0.5">
+                  <h4 class="text-[11px] font-bold text-slate-800 group-hover:text-[#16A34A] line-clamp-2 leading-snug">
+                    Dự án Căn hộ Condotel Oyster Gành Hào Vũng Tàu
+                  </h4>
+                  <span class="text-[10px] text-slate-400 block">28 Tháng Tư, 2026</span>
+                </div>
+              </a>
+              <a href="#tin-tuc" class="flex gap-3 group p-1.5 rounded-sm hover:bg-slate-50 transition">
+                <img src="https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=400&q=80" alt="News" class="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition">
+                <div class="space-y-0.5">
+                  <h4 class="text-[11px] font-bold text-slate-800 group-hover:text-[#16A34A] line-clamp-2 leading-snug">
+                    Bảng giá dự án căn hộ Golden Star tháng 08/2026
+                  </h4>
+                  <span class="text-[10px] text-slate-400 block">25 Tháng Tư, 2026</span>
+                </div>
+              </a>
+              <a href="#tin-tuc" class="flex gap-3 group p-1.5 rounded-sm hover:bg-slate-50 transition">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80" alt="News" class="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition">
+                <div class="space-y-0.5">
+                  <h4 class="text-[11px] font-bold text-slate-800 group-hover:text-[#16A34A] line-clamp-2 leading-snug">
+                    Có nên mua căn hộ Blue Star từ Hưng Lộc Phát?
+                  </h4>
+                  <span class="text-[10px] text-slate-400 block">20 Tháng Tư, 2026</span>
+                </div>
+              </a>
+              <a href="#tin-tuc" class="flex gap-3 group p-1.5 rounded-sm hover:bg-slate-50 transition">
+                <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&q=80" alt="News" class="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition">
+                <div class="space-y-0.5">
+                  <h4 class="text-[11px] font-bold text-slate-800 group-hover:text-[#16A34A] line-clamp-2 leading-snug">
+                    Căn hộ mẫu dự án Green Star TP.HCM Quận 7
+                  </h4>
+                  <span class="text-[10px] text-slate-400 block">15 Tháng Tư, 2026</span>
+                </div>
+              </a>
+              <a href="#tin-tuc" class="flex gap-3 group p-1.5 rounded-sm hover:bg-slate-50 transition">
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80" alt="News" class="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition">
+                <div class="space-y-0.5">
+                  <h4 class="text-[11px] font-bold text-slate-800 group-hover:text-[#16A34A] line-clamp-2 leading-snug">
+                    Summer Land Mũi Né — Điểm đầu tư sáng giá năm 2026
+                  </h4>
+                  <span class="text-[10px] text-slate-400 block">10 Tháng Tư, 2026</span>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Cột 2: Hoạt động công ty -->
+          <div id="hoat-dong" class="space-y-4">
+            <h3 class="text-sm font-black text-slate-900 uppercase border-b-2 border-[#0284C7] pb-2">
+              Hoạt động công ty
+            </h3>
+            <div class="space-y-3">
+              <a href="#hoat-dong" class="flex gap-3 group p-1.5 rounded-sm hover:bg-slate-50 transition">
+                <img src="https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=400&q=80" alt="Act" class="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition">
+                <div class="space-y-0.5">
+                  <h4 class="text-[11px] font-bold text-slate-800 group-hover:text-[#0284C7] line-clamp-2 leading-snug">
+                    Lễ bàn giao sổ hồng đợt 3 cho cư dân Golden Star
+                  </h4>
+                  <span class="text-[10px] text-slate-400 block">28 Tháng Tư, 2026</span>
+                </div>
+              </a>
+              <a href="#hoat-dong" class="flex gap-3 group p-1.5 rounded-sm hover:bg-slate-50 transition">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&q=80" alt="Act" class="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition">
+                <div class="space-y-0.5">
+                  <h4 class="text-[11px] font-bold text-slate-800 group-hover:text-[#0284C7] line-clamp-2 leading-snug">
+                    Lễ ký kết hợp tác chiến lược dự án NovaWorld
+                  </h4>
+                  <span class="text-[10px] text-slate-400 block">22 Tháng Tư, 2026</span>
+                </div>
+              </a>
+              <a href="#hoat-dong" class="flex gap-3 group p-1.5 rounded-sm hover:bg-slate-50 transition">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80" alt="Act" class="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition">
+                <div class="space-y-0.5">
+                  <h4 class="text-[11px] font-bold text-slate-800 group-hover:text-[#0284C7] line-clamp-2 leading-snug">
+                    Chương trình thiện nguyện Tiếp Sức Đến Trường 2026
+                  </h4>
+                  <span class="text-[10px] text-slate-400 block">18 Tháng Tư, 2026</span>
+                </div>
+              </a>
+              <a href="#hoat-dong" class="flex gap-3 group p-1.5 rounded-sm hover:bg-slate-50 transition">
+                <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&q=80" alt="Act" class="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition">
+                <div class="space-y-0.5">
+                  <h4 class="text-[11px] font-bold text-slate-800 group-hover:text-[#0284C7] line-clamp-2 leading-snug">
+                    Hội nghị sơ kết hoạt động kinh doanh Quý 1/2026
+                  </h4>
+                  <span class="text-[10px] text-slate-400 block">12 Tháng Tư, 2026</span>
+                </div>
+              </a>
+              <a href="#hoat-dong" class="flex gap-3 group p-1.5 rounded-sm hover:bg-slate-50 transition">
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80" alt="Act" class="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition">
+                <div class="space-y-0.5">
+                  <h4 class="text-[11px] font-bold text-slate-800 group-hover:text-[#0284C7] line-clamp-2 leading-snug">
+                    Chuyến tham quan thực địa dự án Phú Mỹ Gold City
+                  </h4>
+                  <span class="text-[10px] text-slate-400 block">05 Tháng Tư, 2026</span>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Cột 3: Giải thưởng vinh danh -->
+          <div class="bg-slate-900 text-white rounded-sm overflow-hidden shadow-xl border border-slate-800 flex flex-col justify-between p-5 space-y-4">
+            <div>
+              <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&q=80" alt="Gala Award" class="w-full h-44 object-cover rounded-sm border border-white/20 mb-3">
+              <span class="text-[11px] font-extrabold text-[#FDE047] uppercase tracking-wider block text-center">
+                ★ VINH DANH THƯƠNG HIỆU UY TÍN ★
+              </span>
+              <h4 class="text-sm font-black text-center text-white mt-1">
+                "Hưng Lộc Phát vào TOP 10 thương hiệu mạnh uy tín của Việt Nam"
+              </h4>
+              <p class="text-[11px] text-slate-300 text-center leading-relaxed mt-2">
+                Liên hoan các Doanh nghiệp Rồng Vàng & Thương hiệu mạnh Việt Nam 2017-2018 vừa diễn ra tại Hà Nội nhằm tri ân Tập đoàn Hưng Lộc Phát lọt vào Top 10.
+              </p>
+            </div>
+            
+            <div class="pt-2 border-t border-slate-800 text-center">
+              <span class="text-xs text-slate-400">HOTLINE: </span>
+              <a href="tel:0919006030" class="text-xs font-black text-amber-400 hover:underline">
+                0919 006 030
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- CAROUSEL ĐỐI TÁC -->
+    <section class="py-10 bg-slate-50 border-t border-slate-200">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 w-full text-center">
+          <div class="p-3 bg-white rounded-sm border border-slate-200 shadow-sm flex flex-col items-center justify-center space-y-1">
+            <span class="text-xl">🇫🇷</span>
+            <span class="text-[10px] font-black text-slate-800 uppercase">CCI FRANCE</span>
+            <span class="text-[9px] text-slate-400">CCI France Vietnam</span>
+          </div>
+          <div class="p-3 bg-white rounded-sm border border-slate-200 shadow-sm flex flex-col items-center justify-center space-y-1">
+            <span class="text-xl">🏙️</span>
+            <span class="text-[10px] font-black text-slate-800 uppercase">METROPOLIS</span>
+            <span class="text-[9px] text-slate-400">Metropolis Saigon</span>
+          </div>
+          <div class="p-3 bg-white rounded-sm border border-slate-200 shadow-sm flex flex-col items-center justify-center space-y-1">
+            <span class="text-xl">🌳</span>
+            <span class="text-[10px] font-black text-slate-800 uppercase">VINCITY</span>
+            <span class="text-[9px] text-slate-400">VinCity Grand Park</span>
+          </div>
+          <div class="p-3 bg-white rounded-sm border border-slate-200 shadow-sm flex flex-col items-center justify-center space-y-1">
+            <span class="text-xl">👑</span>
+            <span class="text-[10px] font-black text-slate-800 uppercase">VINHOMES</span>
+            <span class="text-[9px] text-slate-400">Vinhomes Central Park</span>
+          </div>
+          <div class="p-3 bg-white rounded-sm border border-slate-200 shadow-sm flex flex-col items-center justify-center space-y-1">
+            <span class="text-xl">🐲</span>
+            <span class="text-[10px] font-black text-slate-800 uppercase">THĂNG LONG</span>
+            <span class="text-[9px] text-slate-400">Thang Long Group</span>
+          </div>
+          <div class="p-3 bg-white rounded-sm border border-slate-200 shadow-sm flex flex-col items-center justify-center space-y-1">
+            <span class="text-xl">⭐</span>
+            <span class="text-[10px] font-black text-slate-800 uppercase">HƯNG LỘC PHÁT</span>
+            <span class="text-[9px] text-slate-400">Hung Loc Phat Land</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GREEN FOOTER BANNER -->
+    <section id="tai-bao-gia" class="py-14 bg-[#15803D] text-white">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10">
+          
+          <div class="md:col-span-5 space-y-4">
+            <div class="space-y-1">
+              <span class="text-xl sm:text-2xl font-black text-amber-300 tracking-tight block">
+                NovaWorld PHAN THIẾT
+              </span>
+              <span class="text-sm font-extrabold text-emerald-100 block">
+                Hưng Lộc Phát Land Phân Phối F1
+              </span>
+            </div>
+
+            <p class="text-xs text-emerald-100 leading-relaxed">
+              Trúng Top Phân Phối TOP 10 thương hiệu mạnh uy tín của Việt Nam! Liên hoan các Doanh nghiệp Rồng Vàng & Thương hiệu mạnh Việt Nam 2017-2018 vừa diễn ra tại Hà Nội nhằm tri ân Tập đoàn Hưng Lộc Phát lọt vào Top 10.
+            </p>
+
+            <div class="flex items-center gap-2.5 pt-2">
+              <a href="https://facebook.com" class="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-blue-600 flex items-center justify-center text-xs font-bold transition">FB</a>
+              <a href="https://zalo.me/0919006030" class="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-blue-600 flex items-center justify-center text-xs font-bold transition">ZL</a>
+              <a href="tel:0919006030" class="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-emerald-700 flex items-center justify-center text-xs font-bold transition">📞</a>
+              <a href="https://youtube.com" class="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-red-600 flex items-center justify-center text-xs font-bold transition">YT</a>
+            </div>
+          </div>
+
+          <div class="md:col-span-3 space-y-3 text-xs">
+            <h4 class="text-sm font-black uppercase tracking-wider text-amber-300 border-b border-white/20 pb-2">
+              Thông tin liên hệ
+            </h4>
+            <div class="space-y-2 text-emerald-100">
+              <p>📍 VPĐD: 180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội</p>
+              <p>📍 Trụ sở TP.HCM: Số 72 Nguyễn Thị Thập, Quận 7, TP.HCM</p>
+              <p>📞 Hotline: <a href="tel:0919006030" class="font-bold text-white hover:underline">0919 006 030</a></p>
+              <p>✉️ Email: admin@templatebds.com</p>
+            </div>
+          </div>
+
+          <div id="lien-he" class="md:col-span-4 space-y-3">
+            <h4 class="text-sm font-black uppercase tracking-wider text-amber-300 border-b border-white/20 pb-2">
+              Tải báo giá nhanh
+            </h4>
+            <form onsubmit="event.preventDefault(); alert('🎉 Đăng ký thành công! Bảng giá VIP sẽ được gửi qua Zalo trong 3 phút.');" class="space-y-2 text-xs">
+              <input type="text" placeholder="Họ và tên..." required class="w-full bg-white text-slate-800 px-3.5 py-2 rounded-lg focus:outline-none placeholder-slate-400">
+              <input type="email" placeholder="Địa chỉ Email..." class="w-full bg-white text-slate-800 px-3.5 py-2 rounded-lg focus:outline-none placeholder-slate-400">
+              <input type="tel" placeholder="Số điện thoại (*)..." required class="w-full bg-white text-slate-800 px-3.5 py-2 rounded-lg focus:outline-none placeholder-slate-400 font-bold">
+              <select class="w-full bg-white text-slate-800 px-3.5 py-2 rounded-lg focus:outline-none">
+                <option>Dự án Phố Mỹ Gold City</option>
+                <option>Dự án Căn hộ Golden Star Quận 7</option>
+                <option>Dự án Căn hộ Green Star Quận 7</option>
+                <option>Dự án Căn hộ Eco Green Quận 7</option>
+                <option>Dự án Căn hộ Hưng Phát Silver Star</option>
+                <option>Dự án Diamond Island Condotel Mũi Né</option>
+              </select>
+              <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-[#0284C7] to-[#0369A1] hover:from-[#0369A1] text-white font-black rounded-lg shadow-md transition uppercase tracking-wider cursor-pointer">
+                Đăng ký nhận báo giá
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─────────────────────────────────────────────────────────────────────────────
+       FOOTER & COPYRIGHT TEMPLATESBDS
+  ───────────────────────────────────────────────────────────────────────────── -->
+  <footer class="w-full relative bg-[#07132B] text-white">
+    <div class="w-full bg-[#1E60B8] py-6 px-4 text-white">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>
+          <h3 class="text-sm md:text-base font-black">Đăng ký nhận thông tin bảng giá & ưu đãi từ TEMPLATEBDS</h3>
+          <p class="text-xs text-blue-100">Chúng tôi sẽ gửi bạn những thông tin bất động sản và mẫu website mới nhất</p>
+        </div>
+        <div class="flex w-full md:w-auto gap-2">
+          <input type="email" placeholder="Nhập địa chỉ Email của bạn..." class="bg-white text-slate-800 text-xs px-4 py-2.5 rounded-lg w-full md:w-72 focus:outline-none">
+          <button onclick="alert('✓ Đăng ký email nhận bảng tin BĐS thành công!')" class="bg-blue-900 hover:bg-blue-950 text-white font-bold text-xs px-5 py-2.5 rounded-lg whitespace-nowrap transition flex items-center gap-1 cursor-pointer">
+            Đăng ký ngay
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-full bg-[#07132B] text-slate-300 text-xs py-12 px-4 border-b border-slate-800">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10">
+        <div class="md:col-span-5 space-y-4">
+          <div>
+            <span class="text-2xl font-black tracking-tight">
+              <span class="text-[#0084FF]">TEMPLATES</span><span class="text-white">BDS</span>
+            </span>
+            <p class="mt-2 text-xs text-slate-400 leading-relaxed max-w-md">
+              Kho mẫu website bất động sản cao cấp số 1 Việt Nam. Tối ưu chuyển đổi, chuẩn SEO và tích hợp hệ thống CMS quản trị đa kênh.
+            </p>
+          </div>
+          <div class="space-y-2 text-xs text-slate-300 pt-1">
+            <p>📍 Địa chỉ: <strong class="text-white">180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội</strong></p>
+            <p>📞 Hotline 1: <a href="tel:0919006030" class="text-white font-bold">0919 006 030</a></p>
+            <p>📞 Hotline 2: <a href="tel:0983312219" class="text-white font-bold">0983 312 219</a> (24/7)</p>
+            <p>✉️ Email: ntrungz0704@gmail.com • hotro@templatebds.com</p>
+            <p>⏰ Giờ làm việc: <strong class="text-white">8:00 - 20:00 (T2 - CN)</strong></p>
+          </div>
+        </div>
+
+        <div class="md:col-span-2 space-y-3">
+          <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">VỀ CHÚNG TÔI</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="#gioi-thieu" class="hover:text-blue-400">Giới thiệu</a></li>
+            <li><a href="#du-an" class="hover:text-blue-400">Dự án BĐS</a></li>
+            <li><a href="#tin-tuc" class="hover:text-blue-400">Tin tức thị trường</a></li>
+            <li><a href="#tuyen-dung" class="hover:text-blue-400">Tuyển dụng</a></li>
+            <li><a href="#lien-he" class="hover:text-blue-400">Liên hệ & Hỗ trợ</a></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-5 space-y-3">
+          <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">HỖ TRỢ KỸ THUẬT & TRIỂN KHAI</h4>
+          <p class="text-slate-400 text-xs">Trọn bộ mã nguồn Standalone HTML5/CSS3/JS & PHP/MySQL đi kèm database.sql sẵn sàng triển khai trên Hosting cPanel, DirectAdmin hoặc máy chủ XAMPP trong 5 phút.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-full bg-[#050C1B] py-4 px-4 text-slate-400 text-[11px]">
+      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-center sm:text-left">
+        <div>© 2026 Bản quyền thuộc về <strong class="text-white">TEMPLATEBDS</strong> — Nền tảng phân phối & Thiết kế Website Bất Động Sản Chuyên Nghiệp.</div>
+        <div class="text-[10px] text-slate-500">Mẫu Giao Diện: <strong>BDS-08 (Hưng Lộc Phát & NovaWorld)</strong></div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      if (menu) menu.classList.toggle('hidden');
+    }
+  </script>
+</body>
+</html>

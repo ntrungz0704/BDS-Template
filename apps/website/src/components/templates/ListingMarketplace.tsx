@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import { 
   Search, MapPin, Building, ChevronRight, ChevronLeft, 
   Menu, X, Phone, Mail, ArrowRight, Star, Quote, 
@@ -257,16 +258,27 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
   useEffect(() => {
     setCurrentPageState(normalizeListingPage(initialPage));
   }, [initialPage]);
-  const setCurrentPage = (p: string) => {
+
+  const setCurrentPage = (p: string, customSlug?: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
     if (typeof setSelectedArticle === "function") setSelectedArticle(null);
 
     setCurrentPageState(p);
-    if (typeof window !== 'undefined') {
-      const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
-    }
+    const tSlug = template?.slug || 'bds-12';
+    syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-12') ? parts[1] : 'home');
+      if (sub) {
+        setCurrentPageState(normalizeListingPage(sub));
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [template?.slug]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Search & Filter States
@@ -415,7 +427,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
         {/* Logo */}
         <div className="flex-shrink-0 cursor-pointer" onClick={() => navigateTo('home')}>
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-tr from-[#38BDF8] to-[#818CF8] rounded-xl flex items-center justify-center shadow-lg shadow-sky-500/20">
+            <div className="w-10 h-10 bg-gradient-to-tr from-[#38BDF8] to-[#818CF8] rounded-sm flex items-center justify-center shadow-lg shadow-sky-500/20">
               <Building className="text-[#020617]" size={24} strokeWidth={2.5} />
             </div>
             <span className="text-2xl font-bold font-['Plus_Jakarta_Sans'] text-white tracking-tight">
@@ -504,7 +516,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
 
         <div className={`${MAX_W} mx-auto px-4 relative z-10 w-full`}>
           <div className="max-w-3xl">
-            <div className="inline-block px-4 py-1.5 rounded-full bg-[#38BDF8]/20 border border-[#38BDF8]/30 text-[#38BDF8] font-bold text-xs uppercase tracking-widest mb-6 backdrop-blur-md">
+            <div className="inline-block px-4 py-1.5 rounded-sm bg-[#38BDF8]/20 border border-[#38BDF8]/30 text-[#38BDF8] font-bold text-xs uppercase tracking-widest mb-6 backdrop-blur-md">
               Dự án Nổi bật 2026
             </div>
             <h1 className="text-5xl md:text-7xl font-bold font-['Plus_Jakarta_Sans'] text-white leading-tight mb-6">
@@ -517,13 +529,13 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             <div className="flex flex-wrap gap-4">
               <button 
                 onClick={() => navigateTo('projects')}
-                className="bg-gradient-to-r from-[#38BDF8] to-[#818CF8] text-[#020617] px-8 py-4 rounded-xl font-bold hover:shadow-[0_0_30px_rgba(56,189,248,0.5)] transition-all flex items-center gap-2"
+                className="bg-gradient-to-r from-[#38BDF8] to-[#818CF8] text-[#020617] px-8 py-4 rounded-sm font-bold hover:shadow-[0_0_30px_rgba(56,189,248,0.5)] transition-all flex items-center gap-2"
               >
                 Khám phá ngay <ArrowRight size={20} />
               </button>
               <button 
                 onClick={() => alert('Đang tải video giới thiệu dự án...')}
-                className="bg-white/5 border border-white/20 text-white px-8 py-4 rounded-xl font-bold hover:bg-white/10 backdrop-blur-md transition-all flex items-center gap-2"
+                className="bg-white/5 border border-white/20 text-white px-8 py-4 rounded-sm font-bold hover:bg-white/10 backdrop-blur-md transition-all flex items-center gap-2"
               >
                 <PlayCircle size={20} className="text-[#38BDF8]" /> Xem Video
               </button>
@@ -538,7 +550,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
   const renderAdvancedSearch = (isOnProjectsPage = false) => (
     <div className={`relative z-20 ${isOnProjectsPage ? 'mb-8' : '-mt-16 pb-16'}`}>
       <div className={`${MAX_W} mx-auto px-4`}>
-        <div className="bg-[#020617]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl shadow-black/50">
+        <div className="bg-[#020617]/80 backdrop-blur-xl border border-white/10 rounded-sm p-6 shadow-2xl shadow-black/50">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
             
             {/* Search Query */}
@@ -551,7 +563,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Tên dự án, khu vực..." 
-                  className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#38BDF8] transition-colors" 
+                  className="w-full bg-white/5 border border-white/10 rounded-sm pl-10 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#38BDF8] transition-colors" 
                 />
               </div>
             </div>
@@ -567,7 +579,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                     setListingType(e.target.value);
                     setPriceRange(''); // Reset price range since thresholds differ
                   }}
-                  className="w-full bg-[#020617] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white appearance-none focus:outline-none focus:border-[#38BDF8] transition-colors"
+                  className="w-full bg-[#020617] border border-white/10 rounded-sm pl-10 pr-4 py-3 text-sm text-white appearance-none focus:outline-none focus:border-[#38BDF8] transition-colors"
                 >
                   <option value="">Tất cả GD</option>
                   <option value="Bán">Bán</option>
@@ -585,7 +597,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                 <select 
                   value={propertyType}
                   onChange={(e) => setPropertyType(e.target.value)}
-                  className="w-full bg-[#020617] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white appearance-none focus:outline-none focus:border-[#38BDF8] transition-colors"
+                  className="w-full bg-[#020617] border border-white/10 rounded-sm pl-10 pr-4 py-3 text-sm text-white appearance-none focus:outline-none focus:border-[#38BDF8] transition-colors"
                 >
                   <option value="">Tất cả loại</option>
                   <option value="apartment">Căn hộ</option>
@@ -604,7 +616,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                 <select 
                   value={priceRange}
                   onChange={(e) => setPriceRange(e.target.value)}
-                  className="w-full bg-[#020617] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white appearance-none focus:outline-none focus:border-[#38BDF8] transition-colors"
+                  className="w-full bg-[#020617] border border-white/10 rounded-sm pl-10 pr-4 py-3 text-sm text-white appearance-none focus:outline-none focus:border-[#38BDF8] transition-colors"
                 >
                   <option value="">Mọi mức giá</option>
                   {listingType !== 'Cho thuê' ? (
@@ -635,7 +647,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                 <select 
                   value={bedrooms}
                   onChange={(e) => setBedrooms(e.target.value)}
-                  className="w-full bg-[#020617] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white appearance-none focus:outline-none focus:border-[#38BDF8] transition-colors"
+                  className="w-full bg-[#020617] border border-white/10 rounded-sm pl-10 pr-4 py-3 text-sm text-white appearance-none focus:outline-none focus:border-[#38BDF8] transition-colors"
                 >
                   <option value="">Tất cả</option>
                   <option value="1">1 Phòng ngủ</option>
@@ -655,7 +667,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                     navigateTo('projects');
                   }
                 }}
-                className="w-full bg-gradient-to-r from-[#38BDF8] to-[#818CF8] hover:shadow-[0_0_20px_rgba(56,189,248,0.4)] text-[#020617] font-bold rounded-xl py-3 text-sm flex items-center justify-center gap-2 transition-all"
+                className="w-full bg-gradient-to-r from-[#38BDF8] to-[#818CF8] hover:shadow-[0_0_20px_rgba(56,189,248,0.4)] text-[#020617] font-bold rounded-sm py-3 text-sm flex items-center justify-center gap-2 transition-all"
               >
                 <Search size={16} /> Tìm Kiếm
               </button>
@@ -701,7 +713,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                   setRegion(loc.filterVal);
                   navigateTo('projects');
                 }}
-                className="group relative rounded-2xl overflow-hidden cursor-pointer h-80 border border-white/5 hover:border-[#38BDF8]/40 transition-colors"
+                className="group relative rounded-sm overflow-hidden cursor-pointer h-80 border border-white/5 hover:border-[#38BDF8]/40 transition-colors"
               >
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={loc.img} alt={loc.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/40 to-transparent"></div>
@@ -733,14 +745,14 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredProjects.map(p => (
-              <div key={p.id} className="group bg-[#020617] border border-white/5 rounded-2xl overflow-hidden hover:border-[#38BDF8]/50 transition-all duration-300 hover:shadow-[0_10px_30px_rgba(56,189,248,0.1)] hover:-translate-y-2">
+              <div key={p.id} className="group bg-[#020617] border border-white/5 rounded-sm overflow-hidden hover:border-[#38BDF8]/50 transition-all duration-300 hover:shadow-[0_10px_30px_rgba(56,189,248,0.1)] hover:-translate-y-2">
                 <div className="relative h-64 overflow-hidden">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={p.img} alt={p.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   <div className="absolute top-4 left-4 flex gap-2">
-                    <span className="bg-[#020617]/80 backdrop-blur-md text-[#38BDF8] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border border-[#38BDF8]/30">
+                    <span className="bg-[#020617]/80 backdrop-blur-md text-[#38BDF8] px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-wider border border-[#38BDF8]/30">
                       {p.status}
                     </span>
-                    <span className="bg-[#38BDF8] text-[#020617] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                    <span className="bg-[#38BDF8] text-[#020617] px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-wider">
                       {p.listingType}
                     </span>
                   </div>
@@ -766,7 +778,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
           <div className="mt-12 text-center">
             <button 
               onClick={() => navigateTo('projects')}
-              className="border border-[#38BDF8] text-[#38BDF8] hover:bg-[#38BDF8] hover:text-[#020617] px-8 py-3 rounded-full font-bold transition-all duration-300"
+              className="border border-[#38BDF8] text-[#38BDF8] hover:bg-[#38BDF8] hover:text-[#020617] px-8 py-3 rounded-sm font-bold transition-all duration-300"
             >
               Xem tất cả dự án
             </button>
@@ -793,7 +805,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                   <button 
                     key={status}
                     onClick={() => setSelectedStatusTab(status)}
-                    className={`px-6 py-4 rounded-xl font-bold text-left flex justify-between items-center transition-all border ${
+                    className={`px-6 py-4 rounded-sm font-bold text-left flex justify-between items-center transition-all border ${
                       selectedStatusTab === status
                         ? 'bg-[#38BDF8]/10 border-[#38BDF8]/30 text-[#38BDF8]'
                         : 'bg-white/5 border-white/10 text-white hover:border-[#38BDF8]/50 hover:bg-[#38BDF8]/5'
@@ -810,7 +822,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                    <div 
                       key={p.id} 
                       onClick={() => setSelectedProject(p)}
-                      className="bg-white/5 border border-white/10 rounded-2xl p-4 flex gap-4 hover:bg-white/10 transition-colors cursor-pointer"
+                      className="bg-white/5 border border-white/10 rounded-sm p-4 flex gap-4 hover:bg-white/10 transition-colors cursor-pointer"
                    >
                       <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={p.img} alt={p.name} className="w-24 h-24 rounded-lg object-cover shrink-0" />
                       <div className="flex flex-col justify-center">
@@ -821,7 +833,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                    </div>
                 ))
               ) : (
-                <div className="col-span-2 flex items-center justify-center p-8 bg-white/5 rounded-2xl border border-white/10">
+                <div className="col-span-2 flex items-center justify-center p-8 bg-white/5 rounded-sm border border-white/10">
                   <span className="text-slate-500 text-sm">Không có dự án nào thuộc trạng thái này.</span>
                 </div>
               )}
@@ -836,13 +848,13 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
   const renderAbout = () => (
     <section className="py-24 bg-[#060B20] relative overflow-hidden">
       {/* Decorative blurs */}
-      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-96 h-96 bg-[#38BDF8]/10 rounded-full blur-[100px] pointer-events-none"></div>
-      <div className="absolute top-1/2 right-0 -translate-y-1/2 w-96 h-96 bg-[#818CF8]/10 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-96 h-96 bg-[#38BDF8]/10 rounded-sm blur-[100px] pointer-events-none"></div>
+      <div className="absolute top-1/2 right-0 -translate-y-1/2 w-96 h-96 bg-[#818CF8]/10 rounded-sm blur-[100px] pointer-events-none"></div>
 
       <div className={`${MAX_W} mx-auto px-4 relative z-10`}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[#38BDF8] text-sm font-bold mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-white/5 border border-white/10 text-[#38BDF8] text-sm font-bold mb-6">
               <Shield size={16} /> Về PlatformBDS
             </div>
             <h2 className="text-4xl md:text-5xl font-bold font-['Plus_Jakarta_Sans'] text-white mb-6 leading-tight">
@@ -872,17 +884,17 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             </div>
             <button 
               onClick={() => navigateTo('about')}
-              className="bg-white text-[#020617] px-8 py-3 rounded-xl font-bold hover:bg-[#38BDF8] hover:text-[#020617] transition-colors"
+              className="bg-white text-[#020617] px-8 py-3 rounded-sm font-bold hover:bg-[#38BDF8] hover:text-[#020617] transition-colors"
             >
               Tìm hiểu thêm
             </button>
           </div>
           <div className="relative">
-            <div className="absolute -inset-4 bg-gradient-to-r from-[#38BDF8] to-[#818CF8] opacity-30 blur-2xl rounded-3xl"></div>
-            <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80" alt="Team" className="relative rounded-3xl object-cover w-full h-[500px] border border-white/10" />
+            <div className="absolute -inset-4 bg-gradient-to-r from-[#38BDF8] to-[#818CF8] opacity-30 blur-2xl rounded-md"></div>
+            <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80" alt="Team" className="relative rounded-md object-cover w-full h-[500px] border border-white/10" />
             
-            <div className="absolute -bottom-8 -left-8 bg-[#020617] p-6 rounded-2xl border border-white/10 shadow-2xl flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-[#38BDF8] to-[#818CF8] flex items-center justify-center text-white text-2xl font-bold">15+</div>
+            <div className="absolute -bottom-8 -left-8 bg-[#020617] p-6 rounded-sm border border-white/10 shadow-2xl flex items-center gap-4">
+              <div className="w-16 h-16 rounded-sm bg-gradient-to-r from-[#38BDF8] to-[#818CF8] flex items-center justify-center text-white text-2xl font-bold">15+</div>
               <div>
                 <div className="text-white font-bold text-lg">Năm Kinh Nghiệm</div>
                 <div className="text-slate-400 text-sm">Trong ngành BĐS</div>
@@ -905,8 +917,8 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             { label: 'Đối tác chiến lược', value: '100+', icon: Briefcase },
             { label: 'Tỉnh thành phủ sóng', value: '25+', icon: MapPin },
           ].map((item, i) => (
-            <div key={i} className="text-center p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group">
-              <div className="w-16 h-16 mx-auto mb-4 bg-[#38BDF8]/10 rounded-full flex items-center justify-center text-[#38BDF8] group-hover:scale-110 transition-transform">
+            <div key={i} className="text-center p-6 rounded-sm bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group">
+              <div className="w-16 h-16 mx-auto mb-4 bg-[#38BDF8]/10 rounded-sm flex items-center justify-center text-[#38BDF8] group-hover:scale-110 transition-transform">
                 <item.icon size={32} />
               </div>
               <div className="text-4xl font-bold text-white mb-2 font-['Plus_Jakarta_Sans']">{item.value}</div>
@@ -934,7 +946,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                 { title: 'Nghị quyết HĐQT số 124/NQ-HĐQT', date: '01/10/2026', size: '1.1 MB' },
                 { title: 'Báo cáo thường niên 2025', date: '30/03/2026', size: '15.8 MB' },
               ].map((doc, i) => (
-                <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10 hover:border-[#38BDF8]/50 transition-colors">
+                <div key={i} className="flex items-center justify-between p-4 rounded-sm bg-white/5 border border-white/10 hover:border-[#38BDF8]/50 transition-colors">
                   <div className="flex items-start gap-4">
                     <FileText className="text-[#38BDF8] mt-1 shrink-0" size={24} />
                     <div>
@@ -959,7 +971,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             </button>
           </div>
           <div className="w-full md:w-1/2">
-            <div className="bg-[#020617] border border-white/10 rounded-3xl p-8 relative overflow-hidden">
+            <div className="bg-[#020617] border border-white/10 rounded-md p-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 opacity-10 text-[#38BDF8]">
                 <TrendingUp size={120} />
               </div>
@@ -987,7 +999,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
   const renderCSR = () => (
     <section className="py-24 bg-[#020617] relative">
       <div className={`${MAX_W} mx-auto px-4 text-center max-w-4xl relative z-10`}>
-        <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-[#38BDF8] rounded-full mx-auto mb-8 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+        <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-[#38BDF8] rounded-sm mx-auto mb-8 flex items-center justify-center shadow-lg shadow-emerald-500/20">
           <Leaf className="text-white" size={36} />
         </div>
         <h2 className="text-3xl md:text-5xl font-bold font-['Plus_Jakarta_Sans'] text-white mb-6">Phát triển <span className="text-emerald-400">Bền vững</span></h2>
@@ -995,15 +1007,15 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
           Chúng tôi cam kết xây dựng các dự án xanh, giảm thiểu khí thải carbon, bảo vệ môi trường và đóng góp tích cực vào sự phát triển của cộng đồng địa phương. Mỗi dự án là một hệ sinh thái hài hòa với thiên nhiên.
         </p>
         <div className="flex flex-wrap justify-center gap-8">
-          <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-6 py-3 rounded-full">
+          <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-6 py-3 rounded-sm">
             <span className="text-3xl font-bold text-emerald-400">40%</span>
             <span className="text-sm text-slate-400 font-semibold text-left">Diện tích<br/>mảng xanh</span>
           </div>
-          <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-6 py-3 rounded-full">
+          <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-6 py-3 rounded-sm">
             <span className="text-3xl font-bold text-emerald-400">100%</span>
             <span className="text-sm text-slate-400 font-semibold text-left">Chiếu sáng<br/>Led</span>
           </div>
-          <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-6 py-3 rounded-full">
+          <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-6 py-3 rounded-sm">
             <span className="text-3xl font-bold text-emerald-400">20+</span>
             <span className="text-sm text-slate-400 font-semibold text-left">Dự án đạt<br/>chứng chỉ xanh</span>
           </div>
@@ -1024,7 +1036,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             </div>
             <button 
               onClick={() => navigateTo('gallery')}
-              className="text-white border border-white/20 px-6 py-2 rounded-full text-sm font-bold hover:bg-white/10 transition-colors"
+              className="text-white border border-white/20 px-6 py-2 rounded-sm text-sm font-bold hover:bg-white/10 transition-colors"
             >
               Xem toàn bộ thư viện
             </button>
@@ -1032,7 +1044,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:h-[500px]">
             <div 
               onClick={() => setSelectedGalleryImg(GALLERY_IMAGES[0].url)}
-              className="col-span-2 row-span-2 relative group rounded-2xl overflow-hidden cursor-pointer"
+              className="col-span-2 row-span-2 relative group rounded-sm overflow-hidden cursor-pointer"
             >
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={GALLERY_IMAGES[0].url} alt="Gallery" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -1043,7 +1055,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
               <div 
                 key={i} 
                 onClick={() => setSelectedGalleryImg(img.url)}
-                className="relative group rounded-2xl overflow-hidden cursor-pointer h-40 md:h-auto"
+                className="relative group rounded-sm overflow-hidden cursor-pointer h-40 md:h-auto"
               >
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={img.url} alt="Gallery" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -1067,16 +1079,16 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[1,2,3].map(i => (
-            <div key={i} className="bg-white/5 border border-white/10 p-8 rounded-3xl relative">
+            <div key={i} className="bg-white/5 border border-white/10 p-8 rounded-md relative">
               <Quote className="absolute top-6 right-6 text-[#38BDF8] opacity-20 w-16 h-16" />
               <div className="flex gap-1 mb-6">
                 {[...Array(5)].map((_, j) => <Star key={j} size={16} fill="#F59E0B" className="text-[#F59E0B]" />)}
               </div>
               <p className="text-slate-300 text-lg mb-8 relative z-10 italic">
-                “Một trải nghiệm mua nhà tuyệt vời. Đội ngũ tư vấn chuyên nghiệp, thủ tục nhanh gọn và đặc biệt là chất lượng bàn giao vượt ngoài mong đợi của gia đình tôi.”
+                "Một trải nghiệm mua nhà tuyệt vời. Đội ngũ tư vấn chuyên nghiệp, thủ tục nhanh gọn và đặc biệt là chất lượng bàn giao vượt ngoài mong đợi của gia đình tôi."
               </p>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-slate-800 border-2 border-[#38BDF8] overflow-hidden">
+                <div className="w-12 h-12 rounded-sm bg-slate-800 border-2 border-[#38BDF8] overflow-hidden">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100&q=80" alt="Avatar" className="w-full h-full object-cover" />
                 </div>
                 <div>
@@ -1114,12 +1126,12 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div 
               onClick={() => setSelectedArticle(featuredNews)}
-              className="lg:col-span-2 relative group rounded-3xl overflow-hidden cursor-pointer h-[500px]"
+              className="lg:col-span-2 relative group rounded-md overflow-hidden cursor-pointer h-[500px]"
             >
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={featuredNews.img} alt="News" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/50 to-transparent"></div>
               <div className="absolute bottom-0 left-0 w-full p-8">
-                <span className="bg-[#38BDF8] text-[#020617] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 inline-block">{featuredNews.category}</span>
+                <span className="bg-[#38BDF8] text-[#020617] px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-wider mb-4 inline-block">{featuredNews.category}</span>
                 <h3 className="text-3xl font-bold text-white mb-4 leading-tight group-hover:text-[#38BDF8] transition-colors">
                   {featuredNews.title}
                 </h3>
@@ -1139,7 +1151,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                   onClick={() => setSelectedArticle(n)}
                   className="flex gap-4 group cursor-pointer"
                 >
-                  <div className="w-32 h-32 rounded-xl overflow-hidden shrink-0">
+                  <div className="w-32 h-32 rounded-sm overflow-hidden shrink-0">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={n.img} alt="News thumb" className="w-full h-full object-cover transition-transform group-hover:scale-110" />
                   </div>
                   <div className="flex flex-col justify-center">
@@ -1179,7 +1191,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             </div>
             <div className="space-y-4">
               {faqs.map((faq, i) => (
-                <div key={i} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+                <div key={i} className="bg-white/5 border border-white/10 rounded-sm overflow-hidden">
                   <button 
                     onClick={() => setOpenFAQIndex(openFAQIndex === i ? null : i)}
                     className="w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none"
@@ -1203,8 +1215,8 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
   const renderCTA = () => (
     <section className="py-12 bg-[#020617]">
       <div className={`${MAX_W} mx-auto px-4`}>
-        <div className="bg-gradient-to-br from-[#0C4A6E] to-[#020617] rounded-3xl p-8 md:p-16 border border-[#38BDF8]/20 relative overflow-hidden text-center md:text-left">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[#38BDF8]/20 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="bg-gradient-to-br from-[#0C4A6E] to-[#020617] rounded-md p-8 md:p-16 border border-[#38BDF8]/20 relative overflow-hidden text-center md:text-left">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#38BDF8]/20 rounded-sm blur-[100px] pointer-events-none"></div>
           
           <div className="flex flex-col md:flex-row items-center justify-between relative z-10 gap-8">
             <div className="max-w-2xl">
@@ -1219,7 +1231,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             <div className="shrink-0 w-full md:w-auto">
               <button 
                 onClick={() => navigateTo('contact')}
-                className="w-full md:w-auto bg-[#38BDF8] hover:bg-[#0EA5E9] text-[#020617] px-8 py-5 rounded-2xl font-black text-lg transition-all shadow-[0_0_40px_rgba(56,189,248,0.4)] flex items-center justify-center gap-3"
+                className="w-full md:w-auto bg-[#38BDF8] hover:bg-[#0EA5E9] text-[#020617] px-8 py-5 rounded-sm font-black text-lg transition-all shadow-[0_0_40px_rgba(56,189,248,0.4)] flex items-center justify-center gap-3"
               >
                 <Phone size={24} /> Gọi Ngay: 1800 9999
               </button>
@@ -1237,7 +1249,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div>
             <div className="flex items-center gap-2 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-tr from-[#38BDF8] to-[#818CF8] rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-tr from-[#38BDF8] to-[#818CF8] rounded-sm flex items-center justify-center">
                 <Building className="text-[#020617]" size={24} />
               </div>
               <span className="text-2xl font-bold text-white">
@@ -1246,10 +1258,10 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             </div>
             <p className="mb-6 leading-relaxed">Nền tảng giao dịch bất động sản cao cấp hàng đầu Việt Nam. Nơi hội tụ những dự án tinh hoa và cơ hội đầu tư sinh lời bền vững.</p>
             <div className="flex gap-4">
-              <button onClick={() => alert('Mở Facebook')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors cursor-pointer"><Facebook size={18}/></button>
-              <button onClick={() => alert('Mở Twitter')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors cursor-pointer"><Twitter size={18}/></button>
-              <button onClick={() => alert('Mở LinkedIn')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors cursor-pointer"><Linkedin size={18}/></button>
-              <button onClick={() => alert('Mở Instagram')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors cursor-pointer"><Instagram size={18}/></button>
+              <button onClick={() => alert('Mở Facebook')} className="w-10 h-10 rounded-sm bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors cursor-pointer"><Facebook size={18}/></button>
+              <button onClick={() => alert('Mở Twitter')} className="w-10 h-10 rounded-sm bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors cursor-pointer"><Twitter size={18}/></button>
+              <button onClick={() => alert('Mở LinkedIn')} className="w-10 h-10 rounded-sm bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors cursor-pointer"><Linkedin size={18}/></button>
+              <button onClick={() => alert('Mở Instagram')} className="w-10 h-10 rounded-sm bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors cursor-pointer"><Instagram size={18}/></button>
             </div>
           </div>
           
@@ -1339,14 +1351,14 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
           {filtered.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
               {filtered.map(p => (
-                <div key={p.id} className="group bg-[#060B20] border border-white/5 rounded-2xl overflow-hidden hover:border-[#38BDF8]/50 transition-all hover:shadow-[0_10px_35px_rgba(56,189,248,0.05)]">
+                <div key={p.id} className="group bg-[#060B20] border border-white/5 rounded-sm overflow-hidden hover:border-[#38BDF8]/50 transition-all hover:shadow-[0_10px_35px_rgba(56,189,248,0.05)]">
                   <div className="relative h-56 overflow-hidden">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={p.img} alt={p.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     <div className="absolute top-3 left-3 flex gap-2">
-                      <span className="bg-[#020617]/90 text-[#38BDF8] px-2.5 py-0.5 rounded-full text-xs font-bold border border-[#38BDF8]/20">
+                      <span className="bg-[#020617]/90 text-[#38BDF8] px-2.5 py-0.5 rounded-sm text-xs font-bold border border-[#38BDF8]/20">
                         {p.status}
                       </span>
-                      <span className="bg-[#38BDF8] text-[#020617] px-2.5 py-0.5 rounded-full text-xs font-bold">
+                      <span className="bg-[#38BDF8] text-[#020617] px-2.5 py-0.5 rounded-sm text-xs font-bold">
                         {p.listingType}
                       </span>
                     </div>
@@ -1361,7 +1373,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                       <div className="text-[#38BDF8] font-black text-lg">{p.priceDisplay}</div>
                       <button 
                         onClick={() => setSelectedProject(p)}
-                        className="bg-white/5 border border-white/10 text-white hover:bg-[#38BDF8] hover:text-[#020617] px-4 py-2 rounded-xl text-xs font-bold transition-all"
+                        className="bg-white/5 border border-white/10 text-white hover:bg-[#38BDF8] hover:text-[#020617] px-4 py-2 rounded-sm text-xs font-bold transition-all"
                       >
                         Chi tiết
                       </button>
@@ -1371,7 +1383,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 bg-white/5 border border-white/10 rounded-2xl mt-8">
+            <div className="text-center py-20 bg-white/5 border border-white/10 rounded-sm mt-8">
               <Building className="mx-auto text-slate-500 mb-4" size={48} />
               <h3 className="text-xl font-bold text-white mb-2">Không tìm thấy dự án</h3>
               <p className="text-slate-400">Vui lòng thay đổi từ khóa hoặc bộ lọc để tìm kiếm lại.</p>
@@ -1384,7 +1396,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                   setBedrooms('');
                   setRegion('');
                 }}
-                className="mt-6 bg-[#38BDF8] text-[#020617] font-bold px-6 py-2.5 rounded-xl hover:bg-[#0EA5E9] transition-colors"
+                className="mt-6 bg-[#38BDF8] text-[#020617] font-bold px-6 py-2.5 rounded-sm hover:bg-[#0EA5E9] transition-colors"
               >
                 Xóa tất cả bộ lọc
               </button>
@@ -1410,8 +1422,8 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               {coreValues.map((value, idx) => (
-                <div key={idx} className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/10 hover:border-[#38BDF8]/50 transition-all group">
-                  <div className="w-12 h-12 bg-[#38BDF8]/10 text-[#38BDF8] rounded-xl flex items-center justify-center text-xl font-bold mb-6 group-hover:scale-110 transition-transform">
+                <div key={idx} className="bg-white/5 border border-white/10 rounded-sm p-8 hover:bg-white/10 hover:border-[#38BDF8]/50 transition-all group">
+                  <div className="w-12 h-12 bg-[#38BDF8]/10 text-[#38BDF8] rounded-sm flex items-center justify-center text-xl font-bold mb-6 group-hover:scale-110 transition-transform">
                     {idx + 1}
                   </div>
                   <h3 className="text-xl font-bold text-white mb-3">{value.title}</h3>
@@ -1432,7 +1444,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             <div className="relative border-l border-white/10 ml-4 md:ml-32 py-4 space-y-12">
               {milestones.map((m, idx) => (
                 <div key={idx} className="relative pl-8 md:pl-12 group">
-                  <div className="absolute -left-[9px] top-1.5 w-4 h-4 bg-[#38BDF8] rounded-full border-4 border-[#020617] group-hover:scale-150 transition-transform"></div>
+                  <div className="absolute -left-[9px] top-1.5 w-4 h-4 bg-[#38BDF8] rounded-sm border-4 border-[#020617] group-hover:scale-150 transition-transform"></div>
                   <div className="flex flex-col md:flex-row md:items-start gap-4">
                     <span className="text-2xl font-black text-[#38BDF8] font-['Plus_Jakarta_Sans'] tracking-wider leading-none shrink-0 w-20">{m.year}</span>
                     <div>
@@ -1455,14 +1467,14 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {leadership.map((leader, idx) => (
-                <div key={idx} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 hover:border-[#818CF8]/50 transition-all duration-300">
+                <div key={idx} className="bg-white/5 border border-white/10 rounded-sm overflow-hidden hover:bg-white/10 hover:border-[#818CF8]/50 transition-all duration-300">
                   <div className="h-80 overflow-hidden relative">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={leader.avatar} alt={leader.name} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
                   </div>
                   <div className="p-6">
                     <h4 className="text-xl font-bold text-white mb-1">{leader.name}</h4>
                     <p className="text-[#38BDF8] text-sm mb-4 font-semibold">{leader.role}</p>
-                    <p className="text-slate-400 text-sm italic leading-relaxed border-t border-white/5 pt-4">“{leader.quote}”</p>
+                    <p className="text-slate-400 text-sm italic leading-relaxed border-t border-white/5 pt-4">"{leader.quote}"</p>
                   </div>
                 </div>
               ))}
@@ -1497,7 +1509,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
               <button
                 key={tab}
                 onClick={() => setSelectedGalleryTab(tab)}
-                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${
+                className={`px-6 py-2.5 rounded-sm text-sm font-bold transition-all ${
                   selectedGalleryTab === tab
                     ? 'bg-gradient-to-r from-[#38BDF8] to-[#818CF8] text-[#020617] shadow-lg shadow-sky-500/20'
                     : 'bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10'
@@ -1514,7 +1526,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
               <div 
                 key={idx} 
                 onClick={() => setSelectedGalleryImg(img.url)}
-                className="break-inside-avoid relative group rounded-2xl overflow-hidden cursor-pointer border border-white/5 hover:border-[#38BDF8]/40 transition-colors"
+                className="break-inside-avoid relative group rounded-sm overflow-hidden cursor-pointer border border-white/5 hover:border-[#38BDF8]/40 transition-colors"
               >
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={img.url} alt={img.title} className="w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-[#020617]/60 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6">
@@ -1554,7 +1566,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                 value={searchNewsQuery}
                 onChange={(e) => setSearchNewsQuery(e.target.value)}
                 placeholder="Tìm tin tức..." 
-                className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-[#38BDF8] transition-colors text-sm" 
+                className="w-full bg-white/5 border border-white/10 rounded-sm pl-12 pr-4 py-3 text-white focus:outline-none focus:border-[#38BDF8] transition-colors text-sm" 
               />
             </div>
           </div>
@@ -1566,12 +1578,12 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                 <>
                   <div 
                     onClick={() => setSelectedArticle(featuredNews)}
-                    className="lg:col-span-2 relative group rounded-3xl overflow-hidden cursor-pointer h-[500px]"
+                    className="lg:col-span-2 relative group rounded-md overflow-hidden cursor-pointer h-[500px]"
                   >
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={featuredNews.img} alt={featuredNews.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/50 to-transparent"></div>
                     <div className="absolute bottom-0 left-0 w-full p-8">
-                      <span className="bg-[#38BDF8] text-[#020617] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 inline-block">{featuredNews.category}</span>
+                      <span className="bg-[#38BDF8] text-[#020617] px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-wider mb-4 inline-block">{featuredNews.category}</span>
                       <h3 className="text-3xl font-bold text-white mb-4 leading-tight group-hover:text-[#38BDF8] transition-colors">
                         {featuredNews.title}
                       </h3>
@@ -1590,9 +1602,9 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                       <div 
                         key={n.id} 
                         onClick={() => setSelectedArticle(n)}
-                        className="flex gap-4 group cursor-pointer p-4 bg-white/5 border border-white/5 rounded-2xl hover:border-white/10 transition-colors"
+                        className="flex gap-4 group cursor-pointer p-4 bg-white/5 border border-white/5 rounded-sm hover:border-white/10 transition-colors"
                       >
-                        <div className="w-28 h-28 rounded-xl overflow-hidden shrink-0">
+                        <div className="w-28 h-28 rounded-sm overflow-hidden shrink-0">
                           <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={n.img} alt={n.title} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
                         </div>
                         <div className="flex flex-col justify-center">
@@ -1614,11 +1626,11 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                     <div 
                       key={n.id}
                       onClick={() => setSelectedArticle(n)}
-                      className="group bg-[#060B20] border border-white/5 rounded-2xl overflow-hidden hover:border-[#38BDF8]/50 transition-all cursor-pointer flex flex-col h-full"
+                      className="group bg-[#060B20] border border-white/5 rounded-sm overflow-hidden hover:border-[#38BDF8]/50 transition-all cursor-pointer flex flex-col h-full"
                     >
                       <div className="h-48 overflow-hidden relative">
                         <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={n.img} alt={n.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        <span className="absolute top-4 left-4 bg-[#38BDF8] text-[#020617] px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider">{n.category}</span>
+                        <span className="absolute top-4 left-4 bg-[#38BDF8] text-[#020617] px-2.5 py-0.5 rounded-sm text-xs font-bold uppercase tracking-wider">{n.category}</span>
                       </div>
                       <div className="p-6 flex flex-col flex-grow">
                         <div className="flex items-center gap-4 text-xs text-slate-500 mb-3">
@@ -1638,13 +1650,13 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
               )}
             </div>
           ) : (
-            <div className="text-center py-20 bg-white/5 border border-white/10 rounded-2xl">
+            <div className="text-center py-20 bg-white/5 border border-white/10 rounded-sm">
               <FileText className="mx-auto text-slate-500 mb-4" size={48} />
               <h3 className="text-xl font-bold text-white mb-2">Không tìm thấy tin tức</h3>
               <p className="text-slate-400">Vui lòng thay đổi từ khóa tìm kiếm.</p>
               <button 
                 onClick={() => setSearchNewsQuery('')}
-                className="mt-6 bg-[#38BDF8] text-[#020617] font-bold px-6 py-2.5 rounded-xl hover:bg-[#0EA5E9] transition-colors"
+                className="mt-6 bg-[#38BDF8] text-[#020617] font-bold px-6 py-2.5 rounded-sm hover:bg-[#0EA5E9] transition-colors"
               >
                 Xóa tìm kiếm
               </button>
@@ -1670,8 +1682,8 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {contactSubmitted ? (
-              <div className="bg-[#060B20] p-8 md:p-12 rounded-3xl border border-emerald-500/30 flex flex-col items-center justify-center text-center">
-                <div className="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mb-6 border border-emerald-500/20">
+              <div className="bg-[#060B20] p-8 md:p-12 rounded-md border border-emerald-500/30 flex flex-col items-center justify-center text-center">
+                <div className="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-sm flex items-center justify-center mb-6 border border-emerald-500/20">
                   <CheckCircle2 size={44} />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-3">Gửi yêu cầu thành công!</h3>
@@ -1683,13 +1695,13 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                     setContactSubmitted(false);
                     setContactForm({ name: '', email: '', phone: '', message: '' });
                   }}
-                  className="bg-gradient-to-r from-[#38BDF8] to-[#818CF8] text-[#020617] font-bold px-8 py-3 rounded-xl hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] transition-all"
+                  className="bg-gradient-to-r from-[#38BDF8] to-[#818CF8] text-[#020617] font-bold px-8 py-3 rounded-sm hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] transition-all"
                 >
                   Gửi tin nhắn mới
                 </button>
               </div>
             ) : (
-              <div className="bg-[#060B20] p-8 rounded-3xl border border-white/10">
+              <div className="bg-[#060B20] p-8 rounded-md border border-white/10">
                 <h3 className="text-2xl font-bold text-white mb-6">Gửi tin nhắn</h3>
                 <form onSubmit={handleContactSubmit} className="space-y-4">
                   <div>
@@ -1700,7 +1712,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                       value={contactForm.name}
                       onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
                       placeholder="Họ và tên của bạn" 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#38BDF8] outline-none transition-colors" 
+                      className="w-full bg-white/5 border border-white/10 rounded-sm px-4 py-3 text-white focus:border-[#38BDF8] outline-none transition-colors" 
                     />
                   </div>
                   <div>
@@ -1711,7 +1723,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                       value={contactForm.email}
                       onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
                       placeholder="Email liên hệ" 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#38BDF8] outline-none transition-colors" 
+                      className="w-full bg-white/5 border border-white/10 rounded-sm px-4 py-3 text-white focus:border-[#38BDF8] outline-none transition-colors" 
                     />
                   </div>
                   <div>
@@ -1722,7 +1734,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                       value={contactForm.phone}
                       onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
                       placeholder="Số điện thoại của bạn" 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#38BDF8] outline-none transition-colors" 
+                      className="w-full bg-white/5 border border-white/10 rounded-sm px-4 py-3 text-white focus:border-[#38BDF8] outline-none transition-colors" 
                     />
                   </div>
                   <div>
@@ -1732,10 +1744,10 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                       onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
                       placeholder="Bạn đang quan tâm đến dự án nào? Hãy viết yêu cầu tại đây..." 
                       rows={4} 
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#38BDF8] outline-none transition-colors"
+                      className="w-full bg-white/5 border border-white/10 rounded-sm px-4 py-3 text-white focus:border-[#38BDF8] outline-none transition-colors"
                     ></textarea>
                   </div>
-                    <button type="submit" className="w-full bg-[#38BDF8] text-[#020617] font-bold py-4 rounded-xl hover:bg-[#0EA5E9] transition-all hover:shadow-[0_0_15px_rgba(56,189,248,0.3)] cursor-pointer">Gửi liên hệ</button>
+                    <button type="submit" className="w-full bg-[#38BDF8] text-[#020617] font-bold py-4 rounded-sm hover:bg-[#0EA5E9] transition-all hover:shadow-[0_0_15px_rgba(56,189,248,0.3)] cursor-pointer">Gửi liên hệ</button>
                 </form>
               </div>
             )}
@@ -1743,8 +1755,8 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             <div className="flex flex-col justify-between">
               {/* Contact Info */}
               <div className="grid grid-cols-1 gap-4 mb-6">
-                <div className="bg-white/5 border border-white/10 p-6 rounded-2xl flex gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#38BDF8]/10 text-[#38BDF8] flex items-center justify-center shrink-0">
+                <div className="bg-white/5 border border-white/10 p-6 rounded-sm flex gap-4">
+                  <div className="w-12 h-12 rounded-sm bg-[#38BDF8]/10 text-[#38BDF8] flex items-center justify-center shrink-0">
                     <MapPin size={24} />
                   </div>
                   <div>
@@ -1752,8 +1764,8 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                     <p className="text-slate-400 text-sm">Tòa nhà Bitexco Financial Tower, 2 Hải Triều, Bến Nghé, Quận 1, TP. Hồ Chí Minh</p>
                   </div>
                 </div>
-                <div className="bg-white/5 border border-white/10 p-6 rounded-2xl flex gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#38BDF8]/10 text-[#38BDF8] flex items-center justify-center shrink-0">
+                <div className="bg-white/5 border border-white/10 p-6 rounded-sm flex gap-4">
+                  <div className="w-12 h-12 rounded-sm bg-[#38BDF8]/10 text-[#38BDF8] flex items-center justify-center shrink-0">
                     <Phone size={24} />
                   </div>
                   <div>
@@ -1761,8 +1773,8 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                     <p className="text-slate-400 text-sm">1800 9999 (Miễn phí cước cuộc gọi, hoạt động 24/7)</p>
                   </div>
                 </div>
-                <div className="bg-white/5 border border-white/10 p-6 rounded-2xl flex gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#38BDF8]/10 text-[#38BDF8] flex items-center justify-center shrink-0">
+                <div className="bg-white/5 border border-white/10 p-6 rounded-sm flex gap-4">
+                  <div className="w-12 h-12 rounded-sm bg-[#38BDF8]/10 text-[#38BDF8] flex items-center justify-center shrink-0">
                     <Mail size={24} />
                   </div>
                   <div>
@@ -1773,7 +1785,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
               </div>
 
               {/* Interactive Google Map */}
-              <div className="w-full h-80 bg-[#060B20] rounded-3xl border border-white/10 overflow-hidden relative shadow-2xl flex flex-col">
+              <div className="w-full h-80 bg-[#060B20] rounded-md border border-white/10 overflow-hidden relative shadow-2xl flex flex-col">
                 <div className="px-4 py-2.5 bg-slate-900/90 border-b border-white/10 flex items-center justify-between text-xs z-10">
                   <div className="flex items-center gap-2 text-white font-bold truncate">
                     <MapPin size={14} className="text-[#38BDF8] shrink-0" />
@@ -1810,10 +1822,10 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
     if (!selectedProject) return null;
     return (
       <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-        <div className="bg-[#060B20] border border-white/10 rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl relative my-8">
+        <div className="bg-[#060B20] border border-white/10 rounded-md max-w-3xl w-full overflow-hidden shadow-2xl relative my-8">
           <button 
             onClick={() => setSelectedProject(null)}
-            className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full transition-all z-10"
+            className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white p-2 rounded-sm transition-all z-10"
           >
             <X size={20} />
           </button>
@@ -1822,10 +1834,10 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedProject.img} alt={selectedProject.name} className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#060B20] via-transparent to-transparent"></div>
             <div className="absolute bottom-6 left-6 flex gap-2">
-              <span className="bg-[#38BDF8] text-[#020617] px-3.5 py-1 rounded-full text-xs font-black uppercase">
+              <span className="bg-[#38BDF8] text-[#020617] px-3.5 py-1 rounded-sm text-xs font-black uppercase">
                 {selectedProject.listingType}
               </span>
-              <span className="bg-white/15 backdrop-blur-md text-white px-3.5 py-1 rounded-full text-xs font-bold border border-white/20">
+              <span className="bg-white/15 backdrop-blur-md text-white px-3.5 py-1 rounded-sm text-xs font-bold border border-white/20">
                 {selectedProject.status}
               </span>
             </div>
@@ -1849,7 +1861,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
               <h4 className="text-white font-bold mb-3 text-sm uppercase tracking-wider">Thông số chi tiết</h4>
               <div className="grid grid-cols-2 gap-3">
                 {selectedProject.specs?.map((spec: string, idx: number) => (
-                  <div key={idx} className="bg-white/5 border border-white/5 rounded-xl px-4 py-2.5 text-xs md:text-sm text-slate-300 flex items-center gap-2">
+                  <div key={idx} className="bg-white/5 border border-white/5 rounded-sm px-4 py-2.5 text-xs md:text-sm text-slate-300 flex items-center gap-2">
                     <CheckCircle2 size={16} className="text-[#38BDF8]" /> {spec}
                   </div>
                 ))}
@@ -1871,13 +1883,13 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                     });
                     navigateTo('contact');
                   }}
-                  className="flex-grow md:flex-grow-0 bg-[#38BDF8] hover:bg-[#0EA5E9] text-[#020617] font-bold px-6 py-3 rounded-xl text-center text-sm transition-all"
+                  className="flex-grow md:flex-grow-0 bg-[#38BDF8] hover:bg-[#0EA5E9] text-[#020617] font-bold px-6 py-3 rounded-sm text-center text-sm transition-all"
                 >
                   Liên hệ tư vấn
                 </button>
                 <button 
                   onClick={() => alert(`Đang tải tài liệu giới thiệu (Brochure) cho dự án: ${selectedProject.name}`)}
-                  className="flex-grow md:flex-grow-0 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold px-6 py-3 rounded-xl text-center text-sm transition-all flex items-center justify-center gap-2"
+                  className="flex-grow md:flex-grow-0 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold px-6 py-3 rounded-sm text-center text-sm transition-all flex items-center justify-center gap-2"
                 >
                   <Download size={16} /> Tài liệu
                 </button>
@@ -1893,10 +1905,10 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
     if (!selectedArticle) return null;
     return (
       <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-        <div className="bg-[#060B20] border border-white/10 rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl relative my-8">
+        <div className="bg-[#060B20] border border-white/10 rounded-md max-w-3xl w-full overflow-hidden shadow-2xl relative my-8">
           <button 
             onClick={() => setSelectedArticle(null)}
-            className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full transition-all z-10"
+            className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white p-2 rounded-sm transition-all z-10"
           >
             <X size={20} />
           </button>
@@ -1904,7 +1916,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
           <div className="h-64 overflow-hidden relative">
             <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#060B20] via-transparent to-transparent"></div>
-            <span className="absolute bottom-6 left-6 bg-[#38BDF8] text-[#020617] px-3.5 py-1 rounded-full text-xs font-black uppercase">
+            <span className="absolute bottom-6 left-6 bg-[#38BDF8] text-[#020617] px-3.5 py-1 rounded-sm text-xs font-black uppercase">
               {selectedArticle.category}
             </span>
           </div>
@@ -1932,7 +1944,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             <div className="flex justify-end pt-8 border-t border-white/5 mt-8">
               <button 
                 onClick={() => setSelectedArticle(null)}
-                className="bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-all"
+                className="bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold px-6 py-2.5 rounded-sm text-sm transition-all"
               >
                 Đóng bài viết
               </button>
@@ -1951,13 +1963,13 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
         onClick={() => setSelectedGalleryImg(null)}
       >
         <button 
-          className="absolute top-6 right-6 bg-white/10 hover:bg-white/20 text-white p-2.5 rounded-full transition-colors"
+          className="absolute top-6 right-6 bg-white/10 hover:bg-white/20 text-white p-2.5 rounded-sm transition-colors"
           onClick={() => setSelectedGalleryImg(null)}
         >
           <X size={24} />
         </button>
         <div className="relative max-w-5xl max-h-[85vh] overflow-hidden" onClick={e => e.stopPropagation()}>
-          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedGalleryImg} alt="Lightbox Preview" className="max-w-full max-h-[80vh] rounded-xl object-contain border border-white/10 shadow-2xl" />
+          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedGalleryImg} alt="Lightbox Preview" className="max-w-full max-h-[80vh] rounded-sm object-contain border border-white/10 shadow-2xl" />
         </div>
       </div>
     );

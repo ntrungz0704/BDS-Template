@@ -7,8 +7,8 @@ const TEMPLATES = [
   { num: '03', slug: 'modern-corporate', name: 'Modern Corporate Pro (Tuấn Nhân Land)', compFile: 'CorporateTemplate.tsx', desc: 'Tập đoàn BĐS · Tổng công ty · Sàn lớn 100+ nhân sự' },
   { num: '04', slug: 'resort-paradise', name: 'Resort Paradise Style (Sunshine City)', compFile: 'ResortTemplate.tsx', desc: 'BĐS biển · Biệt thự đảo · Condotel · Second Home' },
   { num: '05', slug: 'smart-urban-city', name: 'Smart Urban City (An Viên Nha Trang)', compFile: 'UrbanTemplate.tsx', desc: 'Căn hộ chung cư · Đại đô thị thông minh · Metro' },
-  { num: '06', slug: 'industrial-estate', name: 'Industrial & Logistics Park', compFile: 'IndustrialTemplate.tsx', desc: 'Khu công nghiệp · Nhà xưởng xây sẵn · Kho vận B2B' },
-  { num: '07', slug: 'villa-royal-garden', name: 'Villa Royal Garden', compFile: 'VillaTemplate.tsx', desc: 'Biệt thự đơn lập sân vườn · Sơ đồ mặt bằng · 3D Tour' },
+  { num: '06', slug: 'industrial-estate', name: 'Grand Riverside Eco-Township', compFile: 'IndustrialTemplate.tsx', desc: 'Đại đô thị sinh thái 120ha · Căn hộ & Shophouse · Hồ cảnh quan 12ha' },
+  { num: '07', slug: 'villa-royal-garden', name: 'Pannamera Eco-Village Bảo Lộc', compFile: 'VillaTemplate.tsx', desc: 'Làng sinh thái 900m biển · Đất vườn săn mây · Sổ đỏ thổ cư có sẵn' },
   { num: '08', slug: 'green-eco-living', name: 'Green Eco Living', compFile: 'EcoTemplate.tsx', desc: 'Đô thị sinh thái xanh · Ecopark · Chuẩn Xanh ESG' },
   { num: '09', slug: 'classic-heritage', name: 'Classic Heritage Architecture', compFile: 'ClassicTemplate.tsx', desc: 'Tân cổ điển Châu Âu · Lâu đài quý phái · Indochine' },
   { num: '10', slug: 'investment-pro-hub', name: 'Investment Pro Hub', compFile: 'InvestmentTemplate.tsx', desc: 'Phân tích tài chính BĐS · Biểu đồ giá · Máy tính ROI' },
@@ -52,7 +52,7 @@ async function exportAll() {
   const designSystemContent = fs.readFileSync(DESIGN_SYSTEM_PATH, 'utf-8');
 
   for (const t of TEMPLATES) {
-    const folderName = `${t.num}-${t.slug}`;
+    const folderName = `bds-${t.num}`;
     const targetFolder = path.join(OUTPUT_BASE, folderName);
     console.log(`📁 Đang xuất [${t.num}/24]: ${folderName} (${t.name})...`);
 

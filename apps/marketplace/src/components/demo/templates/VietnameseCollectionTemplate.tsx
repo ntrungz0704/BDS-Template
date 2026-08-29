@@ -535,7 +535,7 @@ export default function VietnameseCollectionTemplate({ template, initialPage = '
 function Hero({ cfg }: { cfg: StudioConfig }) {
   const copy = (
     <div className="relative z-10 max-w-xl p-8 sm:p-12 lg:p-16">
-      <span className="inline-block px-3.5 py-1 rounded-full text-xs font-black tracking-[.2em] uppercase mb-4" style={{ background: `${cfg.accent}25`, color: cfg.accent }}>
+      <span className="inline-block px-3.5 py-1 rounded-sm text-xs font-black tracking-[.2em] uppercase mb-4" style={{ background: `${cfg.accent}25`, color: cfg.accent }}>
         ★ {cfg.eyebrow}
       </span>
       <h1 className="mt-2 text-4xl font-black leading-[1.08] sm:text-5xl lg:text-6xl tracking-tight">
@@ -545,10 +545,10 @@ function Hero({ cfg }: { cfg: StudioConfig }) {
         {cfg.subtitle}
       </p>
       <div className="mt-8 flex flex-wrap gap-4">
-        <a href="#du-an-noi-bat" className="inline-flex items-center gap-2 px-7 py-3.5 text-xs font-black text-white rounded-xl shadow-xl hover:scale-105 transition" style={{ background: cfg.primary }}>
+        <a href="#du-an-noi-bat" className="inline-flex items-center gap-2 px-7 py-3.5 text-xs font-black text-white rounded-sm shadow-xl hover:scale-105 transition" style={{ background: cfg.primary }}>
           Khám Phá Dự Án <ArrowRight className="h-4 w-4" />
         </a>
-        <a href="#nhan-tu-van" className="inline-flex items-center gap-2 px-6 py-3.5 text-xs font-bold border border-current rounded-xl hover:bg-black/5 transition">
+        <a href="#nhan-tu-van" className="inline-flex items-center gap-2 px-6 py-3.5 text-xs font-bold border border-current rounded-sm hover:bg-black/5 transition">
           <Phone className="h-4 w-4" /> Đặt Lịch Xem Nhà
         </a>
       </div>
@@ -588,10 +588,10 @@ function Hero({ cfg }: { cfg: StudioConfig }) {
 
 function SearchBar({ cfg, floating }: { cfg: StudioConfig; floating: boolean }) {
   return (
-    <form onSubmit={(e) => e.preventDefault()} className={`mx-auto grid max-w-6xl gap-3 bg-white p-6 shadow-2xl rounded-2xl md:grid-cols-[1fr_1fr_1fr_auto] ${floating ? '-mt-10 relative z-20' : 'my-8'}`}>
+    <form onSubmit={(e) => e.preventDefault()} className={`mx-auto grid max-w-6xl gap-3 bg-white p-6 shadow-2xl rounded-sm md:grid-cols-[1fr_1fr_1fr_auto] ${floating ? '-mt-10 relative z-20' : 'my-8'}`}>
       <div>
         <label className="block text-[11px] font-bold uppercase tracking-wider opacity-60 mb-1">Loại BĐS</label>
-        <select className="w-full border border-slate-200 rounded-xl p-3 text-xs font-semibold focus:outline-none focus:border-blue-500">
+        <select className="w-full border border-slate-200 rounded-sm p-3 text-xs font-semibold focus:outline-none focus:border-blue-500">
           <option>Tất cả loại hình sản phẩm</option>
           <option>Biệt thự đơn lập / Song lập</option>
           <option>Căn hộ cao cấp 1-3PN</option>
@@ -601,7 +601,7 @@ function SearchBar({ cfg, floating }: { cfg: StudioConfig; floating: boolean }) 
       </div>
       <div>
         <label className="block text-[11px] font-bold uppercase tracking-wider opacity-60 mb-1">Khu Vực</label>
-        <select className="w-full border border-slate-200 rounded-xl p-3 text-xs font-semibold focus:outline-none focus:border-blue-500">
+        <select className="w-full border border-slate-200 rounded-sm p-3 text-xs font-semibold focus:outline-none focus:border-blue-500">
           <option>Tất cả khu vực trọng điểm</option>
           <option>TP. Hồ Chí Minh & TP. Thủ Đức</option>
           <option>Hà Nội & Vùng Thủ Đô</option>
@@ -611,7 +611,7 @@ function SearchBar({ cfg, floating }: { cfg: StudioConfig; floating: boolean }) 
       </div>
       <div>
         <label className="block text-[11px] font-bold uppercase tracking-wider opacity-60 mb-1">Khoảng Giá</label>
-        <select className="w-full border border-slate-200 rounded-xl p-3 text-xs font-semibold focus:outline-none focus:border-blue-500">
+        <select className="w-full border border-slate-200 rounded-sm p-3 text-xs font-semibold focus:outline-none focus:border-blue-500">
           <option>Tất cả mức ngân sách</option>
           <option>Dưới 5 Tỷ VNĐ</option>
           <option>5 Tỷ - 15 Tỷ VNĐ</option>
@@ -626,7 +626,7 @@ function SearchBar({ cfg, floating }: { cfg: StudioConfig; floating: boolean }) 
             const el = document.getElementById('du-an-noi-bat');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
           }}
-          className="w-full px-7 py-3 text-xs font-black text-white rounded-xl shadow-lg transition hover:brightness-110 flex items-center justify-center gap-2 cursor-pointer" 
+          className="w-full px-7 py-3 text-xs font-black text-white rounded-sm shadow-lg transition hover:brightness-110 flex items-center justify-center gap-2 cursor-pointer" 
           style={{ background: cfg.primary }}
         >
           <Search className="w-4 h-4" /> Tìm Kiếm
@@ -638,14 +638,14 @@ function SearchBar({ cfg, floating }: { cfg: StudioConfig; floating: boolean }) 
 
 function SearchSidebar({ cfg }: { cfg: StudioConfig }) {
   return (
-    <aside className="h-fit bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80">
+    <aside className="h-fit bg-white p-6 rounded-sm shadow-sm border border-slate-200/80">
       <h2 className="text-lg font-black pb-3 border-b border-slate-100 flex items-center gap-2">
         <SlidersHorizontal className="w-4 h-4" /> Bộ Lọc Chi Tiết
       </h2>
       {['Khu vực', 'Loại hình BĐS', 'Khoảng giá', 'Diện tích sàn', 'Trạng thái mở bán'].map((x) => (
         <label key={x} className="mt-4 block text-xs font-bold opacity-80">
           {x}
-          <select className="mt-1.5 w-full border border-slate-200 rounded-xl p-2.5 text-xs font-medium focus:outline-none focus:border-blue-500">
+          <select className="mt-1.5 w-full border border-slate-200 rounded-sm p-2.5 text-xs font-medium focus:outline-none focus:border-blue-500">
             <option>Tất cả lựa chọn</option>
           </select>
         </label>
@@ -656,7 +656,7 @@ function SearchSidebar({ cfg }: { cfg: StudioConfig }) {
           const el = document.getElementById('du-an-noi-bat');
           if (el) el.scrollIntoView({ behavior: 'smooth' });
         }}
-        className="mt-6 w-full py-3.5 text-xs font-black text-white rounded-xl shadow-md transition hover:brightness-110 cursor-pointer" 
+        className="mt-6 w-full py-3.5 text-xs font-black text-white rounded-sm shadow-md transition hover:brightness-110 cursor-pointer" 
         style={{ background: cfg.primary }}
       >
         Áp Dụng Bộ Lọc
@@ -679,11 +679,11 @@ function ProjectSection({ cfg }: { cfg: StudioConfig }) {
 
         <div className="grid gap-8 md:grid-cols-3">
           {cfg.projects.map((proj, i) => (
-            <article key={proj.name} className="group overflow-hidden rounded-2xl bg-white border border-slate-200/80 shadow-md hover:shadow-2xl transition-all flex flex-col justify-between">
+            <article key={proj.name} className="group overflow-hidden rounded-sm bg-white border border-slate-200/80 shadow-md hover:shadow-2xl transition-all flex flex-col justify-between">
               <div>
                 <div className="relative aspect-[16/11] overflow-hidden">
                   <img src={proj.img} alt={proj.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <span className="absolute top-4 left-4 px-3 py-1 rounded-full text-[10px] font-black uppercase text-white shadow" style={{ background: cfg.primary }}>
+                  <span className="absolute top-4 left-4 px-3 py-1 rounded-sm text-[10px] font-black uppercase text-white shadow" style={{ background: cfg.primary }}>
                     {proj.type}
                   </span>
                 </div>
@@ -702,7 +702,7 @@ function ProjectSection({ cfg }: { cfg: StudioConfig }) {
                   <span className="text-[10px] font-bold uppercase opacity-50 block">Giá niêm yết</span>
                   <strong className="text-lg font-black" style={{ color: cfg.primary }}>{proj.price}</strong>
                 </div>
-                <a href="#nhan-tu-van" className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-900 hover:text-white transition-colors text-xs font-bold">
+                <a href="#nhan-tu-van" className="p-2.5 rounded-sm bg-slate-100 hover:bg-slate-900 hover:text-white transition-colors text-xs font-bold">
                   Nhận Báo Giá →
                 </a>
               </div>
@@ -730,14 +730,14 @@ function StorySection({ cfg }: { cfg: StudioConfig }) {
           </p>
           <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
             {cfg.stats.map((st, i) => (
-              <div key={i} className="p-4 rounded-xl bg-slate-50 border border-slate-200/60">
+              <div key={i} className="p-4 rounded-sm bg-slate-50 border border-slate-200/60">
                 <strong className="text-xl font-black block" style={{ color: cfg.primary }}>{st.value}</strong>
                 <p className="text-[10px] opacity-60 font-bold mt-1">{st.label}</p>
               </div>
             ))}
           </div>
         </div>
-        <div className="rounded-3xl overflow-hidden shadow-2xl border border-slate-200 aspect-[4/3]">
+        <div className="rounded-md overflow-hidden shadow-2xl border border-slate-200 aspect-[4/3]">
           <img src={cfg.hero} alt={`Câu chuyện ${cfg.brand}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
         </div>
       </div>
@@ -758,7 +758,7 @@ function FeatureSection({ cfg }: { cfg: StudioConfig }) {
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {cfg.features.map((ft, idx) => (
-          <div key={idx} className="p-8 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:shadow-xl transition-all space-y-3">
+          <div key={idx} className="p-8 rounded-sm bg-white border border-slate-200/80 shadow-sm hover:shadow-xl transition-all space-y-3">
             <span className="text-4xl block">{ft.icon}</span>
             <h4 className="text-lg font-black">{ft.title}</h4>
             <p className="text-xs opacity-70 leading-relaxed">{ft.desc}</p>
@@ -799,21 +799,21 @@ function LocationSection({ cfg }: { cfg: StudioConfig }) {
                   key={x}
                   type="button"
                   onClick={() => setActiveIdx(i)}
-                  className={`w-full flex justify-between items-center py-4 px-5 rounded-2xl border text-sm font-semibold transition-all duration-200 text-left cursor-pointer ${
+                  className={`w-full flex justify-between items-center py-4 px-5 rounded-sm border text-sm font-semibold transition-all duration-200 text-left cursor-pointer ${
                     isActive
                       ? 'bg-white/20 border-white shadow-xl backdrop-blur-md translate-x-2'
                       : 'border-white/15 bg-white/5 hover:bg-white/10 hover:border-white/30'
                   }`}
                 >
                   <span className="flex items-center gap-3">
-                    <span className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform ${isActive ? 'bg-amber-400 text-slate-900 scale-110 shadow-md' : 'bg-white/10 text-white'}`}>
+                    <span className={`w-8 h-8 rounded-sm flex items-center justify-center transition-transform ${isActive ? 'bg-amber-400 text-slate-900 scale-110 shadow-md' : 'bg-white/10 text-white'}`}>
                       <MapPin className="w-4 h-4" />
                     </span>
                     <span className={isActive ? 'font-bold text-white text-base' : 'opacity-90'}>{x}</span>
                   </span>
                   <div className="flex items-center gap-2.5">
                     <span className="text-xs font-black opacity-75">Khu vực 0{i + 1}</span>
-                    {isActive && <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />}
+                    {isActive && <span className="w-2.5 h-2.5 rounded-sm bg-emerald-400 animate-ping" />}
                   </div>
                 </button>
               );
@@ -821,11 +821,11 @@ function LocationSection({ cfg }: { cfg: StudioConfig }) {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-3xl border border-white/20 bg-slate-950/90 shadow-2xl backdrop-blur flex flex-col h-[480px]">
+        <div className="overflow-hidden rounded-md border border-white/20 bg-slate-950/90 shadow-2xl backdrop-blur flex flex-col h-[480px]">
           {/* Header Map Toolbar */}
           <div className="px-5 py-3.5 bg-white/10 border-b border-white/15 flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-2 font-bold truncate">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              <span className="w-2.5 h-2.5 rounded-sm bg-emerald-400 animate-pulse shrink-0" />
               <span className="truncate">Vị trí: <strong className="text-white font-black">{activeArea}</strong></span>
             </div>
             <div className="flex items-center gap-2 shrink-0">
@@ -889,7 +889,7 @@ function LeadSection({ cfg }: { cfg: StudioConfig }) {
             Chuyên viên tư vấn senior sẵn sàng hỗ trợ chọn căn đẹp nhất, giải đáp pháp lý và gửi trọn bộ tài liệu PDF qua Zalo.
           </p>
           <div className="mt-6 flex items-center gap-3 text-sm font-bold">
-            <div className="p-3 rounded-full bg-emerald-50 text-emerald-600">
+            <div className="p-3 rounded-sm bg-emerald-50 text-emerald-600">
               <Phone className="w-5 h-5 animate-pulse" />
             </div>
             <div>
@@ -900,22 +900,22 @@ function LeadSection({ cfg }: { cfg: StudioConfig }) {
         </div>
 
         {submitted ? (
-          <div className="p-8 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-3">
+          <div className="p-8 rounded-sm bg-emerald-50 border border-emerald-200 text-center space-y-3">
             <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
             <h4 className="text-xl font-bold text-emerald-800">Đã Gửi Thành Công!</h4>
             <p className="text-xs text-emerald-700">Tài liệu và bảng giá chi tiết đang được gửi qua Zalo cho quý khách.</p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="grid gap-3.5 p-8 rounded-3xl bg-slate-50 border border-slate-200/80 shadow-xl">
+          <form onSubmit={handleSubmit} className="grid gap-3.5 p-8 rounded-md bg-slate-50 border border-slate-200/80 shadow-xl">
             <div>
               <label className="block text-xs font-bold uppercase opacity-70 mb-1">Họ và tên (*)</label>
-              <input required value={name} onChange={e => setName(e.target.value)} className="w-full border border-slate-200 bg-white rounded-xl p-3.5 text-xs font-medium focus:outline-none focus:border-blue-500" placeholder="Ví dụ: Nguyễn Văn A..." />
+              <input required value={name} onChange={e => setName(e.target.value)} className="w-full border border-slate-200 bg-white rounded-sm p-3.5 text-xs font-medium focus:outline-none focus:border-blue-500" placeholder="Ví dụ: Nguyễn Văn A..." />
             </div>
             <div>
               <label className="block text-xs font-bold uppercase opacity-70 mb-1">Số điện thoại / Zalo (*)</label>
-              <input required type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full border border-slate-200 bg-white rounded-xl p-3.5 text-xs font-bold text-blue-600 focus:outline-none focus:border-blue-500" placeholder="Ví dụ: 0919 006 030..." />
+              <input required type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full border border-slate-200 bg-white rounded-sm p-3.5 text-xs font-bold text-blue-600 focus:outline-none focus:border-blue-500" placeholder="Ví dụ: 0919 006 030..." />
             </div>
-            <button type="submit" className="py-4 text-xs font-black text-white rounded-xl shadow-lg transition hover:brightness-110 mt-2 cursor-pointer" style={{ background: cfg.primary }}>
+            <button type="submit" className="py-4 text-xs font-black text-white rounded-sm shadow-lg transition hover:brightness-110 mt-2 cursor-pointer" style={{ background: cfg.primary }}>
               🚀 GỬI YÊU CẦU NHẬN BẢNG GIÁ VIP
             </button>
             <p className="text-[10px] text-center opacity-50">🔒 Thông tin được bảo mật 100% theo tiêu chuẩn chủ đầu tư.</p>

@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import Link from 'next/link';
 import { 
   MapPin, Search, Phone, Mail, ChevronRight, Menu, X, CheckCircle, 
@@ -237,16 +238,27 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
   useEffect(() => {
     setCurrentPageState(normalizeLandPlotPage(initialPage));
   }, [initialPage]);
-  const setCurrentPage = (p: string) => {
+
+  const setCurrentPage = (p: string, customSlug?: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
     if (typeof setSelectedArticle === "function") setSelectedArticle(null);
 
     setCurrentPageState(p);
-    if (typeof window !== 'undefined') {
-      const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
-    }
+    const tSlug = template?.slug || 'bds-14';
+    syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-14') ? parts[1] : 'home');
+      if (sub) {
+        setCurrentPageState(normalizeLandPlotPage(sub));
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [template?.slug]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   
@@ -769,7 +781,7 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
           </p>
           <div style={{ borderTop: `1px solid ${theme.accent}`, borderBottom: `1px solid ${theme.accent}`, padding: '2rem 0', display: 'inline-block', marginBottom: '2rem' }}>
             <h4 style={{ fontFamily: theme.headingFont, fontSize: '1.25rem', fontWeight: 700, color: theme.text, fontStyle: 'italic' }}>
-              “Giá trị thực - Sinh lời thực - Pháp lý chuẩn”
+              "Giá trị thực - Sinh lời thực - Pháp lý chuẩn"
             </h4>
           </div>
           <div>
@@ -932,7 +944,7 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
               <div className="flex text-yellow-400 mb-4">
                 {[1,2,3,4,5].map(i => <Star key={i} size={20} fill="currentColor" />)}
               </div>
-              <p style={{ color: theme.textLight, fontStyle: 'italic', marginBottom: '1.5rem', lineHeight: 1.7 }}>“{item.text}”</p>
+              <p style={{ color: theme.textLight, fontStyle: 'italic', marginBottom: '1.5rem', lineHeight: 1.7 }}>"{item.text}"</p>
               <div style={{ fontWeight: 700, color: theme.text }}>{item.name}</div>
               <div style={{ fontSize: '0.875rem', color: theme.textLight }}>{item.role}</div>
             </div>
@@ -1477,7 +1489,7 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
               )}
               {activeAboutTab === 'philosophy' && (
                 <div>
-                  <h3 style={{ fontFamily: theme.headingFont, fontSize: '1.75rem', fontWeight: 800, color: theme.primary, marginBottom: '1rem' }}>Triết Lý Kinh Doanh “Ba Chân Kiềng”</h3>
+                  <h3 style={{ fontFamily: theme.headingFont, fontSize: '1.75rem', fontWeight: 800, color: theme.primary, marginBottom: '1rem' }}>Triết Lý Kinh Doanh "Ba Chân Kiềng"</h3>
                   <p style={{ color: theme.textLight, lineHeight: 1.8, fontSize: '1.05rem', marginBottom: '1rem' }}>
                     Triết lý của chúng tôi xoay quanh ba giá trị cốt lõi làm nền tảng vững chắc cho mọi hoạt động kinh doanh:
                   </p>
@@ -1695,7 +1707,7 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
               {searchNewsQuery && (
                 <div style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '4px', border: '1px solid #E5E7EB', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ color: theme.textLight }}>
-                    Kết quả tìm kiếm cho: <strong>“{searchNewsQuery}”</strong> ({filtered.length} bài viết)
+                    Kết quả tìm kiếm cho: <strong>"{searchNewsQuery}"</strong> ({filtered.length} bài viết)
                   </span>
                   <button 
                     onClick={() => setSearchNewsQuery('')}
@@ -1891,7 +1903,7 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
                 </ul>
 
                 {/* Interactive Google Map */}
-                <div className="mt-8 rounded-2xl overflow-hidden border border-slate-200 shadow-md flex flex-col h-56">
+                <div className="mt-8 rounded-sm overflow-hidden border border-slate-200 shadow-md flex flex-col h-56">
                   <div className="px-3.5 py-2 bg-slate-900 text-white flex items-center justify-between text-xs">
                     <span className="font-bold flex items-center gap-1.5 truncate"><MapPin size={14} className="text-amber-400" /> KĐT Nam Sài Gòn, Quận 7, TP.HCM</span>
                     <a

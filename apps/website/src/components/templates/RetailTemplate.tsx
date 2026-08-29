@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import Link from 'next/link';
 import { 
   MapPin, Phone, Mail, Clock, ChevronDown, ChevronRight, Menu, X, 
@@ -219,16 +220,27 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
   useEffect(() => {
     setCurrentPageState(normalizeRetailPage(initialPage));
   }, [initialPage]);
-  const setCurrentPage = (p: string) => {
+
+  const setCurrentPage = (p: string, customSlug?: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
     if (typeof setSelectedArticle === "function") setSelectedArticle(null);
 
     setCurrentPageState(p);
-    if (typeof window !== 'undefined') {
-      const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
-    }
+    const tSlug = template?.slug || 'bds-15';
+    syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-15') ? parts[1] : 'home');
+      if (sub) {
+        setCurrentPageState(normalizeRetailPage(sub));
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [template?.slug]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
@@ -367,7 +379,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setCurrentPage('contact')}
-              className="hidden sm:flex items-center gap-2 px-6 py-2.5 rounded-full text-white font-medium transition-all transform hover:scale-105"
+              className="hidden sm:flex items-center gap-2 px-6 py-2.5 rounded-sm text-white font-medium transition-all transform hover:scale-105"
               style={{ backgroundColor: theme.accent, fontFamily: theme.fontBody }}
             >
               <Phone size={18} />
@@ -417,7 +429,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
         </div>
         
         <div className={`relative z-10 ${MAX_W} mx-auto px-4 sm:px-6 lg:px-8 text-center text-white`}>
-          <span className="inline-block py-1 px-3 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-200 text-sm font-semibold tracking-widest uppercase mb-6 backdrop-blur-sm">
+          <span className="inline-block py-1 px-3 rounded-sm bg-amber-500/20 border border-amber-400/30 text-amber-200 text-sm font-semibold tracking-widest uppercase mb-6 backdrop-blur-sm">
             Tổ Hợp Thương Mại Đẳng Cấp
           </span>
           <h2 style={{ fontFamily: theme.fontHeading }} className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
@@ -430,7 +442,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
             <button 
               onClick={() => setCurrentPage('projects')}
               style={{ backgroundColor: theme.primary }} 
-              className="px-8 py-4 rounded-full font-bold text-lg hover:bg-amber-800 transition-colors flex items-center gap-2 shadow-lg"
+              className="px-8 py-4 rounded-sm font-bold text-lg hover:bg-amber-800 transition-colors flex items-center gap-2 shadow-lg"
             >
               Khám Phá Mặt Bằng <ArrowRight size={20} />
             </button>
@@ -438,7 +450,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
               onClick={() => {
                 setSelectedArticle(newsArticles[0]);
               }}
-              className="px-8 py-4 rounded-full font-bold text-lg border-2 border-white/50 hover:bg-white hover:text-amber-900 transition-colors flex items-center gap-2 backdrop-blur-sm"
+              className="px-8 py-4 rounded-sm font-bold text-lg border-2 border-white/50 hover:bg-white hover:text-amber-900 transition-colors flex items-center gap-2 backdrop-blur-sm"
             >
               <Play size={20} /> Xem Video Thực Tế
             </button>
@@ -447,7 +459,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
 
         {/* Floating Search Bar */}
         <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-4 z-20">
-          <div className="bg-white rounded-2xl shadow-xl p-4 flex flex-col md:flex-row gap-4 items-center">
+          <div className="bg-white rounded-sm shadow-xl p-4 flex flex-col md:flex-row gap-4 items-center">
             <div className="flex-1 w-full border-r border-gray-100 px-4">
               <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Loại Bất Động Sản</p>
               <select 
@@ -490,7 +502,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
             <button 
               onClick={() => setCurrentPage('projects')}
               style={{ backgroundColor: theme.accent }} 
-              className="w-full md:w-auto p-4 rounded-xl text-white hover:scale-105 transition-transform flex items-center justify-center"
+              className="w-full md:w-auto p-4 rounded-sm text-white hover:scale-105 transition-transform flex items-center justify-center"
             >
               <Search size={24} />
             </button>
@@ -514,10 +526,10 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
               <div 
                 key={space.id} 
                 onClick={() => setSelectedProject(space)}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-amber-50 cursor-pointer transform hover:-translate-y-1"
+                className="bg-white rounded-sm overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-amber-50 cursor-pointer transform hover:-translate-y-1"
               >
                 <div className="relative h-64 overflow-hidden">
-                  <div className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-amber-600 uppercase tracking-wide">
+                  <div className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-sm text-xs font-bold text-amber-600 uppercase tracking-wide">
                     {space.status}
                   </div>
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={space.img} alt={space.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
@@ -547,7 +559,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
           <div className="text-center mt-12">
             <button 
               onClick={() => setCurrentPage('projects')}
-              className="px-8 py-3 rounded-full border border-amber-600 text-amber-700 font-semibold hover:bg-amber-50 transition-colors inline-flex items-center gap-2"
+              className="px-8 py-3 rounded-sm border border-amber-600 text-amber-700 font-semibold hover:bg-amber-50 transition-colors inline-flex items-center gap-2"
             >
               Xem Tất Cả Sản Phẩm <ArrowRight size={18} />
             </button>
@@ -573,7 +585,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                 }}
                 className="flex flex-col items-center text-center group cursor-pointer"
               >
-                <div className="p-6 bg-amber-50 rounded-2xl group-hover:bg-amber-100 group-hover:-translate-y-2 transition-all duration-300 shadow-sm border border-amber-100">
+                <div className="p-6 bg-amber-50 rounded-sm group-hover:bg-amber-100 group-hover:-translate-y-2 transition-all duration-300 shadow-sm border border-amber-100">
                   {type.icon}
                 </div>
                 <h4 className="mt-4 font-bold text-gray-800">{type.label}</h4>
@@ -598,7 +610,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
               { num: '12%', label: 'Lợi nhuận kỳ vọng/năm', icon: <Star size={24}/> },
             ].map((stat, idx) => (
               <div key={idx} className="py-6 md:py-0 px-4 flex flex-col items-center">
-                <div className="w-12 h-12 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-400 mb-4 backdrop-blur-sm">
+                <div className="w-12 h-12 bg-amber-500/20 rounded-sm flex items-center justify-center text-amber-400 mb-4 backdrop-blur-sm">
                   {stat.icon}
                 </div>
                 <h4 style={{ fontFamily: theme.fontHeading }} className="text-4xl md:text-5xl font-bold text-white mb-2">{stat.num}</h4>
@@ -629,8 +641,8 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
           <div className="flex flex-col lg:flex-row items-center gap-12">
             <div className="w-full lg:w-1/2">
               <div className="relative">
-                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1542385151-efd9000785a0?w=800&q=80" alt="Kiến trúc hiện đại" className="rounded-2xl shadow-2xl" />
-                <div className="absolute -bottom-6 -right-6 bg-amber-500 text-white p-8 rounded-2xl shadow-xl hidden md:block">
+                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1542385151-efd9000785a0?w=800&q=80" alt="Kiến trúc hiện đại" className="rounded-sm shadow-2xl" />
+                <div className="absolute -bottom-6 -right-6 bg-amber-500 text-white p-8 rounded-sm shadow-xl hidden md:block">
                   <p style={{ fontFamily: theme.fontHeading }} className="text-4xl font-bold mb-1">15+</p>
                   <p className="text-sm uppercase font-semibold tracking-wider">Năm Kinh Nghiệm<br/>Phát Triển</p>
                 </div>
@@ -687,7 +699,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                 { icon: <Shield/>, title: 'An Ninh Tiên Tiến', desc: 'Hệ thống camera giám sát và đội ngũ bảo vệ chuyên nghiệp 24/7.' }
               ].map((adv, i) => (
                 <div key={i} className="flex gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center text-amber-400">
+                  <div className="flex-shrink-0 w-12 h-12 bg-amber-500/20 rounded-sm flex items-center justify-center text-amber-400">
                     {adv.icon}
                   </div>
                   <div>
@@ -698,14 +710,14 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
               ))}
             </div>
             
-            <div className="w-full lg:w-2/3 bg-white/5 p-4 rounded-3xl backdrop-blur-md border border-white/10">
+            <div className="w-full lg:w-2/3 bg-white/5 p-4 rounded-md backdrop-blur-md border border-white/10">
               <div 
                 onClick={() => setSelectedGalleryImg('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000&q=80')}
-                className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden group cursor-pointer"
+                className="relative aspect-[16/9] w-full rounded-sm overflow-hidden group cursor-pointer"
               >
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000&q=80" alt="Sơ đồ mặt bằng" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute inset-0 bg-amber-900/40 flex items-center justify-center group-hover:bg-amber-900/20 transition-colors">
-                  <div className="bg-white/90 backdrop-blur text-amber-900 px-6 py-3 rounded-full font-bold flex items-center gap-2">
+                  <div className="bg-white/90 backdrop-blur text-amber-900 px-6 py-3 rounded-sm font-bold flex items-center gap-2">
                     <Search size={20} /> Xem Sơ Đồ Chi Tiết
                   </div>
                 </div>
@@ -736,19 +748,19 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
           <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-4 h-[600px]">
             <div 
               onClick={() => setSelectedGalleryImg(galleryImages[0].url)}
-              className="md:col-span-2 md:row-span-2 rounded-2xl overflow-hidden relative group cursor-pointer"
+              className="md:col-span-2 md:row-span-2 rounded-sm overflow-hidden relative group cursor-pointer"
             >
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={galleryImages[0].url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Gallery 1"/>
             </div>
             <div 
               onClick={() => setSelectedGalleryImg(galleryImages[1].url)}
-              className="md:col-span-2 rounded-2xl overflow-hidden relative group cursor-pointer"
+              className="md:col-span-2 rounded-sm overflow-hidden relative group cursor-pointer"
             >
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={galleryImages[1].url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Gallery 2"/>
             </div>
             <div 
               onClick={() => setSelectedGalleryImg(galleryImages[2].url)}
-              className="rounded-2xl overflow-hidden relative group cursor-pointer"
+              className="rounded-sm overflow-hidden relative group cursor-pointer"
             >
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={galleryImages[2].url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Gallery 3"/>
             </div>
@@ -757,7 +769,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                 setCurrentPage('gallery');
                 setSelectedGalleryTab('Tất cả');
               }}
-              className="rounded-2xl overflow-hidden relative group cursor-pointer"
+              className="rounded-sm overflow-hidden relative group cursor-pointer"
             >
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={galleryImages[3].url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Gallery 4"/>
               <div className="absolute inset-0 bg-amber-900/60 flex items-center justify-center hover:bg-amber-900/50 transition-colors">
@@ -777,13 +789,13 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testi, i) => (
-              <div key={i} className="bg-white p-8 rounded-3xl shadow-sm border border-amber-100 relative mt-8">
+              <div key={i} className="bg-white p-8 rounded-md shadow-sm border border-amber-100 relative mt-8">
                 <div className="absolute -top-8 left-8">
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={testi.img} alt={testi.name} className="w-16 h-16 rounded-full border-4 border-white shadow-lg object-cover" />
+                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={testi.img} alt={testi.name} className="w-16 h-16 rounded-sm border-4 border-white shadow-lg object-cover" />
                 </div>
                 <Quote className="text-amber-200 w-12 h-12 absolute top-8 right-8" />
                 <div className="pt-8">
-                  <p className="text-gray-600 mb-6 italic leading-relaxed relative z-10">“{testi.content}”</p>
+                  <p className="text-gray-600 mb-6 italic leading-relaxed relative z-10">"{testi.content}"</p>
                   <h5 className="font-bold text-gray-900">{testi.name}</h5>
                   <p className="text-sm text-amber-600">{testi.role}</p>
                 </div>
@@ -814,11 +826,11 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
               <div 
                 key={article.id} 
                 onClick={() => setSelectedArticle(article)}
-                className="group cursor-pointer bg-white rounded-2xl overflow-hidden border border-amber-50 shadow-sm hover:shadow-md transition-all p-4"
+                className="group cursor-pointer bg-white rounded-sm overflow-hidden border border-amber-50 shadow-sm hover:shadow-md transition-all p-4"
               >
-                <div className="overflow-hidden rounded-xl mb-4 relative h-48">
+                <div className="overflow-hidden rounded-sm mb-4 relative h-48">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={article.img} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute top-4 left-4 bg-white px-3 py-1 rounded-full text-xs font-bold text-amber-600 flex items-center gap-1 shadow-sm">
+                  <div className="absolute top-4 left-4 bg-white px-3 py-1 rounded-sm text-xs font-bold text-amber-600 flex items-center gap-1 shadow-sm">
                     <Calendar size={12} /> {article.date}
                   </div>
                 </div>
@@ -841,7 +853,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
             <h3 style={{ fontFamily: theme.fontHeading, color: theme.primary }} className="text-3xl md:text-4xl font-bold text-center mb-10">Câu Hỏi Thường Gặp</h3>
             <div className="space-y-4">
               {faqs.map((faq, i) => (
-                <div key={i} className="border border-gray-200 rounded-2xl overflow-hidden transition-all duration-300">
+                <div key={i} className="border border-gray-200 rounded-sm overflow-hidden transition-all duration-300">
                   <button 
                     className="w-full px-6 py-4 flex justify-between items-center bg-gray-50 hover:bg-amber-50 transition-colors"
                     onClick={() => setActiveFaq(activeFaq === i ? null : i)}
@@ -877,7 +889,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
               </p>
               
               {newsletterSubmitted ? (
-                <div className="bg-white/10 p-8 rounded-2xl border border-white/20 text-center max-w-md mx-auto backdrop-blur-md">
+                <div className="bg-white/10 p-8 rounded-sm border border-white/20 text-center max-w-md mx-auto backdrop-blur-md">
                   <CheckCircle size={40} className="text-amber-400 mx-auto mb-3" />
                   <p className="text-white font-bold text-xl">Đăng ký thành công!</p>
                   <p className="text-amber-200 text-sm mt-2">Chúng tôi đã ghi nhận email của bạn và sẽ gửi tài liệu trong thời gian sớm nhất.</p>
@@ -894,9 +906,9 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                     type="email" 
                     required
                     placeholder="Nhập email của bạn..." 
-                    className="px-6 py-4 rounded-full w-full max-w-md bg-white/10 border border-white/20 text-white placeholder-amber-200/60 focus:outline-none focus:border-amber-400 backdrop-blur-md text-sm"
+                    className="px-6 py-4 rounded-sm w-full max-w-md bg-white/10 border border-white/20 text-white placeholder-amber-200/60 focus:outline-none focus:border-amber-400 backdrop-blur-md text-sm"
                   />
-                  <button type="submit" style={{ backgroundColor: theme.accent }} className="px-8 py-4 rounded-full text-white font-bold hover:bg-amber-400 transition-colors whitespace-nowrap">
+                  <button type="submit" style={{ backgroundColor: theme.accent }} className="px-8 py-4 rounded-sm text-white font-bold hover:bg-amber-400 transition-colors whitespace-nowrap">
                     Nhận Báo Giá Ngay
                   </button>
                 </form>
@@ -935,7 +947,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
         </div>
 
         {/* Filter Toolbar */}
-        <div className="bg-white rounded-2xl shadow-md p-6 mb-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 border border-amber-50">
+        <div className="bg-white rounded-sm shadow-md p-6 mb-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 border border-amber-50">
           <div>
             <label className="block text-xs text-gray-400 uppercase font-semibold mb-2">Tìm kiếm từ khóa</label>
             <div className="relative">
@@ -944,7 +956,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Nhập tên, vị trí, phân khu..." 
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm"
+                className="w-full pl-10 pr-4 py-2.5 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm"
               />
               <Search className="absolute left-3 top-3 text-gray-400" size={18} />
             </div>
@@ -955,7 +967,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
             <select 
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white text-sm"
+              className="w-full px-4 py-2.5 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white text-sm"
             >
               <option value="Tất cả">Tất cả loại mặt bằng</option>
               <option value="Shophouse F&B">Shophouse F&B</option>
@@ -969,7 +981,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
             <select 
               value={filterSize}
               onChange={(e) => setFilterSize(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white text-sm"
+              className="w-full px-4 py-2.5 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white text-sm"
             >
               <option value="Tất cả">Tất cả diện tích</option>
               <option value="under-50">Dưới 50m²</option>
@@ -983,7 +995,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
             <select 
               value={filterPrice}
               onChange={(e) => setFilterPrice(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white text-sm"
+              className="w-full px-4 py-2.5 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white text-sm"
             >
               <option value="Tất cả">Tất cả mức giá</option>
               <option value="under-5">Dưới 5 Tỷ</option>
@@ -995,7 +1007,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
 
         {/* Listings Grid */}
         {filteredSpaces.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
+          <div className="text-center py-20 bg-white rounded-md border border-dashed border-gray-200">
             <Store size={48} className="mx-auto text-gray-300 mb-4 animate-pulse" />
             <h3 className="text-lg font-bold text-gray-800 mb-1">Không tìm thấy mặt bằng phù hợp</h3>
             <p className="text-gray-500">Vui lòng thử điều chỉnh lại bộ lọc hoặc từ khóa tìm kiếm.</p>
@@ -1006,10 +1018,10 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
               <div 
                 key={space.id} 
                 onClick={() => setSelectedProject(space)}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-amber-50 cursor-pointer transform hover:-translate-y-1"
+                className="bg-white rounded-sm overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-amber-50 cursor-pointer transform hover:-translate-y-1"
               >
                 <div className="relative h-64 overflow-hidden">
-                  <div className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-amber-600 uppercase tracking-wide">
+                  <div className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-sm text-xs font-bold text-amber-600 uppercase tracking-wide">
                     {space.status}
                   </div>
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={space.img} alt={space.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
@@ -1067,7 +1079,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
           {/* Header Story */}
           <div className="flex flex-col lg:flex-row items-center gap-12 mb-20">
             <div className="w-full lg:w-1/2">
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1542385151-efd9000785a0?w=800&q=80" alt="About us" className="rounded-2xl shadow-xl w-full h-auto" />
+              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1542385151-efd9000785a0?w=800&q=80" alt="About us" className="rounded-sm shadow-xl w-full h-auto" />
             </div>
             <div className="w-full lg:w-1/2 space-y-6">
               <span className="text-amber-600 font-bold uppercase tracking-wider text-xs block">Về PlatformBDS</span>
@@ -1088,9 +1100,9 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
             <h3 style={{ fontFamily: theme.fontHeading, color: theme.primary }} className="text-3xl font-bold text-center mb-10">Giá Trị Cốt Lõi</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {coreValues.map((val, idx) => (
-                <div key={idx} className="bg-white p-8 rounded-2xl shadow-sm border border-amber-100 flex flex-col justify-between">
+                <div key={idx} className="bg-white p-8 rounded-sm shadow-sm border border-amber-100 flex flex-col justify-between">
                   <div>
-                    <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center font-bold text-xl mb-6">
+                    <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-sm flex items-center justify-center font-bold text-xl mb-6">
                       {idx + 1}
                     </div>
                     <h4 className="text-xl font-bold text-gray-900 mb-3">{val.title}</h4>
@@ -1108,7 +1120,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
               {milestones.map((mile, i) => (
                 <div key={i} className="mb-10 ml-8 relative">
                   {/* Dot */}
-                  <span className="absolute -left-12 top-1.5 bg-amber-500 w-8 h-8 rounded-full border-4 border-white flex items-center justify-center text-white text-xs font-bold shadow-md">
+                  <span className="absolute -left-12 top-1.5 bg-amber-500 w-8 h-8 rounded-sm border-4 border-white flex items-center justify-center text-white text-xs font-bold shadow-md">
                     ✓
                   </span>
                   
@@ -1118,7 +1130,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                   </div>
                   
                   {/* Content */}
-                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                  <div className="bg-white p-6 rounded-sm shadow-sm border border-gray-100">
                     <span className="inline-block md:hidden text-amber-700 font-bold text-lg mb-1">{mile.year}</span>
                     <h4 className="text-lg font-bold text-gray-900 mb-2">{mile.title}</h4>
                     <p className="text-gray-600 text-sm leading-relaxed">{mile.desc}</p>
@@ -1133,7 +1145,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
             <h3 style={{ fontFamily: theme.fontHeading, color: theme.primary }} className="text-3xl font-bold text-center mb-12">Ban Lãnh Đạo Sáng Lập</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {leadership.map((member, i) => (
-                <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                <div key={i} className="bg-white rounded-sm overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                   <div className="h-64 overflow-hidden relative">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={member.img} alt={member.name} className="w-full h-full object-cover" />
                   </div>
@@ -1175,7 +1187,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                   backgroundColor: selectedGalleryTab === tab ? theme.primary : '#fff',
                   color: selectedGalleryTab === tab ? '#fff' : '#4B5563'
                 }}
-                className="px-5 py-2.5 rounded-full text-sm font-semibold shadow-sm hover:shadow-md transition-all border border-amber-100"
+                className="px-5 py-2.5 rounded-sm text-sm font-semibold shadow-sm hover:shadow-md transition-all border border-amber-100"
               >
                 {tab}
               </button>
@@ -1188,7 +1200,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
               <div 
                 key={i} 
                 onClick={() => setSelectedGalleryImg(img.url)}
-                className="aspect-square bg-white rounded-2xl overflow-hidden group shadow-sm hover:shadow-lg border border-amber-50 cursor-pointer relative"
+                className="aspect-square bg-white rounded-sm overflow-hidden group shadow-sm hover:shadow-lg border border-amber-50 cursor-pointer relative"
               >
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={img.url} alt={img.caption} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
@@ -1233,7 +1245,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                     backgroundColor: selectedNewsCategory === cat ? theme.primary : '#f3f4f6',
                     color: selectedNewsCategory === cat ? '#fff' : '#4b5563'
                   }}
-                  className="px-4 py-2 rounded-full text-xs font-semibold hover:shadow-sm transition-all"
+                  className="px-4 py-2 rounded-sm text-xs font-semibold hover:shadow-sm transition-all"
                 >
                   {cat}
                 </button>
@@ -1246,7 +1258,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                 value={searchNewsQuery}
                 onChange={(e) => setSearchNewsQuery(e.target.value)}
                 placeholder="Tìm tin tức..." 
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm"
+                className="w-full pl-10 pr-4 py-2.5 rounded-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm"
               />
               <Search className="absolute left-3 top-3 text-gray-400" size={18} />
             </div>
@@ -1254,7 +1266,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
 
           {/* News List */}
           {filteredNews.length === 0 ? (
-            <div className="text-center py-20 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+            <div className="text-center py-20 bg-gray-50 rounded-md border border-dashed border-gray-200">
               <Calendar size={48} className="mx-auto text-gray-300 mb-4 animate-pulse" />
               <h3 className="text-lg font-bold text-gray-800 mb-1">Không tìm thấy bài viết</h3>
               <p className="text-gray-500">Thử tìm kiếm với từ khóa khác hoặc chuyển danh mục.</p>
@@ -1265,15 +1277,15 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                 <div 
                   key={article.id} 
                   onClick={() => setSelectedArticle(article)}
-                  className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 cursor-pointer flex flex-col justify-between transform hover:-translate-y-1"
+                  className="group bg-white rounded-md overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 cursor-pointer flex flex-col justify-between transform hover:-translate-y-1"
                 >
                   <div>
                     <div className="overflow-hidden relative h-56">
                       <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={article.img} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-amber-600 flex items-center gap-1 shadow-sm">
+                      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-sm text-xs font-bold text-amber-600 flex items-center gap-1 shadow-sm">
                         <Calendar size={12} className="text-amber-500" /> {article.date}
                       </div>
-                      <div className="absolute top-4 right-4 bg-amber-600 text-white px-3 py-0.5 rounded-full text-xs font-semibold">
+                      <div className="absolute top-4 right-4 bg-amber-600 text-white px-3 py-0.5 rounded-sm text-xs font-semibold">
                         {article.category}
                       </div>
                     </div>
@@ -1306,7 +1318,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
     return (
       <div className="py-20" style={{ backgroundColor: theme.bg, minHeight: '80vh', fontFamily: theme.fontBody }}>
         <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
-          <div className="bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col lg:flex-row border border-amber-100">
+          <div className="bg-white rounded-md shadow-xl overflow-hidden flex flex-col lg:flex-row border border-amber-100">
             <div className="w-full lg:w-5/12 bg-amber-900 text-white p-12 flex flex-col justify-between">
               <div>
                 <h3 style={{ fontFamily: theme.fontHeading }} className="text-3xl font-bold mb-6">Liên Hệ Với Chúng Tôi</h3>
@@ -1337,7 +1349,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                 </div>
 
                 {/* Interactive Google Map */}
-                <div className="mt-8 rounded-2xl overflow-hidden border border-amber-800 shadow-md flex flex-col h-48 bg-amber-950">
+                <div className="mt-8 rounded-sm overflow-hidden border border-amber-800 shadow-md flex flex-col h-48 bg-amber-950">
                   <div className="px-3.5 py-2 bg-amber-950 text-white flex items-center justify-between text-xs">
                     <span className="font-bold truncate text-amber-300">Sales Gallery Quận 1, TP.HCM</span>
                     <a
@@ -1369,7 +1381,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
             <div className="w-full lg:w-7/12 p-12">
               {contactSubmitted ? (
                 <div className="h-full flex flex-col items-center justify-center text-center py-12">
-                  <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6 shadow-sm">
+                  <div className="w-20 h-20 bg-green-100 text-green-600 rounded-sm flex items-center justify-center mb-6 shadow-sm">
                     <CheckCircle size={48} />
                   </div>
                   <h3 style={{ fontFamily: theme.fontHeading }} className="text-3xl font-bold text-gray-900 mb-4">Gửi Yêu Cầu Thành Công!</h3>
@@ -1384,7 +1396,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                       setContactMessage('');
                     }}
                     style={{ backgroundColor: theme.primary }}
-                    className="px-8 py-3 rounded-full text-white font-semibold hover:bg-amber-800 transition-colors"
+                    className="px-8 py-3 rounded-sm text-white font-semibold hover:bg-amber-800 transition-colors"
                   >
                     Gửi yêu cầu mới
                   </button>
@@ -1467,9 +1479,9 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
               Tổ hợp thương mại đỉnh cao, nơi hội tụ các thương hiệu lớn và kiến tạo cơ hội đầu tư sinh lời bền vững tại trung tâm thành phố.
             </p>
             <div className="flex gap-4">
-              <button onClick={() => alert('Mở Facebook')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors cursor-pointer"><Facebook size={18}/></button>
-              <button onClick={() => alert('Mở Instagram')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors cursor-pointer"><Instagram size={18}/></button>
-              <button onClick={() => alert('Mở Twitter')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors cursor-pointer"><Twitter size={18}/></button>
+              <button onClick={() => alert('Mở Facebook')} className="w-10 h-10 rounded-sm bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors cursor-pointer"><Facebook size={18}/></button>
+              <button onClick={() => alert('Mở Instagram')} className="w-10 h-10 rounded-sm bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors cursor-pointer"><Instagram size={18}/></button>
+              <button onClick={() => alert('Mở Twitter')} className="w-10 h-10 rounded-sm bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors cursor-pointer"><Twitter size={18}/></button>
             </div>
           </div>
           
@@ -1535,17 +1547,17 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
           onClick={() => setSelectedProject(null)}
         />
         
-        <div className="relative bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl z-10 border border-amber-100 flex flex-col md:flex-row">
+        <div className="relative bg-white rounded-md max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl z-10 border border-amber-100 flex flex-col md:flex-row">
           <button 
             onClick={() => setSelectedProject(null)}
-            className="absolute top-4 right-4 p-2 rounded-full bg-white/85 hover:bg-white text-gray-700 shadow-md transition-colors z-20"
+            className="absolute top-4 right-4 p-2 rounded-sm bg-white/85 hover:bg-white text-gray-700 shadow-md transition-colors z-20"
           >
             <X size={20} />
           </button>
           
           <div className="w-full md:w-1/2 h-64 md:h-auto relative">
             <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedProject.img} alt={selectedProject.title} className="w-full h-full object-cover" />
-            <div className="absolute top-4 left-4 bg-amber-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+            <div className="absolute top-4 left-4 bg-amber-600 text-white text-xs font-bold px-3 py-1 rounded-sm uppercase tracking-wider">
               {selectedProject.status}
             </div>
           </div>
@@ -1559,7 +1571,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                 {selectedProject.title}
               </h3>
               
-              <div className="flex flex-wrap gap-4 text-xs text-gray-600 mb-6 bg-amber-50/50 p-3 rounded-xl border border-amber-100/50">
+              <div className="flex flex-wrap gap-4 text-xs text-gray-600 mb-6 bg-amber-50/50 p-3 rounded-sm border border-amber-100/50">
                 <div className="flex items-center gap-1"><MapPin size={14} className="text-amber-500"/> {selectedProject.location}</div>
                 <div className="flex items-center gap-1"><ShoppingBag size={14} className="text-amber-500"/> {selectedProject.area}</div>
               </div>
@@ -1593,7 +1605,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                   setCurrentPage('contact');
                 }}
                 style={{ backgroundColor: theme.primary }}
-                className="px-6 py-3 rounded-full text-white font-bold text-sm hover:bg-amber-800 transition-colors flex items-center gap-2"
+                className="px-6 py-3 rounded-sm text-white font-bold text-sm hover:bg-amber-800 transition-colors flex items-center gap-2"
               >
                 <span>Liên Hệ Ngay</span>
                 <ArrowRight size={16} />
@@ -1613,7 +1625,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
       <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4">
         <button 
           onClick={() => setSelectedGalleryImg(null)}
-          className="absolute top-6 right-6 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+          className="absolute top-6 right-6 p-3 rounded-sm bg-white/10 hover:bg-white/20 text-white transition-colors"
         >
           <X size={24} />
         </button>
@@ -1621,7 +1633,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
           <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedGalleryImg} alt="Lightbox view" className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-2xl border border-white/10" />
           {currentImgObj && (
             <div className="text-center text-white">
-              <span className="inline-block px-3 py-1 rounded-full bg-amber-600 text-xs font-semibold mb-2">{currentImgObj.category}</span>
+              <span className="inline-block px-3 py-1 rounded-sm bg-amber-600 text-xs font-semibold mb-2">{currentImgObj.category}</span>
               <p className="text-lg font-medium">{currentImgObj.caption}</p>
             </div>
           )}
@@ -1640,10 +1652,10 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
           onClick={() => setSelectedArticle(null)}
         />
         
-        <div className="relative bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl z-10 border border-amber-100">
+        <div className="relative bg-white rounded-md max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl z-10 border border-amber-100">
           <button 
             onClick={() => setSelectedArticle(null)}
-            className="absolute top-4 right-4 p-2 rounded-full bg-white/80 hover:bg-white text-gray-700 shadow-md transition-colors z-20"
+            className="absolute top-4 right-4 p-2 rounded-sm bg-white/80 hover:bg-white text-gray-700 shadow-md transition-colors z-20"
           >
             <X size={20} />
           </button>
@@ -1676,7 +1688,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
               <button 
                 onClick={() => setSelectedArticle(null)}
                 style={{ backgroundColor: theme.primary }}
-                className="px-6 py-2.5 rounded-full text-white font-bold text-sm hover:bg-amber-800 transition-colors"
+                className="px-6 py-2.5 rounded-sm text-white font-bold text-sm hover:bg-amber-800 transition-colors"
               >
                 Đóng bài viết
               </button>

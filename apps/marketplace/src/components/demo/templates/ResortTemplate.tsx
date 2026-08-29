@@ -348,7 +348,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
       <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between`}>
         {/* Brand Logo with Gold Emblem */}
         <div onClick={() => navigate('home')} className="flex items-center gap-3 cursor-pointer group">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#C5A059] to-[#E6CA65] flex items-center justify-center text-[#07132B] font-black text-xl shadow-md group-hover:scale-105 transition">
+          <div className="w-10 h-10 rounded-sm bg-gradient-to-tr from-[#C5A059] to-[#E6CA65] flex items-center justify-center text-[#07132B] font-black text-xl shadow-md group-hover:scale-105 transition">
             TB
           </div>
           <div>
@@ -362,12 +362,12 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
         </div>
 
         {/* Desktop Menu */}
-        <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider">
+        <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider whitespace-nowrap">
           {[
             { id: 'home', label: 'Tổng Quan' },
-            { id: 'vi-tri', label: 'Vị Trí Kim Cương' },
-            { id: 'cong-nghe', label: 'Công Nghệ 4.0' },
-            { id: 'tien-ich', label: 'Tiện Ích Đặc Quyền' },
+            { id: 'vi-tri', label: 'Vị Trí' },
+            { id: 'cong-nghe', label: 'Công Nghệ' },
+            { id: 'tien-ich', label: 'Tiện Ích' },
             { id: 'can-ho', label: 'Mặt Bằng Căn Hộ' },
             { id: 'news', label: 'Tin Tức' },
             { id: 'contact', label: 'Liên Hệ' },
@@ -377,7 +377,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
               <button
                 key={navItem.id}
                 onClick={() => navigate(navItem.id)}
-                className={`px-3 py-2 rounded-md transition-all cursor-pointer ${
+                className={`whitespace-nowrap px-3 py-2 rounded-md transition-all cursor-pointer ${
                   isActive
                     ? 'bg-[#C5A059] text-[#07132B] font-black shadow-md'
                     : 'text-slate-200 hover:text-[#E6CA65] hover:bg-white/5'
@@ -390,10 +390,10 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
         </nav>
 
         {/* Right CTA */}
-        <div className="hidden sm:flex items-center gap-3">
+        <div className="hidden sm:flex items-center gap-3 shrink-0">
           <button
             onClick={() => navigate('contact')}
-            className="px-4 py-2 bg-gradient-to-r from-[#C5A059] to-[#E6CA65] hover:from-[#E6CA65] hover:to-[#C5A059] text-[#07132B] font-black text-xs uppercase tracking-wider rounded-full shadow-md transition active:scale-95 cursor-pointer"
+            className="px-4 py-2 bg-gradient-to-r from-[#C5A059] to-[#E6CA65] hover:from-[#E6CA65] hover:to-[#C5A059] text-[#07132B] font-black text-xs uppercase tracking-wider rounded-sm shadow-md transition active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
           >
             Đăng Ký Tham Quan
           </button>
@@ -453,7 +453,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
       }}
     >
       <div className={`${MAX_W} mx-auto max-w-4xl space-y-6 pt-12`}>
-        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-[#C5A059]/20 text-[#E6CA65] border border-[#C5A059]/40 text-xs font-bold uppercase tracking-widest backdrop-blur-sm">
+        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-sm bg-[#C5A059]/20 text-[#E6CA65] border border-[#C5A059]/40 text-xs font-bold uppercase tracking-widest backdrop-blur-sm">
           <Sparkles size={14} /> TỔ HỢP CĂN HỘ THÔNG MINH BÊN SÔNG SÀI GÒN
         </div>
         <h1 className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-wider text-white font-serif leading-tight drop-shadow-lg">
@@ -465,13 +465,13 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
         <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
           <button
             onClick={() => navigate('can-ho')}
-            className="px-8 py-3.5 bg-gradient-to-r from-[#C5A059] to-[#E6CA65] hover:from-[#E6CA65] hover:to-[#C5A059] text-[#07132B] font-black text-xs uppercase tracking-wider rounded-full shadow-2xl transition transform hover:scale-105 active:scale-95 cursor-pointer"
+            className="px-8 py-3.5 bg-gradient-to-r from-[#C5A059] to-[#E6CA65] hover:from-[#E6CA65] hover:to-[#C5A059] text-[#07132B] font-black text-xs uppercase tracking-wider rounded-sm shadow-2xl transition transform hover:scale-105 active:scale-95 cursor-pointer"
           >
             Khám Phá Căn Hộ Mẫu ›
           </button>
           <button
             onClick={() => navigate('contact')}
-            className="px-8 py-3.5 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold text-xs uppercase tracking-wider rounded-full backdrop-blur-md transition cursor-pointer"
+            className="px-8 py-3.5 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold text-xs uppercase tracking-wider rounded-sm backdrop-blur-md transition cursor-pointer"
           >
             Tải Bảng Giá & CSBH
           </button>
@@ -492,14 +492,14 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black uppercase tracking-wider font-serif">
               Tổng Quan Dự Án Sunshine City Saigon
             </h2>
-            <div className="w-16 h-1 bg-slate-900 mx-auto rounded-full" />
+            <div className="w-16 h-1 bg-slate-900 mx-auto rounded-sm" />
             <p className="text-xs sm:text-sm font-semibold max-w-xl mx-auto text-slate-900/80">
               Biểu tượng kiến trúc tương lai ven sông Cả Cấm tại trung tâm Nam Sài Gòn
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-6 rounded-2xl overflow-hidden shadow-2xl border-4 border-white/30 bg-slate-900">
+            <div className="lg:col-span-6 rounded-sm overflow-hidden shadow-2xl border-4 border-white/30 bg-slate-900">
               <img
                 src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1000&q=80"
                 alt="Sunshine City Saigon Overview"
@@ -508,7 +508,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
             </div>
 
             <div className="lg:col-span-6 space-y-4 text-xs sm:text-sm font-medium">
-              <div className="bg-white/20 backdrop-blur-md p-4 rounded-xl space-y-2 border border-white/30">
+              <div className="bg-white/20 backdrop-blur-md p-4 rounded-sm space-y-2 border border-white/30">
                 <div className="flex justify-between border-b border-black/10 pb-2">
                   <span className="font-bold">Chủ đầu tư:</span>
                   <span>Tập đoàn Sunshine Group / PlatformBDS</span>
@@ -550,7 +550,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white font-serif uppercase tracking-wider">
             Vị Trí Kim Cương Ven Sông
           </h2>
-          <div className="w-16 h-1 bg-[#C5A059] mx-auto rounded-full" />
+          <div className="w-16 h-1 bg-[#C5A059] mx-auto rounded-sm" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -559,26 +559,26 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
               Tọa lạc tại vị trí độc tôn ven sông Cả Cấm, dự án Sunshine City Saigon liền kề Khu đô thị kiểu mẫu Phú Mỹ Hưng, thừa hưởng trọn vẹn hạ tầng giao thông và tiện ích quốc tế cao cấp nhất khu Nam.
             </p>
             <div className="grid grid-cols-2 gap-3 pt-2">
-              <div className="p-3.5 bg-white/5 border border-[#C5A059]/30 rounded-xl">
+              <div className="p-3.5 bg-white/5 border border-[#C5A059]/30 rounded-sm">
                 <span className="text-[#E6CA65] font-black text-base block font-serif">3 PHÚT</span>
                 <span className="text-slate-400 text-xs">Crescent Mall & Hồ Bán Nguyệt</span>
               </div>
-              <div className="p-3.5 bg-white/5 border border-[#C5A059]/30 rounded-xl">
+              <div className="p-3.5 bg-white/5 border border-[#C5A059]/30 rounded-sm">
                 <span className="text-[#E6CA65] font-black text-base block font-serif">5 PHÚT</span>
                 <span className="text-slate-400 text-xs">Bệnh viện Quốc tế FV & Tâm Đức</span>
               </div>
-              <div className="p-3.5 bg-white/5 border border-[#C5A059]/30 rounded-xl">
+              <div className="p-3.5 bg-white/5 border border-[#C5A059]/30 rounded-sm">
                 <span className="text-[#E6CA65] font-black text-base block font-serif">7 PHÚT</span>
                 <span className="text-slate-400 text-xs">Đại học RMIT & Trường Quốc Tế SSIS</span>
               </div>
-              <div className="p-3.5 bg-white/5 border border-[#C5A059]/30 rounded-xl">
+              <div className="p-3.5 bg-white/5 border border-[#C5A059]/30 rounded-sm">
                 <span className="text-[#E6CA65] font-black text-base block font-serif">10 PHÚT</span>
                 <span className="text-slate-400 text-xs">Chợ Bến Thành & Quận 1</span>
               </div>
             </div>
           </div>
 
-          <div className="lg:col-span-6 rounded-2xl overflow-hidden shadow-2xl border border-[#C5A059]/40 bg-slate-900">
+          <div className="lg:col-span-6 rounded-sm overflow-hidden shadow-2xl border border-[#C5A059]/40 bg-slate-900">
             <img
               src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1000&q=80"
               alt="Bản đồ vị trí kết nối vùng"
@@ -596,7 +596,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white font-serif uppercase tracking-wider">
               Ứng Dụng Công Nghệ 4.0 Đỉnh Cao
             </h2>
-            <div className="w-16 h-1 bg-[#C5A059] mx-auto rounded-full" />
+            <div className="w-16 h-1 bg-[#C5A059] mx-auto rounded-sm" />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -608,8 +608,8 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
             ].map((item, idx) => {
               const Icon = item.icon;
               return (
-                <div key={idx} className="bg-white/5 border border-[#C5A059]/30 p-6 rounded-2xl backdrop-blur-md space-y-3 hover:border-[#E6CA65] hover:bg-white/10 transition group">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-[#C5A059] to-[#E6CA65] text-[#07132B] flex items-center justify-center font-black group-hover:scale-110 transition">
+                <div key={idx} className="bg-white/5 border border-[#C5A059]/30 p-6 rounded-sm backdrop-blur-md space-y-3 hover:border-[#E6CA65] hover:bg-white/10 transition group">
+                  <div className="w-12 h-12 rounded-sm bg-gradient-to-tr from-[#C5A059] to-[#E6CA65] text-[#07132B] flex items-center justify-center font-black group-hover:scale-110 transition">
                     <Icon size={24} />
                   </div>
                   <h3 className="font-black text-base text-[#E6CA65] font-serif">{item.title}</h3>
@@ -628,7 +628,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black uppercase tracking-wider font-serif">
               Hệ Thống Tiện Ích Đặc Quyền Chuẩn Resort 5 Sao
             </h2>
-            <div className="w-16 h-1 bg-slate-900 mx-auto rounded-full" />
+            <div className="w-16 h-1 bg-slate-900 mx-auto rounded-sm" />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -652,7 +652,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
               </div>
             </div>
 
-            <div className="lg:col-span-6 rounded-2xl overflow-hidden shadow-2xl border-4 border-white/30 bg-slate-900">
+            <div className="lg:col-span-6 rounded-sm overflow-hidden shadow-2xl border-4 border-white/30 bg-slate-900">
               <img
                 src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1000&q=80"
                 alt="Spa & Onsen thư giãn 5 sao"
@@ -670,7 +670,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white font-serif uppercase tracking-wider">
             Tuyệt Tác Căn Hộ & Sky Villa Dát Vàng
           </h2>
-          <div className="w-16 h-1 bg-[#C5A059] mx-auto rounded-full" />
+          <div className="w-16 h-1 bg-[#C5A059] mx-auto rounded-sm" />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -678,7 +678,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
             <div
               key={unit.id}
               onClick={() => handleOpenUnit(unit)}
-              className="bg-white/5 border border-[#C5A059]/30 hover:border-[#E6CA65] rounded-2xl overflow-hidden shadow-xl transition-all duration-300 group cursor-pointer flex flex-col justify-between"
+              className="bg-white/5 border border-[#C5A059]/30 hover:border-[#E6CA65] rounded-sm overflow-hidden shadow-xl transition-all duration-300 group cursor-pointer flex flex-col justify-between"
             >
               <div>
                 <div className="h-48 relative overflow-hidden bg-slate-900">
@@ -688,7 +688,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
                     onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
                   />
-                  <span className="absolute top-3 left-3 px-3 py-0.5 bg-gradient-to-r from-[#C5A059] to-[#E6CA65] text-[#07132B] font-black text-[10px] rounded-full shadow">
+                  <span className="absolute top-3 left-3 px-3 py-0.5 bg-gradient-to-r from-[#C5A059] to-[#E6CA65] text-[#07132B] font-black text-[10px] rounded-sm shadow">
                     {unit.badge}
                   </span>
                   <span className="absolute bottom-3 right-3 px-2.5 py-0.5 bg-black/80 backdrop-blur-xs text-white font-bold text-[10px] rounded">
@@ -729,7 +729,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white font-serif uppercase tracking-wider">
             Tin Tức & Tiến Độ Mới Nhất
           </h2>
-          <div className="w-16 h-1 bg-[#C5A059] mx-auto rounded-full" />
+          <div className="w-16 h-1 bg-[#C5A059] mx-auto rounded-sm" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -737,7 +737,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
             <div
               key={art.id}
               onClick={() => handleOpenArticle(art)}
-              className="bg-white/5 border border-[#C5A059]/30 hover:border-[#E6CA65] rounded-2xl overflow-hidden shadow-xl transition cursor-pointer group flex flex-col justify-between"
+              className="bg-white/5 border border-[#C5A059]/30 hover:border-[#E6CA65] rounded-sm overflow-hidden shadow-xl transition cursor-pointer group flex flex-col justify-between"
             >
               <div className="h-48 overflow-hidden bg-slate-900">
                 <img
@@ -789,7 +789,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
 
       {/* 8. FORM ĐĂNG KÝ VIP & LIÊN HỆ */}
       <section className={`${MAX_W} mx-auto px-4`}>
-        <div className="bg-gradient-to-br from-[#0B1B3D] to-[#07132B] border border-[#C5A059]/40 rounded-3xl p-8 sm:p-12 shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div className="bg-gradient-to-br from-[#0B1B3D] to-[#07132B] border border-[#C5A059]/40 rounded-md p-8 sm:p-12 shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           <div className="lg:col-span-6 space-y-4">
             <span className="text-xs font-bold text-[#E6CA65] uppercase tracking-widest">ĐẶC QUYỀN DÀNH CHO KHÁCH HÀNG VIP</span>
             <h3 className="text-2xl sm:text-3xl font-black text-white font-serif uppercase">
@@ -811,14 +811,14 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
             </div>
           </div>
 
-          <form onSubmit={handleVipSubmit} className="lg:col-span-6 bg-white/5 border border-[#C5A059]/30 p-6 sm:p-8 rounded-2xl backdrop-blur-md space-y-3 text-xs">
+          <form onSubmit={handleVipSubmit} className="lg:col-span-6 bg-white/5 border border-[#C5A059]/30 p-6 sm:p-8 rounded-sm backdrop-blur-md space-y-3 text-xs">
             <input
               type="text"
               placeholder="Họ và tên của bạn (*)..."
               value={vipForm.name}
               onChange={e => setVipForm({ ...vipForm, name: e.target.value })}
               required
-              className="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white placeholder-slate-400 focus:outline-none focus:border-[#E6CA65]"
+              className="w-full bg-white/10 border border-white/20 rounded-sm p-3 text-white placeholder-slate-400 focus:outline-none focus:border-[#E6CA65]"
             />
             <input
               type="tel"
@@ -826,19 +826,19 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
               value={vipForm.phone}
               onChange={e => setVipForm({ ...vipForm, phone: e.target.value })}
               required
-              className="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-[#E6CA65] font-black placeholder-slate-400 focus:outline-none focus:border-[#E6CA65]"
+              className="w-full bg-white/10 border border-white/20 rounded-sm p-3 text-[#E6CA65] font-black placeholder-slate-400 focus:outline-none focus:border-[#E6CA65]"
             />
             <input
               type="email"
               placeholder="Email nhận thông tin..."
               value={vipForm.email}
               onChange={e => setVipForm({ ...vipForm, email: e.target.value })}
-              className="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white placeholder-slate-400 focus:outline-none focus:border-[#E6CA65]"
+              className="w-full bg-white/10 border border-white/20 rounded-sm p-3 text-white placeholder-slate-400 focus:outline-none focus:border-[#E6CA65]"
             />
             <select
               value={vipForm.unitType}
               onChange={e => setVipForm({ ...vipForm, unitType: e.target.value })}
-              className="w-full bg-[#0B1B3D] border border-white/20 rounded-xl p-3 text-white font-bold focus:outline-none cursor-pointer"
+              className="w-full bg-[#0B1B3D] border border-white/20 rounded-sm p-3 text-white font-bold focus:outline-none cursor-pointer"
             >
               <option value="Căn hộ 1 Phòng Ngủ">Căn hộ 1 Phòng Ngủ (52 m²)</option>
               <option value="Căn hộ 2 Phòng Ngủ">Căn hộ 2 Phòng Ngủ (72.5 m²)</option>
@@ -847,7 +847,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
             </select>
             <button
               type="submit"
-              className="w-full py-3.5 bg-gradient-to-r from-[#C5A059] to-[#E6CA65] hover:from-[#E6CA65] hover:to-[#C5A059] text-[#07132B] font-black text-xs uppercase tracking-wider rounded-xl shadow-xl transition cursor-pointer active:scale-95"
+              className="w-full py-3.5 bg-gradient-to-r from-[#C5A059] to-[#E6CA65] hover:from-[#E6CA65] hover:to-[#C5A059] text-[#07132B] font-black text-xs uppercase tracking-wider rounded-sm shadow-xl transition cursor-pointer active:scale-95"
             >
               ĐĂNG KÝ TƯ VẤN VIP NGAY
             </button>
@@ -877,7 +877,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
             <div
               key={unit.id}
               onClick={() => handleOpenUnit(unit)}
-              className="bg-white/5 border border-[#C5A059]/30 hover:border-[#E6CA65] rounded-2xl overflow-hidden shadow-xl transition-all duration-300 group cursor-pointer flex flex-col justify-between"
+              className="bg-white/5 border border-[#C5A059]/30 hover:border-[#E6CA65] rounded-sm overflow-hidden shadow-xl transition-all duration-300 group cursor-pointer flex flex-col justify-between"
             >
               <div>
                 <div className="h-48 relative overflow-hidden bg-slate-900">
@@ -887,7 +887,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
                     onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
                   />
-                  <span className="absolute top-3 left-3 px-3 py-0.5 bg-gradient-to-r from-[#C5A059] to-[#E6CA65] text-[#07132B] font-black text-[10px] rounded-full shadow">
+                  <span className="absolute top-3 left-3 px-3 py-0.5 bg-gradient-to-r from-[#C5A059] to-[#E6CA65] text-[#07132B] font-black text-[10px] rounded-sm shadow">
                     {unit.badge}
                   </span>
                 </div>
@@ -932,8 +932,8 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8 space-y-6">
-            <div className="bg-white/5 border border-[#C5A059]/30 p-6 rounded-2xl backdrop-blur-md space-y-3">
-              <span className="px-3 py-1 bg-gradient-to-r from-[#C5A059] to-[#E6CA65] text-[#07132B] font-black text-xs rounded-full">
+            <div className="bg-white/5 border border-[#C5A059]/30 p-6 rounded-sm backdrop-blur-md space-y-3">
+              <span className="px-3 py-1 bg-gradient-to-r from-[#C5A059] to-[#E6CA65] text-[#07132B] font-black text-xs rounded-sm">
                 {selectedUnit.badge}
               </span>
               <h1 className="text-xl sm:text-2xl font-black text-white font-serif leading-snug">
@@ -952,8 +952,8 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
             </div>
 
             {/* Gallery */}
-            <div className="bg-white/5 border border-[#C5A059]/30 p-4 rounded-2xl space-y-3">
-              <div className="h-80 sm:h-96 rounded-xl overflow-hidden bg-slate-900">
+            <div className="bg-white/5 border border-[#C5A059]/30 p-4 rounded-sm space-y-3">
+              <div className="h-80 sm:h-96 rounded-sm overflow-hidden bg-slate-900">
                 <img
                   src={selectedUnit.gallery[activeGalleryIdx] || selectedUnit.image}
                   alt=""
@@ -966,7 +966,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
                   <div
                     key={i}
                     onClick={() => setActiveGalleryIdx(i)}
-                    className={`h-24 rounded-xl overflow-hidden cursor-pointer border-2 transition ${
+                    className={`h-24 rounded-sm overflow-hidden cursor-pointer border-2 transition ${
                       activeGalleryIdx === i ? 'border-[#E6CA65]' : 'border-transparent opacity-70 hover:opacity-100'
                     }`}
                   >
@@ -977,7 +977,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
             </div>
 
             {/* Specs */}
-            <div className="bg-white/5 border border-[#C5A059]/30 p-6 rounded-2xl space-y-4 text-xs">
+            <div className="bg-white/5 border border-[#C5A059]/30 p-6 rounded-sm space-y-4 text-xs">
               <h3 className="font-black text-sm text-[#E6CA65] uppercase tracking-wider font-serif border-b border-white/10 pb-2">
                 TIÊU CHUẨN BÀN GIAO MẠ VÀNG 4.0
               </h3>
@@ -994,7 +994,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
           </div>
 
           <div className="lg:col-span-4 space-y-6">
-            <div className="bg-gradient-to-b from-[#0B1B3D] to-[#07132B] border border-[#C5A059]/40 p-6 rounded-2xl space-y-4">
+            <div className="bg-gradient-to-b from-[#0B1B3D] to-[#07132B] border border-[#C5A059]/40 p-6 rounded-sm space-y-4">
               <h3 className="font-black text-base text-[#E6CA65] font-serif uppercase">
                 Đăng Ký Tham Quan Căn Hộ Này
               </h3>
@@ -1005,7 +1005,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
                   value={vipForm.name}
                   onChange={e => setVipForm({ ...vipForm, name: e.target.value })}
                   required
-                  className="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white focus:outline-none focus:border-[#E6CA65]"
+                  className="w-full bg-white/10 border border-white/20 rounded-sm p-3 text-white focus:outline-none focus:border-[#E6CA65]"
                 />
                 <input
                   type="tel"
@@ -1013,11 +1013,11 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
                   value={vipForm.phone}
                   onChange={e => setVipForm({ ...vipForm, phone: e.target.value })}
                   required
-                  className="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-[#E6CA65] font-bold focus:outline-none focus:border-[#E6CA65]"
+                  className="w-full bg-white/10 border border-white/20 rounded-sm p-3 text-[#E6CA65] font-bold focus:outline-none focus:border-[#E6CA65]"
                 />
                 <button
                   type="submit"
-                  className="w-full py-3 bg-gradient-to-r from-[#C5A059] to-[#E6CA65] text-[#07132B] font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition cursor-pointer"
+                  className="w-full py-3 bg-gradient-to-r from-[#C5A059] to-[#E6CA65] text-[#07132B] font-black text-xs uppercase tracking-wider rounded-sm shadow-lg transition cursor-pointer"
                 >
                   XÁC NHẬN ĐẶT LỊCH XEM
                 </button>
@@ -1048,7 +1048,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
             <div
               key={art.id}
               onClick={() => handleOpenArticle(art)}
-              className="bg-white/5 border border-[#C5A059]/30 hover:border-[#E6CA65] rounded-2xl overflow-hidden shadow-xl transition cursor-pointer group flex flex-col justify-between"
+              className="bg-white/5 border border-[#C5A059]/30 hover:border-[#E6CA65] rounded-sm overflow-hidden shadow-xl transition cursor-pointer group flex flex-col justify-between"
             >
               <div className="h-48 overflow-hidden bg-slate-900">
                 <img
@@ -1089,8 +1089,8 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
           <span className="text-[#E6CA65] font-bold truncate">{selectedArticle.title}</span>
         </div>
 
-        <div className="bg-white/5 border border-[#C5A059]/30 p-6 sm:p-8 rounded-3xl backdrop-blur-md space-y-6">
-          <span className="px-3 py-1 bg-[#C5A059] text-[#07132B] font-bold text-xs rounded-full">
+        <div className="bg-white/5 border border-[#C5A059]/30 p-6 sm:p-8 rounded-md backdrop-blur-md space-y-6">
+          <span className="px-3 py-1 bg-[#C5A059] text-[#07132B] font-bold text-xs rounded-sm">
             {selectedArticle.category}
           </span>
           <h1 className="text-2xl sm:text-3xl font-black text-white font-serif leading-tight">
@@ -1104,7 +1104,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
             <span>{selectedArticle.views} lượt xem</span>
           </div>
 
-          <div className="rounded-2xl overflow-hidden shadow-2xl">
+          <div className="rounded-sm overflow-hidden shadow-2xl">
             <img
               src={selectedArticle.image}
               alt={selectedArticle.title}

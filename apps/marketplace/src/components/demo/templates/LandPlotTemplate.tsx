@@ -1903,7 +1903,7 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
                 </ul>
 
                 {/* Interactive Google Map */}
-                <div className="mt-8 rounded-2xl overflow-hidden border border-slate-200 shadow-md flex flex-col h-56">
+                <div className="mt-8 rounded-sm overflow-hidden border border-slate-200 shadow-md flex flex-col h-56">
                   <div className="px-3.5 py-2 bg-slate-900 text-white flex items-center justify-between text-xs">
                     <span className="font-bold flex items-center gap-1.5 truncate"><MapPin size={14} className="text-amber-400" /> KĐT Nam Sài Gòn, Quận 7, TP.HCM</span>
                     <a

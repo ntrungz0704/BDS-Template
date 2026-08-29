@@ -372,132 +372,136 @@ export const ALL_TEMPLATES: Template[] = [
       heroSubtitle: "Khám phá hàng ngàn bất động sản chính xác theo tọa độ và quy hoạch hạ tầng."
     }
   },
-  // ─── PORTAL 06. ECO LIVING GREEN PORTAL ────────────────────────────────────
+  // ─── PORTAL 06. GRAND RIVERSIDE ECO-TOWNSHIP & RESIDENTIAL RESORT ──────────
   {
     id: "portal-06",
-    name: "Template #06 - Eco Living Green Portal",
+    name: "Template #06 - Grand Riverside Eco-Township",
     slug: "portal-06",
     collectionSlug: "portal",
     collectionName: "Listing Portal Collection",
     badge: "DÒNG A #06",
-    badgeBg: "#065F46",
+    badgeBg: "#D8232A",
     badgeColor: "#FFFFFF",
-    accentColor: "#059669",
-    description: "Cổng thông tin bất động sản sinh thái, nghỉ dưỡng xanh và farmstay chữa lành. Bố cục hữu cơ thân thiện thiên nhiên với tông màu Xanh Rừng Nhiệt Đới & Vàng Lime, thẻ listing Eco Organic bo tròn mềm mại 24px.",
-    shortDescription: "BĐS sinh thái · Farmstay & Đất vườn · Đại đô thị xanh chuẩn LEED",
-    thumbnail: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800&auto=format&fit=crop&q=80",
+    accentColor: "#D8232A",
+    description: "Cổng thông tin và Landing Page đại đô thị sinh thái phức hợp cao cấp 120ha. Tông màu Đỏ Ruby thể thao sang trọng phối Deep Slate Obsidian & Vàng Ánh Kim, tích hợp đầy đủ sơ đồ Masterplan 1/500, catalog căn hộ 1-3PN & Penthouse Duplex, dãy Shophouse đại lộ 30m, 6 cụm tiện ích 5 sao và bảng tính lãi vay ngân hàng thời gian thực.",
+    shortDescription: "Đại đô thị sinh thái 120ha · Căn hộ & Shophouse · Hồ cảnh quan 12ha",
+    thumbnail: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=80",
     screenshots: [
-      "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
     ],
     features: [
-      "Bố cục thân thiện thiên nhiên với nền Kem Thảo Mộc dịu mắt",
-      "Thẻ tin Eco Organic bo góc 24px kèm chỉ số mật độ cây xanh %",
-      "Bộ lọc BĐS theo đặc tính: View hồ, Công viên, Farmstay, Nghỉ dưỡng đồi",
-      "Trang chi tiết BĐS kèm đánh giá vi khí hậu và cẩm nang sống xanh",
-      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án, Cẩm nang, Giới thiệu, Liên hệ",
-      "Tích hợp form ký gửi đất vườn và tư vấn mô hình farmstay sinh thái"
+      "Hero Banner Flycam toàn cảnh đại đô thị 120ha kèm Video Modal 3D sắc nét",
+      "Bảng thông số tổng quan dự án & hồ sơ pháp lý minh bạch chuẩn CĐT",
+      "Sơ đồ liên kết vùng kim cương với 5 cột mốc cự ly di chuyển chi tiết",
+      "Sơ đồ quy hoạch phân khu Masterplan CAD & Catalog 4 dòng căn hộ điển hình",
+      "Dãy Shophouse đại lộ 30m sầm uất & Biệt thự đảo ven hồ sinh thái 12ha",
+      "Hệ thống 6 tiện ích đặc quyền 5 sao (Hồ bơi tràn, Sân Golf 3D, TTTM, Bệnh viện)",
+      "Chính sách bán hàng ưu đãi đợt 1 & Bảng tính lãi suất vay ngân hàng tương tác",
+      "Đầy đủ 100% các trang con: Căn hộ, Shophouse, Biệt thự, Tiện ích, Chính sách, Thư viện, Tin tức, Ký gửi, Liên hệ"
     ],
     priceBuy: 399000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
     sortOrder: 6,
-    targetAudience: ["Sàn phân phối đại đô thị sinh thái (Ecopark, Swanbay, Aqua City)", "Môi giới farmstay & đất vườn sinh thái Bảo Lộc / Đà Lạt", "Sàn cho thuê biệt thự nghỉ dưỡng retreat"],
-    highlights: ["Botanical Emerald Theme", "Eco Organic Cards 24px", "Green LEED Indicators", "Đầy đủ 9 Trang Con"],
-    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
-    modules: ["EcoCardModule", "GreenIndexFilterModule", "EcoProjectModule", "WellnessLifestyleModule"],
-    benefits: ["Thu hút đối tượng khách hàng tìm kiếm không gian sống chữa lành", "Gia tăng 320% thời gian tương tác", "Tối ưu hóa chuyển đổi leads tư vấn BĐS nghỉ dưỡng"],
+    targetAudience: ["Chủ đầu tư & Sàn F1 phân phối đại đô thị quy mô lớn", "Đại lý bán căn hộ chung cư cao cấp & Shophouse khối đế", "Đơn vị phân phối biệt thự sinh thái ven hồ & nhà phố thương mại"],
+    highlights: ["Ruby Red & Obsidian Slate Theme", "Masterplan CAD 1/500", "Realtime Mortgage Calculator", "Đầy đủ 100% Trang Con"],
+    availablePages: ["Trang chủ", "Căn hộ cao cấp", "Shophouse thương mại", "Nhà phố liền kề", "Biệt thự sinh thái", "Chi tiết BĐS", "Hệ thống tiện ích", "Chính sách & Bảng giá", "Thư viện ảnh", "Tin tức dự án", "Chi tiết tin tức", "Ký gửi nhà đất", "Giới thiệu", "Liên hệ"],
+    modules: ["MasterplanViewerModule", "ApartmentCatalogModule", "ShophouseBoulevardModule", "MortgageCalculatorModule", "AmenityShowcaseModule", "UniversalFooterModule"],
+    benefits: ["Nâng tầm thương hiệu dự án đại đô thị chuẩn quốc tế", "Tăng 450% tỷ lệ chuyển đổi khách hàng đăng ký nhận bảng giá VIP", "Hỗ trợ khách hàng tính toán phương án tài chính vay ngân hàng tức thì"],
     themeConfig: {
       fontHeading: "'Inter', sans-serif",
       fontBody: "'Inter', sans-serif",
-      primaryColor: "#065F46",
-      secondaryColor: "#059669",
-      accentColor: "#84CC16",
-      bgColor: "#F0FDF4",
+      primaryColor: "#D8232A",
+      secondaryColor: "#0F172A",
+      accentColor: "#F59E0B",
+      bgColor: "#F8FAFC",
       cardBgColor: "#FFFFFF",
       textColor: "#0F172A",
-      radiusToken: "1.5rem",
-      shadowToken: "0 10px 15px -3px rgba(6, 95, 70, 0.1)"
+      radiusToken: "1rem",
+      shadowToken: "0 10px 15px -3px rgba(216, 35, 42, 0.1)"
     },
     layoutConfig: {
-      heroStyle: "Botanical Forest Hero với Search Bar bo tròn 24px",
-      navigationStyle: "Eco Clean Rounded Navbar",
-      cardStyle: "Eco Organic Card (Ảnh 4:3 bo tròn 24px, huy hiệu xanh)",
-      galleryStyle: "Nature Landscape Slider",
-      ctaStyle: "Emerald Green Rounded Button",
-      spacingScale: "Comfortable Nature Spacing"
+      heroStyle: "Mega Township Aerial Hero với Flycam Video Preview",
+      navigationStyle: "Obsidian Slate Sticky Navbar với Red Micro Topbar",
+      cardStyle: "Modern High-End Card (Viền mảnh, badge trạng thái đỏ, giá vàng amber)",
+      galleryStyle: "6-Column Interactive Lightbox Grid",
+      ctaStyle: "Ruby Red Action Button with Shadow",
+      spacingScale: "Generous Modern Spacing"
     },
-    wireframe: ["HeaderEcoEstate", "HeroForestSearch", "EcoListingsGrid", "ModelEcoCities", "FooterEcoEstate"],
+    wireframe: ["HeaderMegaTownship", "HeroTownshipSearch", "ProjectOverviewTable", "LocationMilestones5Grid", "MasterplanApartmentCatalog", "LowRiseBoulevardGrid", "Amenities6Grid", "PolicyAndMortgageCalculator", "GalleryAndProgress", "NewsArticlesGrid", "FooterMegaTownship"],
     sectionConfig: {
       sourceSlug: "portal-06",
-      heroTitle: "KHỞI ĐẦU CUỘC SỐNG THUẦN KHIẾT GIỮA THIÊN NHIÊN",
-      heroSubtitle: "Hơn 12.000 biệt thự đảo, farmstay sinh thái và căn hộ vườn treo chuẩn LEED."
+      heroTitle: "KHU ĐÔ THỊ SINH THÁI PHỨC HỢP GRAND RIVERSIDE PARK",
+      heroSubtitle: "Tuyệt tác không gian sống xanh chuẩn quốc tế quy mô 120ha bên hồ cảnh quan, tích hợp hơn 100+ tiện ích 5 sao đặc quyền."
     }
   },
-  // ─── PORTAL 07. COASTAL & RESORT LIVING PORTAL ─────────────────────────────
+  // ─── PORTAL 07. PANNAMERA ECO VILLAGE & CLOUD HUNTING RESORT ──────────────
   {
     id: "portal-07",
-    name: "Template #07 - Coastal & Resort Living Portal",
+    name: "Template #07 - Pannamera Eco-Village Bảo Lộc",
     slug: "portal-07",
     collectionSlug: "portal",
     collectionName: "Listing Portal Collection",
     badge: "DÒNG A #07",
-    badgeBg: "#0284C7",
+    badgeBg: "#047857",
     badgeColor: "#FFFFFF",
-    accentColor: "#0284C7",
-    description: "Cổng thông tin và sàn giao dịch bất động sản nghỉ dưỡng biển, condotel 5 sao và biệt thự mặt biển. Tông màu Xanh Đại Dương & Cát Vàng nhiệt đới, hiển thị cự ly ra bãi tắm và cam kết dòng tiền cho thuê %/năm.",
-    shortDescription: "BĐS nghỉ dưỡng biển · Condotel 5 sao · Cam kết dòng tiền Cashflow",
-    thumbnail: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&auto=format&fit=crop&q=80",
+    accentColor: "#047857",
+    description: "Cổng thông tin và Landing Page làng sinh thái nghỉ dưỡng săn mây PANNAMERA Bảo Lộc (Lâm Đồng). Tông màu Xanh Rừng Thông Nhiệt Đới phối Vàng Ánh Kim, tích hợp đầy đủ sơ đồ phân lô 3D đất vườn 250m² - 1000m², cối xay gió Hà Lan & đồi hoa cẩm tú cầu, mẫu nhà bungalow gỗ Bắc Âu và bảng tính vay ngân hàng thời gian thực.",
+    shortDescription: "Làng sinh thái 900m biển · Đất vườn săn mây · Sổ đỏ thổ cư có sẵn",
+    thumbnail: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&auto=format&fit=crop&q=80",
     screenshots: [
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=1200&auto=format&fit=crop&q=80"
     ],
     features: [
-      "Bố cục đậm chất đại dương với tông Xanh Biển & Cát Vàng nhiệt đới",
-      "Thẻ tin Ocean View Wide Card hiển thị cự ly ra biển (50m/100m)",
-      "Tích hợp bảng tính bài toán dòng tiền Cashflow & lợi nhuận cho thuê",
-      "Trang chi tiết BĐS kèm chính sách chia sẻ doanh thu và đơn vị vận hành",
-      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án, Cẩm nang, Giới thiệu, Liên hệ",
-      "Kết nối thông tin các thủ phủ du lịch biển: Phú Quốc, Đà Nẵng, Nha Trang"
+      "Hero Banner Săn Mây bình minh trên đồi chè kèm Video Flycam 3D",
+      "Bảng thông số tổng quan dự án & hồ sơ trích lục địa chính minh bạch",
+      "Bản đồ liên kết vùng cao tốc Dầu Giây - Tân Phú - Bảo Lộc - Liên Khương",
+      "Biểu tượng Cối Xay Gió & Vườn hoa cẩm tú cầu check-in rực rỡ",
+      "Mặt bằng phân lô 3D đất vườn biệt thự từ 250m² - 1.000m²",
+      "Giới thiệu mẫu nhà vườn Bungalow gỗ 2 tầng phong cách Nordic",
+      "6 Giá trị cốt lõi & Tiềm năng tăng giá X2-X3 đón sóng cao tốc",
+      "Đầy đủ 100% các trang con: Đất vườn, Bungalow, Biệt thự đồi, Farmstay, Tiện ích, Thư viện, Tin tức, Ký gửi, Liên hệ"
     ],
     priceBuy: 399000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
     sortOrder: 7,
-    targetAudience: ["Sàn phân phối BĐS nghỉ dưỡng ven biển", "Đại lý bán condotel và shophouse biển Sun Group / Vingroup", "Đơn vị quản lý vận hành cho thuê biệt thự biển"],
-    highlights: ["Ocean View 16:9 Cards", "Cashflow Yield Calculator", "Distance to Beach Meters", "Đầy đủ 9 Trang Con"],
-    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
-    modules: ["OceanCardModule", "YieldCalculatorModule", "ResortProjectModule", "CoastalTourismModule"],
-    benefits: ["Tăng 340% niềm tin nhà đầu tư tìm kiếm dòng tiền cho thuê", "Hiển thị minh bạch lợi nhuận và đơn vị quản lý quốc tế", "Đồng bộ URL slug chuẩn SEO du lịch"],
+    targetAudience: ["Chủ đầu tư & Sàn phân phối đất nền nghỉ dưỡng Bảo Lộc / Lâm Đồng", "Môi giới Farmstay, Đất vườn sinh thái & Second Home Tây Nguyên", "Đơn vị vận hành homestay nghỉ dưỡng và du lịch sinh thái"],
+    highlights: ["Pine Forest Emerald Theme", "Cloud Hunting 3D View", "Nordic Wooden Bungalow", "Đầy đủ 100% Trang Con"],
+    availablePages: ["Trang chủ", "Đất vườn săn mây", "Bungalow nghỉ dưỡng", "Biệt thự đồi", "Farmstay 1000m²", "Chi tiết BĐS", "Hệ thống tiện ích", "Thư viện ảnh", "Tin tức du lịch", "Chi tiết tin tức", "Ký gửi nhà đất", "Giới thiệu", "Liên hệ"],
+    modules: ["CloudHuntingModule", "EcoMasterplanModule", "WindmillShowcaseModule", "NordicBungalowModule", "MortgageCalculatorModule", "UniversalFooterModule"],
+    benefits: ["Thu hút mạnh mẽ khách hàng tìm kiếm Second Home nghỉ dưỡng", "Tăng 520% lượng đăng ký nhận bảng giá F1 qua Zalo", "Hỗ trợ khách hàng thẩm định giá và tính toán phương án vay vốn tức thì"],
     themeConfig: {
       fontHeading: "'Inter', sans-serif",
       fontBody: "'Inter', sans-serif",
-      primaryColor: "#0284C7",
-      secondaryColor: "#0369A1",
+      primaryColor: "#047857",
+      secondaryColor: "#064E3B",
       accentColor: "#F59E0B",
-      bgColor: "#F0F9FF",
+      bgColor: "#F0FDF4",
       cardBgColor: "#FFFFFF",
       textColor: "#0F172A",
-      radiusToken: "1.5rem",
-      shadowToken: "0 10px 15px -3px rgba(2, 132, 199, 0.1)"
+      radiusToken: "1rem",
+      shadowToken: "0 10px 15px -3px rgba(4, 120, 87, 0.1)"
     },
     layoutConfig: {
-      heroStyle: "Coastal Resort Hero với Search Bar cự ly biển",
-      navigationStyle: "Sky Clean Rounded Navbar",
-      cardStyle: "Ocean View Wide Card (Ảnh 16:9, badge cự ly biển m)",
-      galleryStyle: "Coastal Panoramic Slider",
-      ctaStyle: "Ocean Blue Action Button",
-      spacingScale: "Tropical Spacious Spacing"
+      heroStyle: "Highland Forest Mist Hero với Săn Mây View",
+      navigationStyle: "Emerald Pine Sticky Navbar với Top Microbar",
+      cardStyle: "Eco Highland Card (Viền mỏng, badge xanh lục, giá vàng hổ phách)",
+      galleryStyle: "Day-Night Showcase & 6-Thumbnail Grid",
+      ctaStyle: "Amber Gold Action Button with Shadow",
+      spacingScale: "Comfortable Natural Spacing"
     },
-    wireframe: ["HeaderOceanEstate", "HeroCoastalSearch", "OceanListingsGrid", "TopResortComplexes", "FooterOceanEstate"],
+    wireframe: ["HeaderEcoVillage", "HeroCloudHunting", "OverviewTeaHills", "LocationExpresswayMap", "WindmillAmenities", "MasterplanPhanLoGrid", "CoreValues6Grid", "GalleryAndVideoFlycam", "NordicBungalowModel", "NewsAndMortgageCalc", "FooterEcoVillage"],
     sectionConfig: {
       sourceSlug: "portal-07",
-      heroTitle: "SỞ HỮU BẤT ĐỘNG SẢN VEN BIỂN ĐẸP NHẤT VIỆT NAM",
-      heroSubtitle: "Hơn 8.000 biệt thự mặt biển, shophouse phố biển và condotel 5 sao quản lý quốc tế."
+      heroTitle: "PANNAMERA — NƠI DỪNG CHÂN LÝ TƯỞNG BẢO LỘC",
+      heroSubtitle: "Làng sinh thái đồi chè nghỉ dưỡng độ cao 900m, mát lạnh 18-22°C quanh năm, sổ đỏ trao tay từng nền."
     }
   },
   // ─── PORTAL 08. INDUSTRIAL & LOGISTICS HUB ─────────────────────────────────

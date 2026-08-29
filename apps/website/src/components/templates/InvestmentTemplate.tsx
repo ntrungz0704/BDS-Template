@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import {
   ArrowRight, ArrowUpRight, BarChart3, Building2, Calculator,
   ChevronDown, ChevronRight, Download, Filter, Home, Info,
@@ -9,7 +10,7 @@ import {
   Clock, Map, Award, Users, Plus
 } from 'lucide-react';
 import { MAX_W } from '../design-system';
-import { FacebookIcon, LinkedinIcon, YoutubeIcon, ZaloIcon } from '../icons/SocialIcons';
+import { FacebookIcon, LinkedinIcon, YoutubeIcon, ZaloIcon } from '../../icons/SocialIcons';
 
 interface TemplateProps {
   template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
@@ -215,16 +216,27 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
   useEffect(() => {
     setCurrentPageState(normalizeInvestmentPage(initialPage));
   }, [initialPage]);
-  const setCurrentPage = (p: string) => {
+
+  const setCurrentPage = (p: string, customSlug?: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
     if (typeof setSelectedArticle === "function") setSelectedArticle(null);
 
     setCurrentPageState(p);
-    if (typeof window !== 'undefined') {
-      const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
-    }
+    const tSlug = template?.slug || 'bds-10';
+    syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-10') ? parts[1] : 'home');
+      if (sub) {
+        setCurrentPageState(normalizeInvestmentPage(sub));
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [template?.slug]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
@@ -466,16 +478,16 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             Đơn vị tư vấn và quản lý danh mục đầu tư bất động sản hàng đầu, mang đến giải pháp sinh lời bền vững và an toàn cho nhà đầu tư chuyên nghiệp.
           </p>
           <div className="flex space-x-3">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook" className="w-8 h-8 rounded-sm bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors">
               <FacebookIcon className="w-4 h-4" />
             </a>
-            <a href="https://zalo.me/0919006030" target="_blank" rel="noopener noreferrer" title="Zalo" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-[#0068FF] hover:text-white transition-colors p-1.5">
+            <a href="https://zalo.me/0919006030" target="_blank" rel="noopener noreferrer" title="Zalo" className="w-8 h-8 rounded-sm bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-[#0068FF] hover:text-white transition-colors p-1.5">
               <ZaloIcon className="w-full h-full" />
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" title="LinkedIn" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-blue-700 hover:text-white transition-colors">
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" title="LinkedIn" className="w-8 h-8 rounded-sm bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-blue-700 hover:text-white transition-colors">
               <LinkedinIcon className="w-4 h-4" />
             </a>
-            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" title="YouTube" className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-red-600 hover:text-white transition-colors">
+            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" title="YouTube" className="w-8 h-8 rounded-sm bg-slate-800 flex items-center justify-center text-gray-400 hover:bg-red-600 hover:text-white transition-colors">
               <YoutubeIcon className="w-4 h-4" />
             </a>
           </div>
@@ -548,10 +560,10 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
         
         <div className={`${MAX_W} mx-auto px-4 sm:px-6 relative z-10 flex flex-col lg:flex-row items-center gap-12`}>
           <div className="lg:w-1/2 space-y-6">
-            <div className="inline-flex items-center gap-2 bg-blue-900/50 border border-blue-500/30 px-3 py-1.5 rounded-full text-xs font-semibold text-blue-200">
+            <div className="inline-flex items-center gap-2 bg-blue-900/50 border border-blue-500/30 px-3 py-1.5 rounded-sm text-xs font-semibold text-blue-200">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-sm bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-sm h-2 w-2 bg-emerald-500"></span>
               </span>
               Cập nhật dữ liệu thị trường Q2/2026
             </div>
@@ -576,7 +588,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
           </div>
           
           <div className="lg:w-1/2 w-full">
-            <div className="bg-slate-800/80 backdrop-blur-md rounded-xl border border-slate-700 p-4 md:p-6 shadow-2xl">
+            <div className="bg-slate-800/80 backdrop-blur-md rounded-sm border border-slate-700 p-4 md:p-6 shadow-2xl">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="font-bold text-lg">Hiệu suất Quỹ InvestPro</h3>
                 <div className="flex gap-2">
@@ -612,7 +624,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
       {/* QUICK SEARCH */}
       <section className="-mt-10 relative z-20">
         <div className={`${MAX_W} mx-auto px-4 sm:px-6`}>
-          <div className="bg-white rounded-xl shadow-xl p-4 md:p-6 border border-gray-100 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div className="bg-white rounded-sm shadow-xl p-4 md:p-6 border border-gray-100 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Loại hình đầu tư</label>
               <select 
@@ -679,7 +691,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               { title: 'Tỷ Lệ Hấp Thụ', value: '78.5', unit: '%', trend: '+5.1%', icon: Target, desc: 'Phân khúc cao cấp tại TP.HCM' },
               { title: 'Lãi Suất Cho Vay', value: '6.5-8.5', unit: '%/năm', trend: '-1.2%', icon: Coins, desc: 'Mức thấp nhất trong 3 năm' }
             ].map((stat, i) => (
-              <div key={i} className="bg-gray-50 border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-shadow">
+              <div key={i} className="bg-gray-50 border border-gray-100 rounded-sm p-6 hover:shadow-lg transition-shadow">
                 <div className="flex justify-between items-start mb-4">
                   <div className="p-3 bg-white rounded-lg shadow-sm">
                     <stat.icon size={24} color={colors.primary} />
@@ -718,7 +730,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <div 
                 key={project.id} 
                 onClick={() => setSelectedProject(project)}
-                className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all group flex flex-col h-full border border-gray-100 cursor-pointer"
+                className="bg-white rounded-sm overflow-hidden shadow-md hover:shadow-xl transition-all group flex flex-col h-full border border-gray-100 cursor-pointer"
               >
                 <div className="relative h-48 overflow-hidden">
                   <div className="absolute top-3 right-3 z-10 bg-[#10B981] text-white text-xs font-bold px-2 py-1 rounded">
@@ -757,7 +769,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                     </div>
                     <button 
                       onClick={() => setSelectedProject(project)}
-                      className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#1E40AF] group-hover:bg-[#1E40AF] group-hover:text-white transition-colors cursor-pointer"
+                      className="w-10 h-10 rounded-sm bg-blue-50 flex items-center justify-center text-[#1E40AF] group-hover:bg-[#1E40AF] group-hover:text-white transition-colors cursor-pointer"
                     >
                       <ArrowUpRight size={18} />
                     </button>
@@ -780,7 +792,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             <p className="text-gray-500 max-w-2xl mx-auto">Phân tích đa chiều giúp nhà đầu tư đưa ra quyết định phân bổ nguồn vốn hợp lý trong bối cảnh kinh tế hiện tại.</p>
           </div>
           
-          <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+          <div className="overflow-x-auto rounded-sm border border-gray-200 shadow-sm">
             <table className="w-full text-left border-collapse min-w-[800px]">
               <thead>
                 <tr className="bg-gray-50">
@@ -815,19 +827,19 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
 
       {/* ADVISORY STORY */}
       <section className="py-20 bg-[#EFF6FF] relative overflow-hidden">
-        <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-blue-200 rounded-full blur-3xl opacity-50"></div>
+        <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-blue-200 rounded-sm blur-3xl opacity-50"></div>
         <div className={`${MAX_W} mx-auto px-4 sm:px-6 relative z-10`}>
           <div className="flex flex-col lg:flex-row gap-16 items-center">
             <div className="lg:w-1/2 relative">
-              <div className="absolute -inset-4 bg-gradient-to-tr from-blue-600 to-emerald-400 rounded-2xl transform rotate-2 opacity-20 blur-sm"></div>
+              <div className="absolute -inset-4 bg-gradient-to-tr from-blue-600 to-emerald-400 rounded-sm transform rotate-2 opacity-20 blur-sm"></div>
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
                 src="https://images.unsplash.com/photo-1556761175-5973dc0f32b7?w=800&q=80" 
                 alt="Đội ngũ chuyên gia" 
-                className="relative rounded-2xl shadow-2xl z-10 border-4 border-white object-cover h-[500px] w-full"
+                className="relative rounded-sm shadow-2xl z-10 border-4 border-white object-cover h-[500px] w-full"
               />
-              <div className="absolute bottom-8 -right-8 bg-white p-6 rounded-xl shadow-xl z-20 border border-gray-100 hidden md:block">
+              <div className="absolute bottom-8 -right-8 bg-white p-6 rounded-sm shadow-xl z-20 border border-gray-100 hidden md:block">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-[#1E40AF]">
+                  <div className="w-16 h-16 bg-blue-100 rounded-sm flex items-center justify-center text-[#1E40AF]">
                     <Award size={32} />
                   </div>
                   <div>
@@ -888,7 +900,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               { icon: Landmark, title: 'Đòn Bẩy Tài Chính', desc: 'Sử dụng vốn ngân hàng một cách thông minh để tối ưu hóa tỷ suất lợi nhuận ròng (ROE).' },
               { icon: Briefcase, title: 'Đa Dạng Danh Mục', desc: 'Giảm thiểu rủi ro cho danh mục đầu tư tổng thể nhờ tính tương quan thấp với chứng khoán.' }
             ].map((feature, i) => (
-              <div key={i} className="bg-slate-800 p-8 rounded-xl border border-slate-700 hover:border-blue-500 transition-colors group">
+              <div key={i} className="bg-slate-800 p-8 rounded-sm border border-slate-700 hover:border-blue-500 transition-colors group">
                 <div className="w-14 h-14 bg-blue-900/50 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <feature.icon size={28} className="text-blue-400" />
                 </div>
@@ -903,7 +915,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
       {/* DYNAMIC ROI CALCULATOR */}
       <section className="py-20 bg-white">
         <div className={`${MAX_W} mx-auto px-4 sm:px-6`}>
-          <div className="bg-blue-50 rounded-3xl p-8 md:p-12 border border-blue-100 flex flex-col lg:flex-row gap-12 items-center">
+          <div className="bg-blue-50 rounded-md p-8 md:p-12 border border-blue-100 flex flex-col lg:flex-row gap-12 items-center">
             <div className="lg:w-1/2 w-full space-y-6">
               <span className="text-[#1E40AF] font-bold text-sm tracking-wider uppercase mb-2 block">Công cụ phân tích độc quyền</span>
               <h2 className="text-3xl font-bold text-gray-900 leading-tight">Tính Toán Lợi Nhuận Dòng Tiền & Tăng Giá Trị</h2>
@@ -991,7 +1003,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             </div>
             
             <div className="lg:w-1/2 w-full">
-              <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100 w-full relative overflow-hidden space-y-6">
+              <div className="bg-white rounded-sm shadow-xl p-6 sm:p-8 border border-gray-100 w-full relative overflow-hidden space-y-6">
                 <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#1E40AF] to-[#10B981]"></div>
                 
                 <h3 className="text-center font-bold text-gray-500 uppercase tracking-wider text-xs">Phân tích hiệu suất đầu tư dự kiến</h3>
@@ -1009,25 +1021,25 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="p-4 bg-gray-50 rounded-xl">
+                  <div className="p-4 bg-gray-50 rounded-sm">
                     <span className="text-gray-500 text-xs font-semibold block mb-1">Tỷ suất cho thuê hàng năm</span>
                     <span className="font-bold text-gray-800 text-lg">
                       {rentalYieldPercent.toFixed(1)}% / năm
                     </span>
                   </div>
-                  <div className="p-4 bg-gray-50 rounded-xl">
+                  <div className="p-4 bg-gray-50 rounded-sm">
                     <span className="text-gray-500 text-xs font-semibold block mb-1">Tổng tiền thuê thu được</span>
                     <span className="font-bold text-[#1E40AF] text-lg">
                       {totalRentalIncome.toFixed(2)} Tỷ VNĐ
                     </span>
                   </div>
-                  <div className="p-4 bg-gray-50 rounded-xl">
+                  <div className="p-4 bg-gray-50 rounded-sm">
                     <span className="text-gray-500 text-xs font-semibold block mb-1">Giá trị BĐS sau {calcYears} năm</span>
                     <span className="font-bold text-gray-800 text-lg">
                       {projectedPropertyValue.toFixed(2)} Tỷ VNĐ
                     </span>
                   </div>
-                  <div className="p-4 bg-emerald-50 rounded-xl">
+                  <div className="p-4 bg-emerald-50 rounded-sm">
                     <span className="text-emerald-800 text-xs font-semibold block mb-1">Mức tăng trưởng giá đất</span>
                     <span className="font-bold text-emerald-600 text-lg">
                       {capitalGain.toFixed(2)} Tỷ VNĐ
@@ -1040,7 +1052,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                     setContactMessage(`Tôi đã dùng bảng tính ROI và muốn nhận bảng phân tích chi tiết dòng tiền cho BĐS giá ${calcPrice} Tỷ VNĐ, thuê ${calcMonthlyRent} Triệu/tháng.`);
                     navigateTo('contact');
                   }}
-                  className="w-full bg-[#1E40AF] text-white py-4 rounded-xl font-bold shadow-lg hover:bg-blue-800 transition-colors flex items-center justify-center gap-2"
+                  className="w-full bg-[#1E40AF] text-white py-4 rounded-sm font-bold shadow-lg hover:bg-blue-800 transition-colors flex items-center justify-center gap-2"
                 >
                   <Calculator size={20} /> Nhận Báo Cáo Dòng Tiền Chi Tiết
                 </button>
@@ -1064,14 +1076,14 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div onClick={() => setSelectedGalleryImg(galleryImages[0].img)} className="col-span-2 row-span-2 relative group overflow-hidden rounded-xl h-96 cursor-pointer">
+            <div onClick={() => setSelectedGalleryImg(galleryImages[0].img)} className="col-span-2 row-span-2 relative group overflow-hidden rounded-sm h-96 cursor-pointer">
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={galleryImages[0].img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Gallery 1"/>
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <span className="text-white font-bold text-lg">Biệt Thự Đảo Grand Marina</span>
               </div>
             </div>
             {galleryImages.slice(1, 5).map((img, i) => (
-              <div key={i} onClick={() => setSelectedGalleryImg(img.img)} className="relative group overflow-hidden rounded-xl h-44 cursor-pointer">
+              <div key={i} onClick={() => setSelectedGalleryImg(img.img)} className="relative group overflow-hidden rounded-sm h-44 cursor-pointer">
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={img.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Gallery preview"/>
                 <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <Plus size={20} className="text-white" />
@@ -1096,14 +1108,14 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               { name: 'Chị Mai Lan', role: 'Nhà đầu tư cá nhân', text: 'Dịch vụ tư vấn không chỉ dừng lại ở việc bán nhà, mà còn hỗ trợ tôi cơ cấu lại toàn bộ danh mục tài sản để tạo dòng tiền ổn định 15%/năm.', rating: 5 },
               { name: 'Mr. John Smith', role: 'Expat Investor', text: 'As a foreigner navigating the VN real estate market, InvestPro provided the transparent data and legal clarity I needed. Exceptional service.', rating: 5 }
             ].map((testimonial, i) => (
-              <div key={i} className="bg-gray-50 p-8 rounded-2xl border border-gray-100 relative">
-                <div className="absolute -top-5 right-8 text-6xl text-blue-100 font-serif">“</div>
+              <div key={i} className="bg-gray-50 p-8 rounded-sm border border-gray-100 relative">
+                <div className="absolute -top-5 right-8 text-6xl text-blue-100 font-serif">"</div>
                 <div className="flex gap-1 mb-4">
                   {[...Array(testimonial.rating)].map((_, j) => <Star key={j} size={16} className="fill-yellow-400 text-yellow-400" />)}
                 </div>
-                <p className="text-gray-600 mb-6 relative z-10 italic">“{testimonial.text}”</p>
+                <p className="text-gray-600 mb-6 relative z-10 italic">"{testimonial.text}"</p>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center font-bold text-gray-500">
+                  <div className="w-12 h-12 bg-gray-300 rounded-sm flex items-center justify-center font-bold text-gray-500">
                     {testimonial.name.charAt(0)}
                   </div>
                   <div>
@@ -1134,7 +1146,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <div 
                 key={news.id} 
                 onClick={() => setSelectedArticle(news)}
-                className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all group cursor-pointer flex flex-col justify-between h-full"
+                className="bg-white rounded-sm overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all group cursor-pointer flex flex-col justify-between h-full"
               >
                 <div>
                   <div className="h-48 overflow-hidden relative">
@@ -1171,7 +1183,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 { q: 'InvestPro có cam kết lợi nhuận không?', a: 'Chúng tôi cam kết tính minh bạch của dữ liệu và quy trình thẩm định. Tuy nhiên, ngoại trừ các dự án có chính sách cam kết thuê lại từ CĐT, đầu tư BĐS luôn đi kèm yếu tố thị trường nên không có cam kết lãi suất cố định.' },
                 { q: 'Quy trình tư vấn của InvestPro diễn ra như thế nào?', a: '1. Khảo sát khẩu vị rủi ro và mục tiêu tài chính -> 2. Đề xuất danh mục phù hợp -> 3. Phân tích dòng tiền chi tiết -> 4. Hỗ trợ thủ tục pháp lý/tín dụng -> 5. Quản lý tài sản sau đầu tư.' }
               ].map((faq, i) => (
-                <div key={i} className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                <div key={i} className="border border-gray-200 rounded-sm overflow-hidden bg-white">
                   <button 
                     className="w-full flex justify-between items-center p-5 hover:bg-gray-50 transition-colors text-left font-bold text-gray-800"
                     onClick={() => setActiveFaq(activeFaq === i ? null : i)}
@@ -1195,7 +1207,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
       <section className="py-20 relative bg-slate-900">
         <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80')] bg-cover bg-center"></div>
         <div className={`${MAX_W} mx-auto px-4 sm:px-6 relative z-10`}>
-          <div className="bg-gradient-to-br from-[#1E40AF] to-blue-900 rounded-3xl p-8 md:p-16 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-12">
+          <div className="bg-gradient-to-br from-[#1E40AF] to-blue-900 rounded-md p-8 md:p-16 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-12">
             <div className="lg:w-1/2 text-white">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Nhận tư vấn chiến lược 1:1</h2>
               <p className="text-blue-100 text-lg mb-8">Chuyên gia của chúng tôi sẽ thiết kế lộ trình đầu tư riêng biệt dựa trên nguồn vốn và mục tiêu của bạn.</p>
@@ -1207,10 +1219,10 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               </ul>
             </div>
             
-            <div className="lg:w-1/2 w-full bg-white rounded-2xl p-6 md:p-8 text-gray-900 shadow-xl">
+            <div className="lg:w-1/2 w-full bg-white rounded-sm p-6 md:p-8 text-gray-900 shadow-xl">
               {contactSubmitted ? (
                 <div className="text-center py-10 space-y-4">
-                  <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+                  <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-sm flex items-center justify-center mx-auto">
                     <CheckCircle2 size={32} />
                   </div>
                   <h3 className="text-xl font-bold">Đăng ký thành công!</h3>
@@ -1280,7 +1292,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
         </div>
         
         {/* Search & Filter Bar */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm mb-10 space-y-6">
+        <div className="bg-white rounded-sm border border-gray-200 p-6 shadow-sm mb-10 space-y-6">
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="flex-grow relative">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
@@ -1375,7 +1387,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
         </div>
         
         {filteredProjects.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-gray-200 shadow-sm">
+          <div className="text-center py-16 bg-white rounded-sm border border-gray-200 shadow-sm">
             <AlertCircle className="mx-auto text-gray-400 mb-4" size={48} />
             <h3 className="text-lg font-bold text-gray-900 mb-1">Không tìm thấy cơ hội đầu tư phù hợp</h3>
             <p className="text-gray-500 text-sm max-w-md mx-auto mb-6">Thử đặt lại bộ lọc hoặc thay đổi từ khóa để hiển thị thêm nhiều dự án hơn.</p>
@@ -1399,7 +1411,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <div 
                 key={project.id} 
                 onClick={() => setSelectedProject(project)}
-                className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 flex flex-col h-full cursor-pointer hover:shadow-md transition-shadow group"
+                className="bg-white rounded-sm overflow-hidden shadow-sm border border-gray-200 flex flex-col h-full cursor-pointer hover:shadow-md transition-shadow group"
               >
                 <div className="relative h-48 overflow-hidden bg-gray-100">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
@@ -1466,8 +1478,8 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             </p>
           </div>
           <div className="relative">
-            <div className="absolute -inset-4 bg-gradient-to-tr from-blue-600 to-emerald-400 rounded-2xl transform rotate-2 opacity-10 blur-sm"></div>
-            <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80" alt="Team" className="relative rounded-2xl shadow-xl w-full object-cover h-[350px] z-10 border-4 border-white"/>
+            <div className="absolute -inset-4 bg-gradient-to-tr from-blue-600 to-emerald-400 rounded-sm transform rotate-2 opacity-10 blur-sm"></div>
+            <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80" alt="Team" className="relative rounded-sm shadow-xl w-full object-cover h-[350px] z-10 border-4 border-white"/>
           </div>
         </div>
       </div>
@@ -1485,7 +1497,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               { icon: Target, title: 'Định Lượng Bằng Số Liệu', desc: 'Mọi cơ hội đầu tư được sàng lọc qua mô hình đánh giá AI và dữ liệu lớn (Big Data). Thay thế cảm tính bằng phân tích khoa học.' },
               { icon: Users, title: 'Khách Hàng Là Trọng Tâm', desc: 'Thiết kế danh mục đầu tư may đo riêng biệt phù hợp với năng lực tài chính, khẩu vị rủi ro và kỳ vọng dòng tiền của từng gia đình.' }
             ].map((value, i) => (
-              <div key={i} className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <div key={i} className="bg-white p-8 rounded-sm border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                 <div className="w-12 h-12 bg-blue-50 text-[#1E40AF] rounded-lg flex items-center justify-center mb-6">
                   <value.icon size={24} />
                 </div>
@@ -1512,9 +1524,9 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             { year: '2026', title: 'Đạt mốc 15.200 Tỷ AUM', desc: 'Khẳng định vị thế hàng đầu Việt Nam trong lĩnh vực phân tích và tư vấn đầu tư BĐS chuyên nghiệp.' }
           ].map((milestone, i) => (
             <div key={i} className="relative">
-              <div className="absolute -left-[41px] top-1.5 w-6 h-6 bg-white border-4 border-[#1E40AF] rounded-full flex items-center justify-center"></div>
+              <div className="absolute -left-[41px] top-1.5 w-6 h-6 bg-white border-4 border-[#1E40AF] rounded-sm flex items-center justify-center"></div>
               <div>
-                <span className="inline-block bg-blue-100 text-[#1E40AF] text-xs font-bold px-2.5 py-1 rounded-full mb-2">{milestone.year}</span>
+                <span className="inline-block bg-blue-100 text-[#1E40AF] text-xs font-bold px-2.5 py-1 rounded-sm mb-2">{milestone.year}</span>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">{milestone.title}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{milestone.desc}</p>
               </div>
@@ -1556,7 +1568,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               bio: 'Hơn 10 năm kinh nghiệm quản lý vận hành dự án BĐS dòng tiền, tối ưu hóa tỷ suất lấp đầy và khai thác cho thuê.'
             }
           ].map((leader, i) => (
-            <div key={i} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow text-center flex flex-col h-full">
+            <div key={i} className="bg-white rounded-sm border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow text-center flex flex-col h-full">
               <div className="h-64 overflow-hidden bg-gray-100">
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={leader.img} alt={leader.name} className="w-full h-full object-cover object-top" />
               </div>
@@ -1598,7 +1610,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <button 
                 key={tab.id} 
                 onClick={() => setSelectedGalleryTab(tab.id)}
-                className={`px-5 py-2.5 rounded-full font-semibold whitespace-nowrap text-sm border transition-colors
+                className={`px-5 py-2.5 rounded-sm font-semibold whitespace-nowrap text-sm border transition-colors
                   ${selectedGalleryTab === tab.id 
                     ? 'bg-[#1E40AF] text-white border-[#1E40AF]' 
                     : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
@@ -1611,7 +1623,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
           </div>
 
           {filteredGallery.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-xl border border-gray-150">
+            <div className="text-center py-12 bg-white rounded-sm border border-gray-150">
               <AlertCircle className="mx-auto text-gray-400 mb-3" size={36} />
               <p className="text-gray-500 font-semibold">Chưa có hình ảnh cho danh mục này.</p>
             </div>
@@ -1621,7 +1633,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 <div 
                   key={img.id} 
                   onClick={() => setSelectedGalleryImg(img.img)}
-                  className="relative aspect-square overflow-hidden rounded-xl group cursor-pointer shadow-sm hover:shadow-lg transition-all"
+                  className="relative aspect-square overflow-hidden rounded-sm group cursor-pointer shadow-sm hover:shadow-lg transition-all"
                 >
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
                     src={img.img} 
@@ -1683,7 +1695,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
           </div>
 
           {filteredNews.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-xl border border-gray-150 shadow-sm">
+            <div className="text-center py-12 bg-white rounded-sm border border-gray-150 shadow-sm">
               <AlertCircle className="mx-auto text-gray-400 mb-3" size={36} />
               <p className="text-gray-500 font-semibold">Không tìm thấy bài viết phù hợp với từ khóa.</p>
             </div>
@@ -1693,7 +1705,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 <div 
                   key={news.id} 
                   onClick={() => setSelectedArticle(news)}
-                  className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 hover:shadow-md transition-shadow group cursor-pointer flex flex-col h-full"
+                  className="bg-white rounded-sm overflow-hidden shadow-sm border border-gray-200 hover:shadow-md transition-shadow group cursor-pointer flex flex-col h-full"
                 >
                   <div className="h-48 overflow-hidden relative">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={news.img} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={news.title}/>
@@ -1724,8 +1736,8 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
   };
 
   const renderContactSuccess = () => (
-    <div className="text-center py-12 px-6 bg-white rounded-2xl border border-gray-100 shadow-xl max-w-md mx-auto space-y-6">
-      <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center text-[#10B981] mx-auto">
+    <div className="text-center py-12 px-6 bg-white rounded-sm border border-gray-100 shadow-xl max-w-md mx-auto space-y-6">
+      <div className="w-16 h-16 bg-emerald-100 rounded-sm flex items-center justify-center text-[#10B981] mx-auto">
         <CheckCircle2 size={36} />
       </div>
       <h3 className="text-2xl font-bold text-gray-900">Đăng ký thành công!</h3>
@@ -1758,21 +1770,21 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             
             <div className="space-y-6 pt-4">
               <div className="flex items-start gap-4">
-                <div className="p-3.5 bg-blue-50 text-[#1E40AF] rounded-xl shrink-0"><MapPin size={24}/></div>
+                <div className="p-3.5 bg-blue-50 text-[#1E40AF] rounded-sm shrink-0"><MapPin size={24}/></div>
                 <div>
                   <h4 className="font-bold text-gray-900">Trụ sở chính TP.HCM</h4>
                   <p className="text-gray-500 mt-1 text-sm leading-relaxed">Tầng 45, Tòa nhà Bitexco Financial Tower, Số 2 Hải Triều, Quận 1, TP.HCM</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <div className="p-3.5 bg-blue-50 text-[#1E40AF] rounded-xl shrink-0"><Phone size={24}/></div>
+                <div className="p-3.5 bg-blue-50 text-[#1E40AF] rounded-sm shrink-0"><Phone size={24}/></div>
                 <div>
                   <h4 className="font-bold text-gray-900">Tổng đài Tư vấn 24/7</h4>
                   <p className="text-gray-500 mt-1 text-sm">1900 6868 (Hotline chính thức) | 0900 123 456 (Zalo/Viber)</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <div className="p-3.5 bg-blue-50 text-[#1E40AF] rounded-xl shrink-0"><Mail size={24}/></div>
+                <div className="p-3.5 bg-blue-50 text-[#1E40AF] rounded-sm shrink-0"><Mail size={24}/></div>
                 <div>
                   <h4 className="font-bold text-gray-900">Hòm thư điện tử</h4>
                   <p className="text-gray-500 mt-1 text-sm">invest@investpro.com.vn | contact@investpro.com.vn</p>
@@ -1781,7 +1793,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
             </div>
 
             {/* Interactive Google Map */}
-            <div className="rounded-2xl overflow-hidden border border-blue-100 shadow-md flex flex-col h-60 bg-white">
+            <div className="rounded-sm overflow-hidden border border-blue-100 shadow-md flex flex-col h-60 bg-white">
               <div className="px-4 py-2 bg-slate-900 text-white flex items-center justify-between text-xs">
                 <span className="font-bold flex items-center gap-1.5 truncate"><MapPin size={14} className="text-[#10B981]" /> Bitexco Financial Tower — Quận 1, TP.HCM</span>
                 <a
@@ -1807,7 +1819,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
           
           <div>
             {contactSubmitted ? renderContactSuccess() : (
-              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-150 shadow-sm">
+              <div className="bg-gray-50 p-8 rounded-sm border border-gray-150 shadow-sm">
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">Yêu cầu liên hệ khẩn cấp</h3>
                 <form className="space-y-4" onSubmit={handleContactSubmit}>
                   <div>
@@ -1902,10 +1914,10 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
       {/* PROJECT DETAILS MODAL */}
       {selectedProject && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl overflow-hidden shadow-2xl max-w-3xl w-full relative animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-sm overflow-hidden shadow-2xl max-w-3xl w-full relative animate-in fade-in zoom-in-95 duration-200">
             <button 
               onClick={() => setSelectedProject(null)}
-              className="absolute top-4 right-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors z-10"
+              className="absolute top-4 right-4 p-2 rounded-sm bg-black/50 text-white hover:bg-black/80 transition-colors z-10"
             >
               <X size={20} />
             </button>
@@ -1914,7 +1926,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedProject.image} alt={selectedProject.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 to-transparent flex items-end p-6">
                 <div>
-                  <span className="bg-[#10B981] text-white text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider mb-2 inline-block">
+                  <span className="bg-[#10B981] text-white text-xs font-bold px-2.5 py-1 rounded-sm uppercase tracking-wider mb-2 inline-block">
                     ROI {selectedProject.expectedRoi}
                   </span>
                   <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">{selectedProject.title}</h2>
@@ -1982,10 +1994,10 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
       {/* ARTICLE FULL MODAL */}
       {selectedArticle && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl overflow-hidden shadow-2xl max-w-2xl w-full relative animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-sm overflow-hidden shadow-2xl max-w-2xl w-full relative animate-in fade-in zoom-in-95 duration-200">
             <button 
               onClick={() => setSelectedArticle(null)}
-              className="absolute top-4 right-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors z-10"
+              className="absolute top-4 right-4 p-2 rounded-sm bg-black/50 text-white hover:bg-black/80 transition-colors z-10"
             >
               <X size={20} />
             </button>
@@ -2033,7 +2045,7 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
         <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
           <button 
             onClick={() => setSelectedGalleryImg(null)}
-            className="absolute top-6 right-6 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors z-20"
+            className="absolute top-6 right-6 p-3 rounded-sm bg-white/10 text-white hover:bg-white/20 transition-colors z-20"
           >
             <X size={24} />
           </button>

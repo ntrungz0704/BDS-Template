@@ -371,11 +371,11 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
             </p>
 
             {/* Search Box Tabs */}
-            <div className="bg-[#F8FAFC] border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-sm">
+            <div className="bg-[#F8FAFC] border border-slate-200 rounded-sm p-4 sm:p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-4 border-b border-slate-200 pb-3">
                 <button
                   onClick={() => setSearchTab('sale')}
-                  className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
+                  className={`px-4 py-2 rounded-sm text-xs font-black uppercase tracking-wider transition-all ${
                     searchTab === 'sale'
                       ? 'bg-[#0072bc] text-white shadow-xs'
                       : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
@@ -385,7 +385,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 </button>
                 <button
                   onClick={() => setSearchTab('rent')}
-                  className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
+                  className={`px-4 py-2 rounded-sm text-xs font-black uppercase tracking-wider transition-all ${
                     searchTab === 'rent'
                       ? 'bg-[#0072bc] text-white shadow-xs'
                       : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
@@ -404,13 +404,13 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                     placeholder="Tìm theo khu vực, đường, dự án hoặc từ khóa..."
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500 font-medium"
+                    className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-sm text-xs text-slate-900 focus:outline-none focus:border-blue-500 font-medium"
                   />
                 </div>
                 <select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
-                  className="bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 focus:outline-none"
+                  className="bg-white border border-slate-200 rounded-sm px-3 py-2.5 text-xs font-bold text-slate-700 focus:outline-none"
                 >
                   <option value="all">Tất cả loại hình</option>
                   <option value="Chung cư">Căn hộ chung cư</option>
@@ -420,7 +420,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 </select>
                 <button
                   onClick={() => navigateTo(searchTab, searchTab === 'sale' ? 'nha-dat-ban' : 'cho-thue')}
-                  className="bg-[#0072bc] hover:bg-[#005c99] text-white font-bold text-xs uppercase px-6 py-2.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 shrink-0"
+                  className="bg-[#0072bc] hover:bg-[#005c99] text-white font-bold text-xs uppercase px-6 py-2.5 rounded-sm shadow-md transition-all flex items-center justify-center gap-1.5 shrink-0"
                 >
                   <Search className="w-3.5 h-3.5" />
                   <span>Tìm Kiếm</span>
@@ -451,7 +451,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
       {isHome && !selectedProperty && (
         <main className="max-w-[1240px] mx-auto px-4 py-8 space-y-10">
           {/* SECTION 1: BẤT ĐỘNG SẢN THEO KHU VỰC */}
-          <section className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+          <section className="bg-white p-6 rounded-sm border border-slate-200 shadow-xs">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg sm:text-xl font-black text-slate-900 flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-blue-600" />
@@ -467,7 +467,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 <div
                   key={reg.id}
                   onClick={() => { setKeyword(reg.name); navigateTo('sale', 'nha-dat-ban'); }}
-                  className="group relative h-40 rounded-xl overflow-hidden cursor-pointer border border-slate-100 shadow-xs"
+                  className="group relative h-40 rounded-sm overflow-hidden cursor-pointer border border-slate-100 shadow-xs"
                 >
                   <img
                     src={reg.image}
@@ -485,7 +485,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
           </section>
 
           {/* SECTION 2: DỰ ÁN NỔI BẬT */}
-          <section className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+          <section className="bg-white p-6 rounded-sm border border-slate-200 shadow-xs">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg sm:text-xl font-black text-slate-900 flex items-center gap-2">
                 <Building className="w-5 h-5 text-blue-600" />
@@ -501,7 +501,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 <div
                   key={proj.id}
                   onClick={() => navigateTo('projects', 'du-an')}
-                  className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
+                  className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
                 >
                   <div className="h-32 overflow-hidden relative">
                     <img
@@ -527,7 +527,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
           </section>
 
           {/* SECTION 3: BẤT ĐỘNG SẢN ĐANG BÁN (4 COLUMNS) */}
-          <section className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+          <section className="bg-white p-6 rounded-sm border border-slate-200 shadow-xs">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-lg sm:text-xl font-black text-slate-900 flex items-center gap-2">
@@ -546,7 +546,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 <div
                   key={prop.id}
                   onClick={() => setSelectedProperty(prop)}
-                  className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between group"
+                  className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between group"
                 >
                   <div className="aspect-[4/3] overflow-hidden relative">
                     <img
@@ -592,7 +592,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
           </section>
 
           {/* SECTION 4: BẤT ĐỘNG SẢN CHO THUÊ */}
-          <section className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+          <section className="bg-white p-6 rounded-sm border border-slate-200 shadow-xs">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-lg sm:text-xl font-black text-slate-900 flex items-center gap-2">
@@ -611,7 +611,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 <div
                   key={prop.id}
                   onClick={() => setSelectedProperty(prop)}
-                  className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between group"
+                  className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between group"
                 >
                   <div className="aspect-[4/3] overflow-hidden relative">
                     <img
@@ -652,14 +652,14 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
           </section>
 
           {/* SECTION 5: CHỦ ĐẦU TƯ UY TÍN */}
-          <section className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+          <section className="bg-white p-6 rounded-sm border border-slate-200 shadow-xs">
             <h2 className="text-lg font-black text-slate-900 mb-4 flex items-center gap-2">
               <Award className="w-5 h-5 text-amber-500" />
               <span>Chủ Đầu Tư Tiêu Biểu</span>
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               {DEVELOPERS.map((dev, idx) => (
-                <div key={idx} className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center hover:bg-blue-50 hover:border-blue-300 transition-all cursor-pointer">
+                <div key={idx} className="p-4 rounded-sm bg-slate-50 border border-slate-200 text-center hover:bg-blue-50 hover:border-blue-300 transition-all cursor-pointer">
                   <div className="text-2xl mb-1">{dev.logo}</div>
                   <h3 className="font-bold text-xs text-slate-800 line-clamp-1">{dev.name}</h3>
                   <span className="text-[10px] text-slate-400 font-medium">{dev.projects}</span>
@@ -669,9 +669,9 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
           </section>
 
           {/* SECTION 6: HOTLINE CALL CENTER STRIP (Ảnh 4) */}
-          <section className="bg-gradient-to-r from-slate-900 to-blue-950 text-white rounded-2xl p-6 sm:p-8 shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
+          <section className="bg-gradient-to-r from-slate-900 to-blue-950 text-white rounded-sm p-6 sm:p-8 shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-2xl shadow-lg shrink-0">
+              <div className="w-14 h-14 rounded-sm bg-blue-600 text-white flex items-center justify-center font-black text-2xl shadow-lg shrink-0">
                 📞
               </div>
               <div>
@@ -719,7 +719,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
               <div
                 key={prop.id}
                 onClick={() => setSelectedProperty(prop)}
-                className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between group"
+                className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between group"
               >
                 <div className="aspect-[4/3] overflow-hidden relative">
                   <img
@@ -772,7 +772,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
               <div
                 key={proj.id}
                 onClick={() => navigateTo('contact', 'lien-he')}
-                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between"
+                className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
                   <img src={proj.image} alt={proj.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -823,7 +823,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
               <div 
                 key={art.id} 
                 onClick={() => handleOpenArticle(art)}
-                className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all p-4 flex flex-col justify-between group cursor-pointer"
+                className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all p-4 flex flex-col justify-between group cursor-pointer"
               >
                 <div>
                   <div className="aspect-[16/10] overflow-hidden rounded-lg mb-3 bg-slate-100">
@@ -865,7 +865,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <article className="lg:col-span-8 bg-white rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-xs space-y-6">
+            <article className="lg:col-span-8 bg-white rounded-sm border border-slate-200 p-6 sm:p-10 shadow-xs space-y-6">
               <div className="flex flex-wrap items-center gap-3 text-xs">
                 <span className="px-3 py-1 rounded-md bg-blue-600 text-white font-bold uppercase tracking-wider text-[11px]">
                   {selectedArticle.category}
@@ -880,8 +880,8 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 {selectedArticle.title}
               </h1>
 
-              <div className="flex items-center gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-100 text-xs">
-                <div className="w-9 h-9 rounded-full bg-blue-600 text-white font-black flex items-center justify-center text-xs">
+              <div className="flex items-center gap-3 p-3.5 bg-slate-50 rounded-sm border border-slate-100 text-xs">
+                <div className="w-9 h-9 rounded-sm bg-blue-600 text-white font-black flex items-center justify-center text-xs">
                   123
                 </div>
                 <div>
@@ -890,11 +890,11 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 </div>
               </div>
 
-              <div className="aspect-[16/9] w-full rounded-xl overflow-hidden bg-slate-900 shadow-md">
+              <div className="aspect-[16/9] w-full rounded-sm overflow-hidden bg-slate-900 shadow-md">
                 <img src={selectedArticle.image} alt={selectedArticle.title} className="w-full h-full object-cover" />
               </div>
 
-              <div className="p-5 rounded-xl bg-blue-50/80 border-l-4 border-blue-600 text-slate-800 text-sm font-semibold leading-relaxed">
+              <div className="p-5 rounded-sm bg-blue-50/80 border-l-4 border-blue-600 text-slate-800 text-sm font-semibold leading-relaxed">
                 {selectedArticle.desc}
               </div>
 
@@ -909,7 +909,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 </p>
               </div>
 
-              <div className="p-5 bg-gradient-to-r from-slate-900 to-blue-950 text-white rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+              <div className="p-5 bg-gradient-to-r from-slate-900 to-blue-950 text-white rounded-sm flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
                 <div>
                   <h4 className="font-bold text-sm">Nhận Cẩm Nang Pháp Lý & Bảng Giá Đất 2026</h4>
                   <p className="text-xs text-slate-300">Tài liệu miễn phí dành cho khách hàng đăng ký</p>
@@ -924,7 +924,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
             </article>
 
             <aside className="lg:col-span-4 space-y-6">
-              <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
+              <div className="bg-white rounded-sm border border-slate-200 p-5 shadow-xs space-y-4">
                 <h3 className="font-black text-sm text-slate-900 pb-2 border-b border-slate-100">
                   Tin Liên Quan Khác
                 </h3>
@@ -960,7 +960,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
       ───────────────────────────────────────────────────────────── */}
       {(currentPage === 'about' || currentPage === 'gioi-thieu') && !selectedProperty && (
         <main className="max-w-[1240px] mx-auto px-4 py-10 space-y-8">
-          <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
+          <div className="bg-white p-8 rounded-sm border border-slate-200 shadow-xs space-y-6">
             <div className="border-b border-slate-200 pb-4">
               <span className="text-xs font-bold text-blue-600 uppercase tracking-widest block mb-1">VỀ CHÚNG TÔI</span>
               <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Cổng Thông Tin Bất Động Sản BDS123</h1>
@@ -975,22 +975,22 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                   Chúng tôi ứng dụng các giải pháp công nghệ tiên tiến nhằm đảm bảo tính chính xác, minh bạch của dữ liệu, giúp việc tìm kiếm ngôi nhà mơ ước hay cơ hội đầu tư trở nên dễ dàng và hiệu quả hơn bao giờ hết.
                 </p>
                 <div className="grid grid-cols-3 gap-4 pt-2 text-center">
-                  <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl">
+                  <div className="p-3 bg-blue-50 border border-blue-100 rounded-sm">
                     <strong className="text-lg font-black text-blue-700 block">50.000+</strong>
                     <span className="text-[11px] text-slate-500">Tin đăng hoạt động</span>
                   </div>
-                  <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl">
+                  <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-sm">
                     <strong className="text-lg font-black text-emerald-700 block">250.000+</strong>
                     <span className="text-[11px] text-slate-500">Người tìm kiếm/tháng</span>
                   </div>
-                  <div className="p-3 bg-amber-50 border border-amber-100 rounded-xl">
+                  <div className="p-3 bg-amber-50 border border-amber-100 rounded-sm">
                     <strong className="text-lg font-black text-amber-700 block">10.000+</strong>
                     <span className="text-[11px] text-slate-500">Môi giới uy tín</span>
                   </div>
                 </div>
               </div>
               <div className="lg:col-span-5">
-                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80" alt="Văn phòng BDS123" className="w-full h-64 object-cover rounded-2xl border border-slate-200 shadow-sm" />
+                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80" alt="Văn phòng BDS123" className="w-full h-64 object-cover rounded-sm border border-slate-200 shadow-sm" />
               </div>
             </div>
           </div>
@@ -1009,10 +1009,10 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Form */}
-            <div className="lg:col-span-6 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-xs">
+            <div className="lg:col-span-6 bg-white p-6 sm:p-8 rounded-sm border border-slate-200 shadow-xs">
               <h2 className="text-base font-black text-slate-900 mb-4">Gửi Yêu Cầu Tư Vấn</h2>
               {contactSuccess ? (
-                <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-xl text-center">
+                <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-sm text-center">
                   <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto mb-2" />
                   <h4 className="font-bold text-emerald-900 text-sm">Gửi Thông Tin Thành Công!</h4>
                   <p className="text-xs text-emerald-700 mt-1">Chuyên viên tư vấn sẽ liên hệ lại với bạn qua số điện thoại <strong>{consultPhone}</strong> trong 15 phút.</p>
@@ -1032,7 +1032,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                       placeholder="Nguyễn Văn A"
                       value={consultName}
                       onChange={(e) => setConsultName(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 font-medium"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-sm focus:outline-none focus:border-blue-500 font-medium"
                     />
                   </div>
                   <div>
@@ -1043,7 +1043,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                       placeholder="0919 006 030"
                       value={consultPhone}
                       onChange={(e) => setConsultPhone(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 font-medium"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-sm focus:outline-none focus:border-blue-500 font-medium"
                     />
                   </div>
                   <div>
@@ -1053,12 +1053,12 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                       placeholder="Cần tìm căn hộ 2PN, ngân sách 3 tỷ tại TP.HCM..."
                       value={consultNote}
                       onChange={(e) => setConsultNote(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 font-medium"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-sm focus:outline-none focus:border-blue-500 font-medium"
                     />
                   </div>
                   <button
                     type="submit"
-                    className="w-full bg-[#0072bc] hover:bg-[#005c99] text-white font-bold py-3 rounded-xl uppercase tracking-wider text-xs shadow-md transition-all"
+                    className="w-full bg-[#0072bc] hover:bg-[#005c99] text-white font-bold py-3 rounded-sm uppercase tracking-wider text-xs shadow-md transition-all"
                   >
                     Gửi Yêu Cầu Ngay
                   </button>
@@ -1068,7 +1068,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
 
             {/* Map & Addresses */}
             <div className="lg:col-span-6 space-y-6">
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+              <div className="bg-white p-6 rounded-sm border border-slate-200 shadow-xs">
                 <h3 className="font-black text-slate-900 text-sm mb-3">Trụ Sở Chính Đấu Giá Bến Thành</h3>
                 <div className="text-xs text-slate-600 space-y-2 mb-4">
                   <p>📍 Địa chỉ: <strong>{company?.address || 'Tòa nhà Bitexco Financial Tower, Số 2 Hải Triều, Q.1, TP.HCM'}</strong></p>
@@ -1077,7 +1077,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 </div>
 
                 {/* Real Google Map iframe */}
-                <div className="w-full h-64 rounded-xl overflow-hidden border border-slate-200 relative">
+                <div className="w-full h-64 rounded-sm overflow-hidden border border-slate-200 relative">
                   <div className="absolute top-2 right-2 z-10">
                     <a
                       href="https://www.google.com/maps/search/?api=1&query=Bitexco+Financial+Tower,+2+H%E1%BA%A3i+Tri%E1%BB%81u,+Qu%E1%BA%ADn+1,+TP.HCM"
@@ -1107,7 +1107,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
       ───────────────────────────────────────────────────────────── */}
       {selectedProperty && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm overflow-y-auto animate-in fade-in">
-          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-3xl w-full overflow-hidden my-8">
+          <div className="bg-white rounded-sm shadow-2xl border border-slate-200 max-w-3xl w-full overflow-hidden my-8">
             <div className="relative h-64 sm:h-80 bg-slate-900">
               <img
                 src={selectedProperty.image}
@@ -1116,7 +1116,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
               />
               <button
                 onClick={() => setSelectedProperty(null)}
-                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-950/70 text-white hover:bg-red-600 flex items-center justify-center transition-colors"
+                className="absolute top-4 right-4 w-9 h-9 rounded-sm bg-slate-950/70 text-white hover:bg-red-600 flex items-center justify-center transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1135,7 +1135,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 </p>
               </div>
 
-              <div className="grid grid-cols-3 gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100 text-center">
+              <div className="grid grid-cols-3 gap-3 p-4 bg-slate-50 rounded-sm border border-slate-100 text-center">
                 <div>
                   <span className="text-[10px] text-slate-400 uppercase font-bold block">Diện tích</span>
                   <strong className="text-sm font-black text-slate-900">{selectedProperty.area || '100 m²'}</strong>
@@ -1151,7 +1151,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
               </div>
 
               {/* Map embed in modal */}
-              <div className="rounded-xl overflow-hidden border border-slate-200 h-44">
+              <div className="rounded-sm overflow-hidden border border-slate-200 h-44">
                 <iframe
                   title="Vị trí BĐS"
                   src={`https://maps.google.com/maps?q=${encodeURIComponent(selectedProperty.loc + ', Việt Nam')}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
@@ -1164,7 +1164,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
               <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
                 <a
                   href="tel:0919006030"
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-center text-xs uppercase flex items-center justify-center gap-2 shadow-md"
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-sm text-center text-xs uppercase flex items-center justify-center gap-2 shadow-md"
                 >
                   <Phone className="w-4 h-4" />
                   <span>Gọi 0919 006 030</span>
@@ -1173,7 +1173,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                   href="https://zalo.me/0919006030"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 bg-[#0072bc] hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-center text-xs uppercase flex items-center justify-center gap-2 shadow-md"
+                  className="flex-1 bg-[#0072bc] hover:bg-blue-700 text-white font-bold py-3 rounded-sm text-center text-xs uppercase flex items-center justify-center gap-2 shadow-md"
                 >
                   <span>Chat Zalo Tư Vấn</span>
                 </a>

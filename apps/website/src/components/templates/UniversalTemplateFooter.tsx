@@ -54,7 +54,7 @@ export default function UniversalTemplateFooter({
     <footer className="w-full relative bg-[#07132B] text-white">
       {/* Toast popup */}
       {toastMessage && (
-        <div className="fixed bottom-24 right-6 z-50 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce">
+        <div className="fixed bottom-24 right-6 z-50 bg-emerald-600 text-white px-5 py-3 rounded-sm shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce">
           <CheckCircle size={16} /> {toastMessage}
         </div>
       )}
@@ -138,7 +138,7 @@ export default function UniversalTemplateFooter({
                 target="_blank"
                 rel="noreferrer"
                 title="Chat Zalo CSKH (0919 006 030)"
-                className="w-10 h-10 rounded-2xl bg-[#0068FF] hover:bg-[#0052cc] text-white flex items-center justify-center font-black text-[11px] tracking-tight shadow-md hover:scale-105 transition"
+                className="w-10 h-10 rounded-sm bg-[#0068FF] hover:bg-[#0052cc] text-white flex items-center justify-center font-black text-[11px] tracking-tight shadow-md hover:scale-105 transition"
               >
                 ZALO
               </a>
@@ -147,7 +147,7 @@ export default function UniversalTemplateFooter({
                 target="_blank"
                 rel="noreferrer"
                 title="Facebook Group"
-                className="w-10 h-10 rounded-2xl bg-[#1877F2] hover:bg-[#1565c0] text-white flex items-center justify-center font-black text-base shadow-md hover:scale-105 transition"
+                className="w-10 h-10 rounded-sm bg-[#1877F2] hover:bg-[#1565c0] text-white flex items-center justify-center font-black text-base shadow-md hover:scale-105 transition"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96C15.9164 21.5878 18.0622 20.3855 19.6099 18.57C21.1576 16.7546 22.0054 14.4456 22 12.06C22 6.53 17.5 2.04 12 2.04Z" /></svg>
               </a>
@@ -156,7 +156,7 @@ export default function UniversalTemplateFooter({
                 target="_blank"
                 rel="noreferrer"
                 title="YouTube Channel"
-                className="w-10 h-10 rounded-2xl bg-[#E62117] hover:bg-[#c61810] text-white flex items-center justify-center shadow-md hover:scale-105 transition"
+                className="w-10 h-10 rounded-sm bg-[#E62117] hover:bg-[#c61810] text-white flex items-center justify-center shadow-md hover:scale-105 transition"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg>
               </a>
@@ -165,7 +165,7 @@ export default function UniversalTemplateFooter({
                 target="_blank"
                 rel="noreferrer"
                 title="TikTok Channel"
-                className="w-10 h-10 rounded-2xl bg-[#1E293B] hover:bg-[#0f172a] text-[#A78BFA] flex items-center justify-center shadow-md hover:scale-105 transition"
+                className="w-10 h-10 rounded-sm bg-[#1E293B] hover:bg-[#0f172a] text-[#A78BFA] flex items-center justify-center shadow-md hover:scale-105 transition"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.86 4.43V12.9a8.16 8.16 0 0 0 5.73 2.29V11.7a4.83 4.83 0 0 1-3.77-4.25z" /></svg>
               </a>
@@ -266,7 +266,7 @@ export default function UniversalTemplateFooter({
           target="_blank"
           rel="noreferrer"
           title="Chat Zalo CSKH (0919 006 030)"
-          className="w-12 h-12 rounded-full bg-[#0084FF] hover:bg-blue-600 text-white flex items-center justify-center shadow-2xl hover:scale-110 transition animate-pulse"
+          className="w-12 h-12 rounded-sm bg-[#0084FF] hover:bg-blue-600 text-white flex items-center justify-center shadow-2xl hover:scale-110 transition animate-pulse"
         >
           <span className="text-[10px] font-black tracking-tighter">ZALO</span>
         </a>
@@ -275,7 +275,7 @@ export default function UniversalTemplateFooter({
         <a
           href="tel:0919006030"
           title="Gọi Hotline Ngay (0919 006 030)"
-          className="w-12 h-12 rounded-full bg-[#E65100] hover:bg-[#F57C00] text-white flex items-center justify-center shadow-2xl hover:scale-110 transition"
+          className="w-12 h-12 rounded-sm bg-[#E65100] hover:bg-[#F57C00] text-white flex items-center justify-center shadow-2xl hover:scale-110 transition"
         >
           <Phone size={20} />
         </a>
@@ -284,7 +284,7 @@ export default function UniversalTemplateFooter({
         <button
           onClick={scrollToTop}
           title="Lên đầu trang"
-          className="w-10 h-10 rounded-full bg-slate-900/90 hover:bg-slate-950 text-white flex items-center justify-center shadow-lg hover:scale-105 transition cursor-pointer"
+          className="w-10 h-10 rounded-sm bg-slate-900/90 hover:bg-slate-950 text-white flex items-center justify-center shadow-lg hover:scale-105 transition cursor-pointer"
         >
           <ArrowUp size={18} />
         </button>

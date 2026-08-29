@@ -443,7 +443,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
     <nav className="sticky top-0 z-40 shadow-sm transition-all duration-300" style={{ backgroundColor: t.headerBg }}>
       <div className={`${MAX_W} mx-auto px-4 md:px-8 flex justify-between items-center h-20`}>
         <button onClick={() => { setCurrentPage('home'); resetFilters(); }} className="flex items-center gap-2.5 group">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center transition-colors" style={{ backgroundColor: t.primary }}>
+          <div className="w-10 h-10 rounded-sm flex items-center justify-center transition-colors" style={{ backgroundColor: t.primary }}>
             <Leaf className="w-5 h-5 text-white" />
           </div>
           <span className="text-xl font-black tracking-tight" style={{ color: t.heading }}>{template.name || 'ECO LIVING'}</span>
@@ -460,7 +460,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
           ))}
           <button 
             onClick={() => setCurrentPage('contact')} 
-            className="px-6 py-2.5 text-white rounded-full font-bold shadow-md transition-all hover:-translate-y-0.5"
+            className="px-6 py-2.5 text-white rounded-sm font-bold shadow-md transition-all hover:-translate-y-0.5"
             style={{ backgroundColor: t.primary }}>
             Tư vấn miễn phí
           </button>
@@ -482,7 +482,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
           ))}
           <button 
             onClick={() => { setCurrentPage('contact'); setMobileMenuOpen(false); }} 
-            className="mt-4 w-full py-3 text-white rounded-full font-bold" 
+            className="mt-4 w-full py-3 text-white rounded-sm font-bold" 
             style={{ backgroundColor: t.primary }}>
             Tư vấn miễn phí
           </button>
@@ -501,7 +501,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
         </div>
         <div className={`relative z-10 w-full ${MAX_W} mx-auto px-4 md:px-8 py-32`}>
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest mb-8 border"
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm text-xs font-black uppercase tracking-widest mb-8 border"
               style={{ backgroundColor: `${t.accentDark}33`, borderColor: t.accentDark, color: t.accent }}>
               <Leaf className="w-4 h-4" /> Khu Đô Thị Sinh Thái Tiêu Chuẩn LEED Platinum
             </div>
@@ -514,7 +514,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
             <div className="flex flex-wrap gap-4 mb-16">
               <button 
                 onClick={() => setCurrentPage('projects')} 
-                className="px-8 py-4 rounded-full font-bold text-white flex items-center gap-2 shadow-xl transition-all hover:-translate-y-1"
+                className="px-8 py-4 rounded-sm font-bold text-white flex items-center gap-2 shadow-xl transition-all hover:-translate-y-1"
                 style={{ backgroundColor: t.primary }}>
                 Khám Phá Dự Án <ArrowRight className="w-5 h-5" />
               </button>
@@ -522,9 +522,9 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 href="https://www.youtube.com" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="flex items-center gap-3 px-6 py-4 rounded-full font-bold border-2 text-white transition-all hover:bg-white/10"
+                className="flex items-center gap-3 px-6 py-4 rounded-sm font-bold border-2 text-white transition-all hover:bg-white/10"
                 style={{ borderColor: 'rgba(255,255,255,0.4)' }}>
-                <div className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center">
+                <div className="w-8 h-8 rounded-sm border-2 border-white flex items-center justify-center">
                   <Play className="w-3 h-3 text-white fill-white" />
                 </div>
                 Xem Video Dự Án
@@ -538,7 +538,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 { num: '<50', label: 'Chỉ số AQI' },
                 { num: '15km', label: 'Đường dạo bộ' },
               ].map((stat, i) => (
-                <div key={i} className="p-4 rounded-2xl border text-center" style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.2)' }}>
+                <div key={i} className="p-4 rounded-sm border text-center" style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.2)' }}>
                   <div className="text-3xl font-black text-white mb-1">{stat.num}</div>
                   <div className="text-xs font-semibold opacity-70 text-white">{stat.label}</div>
                 </div>
@@ -557,9 +557,9 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
       {/* QUICK SEARCH WITH REDIRECT FILTER BINDINGS */}
       <section className="py-6" style={{ backgroundColor: t.bg }}>
         <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
-          <div className="p-6 rounded-3xl shadow-xl grid grid-cols-1 md:grid-cols-4 gap-4" style={{ backgroundColor: t.surface }}>
+          <div className="p-6 rounded-md shadow-xl grid grid-cols-1 md:grid-cols-4 gap-4" style={{ backgroundColor: t.surface }}>
             <select 
-              className="border rounded-xl px-4 py-3 text-sm font-medium focus:outline-none bg-transparent text-slate-800" 
+              className="border rounded-sm px-4 py-3 text-sm font-medium focus:outline-none bg-transparent text-slate-800" 
               style={{ borderColor: t.accent }}
               value={activeFilter}
               onChange={(e) => setActiveFilter(e.target.value)}
@@ -573,7 +573,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
               <option value="Đất vườn">Đất vườn</option>
             </select>
             <select 
-              className="border rounded-xl px-4 py-3 text-sm font-medium focus:outline-none bg-transparent text-slate-800" 
+              className="border rounded-sm px-4 py-3 text-sm font-medium focus:outline-none bg-transparent text-slate-800" 
               style={{ borderColor: t.accent }}
               value={filterLocation}
               onChange={(e) => setFilterLocation(e.target.value)}
@@ -589,7 +589,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
               <option value="Lâm Đồng">Lâm Đồng</option>
             </select>
             <select 
-              className="border rounded-xl px-4 py-3 text-sm font-medium focus:outline-none bg-transparent text-slate-800" 
+              className="border rounded-sm px-4 py-3 text-sm font-medium focus:outline-none bg-transparent text-slate-800" 
               style={{ borderColor: t.accent }}
               value={filterPrice}
               onChange={(e) => setFilterPrice(e.target.value)}
@@ -602,7 +602,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
             </select>
             <button 
               onClick={() => setCurrentPage('projects')} 
-              className="py-3 px-6 rounded-xl text-white font-bold flex items-center justify-center gap-2 transition-all hover:opacity-90"
+              className="py-3 px-6 rounded-sm text-white font-bold flex items-center justify-center gap-2 transition-all hover:opacity-90"
               style={{ backgroundColor: t.primary }}>
               <MapPin className="w-4 h-4" /> Tìm kiếm ngay
             </button>
@@ -620,8 +620,8 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
               { num: '98%', label: 'Cư dân hài lòng', icon: Heart, color: '#dc2626' },
               { num: '12', label: 'Năm kinh nghiệm', icon: Award, color: t.gold },
             ].map((item, i) => (
-              <div key={i} className="p-8 rounded-3xl text-center shadow-sm hover:shadow-lg transition-all hover:-translate-y-1" style={{ backgroundColor: t.surface }}>
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: `${item.color}20` }}>
+              <div key={i} className="p-8 rounded-md text-center shadow-sm hover:shadow-lg transition-all hover:-translate-y-1" style={{ backgroundColor: t.surface }}>
+                <div className="w-16 h-16 rounded-sm flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: `${item.color}20` }}>
                   <item.icon className="w-8 h-8" style={{ color: item.color }} />
                 </div>
                 <div className="text-4xl font-black mb-2" style={{ color: t.heading }}>{item.num}</div>
@@ -643,7 +643,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
             <div className="flex gap-2 flex-wrap">
               {['Tất cả', 'Biệt thự sinh thái', 'Căn hộ xanh', 'Villa vườn'].map(f => (
                 <button key={f} onClick={() => setActiveFilter(f)}
-                  className="px-4 py-2 rounded-full text-sm font-bold transition-all"
+                  className="px-4 py-2 rounded-sm text-sm font-bold transition-all"
                   style={{ backgroundColor: activeFilter === f ? t.primary : t.bg, color: activeFilter === f ? 'white' : t.muted }}>
                   {f}
                 </button>
@@ -652,15 +652,15 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {PROJECTS.filter(p => activeFilter === 'Tất cả' || p.type === activeFilter).slice(0, 6).map((p, i) => (
-              <div key={i} className="rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group flex flex-col justify-between" style={{ backgroundColor: t.surface }}>
+              <div key={i} className="rounded-md overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group flex flex-col justify-between" style={{ backgroundColor: t.surface }}>
                 <div>
                   <div className="relative overflow-hidden h-56">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={p.img} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
                     <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 rounded-full text-xs font-black text-white" style={{ backgroundColor: t.primary }}>{p.badge}</span>
+                      <span className="px-3 py-1 rounded-sm text-xs font-black text-white" style={{ backgroundColor: t.primary }}>{p.badge}</span>
                     </div>
                     <div className="absolute top-4 right-4">
-                      <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: 'rgba(255,255,255,0.9)', color: t.heading }}>{p.type}</span>
+                      <span className="px-3 py-1 rounded-sm text-xs font-bold" style={{ backgroundColor: 'rgba(255,255,255,0.9)', color: t.heading }}>{p.type}</span>
                     </div>
                   </div>
                   <div className="p-6">
@@ -684,7 +684,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 <div className="px-6 pb-6">
                   <button 
                     onClick={() => setSelectedProject(p)} 
-                    className="w-full py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90" 
+                    className="w-full py-3 rounded-sm font-bold text-sm transition-all hover:opacity-90" 
                     style={{ backgroundColor: `${t.primary}15`, color: t.primary }}>
                     Xem chi tiết →
                   </button>
@@ -693,7 +693,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
             ))}
           </div>
           <div className="text-center mt-12">
-            <button onClick={() => { resetFilters(); setCurrentPage('projects'); }} className="px-10 py-4 rounded-full font-bold border-2 transition-all hover:bg-opacity-10" style={{ borderColor: t.primary, color: t.primary }}>
+            <button onClick={() => { resetFilters(); setCurrentPage('projects'); }} className="px-10 py-4 rounded-sm font-bold border-2 transition-all hover:bg-opacity-10" style={{ borderColor: t.primary, color: t.primary }}>
               Xem tất cả {PROJECTS.length} dự án <ArrowRight className="w-4 h-4 inline ml-1" />
             </button>
           </div>
@@ -721,15 +721,15 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                   </div>
                 ))}
               </div>
-              <button onClick={() => setCurrentPage('about')} className="px-8 py-4 rounded-full font-bold text-white transition-all hover:opacity-90 flex items-center gap-2" style={{ backgroundColor: t.primary }}>
+              <button onClick={() => setCurrentPage('about')} className="px-8 py-4 rounded-sm font-bold text-white transition-all hover:opacity-90 flex items-center gap-2" style={{ backgroundColor: t.primary }}>
                 Câu chuyện của chúng tôi <ArrowRight className="w-5 h-5" />
               </button>
             </div>
             <div className="relative">
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=900&q=85" alt="Eco Living" className="w-full h-96 object-cover rounded-3xl shadow-2xl" loading="lazy" />
-              <div className="absolute -bottom-6 -left-6 p-6 rounded-2xl shadow-xl" style={{ backgroundColor: t.surface }}>
+              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=900&q=85" alt="Eco Living" className="w-full h-96 object-cover rounded-md shadow-2xl" loading="lazy" />
+              <div className="absolute -bottom-6 -left-6 p-6 rounded-sm shadow-xl" style={{ backgroundColor: t.surface }}>
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: t.primary }}>
+                  <div className="w-12 h-12 rounded-sm flex items-center justify-center" style={{ backgroundColor: t.primary }}>
                     <Award className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -755,8 +755,8 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {AMENITIES.map((a, i) => (
-              <div key={i} className="p-6 rounded-2xl border transition-all hover:bg-white/10 group" style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)' }}>
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-colors" style={{ backgroundColor: `${t.primary}40` }}>
+              <div key={i} className="p-6 rounded-sm border transition-all hover:bg-white/10 group" style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)' }}>
+                <div className="w-14 h-14 rounded-sm flex items-center justify-center mb-5 transition-colors" style={{ backgroundColor: `${t.primary}40` }}>
                   <a.icon className="w-7 h-7" style={{ color: t.accent }} />
                 </div>
                 <h3 className="text-lg font-black text-white mb-2">{a.title}</h3>
@@ -784,7 +784,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
               <div 
                 key={i} 
                 onClick={() => setSelectedGalleryImg(img.url)} 
-                className={`relative overflow-hidden rounded-2xl cursor-pointer group ${i === 0 ? 'col-span-2 row-span-2' : ''}`} 
+                className={`relative overflow-hidden rounded-sm cursor-pointer group ${i === 0 ? 'col-span-2 row-span-2' : ''}`} 
                 style={{ aspectRatio: i === 0 ? '1' : '1' }}
               >
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={img.url} alt={img.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
@@ -821,10 +821,10 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
               </div>
             </div>
             
-            <div className="p-8 rounded-3xl" style={{ backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <div className="p-8 rounded-md" style={{ backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
               {consultSubmitted ? (
                 <div className="text-center py-8">
-                  <div className="w-16 h-16 rounded-full bg-emerald-500 flex items-center justify-center mx-auto mb-6 text-white animate-bounce">
+                  <div className="w-16 h-16 rounded-sm bg-emerald-500 flex items-center justify-center mx-auto mb-6 text-white animate-bounce">
                     <Check className="w-8 h-8" />
                   </div>
                   <h3 className="text-2xl font-black text-white mb-2">Đăng Ký Thành Công!</h3>
@@ -837,7 +837,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                       setConsultPhone('');
                       setConsultMessage('');
                     }}
-                    className="px-6 py-2.5 rounded-xl font-bold text-sm bg-white text-emerald-800 hover:bg-emerald-50 transition-colors"
+                    className="px-6 py-2.5 rounded-sm font-bold text-sm bg-white text-emerald-800 hover:bg-emerald-50 transition-colors"
                   >
                     Gửi yêu cầu mới
                   </button>
@@ -860,7 +860,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                       type="text" 
                       placeholder="Họ và tên *" 
                       required
-                      className="w-full px-4 py-3 rounded-xl text-sm outline-none" 
+                      className="w-full px-4 py-3 rounded-sm text-sm outline-none" 
                       style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}
                       value={consultName}
                       onChange={(e) => setConsultName(e.target.value)}
@@ -869,13 +869,13 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                       type="tel" 
                       placeholder="Số điện thoại *" 
                       required
-                      className="w-full px-4 py-3 rounded-xl text-sm outline-none" 
+                      className="w-full px-4 py-3 rounded-sm text-sm outline-none" 
                       style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}
                       value={consultPhone}
                       onChange={(e) => setConsultPhone(e.target.value)}
                     />
                     <select 
-                      className="w-full px-4 py-3 rounded-xl text-sm outline-none text-slate-800" 
+                      className="w-full px-4 py-3 rounded-sm text-sm outline-none text-slate-800" 
                       value={consultInterest}
                       onChange={(e) => setConsultInterest(e.target.value)}
                     >
@@ -887,12 +887,12 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                     <textarea 
                       placeholder="Yêu cầu thêm (VD: mức giá muốn mua, hướng nhà...)" 
                       rows={3} 
-                      className="w-full px-4 py-3 rounded-xl text-sm outline-none resize-none" 
+                      className="w-full px-4 py-3 rounded-sm text-sm outline-none resize-none" 
                       style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}
                       value={consultMessage}
                       onChange={(e) => setConsultMessage(e.target.value)}
                     />
-                    <button type="submit" className="w-full py-4 rounded-xl font-black text-white transition-all hover:opacity-90 text-lg" style={{ backgroundColor: t.primary }}>
+                    <button type="submit" className="w-full py-4 rounded-sm font-black text-white transition-all hover:opacity-90 text-lg" style={{ backgroundColor: t.primary }}>
                       Gửi Đăng Ký →
                     </button>
                   </div>
@@ -915,7 +915,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
         </div>
 
         {/* Dynamic Filters Panel */}
-        <div className="p-6 rounded-3xl bg-white shadow-md mb-8 space-y-4">
+        <div className="p-6 rounded-md bg-white shadow-md mb-8 space-y-4">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             {/* Search */}
             <div className="relative w-full md:w-80">
@@ -923,7 +923,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
               <input 
                 type="text" 
                 placeholder="Tìm tên dự án, khu vực..."
-                className="w-full pl-9 pr-4 py-2.5 text-sm border rounded-xl focus:outline-none focus:border-green-600 bg-transparent text-slate-800"
+                className="w-full pl-9 pr-4 py-2.5 text-sm border rounded-sm focus:outline-none focus:border-green-600 bg-transparent text-slate-800"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -937,7 +937,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
             {/* Dropdowns */}
             <div className="grid grid-cols-3 gap-3 w-full md:w-auto flex-1 max-w-2xl">
               <select 
-                className="border rounded-xl px-3 py-2.5 text-xs md:text-sm font-semibold text-slate-700 bg-transparent"
+                className="border rounded-sm px-3 py-2.5 text-xs md:text-sm font-semibold text-slate-700 bg-transparent"
                 value={filterLocation} 
                 onChange={(e) => setFilterLocation(e.target.value)}
               >
@@ -953,7 +953,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
               </select>
 
               <select 
-                className="border rounded-xl px-3 py-2.5 text-xs md:text-sm font-semibold text-slate-700 bg-transparent"
+                className="border rounded-sm px-3 py-2.5 text-xs md:text-sm font-semibold text-slate-700 bg-transparent"
                 value={filterPrice} 
                 onChange={(e) => setFilterPrice(e.target.value)}
               >
@@ -965,7 +965,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
               </select>
 
               <select 
-                className="border rounded-xl px-3 py-2.5 text-xs md:text-sm font-semibold text-slate-700 bg-transparent"
+                className="border rounded-sm px-3 py-2.5 text-xs md:text-sm font-semibold text-slate-700 bg-transparent"
                 value={filterCert} 
                 onChange={(e) => setFilterCert(e.target.value)}
               >
@@ -984,7 +984,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
           <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-100 items-center">
             <span className="text-xs font-bold text-slate-400 mr-2 flex items-center gap-1"><Filter className="w-3.5 h-3.5" /> Loại BĐS:</span>
             {['Tất cả', 'Biệt thự sinh thái', 'Căn hộ xanh', 'Villa vườn', 'Farmhouse', 'Nhà phố xanh', 'Đất vườn'].map(f => (
-              <button key={f} onClick={() => setActiveFilter(f)} className="px-4 py-1.5 rounded-full text-xs font-bold transition-all"
+              <button key={f} onClick={() => setActiveFilter(f)} className="px-4 py-1.5 rounded-sm text-xs font-bold transition-all"
                 style={{ backgroundColor: activeFilter === f ? t.primary : t.bg, color: activeFilter === f ? 'white' : t.muted, border: `1px solid ${activeFilter === f ? t.primary : t.accent}` }}>
                 {f}
               </button>
@@ -1007,13 +1007,13 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
         {filteredProjects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProjects.map((p, i) => (
-              <div key={i} className="rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group bg-white flex flex-col justify-between" style={{ backgroundColor: t.surface }}>
+              <div key={i} className="rounded-md overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group bg-white flex flex-col justify-between" style={{ backgroundColor: t.surface }}>
                 <div>
                   <div className="relative overflow-hidden h-56">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={p.img} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
                     <div className="absolute top-4 left-4 flex flex-col gap-2">
-                      <span className="px-3 py-1 rounded-full text-xs font-black text-white" style={{ backgroundColor: t.primary }}>{p.badge}</span>
-                      <span className="px-3 py-1 rounded-full text-xs font-bold text-white bg-slate-900/80 flex items-center gap-1">
+                      <span className="px-3 py-1 rounded-sm text-xs font-black text-white" style={{ backgroundColor: t.primary }}>{p.badge}</span>
+                      <span className="px-3 py-1 rounded-sm text-xs font-bold text-white bg-slate-900/80 flex items-center gap-1">
                         <Leaf className="w-3 h-3 text-emerald-400" /> {p.cert}
                       </span>
                     </div>
@@ -1029,7 +1029,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                   <div className="font-black text-xl" style={{ color: t.primary }}>{p.price} tỷ</div>
                   <button 
                     onClick={() => setSelectedProject(p)} 
-                    className="px-5 py-2 rounded-xl text-sm font-bold text-white shadow-sm hover:opacity-90" 
+                    className="px-5 py-2 rounded-sm text-sm font-bold text-white shadow-sm hover:opacity-90" 
                     style={{ backgroundColor: t.primary }}
                   >
                     Xem ngay
@@ -1039,11 +1039,11 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-white rounded-3xl border border-slate-200">
+          <div className="text-center py-20 bg-white rounded-md border border-slate-200">
             <Trees className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-black text-slate-700 mb-2">Không Tìm Thấy Dự Án Phù Hợp</h3>
             <p className="text-slate-500 text-sm max-w-md mx-auto mb-6">Vui lòng thử thay đổi từ khoá tìm kiếm hoặc reset lại các dropdown lọc ở trên.</p>
-            <button onClick={resetFilters} className="px-6 py-2.5 rounded-full text-white font-bold text-sm" style={{ backgroundColor: t.primary }}>Reset bộ lọc</button>
+            <button onClick={resetFilters} className="px-6 py-2.5 rounded-sm text-white font-bold text-sm" style={{ backgroundColor: t.primary }}>Reset bộ lọc</button>
           </div>
         )}
       </div>
@@ -1121,7 +1121,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                     { num: '14', label: 'Năm hoạt động', icon: Award },
                     { num: '98%', label: 'Hài lòng', icon: Heart },
                   ].map((s, i) => (
-                    <div key={i} className="p-6 rounded-2xl text-center shadow-sm" style={{ backgroundColor: t.bg }}>
+                    <div key={i} className="p-6 rounded-sm text-center shadow-sm" style={{ backgroundColor: t.bg }}>
                       <s.icon className="w-8 h-8 mx-auto mb-3" style={{ color: t.primary }} />
                       <div className="text-3xl font-black mb-1" style={{ color: t.heading }}>{s.num}</div>
                       <div className="text-sm font-semibold" style={{ color: t.muted }}>{s.label}</div>
@@ -1134,8 +1134,8 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 <h3 className="text-3xl font-black text-center mb-10" style={{ color: t.heading }}>Giá Trị Cốt Lõi</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {CORE_VALUES.map((val, i) => (
-                    <div key={i} className="p-6 rounded-2xl border shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: t.surface, borderColor: t.accent }}>
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${t.primary}15` }}>
+                    <div key={i} className="p-6 rounded-sm border shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: t.surface, borderColor: t.accent }}>
+                      <div className="w-12 h-12 rounded-sm flex items-center justify-center mb-4" style={{ backgroundColor: `${t.primary}15` }}>
                         <val.icon className="w-6 h-6" style={{ color: t.primary }} />
                       </div>
                       <h4 className="font-black text-lg mb-2" style={{ color: t.heading }}>{val.title}</h4>
@@ -1156,10 +1156,10 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 <div className="space-y-12">
                   {TIMELINE.map((item, i) => (
                     <div key={i} className="flex gap-8 group relative">
-                      <div className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center z-10 font-black text-sm text-white" style={{ backgroundColor: t.primary }}>
+                      <div className="flex-shrink-0 w-12 h-12 rounded-sm flex items-center justify-center z-10 font-black text-sm text-white" style={{ backgroundColor: t.primary }}>
                         {item.year}
                       </div>
-                      <div className="bg-emerald-50/50 p-6 rounded-2xl border border-slate-100 flex-1 hover:bg-emerald-50 transition-colors">
+                      <div className="bg-emerald-50/50 p-6 rounded-sm border border-slate-100 flex-1 hover:bg-emerald-50 transition-colors">
                         <div className="text-sm font-black mb-1" style={{ color: t.primary }}>Năm {item.year}</div>
                         <h4 className="text-xl font-black mb-2" style={{ color: t.heading }}>{item.title}</h4>
                         <p className="text-sm leading-relaxed" style={{ color: t.muted }}>{item.desc}</p>
@@ -1178,7 +1178,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
               <p className="text-slate-500 text-center max-w-xl mx-auto mb-12">Những bộ óc tiên phong mang triết lý kiến trúc bền vững và chuẩn mực quốc tế về Việt Nam.</p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {LEADERSHIP.map((leader, i) => (
-                  <div key={i} className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-md hover:shadow-lg transition-shadow">
+                  <div key={i} className="bg-white rounded-md overflow-hidden border border-slate-100 shadow-md hover:shadow-lg transition-shadow">
                     <div className="h-64 overflow-hidden relative">
                       <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={leader.img} alt={leader.name} className="w-full h-full object-cover" />
                     </div>
@@ -1225,7 +1225,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
             <button 
               key={tab} 
               onClick={() => setSelectedGalleryTab(tab)} 
-              className="px-5 py-2 rounded-full text-sm font-bold transition-all"
+              className="px-5 py-2 rounded-sm text-sm font-bold transition-all"
               style={{ 
                 backgroundColor: selectedGalleryTab === tab ? t.primary : t.surface, 
                 color: selectedGalleryTab === tab ? 'white' : t.muted, 
@@ -1243,7 +1243,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
             <div 
               key={i} 
               onClick={() => setSelectedGalleryImg(img.url)} 
-              className="group aspect-square overflow-hidden rounded-2xl cursor-pointer relative shadow-sm hover:shadow-lg transition-all"
+              className="group aspect-square overflow-hidden rounded-sm cursor-pointer relative shadow-sm hover:shadow-lg transition-all"
             >
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={img.url} alt={img.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
@@ -1267,13 +1267,13 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
         </div>
 
         {/* Search & Filter News */}
-        <div className="max-w-4xl mx-auto bg-white rounded-3xl p-6 shadow-md mb-12 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div className="max-w-4xl mx-auto bg-white rounded-md p-6 shadow-md mb-12 flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="relative w-full md:w-80">
             <Search className="absolute left-3 top-3.5 w-4 h-4 text-slate-400" />
             <input 
               type="text" 
               placeholder="Tìm kiếm bài viết..."
-              className="w-full pl-9 pr-4 py-2.5 text-sm border rounded-xl focus:outline-none focus:border-green-600 bg-transparent text-slate-800"
+              className="w-full pl-9 pr-4 py-2.5 text-sm border rounded-sm focus:outline-none focus:border-green-600 bg-transparent text-slate-800"
               value={searchNewsQuery}
               onChange={(e) => setSearchNewsQuery(e.target.value)}
             />
@@ -1284,7 +1284,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
               <button 
                 key={cat} 
                 onClick={() => setNewsCategory(cat)}
-                className="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all"
+                className="px-3.5 py-1.5 rounded-sm text-xs font-bold transition-all"
                 style={{ 
                   backgroundColor: newsCategory === cat ? t.primary : t.bg, 
                   color: newsCategory === cat ? 'white' : t.text 
@@ -1302,14 +1302,14 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
             {filteredNews.map((n, i) => (
               <div 
                 key={i} 
-                className="rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all hover:-translate-y-1 bg-white cursor-pointer flex flex-col justify-between border border-slate-100"
+                className="rounded-sm overflow-hidden shadow-md hover:shadow-xl transition-all hover:-translate-y-1 bg-white cursor-pointer flex flex-col justify-between border border-slate-100"
                 onClick={() => setSelectedArticle(n)}
               >
                 <div>
                   <div className="h-52 overflow-hidden relative">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={n.img} alt={n.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
                     <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 rounded-full text-xs font-black text-white bg-slate-900/80">
+                      <span className="px-3 py-1 rounded-sm text-xs font-black text-white bg-slate-900/80">
                         {n.cat}
                       </span>
                     </div>
@@ -1331,11 +1331,11 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-white rounded-3xl border border-slate-200">
+          <div className="text-center py-20 bg-white rounded-md border border-slate-200">
             <BookOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-black text-slate-700 mb-2">Không Tìm Thấy Tin Tức Phù Hợp</h3>
             <p className="text-slate-500 text-sm max-w-md mx-auto mb-4">Vui lòng thử gõ từ khoá khác hoặc click vào nút "Tất cả" danh mục ở trên.</p>
-            <button onClick={() => { setSearchNewsQuery(''); setNewsCategory('Tất cả'); }} className="px-6 py-2.5 rounded-full text-white font-bold text-sm" style={{ backgroundColor: t.primary }}>Tất cả bài viết</button>
+            <button onClick={() => { setSearchNewsQuery(''); setNewsCategory('Tất cả'); }} className="px-6 py-2.5 rounded-sm text-white font-bold text-sm" style={{ backgroundColor: t.primary }}>Tất cả bài viết</button>
           </div>
         )}
       </div>
@@ -1361,8 +1361,8 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
               { icon: MapPin, label: 'Văn phòng giao dịch Hà Nội', val: '208 Giảng Võ, Ba Đình, Hà Nội' },
               { icon: MapPin, label: 'Văn phòng giao dịch TP. Hồ Chí Minh', val: '65 Lê Lợi, Quận 1, TP.HCM' },
             ].map((item, i) => (
-              <div key={i} className="flex items-start gap-4 p-5 rounded-2xl bg-white shadow-sm border border-slate-50">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${t.primary}15` }}>
+              <div key={i} className="flex items-start gap-4 p-5 rounded-sm bg-white shadow-sm border border-slate-50">
+                <div className="w-12 h-12 rounded-sm flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${t.primary}15` }}>
                   <item.icon className="w-5 h-5" style={{ color: t.primary }} />
                 </div>
                 <div>
@@ -1373,7 +1373,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
             ))}
 
             {/* Interactive Google Map */}
-            <div className="rounded-3xl overflow-hidden border border-emerald-100 shadow-md flex flex-col h-64 bg-white">
+            <div className="rounded-md overflow-hidden border border-emerald-100 shadow-md flex flex-col h-64 bg-white">
               <div className="px-4 py-2.5 bg-emerald-950 text-white flex items-center justify-between text-xs">
                 <span className="font-bold flex items-center gap-1.5 truncate"><MapPin className="w-3.5 h-3.5 text-emerald-400" /> Trụ sở Eco Living — 208 Giảng Võ, Ba Đình, Hà Nội</span>
                 <a
@@ -1398,10 +1398,10 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
           </div>
 
           {/* Form and success box */}
-          <div className="p-8 rounded-3xl bg-white shadow-md border border-slate-100">
+          <div className="p-8 rounded-md bg-white shadow-md border border-slate-100">
             {contactSubmitted ? (
               <div className="text-center py-12">
-                <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center text-white mx-auto mb-6 shadow-md animate-bounce">
+                <div className="w-20 h-20 bg-emerald-500 rounded-sm flex items-center justify-center text-white mx-auto mb-6 shadow-md animate-bounce">
                   <Check className="w-10 h-10" />
                 </div>
                 <h3 className="text-3xl font-black text-slate-900 mb-2">Gửi Tin Nhắn Thành Công!</h3>
@@ -1418,7 +1418,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                       setContactPhone('');
                       setContactMessage('');
                     }}
-                    className="px-6 py-3 rounded-xl font-bold text-sm border border-green-700 text-green-700 hover:bg-slate-50 transition-colors"
+                    className="px-6 py-3 rounded-sm font-bold text-sm border border-green-700 text-green-700 hover:bg-slate-50 transition-colors"
                   >
                     Gửi tin nhắn khác
                   </button>
@@ -1428,7 +1428,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                       setContactSubmitted(false);
                       setCurrentPage('home');
                     }}
-                    className="px-6 py-3 rounded-xl font-bold text-sm text-white bg-green-700 hover:bg-green-800 transition-colors"
+                    className="px-6 py-3 rounded-sm font-bold text-sm text-white bg-green-700 hover:bg-green-800 transition-colors"
                   >
                     Về Trang Chủ
                   </button>
@@ -1449,7 +1449,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                       type="text" 
                       placeholder="Nguyễn Văn A" 
                       required
-                      className="w-full px-4 py-3 rounded-xl text-sm outline-none border focus:border-green-600 bg-transparent text-slate-800" 
+                      className="w-full px-4 py-3 rounded-sm text-sm outline-none border focus:border-green-600 bg-transparent text-slate-800" 
                       style={{ borderColor: t.accent }}
                       value={contactName}
                       onChange={(e) => setContactName(e.target.value)}
@@ -1462,7 +1462,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                         type="tel" 
                         placeholder="0901234567" 
                         required
-                        className="w-full px-4 py-3 rounded-xl text-sm outline-none border focus:border-green-600 bg-transparent text-slate-800" 
+                        className="w-full px-4 py-3 rounded-sm text-sm outline-none border focus:border-green-600 bg-transparent text-slate-800" 
                         style={{ borderColor: t.accent }}
                         value={contactPhone}
                         onChange={(e) => setContactPhone(e.target.value)}
@@ -1474,7 +1474,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                         type="email" 
                         placeholder="ten@email.com" 
                         required
-                        className="w-full px-4 py-3 rounded-xl text-sm outline-none border focus:border-green-600 bg-transparent text-slate-800" 
+                        className="w-full px-4 py-3 rounded-sm text-sm outline-none border focus:border-green-600 bg-transparent text-slate-800" 
                         style={{ borderColor: t.accent }}
                         value={contactEmail}
                         onChange={(e) => setContactEmail(e.target.value)}
@@ -1486,13 +1486,13 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                     <textarea 
                       placeholder="Tôi muốn tìm hiểu kỹ hơn về các dự án có chứng chỉ LEED Platinum..." 
                       rows={5} 
-                      className="w-full px-4 py-3 rounded-xl text-sm outline-none border focus:border-green-600 resize-none bg-transparent text-slate-800" 
+                      className="w-full px-4 py-3 rounded-sm text-sm outline-none border focus:border-green-600 resize-none bg-transparent text-slate-800" 
                       style={{ borderColor: t.accent }}
                       value={contactMessage}
                       onChange={(e) => setContactMessage(e.target.value)}
                     />
                   </div>
-                  <button type="submit" className="w-full py-4 rounded-xl font-black text-white hover:opacity-95 transition-opacity text-base shadow-sm" style={{ backgroundColor: t.primary }}>Gửi tin nhắn ngay →</button>
+                  <button type="submit" className="w-full py-4 rounded-sm font-black text-white hover:opacity-95 transition-opacity text-base shadow-sm" style={{ backgroundColor: t.primary }}>Gửi tin nhắn ngay →</button>
                 </div>
               </form>
             )}
@@ -1520,7 +1520,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Facebook"
-                className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-blue-600 text-white transition-all shadow-xs"
+                className="w-9 h-9 rounded-sm flex items-center justify-center hover:bg-blue-600 text-white transition-all shadow-xs"
                 style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
               >
                 <FacebookIcon className="w-4 h-4" />
@@ -1530,7 +1530,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Zalo Chat"
-                className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#0068FF] text-white transition-all shadow-xs p-2"
+                className="w-9 h-9 rounded-sm flex items-center justify-center hover:bg-[#0068FF] text-white transition-all shadow-xs p-2"
                 style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
               >
                 <ZaloIcon className="w-full h-full" />
@@ -1540,7 +1540,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 target="_blank"
                 rel="noopener noreferrer"
                 title="YouTube"
-                className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-red-600 text-white transition-all shadow-xs"
+                className="w-9 h-9 rounded-sm flex items-center justify-center hover:bg-red-600 text-white transition-all shadow-xs"
                 style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
               >
                 <YoutubeIcon className="w-4 h-4" />
@@ -1550,7 +1550,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 target="_blank"
                 rel="noopener noreferrer"
                 title="TikTok"
-                className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-slate-800 text-white transition-all shadow-xs"
+                className="w-9 h-9 rounded-sm flex items-center justify-center hover:bg-slate-800 text-white transition-all shadow-xs"
                 style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
               >
                 <TiktokIcon className="w-4 h-4" />
@@ -1560,7 +1560,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Instagram"
-                className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-pink-600 text-white transition-all shadow-xs"
+                className="w-9 h-9 rounded-sm flex items-center justify-center hover:bg-pink-600 text-white transition-all shadow-xs"
                 style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
               >
                 <InstagramIcon className="w-4 h-4" />
@@ -1607,10 +1607,10 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
       {/* PROJECT DETAILS MODAL */}
       {selectedProject && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 overflow-y-auto">
-          <div className="relative w-full max-w-4xl bg-white rounded-3xl overflow-hidden shadow-2xl my-8">
+          <div className="relative w-full max-w-4xl bg-white rounded-md overflow-hidden shadow-2xl my-8">
             <button 
               onClick={() => setSelectedProject(null)} 
-              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors border border-white/20"
+              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-sm bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors border border-white/20"
             >
               <X className="w-6 h-6" />
             </button>
@@ -1619,10 +1619,10 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
               <div className="relative h-64 md:h-auto min-h-[300px]">
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedProject.img} alt={selectedProject.name} className="w-full h-full object-cover" />
                 <div className="absolute top-4 left-4 flex flex-col gap-2">
-                  <span className="px-3 py-1 rounded-full text-xs font-black text-white bg-green-600 shadow-md">
+                  <span className="px-3 py-1 rounded-sm text-xs font-black text-white bg-green-600 shadow-md">
                     {selectedProject.badge}
                   </span>
-                  <span className="px-3 py-1 rounded-full text-xs font-black text-white bg-emerald-700 shadow-md flex items-center gap-1">
+                  <span className="px-3 py-1 rounded-sm text-xs font-black text-white bg-emerald-700 shadow-md flex items-center gap-1">
                     <Leaf className="w-3.5 h-3.5" /> {selectedProject.cert}
                   </span>
                 </div>
@@ -1674,7 +1674,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
 
                 <div>
                   {consultSubmitted ? (
-                    <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-center">
+                    <div className="p-4 rounded-sm bg-emerald-50 border border-emerald-200 text-center">
                       <div className="flex items-center justify-center gap-2 text-emerald-800 font-bold text-sm mb-1">
                         <Check className="w-4 h-4" /> Đã gửi yêu cầu tư vấn!
                       </div>
@@ -1686,7 +1686,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                         <input 
                           type="tel" 
                           placeholder="Nhập số điện thoại..." 
-                          className="flex-1 px-4 py-2 text-sm border rounded-xl focus:outline-none focus:border-green-600 bg-transparent text-slate-800"
+                          className="flex-1 px-4 py-2 text-sm border rounded-sm focus:outline-none focus:border-green-600 bg-transparent text-slate-800"
                           value={consultPhone}
                           onChange={(e) => setConsultPhone(e.target.value)}
                         />
@@ -1697,7 +1697,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                               setTimeout(() => setConsultSubmitted(false), 5000);
                             }
                           }}
-                          className="px-6 py-2 rounded-xl text-sm font-bold text-white bg-green-600 hover:bg-green-700 transition-colors"
+                          className="px-6 py-2 rounded-sm text-sm font-bold text-white bg-green-600 hover:bg-green-700 transition-colors"
                         >
                           Đăng ký tư vấn
                         </button>
@@ -1716,19 +1716,19 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95">
           <button 
             onClick={() => setSelectedGalleryImg(null)} 
-            className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+            className="absolute top-4 right-4 w-12 h-12 rounded-sm bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
           >
             <X className="w-6 h-6" />
           </button>
           
           <div className="max-w-4xl max-h-[85vh] flex flex-col items-center">
-            <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedGalleryImg} alt="Gallery Lightbox" className="max-w-full max-h-[70vh] rounded-2xl object-contain shadow-2xl" />
+            <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedGalleryImg} alt="Gallery Lightbox" className="max-w-full max-h-[70vh] rounded-sm object-contain shadow-2xl" />
             
             {(() => {
               const imgObj = GALLERY.find(g => g.url === selectedGalleryImg);
               return imgObj ? (
                 <div className="text-center mt-6">
-                  <span className="px-3 py-1 rounded-full text-xs font-black text-emerald-400 bg-emerald-950 border border-emerald-800 uppercase tracking-widest">
+                  <span className="px-3 py-1 rounded-sm text-xs font-black text-emerald-400 bg-emerald-950 border border-emerald-800 uppercase tracking-widest">
                     {imgObj.category}
                   </span>
                   <h4 className="text-lg font-bold text-white mt-2">{imgObj.title}</h4>
@@ -1742,17 +1742,17 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
       {/* NEWS DETAIL MODAL */}
       {selectedArticle && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 overflow-y-auto">
-          <div className="relative w-full max-w-3xl bg-white rounded-3xl overflow-hidden shadow-2xl my-8">
+          <div className="relative w-full max-w-3xl bg-white rounded-md overflow-hidden shadow-2xl my-8">
             <button 
               onClick={() => setSelectedArticle(null)} 
-              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors border border-white/20"
+              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-sm bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors border border-white/20"
             >
               <X className="w-6 h-6" />
             </button>
 
             <div className="p-6 md:p-10 max-h-[85vh] overflow-y-auto">
               <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 mb-4">
-                <span className="px-3 py-1 rounded-full font-bold text-green-700 bg-green-50 border border-green-200">
+                <span className="px-3 py-1 rounded-sm font-bold text-green-700 bg-green-50 border border-green-200">
                   {selectedArticle.cat}
                 </span>
                 <span>• {selectedArticle.date}</span>
@@ -1762,7 +1762,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
 
               <h2 className="text-2xl md:text-3xl font-black text-slate-900 leading-snug mb-6">{selectedArticle.title}</h2>
               
-              <div className="h-64 md:h-96 rounded-2xl overflow-hidden mb-6">
+              <div className="h-64 md:h-96 rounded-sm overflow-hidden mb-6">
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
               </div>
 
@@ -1779,7 +1779,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
               <div className="border-t border-slate-100 pt-6 mt-8 flex justify-end">
                 <button 
                   onClick={() => setSelectedArticle(null)}
-                  className="px-6 py-2.5 rounded-xl font-bold text-sm text-white bg-green-700 hover:bg-green-800 transition-colors"
+                  className="px-6 py-2.5 rounded-sm font-bold text-sm text-white bg-green-700 hover:bg-green-800 transition-colors"
                 >
                   Đóng bài viết
                 </button>

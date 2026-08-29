@@ -523,7 +523,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
     <header className="bg-white sticky top-0 z-50 shadow-sm" style={fontBody}>
       <div className={`${MAX_W} px-4 py-3.5 flex justify-between items-center`}>
         <div className="flex items-center gap-2.5 font-bold cursor-pointer text-left" onClick={() => navigateTo('home')}>
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
+          <div className="w-10 h-10 rounded-sm bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
             <Building2 size={22} />
           </div>
           <div>
@@ -538,7 +538,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           <button onClick={() => navigateTo('about')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'about' ? 'text-violet-700 font-black' : ''}`}>Giới thiệu</button>
           <button onClick={() => navigateTo('gallery')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'gallery' ? 'text-violet-700 font-black' : ''}`}>Thư viện</button>
           <button onClick={() => navigateTo('news')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'news' ? 'text-violet-700 font-black' : ''}`}>Tin tức</button>
-          <button onClick={() => navigateTo('contact')} className="px-5 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-xs transition-all shadow-md shadow-violet-500/20 cursor-pointer">
+          <button onClick={() => navigateTo('contact')} className="px-5 py-2 rounded-sm bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-xs transition-all shadow-md shadow-violet-500/20 cursor-pointer">
             Liên Hệ Ngay
           </button>
         </nav>
@@ -557,7 +557,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           <button onClick={() => navigateTo('about')} className="text-left w-full p-2 hover:bg-violet-50 rounded-lg">Giới thiệu</button>
           <button onClick={() => navigateTo('gallery')} className="text-left w-full p-2 hover:bg-violet-50 rounded-lg">Thư viện</button>
           <button onClick={() => navigateTo('news')} className="text-left w-full p-2 hover:bg-violet-50 rounded-lg">Tin tức</button>
-          <button onClick={() => navigateTo('contact')} className="text-white px-6 py-3 rounded-xl text-center mt-2 bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-sm shadow-md">
+          <button onClick={() => navigateTo('contact')} className="text-white px-6 py-3 rounded-sm text-center mt-2 bg-gradient-to-r from-violet-600 to-indigo-600 font-bold text-sm shadow-md">
             Liên Hệ Tư Vấn
           </button>
         </div>
@@ -569,7 +569,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
     <section className="bg-gradient-to-b from-violet-50/70 via-purple-50/40 to-white relative overflow-hidden" style={fontBody}>
       <div className={`${MAX_W} px-4 py-12 lg:py-20 flex flex-col lg:flex-row items-center gap-10 lg:gap-14`}>
         <div className="flex-1 space-y-5 z-10 text-left">
-          <div className="inline-flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-xs border border-violet-100 text-violet-700">
+          <div className="inline-flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-sm text-xs font-bold shadow-xs border border-violet-100 text-violet-700">
             <Star size={14} className="text-amber-500" fill="currentColor" />
             <span>Dự án căn hộ công nghệ 2026</span>
           </div>
@@ -588,13 +588,13 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button 
               onClick={() => navigateTo('projects')} 
-              className="px-6 py-3.5 rounded-xl font-bold bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-lg shadow-violet-500/25 transition-all flex items-center gap-2 text-xs sm:text-sm cursor-pointer"
+              className="px-6 py-3.5 rounded-sm font-bold bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-lg shadow-violet-500/25 transition-all flex items-center gap-2 text-xs sm:text-sm cursor-pointer"
             >
               <span>Xem Căn Hộ</span> <ArrowRight size={16} />
             </button>
             <button 
               onClick={() => navigateTo('contact')} 
-              className="px-6 py-3.5 rounded-xl font-bold bg-white hover:bg-violet-50 text-violet-700 border border-violet-200 transition-all text-xs sm:text-sm shadow-xs cursor-pointer"
+              className="px-6 py-3.5 rounded-sm font-bold bg-white hover:bg-violet-50 text-violet-700 border border-violet-200 transition-all text-xs sm:text-sm shadow-xs cursor-pointer"
             >
               <span>Nhận Báo Giá</span>
             </button>
@@ -602,14 +602,14 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
         </div>
 
         <div className="flex-1 relative w-full max-w-xl">
-          <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-violet-600 to-indigo-400 opacity-15 blur-xl -z-10"></div>
-          <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+          <div className="absolute -inset-2 rounded-md bg-gradient-to-tr from-violet-600 to-indigo-400 opacity-15 blur-xl -z-10"></div>
+          <div className="relative rounded-md overflow-hidden shadow-2xl border-4 border-white">
             <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
               src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" 
               alt="Hero Apartment" 
               className="w-full h-[320px] sm:h-[400px] lg:h-[460px] object-cover"
             />
-            <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-3 rounded-2xl border border-white/80 shadow-lg flex items-center justify-between">
+            <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-3 rounded-sm border border-white/80 shadow-lg flex items-center justify-between">
               <div>
                 <span className="text-[10px] font-bold text-violet-600 uppercase tracking-wide">Tiêu chuẩn bàn giao</span>
                 <p className="text-xs font-bold text-slate-900">100% Căn Hộ Full Smart Home AI</p>
@@ -627,7 +627,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
   const renderQuickSearch = () => (
     <section className="bg-white py-12" style={fontBody}>
       <div className={`${MAX_W} px-4`}>
-        <div className="bg-white rounded-3xl shadow-xl p-6 lg:p-8 -mt-24 relative z-20 border border-violet-50 flex flex-col lg:flex-row gap-6 items-center">
+        <div className="bg-white rounded-md shadow-xl p-6 lg:p-8 -mt-24 relative z-20 border border-violet-50 flex flex-col lg:flex-row gap-6 items-center">
           <div className="flex-1 w-full">
             <label className="block text-sm font-semibold text-violet-950 mb-2">Loại căn hộ</label>
             <select 
@@ -674,7 +674,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           </div>
           <button 
             onClick={() => navigateTo('projects')}
-            className="w-full lg:w-auto bg-violet-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-violet-700 transition flex items-center justify-center gap-2 mt-2 lg:mt-0 shadow-lg shadow-violet-200 shrink-0"
+            className="w-full lg:w-auto bg-violet-600 text-white px-8 py-4 rounded-sm font-bold hover:bg-violet-700 transition flex items-center justify-center gap-2 mt-2 lg:mt-0 shadow-lg shadow-violet-200 shrink-0"
           >
             <Search size={20} /> Tìm Kiếm
           </button>
@@ -696,12 +696,12 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             {featuredItems.map((item) => (
               <div 
                 key={item.id} 
-                className="bg-white rounded-3xl overflow-hidden shadow-lg border border-violet-50 hover:shadow-2xl transition group cursor-pointer" 
+                className="bg-white rounded-md overflow-hidden shadow-lg border border-violet-50 hover:shadow-2xl transition group cursor-pointer" 
                 onClick={() => setSelectedApartment(item)}
               >
                 <div className="relative h-64 overflow-hidden">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.img} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
-                  <div className="absolute top-4 right-4 bg-white px-4 py-1.5 rounded-full text-violet-600 font-bold text-sm shadow-md border border-violet-100">
+                  <div className="absolute top-4 right-4 bg-white px-4 py-1.5 rounded-sm text-violet-600 font-bold text-sm shadow-md border border-violet-100">
                     {item.price}
                   </div>
                 </div>
@@ -738,7 +738,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 setFilterType(cat);
                 navigateTo('projects');
               }}
-              className={`bg-white border-2 px-6 py-3 rounded-full font-bold transition shadow-sm hover:shadow-md ${filterType === cat ? 'border-violet-600 text-violet-600' : 'border-violet-100 text-violet-950 hover:border-violet-600 hover:text-violet-600'}`}
+              className={`bg-white border-2 px-6 py-3 rounded-sm font-bold transition shadow-sm hover:shadow-md ${filterType === cat ? 'border-violet-600 text-violet-600' : 'border-violet-100 text-violet-950 hover:border-violet-600 hover:text-violet-600'}`}
             >
               {cat}
             </button>
@@ -752,8 +752,8 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
     <section className="py-24 bg-white" style={fontBody}>
       <div className={`${MAX_W} px-4 flex flex-col lg:flex-row gap-16 items-center`}>
         <div className="flex-1 grid grid-cols-2 gap-4 w-full">
-          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" alt="About 1" className="w-full h-48 lg:h-64 object-cover rounded-3xl rounded-tr-none shadow-lg" />
-          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80" alt="About 2" className="w-full h-48 lg:h-64 object-cover rounded-3xl mt-8 rounded-bl-none shadow-lg" />
+          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" alt="About 1" className="w-full h-48 lg:h-64 object-cover rounded-md rounded-tr-none shadow-lg" />
+          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80" alt="About 2" className="w-full h-48 lg:h-64 object-cover rounded-md mt-8 rounded-bl-none shadow-lg" />
         </div>
         <div className="flex-1 space-y-6 w-full">
           <h2 className="text-4xl lg:text-5xl font-extrabold text-violet-950 leading-tight" style={fontHeading}>Kiến Tạo Chuẩn Mực <br/><span className="text-violet-600">Sống Mới</span></h2>
@@ -767,7 +767,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               </li>
             ))}
           </ul>
-          <button onClick={() => navigateTo('about')} className="mt-8 bg-violet-50 text-violet-600 font-bold px-8 py-4 rounded-full flex items-center gap-2 hover:bg-violet-100 transition">
+          <button onClick={() => navigateTo('about')} className="mt-8 bg-violet-50 text-violet-600 font-bold px-8 py-4 rounded-sm flex items-center gap-2 hover:bg-violet-100 transition">
             Tìm Hiểu Thêm <ArrowRight size={20} />
           </button>
         </div>
@@ -785,7 +785,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             { icon: <Trees size={40}/>, title: 'Sống Xanh', desc: '60% diện tích dự án dành riêng cho mảng xanh và mặt nước' },
             { icon: <MapPin size={40}/>, title: 'Vị Trí Vàng', desc: 'Kết nối đa tầng đến các tiện ích trọng điểm thành phố' }
           ].map((f, i) => (
-            <div key={i} className="bg-violet-900/50 p-8 rounded-3xl border border-violet-800 hover:bg-violet-800 hover:border-violet-700 transition group cursor-default">
+            <div key={i} className="bg-violet-900/50 p-8 rounded-md border border-violet-800 hover:bg-violet-800 hover:border-violet-700 transition group cursor-default">
               <div className="text-amber-500 mb-6 group-hover:scale-110 transition-transform">{f.icon}</div>
               <h3 className="text-2xl font-bold mb-4" style={fontHeading}>{f.title}</h3>
               <p className="text-violet-200 leading-relaxed">{f.desc}</p>
@@ -812,8 +812,8 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             { icon: <Car size={32}/>, name: 'Bãi Đỗ Xe Thông Minh' },
             { icon: <Users size={32}/>, name: 'Khu Vui Chơi Trẻ Em' },
           ].map((a, i) => (
-            <div key={i} className="bg-white p-8 rounded-3xl shadow-sm border border-violet-100 text-center flex flex-col items-center gap-4 hover:shadow-xl hover:-translate-y-1 transition duration-300 group">
-              <div className="bg-violet-50 p-5 rounded-full text-violet-600 group-hover:bg-violet-600 group-hover:text-white transition duration-300">
+            <div key={i} className="bg-white p-8 rounded-md shadow-sm border border-violet-100 text-center flex flex-col items-center gap-4 hover:shadow-xl hover:-translate-y-1 transition duration-300 group">
+              <div className="bg-violet-50 p-5 rounded-sm text-violet-600 group-hover:bg-violet-600 group-hover:text-white transition duration-300">
                 {a.icon}
               </div>
               <h4 className="font-bold text-lg text-violet-950">{a.name}</h4>
@@ -843,7 +843,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 <button 
                   key={i} 
                   onClick={() => setActiveFloorPlan(i)}
-                  className={`w-full text-left p-6 rounded-2xl font-bold transition text-lg border ${activeFloorPlan === i ? 'bg-violet-600 text-white border-violet-600 shadow-xl' : 'bg-white text-violet-950 border-violet-100 hover:border-violet-300 hover:bg-violet-50'}`}
+                  className={`w-full text-left p-6 rounded-sm font-bold transition text-lg border ${activeFloorPlan === i ? 'bg-violet-600 text-white border-violet-600 shadow-xl' : 'bg-white text-violet-950 border-violet-100 hover:border-violet-300 hover:bg-violet-50'}`}
                 >
                   {p.name}
                   {activeFloorPlan === i && <span className="block text-sm font-normal opacity-90 mt-2 flex items-center gap-4">
@@ -853,8 +853,8 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 </button>
               ))}
             </div>
-            <div className="w-full lg:w-2/3 bg-violet-50 rounded-3xl p-8 flex items-center justify-center min-h-[400px] border border-violet-100">
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={plans[activeFloorPlan].img} alt="Floor plan" className="max-w-full h-auto max-h-[500px] rounded-xl shadow-lg object-contain bg-white p-4" />
+            <div className="w-full lg:w-2/3 bg-violet-50 rounded-md p-8 flex items-center justify-center min-h-[400px] border border-violet-100">
+              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={plans[activeFloorPlan].img} alt="Floor plan" className="max-w-full h-auto max-h-[500px] rounded-sm shadow-lg object-contain bg-white p-4" />
             </div>
           </div>
         </div>
@@ -902,7 +902,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             {images.map((item, i) => (
               <div 
                 key={i} 
-                className="relative group overflow-hidden rounded-3xl cursor-pointer h-48 lg:h-72 shadow-sm" 
+                className="relative group overflow-hidden rounded-md cursor-pointer h-48 lg:h-72 shadow-sm" 
                 onClick={() => setSelectedGalleryImg(item.img)}
               >
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.img} className="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt={item.title} />
@@ -928,10 +928,10 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           {LIST_TIMELINE.slice(0, 4).map((t, i) => (
             <div key={t.id} className="flex gap-6 items-start relative group">
               {i !== 3 && <div className={`absolute left-[1.35rem] top-12 bottom-[-2rem] w-1 ${t.done ? 'bg-violet-600' : 'bg-violet-200'}`}></div>}
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 z-10 shadow-md ${t.done ? 'bg-violet-600 text-white' : 'bg-white border-4 border-violet-200 text-violet-300'}`}>
-                {t.done ? <Check size={20} /> : <div className="w-3 h-3 rounded-full bg-violet-200"></div>}
+              <div className={`w-12 h-12 rounded-sm flex items-center justify-center shrink-0 z-10 shadow-md ${t.done ? 'bg-violet-600 text-white' : 'bg-white border-4 border-violet-200 text-violet-300'}`}>
+                {t.done ? <Check size={20} /> : <div className="w-3 h-3 rounded-sm bg-violet-200"></div>}
               </div>
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-violet-100 flex-1 hover:shadow-xl transition group-hover:-translate-y-1">
+              <div className="bg-white p-8 rounded-md shadow-sm border border-violet-100 flex-1 hover:shadow-xl transition group-hover:-translate-y-1">
                 <span className="text-amber-500 font-extrabold text-sm mb-3 block uppercase tracking-wider">{t.date}</span>
                 <h4 className="text-2xl font-bold text-violet-950 mb-3" style={fontHeading}>{t.title}</h4>
                 <p className="text-slate-600 text-lg">{t.desc}</p>
@@ -956,9 +956,9 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             { name: 'Chị Mai Linh', role: 'Cư dân tháp R2', text: 'Tiện ích nội khu rất đầy đủ, từ siêu thị, hồ bơi đến công viên. Các bé nhà mình có không gian vui chơi an toàn và xanh mát ngay dưới nhà.', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80' },
             { name: 'Anh Hoàng Nam', role: 'Nhà Đầu Tư', text: 'Vị trí đắc địa, tiến độ thi công nhanh chóng. Tôi rất hài lòng về tiềm năng tăng giá cũng như khả năng cho thuê của dự án trong tương lai.', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80' }
           ].map((t, i) => (
-            <div key={i} className="bg-violet-50 p-10 rounded-3xl relative mt-8 border border-violet-100 hover:shadow-xl transition">
+            <div key={i} className="bg-violet-50 p-10 rounded-md relative mt-8 border border-violet-100 hover:shadow-xl transition">
               <div className="absolute -top-10 left-10">
-                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={t.img} alt={t.name} className="w-20 h-20 rounded-full border-4 border-white shadow-lg object-cover" />
+                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={t.img} alt={t.name} className="w-20 h-20 rounded-sm border-4 border-white shadow-lg object-cover" />
               </div>
               <Quote className="text-amber-500 w-12 h-12 absolute right-8 top-8 opacity-20" />
               <div className="mt-6">
@@ -989,7 +989,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           {LIST_NEWS.slice(0, 3).map((n) => (
             <div 
               key={n.id} 
-              className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition border border-violet-100 group cursor-pointer" 
+              className="bg-white rounded-md overflow-hidden shadow-sm hover:shadow-xl transition border border-violet-100 group cursor-pointer" 
               onClick={() => handleOpenArticle(n)}
             >
               <div className="overflow-hidden h-56">
@@ -1024,13 +1024,13 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           <div className="lg:w-1/3">
             <h2 className="text-4xl font-extrabold text-violet-950 mb-6 leading-tight" style={fontHeading}>Câu Hỏi <br/><span className="text-violet-600">Thường Gặp</span></h2>
             <p className="text-slate-600 mb-8 text-lg">Giải đáp nhanh những thắc mắc phổ biến của khách hàng về dự án SmartUrban.</p>
-            <button onClick={() => navigateTo('contact')} className="bg-violet-50 text-violet-600 font-bold px-8 py-4 rounded-full flex items-center gap-2 hover:bg-violet-100 transition shadow-sm border border-violet-100">
+            <button onClick={() => navigateTo('contact')} className="bg-violet-50 text-violet-600 font-bold px-8 py-4 rounded-sm flex items-center gap-2 hover:bg-violet-100 transition shadow-sm border border-violet-100">
               Đặt câu hỏi khác <ArrowRight size={20} />
             </button>
           </div>
           <div className="lg:w-2/3 space-y-4">
             {faqs.map((f, i) => (
-              <div key={i} className="border border-violet-100 rounded-3xl overflow-hidden bg-white hover:border-violet-300 transition shadow-sm">
+              <div key={i} className="border border-violet-100 rounded-md overflow-hidden bg-white hover:border-violet-300 transition shadow-sm">
                 <button 
                   className="w-full text-left p-8 flex justify-between items-center font-bold text-xl text-violet-950 hover:bg-violet-50 transition"
                   onClick={() => setActiveFaq(activeFaq === i ? null : i)}
@@ -1054,16 +1054,16 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
 
   const renderCta = () => (
     <section className="py-32 bg-gradient-to-br from-violet-600 to-violet-950 text-white relative overflow-hidden" style={fontBody}>
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/5 rounded-sm blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-amber-500/10 rounded-sm blur-3xl translate-y-1/3 -translate-x-1/3"></div>
       <div className={`${MAX_W} px-4 relative z-10 text-center`}>
         <h2 className="text-5xl md:text-6xl font-extrabold mb-8 leading-tight" style={fontHeading}>Bạn Đã Sẵn Sàng <br/>Trải Nghiệm?</h2>
         <p className="text-violet-200 text-xl max-w-2xl mx-auto mb-12">Đăng ký ngay hôm nay để nhận thông tin ưu đãi độc quyền và đặt lịch tham quan nhà mẫu thực tế.</p>
         <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
-          <button onClick={() => navigateTo('contact')} className="w-full md:w-auto bg-amber-500 text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-amber-600 transition shadow-2xl shadow-amber-500/30 flex items-center justify-center gap-2">
+          <button onClick={() => navigateTo('contact')} className="w-full md:w-auto bg-amber-500 text-white px-10 py-5 rounded-sm font-bold text-lg hover:bg-amber-600 transition shadow-2xl shadow-amber-500/30 flex items-center justify-center gap-2">
             Đăng Ký Tham Quan <ArrowRight size={20} />
           </button>
-          <button onClick={() => alert('Brochure đang được tải xuống...')} className="w-full md:w-auto bg-white/10 backdrop-blur-md border border-white/30 text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-white/20 transition flex items-center justify-center gap-2">
+          <button onClick={() => alert('Brochure đang được tải xuống...')} className="w-full md:w-auto bg-white/10 backdrop-blur-md border border-white/30 text-white px-10 py-5 rounded-sm font-bold text-lg hover:bg-white/20 transition flex items-center justify-center gap-2">
             Tải Brochure PDF
           </button>
         </div>
@@ -1083,8 +1083,8 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             <p className="text-slate-600 text-lg">Đừng bỏ lỡ các thông tin cập nhật về tiến độ và bảng giá ưu đãi.</p>
           </div>
           <form onSubmit={handleNewsletterSubmit} className="flex w-full lg:w-auto flex-1 max-w-xl gap-3 relative z-10">
-            <input required type="email" placeholder="Nhập địa chỉ email của bạn..." className="w-full bg-violet-50 border-2 border-violet-100 px-8 py-5 rounded-full focus:outline-none focus:border-violet-600 text-lg shadow-inner text-slate-700" />
-            <button type="submit" className="bg-violet-950 text-white px-10 py-5 rounded-full font-bold hover:bg-violet-800 transition text-lg shadow-lg">Gửi</button>
+            <input required type="email" placeholder="Nhập địa chỉ email của bạn..." className="w-full bg-violet-50 border-2 border-violet-100 px-8 py-5 rounded-sm focus:outline-none focus:border-violet-600 text-lg shadow-inner text-slate-700" />
+            <button type="submit" className="bg-violet-950 text-white px-10 py-5 rounded-sm font-bold hover:bg-violet-800 transition text-lg shadow-lg">Gửi</button>
           </form>
         </div>
       </div>
@@ -1101,16 +1101,16 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           </div>
           <p className="mb-8 opacity-80 leading-relaxed">Kiến tạo không gian sống đỉnh cao giữa lòng đô thị. Nơi hội tụ tinh hoa của thiết kế hiện đại và công nghệ thông minh.</p>
           <div className="flex items-center gap-3">
-             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook" className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-blue-600 text-white transition">
+             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook" className="w-10 h-10 rounded-sm bg-violet-900 flex items-center justify-center hover:bg-blue-600 text-white transition">
                <FacebookIcon className="w-4 h-4" />
              </a>
-             <a href="https://zalo.me/0919006030" target="_blank" rel="noopener noreferrer" title="Zalo" className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-[#0068FF] text-white transition p-2">
+             <a href="https://zalo.me/0919006030" target="_blank" rel="noopener noreferrer" title="Zalo" className="w-10 h-10 rounded-sm bg-violet-900 flex items-center justify-center hover:bg-[#0068FF] text-white transition p-2">
                <ZaloIcon className="w-full h-full" />
              </a>
-             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram" className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-pink-600 text-white transition">
+             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram" className="w-10 h-10 rounded-sm bg-violet-900 flex items-center justify-center hover:bg-pink-600 text-white transition">
                <InstagramIcon className="w-4 h-4" />
              </a>
-             <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" title="Youtube" className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-red-600 text-white transition">
+             <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" title="Youtube" className="w-10 h-10 rounded-sm bg-violet-900 flex items-center justify-center hover:bg-red-600 text-white transition">
                <YoutubeIcon className="w-4 h-4" />
              </a>
           </div>
@@ -1214,7 +1214,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Sidebar Filters */}
             <div className="w-full lg:w-1/4 space-y-8">
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-violet-100">
+              <div className="bg-white p-8 rounded-md shadow-sm border border-violet-100">
                 <h3 className="font-bold text-xl text-violet-950 mb-6 border-b border-violet-100 pb-4" style={fontHeading}>Bộ Lọc Tìm Kiếm</h3>
                 <div className="space-y-6">
                   {/* Search Bar */}
@@ -1226,7 +1226,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                         placeholder="Tìm tên căn hộ..." 
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-violet-50 border-none p-4 pl-10 rounded-xl focus:ring-2 focus:ring-violet-600 text-slate-700 font-medium"
+                        className="w-full bg-violet-50 border-none p-4 pl-10 rounded-sm focus:ring-2 focus:ring-violet-600 text-slate-700 font-medium"
                       />
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     </div>
@@ -1243,7 +1243,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                             name="unitType"
                             checked={filterType === type}
                             onChange={() => setFilterType(type)}
-                            className="w-5 h-5 rounded-full border-violet-200 text-violet-600 focus:ring-violet-600" 
+                            className="w-5 h-5 rounded-sm border-violet-200 text-violet-600 focus:ring-violet-600" 
                           />
                           <span className={`${filterType === type ? 'text-violet-600 font-bold' : 'text-slate-700'} font-medium group-hover:text-violet-600 transition`}>{type}</span>
                         </label>
@@ -1257,7 +1257,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                     <select 
                       value={filterTower}
                       onChange={(e) => setFilterTower(e.target.value)}
-                      className="w-full bg-violet-50 border-none p-4 rounded-xl focus:ring-2 focus:ring-violet-600 text-slate-700 font-medium cursor-pointer"
+                      className="w-full bg-violet-50 border-none p-4 rounded-sm focus:ring-2 focus:ring-violet-600 text-slate-700 font-medium cursor-pointer"
                     >
                       <option value="Tất cả">Tất cả tòa</option>
                       <option value="Tháp S1">Tháp S1 (Sapphire)</option>
@@ -1272,7 +1272,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                     <select 
                       value={filterPriceRange}
                       onChange={(e) => setFilterPriceRange(e.target.value)}
-                      className="w-full bg-violet-50 border-none p-4 rounded-xl focus:ring-2 focus:ring-violet-600 text-slate-700 font-medium cursor-pointer"
+                      className="w-full bg-violet-50 border-none p-4 rounded-sm focus:ring-2 focus:ring-violet-600 text-slate-700 font-medium cursor-pointer"
                     >
                       <option value="Tất cả">Tất cả mức giá</option>
                       <option value="Dưới 2 tỷ">Dưới 2 tỷ</option>
@@ -1288,7 +1288,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                     <select 
                       value={filterArea}
                       onChange={(e) => setFilterArea(e.target.value)}
-                      className="w-full bg-violet-50 border-none p-4 rounded-xl focus:ring-2 focus:ring-violet-600 text-slate-700 font-medium cursor-pointer"
+                      className="w-full bg-violet-50 border-none p-4 rounded-sm focus:ring-2 focus:ring-violet-600 text-slate-700 font-medium cursor-pointer"
                     >
                       <option value="Tất cả">Tất cả diện tích</option>
                       <option value="Dưới 60m2">Dưới 60 m²</option>
@@ -1306,7 +1306,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                       setFilterTower('Tất cả');
                       setFilterArea('Tất cả');
                     }}
-                    className="w-full bg-violet-50 hover:bg-violet-100 text-violet-600 font-bold py-4 rounded-xl transition border border-violet-100 mt-4"
+                    className="w-full bg-violet-50 hover:bg-violet-100 text-violet-600 font-bold py-4 rounded-sm transition border border-violet-100 mt-4"
                   >
                     Xóa Bộ Lọc
                   </button>
@@ -1317,7 +1317,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             {/* Grid */}
             <div className="w-full lg:w-3/4">
               {filteredApartments.length === 0 ? (
-                <div className="bg-white rounded-3xl p-16 text-center shadow-sm border border-violet-100">
+                <div className="bg-white rounded-md p-16 text-center shadow-sm border border-violet-100">
                   <Building2 size={64} className="text-violet-300 mx-auto mb-4" />
                   <h3 className="text-2xl font-bold text-violet-950 mb-2">Không tìm thấy căn hộ</h3>
                   <p className="text-slate-500 mb-6">Hãy thử thay đổi điều kiện tìm kiếm hoặc xóa các bộ lọc hiện tại.</p>
@@ -1329,7 +1329,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                       setFilterTower('Tất cả');
                       setFilterArea('Tất cả');
                     }}
-                    className="bg-violet-600 text-white font-bold px-8 py-3.5 rounded-xl hover:bg-violet-700 transition shadow-lg"
+                    className="bg-violet-600 text-white font-bold px-8 py-3.5 rounded-sm hover:bg-violet-700 transition shadow-lg"
                   >
                     Đặt lại bộ lọc
                   </button>
@@ -1337,10 +1337,10 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {filteredApartments.map((item) => (
-                    <div key={item.id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition border border-violet-100 group">
+                    <div key={item.id} className="bg-white rounded-md overflow-hidden shadow-sm hover:shadow-xl transition border border-violet-100 group">
                       <div className="relative h-64 overflow-hidden">
                         <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.img} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-                        <div className="absolute top-4 right-4 bg-white px-4 py-2 rounded-full text-violet-600 font-extrabold text-sm shadow-lg">
+                        <div className="absolute top-4 right-4 bg-white px-4 py-2 rounded-sm text-violet-600 font-extrabold text-sm shadow-lg">
                           {item.price}
                         </div>
                       </div>
@@ -1354,7 +1354,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                         </div>
                         <button 
                           onClick={() => setSelectedApartment(item)}
-                          className="w-full bg-violet-50 text-violet-600 font-bold py-4 rounded-xl hover:bg-violet-600 hover:text-white transition flex justify-center items-center gap-2"
+                          className="w-full bg-violet-50 text-violet-600 font-bold py-4 rounded-sm hover:bg-violet-600 hover:text-white transition flex justify-center items-center gap-2"
                         >
                           Xem Chi Tiết <ArrowRight size={18} />
                         </button>
@@ -1404,22 +1404,22 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           {aboutTab === 'story' && (
             <div className="space-y-24">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                <div className="bg-violet-50 p-10 rounded-3xl border border-violet-100">
-                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-amber-500 mb-8 shadow-sm">
+                <div className="bg-violet-50 p-10 rounded-md border border-violet-100">
+                  <div className="w-16 h-16 bg-white rounded-sm flex items-center justify-center text-amber-500 mb-8 shadow-sm">
                     <Star size={32} />
                   </div>
                   <h3 className="text-2xl font-bold text-violet-950 mb-4" style={fontHeading}>Tầm Nhìn</h3>
                   <p className="text-slate-600 text-lg leading-relaxed">Trở thành biểu tượng bất động sản của khu vực, tiên phong trong việc ứng dụng công nghệ xanh và thông minh vào không gian sống đẳng cấp.</p>
                 </div>
-                <div className="bg-violet-600 p-10 rounded-3xl text-white shadow-xl shadow-violet-200">
-                  <div className="w-16 h-16 bg-violet-500 rounded-2xl flex items-center justify-center text-white mb-8">
+                <div className="bg-violet-600 p-10 rounded-md text-white shadow-xl shadow-violet-200">
+                  <div className="w-16 h-16 bg-violet-500 rounded-sm flex items-center justify-center text-white mb-8">
                     <CheckCircle2 size={32} />
                   </div>
                   <h3 className="text-2xl font-bold mb-4" style={fontHeading}>Sứ Mệnh</h3>
                   <p className="text-violet-100 text-lg leading-relaxed">Không chỉ xây nhà, chúng tôi kiến tạo một cộng đồng văn minh, thịnh vượng, nơi mỗi cá nhân được phát triển toàn diện trong môi trường tốt nhất.</p>
                 </div>
-                <div className="bg-violet-50 p-10 rounded-3xl border border-violet-100">
-                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-amber-500 mb-8 shadow-sm">
+                <div className="bg-violet-50 p-10 rounded-md border border-violet-100">
+                  <div className="w-16 h-16 bg-white rounded-sm flex items-center justify-center text-amber-500 mb-8 shadow-sm">
                     <Shield size={32} />
                   </div>
                   <h3 className="text-2xl font-bold text-violet-950 mb-4" style={fontHeading}>Giá Trị Cốt Lõi</h3>
@@ -1440,7 +1440,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                     { name: 'PTW Architects', desc: 'Thiết kế kiến trúc' },
                     { name: 'Techcombank', desc: 'Ngân hàng bảo lãnh' },
                   ].map((p, i) => (
-                    <div key={i} className="bg-white p-6 rounded-2xl border border-violet-100 text-center shadow-sm hover:shadow-md transition">
+                    <div key={i} className="bg-white p-6 rounded-sm border border-violet-100 text-center shadow-sm hover:shadow-md transition">
                       <h4 className="font-bold text-violet-950 text-xl mb-2" style={fontHeading}>{p.name}</h4>
                       <p className="text-slate-500">{p.desc}</p>
                     </div>
@@ -1459,12 +1459,12 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {LIST_LEADERS.map((leader) => (
                   <div key={leader.id} className="bg-violet-50 border border-violet-100 p-6 rounded-[2.5rem] text-center shadow-sm hover:shadow-xl transition">
-                    <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={leader.img} alt={leader.name} className="w-28 h-28 rounded-full mx-auto object-cover border-4 border-white shadow-md mb-6" />
+                    <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={leader.img} alt={leader.name} className="w-28 h-28 rounded-sm mx-auto object-cover border-4 border-white shadow-md mb-6" />
                     <span className="text-amber-500 font-extrabold text-xs uppercase tracking-wider mb-2 block">{leader.role}</span>
                     <h4 className="font-bold text-violet-950 text-xl mb-4" style={fontHeading}>{leader.name}</h4>
                     <button 
                       onClick={() => setSelectedLeader(leader)}
-                      className="bg-white text-violet-600 font-bold px-5 py-2.5 rounded-full border border-violet-100 shadow-sm hover:bg-violet-600 hover:text-white transition text-sm"
+                      className="bg-white text-violet-600 font-bold px-5 py-2.5 rounded-sm border border-violet-100 shadow-sm hover:bg-violet-600 hover:text-white transition text-sm"
                     >
                       Xem Tiểu Sử
                     </button>
@@ -1484,10 +1484,10 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 {LIST_TIMELINE.map((t, i) => (
                   <div key={t.id} className="flex gap-6 items-start relative group">
                     {i !== LIST_TIMELINE.length - 1 && <div className={`absolute left-[1.35rem] top-12 bottom-[-2rem] w-1 ${t.done ? 'bg-violet-600' : 'bg-violet-200'}`}></div>}
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 z-10 shadow-md ${t.done ? 'bg-violet-600 text-white' : 'bg-white border-4 border-violet-200 text-violet-300'}`}>
-                      {t.done ? <Check size={20} /> : <div className="w-3 h-3 rounded-full bg-violet-200"></div>}
+                    <div className={`w-12 h-12 rounded-sm flex items-center justify-center shrink-0 z-10 shadow-md ${t.done ? 'bg-violet-600 text-white' : 'bg-white border-4 border-violet-200 text-violet-300'}`}>
+                      {t.done ? <Check size={20} /> : <div className="w-3 h-3 rounded-sm bg-violet-200"></div>}
                     </div>
-                    <div className="bg-violet-50 p-8 rounded-3xl border border-violet-100 flex-1 hover:shadow-xl transition group-hover:-translate-y-1">
+                    <div className="bg-violet-50 p-8 rounded-md border border-violet-100 flex-1 hover:shadow-xl transition group-hover:-translate-y-1">
                       <span className="text-amber-500 font-extrabold text-sm mb-3 block uppercase tracking-wider">{t.date}</span>
                       <h4 className="text-2xl font-bold text-violet-950 mb-3" style={fontHeading}>{t.title}</h4>
                       <p className="text-slate-600 text-lg">{t.desc}</p>
@@ -1522,7 +1522,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               <button
                 key={tab}
                 onClick={() => setSelectedGalleryTab(tab)}
-                className={`px-6 py-2.5 rounded-full font-bold transition shadow-sm ${selectedGalleryTab === tab ? 'bg-violet-600 text-white shadow-md' : 'bg-white text-violet-950 hover:bg-violet-50 border border-violet-100'}`}
+                className={`px-6 py-2.5 rounded-sm font-bold transition shadow-sm ${selectedGalleryTab === tab ? 'bg-violet-600 text-white shadow-md' : 'bg-white text-violet-950 hover:bg-violet-50 border border-violet-100'}`}
               >
                 {tab}
               </button>
@@ -1534,7 +1534,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             {filteredGallery.map((img, i) => (
               <div 
                 key={i} 
-                className="relative group overflow-hidden rounded-3xl cursor-pointer h-64 md:h-80 shadow-sm border border-violet-100 bg-white" 
+                className="relative group overflow-hidden rounded-md cursor-pointer h-64 md:h-80 shadow-sm border border-violet-100 bg-white" 
                 onClick={() => setSelectedGalleryImg(img.img)}
               >
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={img.img} className="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt={img.title} />
@@ -1578,7 +1578,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 <button
                   key={cat}
                   onClick={() => setSelectedNewsCategory(cat)}
-                  className={`px-5 py-2.5 rounded-full font-bold transition text-sm ${selectedNewsCategory === cat ? 'bg-violet-600 text-white shadow-md' : 'bg-violet-50 text-slate-700 hover:bg-violet-100'}`}
+                  className={`px-5 py-2.5 rounded-sm font-bold transition text-sm ${selectedNewsCategory === cat ? 'bg-violet-600 text-white shadow-md' : 'bg-violet-50 text-slate-700 hover:bg-violet-100'}`}
                 >
                   {cat}
                 </button>
@@ -1591,7 +1591,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 placeholder="Tìm tin tức..." 
                 value={searchNewsQuery}
                 onChange={(e) => setSearchNewsQuery(e.target.value)}
-                className="w-full bg-violet-50 border-none p-3.5 pl-10 rounded-xl focus:ring-2 focus:ring-violet-600 text-slate-700 font-medium"
+                className="w-full bg-violet-50 border-none p-3.5 pl-10 rounded-sm focus:ring-2 focus:ring-violet-600 text-slate-700 font-medium"
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
               {searchNewsQuery && (
@@ -1609,7 +1609,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               <div className="rounded-[3rem] overflow-hidden shadow-2xl relative h-[500px]">
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={featuredArticle.img} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt="News main" />
                 <div className="absolute inset-0 bg-gradient-to-t from-violet-950 via-violet-950/50 to-transparent flex flex-col justify-end p-12 text-white">
-                  <span className="bg-amber-500 text-white text-sm font-bold px-4 py-2 rounded-full w-max mb-6 uppercase tracking-wider">Tin Nổi Bật</span>
+                  <span className="bg-amber-500 text-white text-sm font-bold px-4 py-2 rounded-sm w-max mb-6 uppercase tracking-wider">Tin Nổi Bật</span>
                   <h2 className="text-3xl lg:text-4xl font-bold mb-4 leading-tight" style={fontHeading}>{featuredArticle.title}</h2>
                   <p className="text-violet-200 text-lg line-clamp-2">{featuredArticle.excerpt}</p>
                 </div>
@@ -1618,7 +1618,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               <div className="flex flex-col gap-6 justify-between">
                 {LIST_NEWS.filter(news => !news.featured).slice(0, 3).map((n) => (
                   <div key={n.id} onClick={() => handleOpenArticle(n)} className="flex gap-6 items-center bg-violet-50 p-6 rounded-[2rem] hover:shadow-lg hover:bg-white hover:border hover:border-violet-100 transition border border-transparent h-full cursor-pointer group">
-                    <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={n.img} className="w-32 h-32 lg:w-40 lg:h-40 object-cover rounded-2xl shrink-0 group-hover:scale-105 transition duration-500" alt="Thumb" />
+                    <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={n.img} className="w-32 h-32 lg:w-40 lg:h-40 object-cover rounded-sm shrink-0 group-hover:scale-105 transition duration-500" alt="Thumb" />
                     <div>
                       <div className="flex items-center gap-2 text-amber-500 text-sm font-bold mb-3 uppercase tracking-wider">
                         <Calendar size={16} /> {n.date}
@@ -1637,7 +1637,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           </h3>
           
           {filteredNews.length === 0 ? (
-            <div className="bg-violet-50 rounded-3xl p-16 text-center border border-violet-100">
+            <div className="bg-violet-50 rounded-md p-16 text-center border border-violet-100">
               <Calendar size={64} className="text-violet-300 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-violet-950 mb-2">Không tìm thấy tin tức</h3>
               <p className="text-slate-500">Thử tìm kiếm với từ khóa khác.</p>
@@ -1647,7 +1647,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               {(searchNewsQuery || selectedNewsCategory !== 'Tất cả' ? filteredNews : regularNews).map((n) => (
                 <div 
                   key={n.id} 
-                  className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition border border-violet-100 group cursor-pointer" 
+                  className="bg-white rounded-md overflow-hidden shadow-sm hover:shadow-xl transition border border-violet-100 group cursor-pointer" 
                   onClick={() => handleOpenArticle(n)}
                 >
                   <div className="overflow-hidden h-56">
@@ -1687,7 +1687,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             </nav>
             <button
               onClick={() => navigateTo('news', 'tin-tuc')}
-              className="text-sm font-bold text-violet-600 hover:text-violet-800 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-violet-50 hover:bg-violet-100 transition"
+              className="text-sm font-bold text-violet-600 hover:text-violet-800 flex items-center gap-1.5 px-4 py-2 rounded-sm bg-violet-50 hover:bg-violet-100 transition"
             >
               <ChevronLeft size={18} /> Quay lại danh sách tin tức
             </button>
@@ -1697,7 +1697,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             {/* Main Article */}
             <article className="lg:col-span-8 space-y-8">
               <div className="flex flex-wrap items-center gap-3 text-sm">
-                <span className="px-4 py-1.5 rounded-full bg-amber-500 text-white font-bold uppercase tracking-wider text-xs">
+                <span className="px-4 py-1.5 rounded-sm bg-amber-500 text-white font-bold uppercase tracking-wider text-xs">
                   {selectedArticle.category}
                 </span>
                 <span className="text-slate-400">•</span>
@@ -1718,7 +1718,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 />
               </div>
 
-              <div className="p-6 bg-violet-50 rounded-2xl border-l-4 border-violet-600 text-violet-950 font-semibold text-lg leading-relaxed">
+              <div className="p-6 bg-violet-50 rounded-sm border-l-4 border-violet-600 text-violet-950 font-semibold text-lg leading-relaxed">
                 {selectedArticle.excerpt}
               </div>
 
@@ -1729,14 +1729,14 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               </div>
 
               {/* CTA Box */}
-              <div className="p-8 rounded-3xl bg-gradient-to-r from-violet-900 to-indigo-900 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl mt-12">
+              <div className="p-8 rounded-md bg-gradient-to-r from-violet-900 to-indigo-900 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl mt-12">
                 <div>
                   <h4 className="font-bold text-xl mb-1" style={fontHeading}>Đăng Ký Nhận Thông Tin Dự Án SmartUrban</h4>
                   <p className="text-violet-200 text-sm">Nhận trọn bộ bảng giá, mặt bằng và ưu đãi độc quyền trực tiếp từ CĐT</p>
                 </div>
                 <button
                   onClick={() => navigateTo('contact', 'lien-he')}
-                  className="px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-sm shrink-0 transition shadow-lg"
+                  className="px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-sm text-sm shrink-0 transition shadow-lg"
                 >
                   Nhận Bảng Giá Ngay
                 </button>
@@ -1759,7 +1759,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                       <img
                         src={item.img}
                         alt={item.title}
-                        className="w-24 h-20 rounded-2xl object-cover shrink-0 group-hover:scale-105 transition"
+                        className="w-24 h-20 rounded-sm object-cover shrink-0 group-hover:scale-105 transition"
                       />
                       <div>
                         <span className="text-xs text-amber-500 font-bold uppercase block mb-1">{item.category}</span>
@@ -1806,22 +1806,22 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
         </div>
         <div className="flex flex-col lg:flex-row gap-12">
           <div className="lg:w-1/3 space-y-6">
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-violet-100 flex items-start gap-5 hover:shadow-md transition">
-              <div className="bg-violet-100 p-4 rounded-2xl text-violet-600 shrink-0"><MapPin size={28}/></div>
+            <div className="bg-white p-8 rounded-md shadow-sm border border-violet-100 flex items-start gap-5 hover:shadow-md transition">
+              <div className="bg-violet-100 p-4 rounded-sm text-violet-600 shrink-0"><MapPin size={28}/></div>
               <div>
                 <h4 className="font-bold text-violet-950 text-lg mb-2">Địa chỉ nhà mẫu</h4>
                 <p className="text-slate-600 leading-relaxed">Số 1 Đại lộ Mới, Quận Trung Tâm, TP.HCM</p>
               </div>
             </div>
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-violet-100 flex items-start gap-5 hover:shadow-md transition">
-              <div className="bg-violet-100 p-4 rounded-2xl text-violet-600 shrink-0"><Phone size={28}/></div>
+            <div className="bg-white p-8 rounded-md shadow-sm border border-violet-100 flex items-start gap-5 hover:shadow-md transition">
+              <div className="bg-violet-100 p-4 rounded-sm text-violet-600 shrink-0"><Phone size={28}/></div>
               <div>
                 <h4 className="font-bold text-violet-950 text-lg mb-2">Hotline tư vấn</h4>
                 <p className="text-slate-600 leading-relaxed font-bold text-violet-600">1800 9999 <span className="font-normal text-slate-500">(Miễn phí)</span></p>
               </div>
             </div>
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-violet-100 flex items-start gap-5 hover:shadow-md transition">
-              <div className="bg-violet-100 p-4 rounded-2xl text-violet-600 shrink-0"><Mail size={28}/></div>
+            <div className="bg-white p-8 rounded-md shadow-sm border border-violet-100 flex items-start gap-5 hover:shadow-md transition">
+              <div className="bg-violet-100 p-4 rounded-sm text-violet-600 shrink-0"><Mail size={28}/></div>
               <div>
                 <h4 className="font-bold text-violet-950 text-lg mb-2">Email liên hệ</h4>
                 <p className="text-slate-600 leading-relaxed">info@smarturban.vn</p>
@@ -1829,7 +1829,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             </div>
 
             {/* Interactive Google Map Box */}
-            <div className="bg-white rounded-3xl border border-violet-100 overflow-hidden shadow-md flex flex-col h-64">
+            <div className="bg-white rounded-md border border-violet-100 overflow-hidden shadow-md flex flex-col h-64">
               <div className="px-4 py-2.5 bg-violet-950 text-white flex items-center justify-between text-xs">
                 <span className="font-bold flex items-center gap-1.5 truncate"><MapPin className="w-3.5 h-3.5 text-amber-400" /> Số 1 Đại lộ Mới, Quận Trung Tâm, TP.HCM</span>
                 <a
@@ -1856,14 +1856,14 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           <div className="lg:w-2/3">
             {contactSubmitted ? (
               <div className="bg-white p-8 md:p-12 rounded-[3rem] shadow-xl border border-violet-100 text-center py-16 space-y-6">
-                <div className="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                <div className="w-20 h-20 bg-green-50 text-green-500 rounded-sm flex items-center justify-center mx-auto shadow-inner">
                   <Check className="w-12 h-12" />
                 </div>
                 <h3 className="text-3xl font-extrabold text-violet-950" style={fontHeading}>Gửi Yêu Cầu Thành Công!</h3>
                 <p className="text-slate-600 max-w-md mx-auto text-lg leading-relaxed">
                   Cảm ơn Quý khách <span className="font-bold text-violet-950">{contactName}</span>. Yêu cầu tư vấn của bạn về dòng căn hộ <span className="font-bold text-violet-950">{contactApartment}</span> đã được chuyển tới hệ thống.
                 </p>
-                <div className="bg-violet-50 p-6 rounded-2xl max-w-md mx-auto text-left space-y-2 border border-violet-100 text-sm">
+                <div className="bg-violet-50 p-6 rounded-sm max-w-md mx-auto text-left space-y-2 border border-violet-100 text-sm">
                   <div><span className="text-slate-500">Mã yêu cầu:</span> <span className="font-bold text-violet-950">SU-{Math.floor(100000 + Math.random() * 900000)}</span></div>
                   <div><span className="text-slate-500">Số điện thoại:</span> <span className="font-bold text-violet-950">{contactPhone}</span></div>
                   {contactEmail && <div><span className="text-slate-500">Email:</span> <span className="font-bold text-violet-950">{contactEmail}</span></div>}
@@ -1881,7 +1881,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                       setContactEmail('');
                       setContactMessage('');
                     }}
-                    className="bg-violet-600 hover:bg-violet-700 text-white font-bold px-8 py-4 rounded-xl transition shadow-md"
+                    className="bg-violet-600 hover:bg-violet-700 text-white font-bold px-8 py-4 rounded-sm transition shadow-md"
                   >
                     Gửi yêu cầu khác
                   </button>
@@ -1899,7 +1899,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                         type="text" 
                         value={contactName}
                         onChange={(e) => setContactName(e.target.value)}
-                        className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-2xl focus:outline-none focus:border-violet-600 transition text-slate-700 font-medium" 
+                        className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-sm focus:outline-none focus:border-violet-600 transition text-slate-700 font-medium" 
                         placeholder="Nguyễn Văn A" 
                       />
                     </div>
@@ -1910,7 +1910,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                         type="tel" 
                         value={contactPhone}
                         onChange={(e) => setContactPhone(e.target.value)}
-                        className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-2xl focus:outline-none focus:border-violet-600 transition text-slate-700 font-medium" 
+                        className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-sm focus:outline-none focus:border-violet-600 transition text-slate-700 font-medium" 
                         placeholder="0909..." 
                       />
                     </div>
@@ -1922,7 +1922,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                       type="email" 
                       value={contactEmail}
                       onChange={(e) => setContactEmail(e.target.value)}
-                      className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-2xl focus:outline-none focus:border-violet-600 transition text-slate-700 font-medium" 
+                      className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-sm focus:outline-none focus:border-violet-600 transition text-slate-700 font-medium" 
                       placeholder="email@domain.com" 
                     />
                   </div>
@@ -1932,7 +1932,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                     <select 
                       value={contactApartment}
                       onChange={(e) => setContactApartment(e.target.value)}
-                      className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-2xl focus:outline-none focus:border-violet-600 transition text-slate-700 font-medium cursor-pointer"
+                      className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-sm focus:outline-none focus:border-violet-600 transition text-slate-700 font-medium cursor-pointer"
                     >
                       <option value="Studio">Studio</option>
                       <option value="1 Phòng Ngủ">1 Phòng Ngủ</option>
@@ -1948,12 +1948,12 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                       rows={5} 
                       value={contactMessage}
                       onChange={(e) => setContactMessage(e.target.value)}
-                      className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-2xl focus:outline-none focus:border-violet-600 transition text-slate-700 font-medium resize-none" 
+                      className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-sm focus:outline-none focus:border-violet-600 transition text-slate-700 font-medium resize-none" 
                       placeholder="Bạn cần tư vấn thêm về giá, chính sách hay đặt lịch tham quan..."
                     ></textarea>
                   </div>
                   
-                  <button type="submit" className="w-full bg-violet-600 text-white font-bold text-lg py-5 rounded-2xl hover:bg-violet-700 transition shadow-xl shadow-violet-200 flex justify-center items-center gap-2">
+                  <button type="submit" className="w-full bg-violet-600 text-white font-bold text-lg py-5 rounded-sm hover:bg-violet-700 transition shadow-xl shadow-violet-200 flex justify-center items-center gap-2">
                     Gửi Thông Tin Yêu Cầu <ArrowRight size={20} />
                   </button>
                 </form>
@@ -2009,7 +2009,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           <div className="bg-white rounded-[2.5rem] w-full max-w-4xl overflow-hidden shadow-2xl relative border border-violet-50 flex flex-col md:flex-row max-h-[90vh]">
             <button 
               onClick={() => setSelectedApartment(null)}
-              className="absolute top-4 right-4 z-10 bg-violet-950/60 text-white hover:bg-violet-600 transition p-2.5 rounded-full backdrop-blur-sm"
+              className="absolute top-4 right-4 z-10 bg-violet-950/60 text-white hover:bg-violet-600 transition p-2.5 rounded-sm backdrop-blur-sm"
             >
               <X size={24} />
             </button>
@@ -2020,7 +2020,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 alt={selectedApartment.name} 
                 className="w-full h-full object-cover" 
               />
-              <div className="absolute bottom-6 left-6 bg-violet-600 text-white font-extrabold px-6 py-2.5 rounded-full text-lg shadow-lg">
+              <div className="absolute bottom-6 left-6 bg-violet-600 text-white font-extrabold px-6 py-2.5 rounded-sm text-lg shadow-lg">
                 {selectedApartment.price}
               </div>
             </div>
@@ -2037,7 +2037,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                   <MapPin size={18} className="text-amber-500" /> {selectedApartment.location}
                 </p>
                 
-                <div className="grid grid-cols-3 gap-4 p-4 bg-violet-50 rounded-2xl mb-6 text-center">
+                <div className="grid grid-cols-3 gap-4 p-4 bg-violet-50 rounded-sm mb-6 text-center">
                   <div>
                     <div className="text-slate-500 text-xs font-semibold uppercase mb-1">Diện tích</div>
                     <div className="text-violet-950 font-bold flex items-center justify-center gap-1"><Maximize size={16} className="text-violet-500"/> {selectedApartment.area}</div>
@@ -2077,13 +2077,13 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                     setContactMessage(`Tôi muốn nhận báo giá và thông tin chi tiết cho căn hộ: ${selectedApartment.name}`);
                     navigateTo('contact');
                   }}
-                  className="flex-1 bg-violet-600 text-white font-bold py-4 rounded-xl hover:bg-violet-700 transition shadow-lg text-center"
+                  className="flex-1 bg-violet-600 text-white font-bold py-4 rounded-sm hover:bg-violet-700 transition shadow-lg text-center"
                 >
                   Liên Hệ Tư Vấn
                 </button>
                 <button 
                   onClick={() => setSelectedApartment(null)}
-                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-4 rounded-xl transition"
+                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-4 rounded-sm transition"
                 >
                   Đóng
                 </button>
@@ -2101,19 +2101,19 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           <div className="bg-white rounded-[2.5rem] w-full max-w-md overflow-hidden shadow-2xl relative border border-violet-50 p-8 text-center">
             <button 
               onClick={() => setSelectedLeader(null)}
-              className="absolute top-4 right-4 bg-slate-100 hover:bg-violet-600 hover:text-white transition p-2 rounded-full text-slate-500"
+              className="absolute top-4 right-4 bg-slate-100 hover:bg-violet-600 hover:text-white transition p-2 rounded-sm text-slate-500"
             >
               <X size={20} />
             </button>
             
-            <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedLeader.img} alt={selectedLeader.name} className="w-32 h-32 rounded-full mx-auto object-cover border-4 border-violet-100 shadow-md mb-6" />
+            <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedLeader.img} alt={selectedLeader.name} className="w-32 h-32 rounded-sm mx-auto object-cover border-4 border-violet-100 shadow-md mb-6" />
             <span className="text-amber-500 font-extrabold text-sm uppercase tracking-wider mb-2 block">{selectedLeader.role}</span>
             <h3 className="text-2xl font-bold text-violet-950 mb-4" style={fontHeading}>{selectedLeader.name}</h3>
             <p className="text-slate-600 leading-relaxed mb-6">{selectedLeader.bio}</p>
             
             <button 
               onClick={() => setSelectedLeader(null)}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3.5 rounded-xl transition"
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3.5 rounded-sm transition"
             >
               Đóng Profile
             </button>
@@ -2124,8 +2124,8 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
       {/* GALLERY LIGHTBOX */}
       {selectedGalleryImg && (
         <div className="fixed inset-0 z-[100] bg-violet-950/95 flex items-center justify-center p-4 backdrop-blur-md" onClick={() => setSelectedGalleryImg(null)}>
-          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedGalleryImg} className="max-w-[95vw] max-h-[95vh] rounded-2xl shadow-2xl object-contain bg-white" alt="Lightbox View" />
-          <button onClick={() => setSelectedGalleryImg(null)} className="absolute top-8 right-8 text-white hover:text-amber-500 bg-violet-900/50 p-4 rounded-full backdrop-blur-md transition cursor-pointer"><X size={32}/></button>
+          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedGalleryImg} className="max-w-[95vw] max-h-[95vh] rounded-sm shadow-2xl object-contain bg-white" alt="Lightbox View" />
+          <button onClick={() => setSelectedGalleryImg(null)} className="absolute top-8 right-8 text-white hover:text-amber-500 bg-violet-900/50 p-4 rounded-sm backdrop-blur-md transition cursor-pointer"><X size={32}/></button>
         </div>
       )}
     </div>

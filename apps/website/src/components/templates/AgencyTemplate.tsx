@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import {
   Phone,
   Clock,
@@ -423,16 +424,27 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
   useEffect(() => {
     setCurrentPageState(normalizeAgencyPage(initialPage));
   }, [initialPage]);
-  const setCurrentPage = (p: string) => {
+
+  const setCurrentPage = (p: string, customSlug?: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
     if (typeof setSelectedArticle === "function") setSelectedArticle(null);
 
     setCurrentPageState(p);
-    if (typeof window !== 'undefined') {
-      const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
-    }
+    const tSlug = template?.slug || 'bds-11';
+    syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-11') ? parts[1] : 'home');
+      if (sub) {
+        setCurrentPageState(normalizeAgencyPage(sub));
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [template?.slug]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const isMobile = viewport === 'mobile';
@@ -522,7 +534,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
   const renderUrgencyBar = () => (
     <div style={{ backgroundColor: COLORS.primary, fontFamily: FONTS.body }} className="text-white text-xs sm:text-sm font-bold py-2 px-4 flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-6 z-50 relative">
       <span className="text-center">🔥 CƠ HỘI DUY NHẤT: GIẢM NGAY 5% CHO 3 KHÁCH HÀNG CHỐT CỌC TRONG TUẦN NÀY!</span>
-      <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full whitespace-nowrap">
+      <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-sm whitespace-nowrap">
         <Clock className="w-4 h-4" />
         <span>Còn lại: 03 Ngày 14:25:30</span>
       </div>
@@ -540,7 +552,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
           className="flex items-center gap-2 cursor-pointer"
           onClick={() => { setCurrentPage('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
         >
-          <div style={{ backgroundColor: COLORS.primary }} className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-xl">
+          <div style={{ backgroundColor: COLORS.primary }} className="w-10 h-10 rounded-sm flex items-center justify-center text-white font-black text-xl">
             T
           </div>
           <div>
@@ -549,46 +561,43 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
           </div>
         </div>
         
-        {!isSmall && (
-          <nav className="flex items-center gap-8">
-            {navItems.map(item => (
-              <button
-                key={item.id}
-                onClick={() => { setCurrentPage(item.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                style={{ 
-                  color: currentPage === item.id ? COLORS.primary : COLORS.text,
-                  fontWeight: currentPage === item.id ? 800 : 600
-                }}
-                className="hover:text-[#BE185D] transition-colors text-sm uppercase tracking-wide"
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
-        )}
+        {/* Desktop Nav */}
+        <nav className="hidden lg:flex items-center gap-8">
+          {navItems.map(item => (
+            <button
+              key={item.id}
+              onClick={() => { setCurrentPage(item.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              style={{ 
+                color: currentPage === item.id ? COLORS.primary : COLORS.text,
+                fontWeight: currentPage === item.id ? 800 : 600
+              }}
+              className="hover:text-[#BE185D] transition-colors text-sm uppercase tracking-wide"
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
 
         <div className="flex items-center gap-4">
-          {!isSmall && (
-            <a 
-              href="tel:0909123456" 
-              style={{ backgroundColor: COLORS.accent }}
-              className="hidden lg:flex items-center gap-2 text-white px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
-            >
-              <Phone className="w-5 h-5" />
-              0909.123.456
-            </a>
-          )}
-          {isSmall && (
-            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ color: COLORS.primary }}>
-              {isMobileMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
-            </button>
-          )}
+          <a 
+            href="tel:0909123456" 
+            style={{ backgroundColor: COLORS.accent }}
+            className="hidden lg:flex items-center gap-2 text-white px-6 py-3 rounded-sm font-bold shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
+          >
+            <Phone className="w-5 h-5" />
+            0909.123.456
+          </a>
+
+          {/* Mobile Hamburger Toggle */}
+          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden p-2" style={{ color: COLORS.primary }}>
+            {isMobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+          </button>
         </div>
       </div>
       
       {/* Mobile Menu */}
-      {isSmall && isMobileMenuOpen && (
-        <div className="absolute top-full left-0 right-0 bg-white shadow-xl border-t border-gray-100 p-4 flex flex-col gap-4">
+      {isMobileMenuOpen && (
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-white shadow-xl border-t border-gray-100 p-4 flex flex-col gap-3 animate-fadeIn z-50">
           {navItems.map(item => (
             <button
               key={item.id}
@@ -599,7 +608,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
               {item.label}
             </button>
           ))}
-          <a href="tel:0909123456" style={{ backgroundColor: COLORS.primary }} className="mt-4 flex items-center justify-center gap-2 text-white p-3 rounded-xl font-bold">
+          <a href="tel:0909123456" style={{ backgroundColor: COLORS.primary }} className="mt-4 flex items-center justify-center gap-2 text-white p-3 rounded-sm font-bold">
             <Phone className="w-5 h-5" /> Gọi Ngay: 0909.123.456
           </a>
         </div>
@@ -637,13 +646,13 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
               <button 
                 onClick={() => { setCurrentPage('projects'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                 style={{ backgroundColor: COLORS.primary }} 
-                className="text-white px-8 py-4 rounded-full font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all shadow-lg shadow-pink-500/30"
+                className="text-white px-8 py-4 rounded-sm font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all shadow-lg shadow-pink-500/30"
               >
                 Khám Phá Dự Án <ArrowRight className="w-5 h-5" />
               </button>
               <button 
                 onClick={() => { setCurrentPage('contact'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="bg-white text-gray-800 border-2 border-gray-200 px-8 py-4 rounded-full font-bold flex items-center justify-center gap-2 hover:border-gray-300 transition-all"
+                className="bg-white text-gray-800 border-2 border-gray-200 px-8 py-4 rounded-sm font-bold flex items-center justify-center gap-2 hover:border-gray-300 transition-all"
               >
                 <MessageSquare className="w-5 h-5" /> Nhận Tư Vấn Ngay
               </button>
@@ -655,11 +664,11 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
           </div>
 
           <div className="lg:w-1/2 w-full max-w-md mx-auto relative">
-            <div className="absolute inset-0 translate-x-4 translate-y-4 rounded-3xl" style={{ backgroundColor: COLORS.primary }}></div>
-            <div className="bg-white rounded-3xl p-6 sm:p-8 relative shadow-xl border border-pink-100">
+            <div className="absolute inset-0 translate-x-4 translate-y-4 rounded-md" style={{ backgroundColor: COLORS.primary }}></div>
+            <div className="bg-white rounded-md p-6 sm:p-8 relative shadow-xl border border-pink-100">
               {heroFormSubmitted ? (
                 <div className="py-12 text-center flex flex-col items-center justify-center">
-                  <div className="w-16 h-16 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-6">
+                  <div className="w-16 h-16 rounded-sm bg-green-100 text-green-600 flex items-center justify-center mb-6">
                     <Check className="w-8 h-8" />
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">Đăng Ký Thành Công!</h3>
@@ -669,7 +678,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                   <button 
                     onClick={() => { setHeroFormSubmitted(false); setHeroForm({ name: '', phone: '', need: 'Mua để ở' }); }}
                     style={{ borderColor: COLORS.primary, color: COLORS.primary }}
-                    className="border-2 px-6 py-2 rounded-xl font-bold hover:bg-pink-50 transition-all"
+                    className="border-2 px-6 py-2 rounded-sm font-bold hover:bg-pink-50 transition-all"
                   >
                     Đăng ký lại
                   </button>
@@ -685,7 +694,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                       required
                       value={heroForm.name}
                       onChange={(e) => setHeroForm({ ...heroForm, name: e.target.value })}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all font-medium text-gray-800" 
+                      className="w-full bg-gray-50 border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all font-medium text-gray-800" 
                     />
                     <input 
                       type="tel" 
@@ -693,18 +702,18 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                       required
                       value={heroForm.phone}
                       onChange={(e) => setHeroForm({ ...heroForm, phone: e.target.value })}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all font-medium text-gray-800" 
+                      className="w-full bg-gray-50 border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all font-medium text-gray-800" 
                     />
                     <select 
                       value={heroForm.need}
                       onChange={(e) => setHeroForm({ ...heroForm, need: e.target.value })}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all text-gray-700 font-medium appearance-none"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all text-gray-700 font-medium appearance-none"
                     >
                       <option>Mua để ở</option>
                       <option>Mua đầu tư</option>
                       <option>Ký gửi bán lại</option>
                     </select>
-                    <button type="submit" style={{ backgroundColor: COLORS.accent }} className="w-full text-white font-extrabold py-4 rounded-xl shadow-lg mt-2 hover:bg-opacity-90 transition-all text-lg flex justify-center items-center gap-2">
+                    <button type="submit" style={{ backgroundColor: COLORS.accent }} className="w-full text-white font-extrabold py-4 rounded-sm shadow-lg mt-2 hover:bg-opacity-90 transition-all text-lg flex justify-center items-center gap-2">
                       <Send className="w-5 h-5" /> Gửi Yêu Cầu Ngay
                     </button>
                     <p className="text-xs text-center text-gray-400 mt-2">Thông tin của bạn được bảo mật tuyệt đối.</p>
@@ -732,9 +741,9 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((proj) => (
-              <div key={proj.id} className="group rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300 relative bg-white flex flex-col">
+              <div key={proj.id} className="group rounded-md overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300 relative bg-white flex flex-col">
                 <div className="absolute top-4 right-4 z-10">
-                  <span style={{ backgroundColor: COLORS.accent }} className="text-white text-xs font-extrabold px-3 py-1 rounded-full uppercase shadow-md animate-pulse">
+                  <span style={{ backgroundColor: COLORS.accent }} className="text-white text-xs font-extrabold px-3 py-1 rounded-sm uppercase shadow-md animate-pulse">
                     {proj.tag}
                   </span>
                 </div>
@@ -756,7 +765,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                   <button 
                     onClick={() => openProjectDetails(proj)}
                     style={{ color: COLORS.primary, borderColor: COLORS.primary }} 
-                    className="w-full py-3 rounded-xl font-bold border-2 hover:bg-pink-50 transition-colors mt-auto"
+                    className="w-full py-3 rounded-sm font-bold border-2 hover:bg-pink-50 transition-colors mt-auto"
                   >
                     Xem Chi Tiết
                   </button>
@@ -788,8 +797,8 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {reasons.map((r, i) => (
-              <div key={i} className="bg-white p-8 rounded-3xl text-center shadow-sm hover:shadow-xl transition-all border border-pink-50 group">
-                <div style={{ backgroundColor: COLORS.accent }} className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 transform group-hover:rotate-12 transition-transform">
+              <div key={i} className="bg-white p-8 rounded-md text-center shadow-sm hover:shadow-xl transition-all border border-pink-50 group">
+                <div style={{ backgroundColor: COLORS.accent }} className="w-16 h-16 rounded-sm flex items-center justify-center mx-auto mb-6 transform group-hover:rotate-12 transition-transform">
                   {r.icon}
                 </div>
                 <h3 style={{ color: COLORS.text, fontFamily: FONTS.heading }} className="text-lg font-extrabold mb-3">{r.title}</h3>
@@ -813,8 +822,8 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
     return (
       <section className="py-20 bg-white">
         <div className={`${MAX_W} px-4`}>
-          <div className="bg-gradient-to-br from-[#BE185D] to-[#F43F5E] rounded-3xl p-8 sm:p-12 text-white relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+          <div className="bg-gradient-to-br from-[#BE185D] to-[#F43F5E] rounded-md p-8 sm:p-12 text-white relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-sm blur-3xl -translate-y-1/2 translate-x-1/2"></div>
             <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12">
               <div className="lg:w-1/2">
                 <h2 className="text-3xl sm:text-4xl font-extrabold mb-4" style={{ fontFamily: FONTS.heading }}>Chính Sách Bán Hàng SIÊU ƯU ĐÃI</h2>
@@ -826,10 +835,10 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                 </ul>
               </div>
               <div className="lg:w-1/2 w-full">
-                <div className="bg-white text-gray-900 p-8 rounded-3xl shadow-2xl text-center">
+                <div className="bg-white text-gray-900 p-8 rounded-md shadow-2xl text-center">
                   {discountSubmitted ? (
                     <div className="py-8">
-                      <div className="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-4">
+                      <div className="w-12 h-12 rounded-sm bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-4">
                         <Check className="w-6 h-6" />
                       </div>
                       <h4 className="text-xl font-bold text-gray-900 mb-2">Đăng Ký Thành Công!</h4>
@@ -852,9 +861,9 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                         required
                         value={discountPhone}
                         onChange={(e) => setDiscountPhone(e.target.value)}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-4 mb-4 text-center text-lg font-bold focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 text-gray-800" 
+                        className="w-full bg-gray-50 border border-gray-200 rounded-sm px-4 py-4 mb-4 text-center text-lg font-bold focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 text-gray-800" 
                       />
-                      <button type="submit" style={{ backgroundColor: COLORS.accent }} className="w-full text-white font-extrabold py-4 rounded-xl shadow-lg hover:bg-opacity-90 transition-all text-lg animate-pulse">
+                      <button type="submit" style={{ backgroundColor: COLORS.accent }} className="w-full text-white font-extrabold py-4 rounded-sm shadow-lg hover:bg-opacity-90 transition-all text-lg animate-pulse">
                         NHẬN ƯU ĐÃI NGAY
                       </button>
                     </form>
@@ -875,7 +884,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
         <div className="lg:w-1/2 relative w-full">
           <div className="absolute inset-0 bg-[#BE185D] rounded-[3rem] rotate-3 scale-105 opacity-20"></div>
           <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80" alt="Agent" className="relative z-10 w-full h-[500px] object-cover rounded-[3rem] shadow-2xl" />
-          <div className="absolute bottom-8 left-8 right-8 bg-white/95 backdrop-blur-md p-6 rounded-2xl z-20 shadow-xl border border-white/50 text-center">
+          <div className="absolute bottom-8 left-8 right-8 bg-white/95 backdrop-blur-md p-6 rounded-sm z-20 shadow-xl border border-white/50 text-center">
             <h4 style={{ color: COLORS.text, fontFamily: FONTS.heading }} className="text-xl font-extrabold">Nguyễn Văn Trung</h4>
             <p style={{ color: COLORS.primary }} className="font-bold text-sm">Real Estate Expert / Founder</p>
           </div>
@@ -887,7 +896,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
           </p>
           <div className="space-y-4 mb-8">
             <div className="flex gap-4">
-              <div style={{ backgroundColor: COLORS.lightPink, color: COLORS.primary }} className="w-12 h-12 rounded-full flex items-center justify-center shrink-0">
+              <div style={{ backgroundColor: COLORS.lightPink, color: COLORS.primary }} className="w-12 h-12 rounded-sm flex items-center justify-center shrink-0">
                 <Award className="w-6 h-6" />
               </div>
               <div>
@@ -896,7 +905,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
               </div>
             </div>
             <div className="flex gap-4">
-              <div style={{ backgroundColor: COLORS.lightPink, color: COLORS.primary }} className="w-12 h-12 rounded-full flex items-center justify-center shrink-0">
+              <div style={{ backgroundColor: COLORS.lightPink, color: COLORS.primary }} className="w-12 h-12 rounded-sm flex items-center justify-center shrink-0">
                 <Users className="w-6 h-6" />
               </div>
               <div>
@@ -906,7 +915,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
             </div>
           </div>
           <div className="flex flex-wrap gap-4 items-center">
-            <button onClick={() => { setCurrentPage('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ backgroundColor: COLORS.primary }} className="text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-opacity-90 transition-all">
+            <button onClick={() => { setCurrentPage('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ backgroundColor: COLORS.primary }} className="text-white px-8 py-3 rounded-sm font-bold shadow-lg hover:bg-opacity-90 transition-all">
               Tìm Hiểu Thêm
             </button>
             <div className="flex gap-2">
@@ -914,7 +923,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                 <button 
                   key={i} 
                   onClick={() => alert('Mở liên kết mạng xã hội')}
-                  className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-gray-400 hover:text-[#BE185D] hover:shadow-md transition-all cursor-pointer"
+                  className="w-10 h-10 rounded-sm bg-white flex items-center justify-center text-gray-400 hover:text-[#BE185D] hover:shadow-md transition-all cursor-pointer"
                 >
                   <Icon className="w-5 h-5" />
                 </button>
@@ -965,7 +974,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {services.map((s, i) => (
               <div key={i} className="bg-white p-8 rounded-[2rem] shadow-sm hover:shadow-xl transition-all text-center group border border-pink-50">
-                <div style={{ backgroundColor: COLORS.lightPink, color: COLORS.primary }} className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <div style={{ backgroundColor: COLORS.lightPink, color: COLORS.primary }} className="w-16 h-16 rounded-sm flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                   {React.cloneElement(s.icon, { className: "w-8 h-8" })}
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">{s.title}</h3>
@@ -994,7 +1003,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
               <div 
                 key={img.id} 
                 onClick={() => setSelectedGalleryImg(img.img)}
-                className="rounded-2xl overflow-hidden relative group h-64 cursor-pointer shadow-md hover:shadow-xl transition-all"
+                className="rounded-sm overflow-hidden relative group h-64 cursor-pointer shadow-md hover:shadow-xl transition-all"
               >
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={img.img} alt={img.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-bold p-4 text-center">
@@ -1008,7 +1017,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
             ))}
           </div>
           <div className="text-center mt-10">
-            <button onClick={() => { setCurrentPage('gallery'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ color: COLORS.primary, borderColor: COLORS.primary }} className="px-8 py-3 rounded-full font-bold border-2 hover:bg-pink-50 transition-colors inline-flex items-center gap-2">
+            <button onClick={() => { setCurrentPage('gallery'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ color: COLORS.primary, borderColor: COLORS.primary }} className="px-8 py-3 rounded-sm font-bold border-2 hover:bg-pink-50 transition-colors inline-flex items-center gap-2">
               Xem Tất Cả Hình Ảnh <ArrowRight className="w-5 h-5" />
             </button>
           </div>
@@ -1030,15 +1039,15 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
             { name: 'Chị Mai Lan', role: 'Cư dân Masteri Centre Point', txt: 'Lần đầu mua chung cư gia đình tôi rất lo lắng về pháp lý. Nhờ sự hỗ trợ tận tình của Trung và đội ngũ, toàn bộ quy trình vay ngân hàng và làm sổ hồng đều được hướng dẫn chu đáo.' },
             { name: 'Anh Hoàng Nam', role: 'Chủ doanh nghiệp', txt: 'Phong cách làm việc nhanh nhẹn, chuyên nghiệp và lịch thiệp. Các sản phẩm Trung giới thiệu luôn có view đẹp, thiết kế sang trọng đúng gu thượng lưu.' }
           ].map((item, i) => (
-             <div key={i} className="bg-white p-8 rounded-3xl shadow-sm border border-pink-50 relative flex flex-col justify-between">
+             <div key={i} className="bg-white p-8 rounded-md shadow-sm border border-pink-50 relative flex flex-col justify-between">
                <div>
                  <div className="flex text-yellow-400 mb-4">
                    {[1,2,3,4,5].map(s => <Star key={s} className="w-5 h-5 fill-current" />)}
                  </div>
-                  <p className="text-gray-600 mb-6 italic">“{item.txt}”</p>
+                 <p className="text-gray-600 mb-6 italic">"{item.txt}"</p>
                </div>
                <div className="flex items-center gap-4 border-t border-gray-50 pt-4">
-                 <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center font-bold text-pink-700">
+                 <div className="w-12 h-12 rounded-sm bg-pink-100 flex items-center justify-center font-bold text-pink-700">
                    {item.name[0]}
                  </div>
                  <div>
@@ -1070,7 +1079,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
             { step: '05', title: 'Bàn Giao & Hậu Mãi' }
           ].map((s, i) => (
             <div key={i} className="relative z-10 text-center flex flex-col items-center mb-8 md:mb-0 md:w-1/5">
-              <div style={{ backgroundColor: COLORS.white, borderColor: COLORS.primary, color: COLORS.primary }} className="w-16 h-16 rounded-full border-4 flex items-center justify-center text-xl font-extrabold mb-4 shadow-lg">
+              <div style={{ backgroundColor: COLORS.white, borderColor: COLORS.primary, color: COLORS.primary }} className="w-16 h-16 rounded-sm border-4 flex items-center justify-center text-xl font-extrabold mb-4 shadow-lg">
                 {s.step}
               </div>
               <h4 className="font-bold text-gray-900 text-sm px-2">{s.title}</h4>
@@ -1097,11 +1106,11 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {previewNews.map((news) => (
-              <div key={news.id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-pink-50 group flex flex-col justify-between">
+              <div key={news.id} className="bg-white rounded-md overflow-hidden shadow-sm hover:shadow-xl transition-all border border-pink-50 group flex flex-col justify-between">
                 <div>
                   <div className="h-48 overflow-hidden relative">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={news.img} alt={news.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                    <span style={{ backgroundColor: COLORS.primary }} className="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded-full">
+                    <span style={{ backgroundColor: COLORS.primary }} className="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded-sm">
                       {news.category}
                     </span>
                   </div>
@@ -1146,7 +1155,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
           </div>
           <div className="space-y-4">
             {faqs.map((faq, i) => (
-              <details key={i} className="group bg-gray-50 rounded-2xl cursor-pointer">
+              <details key={i} className="group bg-gray-50 rounded-sm cursor-pointer">
                 <summary className="flex justify-between items-center font-bold p-6 text-gray-900 marker:content-none">
                   {faq.q}
                   <span className="transition group-open:rotate-180">
@@ -1172,12 +1181,12 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
         <h2 className="text-4xl sm:text-5xl font-extrabold text-white mb-6" style={{ fontFamily: FONTS.heading }}>Bạn Đã Sẵn Sàng Sở Hữu Tổ Ấm?</h2>
         <p className="text-pink-100 text-lg mb-10 max-w-2xl mx-auto">Đừng bỏ lỡ những căn góc đẹp nhất cùng chính sách chiết khấu tốt nhất. Nhấc máy gọi ngay hoặc nhắn Zalo để được tư vấn tận tâm.</p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="tel:0909123456" style={{ backgroundColor: COLORS.accent }} className="text-white px-10 py-5 rounded-full font-extrabold text-lg shadow-2xl hover:scale-105 transition-transform flex items-center justify-center gap-3">
+          <a href="tel:0909123456" style={{ backgroundColor: COLORS.accent }} className="text-white px-10 py-5 rounded-sm font-extrabold text-lg shadow-2xl hover:scale-105 transition-transform flex items-center justify-center gap-3">
             <Phone className="w-6 h-6" /> GỌI NGAY: 0909.123.456
           </a>
           <button 
             onClick={() => { setCurrentPage('contact'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-            className="bg-white text-[#BE185D] px-10 py-5 rounded-full font-extrabold text-lg shadow-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-3"
+            className="bg-white text-[#BE185D] px-10 py-5 rounded-sm font-extrabold text-lg shadow-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-3"
           >
             <MessageSquare className="w-6 h-6" /> ĐĂNG KÝ LIÊN HỆ
           </button>
@@ -1200,7 +1209,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
           <h3 className="text-2xl font-extrabold text-gray-900 mb-4" style={{ fontFamily: FONTS.heading }}>Nhận Bản Tin Thị Trường</h3>
           <p className="text-gray-500 mb-6">Đăng ký email để nhận định kỳ phân tích chuyên sâu hàng tháng và các sản phẩm ngộp thanh lý giá tốt.</p>
           {subbed ? (
-            <div className="bg-green-50 border border-green-200 text-green-800 rounded-2xl p-4 font-bold flex items-center justify-center gap-2">
+            <div className="bg-green-50 border border-green-200 text-green-800 rounded-sm p-4 font-bold flex items-center justify-center gap-2">
               <CheckCircle className="w-5 h-5 text-green-600" />
               Đăng ký nhận bản tin thành công! Cảm ơn bạn.
             </div>
@@ -1212,9 +1221,9 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                 required
                 value={subEmail}
                 onChange={(e) => setSubEmail(e.target.value)}
-                className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#BE185D] text-gray-800" 
+                className="flex-1 bg-gray-50 border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#BE185D] text-gray-800" 
               />
-              <button type="submit" style={{ backgroundColor: COLORS.primary }} className="text-white px-6 py-3 rounded-xl font-bold hover:bg-opacity-90 transition-all shrink-0">Đăng Ký</button>
+              <button type="submit" style={{ backgroundColor: COLORS.primary }} className="text-white px-6 py-3 rounded-sm font-bold hover:bg-opacity-90 transition-all shrink-0">Đăng Ký</button>
             </form>
           )}
         </div>
@@ -1228,7 +1237,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
       <div className={`${MAX_W} px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12`}>
         <div>
           <div className="flex items-center gap-2 mb-6">
-            <div style={{ backgroundColor: COLORS.primary }} className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-xl">T</div>
+            <div style={{ backgroundColor: COLORS.primary }} className="w-10 h-10 rounded-sm flex items-center justify-center text-white font-black text-xl">T</div>
             <h2 className="text-white font-extrabold text-2xl tracking-tight">TRUNG NGUYEN</h2>
           </div>
           <p className="text-gray-400 text-sm mb-6 leading-relaxed">Chuyên viên tư vấn bất động sản cao cấp, mang lại giá trị thực và giải pháp an cư hoàn hảo lâu dài cho khách hàng.</p>
@@ -1337,7 +1346,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
           </div>
 
           {/* Filter Bar */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-pink-50 mb-10">
+          <div className="bg-white rounded-md p-6 shadow-sm border border-pink-50 mb-10">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-center">
               {/* Search Box */}
               <div className="relative">
@@ -1347,7 +1356,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                   placeholder="Tìm tên dự án, vị trí..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-12 pr-4 py-3.5 focus:outline-none focus:border-pink-500 text-gray-800 font-medium"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-sm pl-12 pr-4 py-3.5 focus:outline-none focus:border-pink-500 text-gray-800 font-medium"
                 />
               </div>
 
@@ -1356,7 +1365,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                 <select 
                   value={filterArea}
                   onChange={(e) => setFilterArea(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 focus:outline-none focus:border-pink-500 text-gray-700 font-medium"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-sm px-4 py-3.5 focus:outline-none focus:border-pink-500 text-gray-700 font-medium"
                 >
                   <option value="All">Tất cả khu vực</option>
                   <option value="Quận 2">Quận 2</option>
@@ -1371,7 +1380,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                 <select 
                   value={filterBedrooms}
                   onChange={(e) => setFilterBedrooms(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 focus:outline-none focus:border-pink-500 text-gray-700 font-medium"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-sm px-4 py-3.5 focus:outline-none focus:border-pink-500 text-gray-700 font-medium"
                 >
                   <option value="All">Tất cả số phòng ngủ</option>
                   <option value="2">2 phòng ngủ</option>
@@ -1385,7 +1394,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                 <select 
                   value={filterPrice}
                   onChange={(e) => setFilterPrice(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 focus:outline-none focus:border-pink-500 text-gray-700 font-medium"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-sm px-4 py-3.5 focus:outline-none focus:border-pink-500 text-gray-700 font-medium"
                 >
                   <option value="All">Tất cả mức giá</option>
                   <option value="under-3">Dưới 3 Tỷ</option>
@@ -1411,14 +1420,14 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
 
           {/* Project List Grid */}
           {filteredProjects.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
+            <div className="text-center py-20 bg-white rounded-md border border-gray-100 shadow-sm">
               <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Không Tìm Thấy Dự Án Phù Hợp</h3>
               <p className="text-gray-500 mb-6 max-w-sm mx-auto">Vui lòng điều chỉnh hoặc đặt lại bộ lọc tìm kiếm để xem các dự án khác.</p>
               <button 
                 onClick={resetFilters}
                 style={{ backgroundColor: COLORS.primary }}
-                className="text-white font-bold px-6 py-2.5 rounded-xl hover:opacity-90 transition-all"
+                className="text-white font-bold px-6 py-2.5 rounded-sm hover:opacity-90 transition-all"
               >
                 Xóa các bộ lọc
               </button>
@@ -1426,9 +1435,9 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredProjects.map((proj) => (
-                <div key={proj.id} className="group rounded-3xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-300 bg-white flex flex-col justify-between">
+                <div key={proj.id} className="group rounded-md overflow-hidden shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-300 bg-white flex flex-col justify-between">
                   <div className="relative">
-                    <span style={{ backgroundColor: COLORS.accent }} className="absolute top-4 right-4 z-10 text-white text-xs font-extrabold px-3 py-1 rounded-full uppercase">
+                    <span style={{ backgroundColor: COLORS.accent }} className="absolute top-4 right-4 z-10 text-white text-xs font-extrabold px-3 py-1 rounded-sm uppercase">
                       {proj.tag}
                     </span>
                     <div className="h-64 overflow-hidden relative">
@@ -1441,7 +1450,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                       <div className="flex items-center text-gray-500 text-sm gap-1 mb-4">
                         <MapPin className="w-4 h-4 text-gray-400" /> {proj.location}
                       </div>
-                      <div className="grid grid-cols-2 gap-3 mb-6 bg-gray-50 p-3 rounded-2xl text-xs font-bold text-gray-600">
+                      <div className="grid grid-cols-2 gap-3 mb-6 bg-gray-50 p-3 rounded-sm text-xs font-bold text-gray-600">
                         <div className="flex items-center gap-1.5"><Bed className="w-4 h-4 text-pink-700" /> {proj.bedrooms} PN</div>
                         <div className="flex items-center gap-1.5"><Maximize className="w-4 h-4 text-pink-700" /> {proj.size} m²</div>
                       </div>
@@ -1454,7 +1463,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                       <button 
                         onClick={() => openProjectDetails(proj)}
                         style={{ backgroundColor: COLORS.primary }} 
-                        className="w-full py-3.5 rounded-xl font-bold text-white hover:opacity-95 transition-all text-center flex items-center justify-center gap-2"
+                        className="w-full py-3.5 rounded-sm font-bold text-white hover:opacity-95 transition-all text-center flex items-center justify-center gap-2"
                       >
                         Xem Chi Tiết <ArrowRight className="w-4 h-4" />
                       </button>
@@ -1505,7 +1514,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                   <button
                     key={val.id}
                     onClick={() => setActiveValueTab(val.id)}
-                    className={`text-left p-5 rounded-2xl border-2 transition-all font-bold flex items-center justify-between ${activeValueTab === val.id ? 'bg-white shadow-md' : 'bg-transparent border-transparent hover:bg-white/50'}`}
+                    className={`text-left p-5 rounded-sm border-2 transition-all font-bold flex items-center justify-between ${activeValueTab === val.id ? 'bg-white shadow-md' : 'bg-transparent border-transparent hover:bg-white/50'}`}
                     style={{ borderColor: activeValueTab === val.id ? COLORS.primary : 'transparent' }}
                   >
                     <span style={{ color: activeValueTab === val.id ? COLORS.primary : COLORS.text }} className="text-lg">
@@ -1517,8 +1526,8 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
               </div>
 
               {/* Tab Display Panel (Right) */}
-              <div className="lg:w-2/3 bg-white p-8 sm:p-12 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-8 items-start">
-                <div style={{ backgroundColor: COLORS.lightPink, color: COLORS.primary }} className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0">
+              <div className="lg:w-2/3 bg-white p-8 sm:p-12 rounded-md shadow-sm border border-gray-100 flex flex-col md:flex-row gap-8 items-start">
+                <div style={{ backgroundColor: COLORS.lightPink, color: COLORS.primary }} className="w-16 h-16 rounded-sm flex items-center justify-center shrink-0">
                   {activeValue.icon === 'Shield' && <Shield className="w-8 h-8" />}
                   {activeValue.icon === 'Users' && <Users className="w-8 h-8" />}
                   {activeValue.icon === 'Award' && <Award className="w-8 h-8" />}
@@ -1557,7 +1566,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                   {/* Bubble marker */}
                   <span 
                     style={{ backgroundColor: COLORS.primary }} 
-                    className="absolute -left-[41px] top-1.5 w-5 h-5 rounded-full border-4 border-white shadow flex items-center justify-center"
+                    className="absolute -left-[41px] top-1.5 w-5 h-5 rounded-sm border-4 border-white shadow flex items-center justify-center"
                   ></span>
                   
                   <div>
@@ -1581,8 +1590,8 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {LEADERSHIP.map((leader, index) => (
-                <div key={index} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-gray-100 p-6 text-center">
-                  <div className="w-32 h-32 rounded-full overflow-hidden mx-auto mb-6 border-4 border-pink-50">
+                <div key={index} className="bg-white rounded-md overflow-hidden shadow-sm hover:shadow-lg transition-all border border-gray-100 p-6 text-center">
+                  <div className="w-32 h-32 rounded-sm overflow-hidden mx-auto mb-6 border-4 border-pink-50">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={leader.img} alt={leader.name} className="w-full h-full object-cover" />
                   </div>
                   <h4 className="text-xl font-bold text-gray-900 mb-1">{leader.name}</h4>
@@ -1593,7 +1602,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                       <button 
                         key={idx} 
                         onClick={() => alert('Liên hệ trực tiếp với chuyên gia')}
-                        className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-[#BE185D] hover:bg-pink-50 transition-all cursor-pointer"
+                        className="w-8 h-8 rounded-sm bg-gray-50 flex items-center justify-center text-gray-400 hover:text-[#BE185D] hover:bg-pink-50 transition-all cursor-pointer"
                       >
                         <Icon className="w-4 h-4" />
                       </button>
@@ -1638,7 +1647,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
               <button
                 key={tab.id}
                 onClick={() => setSelectedGalleryTab(tab.id)}
-                className={`px-6 py-2.5 rounded-full font-bold text-sm transition-all ${selectedGalleryTab === tab.id ? 'text-white' : 'text-gray-500 hover:text-[#BE185D] bg-gray-50'}`}
+                className={`px-6 py-2.5 rounded-sm font-bold text-sm transition-all ${selectedGalleryTab === tab.id ? 'text-white' : 'text-gray-500 hover:text-[#BE185D] bg-gray-50'}`}
                 style={{ backgroundColor: selectedGalleryTab === tab.id ? COLORS.primary : undefined }}
               >
                 {tab.label}
@@ -1652,7 +1661,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
               <div 
                 key={img.id} 
                 onClick={() => setSelectedGalleryImg(img.img)}
-                className="group rounded-2xl overflow-hidden relative h-60 cursor-pointer shadow-sm hover:shadow-lg transition-all"
+                className="group rounded-sm overflow-hidden relative h-60 cursor-pointer shadow-sm hover:shadow-lg transition-all"
               >
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={img.img} alt={img.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-bold p-4 text-center">
@@ -1694,7 +1703,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
           </div>
 
           {/* Search and Category Filter */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-pink-50 mb-10">
+          <div className="bg-white rounded-md p-6 shadow-sm border border-pink-50 mb-10">
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
               <div className="relative w-full md:w-80 shrink-0">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -1703,7 +1712,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                   placeholder="Tìm tin tức, bài viết..."
                   value={searchNewsQuery}
                   onChange={(e) => setSearchNewsQuery(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:border-pink-500 text-gray-800 font-medium text-sm"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-sm pl-10 pr-4 py-2.5 focus:outline-none focus:border-pink-500 text-gray-800 font-medium text-sm"
                 />
               </div>
 
@@ -1712,7 +1721,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                   <button
                     key={cat}
                     onClick={() => setSelectedNewsCategory(cat)}
-                    className={`px-4 py-1.5 rounded-xl font-bold text-xs transition-all ${selectedNewsCategory === cat ? 'text-white' : 'text-gray-500 hover:text-[#BE185D] bg-gray-50'}`}
+                    className={`px-4 py-1.5 rounded-sm font-bold text-xs transition-all ${selectedNewsCategory === cat ? 'text-white' : 'text-gray-500 hover:text-[#BE185D] bg-gray-50'}`}
                     style={{ backgroundColor: selectedNewsCategory === cat ? COLORS.primary : undefined }}
                   >
                     {cat === 'All' ? 'Tất cả' : cat}
@@ -1724,14 +1733,14 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
 
           {/* News List */}
           {filteredNews.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
+            <div className="text-center py-20 bg-white rounded-md border border-gray-100 shadow-sm">
               <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Không Tìm Thấy Tin Tức</h3>
               <p className="text-gray-500 mb-6 max-w-sm mx-auto">Vui lòng thử lại với từ khóa hoặc danh mục khác.</p>
               <button 
                 onClick={() => { setSearchNewsQuery(''); setSelectedNewsCategory('All'); }}
                 style={{ backgroundColor: COLORS.primary }}
-                className="text-white font-bold px-6 py-2.5 rounded-xl hover:opacity-90"
+                className="text-white font-bold px-6 py-2.5 rounded-sm hover:opacity-90"
               >
                 Xóa tìm kiếm
               </button>
@@ -1739,11 +1748,11 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredNews.map((news) => (
-                <div key={news.id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-pink-50 flex flex-col justify-between group">
+                <div key={news.id} className="bg-white rounded-md overflow-hidden shadow-sm hover:shadow-xl transition-all border border-pink-50 flex flex-col justify-between group">
                   <div>
                     <div className="h-48 overflow-hidden relative">
                       <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={news.img} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      <span style={{ backgroundColor: COLORS.primary }} className="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded-full">
+                      <span style={{ backgroundColor: COLORS.primary }} className="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded-sm">
                         {news.category}
                       </span>
                     </div>
@@ -1801,12 +1810,12 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             {/* Contact details */}
-            <div className="lg:col-span-5 bg-white rounded-3xl p-8 shadow-sm border border-gray-100 flex flex-col justify-between">
+            <div className="lg:col-span-5 bg-white rounded-md p-8 shadow-sm border border-gray-100 flex flex-col justify-between">
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">Thông Tin Liên Hệ</h3>
                 <ul className="space-y-6">
                   <li className="flex gap-4 items-start">
-                    <div style={{ backgroundColor: COLORS.lightPink, color: COLORS.primary }} className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-sm">
+                    <div style={{ backgroundColor: COLORS.lightPink, color: COLORS.primary }} className="w-12 h-12 rounded-sm flex items-center justify-center shrink-0 shadow-sm">
                       <MapPin className="w-6 h-6" />
                     </div>
                     <div>
@@ -1815,7 +1824,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                     </div>
                   </li>
                   <li className="flex gap-4 items-start">
-                    <div style={{ backgroundColor: COLORS.lightPink, color: COLORS.primary }} className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-sm">
+                    <div style={{ backgroundColor: COLORS.lightPink, color: COLORS.primary }} className="w-12 h-12 rounded-sm flex items-center justify-center shrink-0 shadow-sm">
                       <Phone className="w-6 h-6" />
                     </div>
                     <div>
@@ -1824,7 +1833,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                     </div>
                   </li>
                   <li className="flex gap-4 items-start">
-                    <div style={{ backgroundColor: COLORS.lightPink, color: COLORS.primary }} className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-sm">
+                    <div style={{ backgroundColor: COLORS.lightPink, color: COLORS.primary }} className="w-12 h-12 rounded-sm flex items-center justify-center shrink-0 shadow-sm">
                       <Mail className="w-6 h-6" />
                     </div>
                     <div>
@@ -1836,7 +1845,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
               </div>
 
               {/* Real Interactive Google Map */}
-              <div className="mt-8 rounded-2xl overflow-hidden border border-gray-200 relative h-64 bg-gray-100 flex flex-col shadow-md">
+              <div className="mt-8 rounded-sm overflow-hidden border border-gray-200 relative h-64 bg-gray-100 flex flex-col shadow-md">
                 <div className="px-3.5 py-2 bg-slate-900 text-white flex items-center justify-between text-xs z-10">
                   <span className="font-bold flex items-center gap-1.5 truncate"><MapPin className="w-3.5 h-3.5 text-[#F43F5E]" /> 123 Nguyễn Văn Linh, Quận 7, TP.HCM</span>
                   <a
@@ -1861,10 +1870,10 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
             </div>
 
             {/* Interactive Form */}
-            <div className="lg:col-span-7 bg-white rounded-3xl p-8 shadow-sm border border-gray-100 flex flex-col justify-center">
+            <div className="lg:col-span-7 bg-white rounded-md p-8 shadow-sm border border-gray-100 flex flex-col justify-center">
               {contactSubmitted ? (
                 <div className="text-center py-10 flex flex-col items-center">
-                  <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6 shadow-md animate-bounce">
+                  <div className="w-20 h-20 bg-green-100 text-green-600 rounded-sm flex items-center justify-center mb-6 shadow-md animate-bounce">
                     <Check className="w-10 h-10" />
                   </div>
                   <h3 className="text-3xl font-extrabold text-gray-900 mb-2">Gửi Yêu Cầu Thành Công!</h3>
@@ -1876,13 +1885,13 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                     <button 
                       onClick={resetContact}
                       style={{ backgroundColor: COLORS.primary }}
-                      className="text-white font-bold px-8 py-3 rounded-xl hover:opacity-95 shadow-md transition-all text-sm"
+                      className="text-white font-bold px-8 py-3 rounded-sm hover:opacity-95 shadow-md transition-all text-sm"
                     >
                       Gửi tin nhắn mới
                     </button>
                     <button 
                       onClick={() => { resetContact(); setCurrentPage('home'); }}
-                      className="bg-gray-100 text-gray-700 font-bold px-8 py-3 rounded-xl hover:bg-gray-200 transition-all text-sm"
+                      className="bg-gray-100 text-gray-700 font-bold px-8 py-3 rounded-sm hover:bg-gray-200 transition-all text-sm"
                     >
                       Quay lại trang chủ
                     </button>
@@ -1900,7 +1909,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                         placeholder="Nguyễn Văn A"
                         value={contactForm.name}
                         onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-pink-500 text-gray-800 text-sm font-medium"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-pink-500 text-gray-800 text-sm font-medium"
                       />
                     </div>
                     <div>
@@ -1911,7 +1920,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                         placeholder="09xx.xxx.xxx"
                         value={contactForm.phone}
                         onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-pink-500 text-gray-800 text-sm font-medium"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-pink-500 text-gray-800 text-sm font-medium"
                       />
                     </div>
                   </div>
@@ -1924,7 +1933,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                         placeholder="example@gmail.com"
                         value={contactForm.email}
                         onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-pink-500 text-gray-800 text-sm font-medium"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-pink-500 text-gray-800 text-sm font-medium"
                       />
                     </div>
                     <div>
@@ -1932,7 +1941,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                       <select 
                         value={contactForm.project}
                         onChange={(e) => setContactForm({ ...contactForm, project: e.target.value })}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-pink-500 text-gray-700 text-sm font-medium"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-pink-500 text-gray-700 text-sm font-medium"
                       >
                         <option value="">Chọn dự án quan tâm</option>
                         {MOCK_PROJECTS.map(p => (
@@ -1949,14 +1958,14 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                       placeholder="Nhập ghi chú hoặc thời gian thuận tiện để liên hệ..."
                       value={contactForm.message}
                       onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-pink-500 text-gray-800 text-sm font-medium"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-pink-500 text-gray-800 text-sm font-medium"
                     ></textarea>
                   </div>
 
                   <button 
                     type="submit" 
                     style={{ backgroundColor: COLORS.accent }}
-                    className="w-full text-white font-extrabold py-4 rounded-xl shadow-lg hover:bg-opacity-95 transition-all text-sm uppercase flex justify-center items-center gap-2"
+                    className="w-full text-white font-extrabold py-4 rounded-sm shadow-lg hover:bg-opacity-95 transition-all text-sm uppercase flex justify-center items-center gap-2"
                   >
                     <Send className="w-4 h-4" /> Gửi thông tin liên hệ
                   </button>
@@ -2032,13 +2041,13 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
 
     return (
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-        <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative flex flex-col">
+        <div className="bg-white rounded-md max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative flex flex-col">
           {/* Modal Header */}
           <div className="sticky top-0 bg-white z-20 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
             <h3 className="font-bold text-xl text-gray-900 line-clamp-1">{selectedProject.title}</h3>
             <button 
               onClick={() => setSelectedProject(null)}
-              className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 transition-colors"
+              className="w-8 h-8 rounded-sm bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -2048,13 +2057,13 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Left Column: Images Carousel */}
               <div>
-                <div className="rounded-2xl overflow-hidden h-72 sm:h-80 bg-gray-100 relative">
+                <div className="rounded-sm overflow-hidden h-72 sm:h-80 bg-gray-100 relative">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
                     src={selectedProject.images[activeModalImgIndex]} 
                     alt={selectedProject.title} 
                     className="w-full h-full object-cover" 
                   />
-                  <span style={{ backgroundColor: COLORS.accent }} className="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded-full uppercase">
+                  <span style={{ backgroundColor: COLORS.accent }} className="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded-sm uppercase">
                     {selectedProject.tag}
                   </span>
                 </div>
@@ -2065,7 +2074,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                     <button
                       key={idx}
                       onClick={() => setActiveModalImgIndex(idx)}
-                      className={`w-20 h-16 rounded-xl overflow-hidden border-2 bg-gray-50 shrink-0 transition-all ${activeModalImgIndex === idx ? 'scale-95 shadow-md' : 'opacity-65 hover:opacity-100'}`}
+                      className={`w-20 h-16 rounded-sm overflow-hidden border-2 bg-gray-50 shrink-0 transition-all ${activeModalImgIndex === idx ? 'scale-95 shadow-md' : 'opacity-65 hover:opacity-100'}`}
                       style={{ borderColor: activeModalImgIndex === idx ? COLORS.primary : 'transparent' }}
                     >
                       <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={img} alt="thumbnail" className="w-full h-full object-cover" />
@@ -2074,7 +2083,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                 </div>
 
                 {/* Spec Table */}
-                <div className="mt-8 bg-gray-50 p-6 rounded-2xl">
+                <div className="mt-8 bg-gray-50 p-6 rounded-sm">
                   <h4 className="font-bold text-gray-900 mb-4 text-sm uppercase tracking-wider">Thông Số Kỹ Thuật</h4>
                   <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
                     <div className="flex items-center gap-2 text-gray-600">
@@ -2124,7 +2133,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                 {/* Inquiry box */}
                 <div className="border-t border-gray-100 pt-6">
                   {projectInquirySubmitted ? (
-                    <div className="bg-green-50 border border-green-200 text-green-800 rounded-2xl p-4 font-bold flex items-center gap-2 text-sm">
+                    <div className="bg-green-50 border border-green-200 text-green-800 rounded-sm p-4 font-bold flex items-center gap-2 text-sm">
                       <CheckCircle className="w-5 h-5 text-green-600 shrink-0" />
                       <div>
                         Đăng ký thành công! Tôi sẽ liên hệ tư vấn giỏ hàng <strong>{selectedProject.title}</strong> ngay.
@@ -2140,7 +2149,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                           required
                           value={projectInquiryForm.name}
                           onChange={(e) => setProjectInquiryForm({ ...projectInquiryForm, name: e.target.value })}
-                          className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-500 text-gray-800 font-medium"
+                          className="flex-1 bg-gray-50 border border-gray-200 rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:border-pink-500 text-gray-800 font-medium"
                         />
                         <input 
                           type="tel" 
@@ -2148,12 +2157,12 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                           required
                           value={projectInquiryForm.phone}
                           onChange={(e) => setProjectInquiryForm({ ...projectInquiryForm, phone: e.target.value })}
-                          className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-pink-500 text-gray-800 font-medium"
+                          className="flex-1 bg-gray-50 border border-gray-200 rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:border-pink-500 text-gray-800 font-medium"
                         />
                         <button 
                           type="submit"
                           style={{ backgroundColor: COLORS.primary }}
-                          className="text-white px-5 py-2.5 rounded-xl font-bold text-xs hover:opacity-90 transition-all shrink-0"
+                          className="text-white px-5 py-2.5 rounded-sm font-bold text-xs hover:opacity-90 transition-all shrink-0"
                         >
                           GỬI YÊU CẦU
                         </button>
@@ -2208,7 +2217,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
       >
         <button 
           onClick={() => setSelectedGalleryImg(null)}
-          className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-3xl font-light z-50 transition-colors"
+          className="absolute top-6 right-6 w-12 h-12 rounded-sm bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-3xl font-light z-50 transition-colors"
         >
           <X className="w-6 h-6" />
         </button>
@@ -2216,14 +2225,14 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
         {/* Navigation arrows */}
         <button 
           onClick={handlePrev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white z-50 transition-colors"
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-sm bg-white/10 hover:bg-white/20 flex items-center justify-center text-white z-50 transition-colors"
         >
           <ChevronLeft className="w-8 h-8" />
         </button>
 
         <button 
           onClick={handleNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white z-50 transition-colors"
+          className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-sm bg-white/10 hover:bg-white/20 flex items-center justify-center text-white z-50 transition-colors"
         >
           <ChevronRight className="w-8 h-8" />
         </button>
@@ -2235,7 +2244,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
             onClick={(e) => e.stopPropagation()} width={1200} height={800}
           />
           {currentImgObj && (
-            <div className="text-white mt-4 max-w-lg bg-black/50 py-2 px-4 rounded-full text-sm inline-block">
+            <div className="text-white mt-4 max-w-lg bg-black/50 py-2 px-4 rounded-sm text-sm inline-block">
               {currentImgObj.title}
             </div>
           )}
@@ -2250,7 +2259,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
 
     return (
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-        <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+        <div className="bg-white rounded-md max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
           
           {/* Cover image header */}
           <div className="h-64 sm:h-80 w-full relative">
@@ -2259,13 +2268,13 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
             
             <button 
               onClick={() => setSelectedArticle(null)}
-              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center text-white transition-colors"
+              className="absolute top-4 right-4 w-10 h-10 rounded-sm bg-black/40 hover:bg-black/60 flex items-center justify-center text-white transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
 
             <div className="absolute bottom-6 left-6 right-6 text-white">
-              <span style={{ backgroundColor: COLORS.primary }} className="text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">
+              <span style={{ backgroundColor: COLORS.primary }} className="text-xs font-bold px-3 py-1 rounded-sm uppercase tracking-wider mb-3 inline-block">
                 {selectedArticle.category}
               </span>
               <h2 className="text-xl sm:text-3xl font-extrabold leading-tight">{selectedArticle.title}</h2>
@@ -2298,7 +2307,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 style={{ backgroundColor: COLORS.primary }}
-                className="text-white font-bold px-6 py-2.5 rounded-xl hover:opacity-90 transition-all text-xs uppercase"
+                className="text-white font-bold px-6 py-2.5 rounded-sm hover:opacity-90 transition-all text-xs uppercase"
               >
                 Nhận tư vấn từ chuyên gia
               </button>

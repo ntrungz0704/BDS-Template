@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homeo Realty — Cổng Giao Dịch Bất Động Sản Toàn Diện | BDS-21</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .bg-cobalt { background-color: #1E40AF; }
+    .bg-coral { background-color: #E11D48; }
+  </style>
+</head>
+<body class="bg-white text-slate-800 flex flex-col min-h-screen">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-[#1E40AF] text-white shadow-xl border-b border-blue-400/30">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-white flex items-center justify-center text-[#1E40AF] font-black text-xl shadow">
+          🏠
+        </div>
+        <div>
+          <span class="text-xl sm:text-2xl font-black tracking-wider text-white block leading-none">
+            HOMEO <span class="text-rose-300">REALTY</span>
+          </span>
+          <span class="text-[8.5px] font-bold text-blue-200 uppercase tracking-widest block mt-0.5">
+            CỔNG GIAO DỊCH BẤT ĐỘNG SẢN TOÀN DIỆN
+          </span>
+        </div>
+      </a>
+
+      <!-- Navbar -->
+      <nav class="hidden xl:flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-white">
+        <a href="index.html" class="px-3 py-2 text-rose-300 bg-[#1D4ED8]">Trang Chủ</a>
+        <a href="#gioi-thieu" class="px-3 py-2 hover:text-rose-300">Giới Thiệu</a>
+        <a href="#danh-sach-bds" class="px-3 py-2 hover:text-rose-300">BĐS Bán</a>
+        <a href="#danh-sach-bds" class="px-3 py-2 hover:text-rose-300">Cho Thuê</a>
+        <a href="#khu-vuc" class="px-3 py-2 hover:text-rose-300">Khu Vực</a>
+        <a href="#tin-tuc" class="px-3 py-2 hover:text-rose-300">Tin Tức</a>
+        <a href="#dang-tin" class="px-3 py-2 hover:text-rose-300">Đăng Tin</a>
+      </nav>
+
+      <div>
+        <a href="#dang-tin" class="px-4 py-2 bg-[#E11D48] hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider shadow">
+          + Đăng Tin Miễn Phí
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative bg-slate-950 text-white min-h-[460px] flex items-center justify-center overflow-hidden">
+    <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&q=80" alt="Homeo Realty" class="absolute inset-0 w-full h-full object-cover opacity-60">
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-black/40 to-transparent"></div>
+    
+    <div class="relative z-20 text-center space-y-4 max-w-3xl mx-auto px-4">
+      <h1 class="text-3xl sm:text-5xl font-serif font-black uppercase text-white tracking-wide">
+        Tìm Kiếm Ngôi Nhà Bạn Yêu Thích
+      </h1>
+      <p class="text-xs sm:text-sm text-slate-200 max-w-2xl mx-auto font-medium">
+        Hơn 15.000+ bất động sản chính chủ, căn hộ chung cư, biệt thự nghỉ dưỡng và nhà phố sinh lời cao trên toàn quốc.
+      </p>
+      
+      <!-- Big Search -->
+      <div class="bg-white p-2.5 shadow-2xl flex flex-col md:flex-row gap-2 max-w-2xl mx-auto text-slate-800 text-xs">
+        <input type="text" placeholder="Nhập tên dự án, đường, quận hoặc từ khóa cần tìm..." class="flex-1 p-2 text-slate-800 focus:outline-none" />
+        <button class="px-6 py-2.5 bg-[#E11D48] text-white font-black uppercase tracking-wider shadow">
+          Tìm Kiếm
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="gioi-thieu" class="py-16 bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-50 p-8 border">
+      <div class="lg:col-span-6 aspect-[16/10] border-2 border-[#1E40AF] overflow-hidden shadow">
+        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80" alt="" class="w-full h-full object-cover">
+      </div>
+      <div class="lg:col-span-6 space-y-4">
+        <span class="text-xs font-black uppercase text-[#E11D48] tracking-widest block">VỀ CHÚNG TÔI</span>
+        <h2 class="text-2xl sm:text-3xl font-serif font-black uppercase text-[#1E40AF]">Homeo Realty — Nền Tảng Giao Dịch Uy Tín</h2>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Chúng tôi tự hào là đơn vị phân phối BĐS chuyên nghiệp với mạng lưới hơn 5.000 môi giới giàu kinh nghiệm trên khắp 63 tỉnh thành.
+        </p>
+        <ul class="space-y-1.5 text-xs text-slate-700">
+          <li>✓ 100% Thông tin chính xác, pháp lý sổ đỏ minh bạch</li>
+          <li>✓ Hỗ trợ tư vấn vay vốn ngân hàng lãi suất ưu đãi</li>
+          <li>✓ Kết nối trực tiếp chủ nhà, giá chuẩn niêm yết</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Property Grid -->
+  <section id="danh-sach-bds" class="py-16 bg-slate-50 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 space-y-8">
+      <h2 class="text-2xl font-serif font-black text-slate-900 uppercase">BẤT ĐỘNG SẢN NỔI BẬT ĐANG MỞ BÁN</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <div class="bg-white border border-slate-300 shadow-sm flex flex-col justify-between">
+          <div class="relative aspect-[16/10] overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80" alt="" class="w-full h-full object-cover">
+            <div class="absolute bottom-0 inset-x-0 bg-rose-800/90 text-white px-3 py-1 flex justify-between text-xs font-black">
+              <span>28.5 Tỷ VNĐ</span>
+              <span>210 m²</span>
+            </div>
+          </div>
+          <div class="p-4 space-y-2">
+            <h3 class="text-xs font-black uppercase text-slate-900">Biệt Thự Đơn Lập The Manor Central Park</h3>
+            <p class="text-[11px] text-slate-500">📍 Hoàng Mai, Hà Nội • 5 PN • 5 WC</p>
+            <div class="pt-2 border-t flex justify-between items-center">
+              <span class="text-xs font-bold text-[#1E40AF]">BIỆT THỰ</span>
+              <button onclick="alert('Đã lưu thông tin BĐS!');" class="px-3 py-1 bg-[#1E40AF] text-white text-xs font-bold uppercase">Chi Tiết ›</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-300 shadow-sm flex flex-col justify-between">
+          <div class="relative aspect-[16/10] overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" alt="" class="w-full h-full object-cover">
+            <div class="absolute bottom-0 inset-x-0 bg-rose-800/90 text-white px-3 py-1 flex justify-between text-xs font-black">
+              <span>3.65 Tỷ VNĐ</span>
+              <span>72 m²</span>
+            </div>
+          </div>
+          <div class="p-4 space-y-2">
+            <h3 class="text-xs font-black uppercase text-slate-900">Căn Hộ Masteri Centre Point Q9</h3>
+            <p class="text-[11px] text-slate-500">📍 TP. Thủ Đức, TP.HCM • 2 PN • 2 WC</p>
+            <div class="pt-2 border-t flex justify-between items-center">
+              <span class="text-xs font-bold text-[#1E40AF]">CĂN HỘ</span>
+              <button onclick="alert('Đã lưu thông tin BĐS!');" class="px-3 py-1 bg-[#1E40AF] text-white text-xs font-bold uppercase">Chi Tiết ›</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-300 shadow-sm flex flex-col justify-between">
+          <div class="relative aspect-[16/10] overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80" alt="" class="w-full h-full object-cover">
+            <div class="absolute bottom-0 inset-x-0 bg-rose-800/90 text-white px-3 py-1 flex justify-between text-xs font-black">
+              <span>48.0 Tỷ VNĐ</span>
+              <span>320 m²</span>
+            </div>
+          </div>
+          <div class="p-4 space-y-2">
+            <h3 class="text-xs font-black uppercase text-slate-900">Penthouse Duplex Ba Son Quận 1</h3>
+            <p class="text-[11px] text-slate-500">📍 Bến Nghé, Quận 1, TP.HCM • 4 PN • 5 WC</p>
+            <div class="pt-2 border-t flex justify-between items-center">
+              <span class="text-xs font-bold text-[#1E40AF]">PENTHOUSE</span>
+              <button onclick="alert('Đã lưu thông tin BĐS!');" class="px-3 py-1 bg-[#1E40AF] text-white text-xs font-bold uppercase">Chi Tiết ›</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Post Form -->
+  <section id="dang-tin" class="py-16 bg-[#1E40AF] text-white text-center">
+    <div class="max-w-xl mx-auto px-4 space-y-6">
+      <h2 class="text-2xl sm:text-3xl font-serif font-black uppercase text-rose-300">
+        ĐĂNG TIN KÝ GỬI MUA BÁN & CHO THUÊ
+      </h2>
+      <form class="bg-white text-slate-900 p-6 space-y-3 text-left text-xs shadow-2xl" onsubmit="event.preventDefault(); alert('Đăng tin thành công!');">
+        <div>
+          <label class="block font-bold mb-1">Họ và tên *</label>
+          <input type="text" required placeholder="Nguyễn Văn A" class="w-full bg-slate-50 border border-slate-300 p-2.5" />
+        </div>
+        <div>
+          <label class="block font-bold mb-1">Số điện thoại *</label>
+          <input type="tel" required placeholder="0919 006 030" class="w-full bg-slate-50 border border-slate-300 p-2.5" />
+        </div>
+        <div>
+          <label class="block font-bold mb-1">Tiêu đề BĐS *</label>
+          <input type="text" required placeholder="Cần bán biệt thự / căn hộ..." class="w-full bg-slate-50 border border-slate-300 p-2.5" />
+        </div>
+        <button type="submit" class="w-full py-3 bg-[#E11D48] text-white font-black uppercase shadow">
+          Gửi Tin Ký Gửi Miễn Phí
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="lien-he" class="bg-slate-950 text-slate-400 text-xs py-8 border-t border-slate-800 text-center">
+    © TEMPLATEBDS — Nền tảng phân phối website BĐS chuyên nghiệp. Mẫu BDS-21 (Homeo Realty)
+  </footer>
+
+</body>
+</html>

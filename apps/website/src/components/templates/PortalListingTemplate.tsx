@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import {
   Search, MapPin, Building, ChevronRight, ChevronLeft, Menu, X,
   Phone, Mail, ArrowRight, Star, TrendingUp, Shield, Clock, Home,
@@ -295,6 +296,9 @@ const NEWS_LIST = [
 
 export default function PortalListingTemplate({ template, viewport = 'desktop', initialPage = 'home', company }: TemplateProps) {
   const [currentPage, setCurrentPage] = useState<string>(initialPage || 'home');
+  const isHome = useMemo(() => {
+    return currentPage === 'home' || !['sale', 'rent', 'projects', 'du-an', 'detail', 'chi-tiet', 'news', 'tin-tuc', 'about', 'gioi-thieu', 'contact', 'lien-he'].includes(currentPage);
+  }, [currentPage]);
   const [selectedProperty, setSelectedProperty] = useState<any>(SALE_PROPERTIES[0]);
   const [selectedArticle, setSelectedArticle] = useState<any>(null);
   const [leadModalProject, setLeadModalProject] = useState<any>(null);
@@ -304,6 +308,25 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
   const [selectedType, setSelectedType] = useState('all');
   const [selectedCity, setSelectedCity] = useState('all');
   const [activeTab, setActiveTab] = useState<'sale' | 'rent'>('sale');
+  
+  const navigateTo = (page: string, customSlug?: string) => {
+    setCurrentPage(page);
+    setMobileMenuOpen(false);
+    syncDemoUrl(customSlug || page, 'bds-17');
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts[2] : (parts[1] !== 'bds-17' ? parts[1] : 'home');
+      if (sub) {
+        setCurrentPage(sub);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
   
   // Spotlight project carousel index
   const [spotlightIdx, setSpotlightIdx] = useState(0);
@@ -341,31 +364,19 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
     return Math.round(payment);
   }, [loanAmount, loanTermYears, interestRate]);
 
-  const navigateTo = (page: string, slugParam?: string) => {
-    setCurrentPage(page);
-    if (typeof window !== 'undefined') {
-      const basePath = window.location.pathname.split('/').slice(0, 3).join('/');
-      let newUrl = basePath;
-      if (page !== 'home') {
-        newUrl += slugParam ? `/${page}/${slugParam}` : `/${page}`;
-      }
-      window.history.pushState(null, '', newUrl);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
   const handleOpenDetail = (prop: any) => {
     setSelectedProperty(prop);
     navigateTo('detail', prop.id);
   };
 
   const navItems = [
-    { id: 'home', label: 'Trang chủ' },
-    { id: 'sale', label: 'Nhà đất bán' },
-    { id: 'rent', label: 'Cho thuê' },
-    { id: 'projects', label: 'Dự án' },
-    { id: 'news', label: 'Tin tức' },
-    { id: 'contact', label: 'Liên hệ & Ký gửi' },
+    { id: 'home', slug: '', label: 'Trang chủ' },
+    { id: 'sale', slug: 'nha-dat-ban', label: 'Nhà đất bán' },
+    { id: 'rent', slug: 'cho-thue', label: 'Cho thuê' },
+    { id: 'projects', slug: 'du-an', label: 'Dự án' },
+    { id: 'news', slug: 'tin-tuc', label: 'Tin tức' },
+    { id: 'about', slug: 'gioi-thieu', label: 'Giới thiệu' },
+    { id: 'contact', slug: 'lien-he', label: 'Liên hệ & Ký gửi' },
   ];
 
   return (
@@ -383,11 +394,11 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
             </a>
           </div>
           <div className="flex items-center gap-3 font-semibold">
-            <button onClick={() => setCurrentPage('contact')} className="hover:text-blue-400 transition-colors">
+            <button onClick={() => navigateTo('contact', 'lien-he')} className="hover:text-blue-400 transition-colors">
               Đăng tin BĐS
             </button>
             <span>•</span>
-            <button onClick={() => setCurrentPage('contact')} className="hover:text-blue-400 transition-colors">
+            <button onClick={() => navigateTo('contact', 'lien-he')} className="hover:text-blue-400 transition-colors">
               Đăng nhập / Đăng ký
             </button>
           </div>
@@ -399,10 +410,10 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
         <div className="max-w-[1360px] mx-auto px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4">
           {/* Logo */}
           <div 
-            onClick={() => setCurrentPage('home')} 
+            onClick={() => navigateTo('home', '')} 
             className="flex items-center gap-2.5 cursor-pointer select-none group"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-sm bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
               <Building className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -420,11 +431,8 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
               return (
                 <button
                   key={item.id}
-                  onClick={() => {
-                    setCurrentPage(item.id);
-                    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className={`px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold transition-all ${
+                  onClick={() => navigateTo(item.id, item.slug)}
+                  className={`px-3.5 py-2 rounded-sm text-xs xl:text-sm font-bold transition-all ${
                     active
                       ? 'text-blue-600 bg-blue-50/80 shadow-xs'
                       : 'hover:text-blue-600 hover:bg-slate-50'
@@ -439,8 +447,8 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
           {/* Action Right */}
           <div className="flex items-center gap-2 sm:gap-3">
             <button
-              onClick={() => setCurrentPage('contact')}
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-600/20 transition-all hover:scale-102"
+              onClick={() => navigateTo('contact', 'lien-he')}
+              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-sm bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-600/20 transition-all hover:scale-102"
             >
               <Send className="w-3.5 h-3.5" />
               <span>Ký gửi BĐS</span>
@@ -449,7 +457,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200"
+              className="lg:hidden p-2 rounded-sm bg-slate-100 text-slate-700 hover:bg-slate-200"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -462,10 +470,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
             {navItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => {
-                  setCurrentPage(item.id);
-                  setMobileMenuOpen(false);
-                }}
+                onClick={() => navigateTo(item.id, item.slug)}
                 className={`w-full text-left py-2.5 px-3 rounded-lg text-sm font-bold ${
                   currentPage === item.id ? 'bg-blue-50 text-blue-600' : 'text-slate-700'
                 }`}
@@ -475,11 +480,8 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
             ))}
             <div className="pt-3 border-t border-slate-100 flex flex-col gap-2">
               <button
-                onClick={() => {
-                  setCurrentPage('contact');
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full py-2.5 bg-blue-600 text-white font-bold rounded-xl text-center text-xs"
+                onClick={() => navigateTo('contact', 'lien-he')}
+                className="w-full py-2.5 bg-blue-600 text-white font-bold rounded-sm text-center text-xs"
               >
                 Đăng tin ký gửi nhà đất
               </button>
@@ -493,7 +495,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
         {/* ─────────────────────────────────────────────────────────────
             PAGE 1: TRANG CHỦ (HOME PAGE EXACTLY LIKE THE SCREENSHOT)
         ───────────────────────────────────────────────────────────── */}
-        {currentPage === 'home' && (
+        {isHome && (
           <div>
             {/* 1. HERO SECTION WITH BLUE GRADIENT & SEARCH FILTER */}
             <section className="relative bg-gradient-to-r from-[#0F284E] via-[#0F3875] to-[#1E40AF] text-white py-16 sm:py-20 px-4 sm:px-8 overflow-hidden">
@@ -505,7 +507,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
               <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/80 via-transparent to-transparent pointer-events-none" />
 
               <div className="relative max-w-[1100px] mx-auto text-center">
-                <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-200 text-xs font-extrabold uppercase tracking-widest mb-4 backdrop-blur-sm">
+                <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-sm bg-blue-500/20 border border-blue-400/30 text-blue-200 text-xs font-extrabold uppercase tracking-widest mb-4 backdrop-blur-sm">
                   <Sparkles className="w-3.5 h-3.5 text-amber-300" /> Nền tảng giao dịch BĐS hàng đầu
                 </span>
                 <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight uppercase text-white mb-8 drop-shadow-md">
@@ -513,7 +515,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                 </h1>
 
                 {/* Search Bar Container */}
-                <div className="bg-white/95 backdrop-blur-md rounded-2xl p-3 sm:p-4 shadow-2xl border border-white/40 max-w-4xl mx-auto text-slate-800">
+                <div className="bg-white/95 backdrop-blur-md rounded-sm p-3 sm:p-4 shadow-2xl border border-white/40 max-w-4xl mx-auto text-slate-800">
                   <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center">
                     {/* Keyword Input */}
                     <div className="sm:col-span-6 relative">
@@ -523,7 +525,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                         placeholder="Nhập từ khóa, dự án, khu vực cần tìm..."
                         value={searchKeyword}
                         onChange={(e) => setSearchKeyword(e.target.value)}
-                        className="w-full bg-slate-100 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white font-medium"
+                        className="w-full bg-slate-100 border border-slate-200 rounded-sm pl-10 pr-4 py-3 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white font-medium"
                       />
                     </div>
 
@@ -532,7 +534,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                       <select
                         value={selectedType}
                         onChange={(e) => setSelectedType(e.target.value)}
-                        className="w-full bg-slate-100 border border-slate-200 rounded-xl px-3.5 py-3 text-xs sm:text-sm text-slate-700 font-bold focus:outline-none focus:border-blue-500"
+                        className="w-full bg-slate-100 border border-slate-200 rounded-sm px-3.5 py-3 text-xs sm:text-sm text-slate-700 font-bold focus:outline-none focus:border-blue-500"
                       >
                         <option value="all">Loại hình BĐS (Tất cả)</option>
                         <option value="Chung cư">Chung cư cao cấp</option>
@@ -550,7 +552,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                           setCurrentPage('sale');
                           if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
                         }}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-3 px-5 rounded-xl text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2"
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-3 px-5 rounded-sm text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2"
                       >
                         <Search className="w-4 h-4" />
                         <span>Tìm kiếm</span>
@@ -571,9 +573,9 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                         key={cat.label}
                         onClick={() => {
                           setSelectedType(cat.type);
-                          setCurrentPage('sale');
+                          navigateTo('sale', 'nha-dat-ban');
                         }}
-                        className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-blue-50 hover:text-blue-600 transition-all group"
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-sm hover:bg-blue-50 hover:text-blue-600 transition-all group"
                       >
                         <span className="text-base group-hover:scale-110 transition-transform">{cat.icon}</span>
                         <span>{cat.label}</span>
@@ -594,7 +596,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                 <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                   Bất Động Sản <span className="text-blue-600">Cho Bán</span>
                 </h2>
-                <div className="w-16 h-1 bg-blue-600 rounded-full mt-2" />
+                <div className="w-16 h-1 bg-blue-600 rounded-sm mt-2" />
               </div>
 
               {/* 4x2 Grid of Property Cards */}
@@ -603,7 +605,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                   <div
                     key={prop.id}
                     onClick={() => handleOpenDetail(prop)}
-                    className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl hover:border-blue-400 transition-all duration-300 cursor-pointer flex flex-col justify-between"
+                    className="group bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl hover:border-blue-400 transition-all duration-300 cursor-pointer flex flex-col justify-between"
                   >
                     <div>
                       {/* Image Thumbnail */}
@@ -663,11 +665,8 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
 
               <div className="text-center mt-10">
                 <button
-                  onClick={() => {
-                    setCurrentPage('sale');
-                    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white border border-slate-300 hover:border-blue-600 text-slate-800 hover:text-blue-600 text-xs font-bold shadow-xs hover:shadow-md transition-all"
+                  onClick={() => navigateTo('sale', 'nha-dat-ban')}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-sm bg-white border border-slate-300 hover:border-blue-600 text-slate-800 hover:text-blue-600 text-xs font-bold shadow-xs hover:shadow-md transition-all"
                 >
                   <span>Xem tất cả bất động sản cho bán</span>
                   <ArrowRight className="w-4 h-4" />
@@ -681,18 +680,18 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                 <div className="flex items-center justify-between mb-8">
                   <div>
                     <span className="text-xs font-extrabold uppercase text-blue-600 tracking-wider">Tâm điểm đầu tư 2026</span>
-                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Dự Án Nổi Bật</h2>
+                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Dự Án Nổi BẬt</h2>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setSpotlightIdx((prev) => (prev === 0 ? SPOTLIGHT_PROJECTS.length - 1 : prev - 1))}
-                      className="w-9 h-9 rounded-full bg-white border border-slate-300 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-colors shadow-xs"
+                      className="w-9 h-9 rounded-sm bg-white border border-slate-300 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-colors shadow-xs"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setSpotlightIdx((prev) => (prev === SPOTLIGHT_PROJECTS.length - 1 ? 0 : prev + 1))}
-                      className="w-9 h-9 rounded-full bg-white border border-slate-300 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-colors shadow-xs"
+                      className="w-9 h-9 rounded-sm bg-white border border-slate-300 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-colors shadow-xs"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>
@@ -703,7 +702,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                 {(() => {
                   const proj = SPOTLIGHT_PROJECTS[spotlightIdx];
                   return (
-                    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-md grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                    <div className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-md grid grid-cols-1 lg:grid-cols-12 items-stretch">
                       {/* Left: Wide Image */}
                       <div className="lg:col-span-6 relative h-[320px] sm:h-[380px] lg:h-[400px] bg-slate-900">
                         <img
@@ -726,7 +725,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                           <h3 className="text-xl sm:text-2xl font-black text-slate-900 mb-2.5 leading-snug">
                             {proj.title}
                           </h3>
-                          <p className="text-xs text-slate-600 font-medium mb-3.5 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                          <p className="text-xs text-slate-600 font-medium mb-3.5 bg-slate-50 p-2.5 rounded-sm border border-slate-100">
                             {proj.specs}
                           </p>
 
@@ -752,11 +751,8 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                             <span className="text-xl font-black text-blue-600 font-mono">{proj.price}</span>
                           </div>
                           <button
-                            onClick={() => {
-                              setCurrentPage('projects');
-                              if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }}
-                            className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black uppercase tracking-wider shadow-md shadow-blue-600/20 transition-all flex items-center gap-1.5 shrink-0"
+                            onClick={() => navigateTo('projects', 'du-an')}
+                            className="px-6 py-2.5 rounded-sm bg-blue-600 hover:bg-blue-700 text-white text-xs font-black uppercase tracking-wider shadow-md shadow-blue-600/20 transition-all flex items-center gap-1.5 shrink-0"
                           >
                             <span>Xem ngay</span>
                             <ArrowRight className="w-4 h-4" />
@@ -779,7 +775,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                 <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                   Bất Động Sản <span className="text-blue-600">Cho Thuê</span>
                 </h2>
-                <div className="w-16 h-1 bg-blue-600 rounded-full mt-2" />
+                <div className="w-16 h-1 bg-blue-600 rounded-sm mt-2" />
               </div>
 
               {/* 2-Column Grid of Horizontal Cards */}
@@ -788,10 +784,10 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                   <div
                     key={prop.id}
                     onClick={() => handleOpenDetail(prop)}
-                    className="group bg-white rounded-2xl border border-slate-200 p-3 sm:p-4 hover:border-blue-400 hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col sm:flex-row gap-4"
+                    className="group bg-white rounded-sm border border-slate-200 p-3 sm:p-4 hover:border-blue-400 hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col sm:flex-row gap-4"
                   >
                     {/* Left Thumbnail */}
-                    <div className="relative w-full sm:w-44 h-40 rounded-xl overflow-hidden bg-slate-100 shrink-0">
+                    <div className="relative w-full sm:w-44 h-40 rounded-sm overflow-hidden bg-slate-100 shrink-0">
                       <img
                         src={prop.image}
                         alt={prop.title}
@@ -833,11 +829,8 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
 
               <div className="text-center mt-10">
                 <button
-                  onClick={() => {
-                    setCurrentPage('rent');
-                    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white border border-slate-300 hover:border-blue-600 text-slate-800 hover:text-blue-600 text-xs font-bold shadow-xs hover:shadow-md transition-all"
+                  onClick={() => navigateTo('rent', 'cho-thue')}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-sm bg-white border border-slate-300 hover:border-blue-600 text-slate-800 hover:text-blue-600 text-xs font-bold shadow-xs hover:shadow-md transition-all"
                 >
                   <span>Xem tất cả bất động sản cho thuê</span>
                   <ArrowRight className="w-4 h-4" />
@@ -853,7 +846,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                   <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white mt-1">
                     Các Dự Án Tại <span className="text-blue-400">Các Thành Phố Lớn</span>
                   </h2>
-                  <div className="w-16 h-1 bg-amber-400 rounded-full mt-2" />
+                  <div className="w-16 h-1 bg-amber-400 rounded-sm mt-2" />
                 </div>
 
                 {/* 6 City Cards Grid */}
@@ -863,9 +856,9 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                       key={city.name}
                       onClick={() => {
                         setSelectedCity(city.name);
-                        setCurrentPage('sale');
+                        navigateTo('sale', 'nha-dat-ban');
                       }}
-                      className="group relative h-48 sm:h-56 rounded-2xl overflow-hidden border border-white/10 shadow-lg cursor-pointer"
+                      className="group relative h-48 sm:h-56 rounded-sm overflow-hidden border border-white/10 shadow-lg cursor-pointer"
                     >
                       <img
                         src={city.image}
@@ -883,7 +876,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                             {city.name}
                           </h3>
                         </div>
-                        <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white group-hover:bg-blue-600 transition-colors">
+                        <div className="w-8 h-8 rounded-sm bg-white/20 backdrop-blur-md flex items-center justify-center text-white group-hover:bg-blue-600 transition-colors">
                           <ArrowUpRight className="w-4 h-4" />
                         </div>
                       </div>
@@ -912,8 +905,8 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                 {/* Column 1: Featured Big News */}
                 <div 
-                  onClick={() => setCurrentPage('news')}
-                  className="lg:col-span-6 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-shadow cursor-pointer flex flex-col justify-between group"
+                  onClick={() => navigateTo('news', 'tin-tuc')}
+                  className="lg:col-span-6 bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-shadow cursor-pointer flex flex-col justify-between group"
                 >
                   <div className="aspect-[16/10] overflow-hidden bg-slate-100 relative">
                     <img
@@ -952,12 +945,12 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                     <div
                       key={item.id}
                       onClick={() => setSelectedArticle(item)}
-                      className="bg-white rounded-2xl border border-slate-200 p-4 hover:border-blue-400 hover:shadow-md transition-all cursor-pointer flex items-center gap-4 group"
+                      className="bg-white rounded-sm border border-slate-200 p-4 hover:border-blue-400 hover:shadow-md transition-all cursor-pointer flex items-center gap-4 group"
                     >
                       <img
                         src={item.image}
                         alt={item.title}
-                        className="w-32 sm:w-36 h-24 rounded-xl object-cover shrink-0 group-hover:scale-105 transition-transform"
+                        className="w-32 sm:w-36 h-24 rounded-sm object-cover shrink-0 group-hover:scale-105 transition-transform"
                       />
                       <div className="flex-1 flex flex-col justify-between h-full py-0.5">
                         <div>
@@ -991,9 +984,9 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                   <input
                     type="email"
                     placeholder="Nhập địa chỉ email của bạn..."
-                    className="bg-white/10 border border-white/20 text-white placeholder-blue-200 text-xs px-4 py-2.5 rounded-xl focus:outline-none focus:bg-white focus:text-slate-900 flex-1"
+                    className="bg-white/10 border border-white/20 text-white placeholder-blue-200 text-xs px-4 py-2.5 rounded-sm focus:outline-none focus:bg-white focus:text-slate-900 flex-1"
                   />
-                  <button className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl shrink-0 transition-colors shadow-md">
+                  <button className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-5 py-2.5 rounded-sm shrink-0 transition-colors shadow-md">
                     Đăng ký ngay
                   </button>
                 </div>
@@ -1013,20 +1006,20 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
             </div>
 
             {/* Filter Bar */}
-            <div className="bg-white rounded-2xl p-4 border border-slate-200 mb-8 shadow-xs flex flex-wrap items-center gap-3">
+            <div className="bg-white rounded-sm p-4 border border-slate-200 mb-8 shadow-xs flex flex-wrap items-center gap-3">
               <div className="flex-1 min-w-[200px]">
                 <input
                   type="text"
                   placeholder="Lọc theo tên, quận huyện, dự án..."
                   value={searchKeyword}
                   onChange={(e) => setSearchKeyword(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-900 font-medium"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-sm px-3.5 py-2 text-xs text-slate-900 font-medium"
                 />
               </div>
               <select
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
-                className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700"
+                className="bg-slate-50 border border-slate-200 rounded-sm px-3 py-2 text-xs font-bold text-slate-700"
               >
                 <option value="all">Tất cả loại hình</option>
                 <option value="Chung cư">Chung cư</option>
@@ -1043,7 +1036,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                 <div
                   key={prop.id}
                   onClick={() => handleOpenDetail(prop)}
-                  className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl hover:border-blue-400 transition-all cursor-pointer flex flex-col justify-between"
+                  className="group bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl hover:border-blue-400 transition-all cursor-pointer flex flex-col justify-between"
                 >
                   <div>
                     <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
@@ -1085,9 +1078,9 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                 <div
                   key={prop.id}
                   onClick={() => handleOpenDetail(prop)}
-                  className="group bg-white rounded-2xl border border-slate-200 p-4 hover:border-blue-400 hover:shadow-lg transition-all cursor-pointer flex flex-col sm:flex-row gap-4"
+                  className="group bg-white rounded-sm border border-slate-200 p-4 hover:border-blue-400 hover:shadow-lg transition-all cursor-pointer flex flex-col sm:flex-row gap-4"
                 >
-                  <div className="relative w-full sm:w-44 h-40 rounded-xl overflow-hidden bg-slate-100 shrink-0">
+                  <div className="relative w-full sm:w-44 h-40 rounded-sm overflow-hidden bg-slate-100 shrink-0">
                     <img src={prop.image} alt={prop.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     <span className="absolute top-2 left-2 text-[9px] font-black px-2 py-0.5 rounded bg-blue-600 text-white">CHO THUÊ</span>
                   </div>
@@ -1120,7 +1113,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
 
             <div className="space-y-8">
               {SPOTLIGHT_PROJECTS.map((proj, idx) => (
-                <div key={idx} className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition-all grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                <div key={idx} className="bg-white rounded-md border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition-all grid grid-cols-1 lg:grid-cols-12 items-stretch">
                   <div className="lg:col-span-6 relative bg-slate-900 overflow-hidden group min-h-[260px] max-h-[360px]">
                     <img src={proj.image} alt={proj.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     <span className="absolute top-4 left-4 bg-blue-600 text-white text-[11px] font-black px-3 py-1 rounded-md uppercase tracking-wider shadow-sm">
@@ -1131,7 +1124,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                     <div>
                       <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">{proj.location}</span>
                       <h2 className="text-xl font-black text-slate-900 mt-1 mb-2">{proj.title}</h2>
-                      <p className="text-xs text-slate-600 mb-4 bg-slate-50 p-2.5 rounded-xl border border-slate-100 font-medium">{proj.specs}</p>
+                      <p className="text-xs text-slate-600 mb-4 bg-slate-50 p-2.5 rounded-sm border border-slate-100 font-medium">{proj.specs}</p>
                       <div className="space-y-2 mb-6">
                         {proj.highlights.map((h, i) => (
                           <div key={i} className="flex items-center gap-2 text-xs text-slate-700">
@@ -1143,7 +1136,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                     </div>
                     <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                       <span className="text-base font-black text-blue-600 font-mono">{proj.price}</span>
-                      <button onClick={() => setLeadModalProject(proj)} className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/20 transition-all hover:scale-105">
+                      <button onClick={() => setLeadModalProject(proj)} className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-sm text-xs font-bold shadow-md shadow-blue-600/20 transition-all hover:scale-105">
                         Đăng ký nhận bảng giá F1
                       </button>
                     </div>
@@ -1169,8 +1162,8 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               {/* Left Column: Gallery & Details */}
               <div className="lg:col-span-8 space-y-6">
-                <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs">
-                  <div className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-slate-900 mb-4">
+                <div className="bg-white rounded-md border border-slate-200 p-6 shadow-xs">
+                  <div className="relative aspect-[16/9] rounded-sm overflow-hidden bg-slate-900 mb-4">
                     <img src={selectedProperty.image} alt={selectedProperty.title} className="w-full h-full object-cover" />
                     <span className="absolute top-4 left-4 bg-blue-600 text-white text-xs font-black px-3 py-1 rounded-md">
                       {selectedProperty.tag || 'BÁN GẤP'}
@@ -1183,7 +1176,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                     <span>{selectedProperty.location}</span>
                   </p>
 
-                  <div className="grid grid-cols-3 gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100 text-center mb-6">
+                  <div className="grid grid-cols-3 gap-3 p-4 bg-slate-50 rounded-sm border border-slate-100 text-center mb-6">
                     <div>
                       <span className="text-[10px] text-slate-400 font-bold uppercase block">Phòng ngủ</span>
                       <span className="text-sm font-black text-slate-800">{selectedProperty.beds || 2} PN</span>
@@ -1221,7 +1214,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                         <ArrowRight className="w-3.5 h-3.5" />
                       </a>
                     </div>
-                    <div className="w-full h-64 rounded-2xl overflow-hidden border border-slate-200 shadow-inner">
+                    <div className="w-full h-64 rounded-sm overflow-hidden border border-slate-200 shadow-inner">
                       <iframe
                         title={`Bản đồ ${selectedProperty.title}`}
                         src={`https://maps.google.com/maps?q=${encodeURIComponent(selectedProperty.location + ', Việt Nam')}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
@@ -1234,7 +1227,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                 </div>
 
                 {/* Bank Loan Calculator Widget */}
-                <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs">
+                <div className="bg-white rounded-md border border-slate-200 p-6 shadow-xs">
                   <div className="flex items-center gap-2 mb-4">
                     <Calculator className="w-5 h-5 text-blue-600" />
                     <h3 className="text-base font-black text-slate-900">Công Cụ Tính Lãi Vay Mua Nhà Ngân Hàng</h3>
@@ -1248,7 +1241,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                         value={loanAmount}
                         onChange={(e) => setLoanAmount(Number(e.target.value))}
                         step="100000000"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 font-mono"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-sm px-3 py-2 text-xs font-bold text-slate-900 font-mono"
                       />
                     </div>
                     <div>
@@ -1256,7 +1249,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                       <select
                         value={loanTermYears}
                         onChange={(e) => setLoanTermYears(Number(e.target.value))}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-sm px-3 py-2 text-xs font-bold text-slate-900"
                       >
                         <option value={5}>5 Năm (60 tháng)</option>
                         <option value={10}>10 Năm (120 tháng)</option>
@@ -1272,12 +1265,12 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                         value={interestRate}
                         onChange={(e) => setInterestRate(Number(e.target.value))}
                         step="0.1"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 font-mono"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-sm px-3 py-2 text-xs font-bold text-slate-900 font-mono"
                       />
                     </div>
                   </div>
 
-                  <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4">
+                  <div className="bg-blue-50 border border-blue-100 rounded-sm p-4 flex flex-wrap items-center justify-between gap-4">
                     <div>
                       <span className="text-[11px] text-blue-700 font-bold block">Ước tính số tiền cần trả hàng tháng:</span>
                       <span className="text-xl font-black text-blue-600 font-mono">
@@ -1286,7 +1279,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                     </div>
                     <button 
                       onClick={() => setCurrentPage('contact')}
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold"
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-sm text-xs font-bold"
                     >
                       Tư vấn gói vay 0%
                     </button>
@@ -1296,14 +1289,14 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
 
               {/* Right Column: Sticky Contact & Booking */}
               <div className="lg:col-span-4 space-y-6">
-                <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-md sticky top-24">
+                <div className="bg-white rounded-md border border-slate-200 p-6 shadow-md sticky top-24">
                   <div className="mb-4">
                     <span className="text-[10px] text-slate-400 font-bold uppercase block">Giá niêm yết</span>
                     <span className="text-2xl font-black text-blue-600 font-mono">{selectedProperty.priceDisplay}</span>
                   </div>
 
-                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100 mb-6">
-                    <div className="w-12 h-12 rounded-full bg-blue-600 text-white font-black flex items-center justify-center text-sm shrink-0">
+                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-sm border border-slate-100 mb-6">
+                    <div className="w-12 h-12 rounded-sm bg-blue-600 text-white font-black flex items-center justify-center text-sm shrink-0">
                       VIP
                     </div>
                     <div>
@@ -1315,7 +1308,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                   <div className="space-y-2 mb-6">
                     <a
                       href="tel:0919006030"
-                      className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md shadow-emerald-600/20"
+                      className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-sm text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md shadow-emerald-600/20"
                     >
                       <Phone className="w-4 h-4" />
                       <span>Gọi ngay: 0919 006 030</span>
@@ -1324,7 +1317,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                       href="https://zalo.me/0919006030"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md shadow-blue-600/20"
+                      className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-sm text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md shadow-blue-600/20"
                     >
                       <span>Chat Zalo tư vấn 1-1</span>
                     </a>
@@ -1334,9 +1327,9 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                   <div className="pt-4 border-t border-slate-100">
                     <h4 className="text-xs font-bold text-slate-900 mb-2">Đăng ký xem nhà thực tế</h4>
                     <form onSubmit={(e) => { e.preventDefault(); alert('Cảm ơn bạn! Chuyên viên BĐS sẽ liên hệ xếp lịch xem nhà trong 15 phút.'); }} className="space-y-2">
-                      <input type="text" placeholder="Họ và tên của bạn" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs" />
-                      <input type="tel" placeholder="Số điện thoại Zalo" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs" />
-                      <button type="submit" className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs">
+                      <input type="text" placeholder="Họ và tên của bạn" required className="w-full bg-slate-50 border border-slate-200 rounded-sm px-3 py-2 text-xs" />
+                      <input type="tel" placeholder="Số điện thoại Zalo" required className="w-full bg-slate-50 border border-slate-200 rounded-sm px-3 py-2 text-xs" />
+                      <button type="submit" className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-sm text-xs">
                         Xác nhận đặt lịch
                       </button>
                     </form>
@@ -1376,7 +1369,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                   summary: 'Cách bố trí hướng sofa, ánh sáng tự nhiên và cây cảnh phong thủy hợp mệnh gia chủ.'
                 }
               ]).map((item) => (
-                <div key={item.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all flex flex-col justify-between">
+                <div key={item.id} className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all flex flex-col justify-between">
                   <div className="aspect-[16/10] overflow-hidden bg-slate-100">
                     <img src={item.image} alt={item.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
                   </div>
@@ -1399,6 +1392,54 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
         )}
 
         {/* ─────────────────────────────────────────────────────────────
+            PAGE 6B: GIỚI THIỆU (ABOUT)
+        ───────────────────────────────────────────────────────────── */}
+        {(currentPage === 'about' || currentPage === 'gioi-thieu') && (
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-8 py-12 space-y-10">
+            <div className="bg-white rounded-md border border-slate-200 p-8 sm:p-12 shadow-xs space-y-8">
+              <div className="border-b border-slate-200 pb-6">
+                <span className="text-xs font-bold text-blue-600 uppercase tracking-widest block mb-1">VỀ CHÚNG TÔI</span>
+                <h1 className="text-3xl sm:text-4xl font-black text-slate-900">Cổng Thông Tin Giao Dịch BĐS Toàn Diện</h1>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div className="lg:col-span-7 space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  <p>
+                    Cổng thông tin cung cấp cơ sở dữ liệu bất động sản khổng lồ với hơn 50.000+ tin đăng mua bán và cho thuê được kiểm duyệt pháp lý nghiêm ngặt tại các thành phố lớn trên cả nước.
+                  </p>
+                  <p>
+                    Ứng dụng công nghệ bản đồ số, tra cứu phong thủy và thẩm định giá trực tuyến, chúng tôi giúp khách hàng đưa ra quyết định an cư và đầu tư chính xác, an toàn và tối ưu tài chính nhất.
+                  </p>
+                  <div className="grid grid-cols-3 gap-4 pt-4 text-center">
+                    <div className="p-4 bg-blue-50 border border-blue-100 rounded-sm">
+                      <strong className="text-xl font-black text-blue-700 block">50.000+</strong>
+                      <span className="text-[11px] text-slate-500">Tin đăng xác thực</span>
+                    </div>
+                    <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-sm">
+                      <strong className="text-xl font-black text-emerald-700 block">99.2%</strong>
+                      <span className="text-[11px] text-slate-500">Pháp lý chuẩn</span>
+                    </div>
+                    <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-sm">
+                      <strong className="text-xl font-black text-indigo-700 block">100+</strong>
+                      <span className="text-[11px] text-slate-500">Chuyên gia đồng hành</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="lg:col-span-5">
+                  <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80" alt="About portal" className="w-full h-64 object-cover rounded-sm border border-slate-200 shadow-sm" />
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-200">
+                <button onClick={() => setCurrentPage('home')} className="text-xs font-bold text-blue-600 hover:underline">
+                  ← Quay lại trang chủ
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
             PAGE 7: LIÊN HỆ & KÝ GỬI (CONTACT & LISTING SUBMISSION)
         ───────────────────────────────────────────────────────────── */}
         {currentPage === 'contact' && (
@@ -1410,24 +1451,24 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               {/* Form */}
-              <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs">
+              <div className="lg:col-span-7 bg-white rounded-md border border-slate-200 p-6 sm:p-8 shadow-xs">
                 <h3 className="text-base font-black text-slate-900 mb-4">Gửi Yêu Cầu Ký Gửi Mua Bán / Cho Thuê</h3>
                 <form onSubmit={(e) => { e.preventDefault(); alert('Yêu cầu ký gửi của bạn đã được tiếp nhận thành công! Chúng tôi sẽ liên hệ trong 30 phút.'); }} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="text-[11px] font-bold text-slate-600 block mb-1">Họ và tên *</label>
-                      <input type="text" required placeholder="Nguyễn Văn A" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium" />
+                      <input type="text" required placeholder="Nguyễn Văn A" className="w-full bg-slate-50 border border-slate-200 rounded-sm px-3.5 py-2.5 text-xs font-medium" />
                     </div>
                     <div>
                       <label className="text-[11px] font-bold text-slate-600 block mb-1">Số điện thoại / Zalo *</label>
-                      <input type="tel" required placeholder="0919 006 030" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium" />
+                      <input type="tel" required placeholder="0919 006 030" className="w-full bg-slate-50 border border-slate-200 rounded-sm px-3.5 py-2.5 text-xs font-medium" />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="text-[11px] font-bold text-slate-600 block mb-1">Hình thức giao dịch</label>
-                      <select className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700">
+                      <select className="w-full bg-slate-50 border border-slate-200 rounded-sm px-3 py-2.5 text-xs font-bold text-slate-700">
                         <option value="ban">Cần Bán Bất Động Sản</option>
                         <option value="cho-thue">Cho Thuê Bất Động Sản</option>
                         <option value="can-mua">Cần Tìm Mua Nhà Đất</option>
@@ -1436,7 +1477,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                     </div>
                     <div>
                       <label className="text-[11px] font-bold text-slate-600 block mb-1">Loại hình BĐS</label>
-                      <select className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700">
+                      <select className="w-full bg-slate-50 border border-slate-200 rounded-sm px-3 py-2.5 text-xs font-bold text-slate-700">
                         <option value="chung-cu">Căn hộ chung cư</option>
                         <option value="biet-thu">Biệt thự / Villa</option>
                         <option value="nha-pho">Nhà phố thương mại</option>
@@ -1448,15 +1489,15 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
 
                   <div>
                     <label className="text-[11px] font-bold text-slate-600 block mb-1">Địa chỉ BĐS & Mức giá mong muốn</label>
-                    <input type="text" placeholder="Ví dụ: Tòa S2.05 Vinhomes Ocean Park, giá mong muốn 3.5 tỷ" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium" />
+                    <input type="text" placeholder="Ví dụ: Tòa S2.05 Vinhomes Ocean Park, giá mong muốn 3.5 tỷ" className="w-full bg-slate-50 border border-slate-200 rounded-sm px-3.5 py-2.5 text-xs font-medium" />
                   </div>
 
                   <div>
                     <label className="text-[11px] font-bold text-slate-600 block mb-1">Ghi chú thêm thông tin</label>
-                    <textarea rows={3} placeholder="Thông tin chi tiết về diện tích, số phòng ngủ, hướng nhà, tình trạng sổ đỏ..." className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-medium" />
+                    <textarea rows={3} placeholder="Thông tin chi tiết về diện tích, số phòng ngủ, hướng nhà, tình trạng sổ đỏ..." className="w-full bg-slate-50 border border-slate-200 rounded-sm p-3 text-xs font-medium" />
                   </div>
 
-                  <button type="submit" className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl text-xs uppercase tracking-wider shadow-md shadow-blue-600/20 transition-all">
+                  <button type="submit" className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-sm text-xs uppercase tracking-wider shadow-md shadow-blue-600/20 transition-all">
                     Gửi thông tin ký gửi ngay
                   </button>
                 </form>
@@ -1464,7 +1505,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
 
               {/* Contact Info Box */}
               <div className="lg:col-span-5 space-y-6">
-                <div className="bg-[#0F172A] text-white rounded-3xl p-6 sm:p-8 shadow-lg">
+                <div className="bg-[#0F172A] text-white rounded-md p-6 sm:p-8 shadow-lg">
                   <h3 className="text-base font-black mb-4">Hệ Thống Trụ Sở & Hotline</h3>
                   
                   <div className="space-y-4 text-xs">
@@ -1504,7 +1545,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                 </div>
 
                 {/* Interactive Map Box */}
-                <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs">
+                <div className="bg-white rounded-md border border-slate-200 p-6 shadow-xs">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
                       <MapPin className="w-4 h-4 text-blue-600" />
@@ -1520,7 +1561,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                       <ArrowRight className="w-3 h-3" />
                     </a>
                   </div>
-                  <div className="w-full h-56 rounded-2xl overflow-hidden border border-slate-200">
+                  <div className="w-full h-56 rounded-sm overflow-hidden border border-slate-200">
                     <iframe
                       title="Bản đồ Trụ sở Keangnam"
                       src="https://maps.google.com/maps?q=Keangnam+Landmark+72,+Ph%E1%BA%A1m+H%C3%B9ng,+H%C3%A0+N%E1%BB%99i&t=&z=15&ie=UTF8&iwloc=&output=embed"
@@ -1562,10 +1603,10 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
             <div>
               <h4 className="font-bold text-white uppercase tracking-wider mb-3">BĐS Mua Bán</h4>
               <ul className="space-y-2 text-slate-400">
-                <li><button onClick={() => setCurrentPage('sale')} className="hover:text-white transition-colors">Căn hộ chung cư</button></li>
-                <li><button onClick={() => setCurrentPage('sale')} className="hover:text-white transition-colors">Biệt thự nhà vườn</button></li>
-                <li><button onClick={() => setCurrentPage('sale')} className="hover:text-white transition-colors">Nhà phố mặt tiền</button></li>
-                <li><button onClick={() => setCurrentPage('sale')} className="hover:text-white transition-colors">Đất nền dự án</button></li>
+                <li><button onClick={() => navigateTo('sale', 'nha-dat-ban')} className="hover:text-white transition-colors">Căn hộ chung cư</button></li>
+                <li><button onClick={() => navigateTo('sale', 'nha-dat-ban')} className="hover:text-white transition-colors">Biệt thự nhà vườn</button></li>
+                <li><button onClick={() => navigateTo('sale', 'nha-dat-ban')} className="hover:text-white transition-colors">Nhà phố mặt tiền</button></li>
+                <li><button onClick={() => navigateTo('sale', 'nha-dat-ban')} className="hover:text-white transition-colors">Đất nền dự án</button></li>
               </ul>
             </div>
 
@@ -1573,10 +1614,10 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
             <div>
               <h4 className="font-bold text-white uppercase tracking-wider mb-3">BĐS Cho Thuê</h4>
               <ul className="space-y-2 text-slate-400">
-                <li><button onClick={() => setCurrentPage('rent')} className="hover:text-white transition-colors">Căn hộ dịch vụ</button></li>
-                <li><button onClick={() => setCurrentPage('rent')} className="hover:text-white transition-colors">Shophouse thương mại</button></li>
-                <li><button onClick={() => setCurrentPage('rent')} className="hover:text-white transition-colors">Mặt bằng văn phòng</button></li>
-                <li><button onClick={() => setCurrentPage('rent')} className="hover:text-white transition-colors">Kho xưởng KCN</button></li>
+                <li><button onClick={() => navigateTo('rent', 'cho-thue')} className="hover:text-white transition-colors">Căn hộ dịch vụ</button></li>
+                <li><button onClick={() => navigateTo('rent', 'cho-thue')} className="hover:text-white transition-colors">Shophouse thương mại</button></li>
+                <li><button onClick={() => navigateTo('rent', 'cho-thue')} className="hover:text-white transition-colors">Mặt bằng văn phòng</button></li>
+                <li><button onClick={() => navigateTo('rent', 'cho-thue')} className="hover:text-white transition-colors">Kho xưởng KCN</button></li>
               </ul>
             </div>
 
@@ -1584,10 +1625,10 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
             <div>
               <h4 className="font-bold text-white uppercase tracking-wider mb-3">Liên Kết Nhanh</h4>
               <ul className="space-y-2 text-slate-400">
-                <li><button onClick={() => setCurrentPage('projects')} className="hover:text-white transition-colors">Dự án mới 2026</button></li>
-                <li><button onClick={() => setCurrentPage('news')} className="hover:text-white transition-colors">Tin tức thị trường</button></li>
-                <li><button onClick={() => setCurrentPage('contact')} className="hover:text-white transition-colors">Gửi ký gửi nhà đất</button></li>
-                <li><button onClick={() => setCurrentPage('contact')} className="hover:text-white transition-colors">Tư vấn vay ngân hàng</button></li>
+                <li><button onClick={() => navigateTo('projects', 'du-an')} className="hover:text-white transition-colors">Dự án mới 2026</button></li>
+                <li><button onClick={() => navigateTo('news', 'tin-tuc')} className="hover:text-white transition-colors">Tin tức thị trường</button></li>
+                <li><button onClick={() => navigateTo('contact', 'lien-he')} className="hover:text-white transition-colors">Gửi ký gửi nhà đất</button></li>
+                <li><button onClick={() => navigateTo('contact', 'lien-he')} className="hover:text-white transition-colors">Tư vấn vay ngân hàng</button></li>
               </ul>
             </div>
           </div>
@@ -1606,13 +1647,13 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
       ───────────────────────────────────────────────────────────── */}
       {selectedArticle && (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200">
+          <div className="bg-white rounded-md max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200">
             {/* Header image & Close */}
             <div className="relative aspect-[16/9] w-full bg-slate-900 overflow-hidden">
               <img src={selectedArticle.image} alt={selectedArticle.title} className="w-full h-full object-cover" />
               <button
                 onClick={() => setSelectedArticle(null)}
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/60 hover:bg-black text-white flex items-center justify-center transition-all z-10"
+                className="absolute top-4 right-4 w-10 h-10 rounded-sm bg-black/60 hover:bg-black text-white flex items-center justify-center transition-all z-10"
               >
                 ✕
               </button>
@@ -1632,8 +1673,8 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                 {selectedArticle.title}
               </h1>
 
-              <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100 text-xs text-slate-600">
-                <div className="w-8 h-8 rounded-full bg-blue-600 text-white font-black flex items-center justify-center text-xs">
+              <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-sm border border-slate-100 text-xs text-slate-600">
+                <div className="w-8 h-8 rounded-sm bg-blue-600 text-white font-black flex items-center justify-center text-xs">
                   BĐS
                 </div>
                 <div>
@@ -1643,7 +1684,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
               </div>
 
               <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
-                <p className="font-semibold text-slate-900 bg-blue-50/60 p-4 rounded-2xl border-l-4 border-blue-600">
+                <p className="font-semibold text-slate-900 bg-blue-50/60 p-4 rounded-sm border-l-4 border-blue-600">
                   {selectedArticle.summary || 'Theo dữ liệu nghiên cứu thị trường mới nhất từ Hội đồng Bất động sản Việt Nam, bức tranh thị trường nửa cuối năm 2026 ghi nhận những bước chuyển mình mạnh mẽ nhờ chính sách tháo gỡ pháp lý và lãi suất vay mua nhà ổn định.'}
                 </p>
 
@@ -1653,15 +1694,15 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 my-4">
-                  <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-100 text-center">
+                  <div className="bg-slate-50 p-3.5 rounded-sm border border-slate-100 text-center">
                     <span className="text-xl font-black text-blue-600 font-mono">+18.5%</span>
                     <span className="block text-[11px] text-slate-500 font-medium mt-0.5">Sức cầu căn hộ</span>
                   </div>
-                  <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-100 text-center">
+                  <div className="bg-slate-50 p-3.5 rounded-sm border border-slate-100 text-center">
                     <span className="text-xl font-black text-emerald-600 font-mono">6.2 - 8.5%</span>
                     <span className="block text-[11px] text-slate-500 font-medium mt-0.5">Lợi suất cho thuê/năm</span>
                   </div>
-                  <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-100 text-center col-span-2 sm:col-span-1">
+                  <div className="bg-slate-50 p-3.5 rounded-sm border border-slate-100 text-center col-span-2 sm:col-span-1">
                     <span className="text-xl font-black text-amber-600 font-mono">100% Sổ Hồng</span>
                     <span className="block text-[11px] text-slate-500 font-medium mt-0.5">Tiêu chí hàng đầu</span>
                   </div>
@@ -1674,14 +1715,14 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
               </div>
 
               {/* Consultation Strip */}
-              <div className="p-5 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl text-white flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="p-5 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-sm text-white flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div>
                   <h4 className="font-bold text-sm">Nhận Báo Cáo Phân Tích Quy Hoạch & Giá Đất</h4>
                   <p className="text-xs text-blue-100 mt-0.5">Tải tài liệu PDF phân tích 63 tỉnh thành cập nhật tháng 8/2026</p>
                 </div>
                 <button
                   onClick={() => { alert('Đăng ký nhận báo cáo thành công! Bản tin đã được gửi tới email của bạn.'); setSelectedArticle(null); }}
-                  className="px-5 py-2.5 bg-white text-blue-700 font-black rounded-xl text-xs shrink-0 hover:bg-blue-50 transition-colors shadow-md"
+                  className="px-5 py-2.5 bg-white text-blue-700 font-black rounded-sm text-xs shrink-0 hover:bg-blue-50 transition-colors shadow-md"
                 >
                   Tải Báo Cáo Miễn Phí
                 </button>
@@ -1696,10 +1737,10 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
       ───────────────────────────────────────────────────────────── */}
       {leadModalProject && (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 relative animate-in fade-in zoom-in duration-200">
+          <div className="bg-white rounded-md max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 relative animate-in fade-in zoom-in duration-200">
             <button
               onClick={() => { setLeadModalProject(null); setLeadSubmitted(false); }}
-              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center font-bold"
+              className="absolute top-4 right-4 w-9 h-9 rounded-sm bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center font-bold"
             >
               ✕
             </button>
@@ -1721,15 +1762,15 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                 >
                   <div>
                     <label className="text-[11px] font-bold text-slate-700 block mb-1">Họ và tên của bạn *</label>
-                    <input type="text" required placeholder="Nguyễn Văn A" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800" />
+                    <input type="text" required placeholder="Nguyễn Văn A" className="w-full bg-slate-50 border border-slate-200 rounded-sm px-3.5 py-2.5 text-xs font-semibold text-slate-800" />
                   </div>
                   <div>
                     <label className="text-[11px] font-bold text-slate-700 block mb-1">Số điện thoại / Zalo *</label>
-                    <input type="tel" required placeholder="0919 006 030" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800" />
+                    <input type="tel" required placeholder="0919 006 030" className="w-full bg-slate-50 border border-slate-200 rounded-sm px-3.5 py-2.5 text-xs font-semibold text-slate-800" />
                   </div>
                   <div>
                     <label className="text-[11px] font-bold text-slate-700 block mb-1">Nhu cầu quan tâm</label>
-                    <select className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700">
+                    <select className="w-full bg-slate-50 border border-slate-200 rounded-sm px-3 py-2.5 text-xs font-bold text-slate-700">
                       <option>Nhận Bảng Giá Đợt 1 & Chính Sách Chiết Khấu</option>
                       <option>Đăng Ký Tham Quan Căn Hộ Mẫu Trực Tiếp</option>
                       <option>Tư Vấn Gói Vay Ngân Hàng 0% Lãi Suất</option>
@@ -1737,7 +1778,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                   </div>
                   <button
                     type="submit"
-                    className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl text-xs uppercase tracking-wider shadow-md shadow-blue-600/20 transition-all hover:scale-[1.02]"
+                    className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-sm text-xs uppercase tracking-wider shadow-md shadow-blue-600/20 transition-all hover:scale-[1.02]"
                   >
                     Gửi Yêu Cầu Nhận Báo Giá Ngay
                   </button>
@@ -1745,7 +1786,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
               </div>
             ) : (
               <div className="text-center py-6">
-                <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl font-black">
+                <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-sm flex items-center justify-center mx-auto mb-3 text-2xl font-black">
                   ✓
                 </div>
                 <h3 className="text-lg font-black text-slate-900 mb-1">Đã Tiếp Nhận Thông Tin!</h3>
@@ -1754,7 +1795,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                 </p>
                 <button
                   onClick={() => { setLeadModalProject(null); setLeadSubmitted(false); }}
-                  className="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800"
+                  className="px-6 py-2.5 bg-slate-900 text-white rounded-sm text-xs font-bold hover:bg-slate-800"
                 >
                   Đóng cửa sổ
                 </button>

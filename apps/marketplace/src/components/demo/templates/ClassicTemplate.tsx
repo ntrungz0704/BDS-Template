@@ -629,7 +629,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
                 { year: '2026', title: 'Kế Thừa', desc: 'Tiếp tục hành trình kiến tạo những di sản vượt thời gian.' }
               ].map((item, idx) => (
                 <div key={idx} className="relative pl-8 md:pl-0 md:pt-12 flex-1">
-                  <div className="absolute left-[-5px] md:left-auto md:top-[-5px] md:left-1/2 md:-translate-x-1/2 w-[9px] h-[9px] rounded-full" style={{ backgroundColor: C.accent }} />
+                  <div className="absolute left-[-5px] md:left-auto md:top-[-5px] md:left-1/2 md:-translate-x-1/2 w-[9px] h-[9px] rounded-sm" style={{ backgroundColor: C.accent }} />
                   <h3 className="text-3xl mb-2" style={{ ...fontHeading, color: C.primary }}>{item.year}</h3>
                   <h4 className="text-xl mb-3 font-semibold" style={{ color: C.text }}>{item.title}</h4>
                   <p className="leading-relaxed text-sm" style={{ color: C.muted }}>{item.desc}</p>
@@ -683,7 +683,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
               { icon: <Droplets size={32} />, title: 'Thủy Khí Vượng', desc: 'Cảnh quan hồ điều hòa và suối nhân tạo bao quanh.' }
             ].map((item, idx) => (
               <div key={idx} className="p-8 border" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-                <div className="inline-block p-4 rounded-full mb-6" style={{ backgroundColor: 'rgba(220,157,95,0.1)', color: C.accent }}>
+                <div className="inline-block p-4 rounded-sm mb-6" style={{ backgroundColor: 'rgba(220,157,95,0.1)', color: C.accent }}>
                   {item.icon}
                 </div>
                 <h3 className="text-2xl mb-4" style={fontHeading}>{item.title}</h3>
@@ -1134,7 +1134,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
                 { title: 'Tôn trọng tự nhiên', desc: 'Quy hoạch cảnh quan bảo vệ môi trường, tối ưu hóa năng lượng tự nhiên theo phong thủy khí hậu học.' }
               ].map((v, i) => (
                 <div key={i} className="text-center p-8 bg-white border hover:shadow-md transition-shadow duration-300" style={{ borderColor: C.border }}>
-                  <div className="w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-6" style={{ backgroundColor: '#FDF6F0', color: C.accent }}>
+                  <div className="w-12 h-12 mx-auto rounded-sm flex items-center justify-center mb-6" style={{ backgroundColor: '#FDF6F0', color: C.accent }}>
                     <Award size={24} />
                   </div>
                   <h3 className="text-xl mb-4 font-bold" style={{ ...fontHeading, color: C.primary }}>{v.title}</h3>
@@ -1388,7 +1388,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
             </div>
 
             {/* Interactive Google Map */}
-            <div className="mt-8 rounded-2xl overflow-hidden border border-stone-200 shadow-md flex flex-col h-60 bg-white">
+            <div className="mt-8 rounded-sm overflow-hidden border border-stone-200 shadow-md flex flex-col h-60 bg-white">
               <div className="px-4 py-2 bg-stone-900 text-white flex items-center justify-between text-xs">
                 <span className="font-bold flex items-center gap-1.5 truncate"><MapPin size={14} className="text-amber-400" /> Tòa nhà Heritage — 123 Nguyễn Huệ, Quận 1, TP.HCM</span>
                 <a
@@ -1414,7 +1414,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
           <div className="lg:w-1/2 bg-white p-8 md:p-12 border shadow-lg" style={{ borderColor: C.border }}>
             {contactSubmitted ? (
               <div className="text-center py-12">
-                <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-6 text-amber-700">
+                <div className="w-16 h-16 bg-stone-100 rounded-sm flex items-center justify-center mx-auto mb-6 text-amber-700">
                   <Award size={36} />
                 </div>
                 <h3 className="text-3xl mb-4" style={{ ...fontHeading, color: C.primary }}>Gửi Yêu Cầu Thành Công</h3>
@@ -1572,7 +1572,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
             {/* Close Button */}
             <button 
               onClick={() => setSelectedVilla(null)}
-              className="absolute top-4 right-4 z-10 p-2 bg-white/80 hover:bg-white text-stone-800 rounded-full transition-colors shadow-sm"
+              className="absolute top-4 right-4 z-10 p-2 bg-white/80 hover:bg-white text-stone-800 rounded-sm transition-colors shadow-sm"
             >
               <X size={20} />
             </button>
@@ -1690,7 +1690,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
           <div className="bg-stone-50 max-w-3xl w-full max-h-[85vh] overflow-y-auto relative p-8 md:p-12 border shadow-2xl rounded-sm">
             <button 
               onClick={() => setSelectedArticle(null)}
-              className="absolute top-4 right-4 p-2 bg-stone-200/80 hover:bg-stone-200 text-stone-800 rounded-full transition-colors"
+              className="absolute top-4 right-4 p-2 bg-stone-200/80 hover:bg-stone-200 text-stone-800 rounded-sm transition-colors"
             >
               <X size={18} />
             </button>
@@ -1726,7 +1726,7 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
         <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 animate-fadeIn">
           <button 
             onClick={() => setSelectedGalleryImg(null)}
-            className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
+            className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 text-white rounded-sm transition-colors"
           >
             <X size={24} />
           </button>

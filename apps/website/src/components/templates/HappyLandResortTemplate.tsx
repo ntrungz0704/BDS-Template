@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import {
   Search, MapPin, Building, Phone, Mail, ArrowRight, ChevronRight,
   CheckCircle2, X, Eye, Sparkles, Send, Tag, Layers, Home, ArrowLeft,
@@ -139,16 +140,27 @@ export const HappyLandResortTemplate: React.FC<HappyLandResortTemplateProps> = (
 
   const navigate = (page: string, slugParam?: string) => {
     setCurrentPage(page);
+    const targetSlug = page === 'home' ? '' : (slugParam ? `${page}/${slugParam}` : page);
+    syncDemoUrl(targetSlug, 'bds-22');
     if (typeof window !== 'undefined') {
-      const basePath = window.location.pathname.split('/').slice(0, 3).join('/');
-      let newUrl = basePath;
-      if (page !== 'home') {
-        newUrl += slugParam ? `/${page}/${slugParam}` : `/${page}`;
-      }
-      window.history.pushState(null, '', newUrl);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts.slice(2).join('/') : (parts[1] !== 'bds-22' ? parts[1] : 'home');
+      if (sub) {
+        const r = resolveRoute(sub);
+        setCurrentPage(r.page);
+        if (r.unit) setSelectedUnit(r.unit);
+        if (r.article) setSelectedArticle(r.article);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const handleSelectUnit = (u: any) => {
     setSelectedUnit(u);
@@ -159,6 +171,8 @@ export const HappyLandResortTemplate: React.FC<HappyLandResortTemplateProps> = (
     setSelectedArticle(art);
     navigate('tin-tuc', art.slug || art.id);
   };
+
+  const isHome = currentPage === 'home' || (!['units', 'services', 'news', 'contact', 'unit-detail', 'news-detail', 'about', 'gioi-thieu', 'projects', 'du-an', 'gallery', 'thu-vien', 'can-ho', 'tin-tuc'].includes(currentPage) && !currentPage.startsWith('can-ho') && !currentPage.startsWith('tin-tuc'));
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-800 flex flex-col">
@@ -192,7 +206,7 @@ export const HappyLandResortTemplate: React.FC<HappyLandResortTemplateProps> = (
       </header>
 
       {/* 2. HERO */}
-      {currentPage === 'home' && (
+      {isHome && (
         <section className="relative h-[540px] bg-slate-950 overflow-hidden flex items-center justify-center text-center text-white">
           <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=1600&q=80" alt="Resort" className="w-full h-full object-cover opacity-50" />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
@@ -205,7 +219,7 @@ export const HappyLandResortTemplate: React.FC<HappyLandResortTemplateProps> = (
       )}
 
       {/* 3. HOME VIEW */}
-      {currentPage === 'home' && (
+      {isHome && (
         <main className="max-w-[1360px] mx-auto px-4 py-12 space-y-16 flex-1">
           <section>
             <div className="text-center mb-8">
@@ -456,6 +470,80 @@ export const HappyLandResortTemplate: React.FC<HappyLandResortTemplateProps> = (
                   </div>
                   <span className="text-xs font-bold text-[#0891B2]">Đọc toàn bộ bài viết →</span>
                 </div>
+              </div>
+            ))}
+          </div>
+        </main>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          PAGE: GIỚI THIỆU (ABOUT)
+      ───────────────────────────────────────────────────────────── */}
+      {(currentPage === 'about' || currentPage === 'gioi-thieu') && (
+        <main className="max-w-[1360px] mx-auto px-4 py-10 space-y-8 flex-1 w-full">
+          <div className="bg-white p-8 border border-slate-200 shadow-xs space-y-6">
+            <div className="border-b border-slate-200 pb-4">
+              <span className="text-xs font-bold text-[#0891B2] uppercase tracking-widest block mb-1">VỀ QUẦN THỂ NGHỈ DƯỠNG</span>
+              <h1 className="text-2xl font-black text-slate-900 uppercase">Happy Land Resort Nha Trang</h1>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-7 space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <p>
+                  <strong>Happy Land Resort Nha Trang</strong> là tổ hợp nghỉ dưỡng và giải trí 5 sao tọa lạc tại vịnh ngọc Nha Trang, mang đến trải nghiệm sống thượng lưu cùng tiềm năng khai thác cho thuê sinh lời vượt bậc.
+                </p>
+                <p>
+                  Với 100% căn hộ và biệt thự hướng biển, hệ sinh thái tiện ích All-in-One gồm công viên nước, bến du thuyền và chuỗi ẩm thực Á-Âu, Happy Land là điểm đến lý tưởng cho kỳ nghỉ của bạn.
+                </p>
+                <div className="grid grid-cols-3 gap-4 pt-2 text-center">
+                  <div className="p-3 bg-cyan-50 border border-cyan-100 rounded">
+                    <strong className="text-lg font-black text-[#0891B2] block">1.200+</strong>
+                    <span className="text-[10px] text-slate-500">Căn Condotel & Villa</span>
+                  </div>
+                  <div className="p-3 bg-cyan-50 border border-cyan-100 rounded">
+                    <strong className="text-lg font-black text-[#0891B2] block">5 Sao</strong>
+                    <span className="text-[10px] text-slate-500">Tiêu chuẩn quốc tế</span>
+                  </div>
+                  <div className="p-3 bg-cyan-50 border border-cyan-100 rounded">
+                    <strong className="text-lg font-black text-[#0891B2] block">10%/năm</strong>
+                    <span className="text-[10px] text-slate-500">Cam kết lợi nhuận</span>
+                  </div>
+                </div>
+              </div>
+              <div className="lg:col-span-5">
+                <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=600&q=80" alt="Resort view" className="w-full h-56 object-cover border border-slate-200 shadow-sm" />
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-200">
+              <button onClick={() => navigate('home')} className="text-xs font-bold text-[#0891B2] hover:underline">
+                ← Quay lại trang chủ
+              </button>
+            </div>
+          </div>
+        </main>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          PAGE: THƯ VIỆN HÌNH ẢNH (GALLERY)
+      ───────────────────────────────────────────────────────────── */}
+      {(currentPage === 'gallery' || currentPage === 'thu-vien') && (
+        <main className="max-w-[1360px] mx-auto px-4 py-10 space-y-8 flex-1 w-full">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 uppercase">Thư Viện Ảnh Happy Land Resort</h1>
+            <button onClick={() => navigate('home')} className="text-xs font-bold text-[#0891B2] hover:underline">← Về trang chủ</button>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {[
+              'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=600&q=80',
+              'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&q=80',
+              'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80',
+              'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&q=80',
+              'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=80',
+              'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?w=600&q=80',
+            ].map((img, idx) => (
+              <div key={idx} className="aspect-[4/3] overflow-hidden rounded border border-slate-200 group">
+                <img src={img} alt={`Gallery ${idx}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               </div>
             ))}
           </div>

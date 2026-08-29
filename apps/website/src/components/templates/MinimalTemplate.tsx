@@ -544,7 +544,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
       <div className={`${MAX_W} mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3`}>
         {/* Left: Brand Logo */}
         <div onClick={() => navigate('home')} className="flex items-center gap-3 cursor-pointer group">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-700 to-blue-600 flex items-center justify-center text-white font-black text-xl shadow-md group-hover:scale-105 transition">
+          <div className="w-11 h-11 rounded-sm bg-gradient-to-tr from-blue-700 to-blue-600 flex items-center justify-center text-white font-black text-xl shadow-md group-hover:scale-105 transition">
             TB
           </div>
           <div>
@@ -580,7 +580,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
       {/* Main Nav Bar (Dark Blue #0D3F8D + Red Active #D8232A) */}
       <div className="w-full bg-[#0D3F8D] text-white">
         <div className={`${MAX_W} mx-auto px-4 flex items-center justify-between`}>
-          <nav className="hidden lg:flex items-center text-xs font-bold uppercase tracking-wider">
+          <nav className="hidden lg:flex items-center text-xs font-bold uppercase tracking-wider whitespace-nowrap">
             {[
               { id: 'home', label: 'TRANG CHỦ' },
               { id: 'biet-thu', label: 'BIỆT THỰ' },
@@ -595,7 +595,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
                 <button
                   key={navItem.id}
                   onClick={() => navigate(navItem.id)}
-                  className={`px-4 py-3.5 transition-all cursor-pointer ${
+                  className={`whitespace-nowrap px-4 py-3.5 transition-all cursor-pointer ${
                     isActive
                       ? 'bg-[#D8232A] text-white font-black shadow-inner'
                       : 'text-white/90 hover:bg-blue-900/60 hover:text-white'
@@ -684,7 +684,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
           TÌM KIẾM BẤT ĐỘNG SẢN
         </h2>
 
-        <div className="bg-white/10 backdrop-blur-md p-3 sm:p-4 rounded-xl border border-white/20 shadow-2xl space-y-2.5">
+        <div className="bg-white/10 backdrop-blur-md p-3 sm:p-4 rounded-sm border border-white/20 shadow-2xl space-y-2.5">
           {/* Row 1: Keyword */}
           <input
             type="text"
@@ -759,7 +759,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
   const renderRightSidebar = () => (
     <aside className="space-y-6">
       {/* Box 1: Quick Search Widget */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+      <div className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs">
         <div className="bg-[#0D3F8D] px-4 py-2.5 text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5">
           <Search size={14} /> Tìm kiếm bất động sản
         </div>
@@ -823,7 +823,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
       </div>
 
       {/* Box 2: VIP Ad Banner */}
-      <div className="rounded-xl overflow-hidden shadow-md relative group cursor-pointer" onClick={() => navigate('biet-thu')}>
+      <div className="rounded-sm overflow-hidden shadow-md relative group cursor-pointer" onClick={() => navigate('biet-thu')}>
         <img
           src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80"
           alt="Biệt thự biển VIP"
@@ -831,7 +831,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
           className="w-full h-48 object-cover group-hover:scale-105 transition duration-500"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-4 flex flex-col justify-end text-white text-center">
-          <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 bg-amber-400/20 px-2 py-0.5 rounded-full w-fit mx-auto mb-1">
+          <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 bg-amber-400/20 px-2 py-0.5 rounded-sm w-fit mx-auto mb-1">
             VINPEARL RESORT
           </span>
           <h4 className="text-sm font-black uppercase">ĐẦU TƯ BIỆT THỰ BIỂN</h4>
@@ -841,7 +841,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
       </div>
 
       {/* Box 3: Bất Động Sản Bán Theo Quận */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+      <div className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs">
         <div className="bg-[#D8232A] px-4 py-2 text-white font-black text-xs uppercase tracking-wider">
           BẤT ĐỘNG SẢN BÁN THEO QUẬN
         </div>
@@ -868,7 +868,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
       </div>
 
       {/* Box 4: Bất Động Sản Cho Thuê */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+      <div className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs">
         <div className="bg-[#D8232A] px-4 py-2 text-white font-black text-xs uppercase tracking-wider">
           BẤT ĐỘNG SẢN CHO THUÊ
         </div>
@@ -895,7 +895,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
       </div>
 
       {/* Box 5: Bất Động Sản Theo Khoảng Giá */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+      <div className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs">
         <div className="bg-[#D8232A] px-4 py-2 text-white font-black text-xs uppercase tracking-wider">
           BẤT ĐỘNG SẢN THEO KHOẢNG GIÁ
         </div>
@@ -927,7 +927,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
     <div
       key={item.id}
       onClick={() => handleOpenProperty(item)}
-      className="bg-white rounded-xl border border-slate-200 hover:border-red-500 p-3 flex flex-col sm:flex-row gap-3.5 shadow-xs hover:shadow-md transition cursor-pointer group"
+      className="bg-white rounded-sm border border-slate-200 hover:border-red-500 p-3 flex flex-col sm:flex-row gap-3.5 shadow-xs hover:shadow-md transition cursor-pointer group"
     >
       <div className="w-full sm:w-44 h-36 sm:h-32 shrink-0 rounded-lg overflow-hidden bg-slate-100 relative">
         <img
@@ -993,7 +993,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
                     <div
                       key={item.id}
                       onClick={() => handleOpenProperty(item)}
-                      className="bg-white rounded-xl border border-slate-200 hover:border-red-500 overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer group flex flex-col justify-between"
+                      className="bg-white rounded-sm border border-slate-200 hover:border-red-500 overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer group flex flex-col justify-between"
                     >
                       <div className="h-36 relative overflow-hidden bg-slate-100">
                         <img
@@ -1034,7 +1034,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
                 <div className="flex justify-center pt-2">
                   <button
                     onClick={() => { setFilterDistrict('Thanh Khê'); navigate('nha-mat-tien'); }}
-                    className="px-5 py-2 border border-blue-700 hover:bg-blue-50 text-blue-800 rounded-full font-bold text-xs transition cursor-pointer"
+                    className="px-5 py-2 border border-blue-700 hover:bg-blue-50 text-blue-800 rounded-sm font-bold text-xs transition cursor-pointer"
                   >
                     Xem thêm nhà đất Thanh Khê ›
                   </button>
@@ -1055,7 +1055,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
                 <div className="flex justify-center pt-2">
                   <button
                     onClick={() => { setFilterDistrict('Sơn Trà'); navigate('biet-thu'); }}
-                    className="px-5 py-2 border border-blue-700 hover:bg-blue-50 text-blue-800 rounded-full font-bold text-xs transition cursor-pointer"
+                    className="px-5 py-2 border border-blue-700 hover:bg-blue-50 text-blue-800 rounded-sm font-bold text-xs transition cursor-pointer"
                   >
                     Xem thêm nhà đất Sơn Trà ›
                   </button>
@@ -1075,7 +1075,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
                     <div
                       key={art.id}
                       onClick={() => handleOpenArticle(art)}
-                      className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer group flex flex-col justify-between"
+                      className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer group flex flex-col justify-between"
                     >
                       <div className="h-32 overflow-hidden bg-slate-100">
                         <img
@@ -1131,7 +1131,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
               </div>
 
               {filteredList.length === 0 ? (
-                <div className="bg-white p-12 rounded-xl text-center border border-slate-200 shadow-xs">
+                <div className="bg-white p-12 rounded-sm text-center border border-slate-200 shadow-xs">
                   <p className="text-sm font-bold text-slate-600">Không tìm thấy bất động sản nào theo tiêu chí đã chọn.</p>
                   <button
                     onClick={() => { setFilterPropType('all'); setFilterDistrict('all'); setFilterPrice('all'); setSearchLocation(''); }}
@@ -1176,7 +1176,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
                 <div
                   key={art.id}
                   onClick={() => handleOpenArticle(art)}
-                  className="bg-white rounded-xl border border-slate-200 hover:border-red-500 p-4 flex flex-col sm:flex-row gap-4 shadow-xs hover:shadow-md transition cursor-pointer group"
+                  className="bg-white rounded-sm border border-slate-200 hover:border-red-500 p-4 flex flex-col sm:flex-row gap-4 shadow-xs hover:shadow-md transition cursor-pointer group"
                 >
                   <div className="w-full sm:w-48 h-36 shrink-0 rounded-lg overflow-hidden bg-slate-100">
                     <img
@@ -1224,7 +1224,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-6">
+          <div className="lg:col-span-8 bg-white rounded-sm border border-slate-200 p-6 shadow-xs space-y-6">
             <h1 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
               {selectedArticle.title}
             </h1>
@@ -1236,7 +1236,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
               <span>{selectedArticle.views} lượt xem</span>
             </div>
 
-            <div className="rounded-xl overflow-hidden shadow-sm">
+            <div className="rounded-sm overflow-hidden shadow-sm">
               <img
                 src={selectedArticle.image}
                 alt={selectedArticle.title}
@@ -1284,7 +1284,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-8 space-y-6">
             {/* Title & Price Header */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-3">
+            <div className="bg-white rounded-sm border border-slate-200 p-5 shadow-xs space-y-3">
               <h1 className="text-lg sm:text-2xl font-black text-slate-900 leading-snug">
                 {selectedProperty.title}
               </h1>
@@ -1302,7 +1302,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
             </div>
 
             {/* Photo Gallery */}
-            <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs space-y-3">
+            <div className="bg-white rounded-sm border border-slate-200 p-4 shadow-xs space-y-3">
               <div className="h-80 sm:h-96 rounded-lg overflow-hidden bg-slate-100">
                 <img
                   src={selectedProperty.gallery[activeGalleryIdx] || selectedProperty.image}
@@ -1327,7 +1327,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
             </div>
 
             {/* Specifications */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
+            <div className="bg-white rounded-sm border border-slate-200 p-5 shadow-xs space-y-4">
               <h3 className="font-black text-sm text-[#0D3F8D] uppercase tracking-wider border-b border-slate-100 pb-2">
                 THÔNG SỐ CHI TIẾT BẤT ĐỘNG SẢN
               </h3>
@@ -1342,7 +1342,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
             </div>
 
             {/* Description */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-3">
+            <div className="bg-white rounded-sm border border-slate-200 p-5 shadow-xs space-y-3">
               <h3 className="font-black text-sm text-[#0D3F8D] uppercase tracking-wider border-b border-slate-100 pb-2">
                 MÔ TẢ CHI TIẾT
               </h3>
@@ -1350,7 +1350,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
             </div>
 
             {/* Mortgage Calculator */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
+            <div className="bg-white rounded-sm border border-slate-200 p-5 shadow-xs space-y-4">
               <h3 className="font-black text-sm text-[#0D3F8D] uppercase tracking-wider border-b border-slate-100 pb-2 flex items-center gap-1.5">
                 <Calculator size={16} /> BẢNG TÍNH LÃI SUẤT VAY MUA NHÀ
               </h3>
@@ -1391,7 +1391,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
                   />
                 </div>
               </div>
-              <div className="p-4 bg-blue-50 rounded-xl grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-slate-800">
+              <div className="p-4 bg-blue-50 rounded-sm grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-slate-800">
                 <div>Số tiền vay: <strong className="text-blue-900 block font-black">{(mortgageCalc.loanAmount / 1_000_000_000).toFixed(2)} Tỷ</strong></div>
                 <div>Gốc + Lãi tháng đầu: <strong className="text-red-600 block font-black">{(mortgageCalc.monthlyPayment / 1_000_000).toFixed(1)} Triệu/tháng</strong></div>
                 <div>Tổng lãi phải trả: <strong className="text-slate-900 block font-black">{(mortgageCalc.totalInterest / 1_000_000_000).toFixed(2)} Tỷ</strong></div>
@@ -1399,7 +1399,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
             </div>
 
             {/* Google Map Embed */}
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+            <div className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs">
               <div className="bg-[#0D3F8D] px-4 py-2 text-white font-black text-xs uppercase">
                 VỊ TRÍ BẤT ĐỘNG SẢN TRÊN BẢN ĐỒ
               </div>
@@ -1416,8 +1416,8 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
 
           <div className="lg:col-span-4 space-y-6">
             {/* Agent Contact Card */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4 text-center">
-              <div className="w-20 h-20 rounded-full overflow-hidden mx-auto border-2 border-red-600 shadow-md">
+            <div className="bg-white rounded-sm border border-slate-200 p-5 shadow-xs space-y-4 text-center">
+              <div className="w-20 h-20 rounded-sm overflow-hidden mx-auto border-2 border-red-600 shadow-md">
                 <img src={selectedProperty.author.avatar} alt="" className="w-full h-full object-cover" />
               </div>
               <div>
@@ -1456,7 +1456,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
 
       <div className={`${MAX_W} mx-auto px-4`}>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-5">
+          <div className="lg:col-span-8 bg-white rounded-sm border border-slate-200 p-6 shadow-xs space-y-5">
             <h2 className="text-base sm:text-lg font-black text-[#0D3F8D] leading-snug">
               Thông tin góp ý - phản hồi của bạn sẽ giúp chúng tôi phục vụ bạn ngày càng tốt hơn
             </h2>
@@ -1543,9 +1543,9 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
   const renderConsignmentPage = () => (
     <div className="bg-[#F8FAFC] py-8 min-h-screen">
       <div className={`${MAX_W} mx-auto px-4 max-w-4xl space-y-6`}>
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-md space-y-6">
+        <div className="bg-white rounded-sm border border-slate-200 p-6 sm:p-8 shadow-md space-y-6">
           <div className="text-center space-y-2">
-            <span className="px-3 py-1 bg-red-100 text-red-600 font-bold text-xs rounded-full">
+            <span className="px-3 py-1 bg-red-100 text-red-600 font-bold text-xs rounded-sm">
               DỊCH VỤ CHUYÊN NGHIỆP
             </span>
             <h1 className="text-2xl font-black text-slate-900">KÝ GỬI BẤT ĐỘNG SẢN CHÍNH CHỦ</h1>
@@ -1632,7 +1632,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
 
             <button
               type="submit"
-              className="w-full py-3 bg-[#D8232A] hover:bg-red-700 text-white font-black text-xs rounded-xl shadow-lg transition cursor-pointer"
+              className="w-full py-3 bg-[#D8232A] hover:bg-red-700 text-white font-black text-xs rounded-sm shadow-lg transition cursor-pointer"
             >
               GỬI YÊU CẦU KÝ GỬI NGAY
             </button>
@@ -1646,21 +1646,21 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
   const renderAboutPage = () => (
     <div className="bg-[#F8FAFC] py-8 min-h-screen">
       <div className={`${MAX_W} mx-auto px-4 max-w-4xl space-y-6`}>
-        <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm space-y-6">
+        <div className="bg-white rounded-sm border border-slate-200 p-8 shadow-sm space-y-6">
           <h1 className="text-2xl font-black text-[#0D3F8D]">VỀ CHÚNG TÔI — SÀN GIAO DỊCH BẤT ĐỘNG SẢN</h1>
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
             Chúng tôi tự hào là đơn vị phân phối và môi giới bất động sản uy tín hàng đầu, chuyên cung cấp các giải pháp mua bán, cho thuê nhà mặt tiền, biệt thự nghỉ dưỡng, nhà phố và căn hộ dịch vụ cao cấp.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-100 text-center">
-            <div className="p-4 bg-slate-50 rounded-xl">
+            <div className="p-4 bg-slate-50 rounded-sm">
               <div className="text-2xl font-black text-red-600">10+ Năm</div>
               <div className="text-xs text-slate-500 mt-1">Kinh nghiệm thị trường</div>
             </div>
-            <div className="p-4 bg-slate-50 rounded-xl">
+            <div className="p-4 bg-slate-50 rounded-sm">
               <div className="text-2xl font-black text-[#0D3F8D]">5,000+</div>
               <div className="text-xs text-slate-500 mt-1">Giao dịch thành công</div>
             </div>
-            <div className="p-4 bg-slate-50 rounded-xl">
+            <div className="p-4 bg-slate-50 rounded-sm">
               <div className="text-2xl font-black text-amber-500">100%</div>
               <div className="text-xs text-slate-500 mt-1">Pháp lý minh bạch</div>
             </div>

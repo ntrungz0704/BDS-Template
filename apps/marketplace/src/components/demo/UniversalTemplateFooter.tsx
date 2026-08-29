@@ -256,38 +256,6 @@ export default function UniversalTemplateFooter({
           </div>
         </div>
       </div>
-
-      {/* ── 4. FLOATING ACTION BUTTONS ON THE RIGHT ── */}
-      <div className="fixed bottom-6 right-5 z-40 flex flex-col items-center gap-3">
-        {/* Zalo Button */}
-        <a
-          href="https://zalo.me/0919006030"
-          target="_blank"
-          rel="noreferrer"
-          title="Chat Zalo CSKH (0919 006 030)"
-          className="w-12 h-12 rounded-full bg-[#0084FF] hover:bg-blue-600 text-white flex items-center justify-center shadow-2xl hover:scale-110 transition animate-pulse"
-        >
-          <span className="text-[10px] font-black tracking-tighter">ZALO</span>
-        </a>
-
-        {/* Hotline Call Button */}
-        <a
-          href="tel:0919006030"
-          title="Gọi Hotline Ngay (0919 006 030)"
-          className="w-12 h-12 rounded-full bg-[#E65100] hover:bg-[#F57C00] text-white flex items-center justify-center shadow-2xl hover:scale-110 transition"
-        >
-          <Phone size={20} />
-        </a>
-
-        {/* Scroll To Top */}
-        <button
-          onClick={scrollToTop}
-          title="Lên đầu trang"
-          className="w-10 h-10 rounded-full bg-slate-900/90 hover:bg-slate-950 text-white flex items-center justify-center shadow-lg hover:scale-105 transition cursor-pointer"
-        >
-          <ArrowUp size={18} />
-        </button>
-      </div>
     </footer>
   );
 }

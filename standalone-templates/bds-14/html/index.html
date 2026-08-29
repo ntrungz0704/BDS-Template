@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WINTLAND — SÀN BẤT ĐỘNG SẢN UY TÍN TOÀN QUỐC</title>
+  <meta name="description" content="Nền tảng giao dịch bất động sản thông minh: Mua bán nhà phố, biệt thự, căn hộ cao cấp và đất nền sinh lời.">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col justify-between selection:bg-[#65A30D] selection:text-white">
+
+  <!-- TOP BAR -->
+  <div class="bg-[#4D7C0F] text-white text-xs py-1.5 px-4 hidden md:block">
+    <div class="max-w-7xl mx-auto flex items-center justify-between text-[11px]">
+      <div class="flex items-center gap-6">
+        <span class="flex items-center gap-1.5">
+          <i data-lucide="mail" class="w-3.5 h-3.5 text-[#BEF264]"></i> info@wintland.vn
+        </span>
+        <span class="opacity-40">|</span>
+        <span class="flex items-center gap-1.5 font-bold">
+          <i data-lucide="phone" class="w-3.5 h-3.5 text-[#BEF264]"></i> Hotline: 0919 006 030
+        </span>
+      </div>
+      <div class="text-lime-100 font-bold uppercase">
+        SÀN GIAO DỊCH VÀ PHÂN PHỐI BẤT ĐỘNG SẢN TOÀN QUỐC WINTLAND
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 bg-white text-slate-800 shadow-md border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo WintLand -->
+      <a href="index.html" class="flex items-center gap-3 group shrink-0">
+        <div class="w-10 h-10 bg-gradient-to-br from-[#84CC16] via-[#65A30D] to-[#4D7C0F] rounded-sm flex items-center justify-center text-white font-black text-xl shadow-md">
+          <i data-lucide="home" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <span class="text-xl sm:text-2xl font-black text-[#4D7C0F] tracking-tight block leading-none">
+            WINT<span class="text-slate-900">LAND</span>
+          </span>
+          <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mt-0.5">
+            REAL ESTATE PLATFORM
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden xl:flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-700 whitespace-nowrap">
+        <a href="index.html" class="px-3 py-1.5 text-[#65A30D] font-extrabold border-b-2 border-[#65A30D]">Trang Chủ</a>
+        <a href="#nha-dat-ban" class="px-3 py-1.5 hover:text-[#65A30D]">BĐS Bán</a>
+        <a href="#gioi-thieu" class="px-3 py-1.5 hover:text-[#65A30D]">Giới Thiệu</a>
+        <a href="#noi-bat" class="px-3 py-1.5 hover:text-[#65A30D]">BĐS Nổi Bật</a>
+        <a href="#thi-truong" class="px-3 py-1.5 hover:text-[#65A30D]">Thị Trường</a>
+        <a href="#tin-tuc" class="px-3 py-1.5 hover:text-[#65A30D]">Tin Tức</a>
+        <a href="#lien-he" class="px-3 py-1.5 hover:text-[#65A30D]">Liên Hệ</a>
+      </nav>
+
+      <!-- CTA -->
+      <div class="flex items-center gap-3 shrink-0">
+        <a href="#dang-tin" class="px-4 py-2 bg-gradient-to-r from-[#84CC16] to-[#65A30D] text-white text-xs font-black rounded-sm shadow-md uppercase tracking-wider whitespace-nowrap">
+          + ĐĂNG TIN
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-1 w-full space-y-0">
+
+    <!-- HERO BANNER -->
+    <section class="relative bg-slate-900 text-white min-h-[380px] flex items-center justify-center text-center px-4">
+      <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80" alt="Hero" class="absolute inset-0 w-full h-full object-cover opacity-50">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/30"></div>
+
+      <div class="relative z-20 max-w-3xl mx-auto space-y-3">
+        <span class="px-4 py-1 rounded-sm bg-white/20 text-[#BEF264] text-xs font-bold uppercase tracking-widest inline-block border border-white/30">
+          NỀN TẢNG BẤT ĐỘNG SẢN THÔNG MINH
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-black uppercase text-white">
+          TÌM KIẾM BẤT ĐỘNG SẢN MƠ ƯỚC
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-200">
+          Hàng ngàn sản phẩm nhà phố, biệt thự, căn hộ cao cấp được kiểm duyệt pháp lý 100%.
+        </p>
+      </div>
+    </section>
+
+    <!-- SECTION 1: NHÀ ĐẤT BÁN -->
+    <section id="nha-dat-ban" class="py-14 max-w-7xl mx-auto px-4 space-y-8">
+      <div class="flex items-center gap-3 border-b pb-3">
+        <div class="w-1.5 h-6 bg-[#65A30D] rounded-sm"></div>
+        <h2 class="text-xl font-black text-slate-900 uppercase">NHÀ ĐẤT BÁN</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="bg-white rounded-sm overflow-hidden border p-4 space-y-2">
+          <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80" alt="" class="w-full h-40 object-cover rounded-sm">
+          <h4 class="text-xs font-black uppercase text-slate-900">Nhà Phố Mặt Tiền Nguyễn Trãi Q1</h4>
+          <span class="text-sm font-black text-[#65A30D]">8.50 Tỷ VNĐ (95m²)</span>
+        </div>
+
+        <div class="bg-white rounded-sm overflow-hidden border p-4 space-y-2">
+          <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80" alt="" class="w-full h-40 object-cover rounded-sm">
+          <h4 class="text-xs font-black uppercase text-slate-900">Căn Hộ View Biển Mỹ Khê The Sang</h4>
+          <span class="text-sm font-black text-[#65A30D]">3.45 Tỷ VNĐ (72m²)</span>
+        </div>
+
+        <div class="bg-white rounded-sm overflow-hidden border p-4 space-y-2">
+          <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&q=80" alt="" class="w-full h-40 object-cover rounded-sm">
+          <h4 class="text-xs font-black uppercase text-slate-900">Biệt Thự Vườn Ven Sông Hương Huế</h4>
+          <span class="text-sm font-black text-[#65A30D]">6.20 Tỷ VNĐ (280m²)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: FORM ĐĂNG TIN MIỄN PHÍ -->
+    <section id="dang-tin" class="py-14 max-w-3xl mx-auto px-4">
+      <div class="bg-white rounded-md p-8 border shadow-xl space-y-4 text-center">
+        <h3 class="text-lg font-black text-[#4D7C0F] uppercase">ĐĂNG TIN BẤT ĐỘNG SẢN WINTLAND</h3>
+        <p class="text-xs text-slate-500">Tiếp cận hơn 100.000 khách hàng tiềm năng toàn quốc.</p>
+        <form onsubmit="event.preventDefault(); alert('🎉 Đã tiếp nhận tin đăng!');" class="space-y-3 text-xs">
+          <input type="text" placeholder="Họ và tên..." required class="w-full p-3 rounded-sm border bg-slate-50">
+          <input type="tel" placeholder="Số điện thoại (*)..." required class="w-full p-3 rounded-sm border bg-slate-50 font-bold">
+          <input type="text" placeholder="Tiêu đề tin đăng..." required class="w-full p-3 rounded-sm border bg-slate-50">
+          <button type="submit" class="w-full py-3.5 bg-[#65A30D] text-white font-black uppercase rounded-sm shadow">
+            ĐĂNG TIN MIỄN PHÍ NGAY
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER TEMPLATESBDS -->
+  <footer id="lien-he" class="w-full bg-[#0F172A] text-white py-8 px-4 text-xs text-center border-t border-slate-800">
+    <div class="max-w-7xl mx-auto space-y-2">
+      <p class="text-slate-300">© 2026 Bản quyền thuộc về <strong>TEMPLATEBDS</strong> — Mẫu Giao Diện: <strong>BDS-14 (WintLand Real Estate)</strong></p>
+      <p class="text-slate-400 text-[11px]">Hotline: 0919 006 030 • 320 Đường 2/9, Hải Châu, TP. Đà Nẵng</p>
+    </div>
+  </footer>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

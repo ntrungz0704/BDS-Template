@@ -713,7 +713,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                 </h3>
                 <div className="p-3 bg-blue-50 border border-blue-100 rounded text-center">
                   <div className="flex items-center justify-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-black">f</div>
+                    <div className="w-8 h-8 rounded-sm bg-blue-600 text-white flex items-center justify-center font-black">f</div>
                     <div className="text-left">
                       <strong className="block text-xs text-blue-900">Nhà Đất Số Fanpage</strong>
                       <span className="text-[10px] text-slate-500">854.718 người theo dõi</span>
@@ -795,7 +795,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
               </h1>
             </div>
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-full">
+              <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-sm">
                 🔥 142 bài viết mới hôm nay
               </span>
             </div>
@@ -924,7 +924,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                 <div className="space-y-2.5">
                   {NHADATSO_ARTICLES.slice(0, 5).map((art, idx) => (
                     <div key={idx} className="flex items-start gap-2.5 border-b border-slate-100 pb-2 last:border-0 last:pb-0 group cursor-pointer">
-                      <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] flex items-center justify-center shrink-0">
+                      <span className="w-5 h-5 rounded-sm bg-emerald-100 text-emerald-800 font-bold text-[10px] flex items-center justify-center shrink-0">
                         {idx + 1}
                       </span>
                       <div>
@@ -1291,12 +1291,12 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
       ───────────────────────────────────────────────────────────── */}
       {selectedProperty && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm overflow-y-auto animate-in fade-in">
-          <div className="bg-white rounded-xl shadow-2xl border border-slate-300 max-w-2xl w-full overflow-hidden my-8">
+          <div className="bg-white rounded-sm shadow-2xl border border-slate-300 max-w-2xl w-full overflow-hidden my-8">
             <div className="relative h-60 bg-slate-900">
               <img src={selectedProperty.image} alt={selectedProperty.title} className="w-full h-full object-cover" />
               <button
                 onClick={() => setSelectedProperty(null)}
-                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-900/80 text-white hover:bg-red-600 flex items-center justify-center"
+                className="absolute top-3 right-3 w-8 h-8 rounded-sm bg-slate-900/80 text-white hover:bg-red-600 flex items-center justify-center"
               >
                 <X className="w-4 h-4" />
               </button>

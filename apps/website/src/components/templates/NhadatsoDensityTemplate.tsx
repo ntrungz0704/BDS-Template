@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import {
   Search,
   MapPin,
@@ -69,18 +70,95 @@ const PROVINCES = [
   'Tỉnh Long An'
 ];
 
-const ADVICE_ARTICLES = [
-  { title: 'Cách bắt mạch bong bóng bất động sản năm 2026 đã vượt qua', date: 'Mới nhất', image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=300&q=80' },
-  { title: 'Mua chung cư cuối năm, người mua nhà cần quan tâm điều gì?', date: 'Mới nhất', image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=300&q=80' },
-  { title: 'Bất động sản 2026: Thị trường nóng sốt dự báo giá tăng loạt tầng', date: 'Mới nhất', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=300&q=80' },
-  { title: 'Đầu tư bất động sản 2026: Trả tiền vào đâu hiệu quả nhất?', date: 'Mới nhất', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=300&q=80' },
+const NHADATSO_ARTICLES = [
+  {
+    id: 1,
+    slug: 'toan-canh-thi-truong-bds-2026',
+    title: 'Toàn cảnh thị trường BĐS năm 2026: Dòng tiền thông minh đang dịch chuyển về đâu?',
+    category: 'TIÊU ĐIỂM THỊ TRƯỜNG',
+    date: 'Hôm nay, 08:00',
+    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80',
+    desc: 'Phân tích chi tiết chu kỳ phục hồi của phân khúc đất nền ven đô và căn hộ thương mại. Lãi suất ngân hàng duy trì mức hấp dẫn giúp thanh khoản bất động sản tăng trưởng hơn 35% so với cùng kỳ.',
+    author: 'Ban Phân Tích Nhà Đất Số',
+    readTime: '6 phút đọc'
+  },
+  {
+    id: 2,
+    slug: 'cach-bat-mach-bong-bong-bds-2026',
+    title: 'Cách bắt mạch bong bóng bất động sản năm 2026 đã vượt qua',
+    category: 'Phân tích đầu tư',
+    date: 'Hôm nay, 08:30',
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+    desc: 'Nhận diện chu kỳ thị trường bất động sản ngay thời điểm hiện nay để đón chu kỳ tăng trưởng mới với mức lợi nhuận tối ưu.',
+    author: 'Chuyên gia Đặng Quốc Toàn',
+    readTime: '5 phút đọc'
+  },
+  {
+    id: 3,
+    slug: 'mua-chung-cu-cuoi-nam-can-luu-y-gi',
+    title: 'Mua chung cư cuối năm, người mua nhà cần quan tâm điều gì?',
+    category: 'Kinh nghiệm mua nhà',
+    date: 'Hôm nay, 09:15',
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+    desc: 'Tổng hợp các tiêu chí kiểm tra pháp lý, tiến độ bàn giao, quỹ bảo trì và tiện ích thực tế trước khi đặt cọc.',
+    author: 'Phan Tuấn Kiệt - KTS Đô thị',
+    readTime: '4 phút đọc'
+  },
+  {
+    id: 4,
+    slug: 'bat-dong-san-2026-gia-tang-loat-tang',
+    title: 'Bất động sản 2026: Thị trường nóng sốt dự báo giá tăng loạt tầng',
+    category: 'Quy hoạch & Hạ tầng',
+    date: 'Hôm qua',
+    image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80',
+    desc: 'Đánh giá tác động của các tuyến đường Vành đai 3, cao tốc liên vùng tới mức giá bất động sản các tỉnh lân cận.',
+    author: 'Võ Minh Hoàng - Ban Hạ Tầng',
+    readTime: '5 phút đọc'
+  },
+  {
+    id: 5,
+    slug: 'luat-dat-dai-moi-quyen-loi-nguoi-mua-nha',
+    title: 'Luật Đất đai mới có hiệu lực: Quyền lợi người mua nhà được bảo vệ ra sao?',
+    category: 'Pháp lý BĐS',
+    date: '2 ngày trước',
+    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
+    desc: 'Những điểm cốt lõi về việc cấp sổ đỏ, minh bạch thông tin giao dịch và bảng giá đất sát thực tế thị trường.',
+    author: 'Luật sư Hoàng Thị Kim Oanh',
+    readTime: '7 phút đọc'
+  },
+  {
+    id: 6,
+    slug: 'top-5-khu-vuc-ven-tphcm-ha-tang-but-pha',
+    title: 'Top 5 khu vực ven TP.HCM có hạ tầng bứt phá mạnh nhất năm 2026',
+    category: 'Thị trường TP.HCM',
+    date: '3 ngày trước',
+    image: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&q=80',
+    desc: 'Bình Chánh, Củ Chi, Hóc Môn và Nhơn Trạch đang đón làn sóng đầu tư mạnh mẽ từ các doanh nghiệp bất động sản lớn.',
+    author: 'Nguyễn Văn Đạt - Hội Môi giới BĐS',
+    readTime: '6 phút đọc'
+  }
 ];
 
 export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = ({
   initialPage = 'home',
   company
 }) => {
-  const [currentPage, setCurrentPage] = useState<string>(initialPage);
+  const resolveInitialArticle = () => {
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      return NHADATSO_ARTICLES.find(n => n.slug === sub || String(n.id) === sub) || NHADATSO_ARTICLES[0];
+    }
+    return null;
+  };
+
+  const initialArticle = resolveInitialArticle();
+  const [selectedArticle, setSelectedArticle] = useState<any>(initialArticle);
+  const [currentPage, setCurrentPage] = useState<string>(initialArticle ? 'news-detail' : (initialPage || 'home'));
+
+  const isHome = useMemo(() => {
+    return (currentPage === 'home' || !['sale', 'rent', 'transfer', 'news', 'tin-tuc', 'news-detail', 'about', 'gioi-thieu', 'projects', 'du-an', 'fengshui', 'contact'].includes(currentPage)) && !selectedArticle;
+  }, [currentPage, selectedArticle]);
+
   const [filterTab, setFilterTab] = useState<'sale' | 'rent' | 'transfer'>('sale');
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [selectedCity, setSelectedCity] = useState<string>('all');
@@ -102,6 +180,54 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
     });
   }, [filterTab, searchKeyword, selectedCity]);
 
+  const navigateTo = (page: string, customSlug?: string) => {
+    if (page !== 'news-detail') {
+      setSelectedArticle(null);
+    }
+    setCurrentPage(page);
+    setSelectedProperty(null);
+    setMobileMenuOpen(false);
+    syncDemoUrl(customSlug || page, 'bds-19');
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenArticle = (item: any) => {
+    setSelectedArticle(item);
+    setCurrentPage('news-detail');
+    setMobileMenuOpen(false);
+    syncDemoUrl(`tin-tuc/${item.slug || item.id}`, 'bds-19');
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      const found = NHADATSO_ARTICLES.find(n => n.slug === sub || String(n.id) === sub) || NHADATSO_ARTICLES[0];
+      setSelectedArticle(found);
+      setCurrentPage('news-detail');
+    }
+  }, [initialPage]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts.slice(2).join('/') : (parts[1] !== 'bds-19' ? parts[1] : 'home');
+      if (sub) {
+        if (sub.startsWith('tin-tuc/') || sub.startsWith('news/') || sub.startsWith('bai-viet/')) {
+          const artSlug = sub.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+          const found = NHADATSO_ARTICLES.find(n => n.slug === artSlug || String(n.id) === artSlug) || NHADATSO_ARTICLES[0];
+          setSelectedArticle(found);
+          setCurrentPage('news-detail');
+        } else {
+          setSelectedArticle(null);
+          setCurrentPage(sub);
+        }
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const handleConsultSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!consultPhone) return;
@@ -118,7 +244,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
         <div className="max-w-[1200px] mx-auto flex flex-wrap items-center justify-between gap-3">
           {/* Brand Logo */}
           <div 
-            onClick={() => { setCurrentPage('home'); setSelectedProperty(null); }}
+            onClick={() => navigateTo('home', '')}
             className="flex items-center gap-2 cursor-pointer"
           >
             <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-black text-lg">
@@ -148,7 +274,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
 
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setCurrentPage('contact')}
+              onClick={() => navigateTo('contact', 'lien-he')}
               className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-md flex items-center gap-1.5 shadow-sm transition-all"
             >
               <span>📝 Đăng tin miễn phí</span>
@@ -168,22 +294,21 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
         <div className="max-w-[1200px] mx-auto px-4 flex items-center justify-between">
           <div className="hidden md:flex items-center text-xs font-bold uppercase tracking-wide">
             {[
-              { key: 'home', label: 'Trang chủ', icon: Home },
-              { key: 'sale', label: 'Nhà đất bán' },
-              { key: 'rent', label: 'Nhà đất cho thuê' },
-              { key: 'transfer', label: 'Nhà đất sang nhượng' },
-              { key: 'news', label: 'Tin bất động sản' },
-              { key: 'fengshui', label: 'Xem tuổi xây - hướng nhà' },
-              { key: 'contact', label: 'Liên hệ' }
+              { key: 'home', slug: '', label: 'Trang chủ', icon: Home },
+              { key: 'sale', slug: 'nha-dat-ban', label: 'Nhà đất bán' },
+              { key: 'rent', slug: 'cho-thue', label: 'Nhà đất cho thuê' },
+              { key: 'transfer', slug: 'sang-nhuong', label: 'Nhà đất sang nhượng' },
+              { key: 'news', slug: 'tin-tuc', label: 'Tin bất động sản' },
+              { key: 'fengshui', slug: 'phong-thuy', label: 'Xem tuổi xây - hướng nhà' },
+              { key: 'contact', slug: 'lien-he', label: 'Liên hệ' }
             ].map(item => (
               <button
                 key={item.key}
                 onClick={() => {
-                  setCurrentPage(item.key);
                   if (item.key === 'sale') setFilterTab('sale');
                   if (item.key === 'rent') setFilterTab('rent');
                   if (item.key === 'transfer') setFilterTab('transfer');
-                  setSelectedProperty(null);
+                  navigateTo(item.key, item.slug);
                 }}
                 className={`px-3.5 py-3 border-r border-emerald-700 hover:bg-emerald-700 flex items-center gap-1.5 transition-colors ${
                   currentPage === item.key ? 'bg-emerald-800 font-black' : ''
@@ -203,20 +328,18 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
         {mobileMenuOpen && (
           <div className="md:hidden bg-emerald-800 px-4 py-2 space-y-1">
             {[
-              { key: 'home', label: 'Trang chủ' },
-              { key: 'sale', label: 'Nhà đất bán' },
-              { key: 'rent', label: 'Nhà đất cho thuê' },
-              { key: 'transfer', label: 'Nhà đất sang nhượng' },
-              { key: 'news', label: 'Tin bất động sản' },
-              { key: 'fengshui', label: 'Xem tuổi xây - hướng nhà' },
-              { key: 'contact', label: 'Liên hệ' }
+              { key: 'home', slug: '', label: 'Trang chủ' },
+              { key: 'sale', slug: 'nha-dat-ban', label: 'Nhà đất bán' },
+              { key: 'rent', slug: 'cho-thue', label: 'Nhà đất cho thuê' },
+              { key: 'transfer', slug: 'sang-nhuong', label: 'Nhà đất sang nhượng' },
+              { key: 'news', slug: 'tin-tuc', label: 'Tin bất động sản' },
+              { key: 'fengshui', slug: 'phong-thuy', label: 'Xem tuổi xây - hướng nhà' },
+              { key: 'contact', slug: 'lien-he', label: 'Liên hệ' }
             ].map(item => (
               <button
                 key={item.key}
                 onClick={() => {
-                  setCurrentPage(item.key);
-                  setSelectedProperty(null);
-                  setMobileMenuOpen(false);
+                  navigateTo(item.key, item.slug);
                 }}
                 className="block w-full text-left py-1.5 text-xs text-white hover:text-amber-300 font-bold"
               >
@@ -230,7 +353,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
       {/* ─────────────────────────────────────────────────────────────
           2. MULTI-CRITERIA SEARCH BAR (Ảnh 5)
       ───────────────────────────────────────────────────────────── */}
-      {currentPage === 'home' && !selectedProperty && (
+      {isHome && !selectedProperty && (
         <section className="bg-white border-b border-slate-300 py-3 shadow-xs">
           <div className="max-w-[1200px] mx-auto px-4">
             {/* Top search bar tabs & stats */}
@@ -299,34 +422,14 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
               <div>
                 <select className="w-full px-2 py-1.5 border border-slate-300 rounded bg-white text-xs text-slate-700 focus:outline-none">
                   <option value="all">Chọn Quận/Huyện</option>
-                  <option value="bc">Bình Chánh</option>
-                  <option value="tp">Tân Phú</option>
-                  <option value="q1">Quận 1</option>
-                  <option value="q7">Quận 7</option>
-                </select>
-              </div>
-              <div>
-                <select className="w-full px-2 py-1.5 border border-slate-300 rounded bg-white text-xs text-slate-700 focus:outline-none">
-                  <option value="all">Chọn Hướng nhà</option>
-                  <option value="dn">Đông Nam</option>
-                  <option value="d">Đông</option>
-                  <option value="n">Nam</option>
-                  <option value="t">Tây</option>
-                  <option value="b">Bắc</option>
-                </select>
-              </div>
-              <div>
-                <select className="w-full px-2 py-1.5 border border-slate-300 rounded bg-white text-xs text-slate-700 focus:outline-none">
-                  <option value="all">Giá thấp nhất</option>
-                  <option value="500">Từ 500 Triệu</option>
-                  <option value="1000">Từ 1 Tỷ</option>
-                  <option value="2000">Từ 2 Tỷ</option>
-                  <option value="5000">Từ 5 Tỷ</option>
+                  <option value="q1">Quận 1 / Hoàn Kiếm</option>
+                  <option value="q2">Quận 2 / Cầu Giấy</option>
+                  <option value="q7">Quận 7 / Nam Từ Liêm</option>
                 </select>
               </div>
               <div>
                 <button
-                  onClick={() => setCurrentPage('sale')}
+                  onClick={() => navigateTo('sale', 'nha-dat-ban')}
                   className="w-full bg-[#1E8449] hover:bg-emerald-800 text-white font-bold py-1.5 rounded text-xs uppercase flex items-center justify-center gap-1 shadow-xs transition-colors"
                 >
                   <Search className="w-3 h-3" />
@@ -341,7 +444,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
       {/* ─────────────────────────────────────────────────────────────
           3. TWO-COLUMN MAIN CONTENT (Ảnh 5 High Density)
       ───────────────────────────────────────────────────────────── */}
-      {currentPage === 'home' && !selectedProperty && (
+      {isHome && !selectedProperty && (
         <main className="max-w-[1200px] mx-auto px-4 py-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
             {/* ════════════════════ LEFT COLUMN (MAIN - 8.5/12) ════════════════════ */}
@@ -355,28 +458,28 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
 
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
                   {/* Big Featured News */}
-                  <div className="sm:col-span-7 cursor-pointer group" onClick={() => setCurrentPage('news')}>
+                  <div className="sm:col-span-7 cursor-pointer group" onClick={() => handleOpenArticle(NHADATSO_ARTICLES[0])}>
                     <div className="aspect-[16/10] overflow-hidden rounded bg-slate-100 mb-2">
                       <img
-                        src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80"
-                        alt="Bong bóng BĐS"
+                        src={NHADATSO_ARTICLES[0].image}
+                        alt={NHADATSO_ARTICLES[0].title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                       />
                     </div>
                     <h3 className="font-bold text-sm text-slate-900 group-hover:text-emerald-700 leading-snug mb-1">
-                      Cách bắt mạch bong bóng bất động sản năm 2026 đã vượt qua
+                      {NHADATSO_ARTICLES[0].title}
                     </h3>
                     <p className="text-[11px] text-slate-500 line-clamp-3 leading-relaxed">
-                      Triệu chứng và nguy cơ tự vấn đề đất đai khi thanh khoản tăng cao. Nhận diện chu kỳ thị trường bất động sản ngay thời điểm hiện nay để đón chu kỳ tăng trưởng mới.
+                      {NHADATSO_ARTICLES[0].desc}
                     </p>
                   </div>
 
-                  {/* 4 Side News Thumbnails */}
+                  {/* Side News Thumbnails */}
                   <div className="sm:col-span-5 space-y-3">
-                    {ADVICE_ARTICLES.map((art, idx) => (
+                    {NHADATSO_ARTICLES.slice(1, 5).map((art) => (
                       <div
-                        key={idx}
-                        onClick={() => setCurrentPage('news')}
+                        key={art.id}
+                        onClick={() => handleOpenArticle(art)}
                         className="flex items-start gap-2 cursor-pointer group border-b border-slate-100 pb-2 last:border-0 last:pb-0"
                       >
                         <img
@@ -435,7 +538,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
               <div className="bg-white border border-slate-300 rounded p-4 shadow-xs">
                 <div className="bg-[#1E8449] text-white font-black text-xs uppercase px-3 py-1.5 -mx-4 -mt-4 mb-4 rounded-t flex items-center justify-between">
                   <span>NHÀ ĐẤT BÁN</span>
-                  <button onClick={() => setCurrentPage('sale')} className="text-[10px] font-normal text-emerald-100 hover:underline">
+                  <button onClick={() => navigateTo('sale', 'nha-dat-ban')} className="text-[10px] font-normal text-emerald-100 hover:underline">
                     Xem thêm &gt;&gt;
                   </button>
                 </div>
@@ -481,7 +584,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
               <div className="bg-white border border-slate-300 rounded p-4 shadow-xs">
                 <div className="bg-[#1C2833] text-white font-black text-xs uppercase px-3 py-1.5 -mx-4 -mt-4 mb-4 rounded-t flex items-center justify-between">
                   <span>NHÀ ĐẤT CHO THUÊ</span>
-                  <button onClick={() => setCurrentPage('rent')} className="text-[10px] font-normal text-slate-300 hover:underline">
+                  <button onClick={() => navigateTo('rent', 'cho-thue')} className="text-[10px] font-normal text-slate-300 hover:underline">
                     Xem thêm &gt;&gt;
                   </button>
                 </div>
@@ -501,10 +604,10 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                       <div className="flex-1 flex flex-col justify-between">
                         <div>
                           <div className="flex items-start justify-between gap-2 mb-1">
-                            <h3 className="font-bold text-xs text-blue-800 group-hover:text-emerald-700 leading-snug line-clamp-2">
+                            <h3 className="font-bold text-xs text-slate-800 group-hover:text-emerald-700 leading-snug line-clamp-2">
                               {item.title}
                             </h3>
-                            <span className="px-2 py-0.5 rounded bg-[#48C774] text-white font-bold text-[10px] whitespace-nowrap">
+                            <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-bold text-[10px] whitespace-nowrap">
                               {item.price}
                             </span>
                           </div>
@@ -535,7 +638,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                   {PROVINCES.map((prov, idx) => (
                     <li key={idx}>
                       <button
-                        onClick={() => { setSelectedCity(prov); setCurrentPage('sale'); }}
+                        onClick={() => { setSelectedCity(prov); navigateTo('sale', 'nha-dat-ban'); }}
                         className="w-full text-left py-1 px-1.5 hover:bg-emerald-50 hover:text-emerald-700 rounded flex items-center justify-between transition-colors"
                       >
                         <span className="flex items-center gap-1.5 font-medium">
@@ -553,10 +656,10 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                   TƯ VẤN BẤT ĐỘNG SẢN
                 </h3>
                 <div className="space-y-2">
-                  {ADVICE_ARTICLES.slice(0, 3).map((art, idx) => (
+                  {NHADATSO_ARTICLES.slice(0, 3).map((art, idx) => (
                     <div
                       key={idx}
-                      onClick={() => setCurrentPage('news')}
+                      onClick={() => navigateTo('news', 'tin-tuc')}
                       className="flex items-center gap-2 cursor-pointer group border-b border-slate-100 pb-2 last:border-0 last:pb-0"
                     >
                       <img src={art.image} alt={art.title} className="w-12 h-10 rounded object-cover shrink-0" />
@@ -574,13 +677,13 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                   PHONG THỦY NHÀ ĐẤT
                 </h3>
                 <ul className="space-y-2 text-[11px] text-slate-700">
-                  <li onClick={() => setCurrentPage('fengshui')} className="hover:text-emerald-700 cursor-pointer flex items-start gap-1.5">
+                  <li onClick={() => navigateTo('fengshui', 'phong-thuy')} className="hover:text-emerald-700 cursor-pointer flex items-start gap-1.5">
                     <span>🧭</span> <span>Cách chọn hướng nhà đón tài lộc cho gia chủ tuổi Tý, Sửu, Dần</span>
                   </li>
-                  <li onClick={() => setCurrentPage('fengshui')} className="hover:text-emerald-700 cursor-pointer flex items-start gap-1.5">
+                  <li onClick={() => navigateTo('fengshui', 'phong-thuy')} className="hover:text-emerald-700 cursor-pointer flex items-start gap-1.5">
                     <span>🧭</span> <span>Bố trí phòng khách và cửa chính hợp phong thủy năm 2026</span>
                   </li>
-                  <li onClick={() => setCurrentPage('fengshui')} className="hover:text-emerald-700 cursor-pointer flex items-start gap-1.5">
+                  <li onClick={() => navigateTo('fengshui', 'phong-thuy')} className="hover:text-emerald-700 cursor-pointer flex items-start gap-1.5">
                     <span>🧭</span> <span>Những điều đại kỵ cần tránh khi mua đất nền, nhà phố</span>
                   </li>
                 </ul>
@@ -610,7 +713,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                 </h3>
                 <div className="p-3 bg-blue-50 border border-blue-100 rounded text-center">
                   <div className="flex items-center justify-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-black">f</div>
+                    <div className="w-8 h-8 rounded-sm bg-blue-600 text-white flex items-center justify-center font-black">f</div>
                     <div className="text-left">
                       <strong className="block text-xs text-blue-900">Nhà Đất Số Fanpage</strong>
                       <span className="text-[10px] text-slate-500">854.718 người theo dõi</span>
@@ -643,7 +746,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
               </h1>
               <p className="text-[11px] text-slate-500">Danh sách tin đăng cập nhật liên tục</p>
             </div>
-            <button onClick={() => setCurrentPage('home')} className="text-xs font-bold text-emerald-700 hover:underline">
+            <button onClick={() => navigateTo('home', '')} className="text-xs font-bold text-emerald-700 hover:underline">
               ← Quay lại Trang Chủ
             </button>
           </div>
@@ -676,6 +779,399 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
       )}
 
       {/* ─────────────────────────────────────────────────────────────
+          PAGE: TIN TỨC BẤT ĐỘNG SẢN & THỊ TRƯỜNG
+      ───────────────────────────────────────────────────────────── */}
+      {(currentPage === 'news' || currentPage === 'tin-tuc' || currentPage.startsWith('tin-tuc')) && !selectedProperty && (
+        <main className="max-w-[1200px] mx-auto px-4 py-6">
+          <div className="bg-white border border-slate-300 rounded p-4 mb-5 shadow-xs flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2 text-[11px] text-slate-500 mb-1">
+                <button onClick={() => navigateTo('home', '')} className="hover:text-emerald-700 font-bold">Trang chủ</button>
+                <span>/</span>
+                <span className="text-emerald-700 font-semibold">Tin bất động sản 24/7</span>
+              </div>
+              <h1 className="text-lg font-black text-slate-900 uppercase tracking-tight">
+                Tin Tức Thị Trường & Phân Tích Bất Động Sản Toàn Quốc
+              </h1>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-sm">
+                🔥 142 bài viết mới hôm nay
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <div className="lg:col-span-8 space-y-6">
+              <div 
+                onClick={() => handleOpenArticle(NHADATSO_ARTICLES[0])}
+                className="bg-white border border-slate-300 rounded overflow-hidden shadow-xs cursor-pointer group"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-12">
+                  <div className="md:col-span-7 aspect-[16/10] md:aspect-auto overflow-hidden">
+                    <img
+                      src={NHADATSO_ARTICLES[0].image}
+                      alt={NHADATSO_ARTICLES[0].title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                  <div className="md:col-span-5 p-5 flex flex-col justify-between bg-slate-50/50">
+                    <div>
+                      <span className="px-2 py-0.5 rounded bg-red-600 text-white font-black text-[9px] uppercase tracking-wider mb-2 inline-block">
+                        {NHADATSO_ARTICLES[0].category}
+                      </span>
+                      <h2 className="text-sm font-black text-slate-900 group-hover:text-emerald-700 leading-snug mb-2">
+                        {NHADATSO_ARTICLES[0].title}
+                      </h2>
+                      <p className="text-[11px] text-slate-600 line-clamp-4 leading-relaxed">
+                        {NHADATSO_ARTICLES[0].desc}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between text-[10px] text-slate-400 pt-3 border-t border-slate-200 mt-3">
+                      <span>✍️ {NHADATSO_ARTICLES[0].author}</span>
+                      <span>🕒 {NHADATSO_ARTICLES[0].date}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white border border-slate-300 rounded p-4 shadow-xs">
+                <h3 className="bg-[#1E8449] text-white font-black text-xs uppercase px-3 py-1.5 -mx-4 -mt-4 mb-4 rounded-t flex items-center justify-between">
+                  <span>BÀI VIẾT NỔI BẬT & CẨM NANG ĐẦU TƯ</span>
+                  <span className="text-[10px] font-normal text-emerald-100">Chuyên mục chọn lọc</span>
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {NHADATSO_ARTICLES.slice(1).map((post) => (
+                    <article 
+                      key={post.id} 
+                      onClick={() => handleOpenArticle(post)}
+                      className="border border-slate-200 rounded p-3 hover:border-emerald-600 hover:shadow-xs transition-all flex flex-col justify-between group cursor-pointer bg-white"
+                    >
+                      <div>
+                        <div className="aspect-[16/10] overflow-hidden rounded mb-2 bg-slate-100">
+                          <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        </div>
+                        <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded uppercase mb-1.5 inline-block">
+                          {post.category}
+                        </span>
+                        <h4 className="font-bold text-xs text-slate-900 group-hover:text-emerald-700 leading-snug line-clamp-2 mb-1">
+                          {post.title}
+                        </h4>
+                        <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">
+                          {post.desc}
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between text-[10px] text-slate-400 pt-2 border-t border-slate-100 mt-2">
+                        <span>🕒 {post.date}</span>
+                        <span className="text-emerald-700 font-bold group-hover:underline">Đọc tiếp →</span>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-white border border-slate-300 rounded p-4 shadow-xs">
+                <h3 className="bg-[#1C2833] text-white font-black text-xs uppercase px-3 py-1.5 -mx-4 -mt-4 mb-4 rounded-t flex items-center justify-between">
+                  <span>HỎI ĐÁP & TƯ VẤN PHÁP LÝ NHÀ ĐẤT</span>
+                  <span className="text-[10px] font-normal text-slate-300">Hỏi chuyên gia 24/7</span>
+                </h3>
+
+                <div className="space-y-3">
+                  {[
+                    { q: 'Hồ sơ mua bán nhà đất qua công chứng cần những giấy tờ gì?', a: 'Bao gồm bản gốc Giấy chứng nhận quyền sử dụng đất (Sổ hồng/Sổ đỏ), CCCD gắn chip của vợ chồng bên bán và bên mua, giấy xác nhận tình trạng hôn nhân...' },
+                    { q: 'Thời hạn sang tên sổ đỏ sau khi ký hợp đồng công chứng là bao lâu?', a: 'Theo Luật Đất đai, trong thời hạn không quá 30 ngày kể từ ngày công chứng hợp đồng, người sử dụng đất phải thực hiện thủ tục đăng ký biến động tại Văn phòng đăng ký đất đai.' },
+                    { q: 'Thuế thu nhập cá nhân và lệ phí trước bạ khi mua bán nhà đất tính thế nào?', a: 'Thuế TNCN bằng 2% trên giá chuyển nhượng (do bên bán nộp), lệ phí trước bạ là 0.5% trên giá trị tài sản (do bên mua nộp), trừ trường hợp hai bên có thỏa thuận khác.' }
+                  ].map((qa, i) => (
+                    <div key={i} className="p-3 bg-slate-50 rounded border border-slate-200">
+                      <h4 className="font-bold text-xs text-slate-900 flex items-start gap-2 mb-1">
+                        <span className="text-emerald-700 font-black">Q:</span>
+                        <span>{qa.q}</span>
+                      </h4>
+                      <p className="text-[11px] text-slate-600 pl-5 leading-relaxed">
+                        <strong className="text-slate-800 font-bold">Trả lời: </strong>{qa.a}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-4 space-y-5">
+              <div className="bg-gradient-to-br from-emerald-800 to-emerald-950 text-white rounded p-4 shadow-xs">
+                <h3 className="font-black text-xs uppercase tracking-wide mb-1 flex items-center gap-1.5">
+                  <span>📬 NHẬN BẢN TIN BĐS HÀNG TUẦN</span>
+                </h3>
+                <p className="text-[11px] text-emerald-200 mb-3 leading-relaxed">
+                  Cập nhật bảng giá đất, báo cáo thị trường và cơ hội đầu tư độc quyền gửi trực tiếp vào email.
+                </p>
+                <div className="space-y-2">
+                  <input
+                    type="email"
+                    placeholder="Nhập địa chỉ email của bạn..."
+                    className="w-full px-3 py-2 rounded bg-emerald-900/60 border border-emerald-600 text-xs text-white placeholder-emerald-300 focus:outline-none"
+                  />
+                  <button className="w-full py-2 bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold rounded text-xs uppercase tracking-wider">
+                    ĐĂNG KÝ MIỄN PHÍ
+                  </button>
+                </div>
+              </div>
+
+              <div className="bg-white border border-slate-300 rounded p-3 shadow-xs">
+                <h3 className="bg-[#1C2833] text-white font-black text-xs uppercase px-3 py-1.5 -mx-3 -mt-3 mb-3 rounded-t">
+                  TIN ĐỌC NHIỀU NHẤT
+                </h3>
+                <div className="space-y-2.5">
+                  {NHADATSO_ARTICLES.slice(0, 5).map((art, idx) => (
+                    <div key={idx} className="flex items-start gap-2.5 border-b border-slate-100 pb-2 last:border-0 last:pb-0 group cursor-pointer">
+                      <span className="w-5 h-5 rounded-sm bg-emerald-100 text-emerald-800 font-bold text-[10px] flex items-center justify-center shrink-0">
+                        {idx + 1}
+                      </span>
+                      <div>
+                        <h4 className="font-semibold text-[11px] text-slate-800 group-hover:text-emerald-700 line-clamp-2 leading-tight">
+                          {art.title}
+                        </h4>
+                        <span className="text-[10px] text-slate-400 mt-0.5 block">{art.date}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          PAGE: CHI TIẾT BÀI VIẾT NHÀ ĐẤT SỐ (ARTICLE FULL PAGE)
+      ───────────────────────────────────────────────────────────── */}
+      {currentPage === 'news-detail' && selectedArticle && !selectedProperty && (
+        <main className="max-w-[1200px] mx-auto px-4 py-6 space-y-5">
+          <div className="bg-white border border-slate-300 rounded px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+            <nav className="flex items-center gap-2 text-[11px] text-slate-500 font-medium">
+              <button onClick={() => navigateTo('home', '')} className="hover:text-emerald-700">Trang chủ</button>
+              <span>/</span>
+              <button onClick={() => navigateTo('news', 'tin-tuc')} className="hover:text-emerald-700">Tin tức thị trường</button>
+              <span>/</span>
+              <span className="text-slate-900 font-bold truncate max-w-xs sm:max-w-md">{selectedArticle.title}</span>
+            </nav>
+            <button
+              onClick={() => navigateTo('news', 'tin-tuc')}
+              className="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 px-3 py-1 rounded bg-emerald-50 border border-emerald-200"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" /> Quay lại danh sách tin
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+            <article className="lg:col-span-8 bg-white border border-slate-300 rounded p-6 sm:p-8 shadow-xs space-y-5">
+              <div className="flex flex-wrap items-center gap-2 text-[11px]">
+                <span className="px-2.5 py-0.5 rounded bg-emerald-700 text-white font-bold uppercase text-[9px]">
+                  {selectedArticle.category}
+                </span>
+                <span className="text-slate-400">•</span>
+                <span className="text-slate-500">{selectedArticle.date}</span>
+                <span className="text-slate-400">•</span>
+                <span className="text-slate-500">⏱️ {selectedArticle.readTime || '5 phút đọc'}</span>
+              </div>
+
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
+                {selectedArticle.title}
+              </h1>
+
+              <div className="flex items-center gap-3 p-3 bg-slate-50 rounded border border-slate-200 text-xs">
+                <div className="w-8 h-8 rounded bg-emerald-700 text-white font-black flex items-center justify-center text-xs">
+                  NĐS
+                </div>
+                <div>
+                  <p className="font-bold text-slate-900">{selectedArticle.author || 'Ban Phân Tích Nhà Đất Số'}</p>
+                  <p className="text-[10px] text-slate-500">Chuyên trang phân tích dữ liệu & định giá bất động sản</p>
+                </div>
+              </div>
+
+              <div className="aspect-[16/9] w-full rounded overflow-hidden bg-slate-900 shadow-sm">
+                <img src={selectedArticle.image} alt={selectedArticle.title} className="w-full h-full object-cover" />
+              </div>
+
+              <div className="p-4 rounded bg-emerald-50/70 border-l-4 border-emerald-700 text-slate-800 text-xs font-semibold leading-relaxed">
+                {selectedArticle.desc}
+              </div>
+
+              <div className="space-y-4 text-xs text-slate-700 leading-relaxed">
+                <h2 className="text-sm font-bold text-slate-900 uppercase">1. Động lực phục hồi của thị trường bất động sản</h2>
+                <p>
+                  Sự thẩm thấu của các chính sách vĩ mô kết hợp cùng mặt bằng lãi suất cho vay mua nhà ở mức hợp lý đã giúp thanh khoản trên toàn thị trường tăng trưởng tích cực. Đặc biệt, phân khúc căn hộ tầm trung và nhà phố khu vực vệ tinh ghi nhận lượng giao dịch thành công tăng vọt.
+                </p>
+                <h2 className="text-sm font-bold text-slate-900 uppercase">2. Lời khuyên tối ưu dòng tiền cho nhà đầu tư</h2>
+                <p>
+                  Các chuyên gia khuyên rằng nhà đầu tư nên phân bổ 60% dòng vốn vào các tài sản có thể khai thác cho thuê ngay để đảm bảo an toàn thanh khoản, và 40% còn lại dành cho đất nền hoặc dự án hình thành trong tương lai có pháp lý minh bạch 100%.
+                </p>
+              </div>
+
+              <div className="p-4 bg-slate-900 text-white rounded flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+                <div>
+                  <h4 className="font-bold text-xs">Nhận Cẩm Nang Pháp Lý & Bảng Giá Đất 2026</h4>
+                  <p className="text-[11px] text-slate-300">Tài liệu miễn phí cập nhật liên tục từ Nhà Đất Số</p>
+                </div>
+                <button
+                  onClick={() => alert('Đăng ký nhận cẩm nang thành công!')}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded text-xs"
+                >
+                  Tải Cẩm Nang Miễn Phí
+                </button>
+              </div>
+            </article>
+
+            <aside className="lg:col-span-4 space-y-5">
+              <div className="bg-white border border-slate-300 rounded p-4 shadow-xs space-y-3">
+                <h3 className="bg-[#1C2833] text-white font-black text-xs uppercase px-3 py-1.5 -mx-4 -mt-4 mb-3 rounded-t">
+                  TIN NỔI BẬT KHÁC
+                </h3>
+                <div className="space-y-3">
+                  {NHADATSO_ARTICLES.filter(n => n.id !== selectedArticle.id).map(item => (
+                    <div
+                      key={item.id}
+                      onClick={() => handleOpenArticle(item)}
+                      className="flex gap-2.5 items-start group cursor-pointer border-b border-slate-100 pb-2.5 last:border-0 last:pb-0"
+                    >
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-16 h-12 rounded object-cover shrink-0 group-hover:opacity-90"
+                      />
+                      <div>
+                        <span className="text-[9px] font-bold text-emerald-700 block">{item.category}</span>
+                        <h4 className="text-[11px] font-bold text-slate-800 group-hover:text-emerald-700 transition-colors line-clamp-2 leading-tight">
+                          {item.title}
+                        </h4>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </aside>
+          </div>
+        </main>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          PAGE: GIỚI THIỆU VỀ NHÀ ĐẤT SỐ (ABOUT)
+      ───────────────────────────────────────────────────────────── */}
+      {(currentPage === 'about' || currentPage === 'gioi-thieu') && !selectedProperty && (
+        <main className="max-w-[1200px] mx-auto px-4 py-6">
+          <div className="bg-white border border-slate-300 rounded p-6 shadow-xs space-y-6">
+            <div className="border-b border-slate-200 pb-4">
+              <span className="text-emerald-700 font-bold uppercase text-[10px] tracking-wider block mb-1">
+                KÊNH THÔNG TIN BẤT ĐỘNG SẢN VIỆT NAM
+              </span>
+              <h1 className="text-xl font-black text-slate-900 uppercase">
+                Giới Thiệu Về Hệ Thống Sàn Nhà Đất Số
+              </h1>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+              <div className="lg:col-span-7 space-y-3 text-xs leading-relaxed text-slate-700">
+                <p>
+                  <strong>Nhà Đất Số</strong> là nền tảng công nghệ niêm yết và giao dịch bất động sản hàng đầu tại Việt Nam, kết nối hàng triệu khách hàng tìm mua, thuê nhà đất với các nhà môi giới và chủ sở hữu uy tín.
+                </p>
+                <p>
+                  Với mật độ dữ liệu phủ sóng 63 tỉnh thành, công nghệ định giá thời gian thực và hệ thống xác minh tin đăng chặt chẽ, chúng tôi cam kết mang lại nguồn thông tin minh bạch, nhanh chóng và chính xác nhất cho thị trường.
+                </p>
+                <div className="grid grid-cols-3 gap-3 pt-2">
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded text-center">
+                    <strong className="text-base font-black text-emerald-800 block">8.500+</strong>
+                    <span className="text-[10px] text-slate-600">Tin đăng mỗi ngày</span>
+                  </div>
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded text-center">
+                    <strong className="text-base font-black text-blue-800 block">500.000+</strong>
+                    <span className="text-[10px] text-slate-600">Khách truy cập/tháng</span>
+                  </div>
+                  <div className="p-3 bg-amber-50 border border-amber-200 rounded text-center">
+                    <strong className="text-base font-black text-amber-800 block">63/63</strong>
+                    <span className="text-[10px] text-slate-600">Tỉnh thành toàn quốc</span>
+                  </div>
+                </div>
+              </div>
+              <div className="lg:col-span-5">
+                <img
+                  src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80"
+                  alt="Văn phòng Nhà Đất Số"
+                  className="rounded border border-slate-300 w-full h-56 object-cover shadow-sm"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-200">
+              <div className="p-4 bg-slate-50 rounded border border-slate-200">
+                <h4 className="font-bold text-slate-900 text-xs mb-1">🎯 Minh Bạch Thông Tin</h4>
+                <p className="text-[11px] text-slate-600 leading-relaxed">Mọi tin đăng đều qua quy trình kiểm duyệt thông tin vị trí, pháp lý sổ đỏ và giá bán niêm yết công khai.</p>
+              </div>
+              <div className="p-4 bg-slate-50 rounded border border-slate-200">
+                <h4 className="font-bold text-slate-900 text-xs mb-1">⚡ Tốc Độ & Tiện Lợi</h4>
+                <p className="text-[11px] text-slate-600 leading-relaxed">Đăng tin siêu tốc trong 30 giây, kết nối trực tiếp khách mua và môi giới qua Zalo và Hotline 24/7.</p>
+              </div>
+              <div className="p-4 bg-slate-50 rounded border border-slate-200">
+                <h4 className="font-bold text-slate-900 text-xs mb-1">🛡️ An Toàn Pháp Lý</h4>
+                <p className="text-[11px] text-slate-600 leading-relaxed">Đội ngũ luật sư và chuyên gia phong thủy đồng hành hỗ trợ thẩm định hồ sơ công chứng miễn phí.</p>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <button onClick={() => navigateTo('home', '')} className="text-xs font-bold text-emerald-700 underline">
+                ← Quay lại trang chủ
+              </button>
+            </div>
+          </div>
+        </main>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          PAGE: DANH MỤC DỰ ÁN TIÊU ĐIỂM (PROJECTS)
+      ───────────────────────────────────────────────────────────── */}
+      {(currentPage === 'projects' || currentPage === 'du-an') && !selectedProperty && (
+        <main className="max-w-[1200px] mx-auto px-4 py-6">
+          <div className="bg-white border border-slate-300 rounded p-4 mb-4 shadow-xs flex items-center justify-between">
+            <div>
+              <h1 className="text-base font-black text-slate-900 uppercase">
+                Dự Án Bất Động Sản Tiêu Điểm Toàn Quốc
+              </h1>
+              <p className="text-[11px] text-slate-500">Khu đô thị, chung cư cao cấp và đại đô thị quy hoạch chuẩn mực</p>
+            </div>
+            <button onClick={() => navigateTo('home', '')} className="text-xs font-bold text-emerald-700 hover:underline">
+              ← Quay lại Trang Chủ
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {VIP_PROPERTIES.map((vip) => (
+              <div
+                key={vip.id}
+                onClick={() => setSelectedProperty(vip)}
+                className="bg-white border border-slate-300 rounded overflow-hidden shadow-xs hover:border-emerald-600 transition-all cursor-pointer flex flex-col justify-between"
+              >
+                <div className="relative h-44 overflow-hidden">
+                  <img src={vip.image} alt={vip.title} className="w-full h-full object-cover" />
+                  <span className="absolute top-2 left-2 bg-blue-700 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase">
+                    📍 {vip.tag}
+                  </span>
+                  <span className="absolute bottom-2 right-2 bg-emerald-700 text-white font-bold text-xs px-2 py-0.5 rounded">
+                    {vip.price}
+                  </span>
+                </div>
+                <div className="p-3">
+                  <h4 className="font-bold text-xs text-slate-900 line-clamp-2 hover:text-emerald-700 mb-2">{vip.title}</h4>
+                  <div className="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-100">
+                    <span>📐 Quy mô: <strong>{vip.area}</strong></span>
+                    <span className="text-emerald-700 font-bold">Xem dự án &gt;</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </main>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
           PAGE: XEM PHONG THỦY - HƯỚNG NHÀ
       ───────────────────────────────────────────────────────────── */}
       {currentPage === 'fengshui' && !selectedProperty && (
@@ -698,7 +1194,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                 <p className="text-xs text-amber-800">Hợp các hướng: Tây, Tây Bắc, Tây Nam, Đông Bắc. Gia đạo bình an, kinh doanh hưng thịnh.</p>
               </div>
             </div>
-            <button onClick={() => setCurrentPage('home')} className="text-xs font-bold text-emerald-700 underline">
+            <button onClick={() => navigateTo('home', '')} className="text-xs font-bold text-emerald-700 underline">
               ← Quay lại trang chủ
             </button>
           </div>
@@ -795,12 +1291,12 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
       ───────────────────────────────────────────────────────────── */}
       {selectedProperty && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm overflow-y-auto animate-in fade-in">
-          <div className="bg-white rounded-xl shadow-2xl border border-slate-300 max-w-2xl w-full overflow-hidden my-8">
+          <div className="bg-white rounded-sm shadow-2xl border border-slate-300 max-w-2xl w-full overflow-hidden my-8">
             <div className="relative h-60 bg-slate-900">
               <img src={selectedProperty.image} alt={selectedProperty.title} className="w-full h-full object-cover" />
               <button
                 onClick={() => setSelectedProperty(null)}
-                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-900/80 text-white hover:bg-red-600 flex items-center justify-center"
+                className="absolute top-3 right-3 w-8 h-8 rounded-sm bg-slate-900/80 text-white hover:bg-red-600 flex items-center justify-center"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -873,24 +1369,24 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
           <div>
             <h4 className="font-bold text-white text-xs uppercase tracking-wider mb-3">NHÀ ĐẤT BÁN</h4>
             <ul className="space-y-1.5 text-slate-400">
-              <li><button onClick={() => { setSelectedCity('TP.HCM'); setCurrentPage('sale'); }} className="hover:text-white">Hồ Chí Minh</button></li>
-              <li><button onClick={() => { setSelectedCity('Hà Nội'); setCurrentPage('sale'); }} className="hover:text-white">Hà Nội</button></li>
-              <li><button onClick={() => { setSelectedCity('Đà Nẵng'); setCurrentPage('sale'); }} className="hover:text-white">Đà Nẵng</button></li>
-              <li><button onClick={() => { setSelectedCity('Hải Phòng'); setCurrentPage('sale'); }} className="hover:text-white">Hải Phòng</button></li>
-              <li><button onClick={() => { setSelectedCity('Bình Dương'); setCurrentPage('sale'); }} className="hover:text-white">Bình Dương</button></li>
-              <li><button onClick={() => { setSelectedCity('Đồng Nai'); setCurrentPage('sale'); }} className="hover:text-white">Đồng Nai</button></li>
+              <li><button onClick={() => { setSelectedCity('TP.HCM'); navigateTo('sale', 'nha-dat-ban'); }} className="hover:text-white">Hồ Chí Minh</button></li>
+              <li><button onClick={() => { setSelectedCity('Hà Nội'); navigateTo('sale', 'nha-dat-ban'); }} className="hover:text-white">Hà Nội</button></li>
+              <li><button onClick={() => { setSelectedCity('Đà Nẵng'); navigateTo('sale', 'nha-dat-ban'); }} className="hover:text-white">Đà Nẵng</button></li>
+              <li><button onClick={() => { setSelectedCity('Hải Phòng'); navigateTo('sale', 'nha-dat-ban'); }} className="hover:text-white">Hải Phòng</button></li>
+              <li><button onClick={() => { setSelectedCity('Bình Dương'); navigateTo('sale', 'nha-dat-ban'); }} className="hover:text-white">Bình Dương</button></li>
+              <li><button onClick={() => { setSelectedCity('Đồng Nai'); navigateTo('sale', 'nha-dat-ban'); }} className="hover:text-white">Đồng Nai</button></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-bold text-white text-xs uppercase tracking-wider mb-3">NHÀ ĐẤT CHO THUÊ</h4>
             <ul className="space-y-1.5 text-slate-400">
-              <li><button onClick={() => { setSelectedCity('TP.HCM'); setCurrentPage('rent'); }} className="hover:text-white">Hồ Chí Minh</button></li>
-              <li><button onClick={() => { setSelectedCity('Hà Nội'); setCurrentPage('rent'); }} className="hover:text-white">Hà Nội</button></li>
-              <li><button onClick={() => { setSelectedCity('Đà Nẵng'); setCurrentPage('rent'); }} className="hover:text-white">Đà Nẵng</button></li>
-              <li><button onClick={() => { setSelectedCity('Hải Phòng'); setCurrentPage('rent'); }} className="hover:text-white">Hải Phòng</button></li>
-              <li><button onClick={() => { setSelectedCity('Bình Dương'); setCurrentPage('rent'); }} className="hover:text-white">Bình Dương</button></li>
-              <li><button onClick={() => { setSelectedCity('Đồng Nai'); setCurrentPage('rent'); }} className="hover:text-white">Đồng Nai</button></li>
+              <li><button onClick={() => { setSelectedCity('TP.HCM'); navigateTo('rent', 'cho-thue'); }} className="hover:text-white">Hồ Chí Minh</button></li>
+              <li><button onClick={() => { setSelectedCity('Hà Nội'); navigateTo('rent', 'cho-thue'); }} className="hover:text-white">Hà Nội</button></li>
+              <li><button onClick={() => { setSelectedCity('Đà Nẵng'); navigateTo('rent', 'cho-thue'); }} className="hover:text-white">Đà Nẵng</button></li>
+              <li><button onClick={() => { setSelectedCity('Hải Phòng'); navigateTo('rent', 'cho-thue'); }} className="hover:text-white">Hải Phòng</button></li>
+              <li><button onClick={() => { setSelectedCity('Bình Dương'); navigateTo('rent', 'cho-thue'); }} className="hover:text-white">Bình Dương</button></li>
+              <li><button onClick={() => { setSelectedCity('Đồng Nai'); navigateTo('rent', 'cho-thue'); }} className="hover:text-white">Đồng Nai</button></li>
             </ul>
           </div>
 
@@ -900,7 +1396,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
               <li><a href="#rule" className="hover:text-white">Quy chế hoạt động</a></li>
               <li><a href="#privacy" className="hover:text-white">Quy định sử dụng</a></li>
               <li><a href="#policy" className="hover:text-white">Quy trình đăng tin</a></li>
-              <li><button onClick={() => setCurrentPage('fengshui')} className="hover:text-white">Cẩm nang phong thủy</button></li>
+              <li><button onClick={() => navigateTo('fengshui', 'phong-thuy')} className="hover:text-white">Cẩm nang phong thủy</button></li>
             </ul>
           </div>
 

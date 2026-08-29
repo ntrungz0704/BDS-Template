@@ -624,14 +624,14 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
         </div>
 
         {/* Desktop Menu */}
-        <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider">
+        <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider whitespace-nowrap">
           {[
             { id: 'home', label: 'Trang Chủ' },
-            { id: 'san-pham-bds', label: 'Sản Phẩm BĐS' },
+            { id: 'san-pham-bds', label: 'Sản Phẩm' },
             { id: 'du-an', label: 'Dự Án' },
-            { id: 'dia-diem', label: 'BĐS Theo Địa Điểm' },
+            { id: 'dia-diem', label: 'Khu Vực' },
             { id: 'news', label: 'Tin Tức' },
-            { id: 'about', label: 'Về Chúng Tôi' },
+            { id: 'about', label: 'Giới Thiệu' },
             { id: 'contact', label: 'Liên Hệ' },
           ].map(navItem => {
             const isActive = currentPage === navItem.id || (navItem.id === 'news' && currentPage === 'news-detail');
@@ -639,7 +639,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
               <button
                 key={navItem.id}
                 onClick={() => navigate(navItem.id)}
-                className={`px-3.5 py-2 rounded-md transition-all cursor-pointer ${
+                className={`whitespace-nowrap px-3 py-2 rounded-md transition-all cursor-pointer ${
                   isActive
                     ? 'bg-amber-500 text-slate-950 font-black shadow-sm'
                     : 'text-amber-100/90 hover:bg-white/10 hover:text-white'
@@ -655,7 +655,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
         <div className="hidden sm:flex items-center gap-3">
           <a
             href={`tel:${hotlineTel}`}
-            className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs rounded-full shadow-md transition flex items-center gap-1.5 cursor-pointer active:scale-95"
+            className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs rounded-sm shadow-md transition flex items-center gap-1.5 cursor-pointer active:scale-95"
           >
             <Phone size={13} /> {activeHotline}
           </a>
@@ -715,7 +715,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
       }}
     >
       <div className={`${MAX_W} mx-auto max-w-3xl space-y-4`}>
-        <span className="px-3.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold uppercase tracking-widest inline-block">
+        <span className="px-3.5 py-1 rounded-sm bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold uppercase tracking-widest inline-block">
           SÀN GIAO DỊCH BẤT ĐỘNG SẢN TÂY NGUYÊN
         </span>
         <h1 className="text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-wider text-white leading-tight font-serif drop-shadow-md">
@@ -727,7 +727,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
         <div className="pt-3">
           <button
             onClick={() => navigate('san-pham-bds')}
-            className="px-8 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs uppercase tracking-wider rounded-full shadow-xl transition transform hover:scale-105 active:scale-95 cursor-pointer"
+            className="px-8 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs uppercase tracking-wider rounded-sm shadow-xl transition transform hover:scale-105 active:scale-95 cursor-pointer"
           >
             Khám Phá Dự Án ›
           </button>
@@ -739,7 +739,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
   // ── FLOATING SEARCH BAR ──
   const renderSearchBar = () => (
     <div className={`${MAX_W} mx-auto px-4 -mt-12 relative z-20`}>
-      <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-xl border border-amber-100 space-y-3">
+      <div className="bg-white p-4 sm:p-5 rounded-sm shadow-xl border border-amber-100 space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2.5 text-xs">
           <input
             type="text"
@@ -747,13 +747,13 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             value={searchKeyword}
             onChange={e => setSearchKeyword(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') navigate('san-pham-bds'); }}
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-medium focus:outline-none focus:border-amber-600"
+            className="w-full bg-slate-50 border border-slate-200 rounded-sm px-3.5 py-2.5 font-medium focus:outline-none focus:border-amber-600"
           />
 
           <select
             value={filterCategory}
             onChange={e => setFilterCategory(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-bold text-slate-700 focus:outline-none cursor-pointer"
+            className="bg-slate-50 border border-slate-200 rounded-sm px-3 py-2.5 font-bold text-slate-700 focus:outline-none cursor-pointer"
           >
             <option value="all">Tất cả loại BĐS</option>
             <option value="dat-nen">Đất nền phân lô</option>
@@ -765,7 +765,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           <select
             value={filterLocation}
             onChange={e => setFilterLocation(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-bold text-slate-700 focus:outline-none cursor-pointer"
+            className="bg-slate-50 border border-slate-200 rounded-sm px-3 py-2.5 font-bold text-slate-700 focus:outline-none cursor-pointer"
           >
             <option value="all">Tất cả khu vực</option>
             <option value="Bảo Lộc">TP. Bảo Lộc</option>
@@ -776,7 +776,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           <select
             value={filterPrice}
             onChange={e => setFilterPrice(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-bold text-slate-700 focus:outline-none cursor-pointer"
+            className="bg-slate-50 border border-slate-200 rounded-sm px-3 py-2.5 font-bold text-slate-700 focus:outline-none cursor-pointer"
           >
             <option value="all">Khoảng giá</option>
             <option value="under-1">Dưới 1 Tỷ</option>
@@ -786,7 +786,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
 
           <button
             onClick={() => navigate('san-pham-bds')}
-            className="bg-[#5C3A21] hover:bg-[#4A2810] text-amber-300 font-black px-4 py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+            className="bg-[#5C3A21] hover:bg-[#4A2810] text-amber-300 font-black px-4 py-2.5 rounded-sm transition shadow flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
           >
             <Search size={14} /> Tìm kiếm
           </button>
@@ -800,7 +800,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
     <div
       key={item.id}
       onClick={() => handleOpenProperty(item)}
-      className="bg-white rounded-2xl border border-slate-200 hover:border-amber-500 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 group cursor-pointer flex flex-col justify-between"
+      className="bg-white rounded-sm border border-slate-200 hover:border-amber-500 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 group cursor-pointer flex flex-col justify-between"
     >
       <div>
         <div className="h-44 sm:h-48 relative overflow-hidden bg-slate-100">
@@ -810,7 +810,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
             className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
           />
-          <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-emerald-600 text-white font-bold text-[10px] rounded-full shadow-sm">
+          <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-emerald-600 text-white font-bold text-[10px] rounded-sm shadow-sm">
             {item.badge}
           </span>
           <span className="absolute bottom-2.5 right-2.5 px-2 py-0.5 bg-black/70 backdrop-blur-xs text-white font-bold text-[10px] rounded-md">
@@ -859,7 +859,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-[#4A2810] font-serif uppercase tracking-wider">
             Sản phẩm bất động sản
           </h2>
-          <div className="w-12 h-1 bg-amber-500 mx-auto rounded-full" />
+          <div className="w-12 h-1 bg-amber-500 mx-auto rounded-sm" />
           <p className="text-xs text-slate-500 max-w-md mx-auto pt-1">
             Danh sách đất nền, đất vườn sinh thái và nhà phố pháp lý sạch sẵn sàng giao dịch
           </p>
@@ -872,7 +872,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
         <div className="flex justify-center pt-4">
           <button
             onClick={() => navigate('san-pham-bds')}
-            className="px-6 py-2.5 border-2 border-[#5C3A21] hover:bg-[#5C3A21] hover:text-white text-[#5C3A21] font-black text-xs rounded-full transition cursor-pointer"
+            className="px-6 py-2.5 border-2 border-[#5C3A21] hover:bg-[#5C3A21] hover:text-white text-[#5C3A21] font-black text-xs rounded-sm transition cursor-pointer"
           >
             Xem tất cả sản phẩm ›
           </button>
@@ -885,7 +885,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-[#4A2810] font-serif uppercase tracking-wider">
             Dự án nổi bật
           </h2>
-          <div className="w-12 h-1 bg-amber-500 mx-auto rounded-full" />
+          <div className="w-12 h-1 bg-amber-500 mx-auto rounded-sm" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -893,7 +893,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             <div
               key={proj.id}
               onClick={() => navigate('du-an')}
-              className="bg-white rounded-2xl border border-slate-200 hover:border-amber-500 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 group cursor-pointer flex flex-col justify-between"
+              className="bg-white rounded-sm border border-slate-200 hover:border-amber-500 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 group cursor-pointer flex flex-col justify-between"
             >
               <div className="h-52 relative overflow-hidden bg-slate-100">
                 <img
@@ -902,7 +902,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                   onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
                 />
-                <span className="absolute top-3 left-3 px-3 py-1 bg-amber-600 text-white font-black text-xs rounded-full shadow">
+                <span className="absolute top-3 left-3 px-3 py-1 bg-amber-600 text-white font-black text-xs rounded-sm shadow">
                   {proj.status}
                 </span>
               </div>
@@ -927,7 +927,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-[#4A2810] font-serif uppercase tracking-wider">
             Bất động sản theo địa điểm
           </h2>
-          <div className="w-12 h-1 bg-amber-500 mx-auto rounded-full" />
+          <div className="w-12 h-1 bg-amber-500 mx-auto rounded-sm" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -939,7 +939,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             <div
               key={idx}
               onClick={() => { setFilterLocation(loc.name); navigate('san-pham-bds'); }}
-              className="h-56 relative rounded-2xl overflow-hidden shadow-md group cursor-pointer border-2 border-amber-900/20"
+              className="h-56 relative rounded-sm overflow-hidden shadow-md group cursor-pointer border-2 border-amber-900/20"
             >
               <img
                 src={loc.image}
@@ -965,7 +965,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-[#4A2810] font-serif uppercase tracking-wider">
             Danh mục bất động sản
           </h2>
-          <div className="w-12 h-1 bg-amber-500 mx-auto rounded-full" />
+          <div className="w-12 h-1 bg-amber-500 mx-auto rounded-sm" />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -978,7 +978,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             <div
               key={idx}
               onClick={() => { setFilterCategory(catItem.cat); navigate('san-pham-bds'); }}
-              className="h-40 relative rounded-2xl overflow-hidden shadow-md group cursor-pointer"
+              className="h-40 relative rounded-sm overflow-hidden shadow-md group cursor-pointer"
             >
               <img
                 src={catItem.image}
@@ -1004,12 +1004,12 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-[#4A2810] font-serif uppercase tracking-wider">
               Tại sao chọn chúng tôi?
             </h2>
-            <div className="w-12 h-1 bg-amber-500 mx-auto rounded-full" />
+            <div className="w-12 h-1 bg-amber-500 mx-auto rounded-sm" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-2xl border border-amber-100 shadow-sm text-center space-y-3">
-              <div className="w-14 h-14 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center mx-auto shadow-inner">
+            <div className="bg-white p-6 rounded-sm border border-amber-100 shadow-sm text-center space-y-3">
+              <div className="w-14 h-14 rounded-sm bg-amber-100 text-amber-800 flex items-center justify-center mx-auto shadow-inner">
                 <Award size={28} />
               </div>
               <h3 className="font-black text-base text-[#4A2810] font-serif">Uy tín chất lượng</h3>
@@ -1018,8 +1018,8 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-amber-100 shadow-sm text-center space-y-3">
-              <div className="w-14 h-14 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center mx-auto shadow-inner">
+            <div className="bg-white p-6 rounded-sm border border-amber-100 shadow-sm text-center space-y-3">
+              <div className="w-14 h-14 rounded-sm bg-amber-100 text-amber-800 flex items-center justify-center mx-auto shadow-inner">
                 <Shield size={28} />
               </div>
               <h3 className="font-black text-base text-[#4A2810] font-serif">Thông tin minh bạch</h3>
@@ -1028,8 +1028,8 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-amber-100 shadow-sm text-center space-y-3">
-              <div className="w-14 h-14 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center mx-auto shadow-inner">
+            <div className="bg-white p-6 rounded-sm border border-amber-100 shadow-sm text-center space-y-3">
+              <div className="w-14 h-14 rounded-sm bg-amber-100 text-amber-800 flex items-center justify-center mx-auto shadow-inner">
                 <ThumbsUp size={28} />
               </div>
               <h3 className="font-black text-base text-[#4A2810] font-serif">Giá tốt nhất F0</h3>
@@ -1066,7 +1066,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-[#4A2810] font-serif uppercase tracking-wider">
             Tin tức & bài viết
           </h2>
-          <div className="w-12 h-1 bg-amber-500 mx-auto rounded-full" />
+          <div className="w-12 h-1 bg-amber-500 mx-auto rounded-sm" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1074,7 +1074,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             <div
               key={art.id}
               onClick={() => handleOpenArticle(art)}
-              className="bg-white rounded-2xl border border-slate-200 hover:border-amber-500 overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer group flex flex-col justify-between"
+              className="bg-white rounded-sm border border-slate-200 hover:border-amber-500 overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer group flex flex-col justify-between"
             >
               <div className="h-48 overflow-hidden bg-slate-100">
                 <img
@@ -1109,12 +1109,12 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-amber-300 font-serif uppercase tracking-wider">
               Đánh giá của khách hàng
             </h2>
-            <div className="w-12 h-1 bg-amber-500 mx-auto rounded-full" />
+            <div className="w-12 h-1 bg-amber-500 mx-auto rounded-sm" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {TESTIMONIALS.map(item => (
-              <div key={item.id} className="bg-white text-slate-800 p-6 rounded-2xl shadow-xl space-y-4 flex flex-col justify-between">
+              <div key={item.id} className="bg-white text-slate-800 p-6 rounded-sm shadow-xl space-y-4 flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center gap-1 text-amber-500">
                     {[...Array(5)].map((_, i) => (
@@ -1126,7 +1126,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                   </p>
                 </div>
                 <div className="pt-4 border-t border-slate-100 flex items-center gap-3">
-                  <img src={item.avatar} alt={item.name} className="w-10 h-10 rounded-full object-cover border border-amber-400" />
+                  <img src={item.avatar} alt={item.name} className="w-10 h-10 rounded-sm object-cover border border-amber-400" />
                   <div>
                     <h4 className="font-bold text-xs text-slate-900 font-serif">{item.name}</h4>
                     <p className="text-[10px] text-slate-400">{item.role}</p>
@@ -1140,7 +1140,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
 
       {/* 8. ĐĂNG KÝ TƯ VẤN & HÌNH ẢNH ĐỘI NGŨ */}
       <section className={`${MAX_W} mx-auto px-4`}>
-        <div className="bg-white rounded-3xl border border-amber-100 shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-12 items-center">
+        <div className="bg-white rounded-md border border-amber-100 shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-12 items-center">
           <div className="md:col-span-6 h-72 md:h-96 relative overflow-hidden bg-slate-100">
             <img
               src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1000&q=80"
@@ -1172,7 +1172,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                 value={consultForm.name}
                 onChange={e => setConsultForm({ ...consultForm, name: e.target.value })}
                 required
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 focus:outline-none focus:border-amber-600 font-medium"
+                className="w-full bg-slate-50 border border-slate-300 rounded-sm p-3 focus:outline-none focus:border-amber-600 font-medium"
               />
               <input
                 type="tel"
@@ -1180,18 +1180,18 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                 value={consultForm.phone}
                 onChange={e => setConsultForm({ ...consultForm, phone: e.target.value })}
                 required
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 focus:outline-none focus:border-amber-600 font-bold text-amber-900"
+                className="w-full bg-slate-50 border border-slate-300 rounded-sm p-3 focus:outline-none focus:border-amber-600 font-bold text-amber-900"
               />
               <textarea
                 rows={3}
                 placeholder="Khu vực hoặc mức giá bạn đang quan tâm..."
                 value={consultForm.note}
                 onChange={e => setConsultForm({ ...consultForm, note: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 focus:outline-none focus:border-amber-600 font-medium"
+                className="w-full bg-slate-50 border border-slate-300 rounded-sm p-3 focus:outline-none focus:border-amber-600 font-medium"
               />
               <button
                 type="submit"
-                className="w-full py-3 bg-[#5C3A21] hover:bg-[#4A2810] text-amber-300 font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition cursor-pointer active:scale-95"
+                className="w-full py-3 bg-[#5C3A21] hover:bg-[#4A2810] text-amber-300 font-black text-xs uppercase tracking-wider rounded-sm shadow-md transition cursor-pointer active:scale-95"
               >
                 GỬI YÊU CẦU TƯ VẤN NGAY
               </button>
@@ -1223,7 +1223,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
               <button
                 key={catKey}
                 onClick={() => setFilterCategory(catKey)}
-                className={`px-3 py-1.5 rounded-full font-bold transition cursor-pointer ${
+                className={`px-3 py-1.5 rounded-sm font-bold transition cursor-pointer ${
                   filterCategory === catKey
                     ? 'bg-[#5C3A21] text-amber-300 shadow-sm'
                     : 'bg-white border border-slate-200 text-slate-600 hover:border-amber-400'
@@ -1236,11 +1236,11 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
         </div>
 
         {filteredProperties.length === 0 ? (
-          <div className="bg-white p-12 rounded-2xl text-center border border-slate-200 shadow-xs">
+          <div className="bg-white p-12 rounded-sm text-center border border-slate-200 shadow-xs">
             <p className="text-sm font-bold text-slate-600">Không tìm thấy bất động sản nào theo bộ lọc đã chọn.</p>
             <button
               onClick={() => { setFilterCategory('all'); setFilterLocation('all'); setFilterPrice('all'); setSearchKeyword(''); }}
-              className="mt-3 px-5 py-2 bg-[#5C3A21] text-amber-300 rounded-full text-xs font-bold transition cursor-pointer"
+              className="mt-3 px-5 py-2 bg-[#5C3A21] text-amber-300 rounded-sm text-xs font-bold transition cursor-pointer"
             >
               Xem tất cả
             </button>
@@ -1268,8 +1268,8 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8 space-y-6">
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-3">
-              <span className="px-3 py-1 bg-emerald-100 text-emerald-800 font-black text-xs rounded-full">
+            <div className="bg-white rounded-sm border border-slate-200 p-6 shadow-xs space-y-3">
+              <span className="px-3 py-1 bg-emerald-100 text-emerald-800 font-black text-xs rounded-sm">
                 {selectedProperty.badge}
               </span>
               <h1 className="text-xl sm:text-2xl font-black text-slate-900 font-serif leading-snug">
@@ -1291,8 +1291,8 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             </div>
 
             {/* Gallery */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-3">
-              <div className="h-80 sm:h-96 rounded-xl overflow-hidden bg-slate-100">
+            <div className="bg-white rounded-sm border border-slate-200 p-4 shadow-xs space-y-3">
+              <div className="h-80 sm:h-96 rounded-sm overflow-hidden bg-slate-100">
                 <img
                   src={selectedProperty.gallery[activeGalleryIdx] || selectedProperty.image}
                   alt=""
@@ -1305,7 +1305,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                   <div
                     key={i}
                     onClick={() => setActiveGalleryIdx(i)}
-                    className={`h-24 rounded-xl overflow-hidden cursor-pointer border-2 transition ${
+                    className={`h-24 rounded-sm overflow-hidden cursor-pointer border-2 transition ${
                       activeGalleryIdx === i ? 'border-amber-600' : 'border-transparent opacity-70 hover:opacity-100'
                     }`}
                   >
@@ -1316,20 +1316,20 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             </div>
 
             {/* Description */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-3">
+            <div className="bg-white rounded-sm border border-slate-200 p-6 shadow-xs space-y-3">
               <h3 className="font-black text-sm text-[#4A2810] font-serif uppercase tracking-wider border-b border-slate-100 pb-2">
                 THÔNG TIN CHI TIẾT & MÔ TẢ
               </h3>
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{selectedProperty.desc}</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-3 text-xs">
-                <div className="p-3 bg-amber-50/60 rounded-xl">Pháp lý: <strong className="block text-slate-800 font-black mt-0.5">{selectedProperty.legal}</strong></div>
-                <div className="p-3 bg-amber-50/60 rounded-xl">Khu vực: <strong className="block text-slate-800 font-black mt-0.5">{selectedProperty.district}</strong></div>
-                <div className="p-3 bg-amber-50/60 rounded-xl">Tình trạng: <strong className="block text-emerald-700 font-black mt-0.5">Sẵn sàng công chứng</strong></div>
+                <div className="p-3 bg-amber-50/60 rounded-sm">Pháp lý: <strong className="block text-slate-800 font-black mt-0.5">{selectedProperty.legal}</strong></div>
+                <div className="p-3 bg-amber-50/60 rounded-sm">Khu vực: <strong className="block text-slate-800 font-black mt-0.5">{selectedProperty.district}</strong></div>
+                <div className="p-3 bg-amber-50/60 rounded-sm">Tình trạng: <strong className="block text-emerald-700 font-black mt-0.5">Sẵn sàng công chứng</strong></div>
               </div>
             </div>
 
             {/* Google Map */}
-            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+            <div className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs">
               <div className="bg-[#4A2810] px-4 py-2.5 text-amber-300 font-black text-xs uppercase font-serif">
                 VỊ TRÍ BẤT ĐỘNG SẢN TRÊN BẢN ĐỒ
               </div>
@@ -1345,8 +1345,8 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           </div>
 
           <div className="lg:col-span-4 space-y-6">
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4 text-center">
-              <div className="w-20 h-20 rounded-full overflow-hidden mx-auto border-2 border-amber-500 shadow-md">
+            <div className="bg-white rounded-sm border border-slate-200 p-6 shadow-sm space-y-4 text-center">
+              <div className="w-20 h-20 rounded-sm overflow-hidden mx-auto border-2 border-amber-500 shadow-md">
                 <img src={selectedProperty.author.avatar} alt="" className="w-full h-full object-cover" />
               </div>
               <div>
@@ -1356,7 +1356,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
               <div className="space-y-2 pt-2">
                 <a
                   href={`tel:${selectedProperty.author.phone}`}
-                  className="block w-full py-2.5 bg-[#5C3A21] hover:bg-[#4A2810] text-amber-300 font-black text-xs rounded-xl shadow transition cursor-pointer"
+                  className="block w-full py-2.5 bg-[#5C3A21] hover:bg-[#4A2810] text-amber-300 font-black text-xs rounded-sm shadow transition cursor-pointer"
                 >
                   📞 GỌI {selectedProperty.author.phone}
                 </a>
@@ -1364,7 +1364,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                   href={`https://zalo.me/${selectedProperty.author.zalo}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="block w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs rounded-xl shadow transition cursor-pointer"
+                  className="block w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs rounded-sm shadow transition cursor-pointer"
                 >
                   💬 CHAT ZALO VỚI CHUYÊN VIÊN
                 </a>
@@ -1396,7 +1396,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             <div
               key={art.id}
               onClick={() => handleOpenArticle(art)}
-              className="bg-white rounded-2xl border border-slate-200 hover:border-amber-500 overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer group flex flex-col justify-between"
+              className="bg-white rounded-sm border border-slate-200 hover:border-amber-500 overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer group flex flex-col justify-between"
             >
               <div className="h-48 overflow-hidden bg-slate-100">
                 <img
@@ -1438,8 +1438,8 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           <span className="text-amber-800 font-bold truncate">{selectedArticle.title}</span>
         </div>
 
-        <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
-          <span className="px-3 py-1 bg-amber-100 text-amber-800 font-bold text-xs rounded-full">
+        <div className="bg-white rounded-md border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+          <span className="px-3 py-1 bg-amber-100 text-amber-800 font-bold text-xs rounded-sm">
             {selectedArticle.category}
           </span>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 font-serif leading-tight">
@@ -1453,7 +1453,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             <span>{selectedArticle.views} lượt xem</span>
           </div>
 
-          <div className="rounded-2xl overflow-hidden shadow-sm">
+          <div className="rounded-sm overflow-hidden shadow-sm">
             <img
               src={selectedArticle.image}
               alt={selectedArticle.title}
@@ -1476,7 +1476,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
   const renderAboutPage = () => (
     <div className="bg-[#FCFBF9] py-12 min-h-screen">
       <div className={`${MAX_W} mx-auto px-4 max-w-4xl space-y-8`}>
-        <div className="bg-white rounded-3xl border border-amber-100 p-8 shadow-md space-y-6">
+        <div className="bg-white rounded-md border border-amber-100 p-8 shadow-md space-y-6">
           <h1 className="text-2xl sm:text-3xl font-black text-[#4A2810] font-serif uppercase">
             VỀ CHÚNG TÔI — TUẤN NHÂN REALTY
           </h1>
@@ -1484,15 +1484,15 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             Bất Động Sản Tuấn Nhân là đơn vị tiên phong trong lĩnh vực tư vấn, đầu tư và phát triển các sản phẩm đất nền nghỉ dưỡng, đất vườn sinh thái và nhà phố tại thị trường Bảo Lộc, Bảo Lâm, Di Linh - Tỉnh Lâm Đồng.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-100 text-center">
-            <div className="p-4 bg-amber-50/60 rounded-2xl">
+            <div className="p-4 bg-amber-50/60 rounded-sm">
               <div className="text-2xl font-black text-[#4A2810] font-serif">10+ Năm</div>
               <div className="text-xs text-slate-500 mt-1">Kinh nghiệm Tây Nguyên</div>
             </div>
-            <div className="p-4 bg-amber-50/60 rounded-2xl">
+            <div className="p-4 bg-amber-50/60 rounded-sm">
               <div className="text-2xl font-black text-[#4A2810] font-serif">1,200+</div>
               <div className="text-xs text-slate-500 mt-1">Sổ đỏ trao tay</div>
             </div>
-            <div className="p-4 bg-amber-50/60 rounded-2xl">
+            <div className="p-4 bg-amber-50/60 rounded-sm">
               <div className="text-2xl font-black text-amber-600 font-serif">100%</div>
               <div className="text-xs text-slate-500 mt-1">Pháp lý minh bạch</div>
             </div>
@@ -1506,7 +1506,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
   const renderContactPage = () => (
     <div className="bg-[#FCFBF9] py-12 min-h-screen">
       <div className={`${MAX_W} mx-auto px-4 max-w-4xl space-y-8`}>
-        <div className="bg-white rounded-3xl border border-amber-100 p-8 shadow-md space-y-6">
+        <div className="bg-white rounded-md border border-amber-100 p-8 shadow-md space-y-6">
           <div className="space-y-1">
             <h1 className="text-2xl font-black text-[#4A2810] font-serif uppercase">LIÊN HỆ & TƯ VẤN ĐẦU TƯ</h1>
             <p className="text-xs text-slate-500">Đội ngũ chuyên viên sẵn sàng hỗ trợ khảo sát thực tế và thẩm định pháp lý 24/7</p>
@@ -1521,7 +1521,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                 value={consultForm.name}
                 onChange={e => setConsultForm({ ...consultForm, name: e.target.value })}
                 required
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3"
+                className="w-full bg-slate-50 border border-slate-300 rounded-sm p-3"
               />
             </div>
             <div>
@@ -1532,7 +1532,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                 value={consultForm.phone}
                 onChange={e => setConsultForm({ ...consultForm, phone: e.target.value })}
                 required
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 font-bold text-amber-900"
+                className="w-full bg-slate-50 border border-slate-300 rounded-sm p-3 font-bold text-amber-900"
               />
             </div>
             <div>
@@ -1542,12 +1542,12 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                 placeholder="Bạn quan tâm loại đất nền, đất vườn hay cần thẩm định giá..."
                 value={consultForm.note}
                 onChange={e => setConsultForm({ ...consultForm, note: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3"
+                className="w-full bg-slate-50 border border-slate-300 rounded-sm p-3"
               />
             </div>
             <button
               type="submit"
-              className="w-full py-3.5 bg-[#5C3A21] hover:bg-[#4A2810] text-amber-300 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition cursor-pointer"
+              className="w-full py-3.5 bg-[#5C3A21] hover:bg-[#4A2810] text-amber-300 font-black text-xs uppercase tracking-wider rounded-sm shadow-lg transition cursor-pointer"
             >
               GỬI THÔNG TIN LIÊN HỆ
             </button>
