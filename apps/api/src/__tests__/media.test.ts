@@ -3,7 +3,7 @@ import { app } from '../index';
 import { prisma } from '@repo/database';
 import * as jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_ACCESS_SECRET || 'test-jwt-access-secret-minimum-32-chars-long-secure-key-01';
+const JWT_SECRET = process.env.JWT_ACCESS_SECRET!;
 
 describe('Media Upload Validation & Safety Test', () => {
   let tenant: any;

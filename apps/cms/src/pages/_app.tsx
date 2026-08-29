@@ -7,18 +7,15 @@ import axios from 'axios';
 // ─── Global Axios: Auto Token Refresh + 401 handler ──────────────────────────
 if (typeof window !== 'undefined') {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
+  axios.defaults.withCredentials = true;
   let isRefreshing = false;
   let refreshQueue: Array<(token: boolean) => void> = [];
 
-  // Attach CSRF token and Bearer token to requests
+  // Cookie authentication is HttpOnly; JavaScript only mirrors the CSRF token.
   axios.interceptors.request.use((config) => {
     const match = document.cookie.match(new RegExp('(^| )csrf_token=([^;]+)'));
     if (match) {
       config.headers['x-csrf-token'] = match[2];
-    }
-    const token = localStorage.getItem('platformbds_token');
-    if (token && !config.headers['Authorization']) {
-      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   });

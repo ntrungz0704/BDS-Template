@@ -176,11 +176,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         }
 
-        const savedToken = localStorage.getItem('platformbds_token');
-        if (savedToken) {
-          axios.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`;
-        }
-
         try {
           const res = await axios.get(`${API_URL}/api/auth/me`, {
             withCredentials: true,
@@ -192,8 +187,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               setUser(null);
               localStorage.removeItem('platformbds_user_v3');
               localStorage.removeItem('platformbds_orders_v3');
-              localStorage.removeItem('platformbds_token');
-              delete axios.defaults.headers.common['Authorization'];
               return;
             }
             const apiOrders = res.data.data.orders || [];
@@ -211,8 +204,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setOrders([]);
             localStorage.removeItem('platformbds_user_v3');
             localStorage.removeItem('platformbds_orders_v3');
-            localStorage.removeItem('platformbds_token');
-            delete axios.defaults.headers.common['Authorization'];
           }
         } catch (err) {
           // Backend API offline or session expired
@@ -254,16 +245,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (loggedUser.role === 'SUPER_ADMIN') {
           await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true, timeout: 2000 }).catch(() => {});
           localStorage.removeItem('platformbds_user_v3');
-          localStorage.removeItem('platformbds_token');
-          delete axios.defaults.headers.common['Authorization'];
           throw new Error('Tài khoản Super Admin không thể đăng nhập trên Marketplace. Vui lòng đăng nhập tại https://admin.aireviewbds.com');
-        }
-
-        const accessToken = res.data?.data?.accessToken;
-        
-        if (accessToken) {
-          localStorage.setItem('platformbds_token', accessToken);
-          axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
         }
         
         setUser(loggedUser);
@@ -332,8 +314,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem('platformbds_orders_v3');
       localStorage.removeItem('platformbds_wishlist_v3');
       localStorage.removeItem('platformbds_cart_v3');
-      localStorage.removeItem('platformbds_token');
-      delete axios.defaults.headers.common['Authorization'];
     }
   };
 

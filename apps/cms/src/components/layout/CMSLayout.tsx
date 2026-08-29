@@ -197,19 +197,13 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
   // ── Auth Guard: xác minh session ──────────────────────────────────────────
   useEffect(() => {
     const verifySession = async () => {
-      const token = localStorage.getItem('platformbds_token');
       const isLoggedInCookie = document.cookie.includes('is_logged_in=true');
-      if (!isLoggedInCookie && !token) {
+      if (!isLoggedInCookie) {
         router.replace('/login');
         return;
       }
       try {
-        const headers: Record<string, string> = {};
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
         const res = await axios.get(`${API_URL}/api/auth/me`, {
-          headers,
           withCredentials: true,
           timeout: 5000,
         });
@@ -219,7 +213,7 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
           return;
         }
         // Cho phép các role hợp lệ vào CMS
-        const allowedRoles = ['TENANT_OWNER', 'EDITOR', 'STAFF', 'SUPER_ADMIN', 'ADMIN', 'CUSTOMER', 'CUSTOMER_OWNER', 'USER'];
+        const allowedRoles = ['TENANT_OWNER', 'EDITOR', 'STAFF'];
         if (!allowedRoles.includes(user.role)) {
           router.replace('/login');
           return;
@@ -475,8 +469,6 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
                 </div>
                 <button
                   onClick={async () => {
-                    localStorage.removeItem('platformbds_token');
-                    delete axios.defaults.headers.common['Authorization'];
                     try {
                       await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true });
                     } catch {}

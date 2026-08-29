@@ -288,7 +288,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       secure: isProd,
       sameSite: sameSiteMode,
       domain: cookieDomain,
-      path: '/api/auth/refresh',
+      path: '/api/auth',
       maxAge: REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000,
     });
 
@@ -324,7 +324,6 @@ export async function login(req: Request, res: Response, next: NextFunction) {
           tenantId: activeTenantId,
           tenant: tenantInfo,
         },
-        accessToken,
       },
     });
   } catch (error) {
@@ -455,16 +454,11 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
       secure: isProdRefresh,
       sameSite: sameSiteModeRefresh,
       domain: cookieDomainRefresh,
-      path: '/api/auth/refresh',
+      path: '/api/auth',
       maxAge: REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({
-      success: true,
-      data: {
-        accessToken: newAccessToken,
-      },
-    });
+    res.status(200).json({ success: true, data: { refreshed: true } });
   } catch (error) {
     next(error);
   }
@@ -482,10 +476,18 @@ export async function logout(req: Request, res: Response, next: NextFunction) {
       }).catch(() => {}); // Bỏ qua lỗi nếu không tìm thấy bản ghi
     }
 
-    // Xóa sạch cookie ở Client
-    res.clearCookie('access_token');
-    res.clearCookie('refresh_token', { path: '/api/auth/refresh' });
-    res.clearCookie('csrf_token');
+    // Clear with the exact domain/path attributes used when cookies were set.
+    const isProd = process.env.NODE_ENV === 'production';
+    const cookieDomain = process.env.COOKIE_DOMAIN || undefined;
+    const cookieOptions = {
+      secure: isProd,
+      sameSite: isProd ? ('none' as const) : ('lax' as const),
+      domain: cookieDomain,
+    };
+    res.clearCookie('access_token', { ...cookieOptions, path: '/' });
+    res.clearCookie('refresh_token', { ...cookieOptions, path: '/api/auth' });
+    res.clearCookie('csrf_token', { ...cookieOptions, path: '/' });
+    res.clearCookie('is_logged_in', { ...cookieOptions, path: '/' });
 
     res.status(200).json({
       success: true,

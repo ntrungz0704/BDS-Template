@@ -12,6 +12,7 @@ import axios from 'axios';
 
 export default function App({ Component, pageProps }: AppProps) {
   React.useEffect(() => {
+    axios.defaults.withCredentials = true;
     const interceptor = axios.interceptors.request.use((config) => {
       const csrfToken = document.cookie.match(new RegExp('(^| )csrf_token=([^;]+)'))?.[2];
       if (csrfToken) {

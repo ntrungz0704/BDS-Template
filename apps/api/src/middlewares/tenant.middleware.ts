@@ -66,12 +66,18 @@ export async function checkTenantAccess(req: Request, res: Response, next: NextF
 
   const tenant = await prisma.tenant.findUnique({
     where: { id: tenantId, deletedAt: null },
-    select: { id: true },
+    select: { id: true, status: true },
   });
   if (!tenant) {
     return res.status(403).json({
       success: false,
       error: { code: 'TENANT_ACCESS_DENIED', message: 'Website không tồn tại hoặc không còn khả dụng.' },
+    });
+  }
+  if (tenant.status === 'SUSPENDED') {
+    return res.status(403).json({
+      success: false,
+      error: { code: 'TENANT_SUSPENDED', message: 'Website đang bị tạm khóa do vi phạm hoặc chưa thanh toán.' },
     });
   }
 

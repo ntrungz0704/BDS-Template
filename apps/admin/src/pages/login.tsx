@@ -44,14 +44,9 @@ export default function LoginPage() {
 
       if (res.data.success) {
         const user = res.data.data.user;
-        const accessToken = res.data.data.accessToken;
         if (user.role !== 'SUPER_ADMIN') {
           setErrorMsg('Tài khoản của bạn không có quyền truy cập trang quản trị Super Admin.');
           return;
-        }
-        if (accessToken) {
-          localStorage.setItem('platformbds_token', accessToken);
-          axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
         }
         router.push('/');
       }

@@ -15,6 +15,7 @@ const queryClient = new QueryClient({
 });
 
 if (typeof window !== 'undefined') {
+  axios.defaults.withCredentials = true;
   const isExtensionError = (msg?: string, filename?: string, stack?: string) => {
     const text = `${msg || ''} ${filename || ''} ${stack || ''}`;
     return (
@@ -53,10 +54,6 @@ if (typeof window !== 'undefined') {
     const match = document.cookie.match(new RegExp('(^| )csrf_token=([^;]+)'));
     if (match) {
       config.headers['x-csrf-token'] = match[2];
-    }
-    const token = localStorage.getItem('platformbds_token');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   });
