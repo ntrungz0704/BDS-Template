@@ -923,7 +923,8 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
         </div>
       </div>
     </div>
-  );
+    );
+  };
 
   // ── PROPERTY DETAIL PAGE ──
   const renderPropertyDetailPage = () => (
