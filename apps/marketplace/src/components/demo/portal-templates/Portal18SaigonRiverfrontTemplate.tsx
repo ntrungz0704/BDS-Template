@@ -145,9 +145,9 @@ export default function Portal18SaigonRiverfrontTemplate({ template, viewport = 
 
   const filteredProperties = useMemo(() => {
     const list = PORTAL_PROPERTIES.filter(item => {
+      if (item.city !== 'TP. Hồ Chí Minh' && item.region !== 'saigon') return false;
       if (filterCategory !== 'all' && item.category !== filterCategory) return false;
       if (filterType !== 'all' && item.type !== filterType) return false;
-      if (filterCity !== 'all' && item.city !== filterCity) return false;
       if (searchKeyword && searchKeyword.trim()) {
         const q = searchKeyword.toLowerCase();
         return item.title.toLowerCase().includes(q) || 
@@ -163,113 +163,109 @@ export default function Portal18SaigonRiverfrontTemplate({ template, viewport = 
 
     if (list.length > 0) return list;
     if (filterCategory !== 'all') {
-      const catList = PORTAL_PROPERTIES.filter(p => p.category === filterCategory);
+      const catList = PORTAL_PROPERTIES.filter(p => (p.city === 'TP. Hồ Chí Minh' || p.region === 'saigon') && p.category === filterCategory);
       if (catList.length > 0) return catList;
     }
-    return PORTAL_PROPERTIES.slice(0, 6);
-  }, [filterCategory, filterType, filterCity, searchKeyword, sortBy]);
+    return PORTAL_PROPERTIES.filter(p => p.city === 'TP. Hồ Chí Minh' || p.region === 'saigon');
+  }, [filterCategory, filterType, searchKeyword, sortBy]);
 
   // ── HEADER ─────────────────────────────────────────────────────────────────
   const renderHeader = () => (
-    <header className="bg-white border-b border-blue-100 sticky top-0 z-40 shadow-xs">
-      <div className="bg-[#1E40AF] text-white text-xs py-1.5 px-4 font-semibold">
+    <header className="bg-white/95 backdrop-blur-md border-b border-blue-100 sticky top-0 z-40 shadow-sm">
+      <div className="bg-gradient-to-r from-[#1E40AF] via-[#1D4ED8] to-[#2563EB] text-white text-xs py-2 px-4 font-semibold">
         <div className={`${MAX_W} mx-auto flex justify-between items-center`}>
-          <span>🌆 Cổng Thông Tin Bất Động Sản TP.HCM — Sông Sài Gòn & Trung Tâm Tài Chính Thủ Thiêm</span>
+          <span className="flex items-center gap-1.5">
+            <Waves size={14} className="text-cyan-300 animate-pulse" />
+            CỔNG BẤT ĐỘNG SẢN SÔNG SÀI GÒN & TRUNG TÂM TÀI CHÍNH THỦ THIÊM TP.HCM
+          </span>
           <div className="flex items-center gap-4">
-            <span>Hotline Sài Gòn 24/7: <strong className="text-amber-300">0903 666 888</strong></span>
+            <span>Hotline Sài Gòn: <strong className="text-amber-300 font-mono font-bold">0903 666 888</strong></span>
             <button onClick={() => { setAuthMode('login'); setIsAuthModalOpen(true); }} className="hover:underline">Thành Viên</button>
           </div>
         </div>
       </div>
 
-      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between`}>
-        <div onClick={() => navigate('home')} className="flex items-center gap-2.5 cursor-pointer group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#1D4ED8] to-[#F59E0B] flex items-center justify-center text-white shadow-md">
+      <div className={`${MAX_W} mx-auto px-4 py-3.5 flex items-center justify-between`}>
+        <div onClick={() => navigate('home')} className="flex items-center gap-3 cursor-pointer group">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#1D4ED8] to-[#06B6D4] flex items-center justify-center text-white shadow-lg shadow-blue-500/25">
             <Building size={22} />
           </div>
           <div>
             <div className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-1">
               SAIGON<span className="text-[#1D4ED8]">ESTATE</span>
             </div>
-            <div className="text-[10px] text-blue-600 font-bold uppercase tracking-wider">Dynamic Riverfront Living</div>
+            <div className="text-[10px] text-blue-600 font-extrabold uppercase tracking-widest">Dynamic Riverfront Portal</div>
           </div>
         </div>
 
-        <nav className="hidden lg:flex items-center gap-1.5 font-bold text-xs text-slate-700">
-          <button onClick={() => navigate('home')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'home' ? 'text-[#1D4ED8] bg-blue-50 font-black' : 'hover:text-[#1D4ED8]'}`}>Trang Chủ</button>
-          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className={`px-3 py-2 rounded-lg transition ${currentPage === 'sale' ? 'text-[#1D4ED8] bg-blue-50 font-black' : 'hover:text-[#1D4ED8]'}`}>Nhà Đất Bán</button>
-          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className={`px-3 py-2 rounded-lg transition ${currentPage === 'rent' ? 'text-[#1D4ED8] bg-blue-50 font-black' : 'hover:text-[#1D4ED8]'}`}>Cho Thuê Q.1/Q.2</button>
-          <button onClick={() => navigate('projects')} className={`px-3 py-2 rounded-lg transition ${['projects', 'project-detail'].includes(currentPage) ? 'text-[#1D4ED8] bg-blue-50 font-black' : 'hover:text-[#1D4ED8]'}`}>Tháp Thủ Thiêm</button>
-          <button onClick={() => navigate('news')} className={`px-3 py-2 rounded-lg transition ${['news', 'news-detail'].includes(currentPage) ? 'text-[#1D4ED8] bg-blue-50 font-black' : 'hover:text-[#1D4ED8]'}`}>Quy Hoạch TP.HCM</button>
-          <button onClick={() => navigate('about')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'about' ? 'text-[#1D4ED8] bg-blue-50 font-black' : 'hover:text-[#1D4ED8]'}`}>Về Chúng Tôi</button>
-          <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'contact' ? 'text-[#1D4ED8] bg-blue-50 font-black' : 'hover:text-[#1D4ED8]'}`}>Liên Hệ</button>
+        <nav className="hidden lg:flex items-center gap-2 font-bold text-xs text-slate-700">
+          <button onClick={() => navigate('home')} className={`px-3.5 py-2 rounded-xl transition ${currentPage === 'home' ? 'text-white bg-[#1D4ED8] shadow-md shadow-blue-500/20' : 'hover:bg-blue-50 hover:text-[#1D4ED8]'}`}>Trang Chủ</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className={`px-3.5 py-2 rounded-xl transition ${currentPage === 'sale' ? 'text-white bg-[#1D4ED8] shadow-md shadow-blue-500/20' : 'hover:bg-blue-50 hover:text-[#1D4ED8]'}`}>Nhà Đất Bán</button>
+          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className={`px-3.5 py-2 rounded-xl transition ${currentPage === 'rent' ? 'text-white bg-[#1D4ED8] shadow-md shadow-blue-500/20' : 'hover:bg-blue-50 hover:text-[#1D4ED8]'}`}>Cho Thuê Q.1/Q.2</button>
+          <button onClick={() => { setFilterCategory('sang-nhuong'); navigate('transfer'); }} className={`px-3.5 py-2 rounded-xl transition ${currentPage === 'transfer' ? 'text-white bg-[#1D4ED8] shadow-md shadow-blue-500/20' : 'hover:bg-blue-50 hover:text-[#1D4ED8]'}`}>Sang Nhượng</button>
+          <button onClick={() => navigate('projects')} className={`px-3.5 py-2 rounded-xl transition ${['projects', 'project-detail'].includes(currentPage) ? 'text-white bg-[#1D4ED8] shadow-md shadow-blue-500/20' : 'hover:bg-blue-50 hover:text-[#1D4ED8]'}`}>Tháp Thủ Thiêm</button>
+          <button onClick={() => navigate('news')} className={`px-3.5 py-2 rounded-xl transition ${['news', 'news-detail'].includes(currentPage) ? 'text-white bg-[#1D4ED8] shadow-md shadow-blue-500/20' : 'hover:bg-blue-50 hover:text-[#1D4ED8]'}`}>Quy Hoạch TP.HCM</button>
+          <button onClick={() => navigate('about')} className={`px-3.5 py-2 rounded-xl transition ${currentPage === 'about' ? 'text-white bg-[#1D4ED8] shadow-md shadow-blue-500/20' : 'hover:bg-blue-50 hover:text-[#1D4ED8]'}`}>Về Chúng Tôi</button>
+          <button onClick={() => navigate('contact')} className={`px-3.5 py-2 rounded-xl transition ${currentPage === 'contact' ? 'text-white bg-[#1D4ED8] shadow-md shadow-blue-500/20' : 'hover:bg-blue-50 hover:text-[#1D4ED8]'}`}>Liên Hệ</button>
         </nav>
 
         <div className="flex items-center gap-2">
-          <button onClick={() => navigate('contact')} className="hidden sm:flex px-4 py-2 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white font-bold text-xs rounded-xl shadow items-center gap-1.5">
-            <Building size={14} /> Ký Gửi
+          <button onClick={() => navigate('contact')} className="hidden sm:flex px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs rounded-xl shadow-lg items-center gap-1.5 transition">
+            <Building size={14} /> Ký Gửi Nhanh
           </button>
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1.5 text-slate-700 hover:bg-blue-50 rounded-lg">
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 text-slate-700 hover:bg-blue-50 rounded-xl">
             {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
-
-      {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-blue-100 px-4 py-3 space-y-1 text-xs font-bold text-slate-700 shadow-lg">
-          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Trang Chủ</button>
-          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Nhà Đất Bán</button>
-          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Cho Thuê Q.1/Q.2</button>
-          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Tháp Thủ Thiêm</button>
-          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Quy Hoạch TP.HCM</button>
-          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Về Chúng Tôi</button>
-          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Liên Hệ</button>
-        </div>
-      )}
     </header>
   );
 
-  // ── SAIGON SKYLINE CARD (SIGNATURE OF TEMPLATE 18) ──────────────────────────
+  // ── SAIGON 4-COLUMN MODERN CARD (SIGNATURE OF TEMPLATE 18) ──────────────────
   const renderSaigonCard = (item: PortalProperty) => (
     <div
       key={item.id}
       onClick={() => handleOpenProperty(item)}
-      className="bg-white rounded-2xl border border-blue-100 hover:border-[#1D4ED8] overflow-hidden transition duration-300 shadow-xs hover:shadow-xl cursor-pointer group flex flex-col justify-between"
+      className="bg-white rounded-2xl border border-slate-200/80 hover:border-[#1D4ED8] overflow-hidden transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-xl cursor-pointer group flex flex-col justify-between"
     >
       <div>
-        <div className="h-52 relative overflow-hidden bg-slate-100">
-          <img src={item.images[0]} alt="" className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-          <div className="absolute top-3 left-3 flex gap-1.5">
-            <span className="px-2.5 py-1 bg-blue-900/90 text-white font-bold text-[10px] rounded-md flex items-center gap-1">
-              <Waves size={12} className="text-cyan-300" /> View Sông Sài Gòn • Metro 200m
+        <div className="h-48 relative overflow-hidden bg-slate-100">
+          <img src={item.images[0]} alt="" className="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition" />
+          <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1">
+            <span className="px-2 py-0.5 bg-blue-900/90 text-cyan-200 backdrop-blur-md font-bold text-[10px] rounded-md flex items-center gap-1">
+              <Waves size={11} className="text-cyan-300" /> Sông Sài Gòn
             </span>
           </div>
-          <div className="absolute bottom-3 left-3 px-3 py-1 bg-white/95 rounded-lg shadow font-black text-sm text-[#1D4ED8]">
+          <div className="absolute bottom-2.5 left-2.5 px-2.5 py-1 bg-white/95 backdrop-blur-md rounded-lg shadow-lg font-black text-xs text-[#1D4ED8]">
             {item.price}
           </div>
         </div>
 
-        <div className="p-5 space-y-2.5">
-          <span className="text-[11px] font-bold text-[#F59E0B] uppercase block">🌆 {item.type} • Trung tâm</span>
-          <h3 className="font-bold text-sm md:text-base text-slate-900 group-hover:text-[#1D4ED8] transition line-clamp-2 leading-snug">
+        <div className="p-4 space-y-2">
+          <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold uppercase">
+            <span className="text-[#1D4ED8]">🌆 {item.type}</span>
+            <span>{item.legal}</span>
+          </div>
+          
+          <h3 className="font-bold text-xs md:text-sm text-slate-900 group-hover:text-[#1D4ED8] transition line-clamp-2 leading-snug">
             {item.title}
           </h3>
-          <p className="text-xs text-slate-500 truncate flex items-center gap-1">
-            <MapPin size={13} className="text-[#1D4ED8]" /> {item.ward}, {item.district}
+          
+          <p className="text-[11px] text-slate-500 truncate flex items-center gap-1">
+            <MapPin size={12} className="text-[#1D4ED8] shrink-0" /> {item.ward}, {item.district}
           </p>
 
-          <div className="flex items-center gap-3 pt-2 text-xs text-slate-600 border-t border-slate-100">
+          <div className="flex items-center justify-between pt-2 text-[11px] text-slate-600 border-t border-slate-100">
             <span>📐 {item.area} m²</span>
-            <span>•</span>
             <span>🛏️ {item.bedrooms} PN</span>
-            <span>•</span>
-            <span className="text-blue-700 font-bold">Hồ bơi vô cực</span>
+            <span className="text-emerald-600 font-bold">✓ Còn hàng</span>
           </div>
         </div>
       </div>
 
-      <div className="p-5 pt-0 flex items-center justify-between text-xs text-[#1D4ED8] font-bold">
-        <span>Xem góc view sông Sài Gòn</span>
+      <div className="p-4 pt-0 flex items-center justify-between text-[11px] text-[#1D4ED8] font-bold border-t border-slate-50 mt-1">
+        <span>Xem chi tiết & Vị trí</span>
         <span className="group-hover:translate-x-1 transition-transform">→</span>
       </div>
     </div>
@@ -277,30 +273,30 @@ export default function Portal18SaigonRiverfrontTemplate({ template, viewport = 
 
   // ── 1. HOME PAGE VIEW ──────────────────────────────────────────────────────
   const renderHomePage = () => (
-    <div className="bg-[#F8FAFC] space-y-16 pb-16">
+    <div className="bg-[#F8FAFC] space-y-12 pb-16">
       {/* Hero Saigon Section */}
-      <section className="relative pt-16 pb-28 px-4 bg-gradient-to-b from-[#1E40AF] to-[#1D4ED8] text-white">
+      <section className="relative pt-16 pb-24 px-4 bg-gradient-to-br from-[#0F172A] via-[#1E40AF] to-[#1D4ED8] text-white">
         <div className={`${MAX_W} mx-auto text-center max-w-3xl mb-8`}>
-          <span className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-white/10 border border-white/20 text-amber-300 text-xs font-bold uppercase tracking-wider mb-4">
-            <TrendingUp size={14} /> Thành Phố Năng Động & Trung Tâm Tài Chính Quốc Tế
+          <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-amber-300 text-xs font-bold uppercase tracking-wider mb-4">
+            <TrendingUp size={14} /> Thị Trường Sài Gòn Năng Động · Thủ Thiêm & Quận 1
           </span>
           <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-4">
-            Bất Động Sản Ven Sông & Trung Tâm Sài Gòn
+            Bất Động Sản Ven Sông Sài Gòn
           </h1>
           <p className="text-blue-100 text-sm md:text-base font-light max-w-xl mx-auto">
-            Khám phá hơn 8.000 căn hộ cao cấp Thủ Thiêm, shophouse trung tâm Quận 1 và biệt thự ven sông Thảo Điền.
+            Hơn 5.000 căn hộ cao cấp Grand Marina, Thủ Thiêm River và biệt thự ven sông Thảo Điền cập nhật giá tốt nhất hôm nay.
           </p>
         </div>
 
         {/* Floating Search */}
-        <div className={`${MAX_W} mx-auto -mb-36 relative z-10`}>
-          <div className="bg-white rounded-2xl p-6 shadow-xl border border-blue-100 text-slate-800">
+        <div className={`${MAX_W} mx-auto -mb-32 relative z-10`}>
+          <div className="bg-white rounded-2xl p-5 shadow-2xl border border-slate-100 text-slate-800">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
               <div className="md:col-span-4 relative">
                 <Search className="absolute left-3.5 top-3.5 text-blue-600" size={18} />
                 <input
                   type="text"
-                  placeholder="Tìm theo Thủ Thiêm, Quận 1, view sông, Metro..."
+                  placeholder="Tìm căn hộ Thủ Thiêm, Thảo Điền, view sông..."
                   value={searchKeyword}
                   onChange={e => setSearchKeyword(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none"
@@ -308,23 +304,24 @@ export default function Portal18SaigonRiverfrontTemplate({ template, viewport = 
               </div>
               <div className="md:col-span-3">
                 <select value={filterType} onChange={e => setFilterType(e.target.value)} className="w-full py-3 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs">
-                  <option value="all">Tất cả loại hình BĐS</option>
-                  <option value="Căn hộ chung cư">Căn Hộ Cao Cấp View Sông</option>
-                  <option value="Biệt thự">Biệt Thự Sân Vườn Thảo Điền</option>
-                  <option value="Nhà phố">Nhà Phố Kinh Doanh Quận 1/3</option>
+                  <option value="all">Tất cả loại hình BĐS TP.HCM</option>
+                  <option value="Căn hộ chung cư">Căn Hộ View Sông</option>
+                  <option value="Biệt thự">Biệt Thự Thảo Điền</option>
+                  <option value="Nhà phố">Nhà Phố Mặt Tiền</option>
+                  <option value="Văn phòng">Văn Phòng Hạng A</option>
                 </select>
               </div>
               <div className="md:col-span-3">
-                <select value={filterCity} onChange={e => setFilterCity(e.target.value)} className="w-full py-3 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs">
-                  <option value="all">Khu đô thị TP.HCM</option>
-                  <option value="TP. Hồ Chí Minh">Khu Đô Thị Mới Thủ Thiêm</option>
-                  <option value="TP. Hồ Chí Minh">Trung Tâm Quận 1 & Quận 3</option>
-                  <option value="TP. Hồ Chí Minh">Thảo Điền & Phú Mỹ Hưng Q.7</option>
+                <select value={filterCategory} onChange={e => setFilterCategory(e.target.value as any)} className="w-full py-3 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-blue-700">
+                  <option value="all">Tất cả Nhu cầu (Bán/Thuê/Sang nhượng)</option>
+                  <option value="ban">Nhà Đất Bán</option>
+                  <option value="thue">Cho Thuê Căn Hộ/Nhà</option>
+                  <option value="sang-nhuong">Sang Nhượng Mặt Bằng</option>
                 </select>
               </div>
               <div className="md:col-span-2">
-                <button onClick={() => navigate('sale')} className="w-full py-3 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white font-bold text-xs uppercase rounded-xl shadow">
-                  Tìm Nhà Đất
+                <button onClick={() => navigate('sale')} className="w-full py-3 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white font-bold text-xs uppercase rounded-xl shadow-lg transition">
+                  Tìm Ngay
                 </button>
               </div>
             </div>
@@ -332,20 +329,20 @@ export default function Portal18SaigonRiverfrontTemplate({ template, viewport = 
         </div>
       </section>
 
-      {/* Featured Saigon Listings */}
-      <section className={`${MAX_W} mx-auto px-4 pt-16`}>
-        <div className="flex items-center justify-between mb-8">
+      {/* Featured Saigon Listings - 4 COLUMNS MODERN GRID */}
+      <section className={`${MAX_W} mx-auto px-4 pt-14`}>
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <span className="text-xs font-bold text-[#1D4ED8] uppercase tracking-wider">Nhịp sống phồn hoa</span>
-            <h2 className="text-2xl md:text-3xl font-black text-[#1E40AF]">Bất Động Sản Sài Gòn Nổi Bật</h2>
+            <span className="text-xs font-bold text-[#1D4ED8] uppercase tracking-wider">Thị Trường Sôi Động</span>
+            <h2 className="text-2xl md:text-3xl font-black text-slate-900">Bất Động Sản TP.HCM Mới Nhất</h2>
           </div>
           <button onClick={() => navigate('sale')} className="text-xs font-bold text-[#1D4ED8] hover:underline flex items-center gap-1">
             Xem tất cả ({filteredProperties.length}) <ChevronRight size={14} />
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {filteredProperties.slice(0, 6).map(renderSaigonCard)}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          {filteredProperties.slice(0, 8).map(renderSaigonCard)}
         </div>
       </section>
     </div>
@@ -355,8 +352,19 @@ export default function Portal18SaigonRiverfrontTemplate({ template, viewport = 
   const renderListingCatalogPage = () => (
     <div className="py-8 bg-[#F8FAFC] min-h-screen">
       <div className={`${MAX_W} mx-auto px-4 space-y-6`}>
-        <h1 className="text-2xl font-black text-[#1E40AF]">Danh Mục Bất Động Sản TP. Hồ Chí Minh</h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+          <div>
+            <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">TP. Hồ Chí Minh Database</span>
+            <h1 className="text-2xl font-black text-slate-900">
+              {filterCategory === 'ban' ? 'Danh Mục Nhà Đất Bán TP.HCM' : filterCategory === 'thue' ? 'Danh Mục Cho Thuê TP.HCM' : filterCategory === 'sang-nhuong' ? 'Danh Mục Sang Nhượng TP.HCM' : 'Bất Động Sản TP. Hồ Chí Minh'}
+            </h1>
+          </div>
+          <span className="text-xs text-blue-700 bg-blue-50 border border-blue-200 px-3.5 py-1.5 rounded-full font-bold">
+            Hiển thị {filteredProperties.length} bất động sản Sài Gòn
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {filteredProperties.map(renderSaigonCard)}
         </div>
       </div>

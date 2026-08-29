@@ -1,4 +1,21 @@
-export interface PortalProperty {
+import fs from 'fs';
+import path from 'path';
+
+function findRepoRoot(): string {
+  let curr = process.cwd();
+  while (curr !== path.dirname(curr)) {
+    if (fs.existsSync(path.join(curr, 'pnpm-workspace.yaml'))) {
+      return curr;
+    }
+    curr = path.dirname(curr);
+  }
+  return process.cwd();
+}
+
+const ROOT_DIR = findRepoRoot();
+const PORTAL_DATA_PATH = path.join(ROOT_DIR, 'apps/marketplace/src/components/demo/portal-templates/portalData.ts');
+
+const comprehensivePortalData = `export interface PortalProperty {
   id: number;
   title: string;
   slug: string;
@@ -815,3 +832,7 @@ export const PORTAL_NEWS: PortalNews[] = [
     tags: ['Đầu tư BĐS', 'Thuê nhà', 'Thủ Đức', 'Phú Mỹ Hưng'],
   },
 ];
+`;
+
+fs.writeFileSync(PORTAL_DATA_PATH, comprehensivePortalData, 'utf-8');
+console.log('✅ Đã nạp thành công bộ dữ liệu địa lý phân tách riêng biệt cho từng vùng miền!');

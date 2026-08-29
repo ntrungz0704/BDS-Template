@@ -145,9 +145,9 @@ export default function Portal17HanoiCapitalTemplate({ template, viewport = 'des
 
   const filteredProperties = useMemo(() => {
     const list = PORTAL_PROPERTIES.filter(item => {
+      if (item.city !== 'Hà Nội' && item.region !== 'hanoi') return false;
       if (filterCategory !== 'all' && item.category !== filterCategory) return false;
       if (filterType !== 'all' && item.type !== filterType) return false;
-      if (filterCity !== 'all' && item.city !== filterCity) return false;
       if (searchKeyword && searchKeyword.trim()) {
         const q = searchKeyword.toLowerCase();
         return item.title.toLowerCase().includes(q) || 
@@ -163,11 +163,11 @@ export default function Portal17HanoiCapitalTemplate({ template, viewport = 'des
 
     if (list.length > 0) return list;
     if (filterCategory !== 'all') {
-      const catList = PORTAL_PROPERTIES.filter(p => p.category === filterCategory);
+      const catList = PORTAL_PROPERTIES.filter(p => (p.city === 'Hà Nội' || p.region === 'hanoi') && p.category === filterCategory);
       if (catList.length > 0) return catList;
     }
-    return PORTAL_PROPERTIES.slice(0, 6);
-  }, [filterCategory, filterType, filterCity, searchKeyword, sortBy]);
+    return PORTAL_PROPERTIES.filter(p => p.city === 'Hà Nội' || p.region === 'hanoi');
+  }, [filterCategory, filterType, searchKeyword, sortBy]);
 
   // ── HEADER ─────────────────────────────────────────────────────────────────
   const renderHeader = () => (
