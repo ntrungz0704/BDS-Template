@@ -2531,6 +2531,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "CỔNG BẤT ĐỘNG SẢN THỦ ĐÔ HÀ NỘI",
       heroSubtitle: "Tổng hợp hơn 5.000 căn nhà phố cổ Hoàn Kiếm, biệt thự Pháp cổ Ba Đình và căn hộ cao cấp view trọn Hồ Tây."
     }
+  },
+  // ─── PORTAL 18. SAIGON DYNAMIC RIVERFRONT PORTAL ───────────────────────────
+  {
+    id: "portal-18",
+    name: "Template #18 - Saigon Dynamic Riverfront Portal",
+    slug: "portal-18",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #18",
+    badgeBg: "#1D4ED8",
+    badgeColor: "#FFFFFF",
+    accentColor: "#1D4ED8",
+    description: "Cổng thông tin bất động sản TP. Hồ Chí Minh năng động, trung tâm tài chính mới Thủ Thiêm và dòng sông Sài Gòn phồn hoa. Chuyên căn hộ cao cấp view sông, shophouse trung tâm Quận 1 và biệt thự ven sông Thảo Điền / Phú Mỹ Hưng.",
+    shortDescription: "Căn hộ cao cấp Thủ Thiêm · Biệt thự Thảo Điền · View sông Sài Gòn",
+    thumbnail: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục đô thị sông nước rực rỡ với tông Xanh Coban Sài Gòn & Vàng Cam Sunset",
+      "Thẻ tin Saigon Skyline Card hiển thị view sông trực diện & cự ly ga Metro m",
+      "Bộ lọc BĐS trọng điểm: Thủ Thiêm TP. Thủ Đức, Quận 1 Bến Nghé, Thảo Điền, Q.7",
+      "Trang chi tiết BĐS kèm bản đồ quy hoạch kết nối cầu Thủ Thiêm 1-4 & Metro số 1",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Tháp biểu tượng, Tin tức, Giới thiệu, Liên hệ",
+      "Tích hợp giỏ hàng chuyển nhượng giá tốt khu đô thị mới Thủ Thiêm"
+    ],
+    priceBuy: 799000,
+    priceBuySource: 2490000,
+    priceRentMonthly: 199000,
+    isActive: true,
+    sortOrder: 42,
+    targetAudience: ["Sàn phân phối căn hộ & shophouse tại TP. Hồ Chí Minh", "Đại lý chiến lược F1 khu vực Thủ Thiêm, Quận 1, Quận 2", "Chuyên viên môi giới BĐS cao cấp khu Đông & Nam Sài Gòn"],
+    highlights: ["Saigon Skyline River Cards", "Thu Thiem Financial Hub Filters", "Metro Line 1 Proximity", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["SaigonCardModule", "MetroProximityModule", "ThuThiemProjectModule", "SaigonEconomyModule"],
+    benefits: ["Nắm bắt trọn vẹn sức hút của trung tâm kinh tế sôi động nhất Việt Nam", "Hình ảnh lung linh hiện đại nâng tầm giá trị BĐS", "Tăng 380% tỷ lệ chuyển đổi"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#1D4ED8",
+      secondaryColor: "#1E40AF",
+      accentColor: "#F59E0B",
+      bgColor: "#F8FAFC",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "1rem",
+      shadowToken: "0 10px 15px -3px rgba(29, 78, 216, 0.15)"
+    },
+    layoutConfig: {
+      heroStyle: "Saigon Riverfront Skyline Hero với Search Bar trung tâm TP.HCM",
+      navigationStyle: "Cobalt Blue Dynamic Navbar",
+      cardStyle: "Saigon Skyline River Card (Grid view sông, cự ly Metro m)",
+      galleryStyle: "Saigon Nightlife Panorama Slider",
+      ctaStyle: "Cobalt Dynamic Action Button",
+      spacingScale: "Dynamic Metropolis Spacing"
+    },
+    wireframe: ["HeaderSaigonEstate", "HeroSaigonSearch", "SaigonListingsGrid", "TopThuThiemTowers", "FooterSaigonEstate"],
+    sectionConfig: {
+      sourceSlug: "portal-18",
+      heroTitle: "BẤT ĐỘNG SẢN VEN SÔNG & TRUNG TÂM SÀI GÒN",
+      heroSubtitle: "Khám phá hơn 8.000 căn hộ cao cấp Thủ Thiêm, shophouse trung tâm Quận 1 và biệt thự ven sông Thảo Điền."
+    }
   }
 ];
 
@@ -2606,6 +2670,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-17': 'portal-17',
   'portal-hanoi': 'portal-17',
   'hanoi-estate': 'portal-17',
+  'portal-18': 'portal-18',
+  'portal-saigon': 'portal-18',
+  'saigon-estate': 'portal-18',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
