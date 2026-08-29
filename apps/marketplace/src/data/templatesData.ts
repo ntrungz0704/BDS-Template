@@ -2723,6 +2723,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "BẤT ĐỘNG SẢN NGHỈ DƯỠNG CAO NGUYÊN SƯƠNG MỜ",
       heroSubtitle: "Hơn 3.500 biệt thự đồi săn mây, bungalow suối rừng và homestay sinh thái tại Đà Lạt, Bảo Lộc, Măng Đen, Sa Pa."
     }
+  },
+  // ─── PORTAL 21. CLEAN MINIMAL SCANDINAVIAN PORTAL ──────────────────────────
+  {
+    id: "portal-21",
+    name: "Template #21 - Clean Minimal Scandinavian Portal",
+    slug: "portal-21",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #21",
+    badgeBg: "#0F172A",
+    badgeColor: "#F8FAFC",
+    accentColor: "#334155",
+    description: "Cổng thông tin bất động sản phong cách Bắc Âu (Scandinavian / Japandi / Warm Minimalist). Chuyên căn hộ studio tinh gọn, duplex tối giản, nhà phố phong cách Muji và biệt thự kính đón nắng ngập tràn. Tối ưu hóa thông số ánh sáng và diện tích thông thủy.",
+    shortDescription: "Phong cách Bắc Âu · Ánh sáng tự nhiên · Căn hộ & Nhà phố tối giản",
+    thumbnail: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục tinh gọn hiện đại với tông Xám Bê Tông Tối Giản & Đen Carbon Tinh Tế",
+      "Thẻ tin Nordic Minimal Card hiển thị độ đón sáng Lux & thông gió chéo",
+      "Bộ lọc phong cách kiến trúc: Studio Japandi, Duplex thông tầng, Warm Minimalist",
+      "Trang chi tiết BĐS kèm sơ đồ bố trí công năng đón nắng & vật liệu gỗ sồi tự nhiên",
+      "Đầy đủ 9 trang con: Mua bán, Thuê, Sang nhượng, Dự án kiến trúc, Triết lý, Giới thiệu, Liên hệ",
+      "Lookbook tuyển tập 50+ mẫu không gian tối giản đẹp nhất 2026"
+    ],
+    priceBuy: 749000,
+    priceBuySource: 2190000,
+    priceRentMonthly: 169000,
+    isActive: true,
+    sortOrder: 45,
+    targetAudience: ["Sàn BĐS và công ty thiết kế nội thất bán kèm sản phẩm hoàn thiện", "Đơn vị môi giới căn hộ dịch vụ cao cấp cho chuyên gia nước ngoài", "Khách hàng trẻ yêu thích phong cách sống tối giản tinh gọn"],
+    highlights: ["Nordic Minimal Clean Cards", "Natural Light Lux & Cross-Ventilation", "Japandi & Scandinavian Design", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["NordicCardModule", "MinimalLayoutModule", "ArchitecturalProjectModule", "MinimalPhilosophyModule"],
+    benefits: ["Thu hút tệp khách hàng trẻ có gu thẩm mỹ cao và tài chính tốt", "Trải nghiệm duyệt web thanh lịch không bị rối mắt", "Tăng 320% thời gian xem trang"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#0F172A",
+      secondaryColor: "#334155",
+      accentColor: "#64748B",
+      bgColor: "#FAFBFD",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "0px",
+      shadowToken: "0 1px 3px 0 rgba(0, 0, 0, 0.05)"
+    },
+    layoutConfig: {
+      heroStyle: "Nordic Minimal Clean Hero với Clean Search Box",
+      navigationStyle: "Clean Minimalist Border Navbar",
+      cardStyle: "Nordic Minimal Clean Card (Khung viền sắc nét, badge ánh sáng Lux)",
+      galleryStyle: "Minimalist Lightbox Slider",
+      ctaStyle: "Clean Carbon Minimal Button",
+      spacingScale: "Generous Breathing Spacing"
+    },
+    wireframe: ["HeaderNordicEstate", "HeroMinimalSearch", "NordicListingsGrid", "TopAwardWinningProjects", "FooterNordicEstate"],
+    sectionConfig: {
+      sourceSlug: "portal-21",
+      heroTitle: "KHÔNG GIAN SỐNG TỐI GIẢN ĐÓN NẮNG TỰ NHIÊN",
+      heroSubtitle: "Tuyển chọn hơn 2.000 căn hộ studio, duplex và nhà phố phong cách Bắc Âu tinh tế, ngập tràn ánh sáng và gió trời."
+    }
   }
 ];
 
@@ -2807,6 +2871,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-20': 'portal-20',
   'portal-highland': 'portal-20',
   'highland-retreat': 'portal-20',
+  'portal-21': 'portal-21',
+  'portal-nordic': 'portal-21',
+  'nordic-minimal': 'portal-21',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',

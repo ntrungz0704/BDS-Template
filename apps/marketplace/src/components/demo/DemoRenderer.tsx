@@ -62,6 +62,7 @@ const Portal17HanoiCapitalTemplate = dynamic(() => import('./portal-templates/Po
 const Portal18SaigonRiverfrontTemplate = dynamic(() => import('./portal-templates/Portal18SaigonRiverfrontTemplate'), { loading: () => <LoadingSkeleton /> });
 const Portal19CentralCoastTemplate = dynamic(() => import('./portal-templates/Portal19CentralCoastTemplate'), { loading: () => <LoadingSkeleton /> });
 const Portal20HighlandRetreatTemplate = dynamic(() => import('./portal-templates/Portal20HighlandRetreatTemplate'), { loading: () => <LoadingSkeleton /> });
+const Portal21NordicMinimalTemplate = dynamic(() => import('./portal-templates/Portal21NordicMinimalTemplate'), { loading: () => <LoadingSkeleton /> });
 
 interface DemoRendererProps {
   template: Template;
@@ -1145,6 +1146,9 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
     }
     if (slug === 'portal-20' || slug === 'portal-highland' || slug === 'highland-retreat' || sourceSlug === 'portal-20' || sourceSlug === 'portal-highland') {
       return <Portal20HighlandRetreatTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+    }
+    if (slug === 'portal-21' || slug === 'portal-nordic' || slug === 'nordic-minimal' || sourceSlug === 'portal-21' || sourceSlug === 'portal-nordic') {
+      return <Portal21NordicMinimalTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
     if (slug === 'bds-01' || sourceSlug === 'luxury-gold' || slug === 'luxury-gold') {
       return <LuxuryTemplate template={template} viewport={viewport} initialPage={initialPage} />;
