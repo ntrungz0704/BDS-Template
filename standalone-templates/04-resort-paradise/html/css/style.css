@@ -1,0 +1,4 @@
+/* CSS3 Custom Stylesheet for Resort Paradise Style (Sunshine City) */
+html { scroll-behavior: smooth; }
+body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+.card-hover:hover { transform: translateY(-4px); transition: all 0.3s ease; }

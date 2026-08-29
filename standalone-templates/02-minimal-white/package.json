@@ -2,7 +2,7 @@
   "name": "bds-minimal-white",
   "version": "1.0.0",
   "private": true,
-  "description": "Website Bất Động Sản Cao Cấp - Mẫu Minimal White Style",
+  "description": "Website Bất Động Sản Cao Cấp - Mẫu Minimal White Style (Sàn Novihome)",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

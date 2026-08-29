@@ -2,11 +2,11 @@ import fs from 'fs';
 import path from 'path';
 
 const TEMPLATES = [
-  { num: '01', slug: 'luxury-gold', name: 'Luxury Gold Style', compFile: 'LuxuryTemplate.tsx', desc: 'Biệt thự · Penthouse · Dinh thự dát vàng hoàng gia' },
-  { num: '02', slug: 'minimal-white', name: 'Minimal White Style', compFile: 'MinimalTemplate.tsx', desc: 'Apple Minimalist · Căn hộ cao cấp Bắc Âu · Tinh tế' },
-  { num: '03', slug: 'modern-corporate', name: 'Modern Corporate Pro', compFile: 'CorporateTemplate.tsx', desc: 'Tập đoàn BĐS · Tổng công ty · Sàn lớn 100+ nhân sự' },
-  { num: '04', slug: 'resort-paradise', name: 'Resort Paradise Style', compFile: 'ResortTemplate.tsx', desc: 'BĐS biển · Biệt thự đảo · Condotel · Second Home' },
-  { num: '05', slug: 'smart-urban-city', name: 'Smart Urban City', compFile: 'ApartmentTemplate.tsx', desc: 'Căn hộ chung cư · Đại đô thị thông minh · Metro' },
+  { num: '01', slug: 'luxury-gold', name: 'Luxury Gold Style (Dinh Thự Hoàng Gia)', compFile: 'LuxuryTemplate.tsx', desc: 'Biệt thự · Penthouse · Dinh thự dát vàng hoàng gia' },
+  { num: '02', slug: 'minimal-white', name: 'Minimal White Style (Sàn Novihome)', compFile: 'MinimalTemplate.tsx', desc: 'Apple Minimalist · Căn hộ cao cấp Bắc Âu · Tinh tế' },
+  { num: '03', slug: 'modern-corporate', name: 'Modern Corporate Pro (Tuấn Nhân Land)', compFile: 'CorporateTemplate.tsx', desc: 'Tập đoàn BĐS · Tổng công ty · Sàn lớn 100+ nhân sự' },
+  { num: '04', slug: 'resort-paradise', name: 'Resort Paradise Style (Sunshine City)', compFile: 'ResortTemplate.tsx', desc: 'BĐS biển · Biệt thự đảo · Condotel · Second Home' },
+  { num: '05', slug: 'smart-urban-city', name: 'Smart Urban City (An Viên Nha Trang)', compFile: 'UrbanTemplate.tsx', desc: 'Căn hộ chung cư · Đại đô thị thông minh · Metro' },
   { num: '06', slug: 'industrial-estate', name: 'Industrial & Logistics Park', compFile: 'IndustrialTemplate.tsx', desc: 'Khu công nghiệp · Nhà xưởng xây sẵn · Kho vận B2B' },
   { num: '07', slug: 'villa-royal-garden', name: 'Villa Royal Garden', compFile: 'VillaTemplate.tsx', desc: 'Biệt thự đơn lập sân vườn · Sơ đồ mặt bằng · 3D Tour' },
   { num: '08', slug: 'green-eco-living', name: 'Green Eco Living', compFile: 'EcoTemplate.tsx', desc: 'Đô thị sinh thái xanh · Ecopark · Chuẩn Xanh ESG' },
@@ -45,7 +45,7 @@ const SOURCE_COMP_DIR = path.join(ROOT_DIR, 'apps/marketplace/src/components/dem
 const DESIGN_SYSTEM_PATH = path.join(ROOT_DIR, 'apps/marketplace/src/components/demo/design-system.ts');
 
 async function exportAll() {
-  console.log('🚀 Bắt đầu tách 24 templates thành 24 folders độc lập hoàn chỉnh...');
+  console.log('🚀 Bắt đầu xuất 24 templates thành các gói độc lập: Next.js + React + HTML5/CSS3/JS + PHP & MySQL...');
 
   fs.mkdirSync(OUTPUT_BASE, { recursive: true });
 
@@ -56,11 +56,20 @@ async function exportAll() {
     const targetFolder = path.join(OUTPUT_BASE, folderName);
     console.log(`📁 Đang xuất [${t.num}/24]: ${folderName} (${t.name})...`);
 
+    // Create subfolders
     fs.mkdirSync(path.join(targetFolder, 'components'), { recursive: true });
     fs.mkdirSync(path.join(targetFolder, 'pages'), { recursive: true });
     fs.mkdirSync(path.join(targetFolder, 'styles'), { recursive: true });
     fs.mkdirSync(path.join(targetFolder, 'public'), { recursive: true });
     fs.mkdirSync(path.join(targetFolder, 'lib'), { recursive: true });
+    
+    // HTML5 & PHP subfolders
+    const htmlDir = path.join(targetFolder, 'html');
+    const phpDir = path.join(targetFolder, 'php');
+    fs.mkdirSync(path.join(htmlDir, 'css'), { recursive: true });
+    fs.mkdirSync(path.join(htmlDir, 'js'), { recursive: true });
+    fs.mkdirSync(path.join(phpDir, 'config'), { recursive: true });
+    fs.mkdirSync(path.join(phpDir, 'api'), { recursive: true });
 
     // 1. package.json độc lập
     const pkgJson = {
@@ -206,18 +215,16 @@ body {
     // 8. lib/design-system.ts
     fs.writeFileSync(path.join(targetFolder, 'lib/design-system.ts'), designSystemContent, 'utf-8');
 
-    // 9. lib/demo.ts (mock sync helper)
+    // 9. lib/demo.ts
     const demoHelper = `export function syncDemoUrl(slug: string, path: string) {
-  // Standalone mode: no iframe sync needed
+  // Standalone mode
 }
 `;
     fs.writeFileSync(path.join(targetFolder, 'lib/demo.ts'), demoHelper, 'utf-8');
 
-    // 10. Copy and adjust Template Component -> components/TemplateComponent.tsx
+    // 10. Copy and adjust Template Component
     const sourceCompPath = path.join(SOURCE_COMP_DIR, t.compFile);
     let compCode = fs.readFileSync(sourceCompPath, 'utf-8');
-
-    // Adjust relative imports
     compCode = compCode.replace(/from\s+['"].*?design-system['"]/g, "from '../lib/design-system'");
     compCode = compCode.replace(/from\s+['"].*?demo['"]/g, "from '../lib/demo'");
 
@@ -286,70 +293,382 @@ export default function HomePage() {
 `;
     fs.writeFileSync(path.join(targetFolder, 'pages/index.tsx'), indexTsx, 'utf-8');
 
-    // 14. README.md với hướng dẫn 1-Click Run & Push GitHub
-    const readmeContent = `# ${t.name} — Standalone Real Estate Template
+    // ─────────────────────────────────────────────────────────────
+    // 14. TẠO GÓI THUẦN HTML5 + CSS3 + JAVASCRIPT ĐƠN GIẢN
+    // ─────────────────────────────────────────────────────────────
+    const htmlIndexContent = `<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${t.name} — Website Bất Động Sản Chuyên Nghiệp</title>
+  <meta name="description" content="${t.desc}">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 font-black text-xl text-blue-600">
+        <span>BĐS ${t.name}</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-xs font-bold uppercase text-slate-700">
+        <a href="index.html" class="text-blue-600">Trang Chủ</a>
+        <a href="#san-pham" class="hover:text-blue-600">Sản Phẩm</a>
+        <a href="#du-an" class="hover:text-blue-600">Dự Án</a>
+        <a href="#tin-tuc" class="hover:text-blue-600">Tin Tức</a>
+        <a href="#lien-he" class="hover:text-blue-600">Liên Hệ</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="tel:0909123456" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow transition">
+          📞 0909.123.456
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="flex-1 w-full space-y-12 pb-16">
+    <section class="relative py-20 px-4 bg-slate-900 text-white text-center">
+      <div class="max-w-4xl mx-auto space-y-4">
+        <span class="px-3.5 py-1 rounded-full bg-blue-600/30 text-blue-300 border border-blue-400/40 text-xs font-bold uppercase tracking-widest inline-block">
+          MẪU GIAO DIỆN ${t.name.toUpperCase()}
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-black uppercase leading-tight font-serif">
+          ${t.name}
+        </h1>
+        <p class="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
+          ${t.desc} — Giải pháp website bất động sản tối ưu chuẩn SEO, tải nhanh và dễ dàng sử dụng.
+        </p>
+        <div class="pt-4 flex justify-center gap-3">
+          <a href="#san-pham" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase rounded-full shadow">
+            Xem Sản Phẩm ›
+          </a>
+          <a href="#lien-he" class="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold text-xs uppercase rounded-full">
+            Đăng Ký Tư Vấn
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Danh Sách BĐS -->
+    <section id="san-pham" class="max-w-7xl mx-auto px-4 space-y-6">
+      <div class="text-center space-y-1">
+        <h2 class="text-2xl font-black text-slate-900 uppercase">SẢN PHẨM BẤT ĐỘNG SẢN NỔI BẬT</h2>
+        <div class="w-12 h-1 bg-blue-600 mx-auto rounded-full"></div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="property-list">
+        <!-- Javascript renders cards here or static cards -->
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
+          <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80" alt="" class="w-full h-48 object-cover">
+          <div class="p-4 space-y-2">
+            <h3 class="font-bold text-sm text-slate-900">Biệt Thự Nghỉ Dưỡng Cao Cấp</h3>
+            <p class="text-xs text-slate-500">Vị trí đắc địa, sổ hồng riêng chính chủ</p>
+            <div class="flex justify-between items-center pt-2 border-t text-xs">
+              <span class="font-black text-blue-600 text-sm">4.5 Tỷ VNĐ</span>
+              <span class="text-slate-500">250 m²</span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
+          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80" alt="" class="w-full h-48 object-cover">
+          <div class="p-4 space-y-2">
+            <h3 class="font-bold text-sm text-slate-900">Nhà Phố Mặt Tiền Thương Mại</h3>
+            <p class="text-xs text-slate-500">Thuận tiện kinh doanh showroom, văn phòng</p>
+            <div class="flex justify-between items-center pt-2 border-t text-xs">
+              <span class="font-black text-blue-600 text-sm">6.8 Tỷ VNĐ</span>
+              <span class="text-slate-500">120 m²</span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
+          <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="" class="w-full h-48 object-cover">
+          <div class="p-4 space-y-2">
+            <h3 class="font-bold text-sm text-slate-900">Đất Nền Phân Lô Sổ Đỏ Trao Tay</h3>
+            <p class="text-xs text-slate-500">Hạ tầng đồng bộ điện âm nước máy</p>
+            <div class="flex justify-between items-center pt-2 border-t text-xs">
+              <span class="font-black text-blue-600 text-sm">1.8 Tỷ VNĐ</span>
+              <span class="text-slate-500">100 m²</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Form Liên Hệ -->
+    <section id="lien-he" class="max-w-4xl mx-auto px-4">
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-lg space-y-4">
+        <h3 class="text-xl font-black text-slate-900 text-center uppercase">LIÊN HỆ & TƯ VẤN BÁO GIÁ</h3>
+        <form id="contact-form" class="space-y-3 text-xs">
+          <input type="text" id="name" placeholder="Họ và tên của bạn (*)" required class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl">
+          <input type="tel" id="phone" placeholder="Số điện thoại / Zalo (*)" required class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl font-bold text-blue-600">
+          <textarea id="message" rows="3" placeholder="Nội dung cần tư vấn..." class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl"></textarea>
+          <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow transition">
+            GỬI YÊU CẦU TƯ VẤN
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center space-y-2">
+    <p>© 2026 Bản quyền thuộc về TEMPLATEBDS — Mẫu Giao Diện: ${t.name}.</p>
+    <p class="text-[11px] text-slate-500">Thiết kế website bất động sản chuyên nghiệp & chuẩn SEO 100%.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>`;
+    fs.writeFileSync(path.join(htmlDir, 'index.html'), htmlIndexContent, 'utf-8');
+
+    const htmlCssContent = `/* CSS3 Custom Stylesheet for ${t.name} */
+html { scroll-behavior: smooth; }
+body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+.card-hover:hover { transform: translateY(-4px); transition: all 0.3s ease; }
+`;
+    fs.writeFileSync(path.join(htmlDir, 'css/style.css'), htmlCssContent, 'utf-8');
+
+    const htmlJsContent = `// JavaScript logic for ${t.name}
+document.getElementById('contact-form')?.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const name = document.getElementById('name').value;
+  const phone = document.getElementById('phone').value;
+  alert('🎉 Cảm ơn quý khách ' + name + ' (' + phone + ')! Chuyên viên tư vấn sẽ liên hệ lại trong ít phút.');
+  this.reset();
+});
+`;
+    fs.writeFileSync(path.join(htmlDir, 'js/main.js'), htmlJsContent, 'utf-8');
+
+    // ─────────────────────────────────────────────────────────────
+    // 15. TẠO GÓI PHP + MYSQL ĐẦY ĐỦ ĐỂ CHẠY XAMPP / CPANEL
+    // ─────────────────────────────────────────────────────────────
+    const dbConfigPhp = `<?php
+// Cấu hình kết nối MySQL Database cho ${t.name}
+$db_host = 'localhost';
+$db_user = 'root';
+$db_pass = '';
+$db_name = 'bds_${t.slug.replace(/-/g, '_')}';
+
+try {
+    $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8mb4", $db_user, $db_pass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    ]);
+} catch (PDOException $e) {
+    // Nếu chưa tạo database MySQL thì chạy dữ liệu demo mẫu
+    $pdo = null;
+}
+`;
+    fs.writeFileSync(path.join(phpDir, 'config/db.php'), dbConfigPhp, 'utf-8');
+
+    const sqlSchema = `-- ========================================================
+-- DATABASE SCHEMA CHO TEMPLATE ${t.name.toUpperCase()} (BDS-${t.num})
+-- Tạo database: bds_${t.slug.replace(/-/g, '_')}
+-- ========================================================
+
+CREATE DATABASE IF NOT EXISTS \`bds_${t.slug.replace(/-/g, '_')}\` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE \`bds_${t.slug.replace(/-/g, '_')}\`;
+
+-- Bảng lưu danh sách Bất Động Sản
+CREATE TABLE IF NOT EXISTS \`properties\` (
+  \`id\` INT AUTO_INCREMENT PRIMARY KEY,
+  \`title\` VARCHAR(255) NOT NULL,
+  \`slug\` VARCHAR(255) NOT NULL UNIQUE,
+  \`price\` VARCHAR(100) NOT NULL,
+  \`area\` VARCHAR(50) NOT NULL,
+  \`location\` VARCHAR(255) NOT NULL,
+  \`image\` TEXT NOT NULL,
+  \`description\` TEXT,
+  \`created_at\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Thêm dữ liệu mẫu
+INSERT INTO \`properties\` (\`title\`, \`slug\`, \`price\`, \`area\`, \`location\`, \`image\`, \`description\`) VALUES
+('Biệt thự sang trọng view thoáng mát', 'biet-thu-view-thoang-mat', '5.5 Tỷ VNĐ', '300 m²', 'Khu Đô Thị Mới', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80', 'Biệt thự thiết kế hiện đại sang trọng, đầy đủ tiện nghi.'),
+('Nhà phố mặt tiền thương mại kinh doanh', 'nha-pho-mat-tien-kinh-doanh', '8.2 Tỷ VNĐ', '140 m²', 'Trung tâm thành phố', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', 'Thuận tiện mở văn phòng, spa hoặc showroom kinh doanh.'),
+('Đất nền phân lô sổ đỏ sẵn sàng công chứng', 'dat-nen-phan-lo-so-do', '1.9 Tỷ VNĐ', '120 m²', 'Khu dân cư hiện hữu', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80', 'Hạ tầng hoàn thiện điện âm nước máy, xây dựng tự do.');
+
+-- Bảng lưu thông tin khách hàng gửi từ Form liên hệ
+CREATE TABLE IF NOT EXISTS \`contacts\` (
+  \`id\` INT AUTO_INCREMENT PRIMARY KEY,
+  \`name\` VARCHAR(255) NOT NULL,
+  \`phone\` VARCHAR(50) NOT NULL,
+  \`email\` VARCHAR(100),
+  \`message\` TEXT,
+  \`created_at\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+`;
+    fs.writeFileSync(path.join(phpDir, 'database.sql'), sqlSchema, 'utf-8');
+
+    const phpIndex = `<?php
+require_once 'config/db.php';
+
+// Lấy danh sách BĐS từ MySQL nếu có kết nối, hoặc dùng mảng demo
+if ($pdo) {
+    $stmt = $pdo->query("SELECT * FROM properties ORDER BY id DESC LIMIT 6");
+    $properties = $stmt->fetchAll();
+} else {
+    $properties = [
+        ['title' => 'Biệt thự sang trọng view thoáng mát', 'slug' => 'biet-thu-view-thoang-mat', 'price' => '5.5 Tỷ VNĐ', 'area' => '300 m²', 'location' => 'Khu Đô Thị Mới', 'image' => 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80'],
+        ['title' => 'Nhà phố mặt tiền thương mại kinh doanh', 'slug' => 'nha-pho-mat-tien-kinh-doanh', 'price' => '8.2 Tỷ VNĐ', 'area' => '140 m²', 'location' => 'Trung tâm thành phố', 'image' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80'],
+        ['title' => 'Đất nền phân lô sổ đỏ sẵn sàng công chứng', 'slug' => 'dat-nen-phan-lo-so-do', 'price' => '1.9 Tỷ VNĐ', 'area' => '120 m²', 'location' => 'Khu dân cư hiện hữu', 'image' => 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80'],
+    ];
+}
+?>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${t.name} — Website Bất Động Sản PHP & MySQL</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Header PHP -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.php" class="font-black text-xl text-blue-600 uppercase">
+        ${t.name}
+      </a>
+      <div class="flex items-center gap-3">
+        <a href="tel:0909123456" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow">
+          Hotline: 0909.123.456
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 w-full space-y-12 pb-16">
+    <section class="py-16 px-4 bg-slate-900 text-white text-center">
+      <h1 class="text-3xl sm:text-5xl font-black uppercase mb-4">${t.name}</h1>
+      <p class="text-slate-300 max-w-xl mx-auto text-sm">${t.desc}</p>
+    </section>
+
+    <!-- Danh sách BĐS từ MySQL -->
+    <section class="max-w-7xl mx-auto px-4 space-y-6">
+      <h2 class="text-2xl font-black text-slate-900 uppercase text-center">DANH SÁCH BẤT ĐỘNG SẢN</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <?php foreach ($properties as $item): ?>
+          <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition">
+            <img src="<?php echo htmlspecialchars($item['image']); ?>" alt="" class="w-full h-48 object-cover">
+            <div class="p-4 space-y-2">
+              <h3 class="font-bold text-sm text-slate-900"><?php echo htmlspecialchars($item['title']); ?></h3>
+              <p class="text-xs text-slate-500"><?php echo htmlspecialchars($item['location']); ?></p>
+              <div class="flex justify-between items-center pt-2 border-t text-xs">
+                <span class="font-black text-blue-600 text-sm"><?php echo htmlspecialchars($item['price']); ?></span>
+                <span class="text-slate-500"><?php echo htmlspecialchars($item['area']); ?></span>
+              </div>
+            </div>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    </section>
+
+    <!-- Form Liên Hệ PHP -->
+    <section class="max-w-3xl mx-auto px-4">
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-md space-y-4">
+        <h3 class="text-lg font-black text-slate-900 uppercase text-center">GỬI YÊU CẦU TƯ VẤN</h3>
+        <form action="api/contact.php" method="POST" class="space-y-3 text-xs">
+          <input type="text" name="name" placeholder="Họ và tên (*)" required class="w-full p-3 bg-slate-50 border rounded-xl">
+          <input type="tel" name="phone" placeholder="Số điện thoại (*)" required class="w-full p-3 bg-slate-50 border rounded-xl font-bold text-blue-600">
+          <textarea name="message" rows="3" placeholder="Nội dung cần tư vấn..." class="w-full p-3 bg-slate-50 border rounded-xl"></textarea>
+          <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl">
+            GỬI THÔNG TIN
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer PHP -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-6 text-center border-t border-slate-800">
+    <p>© 2026 Bản quyền thuộc về TEMPLATEBDS — Mã Mẫu: BDS-${t.num}.</p>
+  </footer>
+
+</body>
+</html>`;
+    fs.writeFileSync(path.join(phpDir, 'index.php'), phpIndex, 'utf-8');
+
+    const phpContactApi = `<?php
+require_once '../config/db.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = trim($_POST['name'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $message = trim($_POST['message'] ?? '');
+
+    if (!empty($name) && !empty($phone)) {
+        if ($pdo) {
+            $stmt = $pdo->prepare("INSERT INTO contacts (name, phone, message) VALUES (?, ?, ?)");
+            $stmt->execute([$name, $phone, $message]);
+        }
+        echo "<script>
+            alert('🎉 Gửi thông tin thành công! Chuyên viên sẽ liên hệ lại với quý khách trong ít phút.');
+            window.location.href = '../index.php';
+        </script>";
+        exit;
+    }
+}
+header('Location: ../index.php');
+exit;
+`;
+    fs.writeFileSync(path.join(phpDir, 'api/contact.php'), phpContactApi, 'utf-8');
+
+    const phpGuide = `# HƯỚNG DẪN CÀI ĐẶT WEBSITE BẤT ĐỘNG SẢN BẰNG PHP & MYSQL
+
+## 1. Cài đặt trên máy tính với XAMPP / Laragon
+1. Tải và cài đặt phần mềm **XAMPP** hoặc **Laragon**.
+2. Copy toàn bộ thư mục \`php\` này vào thư mục \`htdocs\` của XAMPP (VD: \`C:/xampp/htdocs/bds-${t.num}\`).
+3. Mở **phpMyAdmin** (\`http://localhost/phpmyadmin\`).
+4. Tạo database mới tên: \`bds_${t.slug.replace(/-/g, '_')}\`.
+5. Chọn tab **Import (Nhập)** và chọn file \`database.sql\` nằm trong thư mục này để nạp dữ liệu.
+6. Mở trình duyệt và truy cập: \`http://localhost/bds-${t.num}\` để xem website hoạt động!
+
+## 2. Cài đặt trên Hosting (cPanel / DirectAdmin)
+1. Đăng nhập vào cPanel Hosting của bạn.
+2. Mở **MySQL Database Wizard** để tạo Database và User.
+3. Mở **phpMyAdmin** trên cPanel và Import file \`database.sql\`.
+4. Upload toàn bộ các file trong thư mục \`php\` lên thư mục \`public_html\`.
+5. Sửa thông tin tài khoản Database trong file \`config/db.php\` cho khớp với hosting.
+6. Truy cập tên miền của bạn để hoàn tất!
+`;
+    fs.writeFileSync(path.join(phpDir, 'HUONG_DAN_CAI_DAT_XAMPP_CPANEL.md'), phpGuide, 'utf-8');
+
+    // 16. README.md cập nhật cả 3 gói
+    const readmeContent = `# ${t.name} — Trọn Bộ Mã Nguồn Website BĐS Chuyên Nghiệp
 
 > **Mô tả:** ${t.desc}  
-> **Mã mẫu (Slug):** \`${t.slug}\`  
-> **Framework:** Next.js 15, React 19, Tailwind CSS, Lucide Icons  
+> **Mã mẫu (Slug):** \`bds-${t.num}\` (\`${t.slug}\`)  
 
 ---
 
-## 🚀 1. HƯỚNG DẪN CHẠY TRÊN MÁY TÍNH (LOCAL DEV)
+## 📦 BỘ MÃ NGUỒN NÀY BAO GỒM 3 GÓI HOÀN CHỈNH:
 
-Mở terminal tại thư mục này và gõ các lệnh sau:
+1. **Gói 1: HTML5 + CSS3 + Vanilla JavaScript thuần** (Nằm trong thư mục \`html/\`)
+   - Mở trực tiếp file \`index.html\` trên bất kỳ trình duyệt nào mà không cần cài đặt gì.
+   
+2. **Gói 2: PHP + MySQL Database** (Nằm trong thư mục \`php/\`)
+   - Chạy trên mọi hosting cPanel, DirectAdmin, XAMPP, Laragon.
+   - Có sẵn file \`database.sql\` và form lưu liên hệ khách hàng vào MySQL.
 
-\`\`\`bash
-# Bước 1: Cài đặt thư viện dependencies
-npm install
-
-# Bước 2: Khởi chạy website ở môi trường phát triển
-npm run dev
-\`\`\`
-
-Truy cập: **[http://localhost:3000](http://localhost:3000)** để xem website!
-
----
-
-## 🌐 2. HƯỚNG DẪN ĐẨY LÊN GITHUB CHO KHÁCH HÀNG
-
-Khi khách hàng cần bàn giao source code trên GitHub riêng của họ:
-
-\`\`\`bash
-# 1. Khởi tạo Git repository
-git init
-
-# 2. Thêm tất cả file mã nguồn
-git add .
-
-# 3. Tạo commit đầu tiên
-git commit -m "feat: initial commit for ${t.name} real estate website"
-
-# 4. Đổi tên nhánh sang main
-git branch -M main
-
-# 5. Gắn remote URL repository GitHub của khách
-git remote add origin https://github.com/USERNAME/REPO_NAME.git
-
-# 6. Đẩy toàn bộ source code lên GitHub
-git push -u origin main
-\`\`\`
+3. **Gói 3: Next.js + React + Tailwind CSS hiện đại** (Nằm tại thư mục gốc)
+   - Chạy lệnh \`npm install\` và \`npm run dev\` để khởi chạy.
+   - Deploy 1-Click lên Vercel / Netlify.
 
 ---
-
-## ⚡ 3. DEPLOY TRỰC TIẾP LÊN VERCEL / NETLIFY
-
-1. Truy cập [https://vercel.com](https://vercel.com).
-2. Chọn **Add New Project** $\\rightarrow$ Import Repository GitHub vừa push ở trên.
-3. Bấm **Deploy** $\\rightarrow$ Website sẽ chạy online 24/7 chỉ sau 30 giây!
-
----
-© BĐS Template Engine. Bản quyền thuộc về khách hàng sở hữu.
+© BĐS Template Engine. Bản quyền thuộc về TEMPLATEBDS.
 `;
     fs.writeFileSync(path.join(targetFolder, 'README.md'), readmeContent, 'utf-8');
   }
 
-  console.log('\n🎉 ĐÃ TÁCH THÀNH CÔNG TẤT CẢ 24 TEMPLATES THÀNH 24 FOLDERS ĐỘC LẬP TẠI:');
+  console.log('\n🎉 ĐÃ XUẤT THÀNH CÔNG TẤT CẢ 24 TEMPLATES ĐẦY ĐỦ 3 GÓI TẠI:');
   console.log(`👉 ${OUTPUT_BASE}`);
 }
 

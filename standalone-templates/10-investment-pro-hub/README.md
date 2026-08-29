@@ -1,58 +1,22 @@
-# Investment Pro Hub — Standalone Real Estate Template
+# Investment Pro Hub — Trọn Bộ Mã Nguồn Website BĐS Chuyên Nghiệp
 
 > **Mô tả:** Phân tích tài chính BĐS · Biểu đồ giá · Máy tính ROI  
-> **Mã mẫu (Slug):** `investment-pro-hub`  
-> **Framework:** Next.js 15, React 19, Tailwind CSS, Lucide Icons  
+> **Mã mẫu (Slug):** `bds-10` (`investment-pro-hub`)  
 
 ---
 
-## 🚀 1. HƯỚNG DẪN CHẠY TRÊN MÁY TÍNH (LOCAL DEV)
+## 📦 BỘ MÃ NGUỒN NÀY BAO GỒM 3 GÓI HOÀN CHỈNH:
 
-Mở terminal tại thư mục này và gõ các lệnh sau:
+1. **Gói 1: HTML5 + CSS3 + Vanilla JavaScript thuần** (Nằm trong thư mục `html/`)
+   - Mở trực tiếp file `index.html` trên bất kỳ trình duyệt nào mà không cần cài đặt gì.
+   
+2. **Gói 2: PHP + MySQL Database** (Nằm trong thư mục `php/`)
+   - Chạy trên mọi hosting cPanel, DirectAdmin, XAMPP, Laragon.
+   - Có sẵn file `database.sql` và form lưu liên hệ khách hàng vào MySQL.
 
-```bash
-# Bước 1: Cài đặt thư viện dependencies
-npm install
-
-# Bước 2: Khởi chạy website ở môi trường phát triển
-npm run dev
-```
-
-Truy cập: **[http://localhost:3000](http://localhost:3000)** để xem website!
-
----
-
-## 🌐 2. HƯỚNG DẪN ĐẨY LÊN GITHUB CHO KHÁCH HÀNG
-
-Khi khách hàng cần bàn giao source code trên GitHub riêng của họ:
-
-```bash
-# 1. Khởi tạo Git repository
-git init
-
-# 2. Thêm tất cả file mã nguồn
-git add .
-
-# 3. Tạo commit đầu tiên
-git commit -m "feat: initial commit for Investment Pro Hub real estate website"
-
-# 4. Đổi tên nhánh sang main
-git branch -M main
-
-# 5. Gắn remote URL repository GitHub của khách
-git remote add origin https://github.com/USERNAME/REPO_NAME.git
-
-# 6. Đẩy toàn bộ source code lên GitHub
-git push -u origin main
-```
+3. **Gói 3: Next.js + React + Tailwind CSS hiện đại** (Nằm tại thư mục gốc)
+   - Chạy lệnh `npm install` và `npm run dev` để khởi chạy.
+   - Deploy 1-Click lên Vercel / Netlify.
 
 ---
-
-## ⚡ 3. DEPLOY TRỰC TIẾP LÊN VERCEL / NETLIFY
-
-1. Truy cập [https://vercel.com](https://vercel.com).
-2. Chọn **Add New Project** $\rightarrow$ Import Repository GitHub vừa push ở trên.
-3. Bấm **Deploy** $\rightarrow$ Website sẽ chạy online 24/7 chỉ sau 30 giây!
-
----
-© BĐS Template Engine. Bản quyền thuộc về khách hàng sở hữu.
+© BĐS Template Engine. Bản quyền thuộc về TEMPLATEBDS.

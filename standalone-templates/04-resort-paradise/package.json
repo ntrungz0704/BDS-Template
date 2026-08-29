@@ -2,7 +2,7 @@
   "name": "bds-resort-paradise",
   "version": "1.0.0",
   "private": true,
-  "description": "Website Bất Động Sản Cao Cấp - Mẫu Resort Paradise Style",
+  "description": "Website Bất Động Sản Cao Cấp - Mẫu Resort Paradise Style (Sunshine City)",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

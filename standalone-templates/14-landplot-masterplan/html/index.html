@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dự Án Đất Nền Phân Lô — Website Bất Động Sản Chuyên Nghiệp</title>
+  <meta name="description" content="Đất nền phân lô · Sơ đồ quy hoạch 1/500 · Báo giá F1">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 font-black text-xl text-blue-600">
+        <span>BĐS Dự Án Đất Nền Phân Lô</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-xs font-bold uppercase text-slate-700">
+        <a href="index.html" class="text-blue-600">Trang Chủ</a>
+        <a href="#san-pham" class="hover:text-blue-600">Sản Phẩm</a>
+        <a href="#du-an" class="hover:text-blue-600">Dự Án</a>
+        <a href="#tin-tuc" class="hover:text-blue-600">Tin Tức</a>
+        <a href="#lien-he" class="hover:text-blue-600">Liên Hệ</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="tel:0909123456" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow transition">
+          📞 0909.123.456
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="flex-1 w-full space-y-12 pb-16">
+    <section class="relative py-20 px-4 bg-slate-900 text-white text-center">
+      <div class="max-w-4xl mx-auto space-y-4">
+        <span class="px-3.5 py-1 rounded-full bg-blue-600/30 text-blue-300 border border-blue-400/40 text-xs font-bold uppercase tracking-widest inline-block">
+          MẪU GIAO DIỆN DỰ ÁN ĐẤT NỀN PHÂN LÔ
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-black uppercase leading-tight font-serif">
+          Dự Án Đất Nền Phân Lô
+        </h1>
+        <p class="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
+          Đất nền phân lô · Sơ đồ quy hoạch 1/500 · Báo giá F1 — Giải pháp website bất động sản tối ưu chuẩn SEO, tải nhanh và dễ dàng sử dụng.
+        </p>
+        <div class="pt-4 flex justify-center gap-3">
+          <a href="#san-pham" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase rounded-full shadow">
+            Xem Sản Phẩm ›
+          </a>
+          <a href="#lien-he" class="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold text-xs uppercase rounded-full">
+            Đăng Ký Tư Vấn
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Danh Sách BĐS -->
+    <section id="san-pham" class="max-w-7xl mx-auto px-4 space-y-6">
+      <div class="text-center space-y-1">
+        <h2 class="text-2xl font-black text-slate-900 uppercase">SẢN PHẨM BẤT ĐỘNG SẢN NỔI BẬT</h2>
+        <div class="w-12 h-1 bg-blue-600 mx-auto rounded-full"></div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="property-list">
+        <!-- Javascript renders cards here or static cards -->
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
+          <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80" alt="" class="w-full h-48 object-cover">
+          <div class="p-4 space-y-2">
+            <h3 class="font-bold text-sm text-slate-900">Biệt Thự Nghỉ Dưỡng Cao Cấp</h3>
+            <p class="text-xs text-slate-500">Vị trí đắc địa, sổ hồng riêng chính chủ</p>
+            <div class="flex justify-between items-center pt-2 border-t text-xs">
+              <span class="font-black text-blue-600 text-sm">4.5 Tỷ VNĐ</span>
+              <span class="text-slate-500">250 m²</span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
+          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80" alt="" class="w-full h-48 object-cover">
+          <div class="p-4 space-y-2">
+            <h3 class="font-bold text-sm text-slate-900">Nhà Phố Mặt Tiền Thương Mại</h3>
+            <p class="text-xs text-slate-500">Thuận tiện kinh doanh showroom, văn phòng</p>
+            <div class="flex justify-between items-center pt-2 border-t text-xs">
+              <span class="font-black text-blue-600 text-sm">6.8 Tỷ VNĐ</span>
+              <span class="text-slate-500">120 m²</span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
+          <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="" class="w-full h-48 object-cover">
+          <div class="p-4 space-y-2">
+            <h3 class="font-bold text-sm text-slate-900">Đất Nền Phân Lô Sổ Đỏ Trao Tay</h3>
+            <p class="text-xs text-slate-500">Hạ tầng đồng bộ điện âm nước máy</p>
+            <div class="flex justify-between items-center pt-2 border-t text-xs">
+              <span class="font-black text-blue-600 text-sm">1.8 Tỷ VNĐ</span>
+              <span class="text-slate-500">100 m²</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Form Liên Hệ -->
+    <section id="lien-he" class="max-w-4xl mx-auto px-4">
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-lg space-y-4">
+        <h3 class="text-xl font-black text-slate-900 text-center uppercase">LIÊN HỆ & TƯ VẤN BÁO GIÁ</h3>
+        <form id="contact-form" class="space-y-3 text-xs">
+          <input type="text" id="name" placeholder="Họ và tên của bạn (*)" required class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl">
+          <input type="tel" id="phone" placeholder="Số điện thoại / Zalo (*)" required class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl font-bold text-blue-600">
+          <textarea id="message" rows="3" placeholder="Nội dung cần tư vấn..." class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl"></textarea>
+          <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow transition">
+            GỬI YÊU CẦU TƯ VẤN
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 text-center space-y-2">
+    <p>© 2026 Bản quyền thuộc về TEMPLATEBDS — Mẫu Giao Diện: Dự Án Đất Nền Phân Lô.</p>
+    <p class="text-[11px] text-slate-500">Thiết kế website bất động sản chuyên nghiệp & chuẩn SEO 100%.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

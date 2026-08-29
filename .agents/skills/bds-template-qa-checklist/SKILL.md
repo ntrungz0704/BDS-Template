@@ -1,7 +1,7 @@
 ---
 name: bds-template-qa-checklist
 description: >-
-  Quy trình kiểm tra nghiệm thu chất lượng bắt buộc (QA Checklist) sau khi tạo hoặc sửa đổi bất kỳ template nào trong 24 Templates BĐS. Đảm bảo mọi nút bấm, link, trang con, responsive, map, bộ lọc tìm kiếm và footer TEMPLATEBDS đều hoạt động thật 100% và hỗ trợ tùy biến CMS đầy đủ.
+  Quy trình kiểm tra nghiệm thu chất lượng bắt buộc (QA Checklist) sau khi tạo hoặc sửa đổi bất kỳ template nào trong 24 Templates BĐS. Đảm bảo mọi nút bấm, link, trang con, responsive, map, bộ lọc tìm kiếm, footer TEMPLATEBDS hoạt động thật 100% và luôn hỗ trợ trọn bộ 3 định dạng: React/Next.js cho sàn Marketplace + Standalone HTML5/CSS3/JS + PHP & MySQL kèm database.sql để khách hàng dễ dàng triển khai trên Hosting cPanel / XAMPP.
 ---
 
 # Quy Trình Nghiệm Thu & Kiểm Tra Chất Lượng Template BĐS (BDS Template QA Checklist)
@@ -85,10 +85,11 @@ Quy trình này là tiêu chuẩn bắt buộc phải thực hiện sau khi tạ
 
 ---
 
-## 5. Đồng Bộ Hóa & Đẩy Mã Nguồn (Sync & VCS)
+## 5. Chuẩn Hóa 3 Định Dạng Xuất Bản (Trọn Gói Next.js + HTML5/CSS3/JS + PHP & MySQL)
 
-- [ ] 1. Cập nhật mã nguồn tại Marketplace: `apps/marketplace/src/components/demo/templates/...`
-- [ ] 2. Đồng bộ sang Multi-tenant Website: `apps/website/src/components/templates/...`
-- [ ] 3. Xuất thư mục độc lập: Chạy `pnpm --filter api exec ts-node ../../scripts/export-all-24-standalone-templates.ts` để đồng bộ `standalone-templates/...`
-- [ ] 4. Kiểm tra mã phản hồi HTTP 200 tại `http://localhost:3000/demo/bds-xx`.
-- [ ] 5. Thực hiện `git add .`, `git commit` và `git push origin main`.
+- [ ] 1. **Gói Next.js / React (Live SaaS Preview)**: Nằm tại `apps/marketplace` và `apps/website` phục vụ trải nghiệm xem demo siêu mượt trên Marketplace.
+- [ ] 2. **Gói HTML5 + CSS3 + Vanilla JavaScript Thuần (`html/`)**: Nằm trong `standalone-templates/XX-.../html/`, mở file `index.html` chạy ngay trên mọi trình duyệt mà không cần cài đặt.
+- [ ] 3. **Gói PHP & MySQL Độc Lập (`php/`)**: Nằm trong `standalone-templates/XX-.../php/`, gồm `index.php`, `config/db.php`, `database.sql`, `api/contact.php`, hướng dẫn cài đặt tiếng Việt cho XAMPP / Laragon / cPanel.
+- [ ] 4. Chạy `pnpm --filter api exec ts-node ../../scripts/export-all-24-standalone-templates.ts` để đồng bộ toàn bộ 24 templates.
+- [ ] 5. Kiểm tra mã phản hồi HTTP 200 tại `http://localhost:3000/demo/bds-xx`.
+- [ ] 6. Thực hiện `git add .`, `git commit` và `git push origin main`.

@@ -2,7 +2,7 @@
   "name": "bds-smart-urban-city",
   "version": "1.0.0",
   "private": true,
-  "description": "Website Bất Động Sản Cao Cấp - Mẫu Smart Urban City",
+  "description": "Website Bất Động Sản Cao Cấp - Mẫu Smart Urban City (An Viên Nha Trang)",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

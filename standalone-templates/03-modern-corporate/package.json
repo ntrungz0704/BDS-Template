@@ -2,7 +2,7 @@
   "name": "bds-modern-corporate",
   "version": "1.0.0",
   "private": true,
-  "description": "Website Bất Động Sản Cao Cấp - Mẫu Modern Corporate Pro",
+  "description": "Website Bất Động Sản Cao Cấp - Mẫu Modern Corporate Pro (Tuấn Nhân Land)",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
