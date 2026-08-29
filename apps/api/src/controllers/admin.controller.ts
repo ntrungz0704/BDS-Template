@@ -272,7 +272,9 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
       finalSubdomain = `${cleanSubdomain}-${crypto.randomBytes(2).toString('hex').toLowerCase()}`;
     }
 
-    let cmsPassword = order.email ? order.email.split('@')[0] : '123456';
+    // Existing accounts keep their current password. A credential is returned
+    // only when provisioning actually creates a new account.
+    let cmsPassword = '';
 
     const existingUser = await prisma.user.findUnique({
       where: { email: order.email },

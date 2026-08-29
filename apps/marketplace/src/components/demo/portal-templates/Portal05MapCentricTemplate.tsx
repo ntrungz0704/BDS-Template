@@ -190,15 +190,28 @@ export default function Portal05MapCentricTemplate({ template, viewport = 'deskt
           <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'contact' ? 'text-[#4F46E5] bg-indigo-50 font-bold' : 'hover:bg-slate-50'}`}>Liên Hệ</button>
         </nav>
 
-        <div className="flex items-center gap-3">
-          <button onClick={() => { setAuthMode('login'); setIsAuthModalOpen(true); }} className="text-xs font-bold text-slate-700 hover:text-[#4F46E5] px-3 py-2">
-            Đăng Nhập
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate('contact')} className="hidden sm:flex px-4 py-2 bg-[#4F46E5] hover:bg-[#4338CA] text-white font-bold text-xs rounded-xl shadow-md items-center gap-1.5">
+            <Plus size={14} /> Ký Gửi
           </button>
-          <button onClick={() => navigate('contact')} className="px-4 py-2 bg-[#4F46E5] hover:bg-[#4338CA] text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5">
-            <Plus size={14} /> Ký Gửi Tọa Độ
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1.5 text-slate-700 hover:bg-slate-100 rounded-lg">
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-white border-t border-slate-200 px-4 py-3 space-y-1 text-xs font-semibold text-slate-700 shadow-lg">
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded">Trang Chủ Bản Đồ</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded">Nhà Đất Bán</button>
+          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded">Cho Thuê</button>
+          <button onClick={() => { setFilterCategory('sang-nhuong'); navigate('transfer'); }} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded">Sang Nhượng</button>
+          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded">Dự Án Bản Đồ</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded">Quy Hoạch</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded">Giới Thiệu</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded">Liên Hệ</button>
+        </div>
+      )}
     </header>
   );
 

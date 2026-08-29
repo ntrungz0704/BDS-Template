@@ -271,7 +271,6 @@ export async function uploadPaymentProof(req: Request, res: Response, next: Next
     const data = uploadPaymentSchema.parse(req.body);
 
     const userId = req.user?.userId;
-    const userEmail = req.user?.email;
     if (!userId) {
       return res.status(401).json({ success: false, error: { code: 'UNAUTHENTICATED', message: 'Vui lòng đăng nhập để xác nhận thanh toán.' } });
     }

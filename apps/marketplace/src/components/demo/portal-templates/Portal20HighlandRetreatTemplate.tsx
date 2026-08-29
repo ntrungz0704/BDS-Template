@@ -198,10 +198,27 @@ export default function Portal20HighlandRetreatTemplate({ template, viewport = '
           <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded-full transition ${currentPage === 'contact' ? 'text-white bg-[#166534]' : 'hover:bg-emerald-100'}`}>Tour Săn Mây</button>
         </nav>
 
-        <button onClick={() => navigate('contact')} className="px-4 py-2 bg-[#166534] hover:bg-[#14532D] text-white font-bold text-xs rounded-full shadow flex items-center gap-1.5">
-          <Trees size={14} /> Ký Gửi Đất Đồi
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate('contact')} className="hidden sm:flex px-4 py-2 bg-[#166534] hover:bg-[#14532D] text-white font-bold text-xs rounded-full shadow items-center gap-1.5">
+            <Mountain size={14} /> Ký Gửi
+          </button>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1.5 text-emerald-900 hover:bg-emerald-100 rounded-full">
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-[#FFFDF7] border-t border-emerald-200 px-4 py-3 space-y-1 text-xs font-bold text-emerald-950 shadow-lg">
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-emerald-100 rounded-lg">Trang Chủ</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 px-3 hover:bg-emerald-100 rounded-lg">Biệt Thự Đồi Bán</button>
+          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className="block w-full text-left py-2 px-3 hover:bg-emerald-100 rounded-lg">Thuê Nghỉ Dưỡng</button>
+          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 px-3 hover:bg-emerald-100 rounded-lg">Làng Rừng Thông</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-emerald-100 rounded-lg">Sống Chậm Wellness</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-emerald-100 rounded-lg">Về Chúng Tôi</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-emerald-100 rounded-lg">Tour Săn Mây</button>
+        </div>
+      )}
     </header>
   );
 

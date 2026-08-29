@@ -188,10 +188,27 @@ export default function Portal23PenthouseSkyVillaTemplate({ template, viewport =
           <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded-full transition ${currentPage === 'contact' ? 'text-slate-950 bg-[#FACC15]' : 'hover:text-white'}`}>Private Viewing</button>
         </nav>
 
-        <button onClick={() => navigate('contact')} className="px-4 py-2 bg-gradient-to-r from-[#FACC15] to-[#CA8A04] text-slate-950 font-bold text-xs rounded-full shadow flex items-center gap-1.5 font-serif">
-          <Key size={14} /> Private Concierge
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate('contact')} className="hidden sm:flex px-4 py-2 bg-gradient-to-r from-[#FACC15] to-[#CA8A04] text-slate-950 font-bold text-xs rounded-full shadow items-center gap-1.5 font-serif">
+            <Key size={14} /> Private Concierge
+          </button>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1.5 text-amber-400 hover:bg-slate-800 rounded-full">
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-[#0C0E14] border-t border-amber-950 px-4 py-3 space-y-1 text-xs font-serif font-bold text-slate-300 shadow-xl">
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Trang Chủ</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Penthouse Áp Mái</button>
+          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Thuê Sky Villa</button>
+          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Tháp Biểu Tượng</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Ultra-Luxury Living</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Về Chúng Tôi</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Private Viewing</button>
+        </div>
+      )}
     </header>
   );
 

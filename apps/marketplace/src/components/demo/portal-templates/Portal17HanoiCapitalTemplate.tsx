@@ -198,10 +198,27 @@ export default function Portal17HanoiCapitalTemplate({ template, viewport = 'des
           <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'contact' ? 'text-amber-100 bg-[#991B1B]' : 'hover:bg-amber-100'}`}>Liên Hệ</button>
         </nav>
 
-        <button onClick={() => navigate('contact')} className="px-4 py-2 bg-[#991B1B] hover:bg-[#7F1D1D] text-amber-100 font-serif font-bold text-xs rounded-xl shadow flex items-center gap-1.5">
-          <Scroll size={14} /> Ký Gửi Nhà Hà Nội
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate('contact')} className="hidden sm:flex px-4 py-2 bg-[#991B1B] hover:bg-[#7F1D1D] text-amber-100 font-serif font-bold text-xs rounded-lg shadow items-center gap-1.5">
+            <Landmark size={14} /> Ký Gửi
+          </button>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1.5 text-amber-900 hover:bg-amber-100 rounded-lg">
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-[#FFFDF7] border-t border-amber-200 px-4 py-3 space-y-1 font-serif text-xs font-bold text-amber-950 shadow-lg">
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-amber-100 rounded-lg">Trang Chủ</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 px-3 hover:bg-amber-100 rounded-lg">Nhà Đất Bán</button>
+          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className="block w-full text-left py-2 px-3 hover:bg-amber-100 rounded-lg">Cho Thuê Nội Thành</button>
+          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 px-3 hover:bg-amber-100 rounded-lg">Căn Hộ View Hồ</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-amber-100 rounded-lg">Cẩm Nang Hà Thành</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-amber-100 rounded-lg">Về Chúng Tôi</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-amber-100 rounded-lg">Liên Hệ</button>
+        </div>
+      )}
     </header>
   );
 

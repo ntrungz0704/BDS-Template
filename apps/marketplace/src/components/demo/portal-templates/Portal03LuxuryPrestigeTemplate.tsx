@@ -223,6 +223,18 @@ export default function Portal03LuxuryPrestigeTemplate({ template, viewport = 'd
           </button>
         </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-[#12121A] border-t border-[#C9A84C]/30 px-4 py-4 space-y-2 text-xs font-serif uppercase tracking-wider text-slate-300 shadow-2xl">
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:text-[#C9A84C]">Trang Chủ</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 px-3 hover:text-[#C9A84C]">Bộ Sưu Tập Bán</button>
+          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className="block w-full text-left py-2 px-3 hover:text-[#C9A84C]">Thuê Thượng Lưu</button>
+          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 px-3 hover:text-[#C9A84C]">Kiệt Tác Dự Án</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:text-[#C9A84C]">Tạp Chí VIP</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:text-[#C9A84C]">Đặc Quyền</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:text-[#C9A84C]">Liên Hệ</button>
+        </div>
+      )}
     </header>
   );
 

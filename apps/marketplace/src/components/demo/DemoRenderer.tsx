@@ -1123,7 +1123,7 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
     if (slug === 'portal-11' || slug === 'portal-waterfront' || slug === 'waterfront-villa' || sourceSlug === 'portal-11' || sourceSlug === 'portal-waterfront') {
       return <Portal11VillaWaterfrontTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'portal-12' || slug === 'portal-mega' || slug === 'mega-developer' || sourceSlug === 'portal-12' || sourceSlug === 'portal-mega') {
+    if (slug === 'portal-12' || slug === 'portal-mega' || slug === 'mega-developer' || slug === 'mega-ecosystem' || sourceSlug === 'portal-12' || sourceSlug === 'portal-mega') {
       return <Portal12MegaDeveloperTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
     if (slug === 'portal-13' || slug === 'portal-auction' || slug === 'auction-pro' || sourceSlug === 'portal-13' || sourceSlug === 'portal-auction') {

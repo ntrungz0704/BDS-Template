@@ -187,10 +187,27 @@ export default function Portal09HeritageColonialTemplate({ template, viewport = 
           <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded transition ${currentPage === 'contact' ? 'text-amber-100 bg-[#78350F]' : 'hover:bg-amber-100'}`}>Liên Hệ</button>
         </nav>
 
-        <button onClick={() => navigate('contact')} className="px-4 py-2 bg-[#78350F] hover:bg-[#451A03] text-amber-100 font-serif font-bold text-xs uppercase rounded shadow flex items-center gap-1.5">
-          <Scroll size={14} /> Ký Gửi Nhà Cổ
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate('contact')} className="hidden sm:flex px-4 py-2 bg-[#78350F] hover:bg-[#451A03] text-amber-100 font-serif font-bold text-xs uppercase rounded shadow items-center gap-1.5">
+            <Scroll size={14} /> Ký Gửi
+          </button>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1.5 text-amber-900 hover:bg-amber-100 rounded">
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-[#FFFBEB] border-t border-amber-200 px-4 py-3 space-y-1 text-xs font-serif font-bold text-amber-900 shadow-xl">
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-amber-100 rounded">Trang Chủ</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 px-3 hover:bg-amber-100 rounded">Biệt Thự Pháp Cổ</button>
+          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className="block w-full text-left py-2 px-3 hover:bg-amber-100 rounded">Thuê Di Sản</button>
+          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 px-3 hover:bg-amber-100 rounded">Dự Án Bảo Tồn</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-amber-100 rounded">Văn Hóa Kiến Trúc</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-amber-100 rounded">Về Chúng Tôi</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-amber-100 rounded">Liên Hệ</button>
+        </div>
+      )}
     </header>
   );
 

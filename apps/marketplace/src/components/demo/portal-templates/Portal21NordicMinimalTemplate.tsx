@@ -188,10 +188,27 @@ export default function Portal21NordicMinimalTemplate({ template, viewport = 'de
           <button onClick={() => navigate('contact')} className={`transition ${currentPage === 'contact' ? 'text-slate-900 font-bold border-b border-slate-900 pb-0.5' : 'hover:text-slate-900'}`}>Liên Hệ</button>
         </nav>
 
-        <button onClick={() => navigate('contact')} className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs rounded-none shadow-xs tracking-wider uppercase">
-          Ký Gửi Nhà Tối Giản
-        </button>
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigate('contact')} className="hidden sm:flex px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs rounded-none shadow-xs tracking-wider uppercase">
+            Ký Gửi
+          </button>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1 text-slate-900">
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-white border-t border-slate-200 px-6 py-4 space-y-2 text-xs font-medium uppercase tracking-wider text-slate-700 shadow-lg">
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 hover:text-slate-900">Trang Chủ</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 hover:text-slate-900">Mua Nhà Tối Giản</button>
+          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className="block w-full text-left py-2 hover:text-slate-900">Căn Hộ Cho Thuê</button>
+          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 hover:text-slate-900">Dự Án Kiến Trúc</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 hover:text-slate-900">Triết Lý Sống</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 hover:text-slate-900">Về Chúng Tôi</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 hover:text-slate-900">Liên Hệ</button>
+        </div>
+      )}
     </header>
   );
 

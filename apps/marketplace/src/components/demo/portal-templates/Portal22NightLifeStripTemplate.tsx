@@ -188,10 +188,27 @@ export default function Portal22NightLifeStripTemplate({ template, viewport = 'd
           <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded-full transition ${currentPage === 'contact' ? 'text-white bg-[#EC4899]' : 'hover:text-white'}`}>Liên Hệ Đêm</button>
         </nav>
 
-        <button onClick={() => navigate('contact')} className="px-4 py-2 bg-gradient-to-r from-[#EC4899] to-[#8B5CF6] text-white font-bold text-xs rounded-full shadow-lg shadow-pink-500/20 flex items-center gap-1.5">
-          <Zap size={14} /> Ký Gửi Mặt Bằng Đêm
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate('contact')} className="hidden sm:flex px-4 py-2 bg-gradient-to-r from-[#EC4899] to-[#8B5CF6] text-white font-bold text-xs rounded-full shadow-lg shadow-pink-500/20 items-center gap-1.5">
+            <Zap size={14} /> Ký Gửi
+          </button>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1.5 text-pink-400 hover:bg-slate-800 rounded-lg">
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-[#0D0E15] border-t border-pink-950 px-4 py-3 space-y-1 text-xs font-bold text-slate-300 shadow-xl">
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Trang Chủ</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Shophouse Phố Đêm</button>
+          <button onClick={() => { setFilterCategory('sang-nhuong'); navigate('transfer'); }} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Sang Nhượng Bar/Pub</button>
+          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Đại Lộ Thương Mại</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Kinh Tế Đêm 24/7</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Về Chúng Tôi</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Liên Hệ Đêm</button>
+        </div>
+      )}
     </header>
   );
 

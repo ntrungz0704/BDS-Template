@@ -189,15 +189,27 @@ export default function Portal06EcoGreenTemplate({ template, viewport = 'desktop
           <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded-full transition ${currentPage === 'contact' ? 'text-[#065F46] bg-emerald-50' : 'hover:text-[#065F46]'}`}>Liên Hệ & Ký Gửi</button>
         </nav>
 
-        <div className="flex items-center gap-3">
-          <button onClick={() => { setAuthMode('login'); setIsAuthModalOpen(true); }} className="text-xs font-bold text-slate-700 hover:text-[#065F46] px-3 py-2">
-            Đăng Nhập
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate('contact')} className="hidden sm:flex px-4 py-2 bg-[#065F46] hover:bg-[#047857] text-white font-bold text-xs rounded-full shadow-md items-center gap-1.5">
+            <Sprout size={14} /> Ký Gửi
           </button>
-          <button onClick={() => navigate('contact')} className="px-4 py-2 bg-[#065F46] hover:bg-[#047857] text-white font-bold text-xs rounded-full shadow-md flex items-center gap-1.5">
-            <Sprout size={14} /> Ký Gửi Vườn Xanh
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1.5 text-slate-700 hover:bg-emerald-50 rounded-lg">
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-white border-t border-emerald-100 px-4 py-3 space-y-1 text-xs font-bold text-slate-700 shadow-lg">
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-emerald-50 rounded-lg">Trang Chủ</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 px-3 hover:bg-emerald-50 rounded-lg">BĐS Sinh Thái Bán</button>
+          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className="block w-full text-left py-2 px-3 hover:bg-emerald-50 rounded-lg">Nghỉ Dưỡng Thuê</button>
+          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 px-3 hover:bg-emerald-50 rounded-lg">Đại Đô Thị Xanh</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-emerald-50 rounded-lg">Cẩm Nang Sống Xanh</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-emerald-50 rounded-lg">Về EcoEstate</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-emerald-50 rounded-lg">Liên Hệ & Ký Gửi</button>
+        </div>
+      )}
     </header>
   );
 

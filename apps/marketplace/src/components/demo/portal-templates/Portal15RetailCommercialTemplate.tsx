@@ -198,10 +198,27 @@ export default function Portal15RetailCommercialTemplate({ template, viewport = 
           <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'contact' ? 'text-[#EA580C] bg-orange-50 font-black' : 'hover:text-[#EA580C]'}`}>Tìm Mặt Bằng Chuỗi</button>
         </nav>
 
-        <button onClick={() => navigate('contact')} className="px-4 py-2 bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs rounded-xl shadow flex items-center gap-1.5">
-          <Store size={14} /> Ký Gửi Mặt Bằng
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate('contact')} className="hidden sm:flex px-4 py-2 bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs rounded-xl shadow items-center gap-1.5">
+            <Store size={14} /> Ký Gửi
+          </button>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1.5 text-slate-700 hover:bg-orange-50 rounded-lg">
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-white border-t border-orange-100 px-4 py-3 space-y-1 text-xs font-bold text-slate-700 shadow-lg">
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-orange-50 rounded-lg">Trang Chủ</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 px-3 hover:bg-orange-50 rounded-lg">Shophouse Bán</button>
+          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className="block w-full text-left py-2 px-3 hover:bg-orange-50 rounded-lg">Cho Thuê Khối Đế</button>
+          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 px-3 hover:bg-orange-50 rounded-lg">Tổ Hợp TTTM</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-orange-50 rounded-lg">Thị Trường Bán Lẻ</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-orange-50 rounded-lg">Về Chúng Tôi</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-orange-50 rounded-lg">Tìm Mặt Bằng Chuỗi</button>
+        </div>
+      )}
     </header>
   );
 

@@ -128,7 +128,7 @@ export async function resetPassword(req: Request, res: Response, next: NextFunct
       });
     }
 
-    const passwordHash = await bcrypt.hash(newPassword, 10);
+    const passwordHash = await bcrypt.hash(newPassword, 12);
 
     const consumed = await prisma.$transaction(async (tx: any) => {
       const claim = await tx.passwordResetToken.updateMany({

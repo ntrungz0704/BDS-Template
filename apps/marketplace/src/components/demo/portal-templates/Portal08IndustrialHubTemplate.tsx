@@ -198,10 +198,27 @@ export default function Portal08IndustrialHubTemplate({ template, viewport = 'de
           <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded transition ${currentPage === 'contact' ? 'text-white bg-[#EA580C]' : 'hover:bg-slate-800'}`}>Gửi Yêu Cầu RFP</button>
         </nav>
 
-        <button onClick={() => navigate('contact')} className="px-4 py-2 bg-[#EA580C] hover:bg-[#c2410c] text-white font-bold text-xs uppercase rounded shadow flex items-center gap-1.5">
-          <Plus size={14} /> Ký Gửi Nhà Xưởng
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate('contact')} className="hidden sm:flex px-4 py-2 bg-[#EA580C] hover:bg-[#c2410c] text-white font-bold text-xs uppercase rounded shadow items-center gap-1.5">
+            <Plus size={14} /> Ký Gửi Xưởng
+          </button>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1.5 text-slate-300 hover:bg-slate-800 rounded">
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-[#0F172A] border-t border-slate-700 px-4 py-3 space-y-1 text-xs font-bold uppercase text-slate-300 shadow-xl">
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded">Trang Chủ</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded">Đất KCN Bán</button>
+          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded">Thuê Xưởng RBF</button>
+          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded">Khu Công Nghiệp</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded">Báo Cáo FDI</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded">Năng Lực B2B</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded">Gửi Yêu Cầu RFP</button>
+        </div>
+      )}
     </header>
   );
 

@@ -202,10 +202,28 @@ export default function Portal04DensityRaoVatTemplate({ template, viewport = 'de
           <button onClick={() => navigate('contact')} className={`px-2.5 py-1.5 rounded ${currentPage === 'contact' ? 'bg-[#059669] text-white' : 'hover:bg-slate-100'}`}>Liên Hệ</button>
         </nav>
 
-        <button onClick={() => navigate('contact')} className="px-3.5 py-1.5 bg-[#DC2626] hover:bg-red-700 text-white font-bold text-xs uppercase rounded flex items-center gap-1 shadow-xs">
-          <Plus size={14} /> Đăng Tin Miễn Phí
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate('contact')} className="hidden sm:flex px-3.5 py-1.5 bg-[#DC2626] hover:bg-red-700 text-white font-bold text-xs uppercase rounded items-center gap-1 shadow-xs">
+            <Plus size={14} /> Đăng Tin
+          </button>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1.5 text-slate-700 hover:bg-slate-100 rounded">
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-white border-t border-slate-200 px-4 py-3 space-y-1.5 text-xs font-bold uppercase text-slate-700 shadow-lg">
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-slate-100 rounded">Trang Chủ</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 px-3 hover:bg-slate-100 rounded">Nhà Đất Bán</button>
+          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className="block w-full text-left py-2 px-3 hover:bg-slate-100 rounded">Cho Thuê</button>
+          <button onClick={() => { setFilterCategory('sang-nhuong'); navigate('transfer'); }} className="block w-full text-left py-2 px-3 hover:bg-slate-100 rounded">Sang Nhượng</button>
+          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 px-3 hover:bg-slate-100 rounded">Dự Án</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-slate-100 rounded">Tin Tức</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-slate-100 rounded">Giới Thiệu</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-slate-100 rounded">Liên Hệ & Ký Gửi</button>
+        </div>
+      )}
     </header>
   );
 

@@ -3,7 +3,7 @@ import { app } from '../index';
 import { prisma } from '@repo/database';
 import * as jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_ACCESS_SECRET || 'test-jwt-access-secret-minimum-32-chars-long-secure-key-01';
+const JWT_SECRET = process.env.JWT_ACCESS_SECRET!;
 
 describe('Multi-Tenant IDOR Isolation Test', () => {
   let tenantA: any;
@@ -13,9 +13,14 @@ describe('Multi-Tenant IDOR Isolation Test', () => {
   let tokenA: string;
   let tokenB: string;
   let projectB: any;
+  let postB: any;
+  let leadB: any;
+  let mediaB: any;
+  let orderB: any;
   let templateId: string;
 
   beforeAll(async () => {
+    await prisma.order.deleteMany({ where: { orderNumber: 'PHASE2-IDOR-ORDER-B' } });
     // 1. Clean up old test tenants
     const oldA = await prisma.tenant.findUnique({ where: { slug: 'tenant-a-jest' } });
     if (oldA) {
@@ -81,10 +86,55 @@ describe('Multi-Tenant IDOR Isolation Test', () => {
         status: 'SELLING',
       }
     });
+
+    postB = await prisma.post.create({
+      data: {
+        tenantId: tenantB.id,
+        title: 'Post B Private',
+        slug: 'post-b-private',
+        content: 'Tenant B only',
+      },
+    });
+
+    leadB = await prisma.lead.create({
+      data: {
+        tenantId: tenantB.id,
+        fullName: 'Lead B Private',
+        phone: '0900000000',
+        tags: [],
+      },
+    });
+
+    mediaB = await prisma.mediaAsset.create({
+      data: {
+        tenantId: tenantB.id,
+        url: '/uploads/tenant-b-jest/private.webp',
+        type: 'IMAGE',
+        size: 128,
+        format: 'webp',
+        name: 'private.webp',
+        tags: [],
+      },
+    });
+
+    orderB = await prisma.order.create({
+      data: {
+        orderNumber: 'PHASE2-IDOR-ORDER-B',
+        fullName: userB.fullName,
+        email: userB.email,
+        phone: '0900000001',
+        type: 'BUY',
+        templateId,
+        userId: userB.id,
+        tenantId: tenantB.id,
+        amount: 1000000,
+      },
+    });
   });
 
   afterAll(async () => {
     // Cleanup
+    await prisma.order.deleteMany({ where: { orderNumber: 'PHASE2-IDOR-ORDER-B' } });
     const cleanA = await prisma.tenant.findUnique({ where: { slug: 'tenant-a-jest' } });
     if (cleanA) {
       await prisma.project.deleteMany({ where: { tenantId: cleanA.id } });
@@ -155,6 +205,70 @@ describe('Multi-Tenant IDOR Isolation Test', () => {
       where: { id: projectB.id }
     });
     expect(dbProject).not.toBeNull();
+  });
+
+  it('blocks cross-tenant Post reads', async () => {
+    const res = await request(app)
+      .get(`/api/cms/posts/${postB.id}`)
+      .set('Authorization', `Bearer ${tokenA}`);
+
+    expect(res.status).toBe(404);
+  });
+
+  it('blocks cross-tenant Lead reads', async () => {
+    const res = await request(app)
+      .get(`/api/cms/leads/${leadB.id}`)
+      .set('Authorization', `Bearer ${tokenA}`);
+
+    expect(res.status).toBe(404);
+  });
+
+  it('blocks cross-tenant Media deletion and preserves the asset', async () => {
+    const res = await request(app)
+      .delete(`/api/cms/media/${mediaB.id}`)
+      .set('Authorization', `Bearer ${tokenA}`);
+
+    expect(res.status).toBe(400);
+    expect(await prisma.mediaAsset.findUnique({ where: { id: mediaB.id } })).not.toBeNull();
+  });
+
+  it('blocks Order status and Payment access by a different user', async () => {
+    const statusRes = await request(app)
+      .get(`/api/marketplace/orders/${orderB.orderNumber}/status`)
+      .set('Authorization', `Bearer ${tokenA}`);
+    expect(statusRes.status).toBe(404);
+
+    const paymentRes = await request(app)
+      .post(`/api/marketplace/orders/${orderB.id}/payment`)
+      .set('Authorization', `Bearer ${tokenA}`)
+      .send({ billImageUrl: 'https://example.test/bill.jpg', transactionCode: 'IDOR-ATTEMPT' });
+    expect(paymentRes.status).toBe(403);
+  });
+
+  it('ignores spoofed tenant headers and rejects unauthorized tenant switching', async () => {
+    const projectRes = await request(app)
+      .get(`/api/cms/projects/${projectB.id}`)
+      .set('Authorization', `Bearer ${tokenA}`)
+      .set('x-tenant-id', tenantB.id);
+    expect(projectRes.status).toBe(404);
+
+    const switchRes = await request(app)
+      .post('/api/auth/switch-tenant')
+      .set('Authorization', `Bearer ${tokenA}`)
+      .send({ tenantId: tenantB.id });
+    expect(switchRes.status).toBe(403);
+  });
+
+  it('does not grant tenant CMS access to the platform ADMIN role', async () => {
+    const adminToken = jwt.sign(
+      { userId: userA.id, email: userA.email, role: 'ADMIN', tenantId: tenantA.id },
+      JWT_SECRET,
+    );
+    const res = await request(app)
+      .get('/api/cms/projects')
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(403);
   });
 });
 

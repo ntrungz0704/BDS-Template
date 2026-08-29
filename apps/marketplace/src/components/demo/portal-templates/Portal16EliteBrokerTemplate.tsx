@@ -188,10 +188,27 @@ export default function Portal16EliteBrokerTemplate({ template, viewport = 'desk
           <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded-full transition ${currentPage === 'contact' ? 'text-white bg-[#E11D48]' : 'hover:text-white'}`}>Tư Vấn 1-1</button>
         </nav>
 
-        <button onClick={() => navigate('contact')} className="px-4 py-2 bg-gradient-to-r from-[#E11D48] to-[#BE123C] text-white font-bold text-xs rounded-full shadow flex items-center gap-1.5">
-          <Phone size={14} /> Đặt Lịch Riêng
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate('contact')} className="hidden sm:flex px-4 py-2 bg-gradient-to-r from-[#E11D48] to-[#BE123C] text-white font-bold text-xs rounded-full shadow items-center gap-1.5">
+            <Phone size={14} /> Tư Vấn 1-1
+          </button>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1.5 text-slate-300 hover:bg-slate-800 rounded-full">
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-[#12131A] border-t border-rose-950 px-4 py-3 space-y-1 text-xs font-bold text-slate-300 shadow-xl">
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Trang Chủ</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Giỏ Hàng Độc Quyền</button>
+          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Thuê VIP</button>
+          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Dự Án Đại Sứ</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Góc Nhìn Thị Trường</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Hồ Sơ Năng Lực</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-slate-800 rounded-lg">Tư Vấn 1-1</button>
+        </div>
+      )}
     </header>
   );
 

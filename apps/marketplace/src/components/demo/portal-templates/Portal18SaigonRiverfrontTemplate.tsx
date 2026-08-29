@@ -198,10 +198,27 @@ export default function Portal18SaigonRiverfrontTemplate({ template, viewport = 
           <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'contact' ? 'text-[#1D4ED8] bg-blue-50 font-black' : 'hover:text-[#1D4ED8]'}`}>Liên Hệ</button>
         </nav>
 
-        <button onClick={() => navigate('contact')} className="px-4 py-2 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white font-bold text-xs rounded-xl shadow flex items-center gap-1.5">
-          <Sparkles size={14} /> Ký Gửi Nhà Sài Gòn
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate('contact')} className="hidden sm:flex px-4 py-2 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white font-bold text-xs rounded-xl shadow items-center gap-1.5">
+            <Building size={14} /> Ký Gửi
+          </button>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1.5 text-slate-700 hover:bg-blue-50 rounded-lg">
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-white border-t border-blue-100 px-4 py-3 space-y-1 text-xs font-bold text-slate-700 shadow-lg">
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Trang Chủ</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Nhà Đất Bán</button>
+          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Cho Thuê Q.1/Q.2</button>
+          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Tháp Thủ Thiêm</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Quy Hoạch TP.HCM</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Về Chúng Tôi</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Liên Hệ</button>
+        </div>
+      )}
     </header>
   );
 

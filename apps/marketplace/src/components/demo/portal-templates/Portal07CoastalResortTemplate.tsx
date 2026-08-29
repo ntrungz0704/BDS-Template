@@ -188,15 +188,27 @@ export default function Portal07CoastalResortTemplate({ template, viewport = 'de
           <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded-full transition ${currentPage === 'contact' ? 'text-[#0284C7] bg-sky-50' : 'hover:text-[#0284C7]'}`}>Liên Hệ & Ký Gửi</button>
         </nav>
 
-        <div className="flex items-center gap-3">
-          <button onClick={() => { setAuthMode('login'); setIsAuthModalOpen(true); }} className="text-xs font-bold text-slate-700 hover:text-[#0284C7] px-3 py-2">
-            Đăng Nhập
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate('contact')} className="hidden sm:flex px-4 py-2 bg-[#0284C7] hover:bg-[#0369A1] text-white font-bold text-xs rounded-full shadow-md items-center gap-1.5">
+            <Anchor size={14} /> Ký Gửi
           </button>
-          <button onClick={() => navigate('contact')} className="px-4 py-2 bg-[#0284C7] hover:bg-[#0369A1] text-white font-bold text-xs rounded-full shadow-md flex items-center gap-1.5">
-            <Anchor size={14} /> Ký Gửi Biển
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1.5 text-slate-700 hover:bg-sky-50 rounded-lg">
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-white border-t border-sky-100 px-4 py-3 space-y-1 text-xs font-bold text-slate-700 shadow-lg">
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-sky-50 rounded-lg">Trang Chủ Biển</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 px-3 hover:bg-sky-50 rounded-lg">Biệt Thự Biển Bán</button>
+          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className="block w-full text-left py-2 px-3 hover:bg-sky-50 rounded-lg">Thuê Nghỉ Dưỡng</button>
+          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 px-3 hover:bg-sky-50 rounded-lg">Tổ Hợp Nghỉ Dưỡng</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-sky-50 rounded-lg">Cẩm Nang Đầu Tư Biển</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-sky-50 rounded-lg">Về OceanEstate</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-sky-50 rounded-lg">Liên Hệ & Ký Gửi</button>
+        </div>
+      )}
     </header>
   );
 

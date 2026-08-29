@@ -198,10 +198,27 @@ export default function Portal12MegaDeveloperTemplate({ template, viewport = 'de
           <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded-lg transition ${currentPage === 'contact' ? 'text-[#1E3A8A] bg-blue-50 font-black' : 'hover:text-[#1E3A8A]'}`}>Phòng Kinh Doanh</button>
         </nav>
 
-        <button onClick={() => navigate('contact')} className="px-4 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white font-bold text-xs rounded-xl shadow flex items-center gap-1.5">
-          <Download size={14} /> Tải Bảng Giá F1
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate('contact')} className="hidden sm:flex px-4 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white font-bold text-xs rounded-xl shadow items-center gap-1.5">
+            <Download size={14} /> Bảng Giá F1
+          </button>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1.5 text-slate-700 hover:bg-blue-50 rounded-lg">
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-white border-t border-blue-100 px-4 py-3 space-y-1 text-xs font-bold text-slate-700 shadow-lg">
+          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Trang Chủ</button>
+          <button onClick={() => { setFilterCategory('ban'); navigate('sale'); }} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Giỏ Hàng F1</button>
+          <button onClick={() => { setFilterCategory('thue'); navigate('rent'); }} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Cho Thuê Quản Lý</button>
+          <button onClick={() => navigate('projects')} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Đại Đô Thị</button>
+          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Tiến Độ Bàn Giao</button>
+          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Về Tập Đoàn</button>
+          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-blue-50 rounded-lg">Phòng Kinh Doanh</button>
+        </div>
+      )}
     </header>
   );
 
