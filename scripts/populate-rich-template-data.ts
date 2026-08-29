@@ -1,4 +1,20 @@
-export interface PortalProperty {
+import fs from 'fs';
+import path from 'path';
+
+function findRepoRoot(): string {
+  let curr = process.cwd();
+  while (curr !== path.dirname(curr)) {
+    if (fs.existsSync(path.join(curr, 'pnpm-workspace.yaml'))) {
+      return curr;
+    }
+    curr = path.dirname(curr);
+  }
+  return process.cwd();
+}
+const ROOT_DIR = findRepoRoot();
+const PORTAL_DATA_PATH = path.join(ROOT_DIR, 'apps/marketplace/src/components/demo/portal-templates/portalData.ts');
+
+const newPortalDataContent = `export interface PortalProperty {
   id: number;
   title: string;
   slug: string;
@@ -1060,3 +1076,7 @@ export const PORTAL_NEWS: PortalNews[] = [
     tags: ['Thuê chung cư Hà Nội', 'Cẩm nang thuê nhà', 'Đặt cọc'],
   },
 ];
+`;
+
+fs.writeFileSync(PORTAL_DATA_PATH, newPortalDataContent, 'utf-8');
+console.log('✅ Đã cập nhật thành công portalData.ts với dữ liệu BĐS phong phú!');
