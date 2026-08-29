@@ -209,17 +209,10 @@ export default function PublicBlogDetail({ company, post, blogSlug, tenantSlug, 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { slug } = context.params as { slug: string };
-  const queryTenant = context.query.tenant as string;
-  const host = context.req.headers.host || '';
   let tenantSlug = (context.req.headers['x-tenant-slug'] as string) || '';
   
   if (!tenantSlug || tenantSlug === 'localhost:3003' || tenantSlug === 'localhost') {
-    const isDev = process.env.NODE_ENV !== 'production';
-    if (isDev) {
-      tenantSlug = (context.query.tenant as string) || 'hoanggialand';
-    } else {
-      tenantSlug = '_notfound';
-    }
+    tenantSlug = '_notfound';
   }
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';

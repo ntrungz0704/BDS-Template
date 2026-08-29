@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
-import { requestPasswordReset, resetPassword, directResetPassword } from '../controllers/password.controller';
+import { requestPasswordReset, resetPassword } from '../controllers/password.controller';
 
 const router = Router();
 
@@ -19,7 +19,13 @@ const resetLimiter = rateLimit({
 
 router.post('/forgot-password', resetLimiter, requestPasswordReset);
 router.post('/reset-password', resetPassword);
-router.post('/direct-reset-password', resetLimiter, directResetPassword);
+router.all('/direct-reset-password', (_req, res) => res.status(410).json({
+  success: false,
+  error: {
+    code: 'DIRECT_PASSWORD_RESET_DISABLED',
+    message: 'Vui lòng sử dụng liên kết đặt lại mật khẩu một lần được gửi qua email.',
+  },
+}));
 
 export default router;
 

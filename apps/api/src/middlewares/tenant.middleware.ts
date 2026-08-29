@@ -1,15 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma, tenantStorage } from '@repo/database';
 
-// In-memory cache đơn giản lưu trữ slug -> tenantId trong 5 phút để tránh quá tải DB queries
-const tenantCache = new Map<string, { tenantId: string; expiresAt: number }>();
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 phút
-
 export async function resolveTenantSlug(req: Request, res: Response, next: NextFunction) {
-  // Lấy slug từ params hoặc header (Next.js middleware sẽ truyền header này sang API)
-  const slug = req.params.tenantSlug || req.headers['x-tenant-slug'] as string;
+  // Public website APIs are explicitly namespaced by a validated route slug.
+  // Caller-controlled headers never select a tenant.
+  const slug = req.params.tenantSlug?.toLowerCase().trim();
 
-  if (!slug) {
+  if (!slug || !/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(slug)) {
     return res.status(400).json({
       success: false,
       error: {
@@ -19,17 +16,9 @@ export async function resolveTenantSlug(req: Request, res: Response, next: NextF
     });
   }
 
-  // 1. Kiểm tra cache
-  const cached = tenantCache.get(slug);
-  if (cached && cached.expiresAt > Date.now()) {
-    req.tenantId = cached.tenantId;
-    return tenantStorage.run(cached.tenantId, () => next());
-  }
-
   try {
-    // 2. Tìm kiếm trong DB PostgreSQL
-    const tenant = await prisma.tenant.findUnique({
-      where: { slug, status: 'ACTIVE' },
+    const tenant = await prisma.tenant.findFirst({
+      where: { slug, status: 'ACTIVE', deletedAt: null },
       select: { id: true },
     });
 
@@ -39,12 +28,6 @@ export async function resolveTenantSlug(req: Request, res: Response, next: NextF
         error: { code: 'TENANT_NOT_FOUND', message: 'Website không tồn tại.' },
       });
     }
-
-    // 3. Ghi vào cache
-    tenantCache.set(slug, {
-      tenantId: tenant.id,
-      expiresAt: Date.now() + CACHE_TTL_MS,
-    });
 
     req.tenantId = tenant.id;
     tenantStorage.run(tenant.id, () => next());
@@ -70,36 +53,47 @@ export async function checkTenantAccess(req: Request, res: Response, next: NextF
     });
   }
 
-  // 1. Super Admin: lấy targetTenantId hoặc lấy tenant đầu tiên trong hệ thống
-  if (user.role === 'SUPER_ADMIN' || user.role === 'ADMIN') {
-    let targetTenantId = (req.headers['x-tenant-id'] as string) || req.body?.tenantId || (req.query?.tenantId as string);
-    if (!targetTenantId) {
-      const firstTenant = await prisma.tenant.findFirst({
-        where: { deletedAt: null },
-        orderBy: { createdAt: 'desc' },
-        select: { id: true },
-      });
-      targetTenantId = firstTenant?.id || 'tenant-default';
-    }
-    req.tenantId = targetTenantId;
-    return tenantStorage.run(targetTenantId, () => next());
-  }
-
-  // Resolve from the database for every CMS request.  A signed JWT may be
-  // stale after membership has been revoked, so it must not decide tenancy.
-  const membership = await prisma.tenantMembership.findFirst({
-    where: { userId: user.userId, status: 'ACTIVE' },
-    select: { tenantId: true },
-    orderBy: { createdAt: 'desc' },
-  });
-  const tenantId = membership?.tenantId;
-
+  const tenantId = user.tenantId;
   if (!tenantId) {
     return res.status(403).json({
       success: false,
       error: {
-        code: 'NO_TENANT_ASSIGNED',
-        message: 'Tài khoản của bạn chưa được gắn với website nào. Vui lòng đặt mua template hoặc chờ Admin duyệt kích hoạt.',
+        code: 'TENANT_CONTEXT_REQUIRED',
+        message: 'Phiên đăng nhập chưa chọn website. Vui lòng chọn website từ danh sách được cấp quyền.',
+      },
+    });
+  }
+
+  const tenant = await prisma.tenant.findUnique({
+    where: { id: tenantId, deletedAt: null },
+    select: { id: true },
+  });
+  if (!tenant) {
+    return res.status(403).json({
+      success: false,
+      error: { code: 'TENANT_ACCESS_DENIED', message: 'Website không tồn tại hoặc không còn khả dụng.' },
+    });
+  }
+
+  if (user.role !== 'SUPER_ADMIN') {
+    const membership = await prisma.tenantMembership.findFirst({
+      where: { userId: user.userId, tenantId, status: 'ACTIVE' },
+      select: { id: true },
+    });
+    if (!membership) {
+      return res.status(403).json({
+        success: false,
+        error: { code: 'TENANT_ACCESS_DENIED', message: 'Bạn không có quyền truy cập website này.' },
+      });
+    }
+  }
+
+  if (user.role === 'ADMIN') {
+    return res.status(403).json({
+      success: false,
+      error: {
+        code: 'TENANT_ACCESS_DENIED',
+        message: 'Tài khoản Admin nội bộ không được truy cập CMS tenant.',
       },
     });
   }

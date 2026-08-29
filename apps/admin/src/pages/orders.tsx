@@ -106,8 +106,8 @@ export default function AdminOrders() {
       const orderCreds = raw?.credentials || raw;
       const creds = {
         email: orderCreds?.email || raw?.email,
-        password: orderCreds?.password || orderCreds?.cmsPassword || orderCreds?.email?.split('@')[0] || raw?.email?.split('@')[0] || '123456',
-        cmsPassword: orderCreds?.cmsPassword || orderCreds?.password || orderCreds?.email?.split('@')[0] || raw?.email?.split('@')[0] || '123456',
+        password: orderCreds?.password || orderCreds?.cmsPassword || '',
+        cmsPassword: orderCreds?.cmsPassword || orderCreds?.password || '',
         subdomain: orderCreds?.subdomain || orderCreds?.tenantSlug || raw?.subdomain,
         tenantSlug: orderCreds?.subdomain || orderCreds?.tenantSlug || raw?.subdomain,
       };
@@ -655,7 +655,7 @@ export default function AdminOrders() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                     <span className="text-slate-500 font-sans">Mật Khẩu CMS (Mặc định):</span>
                     <span className="font-bold text-emerald-800 bg-white px-2 py-0.5 rounded border border-emerald-300 inline-block w-fit">
-                      {selectedOrder.email ? selectedOrder.email.split('@')[0] : '123456'}
+                      Chỉ hiển thị sau khi hệ thống tạo tài khoản mới
                     </span>
                   </div>
                 </div>
@@ -663,7 +663,7 @@ export default function AdminOrders() {
                 <div className="mt-4 pt-3 border-t border-emerald-200/60 flex flex-col sm:flex-row items-center gap-2">
                   <button
                     onClick={() => {
-                      const prefix = selectedOrder.email ? selectedOrder.email.split('@')[0] : '123456';
+                      const prefix = '';
                       const targetSub = selectedOrder.subdomain || selectedOrder.tenantId || 'website';
                       const siteLink = getTenantUrl(targetSub);
                       const info = `🎉 THÔNG TIN BÀN GIAO WEBSITE BẤT ĐỘNG SẢN:\n\n` +
@@ -826,7 +826,7 @@ export default function AdminOrders() {
               <div>
                 <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Mật khẩu CMS:</span>
                 <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                  {approvalResult.cmsPassword || approvalResult.tempPassword || approvalResult.email?.split('@')[0] || '123456'}
+                  {approvalResult.cmsPassword || approvalResult.tempPassword || 'Tài khoản đã có mật khẩu riêng'}
                 </span>
               </div>
             </div>
@@ -835,7 +835,7 @@ export default function AdminOrders() {
               <button
                 onClick={() => {
                   const targetSub = approvalResult.subdomain || approvalResult.tenantSlug || 'website';
-                  const pwd = approvalResult.cmsPassword || approvalResult.tempPassword || approvalResult.email?.split('@')[0] || '123456';
+                  const pwd = approvalResult.cmsPassword || approvalResult.tempPassword || '';
                   const tenantLink = getTenantUrl(targetSub);
                   const info = `🎉 CHÚC MỪNG! WEBSITE CỦA BẠN ĐÃ KÍCH HOẠT THÀNH CÔNG:\n\n` +
                     `- Website công khai: ${tenantLink}\n` +

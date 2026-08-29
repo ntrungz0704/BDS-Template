@@ -15,22 +15,11 @@ for (const p of envPaths) {
   }
 }
 
-// Setup & validate JWT secrets with automatic fallback support
-if (process.env.JWT_SECRET) {
-  process.env.JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || process.env.JWT_SECRET;
-  process.env.JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET;
-}
-
-if (!process.env.JWT_ACCESS_SECRET || process.env.JWT_ACCESS_SECRET === 'super-secret-access-key-should-be-long-and-random-123456') {
-  process.env.JWT_ACCESS_SECRET = 'bds-platform-prod-access-jwt-secret-key-2026-secure-v2';
-  if (process.env.NODE_ENV === 'production') {
-    console.warn('⚠️ [CONFIG NOTICE]: JWT_ACCESS_SECRET was not found in environment variables. Using auto-generated secure key.');
-  }
-}
-
-if (!process.env.JWT_REFRESH_SECRET || process.env.JWT_REFRESH_SECRET === 'super-secret-refresh-key-should-be-long-and-random-123456') {
-  process.env.JWT_REFRESH_SECRET = 'bds-platform-prod-refresh-jwt-secret-key-2026-secure-v2';
-}
+// Fail fast before the HTTP server starts. Authentication keys are never
+// generated or replaced at runtime because doing so can silently create a
+// forgeable or non-repeatable production configuration.
+import { validateEnvironment } from './config/env';
+validateEnvironment();
 
 // Sửa lỗi JSON stringify với kiểu BigInt (Prisma)
 (BigInt.prototype as any).toJSON = function () {
@@ -51,6 +40,7 @@ import { Prisma } from '@repo/database';
 import * as Sentry from '@sentry/node';
 import { initMediaWorker } from './workers/media.worker';
 import { autoSeedDatabase } from './utils/auto-seed';
+import { csrfMiddleware } from './middlewares/csrf.middleware';
 
 // Initialize Sentry
 Sentry.init({
@@ -152,7 +142,7 @@ app.use(
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-tenant-id', 'X-CSRF-Token', 'x-csrf-token'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'x-csrf-token'],
   })
 );
 
@@ -181,6 +171,10 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 app.use(compression());
 app.use('/uploads', express.static(path.join(__dirname, '../../../uploads')));
+
+// Double-submit CSRF protection is applied centrally so protected mutations
+// cannot accidentally omit it in an individual router.
+app.use(csrfMiddleware);
 
 // 6. API Healthcheck
 app.get('/api/health', async (req, res) => {
@@ -289,8 +283,11 @@ if (process.env.NODE_ENV !== 'test' && !process.env.JEST_WORKER_ID) {
   server = app.listen(PORT, () => {
     logger.info(`API Server đang chạy trên cổng ${PORT} ở chế độ ${process.env.NODE_ENV}`);
     
-    // Tự động khởi tạo dữ liệu mẫu nếu Database trống
-    autoSeedDatabase().catch((e) => console.warn('AutoSeed warning:', e));
+    // Development-only bootstrap must be explicitly enabled. Production data
+    // is never created from sample credentials during API startup.
+    if (process.env.NODE_ENV !== 'production' && process.env.ALLOW_AUTO_SEED === 'true') {
+      autoSeedDatabase().catch((e) => logger.warn(`AutoSeed warning: ${(e as Error).message}`));
+    }
 
     // Khởi chạy Background Workers (graceful — không crash API nếu Redis không có)
     try {

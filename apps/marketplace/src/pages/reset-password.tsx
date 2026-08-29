@@ -22,8 +22,8 @@ export default function ResetPassword() {
     e.preventDefault();
     setErrorMsg('');
     
-    if (password.length < 6) {
-      setErrorMsg('Mật khẩu cần tối thiểu 6 ký tự.');
+    if (password.length < 10 || !/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+      setErrorMsg('Mật khẩu cần ít nhất 10 ký tự, gồm chữ hoa, chữ thường và chữ số.');
       return;
     }
     
@@ -94,7 +94,7 @@ export default function ResetPassword() {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Tối thiểu 6 ký tự"
+                      placeholder="Tối thiểu 10 ký tự"
                       className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#0F172A] focus:bg-white transition-all"
                     />
                   </div>

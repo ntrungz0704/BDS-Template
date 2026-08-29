@@ -33,7 +33,7 @@ export const TENANT_SLUG_HEADER = 'x-tenant-slug';
 export const TENANT_HOST_HEADER = 'x-tenant-host';
 
 export async function middleware(request: NextRequest) {
-  const { pathname, searchParams } = request.nextUrl;
+  const { pathname } = request.nextUrl;
   const hostname = request.headers.get('host') || '';
 
   // Skip excluded paths (static, API, demo, etc.)
@@ -51,16 +51,8 @@ export async function middleware(request: NextRequest) {
 
   let tenantSlug: string | null = null;
 
-  // 2. Query parameter `?tenant=...` takes HIGHEST precedence (both prod and dev)
-  const queryTenant = searchParams.get('tenant');
-  if (queryTenant && queryTenant.trim() !== '') {
-    const candidate = queryTenant.toLowerCase().trim();
-    if (!RESERVED_SLUGS.includes(candidate)) {
-      tenantSlug = candidate;
-    }
-  }
-
-  // 3. Subdomain resolution
+  // 2. Subdomain resolution. Tenant selection never comes from a query
+  // string or cookie because both values are controlled by the caller.
   if (!tenantSlug) {
     if (isLocalhost) {
       if (cleanHost.endsWith('.localhost')) {
@@ -77,15 +69,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 4. Cookie fallback (if previously visited a tenant)
-  if (!tenantSlug) {
-    const cookieTenant = request.cookies.get('tenant_slug')?.value;
-    if (cookieTenant && cookieTenant !== '_notfound' && !RESERVED_SLUGS.includes(cookieTenant)) {
-      tenantSlug = cookieTenant.toLowerCase().trim();
-    }
-  }
-
-  // 5. Custom domain resolution
+  // 3. Custom domain resolution
   if (!tenantSlug && !isLocalhost && cleanHost !== PLATFORM_DOMAIN && cleanHost !== `www.${PLATFORM_DOMAIN}` && !cleanHost.startsWith('bds-template-website')) {
     try {
       const resolveUrl = `${API_URL}/api/website/resolve-domain?domain=${encodeURIComponent(cleanHost)}`;
@@ -120,14 +104,6 @@ export async function middleware(request: NextRequest) {
 
   response.headers.set(TENANT_SLUG_HEADER, tenantSlug);
   response.headers.set(TENANT_HOST_HEADER, hostname);
-
-  if (tenantSlug && tenantSlug !== '_notfound') {
-    response.cookies.set('tenant_slug', tenantSlug, {
-      path: '/',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-    });
-  }
 
   return response;
 }

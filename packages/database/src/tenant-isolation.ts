@@ -20,19 +20,17 @@ export const tenantIsolationExtension = Prisma.defineExtension((client) => {
             return query(args);
           }
 
-          // Check if model has a tenantId field by inspecting typical models
-          // (Can be optimized or statically checked, but Prisma args manipulation is standard)
+          // Only models with a direct tenantId column belong here. Relation-only
+          // children must be scoped by their controller through a tenant-owned
+          // parent record.
           const tenantModels = [
-            'Project', 'Post', 'Category', 'Tag', 'Banner', 'Menu',
-            'CompanyInfo', 'SeoConfig', 'Media', 'ContactFormSubmission',
+            'Order', 'Subscription', 'Project', 'Post', 'Category', 'Tag',
+            'Banner', 'Menu', 'CompanyInfo', 'SeoConfig', 'Media',
+            'ContactFormSubmission', 'AuditLog',
             'TenantThemeSettings', 'TenantPage', 'TenantSection', 'MediaFolder',
-            'MediaAsset', 'MediaRecycleBin',
-            // Lead CRM
-            'Lead', 'LeadNote', 'LeadActivity',
-            // External Integrations
-            'TenantApiKey', 'TenantWebhook',
-            // Content versioning
-            'ContentVersion',
+            'MediaAsset', 'MediaRecycleBin', 'Lead', 'LeadNote', 'LeadActivity',
+            'TenantApiKey', 'TenantWebhook', 'ContentVersion',
+            'TenantDomainSettings', 'TenantMembership',
           ];
 
           if (tenantModels.includes(model)) {
@@ -51,24 +49,32 @@ export const tenantIsolationExtension = Prisma.defineExtension((client) => {
             }
 
             if (operation === 'findUnique' || operation === 'findUniqueOrThrow') {
-              // Convert findUnique to findFirst to enforce multi-column filtering cleanly
-              // since findUnique only accepts unique keys or combinations
-              const findFirstArgs = {
-                ...args,
-                where: {
-                  ...args.where,
-                  tenantId,
-                }
+              // Prisma supports extra non-unique predicates in WhereUniqueInput.
+              // Keeping the original operation also preserves throw semantics.
+              args.where = {
+                ...args.where,
+                tenantId,
               };
-              return (client as any)[model].findFirst(findFirstArgs);
             }
 
-            // 2. Mutate write operations (create, update, delete)
+            // 2. Mutate write operations.
             if (operation === 'create') {
               (args as any).data = {
                 ...(args as any).data,
                 tenantId,
               };
+            }
+
+            if (operation === 'createMany' || operation === 'createManyAndReturn') {
+              const data = (args as any).data;
+              (args as any).data = Array.isArray(data)
+                ? data.map((item) => ({ ...item, tenantId }))
+                : { ...data, tenantId };
+            }
+
+            if (operation === 'upsert') {
+              args.where = { ...args.where, tenantId };
+              (args as any).create = { ...(args as any).create, tenantId };
             }
 
             if (

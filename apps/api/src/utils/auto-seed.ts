@@ -336,7 +336,11 @@ export async function autoSeedDatabase() {
     }
 
     // 2. Tạo DUY NHẤT 1 Super Admin tài khoản chính thức
-    const adminPasswordHash = await bcrypt.hash('adminsuper@123456', 10);
+    const bootstrapPassword = process.env.SEED_ADMIN_PASSWORD;
+    if (!bootstrapPassword || bootstrapPassword.length < 12) {
+      throw new Error('SEED_ADMIN_PASSWORD with at least 12 characters is required when ALLOW_AUTO_SEED=true.');
+    }
+    const adminPasswordHash = await bcrypt.hash(bootstrapPassword, 12);
     const superAdmin = await prisma.user.upsert({
       where: { email: 'admin@aireviewbds.com' },
       update: { role: 'SUPER_ADMIN', isActive: true, fullName: 'Super Admin AI Review BDS' },

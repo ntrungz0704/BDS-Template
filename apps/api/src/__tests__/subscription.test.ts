@@ -3,7 +3,7 @@ import { app } from '../index';
 import { prisma } from '@repo/database';
 import * as jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_ACCESS_SECRET || 'super-secret-access-key-should-be-long-and-random-123456';
+const JWT_SECRET = process.env.JWT_ACCESS_SECRET || 'test-jwt-access-secret-minimum-32-chars-long-secure-key-01';
 
 describe('Subscription Expiration & Grace Period Middleware Test', () => {
   let tenant: any;

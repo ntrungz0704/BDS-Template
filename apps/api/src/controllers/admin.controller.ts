@@ -3,11 +3,37 @@ import { z } from 'zod';
 import { prisma, TemplateRegistry } from '@repo/database';
 import { TEMPLATE_CONFIGS } from '@repo/utils';
 import { logger } from '../index';
-import bcrypt from 'bcrypt';
 import { sendWelcomeEmail } from '../utils/mailer';
 import { BUSINESS_CONFIG } from '@repo/config';
 import { websiteProvisioningService } from '../services/website-provisioning.service';
-import { vercelDomainService } from '../services/vercel-domain.service';
+import crypto from 'crypto';
+import { sendPasswordResetEmail } from '../utils/mailer';
+
+async function writeAdminAudit(
+  req: Request,
+  action: string,
+  entityType: string,
+  entityId: string,
+  tenantId?: string | null,
+  newValues?: Record<string, unknown>,
+): Promise<void> {
+  try {
+    await prisma.auditLog.create({
+      data: {
+        userId: req.user?.userId || null,
+        tenantId: tenantId || null,
+        action,
+        entityType,
+        entityId,
+        newValues: newValues as any,
+        ipAddress: req.ip,
+        userAgent: req.get('user-agent'),
+      },
+    });
+  } catch (error) {
+    logger.warn(`[AdminAudit] Unable to record ${action}: ${(error as Error).message}`);
+  }
+}
 
 export async function getDashboardStats(req: Request, res: Response, next: NextFunction) {
   try {
@@ -207,6 +233,10 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
 
     // A source-code purchase grants a download entitlement only.
     if (order.type === 'BUY_SOURCE') {
+      await writeAdminAudit(req, 'SOURCE_REQUEST_APPROVED', 'Order', order.id, order.tenantId, {
+        orderNumber: order.orderNumber,
+        templateId: order.templateId,
+      });
       return res.status(200).json({
         success: true,
         data: completedOrder,
@@ -281,6 +311,11 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
     }
 
     logger.info(`Duyệt thành công đơn hàng: ${order.orderNumber}. Kích hoạt Tenant ID: ${tenantId || 'N/A'}`);
+    await writeAdminAudit(req, 'ORDER_APPROVED_AND_TENANT_PROVISIONED', 'Order', order.id, tenantId, {
+      orderNumber: order.orderNumber,
+      tenantId,
+      templateId: order.templateId,
+    });
 
     res.status(200).json({
       success: true,
@@ -397,6 +432,12 @@ export async function createTenantManually(req: Request, res: Response, next: Ne
 
     const tempPassword = provResult.credentials.tempPassword;
 
+    await writeAdminAudit(req, 'TENANT_CREATED', 'Tenant', provResult.tenant.id, provResult.tenant.id, {
+      ownerEmail: email,
+      templateId: templateId || 'luxury-gold',
+      subdomain: subdomain.toLowerCase(),
+    });
+
     // Send Welcome Email
     await sendWelcomeEmail(email, fullName, subdomain, tempPassword);
 
@@ -464,30 +505,21 @@ export async function deleteTenant(req: Request, res: Response, next: NextFuncti
       });
     }
 
-    await prisma.$transaction([
-      prisma.lead.deleteMany({ where: { tenantId: id } }),
-      prisma.project.deleteMany({ where: { tenantId: id } }),
-      prisma.post.deleteMany({ where: { tenantId: id } }),
-      prisma.companyInfo.deleteMany({ where: { tenantId: id } }),
-      prisma.tenantSection.deleteMany({ where: { tenantId: id } }),
-      prisma.tenantPage.deleteMany({ where: { tenantId: id } }),
-      prisma.tenantThemeSettings.deleteMany({ where: { tenantId: id } }),
-      prisma.domain.deleteMany({ where: { tenantId: id } }),
-      prisma.subscription.deleteMany({ where: { tenantId: id } }),
-      prisma.tenantMembership.deleteMany({ where: { tenantId: id } }),
-      prisma.user.updateMany({ where: { tenantId: id }, data: { tenantId: null } }),
-      prisma.tenant.delete({ where: { id } }),
-    ]);
+    await prisma.tenant.update({
+      where: { id },
+      data: { status: 'SUSPENDED', version: { increment: 1 } },
+    });
+    await prisma.refreshToken.updateMany({
+      where: { user: { memberships: { some: { tenantId: id, status: 'ACTIVE' } } }, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+    await writeAdminAudit(req, 'TENANT_SUSPENDED', 'Tenant', id, id, { previousStatus: tenant.status });
 
-    // Tự động xóa domain khỏi Vercel Project
-    const platformDomain = process.env.PLATFORM_DOMAIN || 'templates.aireviewbds.com';
-    await vercelDomainService.removeDomainFromVercel(`${tenant.slug}.${platformDomain}`);
-
-    logger.info(`Admin đã xóa vĩnh viễn website tenant ${tenant.name} (${tenant.slug})`);
+    logger.info(`Admin đã tạm ngưng website tenant ${tenant.name} (${tenant.slug})`);
 
     res.status(200).json({
       success: true,
-      message: 'Đã xóa website thành công.',
+      message: 'Đã tạm ngưng website. Dữ liệu được giữ nguyên.',
     });
   } catch (error) {
     next(error);
@@ -614,12 +646,16 @@ export async function deleteOrder(req: Request, res: Response, next: NextFunctio
       return res.status(404).json({ success: false, error: { message: 'Không tìm thấy đơn hàng.' } });
     }
 
-    await prisma.order.delete({ where: { id } });
-    logger.info(`Admin đã xóa đơn hàng ${order.orderNumber} (${id})`);
+    await prisma.order.update({
+      where: { id },
+      data: { status: 'REJECTED', adminNotes: 'Yêu cầu đã được hủy bởi Super Admin.', version: { increment: 1 } },
+    });
+    await writeAdminAudit(req, 'ORDER_CANCELLED', 'Order', id, order.tenantId, { orderNumber: order.orderNumber });
+    logger.info(`Admin đã hủy yêu cầu ${order.orderNumber} (${id})`);
 
     res.status(200).json({
       success: true,
-      message: 'Đã xóa đơn hàng thành công.',
+      message: 'Đã hủy yêu cầu. Lịch sử được giữ lại để đối soát.',
     });
   } catch (error) {
     next(error);
@@ -634,17 +670,21 @@ export async function deleteUser(req: Request, res: Response, next: NextFunction
       return res.status(404).json({ success: false, error: { message: 'Không tìm thấy người dùng.' } });
     }
 
-    if (user.email === 'admin@aireviewbds.com') {
-      return res.status(400).json({ success: false, error: { message: 'Không thể xóa tài khoản Super Admin chính.' } });
+    if (user.role === 'SUPER_ADMIN') {
+      return res.status(400).json({ success: false, error: { message: 'Không thể khóa tài khoản Super Admin.' } });
     }
 
-    // Xóa liên kết hoặc xóa user
-    await prisma.user.delete({ where: { id } });
-    logger.info(`Admin đã xóa người dùng ${user.email} (${id})`);
+    await prisma.$transaction([
+      prisma.user.update({ where: { id }, data: { isActive: false, status: 'BANNED' } }),
+      prisma.refreshToken.updateMany({ where: { userId: id, revokedAt: null }, data: { revokedAt: new Date() } }),
+      prisma.tenantMembership.updateMany({ where: { userId: id, status: 'ACTIVE' }, data: { status: 'SUSPENDED' } }),
+    ]);
+    await writeAdminAudit(req, 'USER_SUSPENDED', 'User', id, user.tenantId, { email: user.email });
+    logger.info(`Admin đã khóa người dùng ${user.email} (${id})`);
 
     res.status(200).json({
       success: true,
-      message: 'Đã xóa người dùng thành công.',
+      message: 'Đã khóa người dùng và thu hồi các phiên đăng nhập.',
     });
   } catch (error) {
     next(error);
@@ -1433,29 +1473,30 @@ export async function resetCustomerPassword(req: Request, res: Response, next: N
       });
     }
 
-    // Generate a random temporary password
-    const tempPassword = Math.random().toString(36).slice(-10) + 'A1!';
-    const passwordHash = await bcrypt.hash(tempPassword, 12);
+    const token = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
 
-    await prisma.user.update({
-      where: { id },
-      data: { passwordHash },
-    });
+    await prisma.$transaction([
+      prisma.passwordResetToken.updateMany({ where: { userId: id, usedAt: null }, data: { usedAt: new Date() } }),
+      prisma.passwordResetToken.create({ data: { userId: id, token: tokenHash, expiresAt } }),
+      prisma.refreshToken.updateMany({ where: { userId: id, revokedAt: null }, data: { revokedAt: new Date() } }),
+    ]);
 
-    // Revoke all refresh tokens for safety
-    await prisma.refreshToken.updateMany({
-      where: { userId: id, revokedAt: null },
-      data: { revokedAt: new Date() },
-    });
-
-    logger.info(`[Admin] Password reset for user ${id} (${user.email})`);
+    const frontendUrl = process.env.FRONTEND_URL;
+    if (!frontendUrl) {
+      throw new Error('FRONTEND_URL is not configured');
+    }
+    await sendPasswordResetEmail(user.email, `${frontendUrl}/reset-password?token=${token}`);
+    await writeAdminAudit(req, 'PASSWORD_RESET_LINK_ISSUED', 'User', id, null, { email: user.email, expiresAt });
+    logger.info(`[Admin] Password reset link issued for user ${id} (${user.email})`);
 
     return res.json({
       success: true,
-      message: 'Mật khẩu đã được đặt lại.',
+      message: 'Đã gửi liên kết đặt lại mật khẩu một lần.',
       data: {
         email: user.email,
-        temporaryPassword: tempPassword, // Only shown once in response
+        expiresAt,
       },
     });
   } catch (error) {
@@ -1546,6 +1587,13 @@ export async function activateSubscription(req: Request, res: Response, next: Ne
     });
 
     logger.info(`[Admin] Subscription activated for tenant ${tenantId} (user ${id}): plan=${plan}, months=${months}`);
+    await writeAdminAudit(req, 'SUBSCRIPTION_ACTIVATED', 'Subscription', subscription.id, tenantId, {
+      userId: id,
+      plan,
+      startDate: now,
+      endDate,
+      orderId: orderId || null,
+    });
 
     return res.json({
       success: true,

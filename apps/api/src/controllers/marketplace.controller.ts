@@ -290,7 +290,7 @@ export async function uploadPaymentProof(req: Request, res: Response, next: Next
       });
     }
 
-    if (order.userId !== userId && order.email !== userEmail && req.user?.role !== 'SUPER_ADMIN') {
+    if (order.userId !== userId && req.user?.role !== 'SUPER_ADMIN') {
       return res.status(403).json({ success: false, error: { code: 'FORBIDDEN', message: 'Bạn không có quyền thao tác trên đơn hàng này.' } });
     }
 
@@ -539,6 +539,7 @@ export async function handleSepayWebhook(req: Request, res: Response, next: Next
 export async function getOrderStatus(req: Request, res: Response, next: NextFunction) {
   try {
     const { orderNumber } = req.params;
+    const userId = req.user?.userId;
     const order = await prisma.order.findUnique({
       where: { orderNumber },
       include: { template: { select: { name: true, slug: true, thumbnail: true } } },
@@ -546,6 +547,10 @@ export async function getOrderStatus(req: Request, res: Response, next: NextFunc
 
     if (!order) {
       return res.status(404).json({ success: false, error: { message: 'Không tìm thấy đơn hàng' } });
+    }
+
+    if (req.user?.role !== 'SUPER_ADMIN' && order.userId !== userId) {
+      return res.status(404).json({ success: false, error: { code: 'ORDER_NOT_FOUND', message: 'Không tìm thấy đơn hàng' } });
     }
 
     let tenant = null;
@@ -674,9 +679,7 @@ export async function simulatePayment(req: Request, res: Response, next: NextFun
 export async function getMyOrders(req: Request, res: Response, next: NextFunction) {
   try {
     const userId = (req as any).user?.userId;
-    const userEmail = (req as any).user?.email;
-
-    if (!userId && !userEmail) {
+    if (!userId) {
       return res.status(401).json({
         success: false,
         error: { code: 'UNAUTHENTICATED', message: 'Vui lòng đăng nhập để xem đơn hàng.' },
@@ -685,10 +688,7 @@ export async function getMyOrders(req: Request, res: Response, next: NextFunctio
 
     const orders = await prisma.order.findMany({
       where: {
-        OR: [
-          ...(userId ? [{ userId }] : []),
-          ...(userEmail ? [{ email: userEmail }] : []),
-        ],
+        userId,
       },
       include: {
         template: {

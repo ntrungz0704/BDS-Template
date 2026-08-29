@@ -284,8 +284,13 @@ async function main() {
 
 
   console.log('Tao tai khoan...');
-  const adminPw = await bcrypt.hash('adminsuper@123456', 10);
-  const customerPw = await bcrypt.hash('123456', 10);
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD;
+  const customerPassword = process.env.SEED_CUSTOMER_PASSWORD;
+  if (!adminPassword || adminPassword.length < 12 || !customerPassword || customerPassword.length < 12) {
+    throw new Error('SEED_ADMIN_PASSWORD and SEED_CUSTOMER_PASSWORD must each contain at least 12 characters.');
+  }
+  const adminPw = await bcrypt.hash(adminPassword, 12);
+  const customerPw = await bcrypt.hash(customerPassword, 12);
   await prisma.user.create({ data: { email: 'admin@platformbds.vn', passwordHash: adminPw, fullName: 'Admin PlatformBDS', role: 'SUPER_ADMIN', isActive: true } });
   const customer = await prisma.user.create({ data: { email: 'customer@platformbds.vn', passwordHash: customerPw, fullName: 'Nguyen Van Khach', phone: '0983312219', role: 'TENANT_OWNER', isActive: true } });
   console.log('  [OK] admin@platformbds.vn (SUPER_ADMIN)');
@@ -379,8 +384,7 @@ async function main() {
 
   console.log('='.repeat(60));
   console.log('DEVELOPER SEED HOAN THANH');
-  console.log('Tai khoan: admin@platformbds.vn / 123456  -> localhost:3002');
-  console.log('Tai khoan: customer@platformbds.vn / 123456 -> localhost:3001');
+  console.log('Tai khoan test da duoc tao tu bien moi truong SEED_*_PASSWORD.');
   console.log('Websites: hoanggialand.platformbds.vn + greenhome.platformbds.vn');
   console.log('Database: Theme/Pages/Sections/Menu/SEO/Subscription/MediaFolder/Leads READY');
   console.log('='.repeat(60));

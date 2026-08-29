@@ -108,7 +108,12 @@ async function main() {
 
   // 3. Tạo Super Admin hệ thống
   console.log('Tạo tài khoản Super Admin...');
-  const adminPasswordHash = await bcrypt.hash('adminsuper@123456', 10);
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD;
+  const customerPassword = process.env.SEED_CUSTOMER_PASSWORD;
+  if (!adminPassword || adminPassword.length < 12 || !customerPassword || customerPassword.length < 12) {
+    throw new Error('SEED_ADMIN_PASSWORD and SEED_CUSTOMER_PASSWORD must each contain at least 12 characters.');
+  }
+  const adminPasswordHash = await bcrypt.hash(adminPassword, 12);
   await prisma.user.create({
     data: {
       email: 'admin@platformbds.vn',
@@ -125,7 +130,7 @@ async function main() {
   // customer@platformbds.vn đã được provision sẵn 2 website demo để test CMS ngay.
   // Nếu muốn test luồng "mua → admin duyệt → provision", dùng ORD-TEST-003 bên dưới.
   console.log('Tạo tài khoản Khách hàng MVP...');
-  const customerPasswordHash = await bcrypt.hash('123456', 10);
+  const customerPasswordHash = await bcrypt.hash(customerPassword, 12);
   const customerUser = await prisma.user.create({
     data: {
       email: 'customer@platformbds.vn',

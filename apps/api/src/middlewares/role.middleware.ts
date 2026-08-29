@@ -15,21 +15,9 @@ export function requireRole(allowedRoles: (UserRole | 'CUSTOMER_OWNER')[]) {
       });
     }
 
-    // Super Admin & Admin được quyền truy cập mọi tính năng
-    if (user.role === 'SUPER_ADMIN' || user.role === 'ADMIN') {
-      return next();
-    }
-
-    // Đối với các route quản trị CMS của Tenant: Khách hàng (CUSTOMER, TENANT_OWNER, USER, EDITOR, STAFF)
-    // đều có toàn quyền chỉnh sửa dữ liệu trên Tenant riêng của mình (đã được cách ly qua tenantStorage)
-    const isTenantRoute = allowedRoles.some((r) =>
-      ['TENANT_OWNER', 'CUSTOMER_OWNER', 'EDITOR', 'STAFF'].includes(r as string)
-    );
-
-    if (
-      isTenantRoute &&
-      ['TENANT_OWNER', 'CUSTOMER_OWNER', 'CUSTOMER', 'USER', 'EDITOR', 'STAFF'].includes(user.role as string)
-    ) {
+    // Super Admin is the only system-wide role. ADMIN never receives an
+    // implicit bypass and must be explicitly listed by a route.
+    if (user.role === 'SUPER_ADMIN') {
       return next();
     }
 

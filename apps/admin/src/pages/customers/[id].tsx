@@ -63,7 +63,7 @@ export default function CustomerDetailPage() {
       return res.data;
     },
     onSuccess: (res) => {
-      alert(`Mật khẩu mới của khách hàng: ${res.data?.data?.temporaryPassword || res.data?.temporaryPassword}\n\nHãy copy gửi cho khách qua Zalo.`);
+      alert(res.data?.message || 'Đã gửi liên kết đặt lại mật khẩu qua email.');
     },
     onError: (err: any) => alert(err.response?.data?.error?.message || 'Lỗi đặt lại mật khẩu'),
   });

@@ -8,8 +8,20 @@ import FloatingButtons from '../components/FloatingButtons';
 import { fontVariables } from '../utils/fonts';
 
 import Head from 'next/head';
+import axios from 'axios';
 
 export default function App({ Component, pageProps }: AppProps) {
+  React.useEffect(() => {
+    const interceptor = axios.interceptors.request.use((config) => {
+      const csrfToken = document.cookie.match(new RegExp('(^| )csrf_token=([^;]+)'))?.[2];
+      if (csrfToken) {
+        config.headers['x-csrf-token'] = decodeURIComponent(csrfToken);
+      }
+      return config;
+    });
+    return () => axios.interceptors.request.eject(interceptor);
+  }, []);
+
   React.useEffect(() => {
     const handleError = (event: ErrorEvent) => {
       if (

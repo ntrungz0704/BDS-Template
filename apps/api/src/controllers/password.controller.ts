@@ -11,31 +11,75 @@ const requestResetSchema = z.object({
 });
 
 const resetPasswordSchema = z.object({
-  token: z.string().min(1, 'Token không hợp lệ.'),
-  newPassword: z.string().min(6, 'Mật khẩu tối thiểu phải từ 6 ký tự trở lên.'),
+  token: z.string().length(64, 'Token không hợp lệ.'),
+  newPassword: z.string()
+    .min(10, 'Mật khẩu tối thiểu phải có 10 ký tự.')
+    .regex(/[a-z]/, 'Mật khẩu phải có chữ thường.')
+    .regex(/[A-Z]/, 'Mật khẩu phải có chữ hoa.')
+    .regex(/[0-9]/, 'Mật khẩu phải có chữ số.'),
 });
+
+const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1),
+  newPassword: resetPasswordSchema.shape.newPassword,
+});
+
+function hashResetToken(token: string): string {
+  return crypto.createHash('sha256').update(token).digest('hex');
+}
+
+async function writePasswordAudit(
+  req: Request,
+  action: string,
+  entityId: string,
+  userId?: string,
+): Promise<void> {
+  try {
+    await prisma.auditLog.create({
+      data: {
+        userId: userId || null,
+        action,
+        entityType: 'User',
+        entityId,
+        ipAddress: req.ip,
+        userAgent: req.get('user-agent'),
+      },
+    });
+  } catch (error) {
+    logger.warn(`[PasswordAudit] Unable to record ${action}: ${(error as Error).message}`);
+  }
+}
 
 export async function requestPasswordReset(req: Request, res: Response, next: NextFunction) {
   try {
     const { email } = requestResetSchema.parse(req.body);
+    const normalizedEmail = email.trim().toLowerCase();
 
     const user = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
     });
 
-    if (user) {
-      const token = crypto.randomBytes(64).toString('hex');
+    if (user?.isActive && !user.deletedAt && user.status === 'ACTIVE') {
+      const token = crypto.randomBytes(32).toString('hex');
+      const tokenHash = hashResetToken(token);
       const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
-      await prisma.passwordResetToken.create({
-        data: {
-          userId: user.id,
-          token,
-          expiresAt,
-        },
-      });
+      await prisma.$transaction([
+        prisma.passwordResetToken.updateMany({
+          where: { userId: user.id, usedAt: null },
+          data: { usedAt: new Date() },
+        }),
+        prisma.passwordResetToken.create({
+          data: { userId: user.id, token: tokenHash, expiresAt },
+        }),
+      ]);
 
-      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      await writePasswordAudit(req, 'PASSWORD_RESET_REQUESTED', user.id, user.id);
+
+      const frontendUrl = process.env.FRONTEND_URL;
+      if (!frontendUrl) {
+        throw new Error('FRONTEND_URL is not configured');
+      }
       const resetLink = `${frontendUrl}/reset-password?token=${token}`;
       
       // Async send email
@@ -62,10 +106,11 @@ export async function requestPasswordReset(req: Request, res: Response, next: Ne
 export async function resetPassword(req: Request, res: Response, next: NextFunction) {
   try {
     const { token, newPassword } = resetPasswordSchema.parse(req.body);
+    const tokenHash = hashResetToken(token);
 
     const resetToken = await prisma.passwordResetToken.findFirst({
       where: {
-        token,
+        token: tokenHash,
         usedAt: null,
         expiresAt: {
           gt: new Date(),
@@ -85,20 +130,38 @@ export async function resetPassword(req: Request, res: Response, next: NextFunct
 
     const passwordHash = await bcrypt.hash(newPassword, 10);
 
-    await prisma.$transaction([
-      prisma.user.update({
+    const consumed = await prisma.$transaction(async (tx: any) => {
+      const claim = await tx.passwordResetToken.updateMany({
+        where: { id: resetToken.id, usedAt: null, expiresAt: { gt: new Date() } },
+        data: { usedAt: new Date() },
+      });
+      if (claim.count !== 1) {
+        return false;
+      }
+
+      await tx.user.update({
         where: { id: resetToken.userId },
         data: { passwordHash },
-      }),
-      prisma.passwordResetToken.update({
-        where: { id: resetToken.id },
-        data: { usedAt: new Date() },
-      }),
-      prisma.refreshToken.updateMany({
-        where: { userId: resetToken.userId },
+      });
+      await tx.refreshToken.updateMany({
+        where: { userId: resetToken.userId, revokedAt: null },
         data: { revokedAt: new Date() },
-      }),
-    ]);
+      });
+      await tx.passwordResetToken.updateMany({
+        where: { userId: resetToken.userId, usedAt: null },
+        data: { usedAt: new Date() },
+      });
+      return true;
+    });
+
+    if (!consumed) {
+      return res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_TOKEN', message: 'Link đặt lại mật khẩu đã được sử dụng.' },
+      });
+    }
+
+    await writePasswordAudit(req, 'PASSWORD_RESET_COMPLETED', resetToken.userId, resetToken.userId);
 
     res.json({
       success: true,
@@ -114,76 +177,36 @@ export async function resetPassword(req: Request, res: Response, next: NextFunct
   }
 }
 
-const directResetSchema = z.object({
-  email: z.string().email('Định dạng email không hợp lệ.'),
-  phone: z.string().min(8, 'Số điện thoại không hợp lệ.'),
-  newPassword: z.string().min(6, 'Mật khẩu mới tối thiểu 6 ký tự.'),
-});
-
-export async function directResetPassword(req: Request, res: Response, next: NextFunction) {
+export async function changePassword(req: Request, res: Response, next: NextFunction) {
   try {
-    const { email, phone, newPassword } = directResetSchema.parse(req.body);
-
-    const user = await prisma.user.findUnique({
-      where: { email: email.trim().toLowerCase() },
-    });
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        error: {
-          code: 'USER_NOT_FOUND',
-          message: 'Không tìm thấy tài khoản với email này trong hệ thống.',
-        },
-      });
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Yêu cầu đăng nhập.' } });
     }
 
-    // Standardize phone strings for comparison (remove spaces/dashes)
-    const userPhoneClean = (user.phone || '').replace(/\D/g, '');
-    const inputPhoneClean = phone.replace(/\D/g, '');
-
-    if (!userPhoneClean || userPhoneClean !== inputPhoneClean) {
-      return res.status(400).json({
-        success: false,
-        error: {
-          code: 'PHONE_MISMATCH',
-          message: 'Số điện thoại xác thực không khớp với thông tin đã đăng ký trên tài khoản này.',
-        },
-      });
+    const { currentPassword, newPassword } = changePasswordSchema.parse(req.body);
+    const user = await prisma.user.findUnique({ where: { id: userId, deletedAt: null } });
+    if (!user || !user.isActive || user.status !== 'ACTIVE') {
+      return res.status(401).json({ success: false, error: { code: 'ACCOUNT_INACTIVE', message: 'Tài khoản không hoạt động.' } });
     }
 
-    const passwordHash = await bcrypt.hash(newPassword, 10);
+    const currentPasswordValid = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!currentPasswordValid) {
+      await writePasswordAudit(req, 'PASSWORD_CHANGE_FAILED', user.id, user.id);
+      return res.status(400).json({ success: false, error: { code: 'INVALID_CURRENT_PASSWORD', message: 'Mật khẩu hiện tại không đúng.' } });
+    }
 
+    const passwordHash = await bcrypt.hash(newPassword, 12);
     await prisma.$transaction([
-      prisma.user.update({
-        where: { id: user.id },
-        data: { passwordHash },
-      }),
+      prisma.user.update({ where: { id: user.id }, data: { passwordHash } }),
       prisma.refreshToken.updateMany({
-        where: { userId: user.id },
+        where: { userId: user.id, revokedAt: null },
         data: { revokedAt: new Date() },
       }),
     ]);
 
-    try {
-      await prisma.auditLog.create({
-        data: {
-          userId: user.id,
-          action: 'PASSWORD_RESET_DIRECT_VERIFIED',
-          entityType: 'User',
-          entityId: user.id,
-          ipAddress: req.ip,
-          userAgent: req.headers['user-agent'],
-        },
-      });
-    } catch (_) {}
-
-    res.json({
-      success: true,
-      data: {
-        message: 'Đặt lại mật khẩu thành công. Quý khách có thể đăng nhập ngay bằng mật khẩu mới.',
-      },
-    });
+    await writePasswordAudit(req, 'PASSWORD_CHANGED', user.id, user.id);
+    return res.json({ success: true, data: { message: 'Đổi mật khẩu thành công. Vui lòng đăng nhập lại.' } });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ success: false, error: { code: 'VALIDATION_ERROR', message: 'Dữ liệu không hợp lệ.', details: error.errors } });

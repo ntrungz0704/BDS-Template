@@ -3,7 +3,7 @@ import { mediaService } from './media.service';
 
 export const uploadMedia = async (req: Request, res: Response) => {
   try {
-    const tenantId = (req as any).tenantId || req.headers['x-tenant-id'] as string;
+    const tenantId = req.tenantId;
     if (!tenantId) {
       return res.status(400).json({ success: false, message: 'Missing Tenant context' });
     }
@@ -96,7 +96,7 @@ export const uploadMedia = async (req: Request, res: Response) => {
 
 export const getMedia = async (req: Request, res: Response) => {
   try {
-    const tenantId = (req as any).tenantId || req.headers['x-tenant-id'] as string;
+    const tenantId = req.tenantId;
     if (!tenantId) {
       return res.status(400).json({ success: false, message: 'Missing Tenant context' });
     }
@@ -115,7 +115,7 @@ export const getMedia = async (req: Request, res: Response) => {
 
 export const deleteMedia = async (req: Request, res: Response) => {
   try {
-    const tenantId = (req as any).tenantId || req.headers['x-tenant-id'] as string;
+    const tenantId = req.tenantId;
     if (!tenantId) {
       return res.status(400).json({ success: false, message: 'Missing Tenant context' });
     }
@@ -136,7 +136,7 @@ export const deleteMedia = async (req: Request, res: Response) => {
 
 export const createFolder = async (req: Request, res: Response) => {
   try {
-    const tenantId = (req as any).tenantId || req.headers['x-tenant-id'] as string;
+    const tenantId = req.tenantId;
     if (!tenantId) {
       return res.status(400).json({ success: false, message: 'Missing Tenant context' });
     }

@@ -370,15 +370,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const updatePassword = async (oldPassword: string, newPassword: string): Promise<boolean> => {
     try {
-      // Verify old password by attempting login
-      await axios.post(`${API_URL}/api/auth/login`, { email: user?.email, password: oldPassword }, { withCredentials: true });
-      
-      // Use direct-reset to set new password
-      const res = await axios.post(`${API_URL}/api/password/direct-reset-password`, {
-        email: user?.email,
-        phone: user?.phone || '',
+      const res = await axios.post(`${API_URL}/api/auth/change-password`, {
+        currentPassword: oldPassword,
         newPassword,
-      });
+      }, { withCredentials: true });
       
       if (res.data?.success) {
         return true;

@@ -1,4 +1,21 @@
 import { Request, Response, NextFunction } from 'express';
+import crypto from 'crypto';
+
+const EXEMPT_PUBLIC_AUTH_PATHS = new Set([
+  '/api/auth/login',
+  '/api/auth/forgot-password',
+  '/api/auth/reset-password',
+]);
+
+function tokensMatch(cookieToken: unknown, headerToken: unknown): boolean {
+  if (typeof cookieToken !== 'string' || typeof headerToken !== 'string') {
+    return false;
+  }
+
+  const cookieBuffer = Buffer.from(cookieToken);
+  const headerBuffer = Buffer.from(headerToken);
+  return cookieBuffer.length === headerBuffer.length && crypto.timingSafeEqual(cookieBuffer, headerBuffer);
+}
 
 export function csrfMiddleware(req: Request, res: Response, next: NextFunction) {
   // Chỉ kiểm tra CSRF đối với các phương thức thay đổi dữ liệu nhạy cảm
@@ -8,28 +25,27 @@ export function csrfMiddleware(req: Request, res: Response, next: NextFunction) 
     return next();
   }
 
-  // 1. Nếu request sử dụng Authorization Bearer Header (SPA Auth via JWT),
-  // phương thức này an toàn với CSRF do browser không tự động đính kèm Authorization header trong cross-site form requests.
-  const authHeader = req.headers['authorization'];
-  if (authHeader && authHeader.startsWith('Bearer ')) {
+  // Public authentication endpoints do not act on an existing session.
+  if (EXEMPT_PUBLIC_AUTH_PATHS.has(req.path) || EXEMPT_PUBLIC_AUTH_PATHS.has(req.originalUrl.split('?')[0])) {
     return next();
   }
 
-  // 2. Nếu request đã được xác thực bởi authMiddleware trước đó
-  if ((req as any).user) {
+  const accessCookie = req.cookies?.access_token;
+  const refreshCookie = req.cookies?.refresh_token;
+  const usesAmbientCookieAuth = Boolean(accessCookie || refreshCookie);
+
+  // A request authenticated only with an Authorization header is not sent
+  // automatically by a browser and is therefore not susceptible to CSRF.
+  if (!usesAmbientCookieAuth) {
     return next();
   }
 
-  // 3. Đọc giá trị CSRF Token từ cookie và so khớp với Header do Client gửi lên
+  // Cookie-authenticated mutations must always use a double-submit token,
+  // including in development and on refresh/logout endpoints.
   const cookieCsrfToken = req.cookies?.csrf_token;
   const headerCsrfToken = req.headers['x-csrf-token'];
 
-  // Hỗ trợ dev môi trường cục bộ hoặc bypass an toàn
-  if (process.env.NODE_ENV !== 'production' || headerCsrfToken === 'dev-bypass') {
-    return next();
-  }
-
-  if (cookieCsrfToken && headerCsrfToken && cookieCsrfToken === headerCsrfToken) {
+  if (tokensMatch(cookieCsrfToken, headerCsrfToken)) {
     return next();
   }
 

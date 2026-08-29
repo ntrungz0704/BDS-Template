@@ -148,16 +148,12 @@ export default function TenantHome({ company, theme, pageContent, projects, post
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const host = context.req.headers.host || '';
   const initialPage = (context.query.page as string) || 'home';
   
-  let tenantSlug = (context.query.tenant as string) 
-    || (context.req.headers['x-tenant-slug'] as string) 
-    || (context.req.cookies['tenant_slug'] as string) 
-    || '';
+  let tenantSlug = (context.req.headers['x-tenant-slug'] as string) || '';
 
   if (tenantSlug === '_notfound' || tenantSlug === 'bds-template-website' || tenantSlug === 'website' || tenantSlug === 'localhost:3003' || tenantSlug === 'localhost') {
-    tenantSlug = (context.query.tenant as string) || (context.req.cookies['tenant_slug'] as string) || '';
+    tenantSlug = '';
   }
 
   try {

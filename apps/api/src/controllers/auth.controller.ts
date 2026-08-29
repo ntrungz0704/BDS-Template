@@ -24,13 +24,40 @@ const REFRESH_TOKEN_EXPIRY_DAYS = 7;
 
 // Helper sinh Access Token
 function generateAccessToken(payload: { userId: string; email: string; role: string; tenantId: string | null }): string {
-  const secret = process.env.JWT_ACCESS_SECRET || 'super-secret-access-key-should-be-long-and-random-123456';
+  const secret = process.env.JWT_ACCESS_SECRET;
+  if (!secret) {
+    throw new Error('JWT_ACCESS_SECRET is not configured');
+  }
   return jwt.sign(payload, secret, { expiresIn: ACCESS_TOKEN_EXPIRY });
 }
 
 // Helper sinh Refresh Token ngẫu nhiên
 function generateRefreshToken(): string {
   return crypto.randomBytes(40).toString('hex');
+}
+
+async function writeAuthAudit(
+  req: Request,
+  action: string,
+  entityId: string,
+  userId?: string,
+  newValues?: Record<string, unknown>,
+): Promise<void> {
+  try {
+    await prisma.auditLog.create({
+      data: {
+        userId: userId || null,
+        action,
+        entityType: 'User',
+        entityId,
+        newValues: newValues as any,
+        ipAddress: req.ip,
+        userAgent: req.get('user-agent'),
+      },
+    });
+  } catch (error) {
+    logger.warn(`[AuthAudit] Unable to record ${action}: ${(error as Error).message}`);
+  }
 }
 
 export async function register(req: Request, res: Response, next: NextFunction) {
@@ -116,26 +143,14 @@ export async function register(req: Request, res: Response, next: NextFunction) 
 export async function login(req: Request, res: Response, next: NextFunction) {
   try {
     const data = loginSchema.parse(req.body);
+    const normalizedEmail = data.email.trim().toLowerCase();
     
-    let user = await prisma.user.findUnique({
-      where: { email: data.email },
+    const user = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
     });
 
-    // Tự động kích hoạt tài khoản Super Admin thực tế nếu đăng nhập bằng email admin
-    if (!user && (data.email === 'admin@aireviewbds.com' || data.email === 'admin@platformbds.vn' || data.email === 'admin@myplatform.com')) {
-      const passwordHash = await bcrypt.hash(data.password, 10);
-      user = await prisma.user.create({
-        data: {
-          email: data.email,
-          passwordHash,
-          fullName: 'Super Admin AI Review BDS',
-          role: 'SUPER_ADMIN',
-          isActive: true,
-        },
-      });
-    }
-
     if (!user) {
+      await writeAuthAudit(req, 'LOGIN_FAILED', normalizedEmail, undefined, { reason: 'INVALID_CREDENTIALS' });
       return res.status(401).json({
         success: false,
         error: {
@@ -146,19 +161,10 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     }
 
     // Verify Password
-    let isValidPassword = await bcrypt.compare(data.password, user.passwordHash);
-    if (!isValidPassword && (data.password === '123456' || data.password === 'customer@123456' || data.password === 'adminsuper@123456')) {
-      const newHash = await bcrypt.hash(data.password, 10);
-      try {
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { passwordHash: newHash },
-        });
-        isValidPassword = true;
-      } catch (e) {}
-    }
+    const isValidPassword = await bcrypt.compare(data.password, user.passwordHash);
 
     if (!isValidPassword) {
+      await writeAuthAudit(req, 'LOGIN_FAILED', user.id, user.id, { reason: 'INVALID_CREDENTIALS' });
       return res.status(401).json({
         success: false,
         error: {
@@ -168,7 +174,8 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       });
     }
 
-    if (!user.isActive) {
+    if (!user.isActive || user.deletedAt || user.status !== 'ACTIVE') {
+      await writeAuthAudit(req, 'LOGIN_BLOCKED', user.id, user.id, { reason: 'ACCOUNT_INACTIVE' });
       return res.status(401).json({
         success: false,
         error: {
@@ -178,13 +185,19 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       });
     }
 
-    // Resolve tenant context if not directly assigned
-    let activeTenantId = user.tenantId;
+    // Resolve a tenant only from a verified active membership. If a user has
+    // multiple memberships and no current selection, the signed session stays
+    // tenant-less until /switch-tenant validates an explicit selection.
+    let activeTenantId: string | null = null;
     let tenantInfo = null;
 
-    if (!activeTenantId && user.role !== 'SUPER_ADMIN') {
-      const membership = await prisma.tenantMembership.findFirst({
-        where: { userId: user.id, status: 'ACTIVE' },
+    if (user.role !== 'SUPER_ADMIN') {
+      const memberships = await prisma.tenantMembership.findMany({
+        where: {
+          userId: user.id,
+          status: 'ACTIVE',
+          tenant: { deletedAt: null },
+        },
         include: {
           tenant: {
             select: {
@@ -200,20 +213,22 @@ export async function login(req: Request, res: Response, next: NextFunction) {
             },
           },
         },
+        take: 2,
       });
-      if (membership) {
-        activeTenantId = membership.tenantId;
-        tenantInfo = membership.tenant;
-        try {
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { tenantId: activeTenantId },
-          });
-        } catch (e) {}
+
+      const selectedMembership = memberships.find((membership: any) => membership.tenantId === user.tenantId)
+        || (memberships.length === 1 ? memberships[0] : null);
+
+      if (selectedMembership) {
+        activeTenantId = selectedMembership.tenantId;
+        tenantInfo = selectedMembership.tenant;
+        if (user.tenantId !== activeTenantId) {
+          await prisma.user.update({ where: { id: user.id }, data: { tenantId: activeTenantId } });
+        }
       }
-    } else if (activeTenantId) {
+    } else if (user.tenantId) {
       tenantInfo = await prisma.tenant.findUnique({
-        where: { id: activeTenantId },
+        where: { id: user.tenantId, deletedAt: null },
         select: {
           id: true,
           name: true,
@@ -226,6 +241,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
           trialSaveCount: true,
         },
       });
+      activeTenantId = tenantInfo?.id || null;
     }
 
     // Tạo Access & Refresh Tokens
@@ -239,24 +255,17 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     const accessToken = generateAccessToken(payload);
     const refreshTokenString = generateRefreshToken();
 
-    // Lưu Refresh Token vào Database nếu online
-    if (!user.id.startsWith('mock-')) {
-      try {
-        const expiresAt = new Date();
-        expiresAt.setDate(expiresAt.getDate() + REFRESH_TOKEN_EXPIRY_DAYS);
-        await prisma.refreshToken.create({
-          data: {
-            token: refreshTokenString,
-            userId: user.id,
-            expiresAt,
-            userAgent: req.headers['user-agent'],
-            ipAddress: req.ip,
-          },
-        });
-      } catch (err) {
-        console.warn(`[Warning] Failed to save refresh token in DB: offline.`);
-      }
-    }
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + REFRESH_TOKEN_EXPIRY_DAYS);
+    await prisma.refreshToken.create({
+      data: {
+        token: refreshTokenString,
+        userId: user.id,
+        expiresAt,
+        userAgent: req.headers['user-agent'],
+        ipAddress: req.ip,
+      },
+    });
 
     // Tạo CSRF Token chống giả mạo
     const csrfToken = crypto.randomBytes(32).toString('hex');
@@ -271,7 +280,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       secure: isProd,
       sameSite: sameSiteMode,
       domain: cookieDomain,
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 15 * 60 * 1000,
     });
 
     res.cookie('refresh_token', refreshTokenString, {
@@ -299,21 +308,10 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    // Ghi Audit Log đăng nhập thành công nếu online
-    if (!user.id.startsWith('mock-')) {
-      try {
-        await prisma.auditLog.create({
-          data: {
-            userId: user.id,
-            action: 'LOGIN_SUCCESS',
-            entityType: 'User',
-            entityId: user.id,
-            ipAddress: req.ip,
-            userAgent: req.headers['user-agent'],
-          },
-        });
-      } catch (err) {}
-    }
+    await Promise.all([
+      prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } }),
+      writeAuthAudit(req, 'LOGIN_SUCCESS', user.id, user.id, { tenantId: activeTenantId }),
+    ]);
 
     res.status(200).json({
       success: true,
@@ -383,6 +381,17 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
       });
     }
 
+    if (!dbToken.user.isActive || dbToken.user.deletedAt || dbToken.user.status !== 'ACTIVE') {
+      await prisma.refreshToken.updateMany({
+        where: { userId: dbToken.userId, revokedAt: null },
+        data: { revokedAt: new Date() },
+      });
+      return res.status(401).json({
+        success: false,
+        error: { code: 'ACCOUNT_INACTIVE', message: 'Tài khoản không còn hoạt động.' },
+      });
+    }
+
     // Kiểm tra hết hạn Refresh Token
     if (dbToken.expiresAt < new Date()) {
       return res.status(401).json({
@@ -430,12 +439,14 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
 
     // Gửi trả cookie mới đè cookie cũ
     const isProdRefresh = process.env.NODE_ENV === 'production';
-    const sameSiteModeRefresh = isProdRefresh ? 'none' as const : 'lax' as const;
+    const sameSiteModeRefresh = isProdRefresh ? ('none' as const) : ('lax' as const);
+    const cookieDomainRefresh = process.env.COOKIE_DOMAIN || undefined;
 
     res.cookie('access_token', newAccessToken, {
       httpOnly: true,
       secure: isProdRefresh,
       sameSite: sameSiteModeRefresh,
+      domain: cookieDomainRefresh,
       maxAge: 15 * 60 * 1000,
     });
 
@@ -443,6 +454,7 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
       httpOnly: true,
       secure: isProdRefresh,
       sameSite: sameSiteModeRefresh,
+      domain: cookieDomainRefresh,
       path: '/api/auth/refresh',
       maxAge: REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000,
     });
@@ -499,171 +511,50 @@ export async function getMe(req: Request, res: Response, next: NextFunction) {
       });
     }
 
-    let user: any = null;
-    let orders: any[] = [];
-    let isDbOffline = false;
-
-    try {
-      user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: {
-          id: true,
-          email: true,
-          fullName: true,
-          phone: true,
-          role: true,
-          tenantId: true,
-          isActive: true,
-          status: true,
-          customerProfile: true,
-          wishlists: {
-            include: {
-              template: {
-                select: {
-                  id: true,
-                  name: true,
-                  slug: true,
-                  shortDescription: true,
-                  thumbnail: true,
-                  priceBuy: true,
-                }
-              }
-            }
-          }
-        }
-      });
-
-      if (user) {
-        orders = await prisma.order.findMany({
-          where: {
-            OR: [
-              { userId: user.id },
-              { email: user.email },
-            ],
-          },
+    const user = await prisma.user.findUnique({
+      where: { id: userId, deletedAt: null },
+      select: {
+        id: true,
+        email: true,
+        fullName: true,
+        phone: true,
+        role: true,
+        tenantId: true,
+        isActive: true,
+        status: true,
+        customerProfile: true,
+        wishlists: {
           include: {
             template: {
               select: {
                 id: true,
                 name: true,
                 slug: true,
+                shortDescription: true,
                 thumbnail: true,
-              }
-            }
+                priceBuy: true,
+              },
+            },
           },
-          orderBy: { createdAt: 'desc' }
-        });
-      }
-    } catch (err) {
-      console.warn(`[Warning] Database offline in getMe. Activating mock user session.`);
-      isDbOffline = true;
+        },
+      },
+    });
+
+    if (!user || !user.isActive || user.status !== 'ACTIVE') {
+      return res.status(401).json({
+        success: false,
+        error: { code: 'USER_NOT_FOUND', message: 'Không tìm thấy phiên tài khoản đang hoạt động.' },
+      });
     }
 
-    // Nếu DB offline hoặc không tìm thấy user thực tế
-    if (isDbOffline || !user) {
-      // Mock data for development only — NEVER expose in production
-      if (process.env.NODE_ENV === 'production') {
-        return res.status(401).json({
-          success: false,
-          error: {
-            code: 'USER_NOT_FOUND',
-            message: 'Không tìm thấy thông tin tài khoản.',
-          },
-        });
-      }
-      if (userId === 'mock-admin-id') {
-        user = {
-          id: 'mock-admin-id',
-          email: 'admin@platformbds.vn',
-          fullName: 'Quản trị viên Hệ thống (Admin)',
-          phone: '0983312219',
-          role: 'SUPER_ADMIN',
-          isActive: true,
-          status: 'ACTIVE',
-          customerProfile: {
-            address: 'Diamond Plaza, 34 Lê Duẩn, Quận 1, TP Hồ Chí Minh',
-            companyName: 'PLATFORMBDS Corp',
-            taxCode: '0316524982'
-          },
-          wishlists: []
-        };
-        orders = [
-          {
-            id: 'ord-mock-admin-1',
-            orderNumber: 'ORD-ADMIN-01',
-            amount: 0,
-            type: 'BUY',
-            status: 'COMPLETED',
-            createdAt: new Date().toISOString(),
-            template: { name: 'Mega Developer', slug: 'mega-developer' }
-          }
-        ];
-      } else if (userId === 'mock-tenant-admin-id') {
-        user = {
-          id: 'mock-tenant-admin-id',
-          email: 'tenant@platformbds.vn',
-          fullName: 'Chủ Website (Môi giới)',
-          phone: '0983312219',
-          role: 'TENANT_OWNER',
-          isActive: true,
-          status: 'ACTIVE',
-          customerProfile: {
-            address: ' Diamond Plaza, Quận 1, TP Hồ Chí Minh',
-            companyName: 'BĐS Sài Gòn Gold',
-            taxCode: '0316524982'
-          },
-          wishlists: []
-        };
-        orders = [
-          {
-            id: 'ord-mock-tenant-1',
-            orderNumber: 'ORD-TENANT-01',
-            amount: 499000,
-            type: 'RENT',
-            status: 'COMPLETED',
-            createdAt: new Date().toISOString(),
-            template: { name: 'Luxury Gold Style', slug: 'luxury-gold' }
-          }
-        ];
-      } else {
-        // Mặc định là Customer
-        user = {
-          id: 'mock-customer-id',
-          email: 'customer@platformbds.vn',
-          fullName: 'Khách Hàng Mẫu',
-          phone: '0983312219',
-          role: 'CUSTOMER',
-          isActive: true,
-          status: 'ACTIVE',
-          customerProfile: {
-            address: 'Diamond Plaza, 34 Lê Duẩn, Quận 1, TP Hồ Chí Minh',
-            companyName: 'Công Ty BĐS Mẫu',
-            taxCode: '0316524982'
-          },
-          wishlists: []
-        };
-        orders = [
-          {
-            id: 'ord-mock-1',
-            orderNumber: 'ORD-20260706-A1',
-            amount: 499000,
-            type: 'BUY',
-            status: 'COMPLETED',
-            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-            template: { name: 'Luxury Gold Style', slug: 'luxury-gold' }
-          },
-          {
-            id: 'ord-mock-2',
-            orderNumber: 'ORD-20260706-B2',
-            amount: 499000,
-            type: 'RENT',
-            status: 'PENDING',
-            createdAt: new Date().toISOString(),
-            template: { name: 'Minimal White Style', slug: 'minimal-white' }
-          }
-        ];
-      }
-    }
+    const orders = await prisma.order.findMany({
+      where: { userId: user.id },
+      include: {
+        template: { select: { id: true, name: true, slug: true, thumbnail: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
 
     res.status(200).json({
       success: true,
@@ -772,15 +663,28 @@ export async function switchTenant(req: Request, res: Response, next: NextFuncti
       return res.status(400).json({ success: false, error: { message: 'Thiếu tenantId' } });
     }
 
-    const membership = await prisma.tenantMembership.findFirst({
-      where: { userId, tenantId, status: 'ACTIVE' },
+    const tenant = await prisma.tenant.findUnique({
+      where: { id: tenantId, deletedAt: null },
+      select: { id: true },
     });
-
-    if (!membership && req.user?.role !== 'SUPER_ADMIN') {
-      return res.status(403).json({
+    if (!tenant) {
+      return res.status(404).json({
         success: false,
-        error: { message: 'Bạn không có quyền truy cập website này.' }
+        error: { code: 'TENANT_NOT_FOUND', message: 'Website không tồn tại.' },
       });
+    }
+
+    if (req.user?.role !== 'SUPER_ADMIN') {
+      const membership = await prisma.tenantMembership.findFirst({
+        where: { userId, tenantId, status: 'ACTIVE' },
+      });
+      if (!membership) {
+        await writeAuthAudit(req, 'TENANT_SWITCH_DENIED', tenantId, userId, { requestedTenantId: tenantId });
+        return res.status(403).json({
+          success: false,
+          error: { code: 'TENANT_ACCESS_DENIED', message: 'Bạn không có quyền truy cập website này.' },
+        });
+      }
     }
 
     const updatedUser = await prisma.user.update({
@@ -799,9 +703,12 @@ export async function switchTenant(req: Request, res: Response, next: NextFuncti
     res.cookie('access_token', newAccessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      domain: process.env.COOKIE_DOMAIN || undefined,
       maxAge: 15 * 60 * 1000,
     });
+
+    await writeAuthAudit(req, 'TENANT_SWITCHED', tenantId, userId, { tenantId });
 
     return res.status(200).json({
       success: true,

@@ -8,6 +8,7 @@ declare global {
     interface Request {
       user?: UserSessionPayload;
       tenantId?: string;
+      authMode?: 'cookie' | 'bearer';
     }
   }
 }
@@ -16,7 +17,8 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
   // Đọc access token từ HttpOnly Cookie hoặc Authorization Bearer Header
   const authHeader = req.headers.authorization;
   const bearerToken = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : null;
-  const token = req.cookies?.access_token || bearerToken;
+  const cookieToken = req.cookies?.access_token;
+  const token = cookieToken || bearerToken;
 
   if (!token) {
     return res.status(401).json({
@@ -41,6 +43,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
     const decoded = jwt.verify(token, accessSecret) as UserSessionPayload;
     
     req.user = decoded;
+    req.authMode = cookieToken ? 'cookie' : 'bearer';
     next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {

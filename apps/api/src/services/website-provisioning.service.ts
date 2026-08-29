@@ -129,10 +129,10 @@ export class WebsiteProvisioningService {
       }
     }
 
-    // CMS Password rule: Extract prefix before '@' from email (e.g. nguyenlongdz8@gmail.com -> nguyenlongdz8)
-    const emailPrefix = customerEmail.split('@')[0].trim();
-    const cmsPassword = emailPrefix || '123456';
-    const passwordHash = await bcrypt.hash(cmsPassword, 10);
+    // A new account receives a high-entropy temporary password. Existing
+    // accounts keep their current password when another tenant is assigned.
+    const cmsPassword = `${crypto.randomBytes(18).toString('base64url')}Aa1!`;
+    const passwordHash = await bcrypt.hash(cmsPassword, 12);
 
     const result = await prisma.$transaction(async (tx: any) => {
       // a. Create Tenant
@@ -159,14 +159,15 @@ export class WebsiteProvisioningService {
 
       // b. Create/Update User as TENANT_OWNER with CMS password
       let user;
+      let isNewUser = false;
       if (customerId) {
         user = await tx.user.update({
           where: { id: customerId },
           data: {
             role: 'TENANT_OWNER',
             tenantId: tenant.id,
-            passwordHash,
             isActive: true,
+            status: 'ACTIVE',
           },
         });
       } else {
@@ -180,12 +181,13 @@ export class WebsiteProvisioningService {
             data: {
               role: 'TENANT_OWNER',
               tenantId: tenant.id,
-              passwordHash,
               isActive: true,
+              status: 'ACTIVE',
               emailVerified: existingUser.emailVerified || new Date(),
             },
           });
         } else {
+          isNewUser = true;
           user = await tx.user.create({
             data: {
               email: customerEmail,
@@ -674,7 +676,7 @@ export class WebsiteProvisioningService {
         },
       });
 
-      return { tenant, user };
+      return { tenant, user, isNewUser };
     });
 
     // n. Tự động đăng ký domain của khách vào Vercel Project qua Vercel API
@@ -685,7 +687,10 @@ export class WebsiteProvisioningService {
     return {
       tenant: result.tenant,
       user: result.user,
-      credentials: { tempPassword: cmsPassword, cmsPassword },
+      credentials: {
+        tempPassword: result.isNewUser ? cmsPassword : '',
+        cmsPassword: result.isNewUser ? cmsPassword : '',
+      },
     };
 
   }
