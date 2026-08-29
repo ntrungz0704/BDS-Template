@@ -2211,6 +2211,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "GIỎ HÀNG GỐC TRỰC TIẾP TỪ CHỦ ĐẦU TƯ",
       heroSubtitle: "Khám phá các đại đô thị quy mô hàng trăm hecta với chính sách chiết khấu đợt 1 và quà tặng đặc quyền."
     }
+  },
+  // ─── PORTAL 13. REAL ESTATE AUCTION & LIQUIDATION PORTAL ───────────────────
+  {
+    id: "portal-13",
+    name: "Template #13 - Real Estate Auction & Liquidation Portal",
+    slug: "portal-13",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #13",
+    badgeBg: "#991B1B",
+    badgeColor: "#FFFFFF",
+    accentColor: "#991B1B",
+    description: "Cổng thông tin và sàn đấu giá bất động sản trực tuyến, chuyên tài sản phát mãi ngân hàng, quỹ đất công đấu giá nhà nước và thi hành án dân sự. Hiển thị đồng hồ đếm ngược phiên đấu giá, giá khởi điểm, bước giá và tỷ lệ cọc 10%.",
+    shortDescription: "Sàn đấu giá trực tuyến · BĐS phát mãi ngân hàng · Dưới giá thị trường 20-35%",
+    thumbnail: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục pháp lý nghiêm ngặt với tông Đỏ Rượu Búa Đấu Giá & Vàng Hổ Phách",
+      "Thẻ tin Live Auction Countdown Card hiển thị thời gian đếm ngược giờ:phút",
+      "Bộ lọc BĐS theo ngân hàng thanh lý: Vietcombank, BIDV, Agribank, VietinBank",
+      "Trang chi tiết tài sản kèm biên bản thẩm định giá & quy chế tham gia đấu giá",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Gói thanh lý, Quy chế, Giới thiệu, Liên hệ",
+      "Tích hợp hệ thống đăng ký nộp hồ sơ cọc và phòng đấu giá trực tuyến"
+    ],
+    priceBuy: 749000,
+    priceBuySource: 2190000,
+    priceRentMonthly: 169000,
+    isActive: true,
+    sortOrder: 37,
+    targetAudience: ["Công ty đấu giá hợp danh & trung tâm dịch vụ đấu giá tài sản", "Phòng xử lý nợ & thu hồi tài sản ngân hàng thương mại", "Nhà đầu tư săn BĐS ngộp thanh lý giá tốt"],
+    highlights: ["Live Auction Countdown Cards", "Bank Liquidation Filters", "Legal Appraisal Dossiers", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["AuctionCardModule", "AuctionCountdownModule", "BankLiquidationModule", "AuctionLegalModule"],
+    benefits: ["Tăng 420% số lượng hồ sơ đăng ký tham gia các phiên đấu giá công khai", "Xây dựng niềm tin pháp lý vững chắc với người mua", "Bố cục khẩn trương kích thích ra quyết định"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#991B1B",
+      secondaryColor: "#7F1D1D",
+      accentColor: "#D97706",
+      bgColor: "#FEF2F2",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "1rem",
+      shadowToken: "0 10px 15px -3px rgba(153, 27, 27, 0.15)"
+    },
+    layoutConfig: {
+      heroStyle: "Auction Live Hero với Search Bar tài sản phát mãi",
+      navigationStyle: "Wine Red Rounded Navbar",
+      cardStyle: "Live Auction Countdown Card (Đồng hồ đếm ngược, bước giá)",
+      galleryStyle: "Legal Evidence Slider",
+      ctaStyle: "Auction Wine Red Button",
+      spacingScale: "Strict Legal Spacing"
+    },
+    wireframe: ["HeaderAuctionPro", "HeroAuctionSearch", "AuctionListingsGrid", "TopBankPortfolios", "FooterAuctionPro"],
+    sectionConfig: {
+      sourceSlug: "portal-13",
+      heroTitle: "CỔNG ĐẤU GIÁ & THANH LÝ BẤT ĐỘNG SẢN PHÁT MÃI",
+      heroSubtitle: "Hơn 1.800 tài sản phát mãi ngân hàng, bất động sản thi hành án và quỹ đất công đấu giá trên toàn quốc."
+    }
   }
 ];
 
@@ -2271,6 +2335,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-12': 'portal-12',
   'portal-mega': 'portal-12',
   'mega-ecosystem': 'portal-12',
+  'portal-13': 'portal-13',
+  'portal-auction': 'portal-13',
+  'auction-pro': 'portal-13',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
