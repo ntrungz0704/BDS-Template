@@ -1763,6 +1763,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "CỔNG BẤT ĐỘNG SẢN TƯƠNG TÁC BẢN ĐỒ THÔNG MINH",
       heroSubtitle: "Khám phá hàng ngàn bất động sản chính xác theo tọa độ và quy hoạch hạ tầng."
     }
+  },
+  // ─── PORTAL 06. ECO LIVING GREEN PORTAL ────────────────────────────────────
+  {
+    id: "portal-06",
+    name: "Template #06 - Eco Living Green Portal",
+    slug: "portal-06",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #06",
+    badgeBg: "#065F46",
+    badgeColor: "#FFFFFF",
+    accentColor: "#059669",
+    description: "Cổng thông tin bất động sản sinh thái, nghỉ dưỡng xanh và farmstay chữa lành. Bố cục hữu cơ thân thiện thiên nhiên với tông màu Xanh Rừng Nhiệt Đới & Vàng Lime, thẻ listing Eco Organic bo tròn mềm mại 24px.",
+    shortDescription: "BĐS sinh thái · Farmstay & Đất vườn · Đại đô thị xanh chuẩn LEED",
+    thumbnail: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục thân thiện thiên nhiên với nền Kem Thảo Mộc dịu mắt",
+      "Thẻ tin Eco Organic bo góc 24px kèm chỉ số mật độ cây xanh %",
+      "Bộ lọc BĐS theo đặc tính: View hồ, Công viên, Farmstay, Nghỉ dưỡng đồi",
+      "Trang chi tiết BĐS kèm đánh giá vi khí hậu và cẩm nang sống xanh",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án, Cẩm nang, Giới thiệu, Liên hệ",
+      "Tích hợp form ký gửi đất vườn và tư vấn mô hình farmstay sinh thái"
+    ],
+    priceBuy: 699000,
+    priceBuySource: 1990000,
+    priceRentMonthly: 149000,
+    isActive: true,
+    sortOrder: 30,
+    targetAudience: ["Sàn phân phối đại đô thị sinh thái (Ecopark, Swanbay, Aqua City)", "Môi giới farmstay & đất vườn sinh thái Bảo Lộc / Đà Lạt", "Sàn cho thuê biệt thự nghỉ dưỡng retreat"],
+    highlights: ["Botanical Emerald Theme", "Eco Organic Cards 24px", "Green LEED Indicators", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["EcoCardModule", "GreenIndexFilterModule", "EcoProjectModule", "WellnessLifestyleModule"],
+    benefits: ["Thu hút đối tượng khách hàng tìm kiếm không gian sống chữa lành", "Gia tăng 320% thời gian tương tác", "Tối ưu hóa chuyển đổi leads tư vấn BĐS nghỉ dưỡng"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#065F46",
+      secondaryColor: "#059669",
+      accentColor: "#84CC16",
+      bgColor: "#F0FDF4",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "1.5rem",
+      shadowToken: "0 10px 15px -3px rgba(6, 95, 70, 0.1)"
+    },
+    layoutConfig: {
+      heroStyle: "Botanical Forest Hero với Search Bar bo tròn 24px",
+      navigationStyle: "Eco Clean Rounded Navbar",
+      cardStyle: "Eco Organic Card (Ảnh 4:3 bo tròn 24px, huy hiệu xanh)",
+      galleryStyle: "Nature Landscape Slider",
+      ctaStyle: "Emerald Green Rounded Button",
+      spacingScale: "Comfortable Nature Spacing"
+    },
+    wireframe: ["HeaderEcoEstate", "HeroForestSearch", "EcoListingsGrid", "ModelEcoCities", "FooterEcoEstate"],
+    sectionConfig: {
+      sourceSlug: "portal-06",
+      heroTitle: "KHỞI ĐẦU CUỘC SỐNG THUẦN KHIẾT GIỮA THIÊN NHIÊN",
+      heroSubtitle: "Hơn 12.000 biệt thự đảo, farmstay sinh thái và căn hộ vườn treo chuẩn LEED."
+    }
   }
 ];
 
@@ -1802,6 +1866,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-05': 'portal-05',
   'portal-map': 'portal-05',
   'map-estate': 'portal-05',
+  'portal-06': 'portal-06',
+  'portal-eco': 'portal-06',
+  'eco-estate': 'portal-06',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
