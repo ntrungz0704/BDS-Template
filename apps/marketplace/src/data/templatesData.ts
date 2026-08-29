@@ -1955,6 +1955,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "HẠ TẦNG NHÀ XƯỞNG & ĐẤT KHU CÔNG NGHIỆP CHUẨN QUỐC TẾ",
       heroSubtitle: "Hơn 5.000.000 m² đất KCN, kho bãi logistics RBW và xưởng xây sẵn RBF sẵn sàng bàn giao."
     }
+  },
+  // ─── PORTAL 09. HERITAGE & COLONIAL PORTAL ─────────────────────────────────
+  {
+    id: "portal-09",
+    name: "Template #09 - Heritage & Colonial Portal",
+    slug: "portal-09",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #09",
+    badgeBg: "#78350F",
+    badgeColor: "#FEF3C7",
+    accentColor: "#D97706",
+    description: "Cổng thông tin bảo tồn và giao dịch bất động sản di sản, biệt thự kiến trúc Pháp cổ (French Colonial), nhà phố cổ Hà Nội / Hội An và khuôn viên nhà rường Cố Đô. Phong cách cổ điển trang nhã với thẻ Vintage Heritage Cards.",
+    shortDescription: "Biệt thự Pháp cổ · Nhà phố di sản · Nhà rường Cố Đô Huế",
+    thumbnail: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục mang đậm giá trị văn hóa với tông Vàng Hoàng Thành & Nâu Gỗ Trầm",
+      "Thẻ tin Vintage Heritage Card hiển thị năm xây dựng & trường phái kiến trúc",
+      "Bộ lọc BĐS di sản theo vùng đất: Phố cổ Hà Nội, Sài Gòn xưa, Cố Đô Huế, Hội An",
+      "Trang chi tiết BĐS kèm hồ sơ bảo tồn lịch sử và vật liệu gỗ quý nguyên bản",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án bảo tồn, Văn hóa, Giới thiệu, Liên hệ",
+      "Kết nối mạng lưới chuyên gia phục dựng di sản kiến trúc hàng đầu"
+    ],
+    priceBuy: 749000,
+    priceBuySource: 2190000,
+    priceRentMonthly: 169000,
+    isActive: true,
+    sortOrder: 33,
+    targetAudience: ["Nhà sưu tầm di sản & biệt thự cổ điển", "Công ty phục dựng & bảo tồn kiến trúc xưa", "Sàn môi giới BĐS khu vực phố cổ Hoàn Kiếm / Ba Đình / Quận 3"],
+    highlights: ["Imperial Ochre & Antique Wood", "Vintage Heritage 4:3 Cards", "Heritage Preservation Dossier", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["VintageCardModule", "HeritageHistoryModule", "RestorationProjectModule", "CulturalMagazineModule"],
+    benefits: ["Nâng tầm giá trị di sản và thu hút giới tinh hoa sưu tầm nhà cổ", "Hiển thị hồ sơ kiến trúc chuẩn mực", "Bố cục đậm chất hoài niệm độc nhất"],
+    themeConfig: {
+      fontHeading: "'Playfair Display', serif",
+      fontBody: "'Lora', serif",
+      primaryColor: "#78350F",
+      secondaryColor: "#D97706",
+      accentColor: "#451A03",
+      bgColor: "#FFFBEB",
+      cardBgColor: "#FEF3C7",
+      textColor: "#451A03",
+      radiusToken: "1rem",
+      shadowToken: "0 4px 6px -1px rgba(120, 53, 15, 0.15)"
+    },
+    layoutConfig: {
+      heroStyle: "Vintage Heritage Hero với Search Bar viền gỗ trầm",
+      navigationStyle: "Antique Paper Navbar",
+      cardStyle: "Vintage Heritage Card (Ảnh sepia, viền đôi cổ điển)",
+      galleryStyle: "Vintage Classic Slider",
+      ctaStyle: "Imperial Ochre Action Button",
+      spacingScale: "Elegant Classical Spacing"
+    },
+    wireframe: ["HeaderHeritageEstate", "HeroVintageSearch", "HeritageListingsGrid", "RestorationProjects", "FooterHeritageEstate"],
+    sectionConfig: {
+      sourceSlug: "portal-09",
+      heroTitle: "BẢO TỒN & CHUYỂN NHƯỢNG DINH THỰ PHÁP CỔ",
+      heroSubtitle: "Tuyển chọn những bất động sản mang giá trị lịch sử, nhà rường Cố Đô và biệt thự Đông Dương."
+    }
   }
 ];
 
@@ -2003,6 +2067,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-08': 'portal-08',
   'portal-industrial': 'portal-08',
   'industrial-pro': 'portal-08',
+  'portal-09': 'portal-09',
+  'portal-heritage': 'portal-09',
+  'heritage-estate': 'portal-09',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
