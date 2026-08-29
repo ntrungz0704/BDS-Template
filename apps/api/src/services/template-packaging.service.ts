@@ -12,66 +12,153 @@ export interface PackageOptions {
 }
 
 export const TEMPLATE_SLUG_MAP: Record<string, { componentName: string; fileName: string; templateName: string }> = {
+  // 1. Luxury Gold
+  'bds-01': { componentName: 'LuxuryTemplate', fileName: 'LuxuryTemplate.tsx', templateName: 'Biệt Thự Hoàng Gia Dát Vàng' },
+  'portal-01': { componentName: 'LuxuryTemplate', fileName: 'LuxuryTemplate.tsx', templateName: 'Biệt Thự Hoàng Gia Dát Vàng' },
   'luxury-gold': { componentName: 'LuxuryTemplate', fileName: 'LuxuryTemplate.tsx', templateName: 'Luxury Gold Style' },
+
+  // 2. Minimal White
+  'bds-02': { componentName: 'MinimalTemplate', fileName: 'MinimalTemplate.tsx', templateName: 'Căn Hộ Tối Giản Bắc Âu' },
+  'portal-02': { componentName: 'MinimalTemplate', fileName: 'MinimalTemplate.tsx', templateName: 'Căn Hộ Tối Giản Bắc Âu' },
   'minimal-white': { componentName: 'MinimalTemplate', fileName: 'MinimalTemplate.tsx', templateName: 'Minimal White Style' },
   'minimal-zen': { componentName: 'MinimalTemplate', fileName: 'MinimalTemplate.tsx', templateName: 'Minimalist Zen Style' },
+
+  // 3. Modern Corporate
+  'bds-03': { componentName: 'CorporateTemplate', fileName: 'CorporateTemplate.tsx', templateName: 'Tập Đoàn BĐS & Sàn Lớn' },
+  'portal-03': { componentName: 'CorporateTemplate', fileName: 'CorporateTemplate.tsx', templateName: 'Tập Đoàn BĐS & Sàn Lớn' },
   'modern-corporate': { componentName: 'CorporateTemplate', fileName: 'CorporateTemplate.tsx', templateName: 'Modern Corporate' },
+
+  // 4. Resort Paradise
+  'bds-04': { componentName: 'ResortTemplate', fileName: 'ResortTemplate.tsx', templateName: 'Nghỉ Dưỡng & Biển Đảo' },
+  'portal-04': { componentName: 'ResortTemplate', fileName: 'ResortTemplate.tsx', templateName: 'Nghỉ Dưỡng & Biển Đảo' },
   'resort-paradise': { componentName: 'ResortTemplate', fileName: 'ResortTemplate.tsx', templateName: 'Resort Paradise' },
   'ocean-view': { componentName: 'ResortTemplate', fileName: 'ResortTemplate.tsx', templateName: 'Ocean View Panorama' },
+
+  // 5. Urban City
+  'bds-05': { componentName: 'ApartmentTemplate', fileName: 'ApartmentTemplate.tsx', templateName: 'Căn Hộ Cao Tầng Smart City' },
+  'portal-05': { componentName: 'ApartmentTemplate', fileName: 'ApartmentTemplate.tsx', templateName: 'Căn Hộ Cao Tầng Smart City' },
   'urban-city': { componentName: 'ApartmentTemplate', fileName: 'ApartmentTemplate.tsx', templateName: 'Urban City Style' },
   'smart-urban': { componentName: 'ApartmentTemplate', fileName: 'ApartmentTemplate.tsx', templateName: 'Smart Urban City' },
   'high-rise': { componentName: 'ApartmentTemplate', fileName: 'ApartmentTemplate.tsx', templateName: 'High-Rise Skyscraper' },
+
+  // 6. Industrial Estate
+  'bds-06': { componentName: 'IndustrialTemplate', fileName: 'IndustrialTemplate.tsx', templateName: 'Khu Công Nghiệp & Kho Vận' },
+  'portal-06': { componentName: 'IndustrialTemplate', fileName: 'IndustrialTemplate.tsx', templateName: 'Khu Công Nghiệp & Kho Vận' },
   'industrial-estate': { componentName: 'IndustrialTemplate', fileName: 'IndustrialTemplate.tsx', templateName: 'Industrial Estate' },
   'industrial-logistics': { componentName: 'IndustrialTemplate', fileName: 'IndustrialTemplate.tsx', templateName: 'Industrial & Logistics' },
+
+  // 7. Villa Premium
+  'bds-07': { componentName: 'VillaTemplate', fileName: 'VillaTemplate.tsx', templateName: 'Biệt Thự Đơn Lập 3D Tour' },
+  'portal-07': { componentName: 'VillaTemplate', fileName: 'VillaTemplate.tsx', templateName: 'Biệt Thự Đơn Lập 3D Tour' },
   'villa-premium': { componentName: 'VillaTemplate', fileName: 'VillaTemplate.tsx', templateName: 'Villa Premium Style' },
   'luxury-villa': { componentName: 'VillaTemplate', fileName: 'VillaTemplate.tsx', templateName: 'Luxury Villa Compound' },
   'modern-villa': { componentName: 'VillaTemplate', fileName: 'VillaTemplate.tsx', templateName: 'Modern Villa & Resort' },
+
+  // 8. Eco Green
+  'bds-08': { componentName: 'EcoTemplate', fileName: 'EcoTemplate.tsx', templateName: 'Đô Thị Sinh Thái Xanh ESG' },
+  'portal-08': { componentName: 'EcoTemplate', fileName: 'EcoTemplate.tsx', templateName: 'Đô Thị Sinh Thái Xanh ESG' },
   'eco-green': { componentName: 'EcoTemplate', fileName: 'EcoTemplate.tsx', templateName: 'Eco Green Living' },
   'eco-living': { componentName: 'EcoTemplate', fileName: 'EcoTemplate.tsx', templateName: 'Eco Living Natural' },
   'green-eco': { componentName: 'EcoTemplate', fileName: 'EcoTemplate.tsx', templateName: 'Green Eco Nature' },
+
+  // 9. Classic Elegant
+  'bds-09': { componentName: 'ClassicTemplate', fileName: 'ClassicTemplate.tsx', templateName: 'Lâu Đài & Tân Cổ Điển' },
+  'portal-09': { componentName: 'ClassicTemplate', fileName: 'ClassicTemplate.tsx', templateName: 'Lâu Đài & Tân Cổ Điển' },
   'classic-elegant': { componentName: 'ClassicTemplate', fileName: 'ClassicTemplate.tsx', templateName: 'Classic Elegant Style' },
   'classic-heritage': { componentName: 'ClassicTemplate', fileName: 'ClassicTemplate.tsx', templateName: 'Classic Heritage' },
   'heritage-classic': { componentName: 'ClassicTemplate', fileName: 'ClassicTemplate.tsx', templateName: 'Heritage Classic Architecture' },
+
+  // 10. Investment Pro
+  'bds-10': { componentName: 'InvestmentTemplate', fileName: 'InvestmentTemplate.tsx', templateName: 'Tài Chính BĐS & Phân Tích ROI' },
+  'portal-10': { componentName: 'InvestmentTemplate', fileName: 'InvestmentTemplate.tsx', templateName: 'Tài Chính BĐS & Phân Tích ROI' },
   'investment-pro': { componentName: 'InvestmentTemplate', fileName: 'InvestmentTemplate.tsx', templateName: 'Investment Pro Hub' },
   'tech-hub': { componentName: 'InvestmentTemplate', fileName: 'InvestmentTemplate.tsx', templateName: 'Future Tech City Hub' },
+
+  // 11. Agency Onepage
+  'bds-11': { componentName: 'AgencyTemplate', fileName: 'AgencyTemplate.tsx', templateName: 'Landing Page 1 Trang Chạy Ads' },
+  'portal-11': { componentName: 'AgencyTemplate', fileName: 'AgencyTemplate.tsx', templateName: 'Landing Page 1 Trang Chạy Ads' },
   'agency-onepage': { componentName: 'AgencyTemplate', fileName: 'AgencyTemplate.tsx', templateName: 'Agency Marketing OnePage' },
   'suburban-family': { componentName: 'AgencyTemplate', fileName: 'AgencyTemplate.tsx', templateName: 'Suburban Family Living' },
+
+  // 12. Mega Developer Portal
+  'bds-12': { componentName: 'ListingMarketplace', fileName: 'ListingMarketplace.tsx', templateName: 'Cổng Thông Tin Đa Dự Án' },
+  'portal-12': { componentName: 'ListingMarketplace', fileName: 'ListingMarketplace.tsx', templateName: 'Cổng Thông Tin Đa Dự Án' },
   'mega-developer': { componentName: 'ListingMarketplace', fileName: 'ListingMarketplace.tsx', templateName: 'Mega Developer Portal' },
   'listing-portal': { componentName: 'ListingMarketplace', fileName: 'ListingMarketplace.tsx', templateName: 'Listing Marketplace Portal' },
   'riverside-mansion': { componentName: 'ListingMarketplace', fileName: 'ListingMarketplace.tsx', templateName: 'Riverside Grand Mansion' },
+
+  // 13. Sàn Đấu Giá BĐS
+  'bds-13': { componentName: 'AuctionTemplate', fileName: 'AuctionTemplate.tsx', templateName: 'Sàn Đấu Giá Bất Động Sản' },
+  'portal-13': { componentName: 'AuctionTemplate', fileName: 'AuctionTemplate.tsx', templateName: 'Sàn Đấu Giá Bất Động Sản' },
   'auction-template': { componentName: 'AuctionTemplate', fileName: 'AuctionTemplate.tsx', templateName: 'Sàn Đấu Giá BĐS' },
   'auction-bds': { componentName: 'AuctionTemplate', fileName: 'AuctionTemplate.tsx', templateName: 'Auction BĐS & Bidding' },
   'lake-sanctuary': { componentName: 'AuctionTemplate', fileName: 'AuctionTemplate.tsx', templateName: 'Lake Sanctuary Living' },
+
+  // 14. Dự Án Đất Nền Phân Lô
+  'bds-14': { componentName: 'LandPlotTemplate', fileName: 'LandPlotTemplate.tsx', templateName: 'Dự Án Đất Nền Phân Lô 1/500' },
+  'portal-14': { componentName: 'LandPlotTemplate', fileName: 'LandPlotTemplate.tsx', templateName: 'Dự Án Đất Nền Phân Lô 1/500' },
   'landplot-template': { componentName: 'LandPlotTemplate', fileName: 'LandPlotTemplate.tsx', templateName: 'Dự Án Đất Nền Phân Lô' },
   'land-plot': { componentName: 'LandPlotTemplate', fileName: 'LandPlotTemplate.tsx', templateName: 'Land Plot Masterplan' },
   'mountain-retreat': { componentName: 'LandPlotTemplate', fileName: 'LandPlotTemplate.tsx', templateName: 'Highland Mountain Retreat' },
+
+  // 15. Retail Podium / Shophouse
+  'bds-15': { componentName: 'RetailTemplate', fileName: 'RetailTemplate.tsx', templateName: 'Shophouse Thương Mại Khối Đế' },
+  'portal-15': { componentName: 'RetailTemplate', fileName: 'RetailTemplate.tsx', templateName: 'Shophouse Thương Mại Khối Đế' },
   'retail-podium': { componentName: 'RetailTemplate', fileName: 'RetailTemplate.tsx', templateName: 'Retail Podium Shophouse' },
   'retail-commercial': { componentName: 'RetailTemplate', fileName: 'RetailTemplate.tsx', templateName: 'Retail Commercial Plaza' },
   'commercial-plaza': { componentName: 'RetailTemplate', fileName: 'RetailTemplate.tsx', templateName: 'Commercial & Shopping Plaza' },
+
+  // 16. Personal Agent
+  'bds-16': { componentName: 'PersonalAgentTemplate', fileName: 'PersonalAgentTemplate.tsx', templateName: 'Môi Giới BĐS Cá Nhân' },
+  'portal-16': { componentName: 'PersonalAgentTemplate', fileName: 'PersonalAgentTemplate.tsx', templateName: 'Môi Giới BĐS Cá Nhân' },
   'personal-agent': { componentName: 'PersonalAgentTemplate', fileName: 'PersonalAgentTemplate.tsx', templateName: 'Top Personal Broker' },
   'golf-residences': { componentName: 'PersonalAgentTemplate', fileName: 'PersonalAgentTemplate.tsx', templateName: 'Elite Golf Residences' },
+
+  // 17. Cổng Thông Tin Bất Động Sản Số 1
   'bds-17': { componentName: 'PortalListingTemplate', fileName: 'PortalListingTemplate.tsx', templateName: 'Cổng Thông Tin Bất Động Sản Số 1' },
+  'portal-17': { componentName: 'PortalListingTemplate', fileName: 'PortalListingTemplate.tsx', templateName: 'Cổng Thông Tin Bất Động Sản Số 1' },
   'portal-listing': { componentName: 'PortalListingTemplate', fileName: 'PortalListingTemplate.tsx', templateName: 'Cổng Thông Tin Bất Động Sản Số 1' },
   'vietnam-portal': { componentName: 'PortalListingTemplate', fileName: 'PortalListingTemplate.tsx', templateName: 'Cổng Thông Tin Bất Động Sản Số 1' },
+
+  // 18. Sàn Giao Dịch & Đấu Giá Bến Thành
   'bds-18': { componentName: 'Bds123PortalTemplate', fileName: 'Bds123PortalTemplate.tsx', templateName: 'Sàn Giao Dịch & Đấu Giá Bến Thành' },
+  'portal-18': { componentName: 'Bds123PortalTemplate', fileName: 'Bds123PortalTemplate.tsx', templateName: 'Sàn Giao Dịch & Đấu Giá Bến Thành' },
   'bds123-portal': { componentName: 'Bds123PortalTemplate', fileName: 'Bds123PortalTemplate.tsx', templateName: 'Sàn Giao Dịch & Đấu Giá Bến Thành' },
   'benthanh-portal': { componentName: 'Bds123PortalTemplate', fileName: 'Bds123PortalTemplate.tsx', templateName: 'Sàn Giao Dịch & Đấu Giá Bến Thành' },
+
+  // 19. Sàn Niêm Yết Mật Độ Cao Nhà Đất Số
   'bds-19': { componentName: 'NhadatsoDensityTemplate', fileName: 'NhadatsoDensityTemplate.tsx', templateName: 'Sàn Niêm Yết Mật Độ Cao Nhà Đất Số' },
+  'portal-19': { componentName: 'NhadatsoDensityTemplate', fileName: 'NhadatsoDensityTemplate.tsx', templateName: 'Sàn Niêm Yết Mật Độ Cao Nhà Đất Số' },
   'nhadatso-density': { componentName: 'NhadatsoDensityTemplate', fileName: 'NhadatsoDensityTemplate.tsx', templateName: 'Sàn Niêm Yết Mật Độ Cao Nhà Đất Số' },
   'nhadatso-portal': { componentName: 'NhadatsoDensityTemplate', fileName: 'NhadatsoDensityTemplate.tsx', templateName: 'Sàn Niêm Yết Mật Độ Cao Nhà Đất Số' },
+
+  // 20. Chung Cư Minh Khai & Times City
   'bds-20': { componentName: 'MinhKhaiApartmentTemplate', fileName: 'MinhKhaiApartmentTemplate.tsx', templateName: 'Chung Cư Minh Khai & Times City' },
+  'portal-20': { componentName: 'MinhKhaiApartmentTemplate', fileName: 'MinhKhaiApartmentTemplate.tsx', templateName: 'Chung Cư Minh Khai & Times City' },
   'minhkhai-apartment': { componentName: 'MinhKhaiApartmentTemplate', fileName: 'MinhKhaiApartmentTemplate.tsx', templateName: 'Chung Cư Minh Khai & Times City' },
   'minhkhai-luxury': { componentName: 'MinhKhaiApartmentTemplate', fileName: 'MinhKhaiApartmentTemplate.tsx', templateName: 'Chung Cư Minh Khai & Times City' },
+
+  // 21. Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội
   'bds-21': { componentName: 'HanoiRentalPortalTemplate', fileName: 'HanoiRentalPortalTemplate.tsx', templateName: 'Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội' },
+  'portal-21': { componentName: 'HanoiRentalPortalTemplate', fileName: 'HanoiRentalPortalTemplate.tsx', templateName: 'Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội' },
   'hanoi-rental': { componentName: 'HanoiRentalPortalTemplate', fileName: 'HanoiRentalPortalTemplate.tsx', templateName: 'Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội' },
   'chothue-hanoi': { componentName: 'HanoiRentalPortalTemplate', fileName: 'HanoiRentalPortalTemplate.tsx', templateName: 'Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội' },
+
+  // 22. ZoHotels & Happy Land Nha Trang
   'bds-22': { componentName: 'HappyLandResortTemplate', fileName: 'HappyLandResortTemplate.tsx', templateName: 'ZoHotels & Happy Land Nha Trang' },
+  'portal-22': { componentName: 'HappyLandResortTemplate', fileName: 'HappyLandResortTemplate.tsx', templateName: 'ZoHotels & Happy Land Nha Trang' },
   'happyland-resort': { componentName: 'HappyLandResortTemplate', fileName: 'HappyLandResortTemplate.tsx', templateName: 'ZoHotels & Happy Land Nha Trang' },
   'zohotels-resort': { componentName: 'HappyLandResortTemplate', fileName: 'HappyLandResortTemplate.tsx', templateName: 'ZoHotels & Happy Land Nha Trang' },
+
+  // 23. Sàn Giao Dịch Nhà Phố Homeo
   'bds-23': { componentName: 'HomeoMultiThumbnailTemplate', fileName: 'HomeoMultiThumbnailTemplate.tsx', templateName: 'Sàn Giao Dịch Nhà Phố Homeo' },
+  'portal-23': { componentName: 'HomeoMultiThumbnailTemplate', fileName: 'HomeoMultiThumbnailTemplate.tsx', templateName: 'Sàn Giao Dịch Nhà Phố Homeo' },
   'homeo-multithumb': { componentName: 'HomeoMultiThumbnailTemplate', fileName: 'HomeoMultiThumbnailTemplate.tsx', templateName: 'Sàn Giao Dịch Nhà Phố Homeo' },
   'homeo-agency': { componentName: 'HomeoMultiThumbnailTemplate', fileName: 'HomeoMultiThumbnailTemplate.tsx', templateName: 'Sàn Giao Dịch Nhà Phố Homeo' },
+
+  // 24. RealtyBuild Trang Tin BĐS Số 1 Việt Nam
   'bds-24': { componentName: 'RealtyBuildTechTemplate', fileName: 'RealtyBuildTechTemplate.tsx', templateName: 'RealtyBuild Trang Tin BĐS Số 1 Việt Nam' },
+  'portal-24': { componentName: 'RealtyBuildTechTemplate', fileName: 'RealtyBuildTechTemplate.tsx', templateName: 'RealtyBuild Trang Tin BĐS Số 1 Việt Nam' },
   'realtybuild-tech': { componentName: 'RealtyBuildTechTemplate', fileName: 'RealtyBuildTechTemplate.tsx', templateName: 'RealtyBuild Trang Tin BĐS Số 1 Việt Nam' },
   'realtybuild-portal': { componentName: 'RealtyBuildTechTemplate', fileName: 'RealtyBuildTechTemplate.tsx', templateName: 'RealtyBuild Trang Tin BĐS Số 1 Việt Nam' },
 };
