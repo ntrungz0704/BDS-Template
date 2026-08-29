@@ -805,53 +805,65 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
     </div>
   );
 
-  // ── SUBPAGE 2-COLUMN ARCHIVE (AS SHOWN IN SCREENSHOT 2) ──
-  const renderArchivePage = () => (
-    <div className="bg-[#F8F9FA] py-8 min-h-screen">
-      <div className={`${MAX_W} mx-auto px-4 space-y-6`}>
-        <div className="text-xs text-slate-500 flex items-center gap-1.5">
-          <span onClick={() => navigate('home')} className="hover:text-[#0084FF] cursor-pointer">Trang chủ</span>
-          <span>/</span>
-          <span className="text-[#0084FF] font-bold">Danh sách bài viết & Dự án</span>
-        </div>
+  // ── SUBPAGE 2-COLUMN ARCHIVE (MATCHING SCREENSHOT 2) ──
+  const renderArchivePage = () => {
+    const pageTitleMap: Record<string, string> = {
+      'dat-du-an': 'Đất Dự Án Quy Hoạch Đồng Bộ',
+      'dat-nen': 'Đất Nền Phân Lô Sổ Đỏ Trao Tay',
+      'nha-o': 'Danh Sách Nhà Ở & Biệt Thự An Viên',
+      'nha-cho-thue': 'Nhà Cho Thuê & Biệt Thự Nghỉ Dưỡng',
+      'news': 'Danh Sách Bài Viết & Cẩm Nang Bất Động Sản',
+      'contact': 'Liên Hệ & Đăng Ký Tư Vấn BĐS',
+    };
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Main Left Column (70%) */}
-          <div className="lg:col-span-8 space-y-4">
-            {BDS05_NEWS.map(art => (
-              <div
-                key={art.id}
-                onClick={() => handleOpenArticle(art)}
-                className="bg-white rounded-xl border border-slate-200 hover:border-[#0084FF] p-4 shadow-xs hover:shadow-md transition cursor-pointer flex flex-col sm:flex-row gap-4 items-start group"
-              >
-                {/* Image with Cyan Date Badge */}
-                <div className="w-full sm:w-48 h-36 relative shrink-0 rounded-lg overflow-hidden bg-slate-100">
-                  <img
-                    src={art.image}
-                    alt={art.title}
-                    onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                  />
-                  <div className="absolute top-2 left-2 bg-[#0084FF] text-white text-[10px] font-black px-2 py-1 rounded shadow text-center leading-tight">
-                    {art.dateTag}
-                  </div>
-                </div>
+    const currentTitle = pageTitleMap[currentPage] || 'Danh sách bài viết & Dự án';
 
-                {/* Text Details */}
-                <div className="flex-1 space-y-2">
-                  <h3 className="font-black text-xs sm:text-sm text-slate-800 group-hover:text-[#0084FF] transition line-clamp-2 leading-snug">
-                    {art.title}
-                  </h3>
-                  <p className="text-xs text-slate-500 line-clamp-3 leading-relaxed">
-                    {art.excerpt}
-                  </p>
-                  <div className="pt-2 text-[11px] text-[#0084FF] font-bold">
-                    Đọc tiếp [...]
-                  </div>
-                </div>
-              </div>
-            ))}
+    return (
+      <div className="bg-[#F8F9FA] py-8 min-h-screen">
+        <div className={`${MAX_W} mx-auto px-4 space-y-6`}>
+          <div className="text-xs text-slate-500 flex items-center gap-1.5">
+            <span onClick={() => navigate('home')} className="hover:text-[#0084FF] cursor-pointer">Trang chủ</span>
+            <span>/</span>
+            <span className="text-[#0084FF] font-bold">{currentTitle}</span>
           </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Main Left Column (70%) */}
+            <div className="lg:col-span-8 space-y-4">
+              {BDS05_NEWS.map(art => (
+                <div
+                  key={art.id}
+                  onClick={() => handleOpenArticle(art)}
+                  className="bg-white rounded-xl border border-slate-200 hover:border-[#0084FF] p-4 shadow-xs hover:shadow-md transition cursor-pointer flex flex-col sm:flex-row gap-4 items-start group"
+                >
+                  {/* Image with Date Badge */}
+                  <div className="w-full sm:w-48 h-36 relative shrink-0 rounded-lg overflow-hidden bg-slate-100">
+                    <img
+                      src={art.image}
+                      alt={art.title}
+                      onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
+                      className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                    />
+                    <div className="absolute top-2 left-2 bg-[#0084FF] text-white text-[10px] font-black px-2 py-1 rounded shadow text-center leading-tight">
+                      {art.dateTag}
+                    </div>
+                  </div>
+
+                  {/* Text Details */}
+                  <div className="flex-1 space-y-2">
+                    <h3 className="font-black text-xs sm:text-sm text-slate-800 group-hover:text-[#0084FF] transition line-clamp-2 leading-snug">
+                      {art.title}
+                    </h3>
+                    <p className="text-xs text-slate-500 line-clamp-3 leading-relaxed">
+                      {art.excerpt}
+                    </p>
+                    <div className="pt-2 text-[11px] text-[#0084FF] font-bold">
+                      Đọc tiếp [...]
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
 
           {/* Right Sidebar (30%) */}
           <div className="lg:col-span-4 space-y-6">
