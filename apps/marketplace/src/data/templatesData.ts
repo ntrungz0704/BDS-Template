@@ -2851,6 +2851,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "MẶT BẰNG PHỐ ĐI BỘ & SANG NHƯỢNG BAR LOUNGE 24/7",
       heroSubtitle: "Tổng hợp hơn 1.800 shophouse phố đi bộ, mặt bằng F&B đêm và quán pub/lounge kinh doanh sầm uất tại Bùi Viện, Tạ Hiện, Grand World."
     }
+  },
+  // ─── PORTAL 23. LUXURY PENTHOUSE & SKY VILLA PORTAL ────────────────────────
+  {
+    id: "portal-23",
+    name: "Template #23 - Luxury Penthouse & Sky Villa Portal",
+    slug: "portal-23",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #23",
+    badgeBg: "#05060A",
+    badgeColor: "#FACC15",
+    accentColor: "#FACC15",
+    description: "Cổng thông tin chuyên biệt cho dòng bất động sản đỉnh cao trên nóc các tòa tháp chọc trời (Penthouse áp mái, Sky Villa hồ bơi riêng, Duplex thông tầng trần cao 7m) phục vụ giới siêu giàu UHNWIs và các gia tộc tài phiệt. Tiêu chuẩn bảo mật thông tin tuyệt đối.",
+    shortDescription: "Penthouse áp mái · Sky Villa hồ bơi riêng · Tháp chọc trời",
+    thumbnail: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục Deep Space sang trọng với tông Đen Vũ Trụ & Vàng Bạch Kim Platinum",
+      "Thẻ tin Sky High Penthouse Card hiển thị tầng 45+, Private Sky Pool & Private Lift",
+      "Bộ lọc phân khúc đỉnh cao: Grand Penthouse 1.000m², Sky Villa hồ bơi vô cực, Duplex 7m",
+      "Trang chi tiết BĐS kèm tầm nhìn 360 độ Panorama và hồ sơ thẩm định giá trị độc bản",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Tháp biểu tượng, Góc nhìn, Hồ sơ, Viewing",
+      "Cổng đăng nhập Private Client bảo mật OTP dành riêng cho thành viên VIP"
+    ],
+    priceBuy: 990000,
+    priceBuySource: 2990000,
+    priceRentMonthly: 249000,
+    isActive: true,
+    sortOrder: 47,
+    targetAudience: ["Đơn vị môi giới Private Client & Family Office phục vụ giới siêu giàu", "Chủ đầu tư phân phối các căn Penthouse phiên bản giới hạn tại các tòa tháp", "Nhà môi giới triệu đô chuyên dòng Sky Villa"],
+    highlights: ["Sky High Penthouse Cards", "Private Lift & Infinity Sky Pool Specs", "Deep Space & Platinum Gold Theme", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["SkyHighCardModule", "PrivateViewingModule", "SkyscraperProjectModule", "UltraLuxuryModule"],
+    benefits: ["Xác lập vị thế đỉnh cao không đối thủ trong phân khúc BĐS siêu sang", "Tạo sự tin cậy tuyệt đối cho khách hàng VIP nhờ tính năng bảo mật kín đáo", "Tối ưu hóa hình ảnh thương hiệu xa xỉ"],
+    themeConfig: {
+      fontHeading: "'Playfair Display', serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#05060A",
+      secondaryColor: "#0C0E14",
+      accentColor: "#FACC15",
+      bgColor: "#05060A",
+      cardBgColor: "#0C0E14",
+      textColor: "#F1F5F9",
+      radiusToken: "1rem",
+      shadowToken: "0 10px 15px -3px rgba(250, 204, 21, 0.15)"
+    },
+    layoutConfig: {
+      heroStyle: "Sky Horizon Sunset Hero với Search Bar tầng không",
+      navigationStyle: "Deep Space Platinum Gold Navbar",
+      cardStyle: "Sky High Penthouse Card (Viền ánh kim vàng Platinum, badge hồ bơi riêng)",
+      galleryStyle: "Panorama 360 Sky Horizon Slider",
+      ctaStyle: "Platinum Gold Luxury Button",
+      spacingScale: "Pinnacle Space Spacing"
+    },
+    wireframe: ["HeaderSkyVillaEstate", "HeroSkyHorizonSearch", "SkyHighListingsGrid", "TopIconicSkyscrapers", "FooterSkyVillaEstate"],
+    sectionConfig: {
+      sourceSlug: "portal-23",
+      heroTitle: "TUYỆT TÁC PENTHOUSE & SKY VILLA TẦNG KHÔNG",
+      heroSubtitle: "Bộ sưu tập độc quyền các căn dinh thự trên đỉnh những tòa tháp biểu tượng đắt giá nhất Việt Nam."
+    }
   }
 ];
 
@@ -2941,6 +3005,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-22': 'portal-22',
   'portal-nightlife': 'portal-22',
   'nightlife-strip': 'portal-22',
+  'portal-23': 'portal-23',
+  'portal-penthouse': 'portal-23',
+  'skyvilla-estate': 'portal-23',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
