@@ -222,49 +222,45 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
             </div>
           </div>
           
-          {!isSmall && (
-            <nav className="flex space-x-8">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavClick(item.id)}
-                  className="font-medium text-sm uppercase tracking-wide transition-colors relative group"
-                  style={{ color: activePage === item.id ? colors.primary : colors.text }}
-                >
-                  {item.label}
-                  <span 
-                    className="absolute -bottom-2 left-0 h-0.5 bg-current transition-all duration-300" 
-                    style={{ 
-                      width: activePage === item.id ? '100%' : '0%',
-                      backgroundColor: colors.accent 
-                    }}
-                  ></span>
-                </button>
-              ))}
-            </nav>
-          )}
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex space-x-8">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item.id)}
+                className="font-medium text-sm uppercase tracking-wide transition-colors relative group"
+                style={{ color: activePage === item.id ? colors.primary : colors.text }}
+              >
+                {item.label}
+                <span 
+                  className="absolute -bottom-2 left-0 h-0.5 bg-current transition-all duration-300" 
+                  style={{ 
+                    width: activePage === item.id ? '100%' : '0%',
+                    backgroundColor: colors.accent 
+                  }}
+                ></span>
+              </button>
+            ))}
+          </nav>
 
-          {!isSmall && (
-            <button 
-              onClick={() => handleNavClick('contact')} 
-              className="px-6 py-2.5 font-medium text-sm uppercase tracking-wide text-white transition-opacity hover:opacity-90 flex items-center cursor-pointer shadow-md" 
-              style={{ backgroundColor: colors.primary }}
-            >
-              Nhận Báo Giá <ArrowRight size={16} className="ml-2" />
-            </button>
-          )}
+          <button 
+            onClick={() => handleNavClick('contact')} 
+            className="hidden lg:flex px-6 py-2.5 font-medium text-sm uppercase tracking-wide text-white transition-opacity hover:opacity-90 items-center cursor-pointer shadow-md" 
+            style={{ backgroundColor: colors.primary }}
+          >
+            Nhận Báo Giá <ArrowRight size={16} className="ml-2" />
+          </button>
 
-          {isSmall && (
-            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ color: colors.primary }}>
-              {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
-          )}
+          {/* Mobile Hamburger Button */}
+          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden p-2" style={{ color: colors.primary }}>
+            {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+          </button>
         </div>
       </div>
       
-      {/* Mobile Menu */}
-      {isSmall && isMobileMenuOpen && (
-        <div className="absolute top-full left-0 w-full shadow-lg border-t" style={{ backgroundColor: colors.surface, borderColor: colors.border }}>
+      {/* Mobile Menu Dropdown */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden absolute top-full left-0 w-full shadow-lg border-t animate-fadeIn z-50" style={{ backgroundColor: colors.surface, borderColor: colors.border }}>
           <div className="flex flex-col py-4">
             {navItems.map((item) => (
               <button

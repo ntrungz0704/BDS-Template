@@ -139,23 +139,23 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
   return (
     <header className="w-full z-40 bg-white">
       {/* 1. TOP BAR */}
-      <div className="w-full bg-[#0F172A] text-white min-h-[40px] py-1 flex items-center px-4 sm:px-6 border-b border-slate-800 text-xs">
-        <div className="max-w-[1440px] w-full mx-auto flex justify-between items-center gap-3">
-          <div className="flex items-center gap-2">
-            <span className="font-extrabold text-[#C5A572] tracking-wider">TEMPLATES BĐS</span>
-            <span className="text-slate-500 hidden sm:inline">|</span>
-            <span className="text-slate-400 hidden sm:inline">Kho mẫu website Bất Động Sản cao cấp</span>
+      <div className="w-full bg-[#0F172A] text-white min-h-[38px] py-1 flex items-center px-3 sm:px-6 border-b border-slate-800 text-xs">
+        <div className="max-w-[1440px] w-full mx-auto flex justify-between items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="font-extrabold text-[#C5A572] tracking-wider text-[11px] sm:text-xs">TEMPLATES BĐS</span>
+            <span className="text-slate-500 hidden md:inline">|</span>
+            <span className="text-slate-400 hidden md:inline">Kho mẫu website Bất Động Sản cao cấp</span>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="flex items-center gap-2">
-              <a href="tel:0919006030" className="flex items-center gap-1 hover:text-[#C5A572] transition-colors font-bold font-mono text-slate-300">
-                <Phone className="w-3.5 h-3.5 text-[#C5A572]" />
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <a href="tel:0919006030" className="hidden sm:flex items-center gap-1 hover:text-[#C5A572] transition-colors font-bold font-mono text-slate-300 text-[11px] sm:text-xs">
+                <Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#C5A572]" />
                 <span>0919 006 030</span>
               </a>
-              <span className="text-slate-600 hidden sm:inline">•</span>
-              <a href="tel:0983312219" className="hidden sm:flex items-center gap-1 hover:text-[#C5A572] transition-colors font-bold font-mono text-slate-300">
-                <Phone className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="text-slate-600 hidden md:inline">•</span>
+              <a href="tel:0983312219" className="hidden md:flex items-center gap-1 hover:text-[#C5A572] transition-colors font-bold font-mono text-slate-300 text-[11px] sm:text-xs">
+                <Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-400" />
                 <span>0983 312 219</span>
               </a>
             </div>
@@ -163,12 +163,12 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
               <div className="relative" ref={userDropdownRef}>
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-2 bg-slate-800/90 hover:bg-slate-700/80 border border-slate-700/80 rounded-full px-3 py-1 text-xs transition-all font-semibold text-slate-100 shadow-xs"
+                  className="flex items-center gap-1.5 sm:gap-2 bg-slate-800/90 hover:bg-slate-700/80 border border-slate-700/80 rounded-full px-2.5 sm:px-3 py-1 text-xs transition-all font-semibold text-slate-100 shadow-xs"
                 >
                   <div className="w-5 h-5 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-[10px] font-bold text-white shrink-0">
                     {(user.fullName || user.email || 'U').slice(0, 1).toUpperCase()}
                   </div>
-                  <span className="truncate max-w-[140px] sm:max-w-[200px]">{user.fullName || user.email}</span>
+                  <span className="truncate max-w-[100px] xs:max-w-[140px] sm:max-w-[200px] text-[11px] sm:text-xs">{user.fullName || user.email}</span>
                   <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${userDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
 
@@ -258,18 +258,19 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
             ) : (
               <Link
                 href="/login"
-                className="flex items-center gap-1.5 hover:text-white hover:bg-blue-600 transition-all font-bold text-slate-700 bg-slate-100/90 px-3 py-1 rounded-full border border-slate-200 shadow-sm hover:shadow"
+                className="flex items-center gap-1.5 hover:text-white hover:bg-blue-600 transition-all font-bold text-slate-700 bg-slate-100/90 px-2.5 sm:px-3 py-1 rounded-full border border-slate-200 shadow-xs hover:shadow text-[11px] sm:text-xs shrink-0"
               >
-                <User className="w-3.5 h-3.5 text-[#2563EB]" />
-                <span>Đăng Nhập Khách Hàng</span>
+                <User className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#2563EB]" />
+                <span className="hidden sm:inline">Đăng Nhập Khách Hàng</span>
+                <span className="sm:hidden font-bold">Đăng nhập</span>
               </Link>
             )}
             <Link
               href="/cart"
-              className="relative flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800/80 hover:bg-blue-600/30 border border-slate-700 text-white transition-all font-bold group"
+              className="relative flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-slate-800/80 hover:bg-blue-600/30 border border-slate-700 text-white transition-all font-bold group shrink-0"
               title="Xem giỏ hàng"
             >
-              <ShoppingCart className="w-3.5 h-3.5 text-blue-400 group-hover:text-white transition-colors" />
+              <ShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-400 group-hover:text-white transition-colors" />
               <span className="text-xs font-semibold hidden sm:inline">Giỏ hàng</span>
               {cart && cart.length > 0 ? (
                 <span className="bg-[#2563EB] text-white text-[10px] font-black rounded-full h-4 min-w-[16px] px-1.5 flex items-center justify-center shadow-sm animate-pulse">

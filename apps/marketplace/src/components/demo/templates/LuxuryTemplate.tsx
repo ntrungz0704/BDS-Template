@@ -511,33 +511,29 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </Link>
 
         {/* Desktop Nav */}
-        {!isSmall && (
-          <div className="flex items-center gap-8 text-[11px] tracking-[0.15em] uppercase font-medium" style={{ color: '#9A9AA8', fontFamily: FONT_BODY }}>
-            {navItems.map(item => (
-              <Link key={item.page} href={getPageHref(item.page)}
-                onClick={(e) => handlePageChange(item.page, e)}
-                className={`hover:text-white transition-colors pb-1 ${currentPage === item.page ? 'text-white border-b' : ''}`}
-                style={currentPage === item.page ? { borderColor: GOLD } : {}}>
-                {item.label}
-              </Link>
-            ))}
-            <GoldButton onClick={(e) => handlePageChange('contact', e)} className="ml-4 py-2.5 px-6 text-[10px]" style={{ color: DARK }}>
-              VIP Concierge
-            </GoldButton>
-          </div>
-        )}
+        <div className="hidden lg:flex items-center gap-8 text-[11px] tracking-[0.15em] uppercase font-medium" style={{ color: '#9A9AA8', fontFamily: FONT_BODY }}>
+          {navItems.map(item => (
+            <Link key={item.page} href={getPageHref(item.page)}
+              onClick={(e) => handlePageChange(item.page, e)}
+              className={`hover:text-white transition-colors pb-1 ${currentPage === item.page ? 'text-white border-b' : ''}`}
+              style={currentPage === item.page ? { borderColor: GOLD } : {}}>
+              {item.label}
+            </Link>
+          ))}
+          <GoldButton onClick={(e) => handlePageChange('contact', e)} className="ml-4 py-2.5 px-6 text-[10px]" style={{ color: DARK }}>
+            VIP Concierge
+          </GoldButton>
+        </div>
 
         {/* Mobile menu toggle */}
-        {isSmall && (
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ color: WHITE }}>
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        )}
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2" style={{ color: WHITE }}>
+          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
       </div>
 
       {/* Mobile Menu */}
-      {isSmall && mobileMenuOpen && (
-        <div className="px-4 pb-6 pt-2" style={{ backgroundColor: DARK2, borderTop: `1px solid rgba(201,168,76,0.2)` }}>
+      {mobileMenuOpen && (
+        <div className="lg:hidden px-4 pb-6 pt-2 animate-fadeIn" style={{ backgroundColor: DARK2, borderTop: `1px solid rgba(201,168,76,0.2)` }}>
           {navItems.map(item => (
             <a
               key={item.page}

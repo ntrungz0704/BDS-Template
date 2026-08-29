@@ -419,7 +419,7 @@ export default function CustomerDashboard() {
                         <h4 className="text-base font-bold text-slate-800">Chưa có website nào được kích hoạt</h4>
                         <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">Sau khi mua template và đơn hàng được duyệt, website của bạn sẽ xuất hiện tại đây kèm quyền truy cập CMS quản trị riêng.</p>
                         <Link href="/templates" className="mt-5 inline-flex items-center gap-1.5 px-5 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 shadow-md">
-                          Xem Kho 16 Mẫu Template
+                          Xem Kho 24 Mẫu Template
                         </Link>
                       </div>
                     ) : (
@@ -518,7 +518,7 @@ export default function CustomerDashboard() {
                       <tbody className="divide-y divide-slate-100">
                         {!orders || orders.length === 0 ? (
                           <tr>
-                            <td colSpan={7} className="py-12 text-center text-slate-400 italic">Bạn chưa có đơn hàng nào. Hãy khám phá kho 16 mẫu template ngay!</td>
+                            <td colSpan={7} className="py-12 text-center text-slate-400 italic">Bạn chưa có đơn hàng nào. Hãy khám phá kho 24 mẫu template ngay!</td>
                           </tr>
                         ) : (
                           orders.map((ord: any) => (

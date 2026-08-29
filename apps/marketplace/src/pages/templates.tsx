@@ -49,25 +49,25 @@ export default function TemplatesPage() {
 
     if (activeCategory === 'all') return true;
     if (activeCategory === 'PORTAL_SAN') {
-      return ['bds-17', 'bds-18', 'bds-19', 'bds-21', 'bds-24'].includes(tpl.slug);
+      return ['portal-01', 'portal-02', 'portal-04', 'portal-05', 'portal-18', 'bds-17', 'bds-18', 'bds-19', 'bds-21', 'bds-24'].includes(tpl.slug);
     }
     if (activeCategory === 'CHUNG_CU') {
-      return ['bds-02', 'bds-05', 'bds-20'].includes(tpl.slug);
+      return ['portal-12', 'portal-15', 'portal-21', 'bds-02', 'bds-05', 'bds-20'].includes(tpl.slug);
     }
     if (activeCategory === 'BIET_THU') {
-      return ['bds-01', 'bds-07', 'bds-09', 'bds-12'].includes(tpl.slug);
+      return ['portal-03', 'portal-11', 'portal-23', 'portal-24', 'bds-01', 'bds-07', 'bds-09', 'bds-12'].includes(tpl.slug);
     }
     if (activeCategory === 'NGHI_DUONG') {
-      return ['bds-04', 'bds-08', 'bds-22'].includes(tpl.slug);
+      return ['portal-07', 'portal-19', 'portal-20', 'bds-04', 'bds-08', 'bds-22'].includes(tpl.slug);
     }
     if (activeCategory === 'CA_NHAN') {
-      return ['bds-11', 'bds-13', 'bds-16', 'bds-23'].includes(tpl.slug);
+      return ['portal-09', 'portal-16', 'portal-17', 'portal-22', 'bds-11', 'bds-13', 'bds-16', 'bds-23'].includes(tpl.slug);
     }
     if (activeCategory === 'DAT_THUONG_MAI') {
-      return ['bds-03', 'bds-10', 'bds-14', 'bds-15'].includes(tpl.slug);
+      return ['portal-06', 'portal-10', 'portal-13', 'portal-14', 'bds-03', 'bds-10', 'bds-14', 'bds-15'].includes(tpl.slug);
     }
     if (activeCategory === 'KCN_NHA_XUONG') {
-      return ['bds-06'].includes(tpl.slug);
+      return ['portal-08', 'bds-06'].includes(tpl.slug);
     }
     return true;
   }).sort((a, b) => {

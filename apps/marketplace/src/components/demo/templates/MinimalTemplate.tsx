@@ -450,49 +450,48 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
           </span>
         </div>
         
-        {!isMobile ? (
-          <nav className="flex items-center gap-8">
-            {navLinks.map(link => (
-              <button 
-                key={link.id}
-                onClick={() => navigate(link.id)}
-                className={`text-[15px] tracking-wide transition-colors duration-200 ${currentPage === link.id ? 'font-medium' : 'hover:opacity-70'}`}
-                style={{ color: currentPage === link.id ? COLORS.primary : COLORS.textLight }}
-              >
-                {link.name}
-              </button>
-            ))}
-          </nav>
-        ) : null}
+        {/* Desktop Nav */}
+        <nav className="hidden lg:flex items-center gap-8">
+          {navLinks.map(link => (
+            <button 
+              key={link.id}
+              onClick={() => navigate(link.id)}
+              className={`text-[15px] tracking-wide transition-colors duration-200 ${currentPage === link.id ? 'font-medium' : 'hover:opacity-70'}`}
+              style={{ color: currentPage === link.id ? COLORS.primary : COLORS.textLight }}
+            >
+              {link.name}
+            </button>
+          ))}
+        </nav>
 
-        {!isMobile ? (
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => navigate('projects')}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            >
-              <Search size={20} style={{ color: COLORS.primary }} />
-            </button>
-            <button 
-              onClick={() => {
-                setContactSubmitted(false);
-                navigate('contact');
-              }}
-              className="px-6 py-2.5 text-sm uppercase tracking-widest transition-transform hover:scale-105"
-              style={{ backgroundColor: COLORS.primary, color: COLORS.bg }}
-            >
-              Tư vấn ngay
-            </button>
-          </div>
-        ) : (
-          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+        <div className="hidden lg:flex items-center gap-4">
+          <button 
+            onClick={() => navigate('projects')}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <Search size={20} style={{ color: COLORS.primary }} />
           </button>
-        )}
+          <button 
+            onClick={() => {
+              setContactSubmitted(false);
+              navigate('contact');
+            }}
+            className="px-6 py-2.5 text-sm uppercase tracking-widest transition-transform hover:scale-105"
+            style={{ backgroundColor: COLORS.primary, color: COLORS.bg }}
+          >
+            Tư vấn ngay
+          </button>
+        </div>
+
+        {/* Mobile Hamburger Toggle */}
+        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden p-2">
+          {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
       </div>
 
-      {isMobile && isMobileMenuOpen && (
-        <div className="absolute top-24 left-0 w-full bg-white shadow-xl border-t" style={{ borderColor: COLORS.border }}>
+      {/* Mobile Drawer */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden absolute top-20 sm:top-24 left-0 w-full bg-white shadow-xl border-t animate-fadeIn z-50" style={{ borderColor: COLORS.border }}>
           <nav className="flex flex-col p-6">
             {navLinks.map(link => (
               <button 

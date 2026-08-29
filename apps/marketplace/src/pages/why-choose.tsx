@@ -89,7 +89,7 @@ export default function WhyChoosePage() {
             <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Website đã tạo</p>
           </div>
           <div>
-            <p className="text-2xl sm:text-3xl font-extrabold text-blue-600 mb-0.5">16+</p>
+            <p className="text-2xl sm:text-3xl font-extrabold text-blue-600 mb-0.5">24+</p>
             <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Mẫu độc quyền</p>
           </div>
           <div>

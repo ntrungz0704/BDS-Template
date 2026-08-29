@@ -531,25 +531,27 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             <span className="text-[10px] uppercase font-bold tracking-wider block text-violet-600">★ IOT SMART HOME 4.0 METROPOLIS ★</span>
           </div>
         </div>
-        {!isSmall ? (
-          <nav className="flex gap-6 lg:gap-8 items-center text-sm font-semibold text-slate-600">
-            <button onClick={() => navigateTo('home')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'home' ? 'text-violet-700 font-black' : ''}`}>Trang chủ</button>
-            <button onClick={() => navigateTo('projects')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'projects' ? 'text-violet-700 font-black' : ''}`}>Căn hộ</button>
-            <button onClick={() => navigateTo('about')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'about' ? 'text-violet-700 font-black' : ''}`}>Giới thiệu</button>
-            <button onClick={() => navigateTo('gallery')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'gallery' ? 'text-violet-700 font-black' : ''}`}>Thư viện</button>
-            <button onClick={() => navigateTo('news')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'news' ? 'text-violet-700 font-black' : ''}`}>Tin tức</button>
-            <button onClick={() => navigateTo('contact')} className="px-5 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-xs transition-all shadow-md shadow-violet-500/20 cursor-pointer">
-              Liên Hệ Ngay
-            </button>
-          </nav>
-        ) : (
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-violet-700">
-            {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+        {/* Desktop Nav */}
+        <nav className="hidden lg:flex gap-6 lg:gap-8 items-center text-sm font-semibold text-slate-600">
+          <button onClick={() => navigateTo('home')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'home' ? 'text-violet-700 font-black' : ''}`}>Trang chủ</button>
+          <button onClick={() => navigateTo('projects')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'projects' ? 'text-violet-700 font-black' : ''}`}>Căn hộ</button>
+          <button onClick={() => navigateTo('about')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'about' ? 'text-violet-700 font-black' : ''}`}>Giới thiệu</button>
+          <button onClick={() => navigateTo('gallery')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'gallery' ? 'text-violet-700 font-black' : ''}`}>Thư viện</button>
+          <button onClick={() => navigateTo('news')} className={`transition hover:text-violet-600 cursor-pointer ${currentPage === 'news' ? 'text-violet-700 font-black' : ''}`}>Tin tức</button>
+          <button onClick={() => navigateTo('contact')} className="px-5 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-xs transition-all shadow-md shadow-violet-500/20 cursor-pointer">
+            Liên Hệ Ngay
           </button>
-        )}
+        </nav>
+
+        {/* Mobile Hamburger Button */}
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 text-violet-700">
+          {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+        </button>
       </div>
-      {isSmall && mobileMenuOpen && (
-        <div className="absolute top-full left-0 w-full bg-white shadow-xl py-4 px-5 flex flex-col gap-3 text-slate-700 font-semibold z-50 border-t border-slate-100 animate-fadeIn">
+
+      {/* Mobile Drawer */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden absolute top-full left-0 w-full bg-white shadow-xl py-4 px-5 flex flex-col gap-3 text-slate-700 font-semibold z-50 border-t border-slate-100 animate-fadeIn">
           <button onClick={() => navigateTo('home')} className="text-left w-full p-2 hover:bg-violet-50 rounded-lg">Trang chủ</button>
           <button onClick={() => navigateTo('projects')} className="text-left w-full p-2 hover:bg-violet-50 rounded-lg">Căn hộ</button>
           <button onClick={() => navigateTo('about')} className="text-left w-full p-2 hover:bg-violet-50 rounded-lg">Giới thiệu</button>

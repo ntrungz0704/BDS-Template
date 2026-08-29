@@ -449,30 +449,30 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
           <span className="text-xl font-black tracking-tight" style={{ color: t.heading }}>{template.name || 'ECO LIVING'}</span>
         </button>
 
-        {!isSmall ? (
-          <div className="flex items-center gap-8 text-sm font-semibold">
-            {navLinks.map(link => (
-              <button key={link.page} onClick={() => setCurrentPage(link.page)}
-                className="transition-colors hover:opacity-70"
-                style={{ color: currentPage === link.page ? t.primary : t.muted }}>
-                {link.label}
-              </button>
-            ))}
-            <button 
-              onClick={() => setCurrentPage('contact')} 
-              className="px-6 py-2.5 text-white rounded-full font-bold shadow-md transition-all hover:-translate-y-0.5"
-              style={{ backgroundColor: t.primary }}>
-              Tư vấn miễn phí
+        {/* Desktop Nav */}
+        <div className="hidden lg:flex items-center gap-8 text-sm font-semibold">
+          {navLinks.map(link => (
+            <button key={link.page} onClick={() => setCurrentPage(link.page)}
+              className="transition-colors hover:opacity-70"
+              style={{ color: currentPage === link.page ? t.primary : t.muted }}>
+              {link.label}
             </button>
-          </div>
-        ) : (
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ color: t.heading }}>
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          ))}
+          <button 
+            onClick={() => setCurrentPage('contact')} 
+            className="px-6 py-2.5 text-white rounded-full font-bold shadow-md transition-all hover:-translate-y-0.5"
+            style={{ backgroundColor: t.primary }}>
+            Tư vấn miễn phí
           </button>
-        )}
+        </div>
+
+        {/* Mobile Hamburger Button */}
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2" style={{ color: t.heading }}>
+          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
       </div>
-      {isSmall && mobileMenuOpen && (
-        <div className="border-t py-4 px-4" style={{ borderColor: t.accent, backgroundColor: t.surface }}>
+      {mobileMenuOpen && (
+        <div className="lg:hidden border-t py-4 px-4 animate-fadeIn" style={{ borderColor: t.accent, backgroundColor: t.surface }}>
           {navLinks.map(link => (
             <button key={link.page} onClick={() => { setCurrentPage(link.page); setMobileMenuOpen(false); }}
               className="block w-full text-left py-3 font-semibold border-b last:border-0 transition-colors"

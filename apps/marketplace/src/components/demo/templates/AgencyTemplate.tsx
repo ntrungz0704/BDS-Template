@@ -561,46 +561,43 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
           </div>
         </div>
         
-        {!isSmall && (
-          <nav className="flex items-center gap-8">
-            {navItems.map(item => (
-              <button
-                key={item.id}
-                onClick={() => { setCurrentPage(item.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                style={{ 
-                  color: currentPage === item.id ? COLORS.primary : COLORS.text,
-                  fontWeight: currentPage === item.id ? 800 : 600
-                }}
-                className="hover:text-[#BE185D] transition-colors text-sm uppercase tracking-wide"
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
-        )}
+        {/* Desktop Nav */}
+        <nav className="hidden lg:flex items-center gap-8">
+          {navItems.map(item => (
+            <button
+              key={item.id}
+              onClick={() => { setCurrentPage(item.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              style={{ 
+                color: currentPage === item.id ? COLORS.primary : COLORS.text,
+                fontWeight: currentPage === item.id ? 800 : 600
+              }}
+              className="hover:text-[#BE185D] transition-colors text-sm uppercase tracking-wide"
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
 
         <div className="flex items-center gap-4">
-          {!isSmall && (
-            <a 
-              href="tel:0909123456" 
-              style={{ backgroundColor: COLORS.accent }}
-              className="hidden lg:flex items-center gap-2 text-white px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
-            >
-              <Phone className="w-5 h-5" />
-              0909.123.456
-            </a>
-          )}
-          {isSmall && (
-            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ color: COLORS.primary }}>
-              {isMobileMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
-            </button>
-          )}
+          <a 
+            href="tel:0909123456" 
+            style={{ backgroundColor: COLORS.accent }}
+            className="hidden lg:flex items-center gap-2 text-white px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
+          >
+            <Phone className="w-5 h-5" />
+            0909.123.456
+          </a>
+
+          {/* Mobile Hamburger Toggle */}
+          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden p-2" style={{ color: COLORS.primary }}>
+            {isMobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+          </button>
         </div>
       </div>
       
       {/* Mobile Menu */}
-      {isSmall && isMobileMenuOpen && (
-        <div className="absolute top-full left-0 right-0 bg-white shadow-xl border-t border-gray-100 p-4 flex flex-col gap-4">
+      {isMobileMenuOpen && (
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-white shadow-xl border-t border-gray-100 p-4 flex flex-col gap-3 animate-fadeIn z-50">
           {navItems.map(item => (
             <button
               key={item.id}

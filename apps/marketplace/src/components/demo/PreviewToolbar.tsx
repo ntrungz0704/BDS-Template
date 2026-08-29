@@ -168,8 +168,8 @@ export default function PreviewToolbar({
         </div>
       </div>
 
-      {/* ── CENTER: Viewport Switcher ───────────────────────────── */}
-      <div className="flex items-center bg-slate-950/80 p-0.5 rounded-xl border border-slate-800 shrink-0 gap-0.5">
+      {/* ── CENTER: Viewport Switcher (hidden on mobile devices) ── */}
+      <div className="hidden md:flex items-center bg-slate-950/80 p-0.5 rounded-xl border border-slate-800 shrink-0 gap-0.5">
         {VIEWPORT_BUTTONS.map(({ key, label, Icon, tooltip }) => (
           <button
             key={key}

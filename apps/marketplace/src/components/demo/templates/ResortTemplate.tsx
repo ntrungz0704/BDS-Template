@@ -505,43 +505,43 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
 
   const renderHeader = () => (
     <header className="absolute top-0 w-full z-50 transition-all duration-300 border-b border-white/20" style={{ backgroundColor: currentPage === 'home' ? 'transparent' : colors.primary }}>
-      <div className={`${MAX_W} px-6 h-24 flex items-center justify-between`}>
+      <div className={`${MAX_W} px-4 sm:px-6 h-20 sm:h-24 flex items-center justify-between`}>
         <div 
-          className="text-3xl font-bold text-white cursor-pointer" 
+          className="text-2xl sm:text-3xl font-bold text-white cursor-pointer" 
           style={fontHead}
           onClick={() => navigateTo('home')}
         >
           Resort Paradise
         </div>
         
-        {!isSmall ? (
-          <nav className="flex space-x-8">
-            {navLinks.map(link => (
-              <button 
-                key={link.id} 
-                onClick={() => navigateTo(link.id)}
-                className={`text-white hover:text-[#F59E0B] transition-colors text-sm font-medium tracking-wider uppercase ${currentPage === link.id ? 'text-[#F59E0B] border-b border-[#F59E0B]' : ''}`}
-                style={fontBody}
-              >
-                {link.label}
-              </button>
-            ))}
-          </nav>
-        ) : (
-          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-white p-2">
-            {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
-        )}
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex space-x-8">
+          {navLinks.map(link => (
+            <button 
+              key={link.id} 
+              onClick={() => navigateTo(link.id)}
+              className={`text-white hover:text-[#F59E0B] transition-colors text-sm font-medium tracking-wider uppercase ${currentPage === link.id ? 'text-[#F59E0B] border-b border-[#F59E0B]' : ''}`}
+              style={fontBody}
+            >
+              {link.label}
+            </button>
+          ))}
+        </nav>
+
+        {/* Mobile Hamburger Toggle */}
+        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden text-white p-2">
+          {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+        </button>
       </div>
       
-      {/* Mobile Menu */}
-      {isSmall && isMobileMenuOpen && (
-        <div className="absolute top-24 left-0 w-full bg-[#0A2540] shadow-2xl py-4 flex flex-col z-50">
+      {/* Mobile Menu Dropdown */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden absolute top-20 sm:top-24 left-0 w-full bg-[#0A2540] shadow-2xl py-4 flex flex-col z-50 animate-fadeIn">
           {navLinks.map(link => (
             <button
               key={link.id}
               onClick={() => navigateTo(link.id)}
-              className={`px-6 py-4 text-left text-white hover:bg-white/10 uppercase tracking-widest text-sm ${currentPage === link.id ? 'text-[#F59E0B] bg-white/5' : ''}`}
+              className={`px-6 py-3.5 text-left text-white hover:bg-white/10 uppercase tracking-widest text-xs font-semibold ${currentPage === link.id ? 'text-[#F59E0B] bg-white/5 font-bold' : ''}`}
               style={fontBody}
             >
               {link.label}
