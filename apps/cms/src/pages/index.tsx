@@ -10,7 +10,7 @@ import CMSLayout from '../components/layout/CMSLayout';
 import {
   Building2,
   FileText,
-  Image,
+  Image as ImageIcon,
   Users,
   TrendingUp,
   Eye,
@@ -75,7 +75,7 @@ const STAT_CARDS: StatCard[] = [
     label: 'File Media',
     value: '—',
     change: '',
-    icon: <Image className="w-5 h-5" />,
+    icon: <ImageIcon className="w-5 h-5" />,
     href: '/media',
     color: 'from-violet-500 to-purple-600',
   },

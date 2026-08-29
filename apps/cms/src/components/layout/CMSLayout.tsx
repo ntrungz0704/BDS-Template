@@ -20,7 +20,7 @@ import {
   LayoutDashboard,
   Building2,
   FileText,
-  Image,
+  Image as ImageIcon,
   Menu as MenuIcon,
   Palette,
   Globe,
@@ -95,7 +95,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     label: 'Thư Viện Ảnh',
     href: '/media',
-    icon: <Image className="w-4 h-4" />,
+    icon: <ImageIcon className="w-4 h-4" />,
   },
   {
     label: 'Khách Hàng (Leads)',
@@ -225,7 +225,7 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
       }
     };
     verifySession();
-  }, []);
+  }, [router]);
 
   // ── Fetch Domain / Subdomain Config ─────────────────────────────────────────
   const { data: domainData } = useQuery({
@@ -682,4 +682,3 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
     </div>
   );
 }
-

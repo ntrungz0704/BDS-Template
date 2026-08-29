@@ -13,7 +13,7 @@ import {
   simulatePayment,
   getMyOrders,
 } from '../controllers/marketplace.controller';
-import { authMiddleware } from '../middlewares/auth.middleware';
+import { authMiddleware, optionalAuthMiddleware } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/role.middleware';
 import { csrfMiddleware } from '../middlewares/csrf.middleware';
 
@@ -25,16 +25,15 @@ router.get('/templates/:slug', getTemplateDetail);
 router.get('/check-subdomain', checkSubdomain);
 router.get('/stats', getMarketplaceStats);
 
-// Checkout phải gắn với tài khoản đã đăng nhập để quyền dùng CMS và tải source
-// luôn thuộc về đúng khách hàng.
-router.post('/orders', authMiddleware, createOrder);
+// Checkout hỗ trợ cả khách vãng lai và tài khoản đã đăng nhập
+router.post('/orders', optionalAuthMiddleware, createOrder);
 router.post('/contact', createContactSubmission);
 
 // API lịch sử đơn hàng của khách (yêu cầu đăng nhập)
 router.get('/orders/my-orders', authMiddleware, getMyOrders);
 
 // API kiểm tra trạng thái đơn hàng realtime (polling)
-router.get('/orders/:orderNumber/status', authMiddleware, getOrderStatus);
+router.get('/orders/:orderNumber/status', optionalAuthMiddleware, getOrderStatus);
 
 // Webhook SePay. Controller bắt buộc kiểm tra webhook secret trong production.
 router.post('/webhook/sepay', handleSepayWebhook);
@@ -55,5 +54,3 @@ router.post(
 );
 
 export default router;
-
-

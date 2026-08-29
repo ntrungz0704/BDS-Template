@@ -343,7 +343,7 @@ export async function autoSeedDatabase() {
     const adminPasswordHash = await bcrypt.hash(bootstrapPassword, 12);
     const superAdmin = await prisma.user.upsert({
       where: { email: 'admin@aireviewbds.com' },
-      update: { role: 'SUPER_ADMIN', isActive: true, fullName: 'Super Admin AI Review BDS' },
+      update: { role: 'SUPER_ADMIN', isActive: true, fullName: 'Super Admin AI Review BDS', passwordHash: adminPasswordHash },
       create: {
         email: 'admin@aireviewbds.com',
         passwordHash: adminPasswordHash,
@@ -363,7 +363,7 @@ export async function autoSeedDatabase() {
       await prisma.tenantSection.deleteMany({});
       await prisma.tenantPage.deleteMany({});
       await prisma.tenantThemeSettings.deleteMany({});
-      await prisma.domain.deleteMany({});
+      await prisma.tenantDomainSettings.deleteMany({});
       await prisma.subscription.deleteMany({});
       await prisma.tenantMembership.deleteMany({});
       await prisma.tenant.deleteMany({});

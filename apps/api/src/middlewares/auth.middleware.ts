@@ -33,8 +33,6 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
   try {
     const accessSecret = process.env.JWT_ACCESS_SECRET;
     if (!accessSecret) {
-      // A missing signing key is an operator error.  Never silently accept a
-      // development key: doing so would make forged tokens possible.
       return res.status(503).json({
         success: false,
         error: { code: 'AUTH_UNAVAILABLE', message: 'Dịch vụ xác thực đang tạm thời không khả dụng.' },
@@ -66,3 +64,26 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
   }
 }
 
+export function optionalAuthMiddleware(req: Request, res: Response, next: NextFunction) {
+  const authHeader = req.headers.authorization;
+  const bearerToken = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : null;
+  const cookieToken = req.cookies?.access_token;
+  const token = cookieToken || bearerToken;
+
+  if (!token) {
+    return next();
+  }
+
+  try {
+    const accessSecret = process.env.JWT_ACCESS_SECRET;
+    if (accessSecret) {
+      const decoded = jwt.verify(token, accessSecret) as UserSessionPayload;
+      req.user = decoded;
+      req.authMode = cookieToken ? 'cookie' : 'bearer';
+    }
+  } catch (error) {
+    // Ignore invalid/expired token in optional auth
+  }
+
+  next();
+}

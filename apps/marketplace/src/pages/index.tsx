@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useQuery, useMutation } from '@tanstack/react-query';
@@ -74,19 +74,28 @@ export default function MarketplaceHome() {
   const [openFAQIndex, setOpenFAQIndex] = useState<number | null>(null);
 
   const router = useRouter();
+  const { isReady, query, replace, push } = router;
+
+  const handleSelectTemplate = useCallback((tpl: any, defaultType?: 'BUY' | 'RENT') => {
+    const type = defaultType || 'RENT';
+    addToCart(tpl, type);
+    if (type === 'BUY') {
+      push('/cart');
+    }
+  }, [addToCart, push]);
 
   // Handle deep link for ordering
   useEffect(() => {
-    if (router.isReady && router.query.order) {
-      const slug = router.query.order as string;
+    if (isReady && query.order) {
+      const slug = query.order as string;
       const tpl = ALL_TEMPLATES.find(t => t.slug === slug);
       if (tpl) {
         handleSelectTemplate(tpl, 'BUY');
         // Clear the query param from URL without refreshing
-        router.replace('/', undefined, { shallow: true });
+        replace('/', undefined, { shallow: true });
       }
     }
-  }, [router.isReady, router.query.order]);
+  }, [isReady, query.order, handleSelectTemplate, replace]);
 
   // 1. Query templates from DB (with fallback to avoid skeleton lag)
   const { data: templatesRes, isLoading } = useQuery({
@@ -128,14 +137,6 @@ export default function MarketplaceHome() {
     setPhone('');
     setSubdomain('');
     setNote('');
-  };
-
-  const handleSelectTemplate = (tpl: any, defaultType?: 'BUY' | 'RENT') => {
-    const type = defaultType || 'RENT';
-    addToCart(tpl, type);
-    if (type === 'BUY') {
-      router.push('/cart');
-    }
   };
 
 
@@ -305,7 +306,7 @@ export default function MarketplaceHome() {
   ];
 
   // Animated HeroStats component using IntersectionObserver
-  const HeroStats = () => {
+  const HeroStats = ({ stats }: { stats: { totalCustomers?: number; totalWebsitesCreated?: number; averageRating?: number } }) => {
     const [started, setStarted] = useState(false);
     const [c1, setC1] = useState(0);
     const [c2, setC2] = useState(0);
@@ -319,10 +320,13 @@ export default function MarketplaceHome() {
       return () => obs.disconnect();
     }, []);
 
+    const totalCustomers = stats?.totalCustomers;
+    const totalWebsitesCreated = stats?.totalWebsitesCreated;
+
     useEffect(() => {
       if (!started) return;
-      const targetCust = Math.max(500, Number(statsData?.totalCustomers) || 500);
-      const targetWebs = Math.max(1200, Number(statsData?.totalWebsitesCreated) || 1200);
+      const targetCust = Math.max(500, Number(totalCustomers) || 500);
+      const targetWebs = Math.max(1200, Number(totalWebsitesCreated) || 1200);
 
       const animate = (target: number, setter: (v: number) => void, duration = 1200) => {
         let v = 0;
@@ -340,7 +344,7 @@ export default function MarketplaceHome() {
         if (t1) clearInterval(t1); 
         if (t2) clearInterval(t2); 
       };
-    }, [started, statsData?.totalCustomers, statsData?.totalWebsitesCreated]);
+    }, [started, totalCustomers, totalWebsitesCreated]);
 
     return (
       <div ref={ref} className="pt-8 mt-4 border-t border-slate-200 grid grid-cols-3 gap-6 text-left max-w-lg">
@@ -358,7 +362,7 @@ export default function MarketplaceHome() {
         </div>
         <div className="pl-6">
           <h4 className="text-h3 text-text-primary tabular-nums">
-            {started ? (statsData.averageRating > 0 ? `${statsData.averageRating}★` : '—') : '—'}
+            {started ? ((stats?.averageRating ?? 0) > 0 ? `${stats.averageRating}★` : '—') : '—'}
           </h4>
           <p className="text-caption text-text-caption mt-1">Đánh giá<br className="hidden sm:block" /> trung bình</p>
         </div>
@@ -460,7 +464,7 @@ export default function MarketplaceHome() {
             </div>
 
             {/* Stats — animated (HeroStats) */}
-            <HeroStats />
+            <HeroStats stats={statsData} />
           </div>
 
           {/* RIGHT — 3-device mockup */}

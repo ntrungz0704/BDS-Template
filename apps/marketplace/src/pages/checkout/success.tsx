@@ -70,7 +70,7 @@ export default function CheckoutSuccessPage() {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [orderNumber, orderPaid]);
+  }, [orderNumber, orderPaid, showToast]);
 
   const handleCopy = (text: string, field: string) => {
     navigator.clipboard.writeText(text);

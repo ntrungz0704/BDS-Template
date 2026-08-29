@@ -45,6 +45,7 @@ router.get('/orders', getOrders);
 
 // Phê duyệt, từ chối và xóa đơn hàng yêu cầu chống CSRF
 router.put('/orders/:id/approve', csrfMiddleware, approveOrder);
+router.post('/orders/:id/approve', csrfMiddleware, approveOrder);
 router.put('/orders/:id/reject', csrfMiddleware, rejectOrder);
 router.delete('/orders/:id', csrfMiddleware, deleteOrder);
 
