@@ -1,1998 +1,1696 @@
-import Image from 'next/image';
-import React, { useState, useEffect } from 'react';
-import { syncDemoUrl } from '../lib/demo';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
-  Menu, X, Search, ChevronDown, ChevronRight, ChevronLeft,
-  MapPin, Phone, Mail, ArrowRight, Star, 
-  Check, Calendar, Info, Shield, Layers, Home as HomeIcon,
-  Wind, Droplets, Sun, Activity, Coffee, Maximize, Play, Plus, Minus
+  Menu, X, Search, ChevronRight, ChevronLeft, MapPin, Phone, Mail, 
+  Building2, Home, Layers, Calendar, User, Eye, CheckCircle2, 
+  ArrowRight, UploadCloud, Compass, DollarSign, Calculator, Share2, Heart,
+  Shield, Check, MessageSquare, Star, Sparkles, Send, Award, FileText
 } from 'lucide-react';
 import { MAX_W } from '../lib/design-system';
-import { FacebookIcon, InstagramIcon, YoutubeIcon, ZaloIcon } from '../../icons/SocialIcons';
+import UniversalTemplateFooter from '../UniversalTemplateFooter';
 
 interface TemplateProps {
-  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
+  template: { name: string; slug: string; collectionSlug?: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
+  company?: {
+    name?: string;
+    slogan?: string;
+    phone?: string;
+    email?: string;
+    address?: string;
+    logo?: string;
+    social?: {
+      facebook?: string;
+      instagram?: string;
+      twitter?: string;
+      youtube?: string;
+      tiktok?: string;
+      zalo?: string;
+    };
+    footerColumns?: Array<{
+      title: string;
+      links: Array<{ label: string; url?: string; page?: string }>;
+    }>;
+  };
+  theme?: Record<string, string>;
+  projects?: Array<Record<string, unknown>>;
+  posts?: Array<Record<string, unknown>>;
 }
 
-const COLORS = {
-  primary: '#1A1A2E',
-  secondary: '#E8E8E8',
-  gold: '#C8A96E',
-  bg: '#FFFFFF',
-  bgAlt: '#F9F9F9',
-  text: '#111111',
-  textLight: '#666666',
-  border: '#EAEAEA'
-};
-
-const FONTS = {
-  heading: "'DM Serif Display', Georgia, serif",
-  body: "'DM Sans', system-ui, sans-serif"
-};
-
-// 1. ELEVATED PROJECTS (APARTMENTS) LIST (6+ items)
-interface ApartmentProject {
-  id: string;
-  name: string;
-  desc: string;
-  img: string;
-  price: number; // in billions
-  priceLabel: string;
-  loc: string;
-  size: number; // in sqm
-  style: 'Japandi' | 'Scandinavian' | 'Industrial';
+export interface PropertyItem {
+  id: number;
+  title: string;
+  slug: string;
+  category: 'biet-thu' | 'nha-mat-tien' | 'nha-ngo-hem' | 'phong-tro' | 'can-ho';
+  type: string;
+  price: string;
+  priceNum: number; // in billions
+  area: string;
+  areaNum: number;
+  location: string;
+  district: string;
+  city: string;
   bedrooms: number;
   bathrooms: number;
-  delivery: string;
-  scale: string;
-  features: string[];
-  description: string;
+  direction: string;
+  legal: string;
+  image: string;
+  gallery: string[];
+  date: string;
+  featured?: boolean;
+  desc: string;
+  author: {
+    name: string;
+    phone: string;
+    zalo: string;
+    avatar: string;
+  };
 }
 
-const MINIMAL_APARTMENTS: ApartmentProject[] = [
+export interface NewsItem {
+  id: number;
+  title: string;
+  slug: string;
+  date: string;
+  author: string;
+  category: string;
+  image: string;
+  desc: string;
+  content: string[];
+  views: number;
+  tags: string[];
+}
+
+const BDS02_PROPERTIES: PropertyItem[] = [
   {
-    id: 'm-riverside',
-    name: 'The M - Riverside',
-    desc: 'Sự hòa quyện tuyệt đẹp giữa kiến trúc đương đại và cảnh quan thiên nhiên ven sông.',
-    img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80',
-    price: 5.2,
-    priceLabel: 'Từ 5.2 Tỷ',
-    loc: 'Quận 2, TP.HCM',
-    size: 65,
-    style: 'Japandi',
-    bedrooms: 2,
-    bathrooms: 2,
-    delivery: 'Quý 4/2026',
-    scale: '2 Tòa tháp, 500 căn',
-    features: ['Ban công sông', 'Nội thất gỗ sồi', 'Hệ thống SmartHome', 'Kính Low-E cách âm'],
-    description: 'The M - Riverside mang đến một không gian sống yên ả bên bờ sông Sài Gòn. Căn hộ được thiết kế tối giản theo phong cách Japandi, kết hợp sự tinh tế của Nhật Bản và nét ấm áp của Bắc Âu. Tất cả các phòng đều có cửa sổ lớn đón ánh sáng tự nhiên và gió trời.'
+    id: 1,
+    title: 'Bán nhà mặt tiền 3.5 tầng đường Nguyễn Tri Phương, Quận Thanh Khê',
+    slug: 'ban-nha-mat-tien-nguyen-tri-phuong-thanh-khe',
+    category: 'nha-mat-tien',
+    type: 'Nhà mặt tiền',
+    price: '7.5 Tỷ VNĐ',
+    priceNum: 7.5,
+    area: '95 m²',
+    areaNum: 95,
+    location: 'Đường Nguyễn Tri Phương, Phường Chính Gián, Quận Thanh Khê, Đà Nẵng',
+    district: 'Thanh Khê',
+    city: 'Đà Nẵng',
+    bedrooms: 4,
+    bathrooms: 4,
+    direction: 'Đông Nam',
+    legal: 'Sổ hồng chính chủ, hoàn công đầy đủ',
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80',
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80',
+      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80',
+      'https://images.unsplash.com/photo-1600566753086-00f18efc2291?w=1200&q=80'
+    ],
+    date: '28/08/2026',
+    featured: true,
+    desc: 'Nhà mặt tiền vị trí đắc địa kinh doanh sầm uất ngay trung tâm Thanh Khê, thiết kế 3.5 tầng hiện đại, vỉa hè 5m rộng rãi, thích hợp mở văn phòng, spa hoặc cho thuê nguyên căn dòng tiền 30 triệu/tháng.',
+    author: {
+      name: 'Nguyễn Văn Tuấn',
+      phone: '0972.939.888',
+      zalo: '0972939888',
+      avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80'
+    }
   },
   {
-    id: 'lumiere-oasis',
-    name: 'Lumiere Oasis',
-    desc: 'Ốc đảo bình yên giữa lòng thành phố náo nhiệt, nổi bật với thiết kế ngập tràn ánh sáng.',
-    img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80',
-    price: 8.5,
-    priceLabel: 'Từ 8.5 Tỷ',
-    loc: 'Quận 1, TP.HCM',
-    size: 90,
-    style: 'Scandinavian',
-    bedrooms: 3,
-    bathrooms: 2,
-    delivery: 'Quý 2/2026',
-    scale: '1 Tòa tháp, 180 căn',
-    features: ['Thang máy riêng', 'Sàn gỗ tự nhiên', 'Thiết bị vệ sinh Kohler', 'Bếp bàn đá thạch anh'],
-    description: 'Lumiere Oasis mang thiết kế Scandinavian tối giản đặc trưng với tông màu sáng và vật liệu tự nhiên. Nằm tại vị trí kim cương Quận 1, dự án mang đến trải nghiệm sống sang trọng nhưng không phô trương, tách biệt hoàn toàn khỏi sự xô bồ của đô thị.'
+    id: 2,
+    title: 'Biệt thự sân vườn đẳng cấp khu Euro Village 1 ven sông Hàn, Sơn Trà',
+    slug: 'biet-thu-san-vuon-euro-village-1-son-tra',
+    category: 'biet-thu',
+    type: 'Biệt thự',
+    price: '28.5 Tỷ VNĐ',
+    priceNum: 28.5,
+    area: '250 m²',
+    areaNum: 250,
+    location: 'Khu Đô Thị Euro Village 1, Phường An Hải Tây, Quận Sơn Trà, Đà Nẵng',
+    district: 'Sơn Trà',
+    city: 'Đà Nẵng',
+    bedrooms: 5,
+    bathrooms: 6,
+    direction: 'Tây Bắc',
+    legal: 'Sổ đỏ vĩnh viễn, pháp lý chuẩn',
+    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80',
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80',
+      'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=1200&q=80',
+      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80'
+    ],
+    date: '27/08/2026',
+    featured: true,
+    desc: 'Biệt thự làng Châu Âu ven sông Hàn đẳng cấp thượng lưu, có hồ bơi riêng, sân vườn tiểu cảnh xanh mát, full nội thất gỗ cao cấp nhập khẩu Ý, an ninh khép kín 24/7.',
+    author: {
+      name: 'Trần Thị Thu Hà',
+      phone: '0905.123.456',
+      zalo: '0905123456',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80'
+    }
   },
   {
-    id: 'zenith-heights',
-    name: 'Zenith Heights',
-    desc: 'Tầm nhìn panorama vô cực, định nghĩa lại chuẩn mực sống trên không.',
-    img: 'https://images.unsplash.com/photo-1600566753086-00f18efc2291?w=1200&q=80',
-    price: 4.8,
-    priceLabel: 'Từ 4.8 Tỷ',
-    loc: 'Quận 7, TP.HCM',
-    size: 55,
-    style: 'Industrial',
-    bedrooms: 1,
-    bathrooms: 1,
-    delivery: 'Quý 3/2026',
-    scale: '3 Tòa tháp, 700 căn',
-    features: ['Trần cao 3.6m', 'Tường bê tông mài', 'Cửa kính sát trần', 'Hệ đèn ray từ tính'],
-    description: 'Zenith Heights sở hữu phong cách Industrial độc đáo với các đường nét thô mộc, trần cao thoáng đãng và kính tràn viền. Dự án tọa lạc tại khu Nam Sài Gòn, mang lại tầm nhìn ôm trọn sông và cảnh quan thành phố lung linh về đêm.'
-  },
-  {
-    id: 'wabi-sabi-residence',
-    name: 'Wabi Sabi Residence',
-    desc: 'Vẻ đẹp tinh tế từ sự không hoàn hảo, không gian sống đậm chất thiền.',
-    img: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80',
-    price: 6.7,
-    priceLabel: 'Từ 6.7 Tỷ',
-    loc: 'Bình Thạnh, TP.HCM',
-    size: 80,
-    style: 'Japandi',
-    bedrooms: 2,
-    bathrooms: 2,
-    delivery: 'Quý 1/2027',
-    scale: 'Boutique Complex, 80 căn',
-    features: ['Sơn hiệu ứng đất sét', 'Bồn tắm đá tự nhiên', 'Vườn thiền ban công', 'Hệ điều hòa âm trần'],
-    description: 'Wabi Sabi Residence được lấy cảm hứng từ triết lý sống của người Nhật, tôn vinh những vật liệu mộc mạc và thời gian. Căn hộ sử dụng sơn hiệu ứng, đồ gỗ thô và bố cục thông minh để mang lại cảm giác bình yên tuyệt đối cho gia chủ.'
-  },
-  {
-    id: 'nordic-haven-studio',
-    name: 'Nordic Haven Studio',
-    desc: 'Không gian ấm cúng, tối ưu hóa công năng cho lối sống độc thân năng động.',
-    img: 'https://images.unsplash.com/photo-160058515526-990dced4e56d?w=1200&q=80',
-    price: 3.5,
-    priceLabel: 'Từ 3.5 Tỷ',
-    loc: 'Quận 4, TP.HCM',
-    size: 45,
-    style: 'Scandinavian',
-    bedrooms: 1,
-    bathrooms: 1,
-    delivery: 'Quý 4/2026',
-    scale: '1 Tòa tháp, 350 căn',
-    features: ['Giường thông minh gập', 'Tủ âm tường kịch trần', 'Logia thông thoáng', 'Khóa cửa thông minh 4 chức năng'],
-    description: 'Nordic Haven Studio chứng minh rằng không gian nhỏ vẫn có thể mang lại cuộc sống tiện nghi hàng đầu. Với lối thiết kế Scandinavian tối giản tinh gọn, mọi góc nhỏ trong căn hộ đều được khai thác tối đa công năng nhưng vẫn giữ được sự thoáng đãng.'
-  },
-  {
-    id: 'the-loft-industrial',
-    name: 'The Loft Industrial',
-    desc: 'Căn hộ thông tầng mang phong cách loft New York cá tính và phóng khoáng.',
-    img: 'https://images.unsplash.com/photo-1600607688969-a5bfcd394fc5?w=1200&q=80',
-    price: 12.0,
-    priceLabel: 'Từ 12.0 Tỷ',
-    loc: 'Thủ Đức, TP.HCM',
-    size: 150,
-    style: 'Industrial',
+    id: 3,
+    title: 'Bán nhà ngõ ô tô tránh đường Phan Chu Trinh, Quận Hải Châu',
+    slug: 'ban-nha-ngo-o-to-phan-chu-trinh-hai-chau',
+    category: 'nha-ngo-hem',
+    type: 'Nhà ngõ, hẻm',
+    price: '4.95 Tỷ VNĐ',
+    priceNum: 4.95,
+    area: '68 m²',
+    areaNum: 68,
+    location: 'Kiệt Phan Chu Trinh, Phường Phước Ninh, Quận Hải Châu, Đà Nẵng',
+    district: 'Hải Châu',
+    city: 'Đà Nẵng',
     bedrooms: 3,
     bathrooms: 3,
-    delivery: 'Quý 2/2027',
-    scale: 'Biệt thự trên không, 45 căn',
-    features: ['Thiết kế Duplex thông tầng', 'Thang xoắn ốc thép mộc', 'Sân vườn riêng 25m2', 'Hệ thống lọc nước tại vòi'],
-    description: 'The Loft Industrial là biểu tượng của phong cách sống tự do và nghệ thuật. Với trần cao thông tầng và vách kính rộng lớn, căn hộ phản chiếu tinh thần của những căn loft công nghiệp tại New York, kết hợp giữa sắt, thép, bê tông và gỗ tự nhiên.'
+    direction: 'Chính Nam',
+    legal: 'Sổ đỏ trao tay, công chứng ngay',
+    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80',
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80',
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80'
+    ],
+    date: '26/08/2026',
+    featured: true,
+    desc: 'Nhà đẹp 3 tầng kiên cố trung tâm Hải Châu, kiệt 5m ô tô thông tứ phía ra đường lớn, dân trí cao, gần trường học các cấp và chợ Hàn chỉ 3 phút đi bộ.',
+    author: {
+      name: 'Lê Hoàng Long',
+      phone: '0935.888.999',
+      zalo: '0935888999',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80'
+    }
+  },
+  {
+    id: 4,
+    title: 'Tòa nhà căn hộ dịch vụ 5 tầng cho thuê dòng tiền đường Lê Duẩn, Thanh Khê',
+    slug: 'toa-nha-can-ho-dich-vu-le-duan-thanh-khe',
+    category: 'phong-tro',
+    type: 'Phòng trọ / Căn hộ dịch vụ',
+    price: '9.2 Tỷ VNĐ',
+    priceNum: 9.2,
+    area: '110 m²',
+    areaNum: 110,
+    location: 'Đường Lê Duẩn, Phường Tân Chính, Quận Thanh Khê, Đà Nẵng',
+    district: 'Thanh Khê',
+    city: 'Đà Nẵng',
+    bedrooms: 10,
+    bathrooms: 10,
+    direction: 'Đông Bắc',
+    legal: 'Sổ hồng hoàn công tòa nhà 5 tầng',
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80',
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80'
+    ],
+    date: '25/08/2026',
+    featured: false,
+    desc: 'Tòa nhà căn hộ gồm 10 phòng studio full nội thất đang cho khách nước ngoài và nhân viên văn phòng thuê kín 100%, doanh thu đều đặn 45 triệu/tháng.',
+    author: {
+      name: 'Nguyễn Văn Tuấn',
+      phone: '0972.939.888',
+      zalo: '0972939888',
+      avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80'
+    }
+  },
+  {
+    id: 5,
+    title: 'Bán nhà mặt tiền đường Võ Văn Kiệt view biển Mỹ Khê, Quận Sơn Trà',
+    slug: 'ban-nha-mat-tien-vo-van-kiet-my-khe-son-tra',
+    category: 'nha-mat-tien',
+    type: 'Nhà mặt tiền',
+    price: '22.0 Tỷ VNĐ',
+    priceNum: 22.0,
+    area: '125 m²',
+    areaNum: 125,
+    location: 'Đại lộ Võ Văn Kiệt, Phường Phước Mỹ, Quận Sơn Trà, Đà Nẵng',
+    district: 'Sơn Trà',
+    city: 'Đà Nẵng',
+    bedrooms: 6,
+    bathrooms: 6,
+    direction: 'Chính Đông',
+    legal: 'Sổ đỏ chính chủ lâu dài',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80',
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80'
+    ],
+    date: '24/08/2026',
+    featured: true,
+    desc: 'Trục đường du lịch tỷ đô sầm uất bậc nhất Đà Nẵng, cách bãi biển Mỹ Khê chỉ 200m. Thích hợp kinh doanh khách sạn mini, nhà hàng hải sản hoặc showroom.',
+    author: {
+      name: 'Trần Thị Thu Hà',
+      phone: '0905.123.456',
+      zalo: '0905123456',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80'
+    }
+  },
+  {
+    id: 6,
+    title: 'Biệt thự song lập phong cách Tân Cổ Điển KĐT Nam Hòa Xuân, Ngũ Hành Sơn',
+    slug: 'biet-thu-song-lap-nam-hoa-xuan-ngu-hanh-son',
+    category: 'biet-thu',
+    type: 'Biệt thự',
+    price: '14.8 Tỷ VNĐ',
+    priceNum: 14.8,
+    area: '180 m²',
+    areaNum: 180,
+    location: 'KĐT Sinh Thái Nam Hòa Xuân, Phường Hòa Quý, Quận Ngũ Hành Sơn, Đà Nẵng',
+    district: 'Ngũ Hành Sơn',
+    city: 'Đà Nẵng',
+    bedrooms: 4,
+    bathrooms: 5,
+    direction: 'Đông Nam',
+    legal: 'Sổ hồng sở hữu lâu dài',
+    image: 'https://images.unsplash.com/photo-1600566753086-00f18efc2291?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1600566753086-00f18efc2291?w=1200&q=80',
+      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80'
+    ],
+    date: '23/08/2026',
+    featured: false,
+    desc: 'Biệt thự 3 tầng xây thô hoàn thiện mặt ngoài, view công viên hồ sinh thái, hạ tầng đồng bộ, kết nối thẳng về trung tâm thành phố qua cầu Minh Mạng.',
+    author: {
+      name: 'Lê Hoàng Long',
+      phone: '0935.888.999',
+      zalo: '0935888999',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80'
+    }
   }
 ];
 
-// 2. ELEVATED NEWS ARTICLES (6+ items)
-interface NewsArticle {
-  id: string;
-  title: string;
-  date: string;
-  img: string;
-  cat: string;
-  summary: string;
-  content: string;
-}
-
-const NEWS_ARTICLES: NewsArticle[] = [
+const BDS02_NEWS: NewsItem[] = [
   {
-    id: 'wabi-sabi-modern',
-    title: 'Nghệ thuật Wabi-Sabi trong không gian sống đô thị hiện đại',
-    date: '15 Th08, 2026',
-    img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000&q=80',
-    cat: 'Góc Nhìn',
-    summary: 'Khám phá cách ứng dụng triết lý tìm kiếm vẻ đẹp từ sự không hoàn hảo để tạo nên tổ ấm bình yên giữa lòng thành phố.',
-    content: 'Triết lý Wabi-sabi xuất phát từ Nhật Bản, tôn vinh những nét đẹp tự nhiên, mộc mạc và có phần không hoàn hảo theo thời gian. Trong thiết kế nội thất hiện đại, Wabi-sabi được biến tấu nhẹ nhàng để phù hợp với căn hộ đô thị. Sự kết hợp giữa các tông màu đất ấm áp, chất liệu vải thô dệt tự nhiên, tường sơn hiệu ứng đất sét và những món đồ gỗ giữ nguyên vân nứt mang lại một chiều sâu cảm xúc đặc biệt, giúp cư dân rũ bỏ mọi ồn ào khi trở về nhà.'
+    id: 1,
+    title: 'Địa ốc Đà Nẵng trong những năm gần đây: Khởi sắc phân khúc nhà phố & căn hộ',
+    slug: 'dia-oc-da-nang-trong-nhung-nam-gan-day',
+    date: '28/08/2026',
+    author: 'PlatformBDS Market Analyst',
+    category: 'Thị trường BĐS',
+    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80',
+    desc: 'Tại các dự án nhà ở thương mại và đất nền pháp lý chuẩn tại Đà Nẵng, lượng giao dịch đang tăng trưởng ấn tượng nhờ chính sách kích cầu hạ tầng...',
+    content: [
+      'Thị trường bất động sản Đà Nẵng ghi nhận những tín hiệu phục hồi mạnh mẽ từ đầu năm 2026, đặc biệt là các sản phẩm nhà phố mặt tiền và đất nền có sổ đỏ trao tay.',
+      'Sự hoàn thiện của các cây cầu mới bắc qua sông Hàn và việc mở rộng sân bay quốc tế Đà Nẵng đang tạo động lực lớn thu hút dòng vốn đầu tư từ cả miền Bắc và miền Nam.',
+      'Các chuyên gia khuyến nghị nhà đầu tư nên tập trung vào các bất động sản trung tâm có khả năng tạo ra dòng tiền khai thác ngay như cho thuê căn hộ dịch vụ hoặc kinh doanh du lịch.'
+    ],
+    views: 3240,
+    tags: ['Đà Nẵng', 'Nhà phố', 'Thị trường BĐS', 'Đầu tư']
   },
   {
-    id: 'natural-light',
-    title: 'Lợi ích của ánh sáng tự nhiên trong căn hộ',
-    date: '05 Th08, 2026',
-    img: 'https://images.unsplash.com/photo-1600607687931-cebf10cb7254?w=1000&q=80',
-    cat: 'Kiến trúc',
-    summary: 'Ánh sáng tự nhiên không chỉ giúp mở rộng không gian trực quan mà còn mang lại giá trị to lớn cho sức khỏe cư dân.',
-    content: 'Trong kiến trúc tối giản, ánh sáng được coi là một vật liệu thiết kế đặc biệt. Việc thiết kế hệ cửa kính sát trần (floor-to-ceiling) giúp ánh sáng đi sâu vào từng ngóc ngách của căn hộ. Nghiên cứu chỉ ra rằng, sống trong môi trường tràn ngập ánh sáng tự nhiên giúp cải thiện nhịp sinh học, tăng cường sản sinh serotonin giúp giảm căng thẳng và nâng cao hiệu suất làm việc. Tại Minimal, mọi căn hộ đều được tính toán góc đón sáng tối ưu để đảm bảo sức khỏe tinh thần bền vững.'
+    id: 2,
+    title: 'Cam kết thuê lại Bất động sản: Giải pháp dòng tiền an toàn hay chiêu bài bán hàng?',
+    slug: 'cam-ket-thue-lai-bds-giai-phap-dong-tien',
+    date: '26/08/2026',
+    author: 'Chuyên gia Tài Chính BĐS',
+    category: 'Cẩm nang đầu tư',
+    image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&q=80',
+    desc: 'Chính sách cam kết lợi nhuận thuê lại từ 8-12%/năm giúp nhà đầu tư yên tâm về bài toán dòng tiền, tuy nhiên cần đọc kỹ điều khoản hợp đồng...',
+    content: [
+      'Chương trình cam kết thuê lại (Rental Guarantee) là mô hình quen thuộc ở phân khúc shophouse và biệt thự nghỉ dưỡng.',
+      'Để đảm bảo tính khả thi, người mua cần thẩm định năng lực vận hành thực tế của đơn vị quản lý, tỷ lệ lấp đầy phòng trung bình và các chi phí khấu hao bảo trì tài sản.',
+      'Lựa chọn các chủ đầu tư uy tín có quỹ dự phòng tài chính minh bạch sẽ giúp hạn chế rủi ro đứt gãy dòng tiền trong giai đoạn đầu vận hành.'
+    ],
+    views: 2890,
+    tags: ['Cam kết thuê lại', 'Dòng tiền', 'Cẩm nang', 'Tài chính']
   },
   {
-    id: 'riverside-progress',
-    title: 'Cập nhật tiến độ dự án The M - Riverside',
-    date: '28 Th07, 2026',
-    img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1000&q=80',
-    cat: 'Dự án',
-    summary: 'Dự án The M - Riverside đang bám sát tiến độ đề ra, hoàn thành cất nóc tòa tháp B và tiếp tục hoàn thiện mặt ngoài.',
-    content: 'Tính đến cuối tháng 7/2026, ban quản lý dự án The M - Riverside xin gửi tới quý khách hàng báo cáo tiến độ chi tiết. Tòa tháp B đã chính thức cất nóc thành công, vượt tiến độ dự kiến 10 ngày. Công tác lắp đặt hệ thống kính cách âm Low-E hai lớp mặt ngoài đang được triển khai đồng bộ từ tầng 5 đến tầng 15. Song song đó, đội ngũ nhà thầu nội thất cũng bắt đầu khảo sát và thi công căn hộ mẫu tiêu chuẩn bàn giao tại tòa tháp A. Chúng tôi tự tin bàn giao đúng hạn vào Quý 4/2026.'
-  },
-  {
-    id: 'luxury-real-estate',
-    title: 'Tại sao bất động sản siêu sang vẫn hút khách?',
-    date: '12 Th07, 2026',
-    img: 'https://images.unsplash.com/photo-1600566753086-00f18efc2291?w=1000&q=80',
-    cat: 'Thị trường',
-    summary: 'Mặc dù thị trường có nhiều biến động, phân khúc bất động sản siêu sang vẫn ghi nhận lượng giao dịch ấn tượng nhờ giá trị độc bản.',
-    content: 'Giới thượng lưu không chỉ mua một căn hộ, họ đang mua một phong cách sống và một tài sản lưu giữ giá trị lâu dài. Các bất động sản có thiết kế độc bản, số lượng giới hạn và sở hữu vị trí đắc địa luôn giữ giá hoặc tăng trưởng bền vững bất chấp chu kỳ kinh tế. Xu hướng tối giản tinh tế (quiet luxury) đang lên ngôi, khi giới tinh hoa ưu tiên những dự án chú trọng chiều sâu trải nghiệm, sự riêng tư tuyệt đối và chất lượng xây dựng chuẩn quốc tế thay vì những hào nhoáng bên ngoài.'
-  },
-  {
-    id: 'sustainable-materials',
-    title: 'Chọn vật liệu bền vững cho ngôi nhà tương lai',
-    date: '01 Th07, 2026',
-    img: 'https://images.unsplash.com/photo-1600585154526-990dced4e56d?w=1000&q=80',
-    cat: 'Nội thất',
-    summary: 'Sử dụng vật liệu xanh, thân thiện với môi trường là xu hướng tất yếu của kiến trúc bền vững thời đại mới.',
-    content: 'Vật liệu bền vững không chỉ bảo vệ trái đất mà còn trực tiếp bảo vệ chất lượng không khí trong nhà bạn. Xu hướng hiện nay ưu tiên sàn gỗ đạt chuẩn phát thải thấp, sơn không chứa VOC (hợp chất hữu cơ dễ bay hơi), gạch đất nung tự nhiên và đá thạch anh tái chế. Những vật liệu này không chỉ có độ bền cao mà còn mang vẻ đẹp thô mộc đặc trưng, tạo nên cảm giác gần gũi với thiên nhiên cho căn hộ hiện đại.'
-  },
-  {
-    id: 'kitchen-trends',
-    title: 'Xu hướng thiết kế bếp mở năm 2027',
-    date: '20 Th06, 2026',
-    img: 'https://images.unsplash.com/photo-1600607688969-a5bfcd394fc5?w=1000&q=80',
-    cat: 'Nội thất',
-    summary: 'Bếp mở kết hợp đảo bếp thông minh trở thành trung tâm kết nối các thành viên trong gia đình.',
-    content: 'Nhà bếp không còn đơn thuần là nơi nấu nướng, mà đã biến thành trái tim của căn nhà, nơi tiếp khách và tụ họp gia đình. Xu hướng thiết kế bếp 2027 tập trung vào các hệ tủ bếp giấu tay nắm tinh giản, tích hợp thiết bị thông minh âm tủ. Mặt đá nhân tạo cao cấp liền mạch từ bàn bếp lên ốp tường giúp việc lau dọn trở nên dễ dàng. Đảo bếp đa năng đóng vai trò vừa là bàn ăn nhanh, vừa là vách ngăn ước lệ phân chia không gian sống.'
+    id: 3,
+    title: 'Hoạt động đầu tư và nâng cấp hạ tầng giao thông trọng điểm thúc đẩy giá đất ven biển',
+    slug: 'hoat-dong-dau-tu-ha-tang-giao-thong-thuc-day-gia-dat',
+    date: '24/08/2026',
+    author: 'Ban Biên Tập BDS',
+    category: 'Quy hoạch & Hạ tầng',
+    image: 'https://images.unsplash.com/photo-1477959858617-67f30bc75b82?w=800&q=80',
+    desc: 'Tuyến đường vành đai phía Tây và cao tốc La Sơn - Túy Loan thông xe đã tạo cú hích lớn giúp liên kết các vùng kinh tế trọng điểm miền Trung...',
+    content: [
+      'Hạ tầng đi trước, giá trị bất động sản gia tăng theo sau luôn là quy luật bất biến của thị trường bất động sản toàn cầu.',
+      'Việc Đà Nẵng quy hoạch phát triển thành phố thông minh gắn liền với cảng biển nước sâu Liên Chiểu mở ra cơ hội vàng cho bất động sản logistics và nhà ở chuyên gia.',
+      'Khu vực ven sông Cổ Cò nối liền Đà Nẵng và Hội An cũng đang hình thành chuỗi đô thị sinh thái cao cấp với tiềm năng tăng giá bền vững.'
+    ],
+    views: 4120,
+    tags: ['Hạ tầng', 'Quy hoạch', 'Cao tốc', 'BĐS ven biển']
   }
 ];
 
-// 3. ELEVATED GALLERY ITEMS
-interface GalleryItem {
-  id: string;
-  img: string;
-  cat: 'exterior' | 'interior' | 'amenities';
-  title: string;
-}
-
-const GALLERY_ITEMS: GalleryItem[] = [
-  { id: 'g1', img: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80', cat: 'interior', title: 'Phòng khách phong cách Japandi' },
-  { id: 'g2', img: 'https://images.unsplash.com/photo-1600607686527-6fb886090705?w=800&q=80', cat: 'interior', title: 'Phòng ngủ ngập tràn ánh sáng' },
-  { id: 'g3', img: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80', cat: 'interior', title: 'Bàn ăn tối giản tinh tế' },
-  { id: 'g4', img: 'https://images.unsplash.com/photo-1600585154526-990dced4e56d?w=800&q=80', cat: 'exterior', title: 'Ban công rộng nhìn ra sông' },
-  { id: 'g5', img: 'https://images.unsplash.com/photo-1600607688969-a5bfcd394fc5?w=800&q=80', cat: 'exterior', title: 'Kiến trúc mặt ngoài tối giản' },
-  { id: 'g6', img: 'https://images.unsplash.com/photo-1600210491369-e753d80a41f3?w=800&q=80', cat: 'amenities', title: 'Hồ bơi vô cực hoàng hôn' },
-  { id: 'g7', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80', cat: 'amenities', title: 'Công viên Zen tĩnh lặng' }
-];
-
-const normalizeMinimalPage = (p: string) => {
-  const clean = (p || '').toLowerCase().trim();
-  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
-  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
-  if (['du-an', 'projects', 'san-pham'].includes(clean)) return 'projects';
-  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
-  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
-  return clean || 'home';
+export const resolvePageAndDetail = (p?: string) => {
+  if (!p || p === 'home') return { page: 'home', propSlug: '', artSlug: '' };
+  const clean = p.replace(/^\//, '').trim();
+  if (clean.startsWith('tin-tuc/') || clean.startsWith('news/')) {
+    return { page: 'news-detail', propSlug: '', artSlug: clean.replace(/^(tin-tuc\/|news\/)/, '') };
+  }
+  if (clean === 'tin-tuc' || clean === 'news') return { page: 'news', propSlug: '', artSlug: '' };
+  if (clean.startsWith('chi-tiet/') || clean.startsWith('property/')) {
+    return { page: 'property-detail', propSlug: clean.replace(/^(chi-tiet\/|property\/)/, ''), artSlug: '' };
+  }
+  if (clean === 'gioi-thieu' || clean === 'about') return { page: 'about', propSlug: '', artSlug: '' };
+  if (clean === 'lien-he' || clean === 'contact') return { page: 'contact', propSlug: '', artSlug: '' };
+  if (clean === 'ky-gui') return { page: 'ky-gui', propSlug: '', artSlug: '' };
+  if (['biet-thu', 'nha-mat-tien', 'nha-ngo-hem', 'phong-tro', 'can-ho'].includes(clean)) {
+    return { page: clean, propSlug: '', artSlug: '' };
+  }
+  return { page: 'home', propSlug: '', artSlug: '' };
 };
 
-export default function MinimalTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const resolveInitialArticle = () => {
-    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
-      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
-      return NEWS_ARTICLES.find(n => n.id === sub || (n as any).slug === sub) || NEWS_ARTICLES[0];
-    }
-    return null;
-  };
+export default function MinimalTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme, projects, posts }: TemplateProps) {
+  const isSmall = viewport === 'mobile' || viewport === 'tablet';
+  const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
-  const initialArticle = resolveInitialArticle();
-  const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(initialArticle);
-  const [currentPage, setCurrentPageState] = useState(initialArticle ? 'news-detail' : normalizeMinimalPage(initialPage));
+  const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
+  const [selectedProperty, setSelectedProperty] = useState<PropertyItem>(() => {
+    if (initialParsed.propSlug) {
+      const found = BDS02_PROPERTIES.find(p => p.slug === initialParsed.propSlug);
+      if (found) return found;
+    }
+    return BDS02_PROPERTIES[0];
+  });
+  const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
+    if (initialParsed.artSlug) {
+      const found = BDS02_NEWS.find(a => a.slug === initialParsed.artSlug);
+      if (found) return found;
+    }
+    return BDS02_NEWS[0];
+  });
+
+  // Filter States
+  const [searchLocation, setSearchLocation] = useState<string>('');
+  const [filterPropType, setFilterPropType] = useState<string>('all');
+  const [filterDistrict, setFilterDistrict] = useState<string>('all');
+  const [filterArea, setFilterArea] = useState<string>('all');
+  const [filterPrice, setFilterPrice] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<string>('default');
+
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeGalleryIdx, setActiveGalleryIdx] = useState(0);
+
+  // Mortgage Calculator
+  const [loanPercent, setLoanPercent] = useState<number>(70);
+  const [loanYears, setLoanYears] = useState<number>(20);
+  const [interestRate, setInterestRate] = useState<number>(8.0);
+
+  // Form states
+  const [feedbackForm, setFeedbackForm] = useState({ name: '', phone: '', address: '', subject: '', content: '' });
+  const [consignmentForm, setConsignmentForm] = useState({ name: '', phone: '', propType: 'Nhà mặt tiền', address: '', price: '', note: '' });
 
   useEffect(() => {
-    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
-      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
-      const found = NEWS_ARTICLES.find(n => n.id === sub || (n as any).slug === sub) || NEWS_ARTICLES[0];
-      setSelectedArticle(found);
-      setCurrentPageState('news-detail');
-    } else {
-      setSelectedArticle(null);
-      setCurrentPageState(normalizeMinimalPage(initialPage));
+    const res = resolvePageAndDetail(initialPage);
+    setCurrentPageState(res.page);
+    if (res.propSlug) {
+      const found = BDS02_PROPERTIES.find(p => p.slug === res.propSlug);
+      if (found) setSelectedProperty(found);
+    }
+    if (res.artSlug) {
+      const found = BDS02_NEWS.find(a => a.slug === res.artSlug);
+      if (found) setSelectedArticle(found);
     }
   }, [initialPage]);
 
-  const setCurrentPage = (p: string, customSlug?: string) => {
-    if (typeof setSelectedProject === "function") setSelectedProject(null);
-    if (p !== 'news-detail') {
-      setSelectedArticle(null);
+  const navigate = (page: string, slug?: string) => {
+    setCurrentPageState(page);
+    setMobileMenuOpen(false);
+    setActiveGalleryIdx(0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    let urlSlug = '';
+    if (page === 'home') urlSlug = '';
+    else if (page === 'news-detail' && slug) urlSlug = `tin-tuc/${slug}`;
+    else if (page === 'property-detail' && slug) urlSlug = `chi-tiet/${slug}`;
+    else if (page === 'news') urlSlug = 'tin-tuc';
+    else if (page === 'about') urlSlug = 'gioi-thieu';
+    else if (page === 'contact') urlSlug = 'lien-he';
+    else if (page === 'ky-gui') urlSlug = 'ky-gui';
+    else urlSlug = page;
+
+    const tSlug = template?.slug || 'bds-02';
+    const finalUrl = urlSlug ? `/demo/${tSlug}/${urlSlug}` : `/demo/${tSlug}`;
+    if (typeof window !== 'undefined' && window.location.pathname.startsWith('/demo/')) {
+      window.history.pushState(null, '', finalUrl + window.location.search);
     }
-
-    setCurrentPageState(p);
-    const tSlug = template?.slug || 'bds-02';
-    syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
   };
 
-  const handleOpenArticle = (item: any) => {
-    setSelectedArticle(item);
-    setCurrentPageState('news-detail');
-    setIsMobileMenuOpen(false);
-    const tSlug = template?.slug || 'bds-02';
-    syncDemoUrl(`tin-tuc/${item.id || item.slug}`, tSlug);
-    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleOpenProperty = (prop: PropertyItem) => {
+    setSelectedProperty(prop);
+    navigate('property-detail', prop.slug);
   };
 
-  useEffect(() => {
-    const handlePopState = () => {
-      const parts = window.location.pathname.split('/').filter(Boolean);
-      const sub = parts.length > 2 ? parts.slice(2).join('/') : (parts[1] !== (template?.slug || 'bds-02') ? parts[1] : 'home');
-      if (sub) {
-        if (sub.startsWith('tin-tuc/') || sub.startsWith('news/') || sub.startsWith('bai-viet/')) {
-          const artSlug = sub.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
-          const found = NEWS_ARTICLES.find(n => n.id === artSlug || (n as any).slug === artSlug) || NEWS_ARTICLES[0];
-          setSelectedArticle(found);
-          setCurrentPageState('news-detail');
-        } else {
-          setSelectedArticle(null);
-          setCurrentPageState(normalizeMinimalPage(sub));
-        }
+  const handleOpenArticle = (art: NewsItem) => {
+    setSelectedArticle(art);
+    navigate('news-detail', art.slug);
+  };
+
+  const handleFeedbackSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!feedbackForm.phone || !feedbackForm.name) {
+      alert('Vui lòng nhập họ tên và số điện thoại liên hệ!');
+      return;
+    }
+    alert(`🎉 Cảm ơn quý khách ${feedbackForm.name}!\nThông tin góp ý / liên hệ của quý khách đã được gửi tới ban quản trị. Chúng tôi sẽ phản hồi trong 15 phút!`);
+    setFeedbackForm({ name: '', phone: '', address: '', subject: '', content: '' });
+  };
+
+  const handleConsignmentSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!consignmentForm.phone || !consignmentForm.name) {
+      alert('Vui lòng nhập đầy đủ họ tên và số điện thoại ký gửi!');
+      return;
+    }
+    alert(`🎉 Tiếp nhận yêu cầu ký gửi thành công!\nChuyên viên thẩm định của chúng tôi sẽ liên hệ với quý khách ${consignmentForm.name} (${consignmentForm.phone}) để khảo sát và niêm yết nhà đất.`);
+    setConsignmentForm({ name: '', phone: '', propType: 'Nhà mặt tiền', address: '', price: '', note: '' });
+  };
+
+  // Filtered Properties
+  const filteredList = useMemo(() => {
+    return BDS02_PROPERTIES.filter(item => {
+      if (currentPage !== 'home' && ['biet-thu', 'nha-mat-tien', 'nha-ngo-hem', 'phong-tro', 'can-ho'].includes(currentPage)) {
+        if (item.category !== currentPage) return false;
       }
+      if (filterPropType !== 'all' && item.category !== filterPropType) return false;
+      if (filterDistrict !== 'all' && item.district !== filterDistrict) return false;
+      if (searchLocation) {
+        const q = searchLocation.toLowerCase();
+        const matchTitle = item.title.toLowerCase().includes(q);
+        const matchLoc = item.location.toLowerCase().includes(q);
+        if (!matchTitle && !matchLoc) return false;
+      }
+      if (filterPrice !== 'all') {
+        if (filterPrice === 'under-3' && item.priceNum >= 3) return false;
+        if (filterPrice === '3-10' && (item.priceNum < 3 || item.priceNum > 10)) return false;
+        if (filterPrice === 'above-10' && item.priceNum <= 10) return false;
+      }
+      if (filterArea !== 'all') {
+        if (filterArea === 'under-50' && item.areaNum >= 50) return false;
+        if (filterArea === '50-100' && (item.areaNum < 50 || item.areaNum > 100)) return false;
+        if (filterArea === 'above-100' && item.areaNum <= 100) return false;
+      }
+      return true;
+    }).sort((a, b) => {
+      if (sortBy === 'price-asc') return a.priceNum - b.priceNum;
+      if (sortBy === 'price-desc') return b.priceNum - a.priceNum;
+      if (sortBy === 'area-desc') return b.areaNum - a.areaNum;
+      return 0;
+    });
+  }, [currentPage, filterPropType, filterDistrict, searchLocation, filterPrice, filterArea, sortBy]);
+
+  // Mortgage calculations
+  const mortgageCalc = useMemo(() => {
+    const propertyPrice = (selectedProperty?.priceNum || 7.5) * 1_000_000_000;
+    const loanAmount = propertyPrice * (loanPercent / 100);
+    const monthlyRate = interestRate / 100 / 12;
+    const totalMonths = loanYears * 12;
+    
+    const monthlyPayment = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
+    const totalPayment = monthlyPayment * totalMonths;
+    const totalInterest = totalPayment - loanAmount;
+
+    return {
+      loanAmount: Math.round(loanAmount),
+      monthlyPayment: Math.round(monthlyPayment),
+      totalInterest: Math.round(totalInterest),
+      totalPayment: Math.round(totalPayment)
     };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [template?.slug]);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeFaq, setActiveFaq] = useState<number | null>(0);
-  const [activeTab, setActiveTab] = useState(0);
+  }, [selectedProperty, loanPercent, loanYears, interestRate]);
 
-  // Search & Filtering States
-  const [searchQuery, setSearchQuery] = useState('');
-  const [styleFilter, setStyleFilter] = useState('all');
-  const [sizeFilter, setSizeFilter] = useState('all');
-  const [priceFilter, setPriceFilter] = useState('all');
-
-  // Modals & Detail Overlays
-  const [selectedProject, setSelectedProject] = useState<ApartmentProject | null>(null);
-  const [selectedGalleryTab, setSelectedGalleryTab] = useState('all');
-  const [selectedGalleryImg, setSelectedGalleryImg] = useState<string | null>(null);
-  const [searchNewsQuery, setSearchNewsQuery] = useState('');
-
-  // Contact States
-  const [contactName, setContactName] = useState('');
-  const [contactPhone, setContactPhone] = useState('');
-  const [contactEmail, setContactEmail] = useState('');
-  const [contactMessage, setContactMessage] = useState('');
-  const [contactError, setContactError] = useState('');
-  const [contactSubmitted, setContactSubmitted] = useState(false);
-
-  // Newsletter States
-  const [newsletterEmail, setNewsletterEmail] = useState('');
-  const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
-
-  const isMobile = viewport === 'mobile';
-  
-  const navigate = (page: string) => {
-    setCurrentPage(page);
-    setIsMobileMenuOpen(false);
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+  const activeHotline = company?.phone || '0972.939.xxx';
+  const hotlineTel = activeHotline.replace(/[^0-9]/g, '') || '0972939000';
+  const activeEmail = company?.email || 'webdemo@gmail.com';
+  const socialLinks = {
+    facebook: company?.social?.facebook || 'https://facebook.com',
+    instagram: company?.social?.instagram || 'https://instagram.com',
+    twitter: company?.social?.twitter || 'https://twitter.com',
+    youtube: company?.social?.youtube || 'https://youtube.com',
   };
 
-  const navLinks = [
-    { name: 'Trang chủ', id: 'home' },
-    { name: 'Dự án', id: 'projects' },
-    { name: 'Về chúng tôi', id: 'about' },
-    { name: 'Thư viện', id: 'gallery' },
-    { name: 'Tin tức', id: 'news' },
-    { name: 'Liên hệ', id: 'contact' }
-  ];
-
-  // Filtering Logic for Projects
-  const filteredProjects = MINIMAL_APARTMENTS.filter(project => {
-    const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          project.loc.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          project.desc.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStyle = styleFilter === 'all' || project.style === styleFilter;
-    
-    let matchesSize = true;
-    if (sizeFilter === 'under-60') {
-      matchesSize = project.size < 60;
-    } else if (sizeFilter === '60-100') {
-      matchesSize = project.size >= 60 && project.size <= 100;
-    } else if (sizeFilter === 'over-100') {
-      matchesSize = project.size > 100;
-    }
-    
-    let matchesPrice = true;
-    if (priceFilter === 'under-5') {
-      matchesPrice = project.price < 5;
-    } else if (priceFilter === '5-8') {
-      matchesPrice = project.price >= 5 && project.price <= 8;
-    } else if (priceFilter === 'over-8') {
-      matchesPrice = project.price > 8;
-    }
-    
-    return matchesSearch && matchesStyle && matchesSize && matchesPrice;
-  });
-
-  // Handle Contact Form Submit
-  const handleContactSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!contactName.trim() || !contactPhone.trim()) {
-      setContactError('Vui lòng điền đầy đủ Họ tên và Số điện thoại.');
-      return;
-    }
-    const phoneClean = contactPhone.replace(/\s/g, '');
-    if (!/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
-      setContactError('Số điện thoại phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.');
-      return;
-    }
-    if (contactEmail.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail.trim())) {
-      setContactError('Email không hợp lệ (VD: ten@gmail.com).');
-      return;
-    }
-    setContactError('');
-    try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
-      await fetch(`${API_URL}/api/marketplace/contact`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fullName: contactName.trim(),
-          phone: phoneClean,
-          email: contactEmail.trim(),
-          selectedTemplate: 'minimal-white',
-          packageInterest: 'Mẫu Minimal White Style',
-          message: contactMessage?.trim() || 'Khách liên hệ từ Demo Minimal White',
-        }),
-      });
-    } catch (err) {}
-    setContactSubmitted(true);
+  const PAGE_NAMES_VN: Record<string, string> = {
+    'home': 'Trang Chủ',
+    'biet-thu': 'Biệt Thự Đẳng Cấp',
+    'nha-mat-tien': 'Nhà Mặt Tiền Kinh Doanh',
+    'nha-ngo-hem': 'Nhà Ngõ, Hẻm Ô Tô',
+    'phong-tro': 'Phòng Trọ & Căn Hộ Dịch Vụ',
+    'can-ho': 'Căn Hộ Cao Cấp',
+    'news': 'Tin Tức & Cẩm Nang Bất Động Sản',
+    'news-detail': 'Chi Tiết Bài Viết',
+    'property-detail': 'Chi Tiết Bất Động Sản',
+    'ky-gui': 'Ký Gửi Nhà Đất',
+    'about': 'Giới Thiệu Doanh Nghiệp',
+    'contact': 'Liên Hệ & Góp Ý',
   };
 
-
-  // Handle Newsletter Submit
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newsletterEmail.trim()) return;
-    setNewsletterSubmitted(true);
-    setNewsletterEmail('');
-    setTimeout(() => {
-      setNewsletterSubmitted(false);
-    }, 4500);
-  };
-
+  // ── HEADER COMPONENT ──
   const renderHeader = () => (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b transition-all duration-300" style={{ borderColor: COLORS.border }}>
-      <div className={`mx-auto px-6 h-24 flex items-center justify-between ${MAX_W}`}>
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('home')}>
-          <div className="w-8 h-8 flex items-center justify-center" style={{ backgroundColor: COLORS.primary, color: COLORS.bg }}>
-            <span className="font-bold text-lg" style={{ fontFamily: FONTS.heading }}>M</span>
+    <header className="w-full bg-white text-slate-800 sticky top-0 z-40 shadow-sm border-b border-slate-200">
+      {/* Top Banner Row */}
+      <div className={`${MAX_W} mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3`}>
+        {/* Left: Brand Logo */}
+        <div onClick={() => navigate('home')} className="flex items-center gap-3 cursor-pointer group">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-red-600 to-rose-500 flex items-center justify-center text-white font-black text-2xl shadow-md group-hover:scale-105 transition">
+            N
           </div>
-          <span className="text-2xl font-bold tracking-tight" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>
-            MINIMAL<span style={{ color: COLORS.gold }}>.</span>
-          </span>
+          <div>
+            <div className="text-xl font-black tracking-tight text-[#0D3F8D] flex items-center gap-1 group-hover:text-red-600 transition">
+              {company?.name || 'NOVIHOME'}
+            </div>
+            <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+              {company?.slogan || 'Mua bán & Ký gửi nhà đất chuyên nghiệp'}
+            </div>
+          </div>
         </div>
-        
-        {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-8">
-          {navLinks.map(link => (
-            <button 
-              key={link.id}
-              onClick={() => navigate(link.id)}
-              className={`text-[15px] tracking-wide transition-colors duration-200 ${currentPage === link.id ? 'font-medium' : 'hover:opacity-70'}`}
-              style={{ color: currentPage === link.id ? COLORS.primary : COLORS.textLight }}
+
+        {/* Right: Contact strip & Ad Banner */}
+        <div className="flex flex-wrap items-center gap-4 text-xs">
+          <div className="flex items-center gap-4 text-slate-600">
+            <a href={`tel:${hotlineTel}`} className="flex items-center gap-1.5 font-bold text-red-600 hover:underline">
+              <Phone size={14} className="text-red-600 shrink-0" /> {activeHotline}
+            </a>
+            <a href={`mailto:${activeEmail}`} className="hidden sm:flex items-center gap-1.5 hover:text-blue-700">
+              <Mail size={14} className="text-amber-500 shrink-0" /> {activeEmail}
+            </a>
+          </div>
+
+          <button
+            onClick={() => navigate('ky-gui')}
+            className="px-3.5 py-1.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 active:scale-95 text-white font-bold text-xs rounded-lg shadow-sm transition flex items-center gap-1.5 cursor-pointer"
+          >
+            <UploadCloud size={13} /> Ký Gửi Nhà Đất
+          </button>
+        </div>
+      </div>
+
+      {/* Main Nav Bar (Dark Blue #0D3F8D + Red Active #D8232A) */}
+      <div className="w-full bg-[#0D3F8D] text-white">
+        <div className={`${MAX_W} mx-auto px-4 flex items-center justify-between`}>
+          <nav className="hidden lg:flex items-center text-xs font-bold uppercase tracking-wider">
+            {[
+              { id: 'home', label: 'TRANG CHỦ' },
+              { id: 'biet-thu', label: 'BIỆT THỰ' },
+              { id: 'nha-mat-tien', label: 'NHÀ MẶT TIỀN' },
+              { id: 'nha-ngo-hem', label: 'NHÀ NGÕ, HẺM' },
+              { id: 'phong-tro', label: 'PHÒNG TRỌ' },
+              { id: 'news', label: 'TIN TỨC' },
+              { id: 'contact', label: 'LIÊN HỆ' },
+            ].map(navItem => {
+              const isActive = currentPage === navItem.id || (navItem.id === 'news' && currentPage === 'news-detail');
+              return (
+                <button
+                  key={navItem.id}
+                  onClick={() => navigate(navItem.id)}
+                  className={`px-4 py-3.5 transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-[#D8232A] text-white font-black shadow-inner'
+                      : 'text-white/90 hover:bg-blue-900/60 hover:text-white'
+                  }`}
+                >
+                  {navItem.label}
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* Quick Search inside Nav */}
+          <div className="hidden md:flex items-center relative py-1.5">
+            <input
+              type="text"
+              placeholder="Nhập từ khóa cần tìm..."
+              value={searchLocation}
+              onChange={e => setSearchLocation(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') navigate('nha-mat-tien'); }}
+              className="bg-blue-950/60 text-white placeholder-blue-200 text-xs px-3.5 py-1.5 rounded-l-md border border-blue-700/60 focus:outline-none focus:bg-blue-900 w-48 lg:w-56"
+            />
+            <button
+              onClick={() => navigate('nha-mat-tien')}
+              className="bg-[#D8232A] hover:bg-red-700 text-white px-3 py-1.5 rounded-r-md transition cursor-pointer flex items-center justify-center"
             >
-              {link.name}
+              <Search size={14} />
             </button>
-          ))}
-        </nav>
+          </div>
 
-        <div className="hidden lg:flex items-center gap-4">
-          <button 
-            onClick={() => navigate('projects')}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden p-2.5 text-white hover:bg-blue-900 rounded-md cursor-pointer ml-auto"
           >
-            <Search size={20} style={{ color: COLORS.primary }} />
-          </button>
-          <button 
-            onClick={() => {
-              setContactSubmitted(false);
-              navigate('contact');
-            }}
-            className="px-6 py-2.5 text-sm uppercase tracking-widest transition-transform hover:scale-105"
-            style={{ backgroundColor: COLORS.primary, color: COLORS.bg }}
-          >
-            Tư vấn ngay
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
-
-        {/* Mobile Hamburger Toggle */}
-        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden p-2">
-          {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
       </div>
 
       {/* Mobile Drawer */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden absolute top-20 sm:top-24 left-0 w-full bg-white shadow-xl border-t animate-fadeIn z-50" style={{ borderColor: COLORS.border }}>
-          <nav className="flex flex-col p-6">
-            {navLinks.map(link => (
-              <button 
-                key={link.id}
-                onClick={() => navigate(link.id)}
-                className="text-left py-4 text-lg border-b last:border-none"
-                style={{ 
-                  color: currentPage === link.id ? COLORS.primary : COLORS.textLight,
-                  borderColor: COLORS.border 
-                }}
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-[#0D3F8D] border-t border-blue-800 px-4 py-3 space-y-1 text-xs font-bold uppercase text-white shadow-xl">
+          {[
+            { id: 'home', label: 'TRANG CHỦ' },
+            { id: 'biet-thu', label: 'BIỆT THỰ' },
+            { id: 'nha-mat-tien', label: 'NHÀ MẶT TIỀN' },
+            { id: 'nha-ngo-hem', label: 'NHÀ NGÕ, HẺM' },
+            { id: 'phong-tro', label: 'PHÒNG TRỌ' },
+            { id: 'news', label: 'TIN TỨC' },
+            { id: 'contact', label: 'LIÊN HỆ' },
+          ].map(navItem => {
+            const isActive = currentPage === navItem.id || (navItem.id === 'news' && currentPage === 'news-detail');
+            return (
+              <button
+                key={navItem.id}
+                onClick={() => navigate(navItem.id)}
+                className={`block w-full text-left py-2 px-3 rounded cursor-pointer ${
+                  isActive ? 'bg-[#D8232A] font-black' : 'hover:bg-blue-900'
+                }`}
               >
-                {link.name}
+                {navItem.label}
               </button>
-            ))}
-            <button 
-              onClick={() => {
-                setContactSubmitted(false);
-                navigate('contact');
-              }}
-              className="mt-6 py-4 text-center text-sm uppercase tracking-widest"
-              style={{ backgroundColor: COLORS.primary, color: COLORS.bg }}
-            >
-              Tư vấn ngay
-            </button>
-          </nav>
+            );
+          })}
+          <button
+            onClick={() => navigate('ky-gui')}
+            className="block w-full text-left py-2 px-3 bg-red-600 text-white rounded font-black cursor-pointer mt-2"
+          >
+            KÝ GỬI NHÀ ĐẤT
+          </button>
         </div>
       )}
     </header>
   );
 
-  const renderFooter = () => (
-    <footer className="pt-24 pb-12" style={{ backgroundColor: COLORS.bgAlt, color: COLORS.text }}>
-      <div className={`mx-auto px-6 ${MAX_W}`}>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-          <div>
-            <div className="flex items-center gap-2 mb-6 cursor-pointer" onClick={() => navigate('home')}>
-              <div className="w-8 h-8 flex items-center justify-center" style={{ backgroundColor: COLORS.primary, color: COLORS.bg }}>
-                <span className="font-bold text-lg" style={{ fontFamily: FONTS.heading }}>M</span>
-              </div>
-              <span className="text-2xl font-bold tracking-tight" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>
-                MINIMAL<span style={{ color: COLORS.gold }}>.</span>
-              </span>
-            </div>
-            <p className="leading-relaxed mb-6 font-light text-sm" style={{ color: COLORS.textLight }}>
-              Tái định nghĩa không gian sống đô thị qua lăng kính tối giản, tinh khiết và tiện tiện nghi đẳng cấp.
-            </p>
-            <div className="flex items-center gap-3">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook" className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors" style={{ borderColor: COLORS.border }}>
-                <FacebookIcon className="w-4 h-4" />
-              </a>
-              <a href="https://zalo.me/0919006030" target="_blank" rel="noopener noreferrer" title="Zalo" className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-[#0068FF] hover:text-white hover:border-[#0068FF] transition-colors p-2" style={{ borderColor: COLORS.border }}>
-                <ZaloIcon className="w-full h-full" />
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram" className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-pink-600 hover:text-white hover:border-pink-600 transition-colors" style={{ borderColor: COLORS.border }}>
-                <InstagramIcon className="w-4 h-4" />
-              </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" title="YouTube" className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-red-600 hover:text-white hover:border-red-600 transition-colors" style={{ borderColor: COLORS.border }}>
-                <YoutubeIcon className="w-4 h-4" />
-              </a>
-            </div>
-          </div>
+  // ── HERO SEARCH BANNER COMPONENT ──
+  const renderHeroSearchBanner = () => (
+    <div
+      className="relative py-10 px-4 bg-cover bg-center text-white"
+      style={{
+        backgroundImage: 'linear-gradient(rgba(10, 30, 60, 0.8), rgba(13, 63, 141, 0.85)), url(https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80)'
+      }}
+    >
+      <div className={`${MAX_W} mx-auto max-w-4xl text-center space-y-4`}>
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-wider text-white">
+          TÌM KIẾM BẤT ĐỘNG SẢN
+        </h2>
 
-          <div>
-            <h4 className="text-sm uppercase tracking-widest font-semibold mb-6" style={{ color: COLORS.primary }}>Khám phá</h4>
-            <ul className="space-y-4 text-sm font-light">
-              <li><button onClick={() => navigate('projects')} className="hover:opacity-70 transition-opacity" style={{ color: COLORS.textLight }}>Dự án nổi bật</button></li>
-              <li><button onClick={() => navigate('about')} className="hover:opacity-70 transition-opacity" style={{ color: COLORS.textLight }}>Về chúng tôi</button></li>
-              <li><button onClick={() => navigate('gallery')} className="hover:opacity-70 transition-opacity" style={{ color: COLORS.textLight }}>Thư viện ảnh</button></li>
-              <li><button onClick={() => navigate('news')} className="hover:opacity-70 transition-opacity" style={{ color: COLORS.textLight }}>Tin tức & Cẩm nang</button></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-sm uppercase tracking-widest font-semibold mb-6" style={{ color: COLORS.primary }}>Dịch vụ</h4>
-            <ul className="space-y-4 text-sm font-light">
-              <li className="hover:opacity-70 transition-opacity cursor-pointer" style={{ color: COLORS.textLight }}>Tư vấn đầu tư</li>
-              <li className="hover:opacity-70 transition-opacity cursor-pointer" style={{ color: COLORS.textLight }}>Quản lý bất động sản</li>
-              <li className="hover:opacity-70 transition-opacity cursor-pointer" style={{ color: COLORS.textLight }}>Ký gửi mua bán</li>
-              <li className="hover:opacity-70 transition-opacity cursor-pointer" style={{ color: COLORS.textLight }}>Thiết kế nội thất</li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-sm uppercase tracking-widest font-semibold mb-6" style={{ color: COLORS.primary }}>Liên hệ</h4>
-            <ul className="space-y-4 text-sm font-light">
-              <li>
-                <a href="https://maps.google.com/?q=123+Ton+Duc+Thang+Quan+1+TPHCM" target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 hover:opacity-80 transition-opacity">
-                  <MapPin size={18} className="mt-0.5 shrink-0" style={{ color: COLORS.gold }} />
-                  <span style={{ color: COLORS.textLight }}>Tầng 15, Tòa nhà Minimal, 123 Đường Tôn Đức Thắng, Quận 1, TP.HCM</span>
-                </a>
-              </li>
-              <li>
-                <a href="tel:0919006030" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                  <Phone size={18} className="shrink-0" style={{ color: COLORS.gold }} />
-                  <span className="whitespace-nowrap" style={{ color: COLORS.textLight }}>0919 006 030</span>
-                </a>
-              </li>
-              <li>
-                <a href="mailto:contact@minimal.vn" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                  <Mail size={18} className="shrink-0" style={{ color: COLORS.gold }} />
-                  <span style={{ color: COLORS.textLight }}>contact@minimal.vn</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light" style={{ borderColor: COLORS.border }}>
-          <p style={{ color: COLORS.textLight }}>&copy; 2026 Minimal BĐS. All rights reserved.</p>
-          <div className="flex gap-6">
-            <span className="cursor-pointer hover:underline" style={{ color: COLORS.textLight }}>Điều khoản bảo mật</span>
-            <span className="cursor-pointer hover:underline" style={{ color: COLORS.textLight }}>Chính sách sử dụng</span>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-
-  const renderHome = () => (
-    <div className="flex flex-col min-h-screen">
-      {/* 2. HERO: Split layout */}
-      <section className="relative min-h-[85vh] flex flex-col md:flex-row bg-white">
-        <div className="w-full md:w-5/12 flex items-center justify-center p-8 md:p-16 z-10">
-          <div className="max-w-md w-full mt-10 md:mt-0">
-            <h1 className="text-5xl md:text-7xl leading-[1.1] mb-6" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>
-              Không gian sống <br />
-              <span className="italic" style={{ color: COLORS.textLight }}>Thuần khiết</span>
-            </h1>
-            <p className="text-lg mb-10 leading-relaxed font-light" style={{ color: COLORS.textLight }}>
-              Khám phá bộ sưu tập căn hộ hạng sang được thiết kế với ngôn ngữ tối giản, nơi mỗi chi tiết đều tôn vinh sự tinh tế và tĩnh tại.
-            </p>
-            
-            <div className="flex border-b-2 focus-within:border-gray-800 transition-colors pb-2" style={{ borderColor: COLORS.border }}>
-              <input 
-                type="text" 
-                placeholder="Tìm kiếm dự án, khu vực..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    navigate('projects');
-                  }
-                }}
-                className="w-full bg-transparent outline-none text-lg placeholder-gray-400 font-light"
-              />
-              <button className="p-2" onClick={() => navigate('projects')}>
-                <Search size={24} style={{ color: COLORS.primary }} />
-              </button>
-            </div>
-            
-            <div className="mt-12 flex gap-6 items-center">
-              <button 
-                onClick={() => navigate('projects')}
-                className="group flex items-center gap-3 pb-1 border-b" 
-                style={{ borderColor: COLORS.primary }}
-              >
-                <span className="text-sm uppercase tracking-widest font-medium" style={{ color: COLORS.primary }}>Khám phá ngay</span>
-                <ArrowRight size={16} className="transition-transform group-hover:translate-x-2" style={{ color: COLORS.primary }} />
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="w-full md:w-7/12 h-[50vh] md:h-auto relative">
-          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
-            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80" 
-            alt="Minimal Living Space" 
-            className="w-full h-full object-cover"
+        <div className="bg-white/10 backdrop-blur-md p-3 sm:p-4 rounded-xl border border-white/20 shadow-2xl space-y-2.5">
+          {/* Row 1: Keyword */}
+          <input
+            type="text"
+            placeholder="Nhập địa điểm cần tìm (Quận, tên đường, dự án)..."
+            value={searchLocation}
+            onChange={e => setSearchLocation(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') navigate('nha-mat-tien'); }}
+            className="w-full bg-white text-slate-800 text-xs px-4 py-2.5 rounded-lg font-medium focus:outline-none shadow-xs"
           />
-          <div className="absolute inset-0 bg-black/5 md:hidden"></div>
-        </div>
-      </section>
 
-      {/* 3. STATS */}
-      <section className="py-20 bg-white border-y" style={{ borderColor: COLORS.border }}>
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center divide-x-0 md:divide-x">
-            <div className="flex flex-col items-center">
-              <span className="text-4xl md:text-5xl mb-2 font-serif font-bold" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>500+</span>
-              <span className="text-xs uppercase tracking-widest text-gray-500 font-medium">Dự án hoàn thành</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-4xl md:text-5xl mb-2 font-serif font-bold" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>98%</span>
-              <span className="text-xs uppercase tracking-widest text-gray-500 font-medium">Khách hàng hài lòng</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-4xl md:text-5xl mb-2 font-serif font-bold" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>15</span>
-              <span className="text-xs uppercase tracking-widest text-gray-500 font-medium">Năm kinh nghiệm</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-4xl md:text-5xl mb-2 font-serif font-bold" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>2k+</span>
-              <span className="text-xs uppercase tracking-widest text-gray-500 font-medium">Khách hàng tin chọn</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. CATEGORIES */}
-      <section className="py-24 bg-gray-50">
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl mb-6 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Loại hình Bất Động Sản</h2>
-            <p className="max-w-2xl mx-auto text-lg font-light" style={{ color: COLORS.textLight }}>Lựa chọn không gian hoàn hảo phản chiếu phong cách sống của bạn.</p>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-            {[
-              { icon: HomeIcon, name: 'Căn hộ Cao cấp', count: '124' },
-              { icon: Star, name: 'Penthouse', count: '18' },
-              { icon: Maximize, name: 'Duplex', count: '32' },
-              { icon: Layers, name: 'Nhà phố Đô thị', count: '64' },
-              { icon: Shield, name: 'Biệt thự Ven sông', count: '12' },
-              { icon: Activity, name: 'Căn hộ Studio', count: '86' }
-            ].map((cat, idx) => (
-              <div key={idx} className="bg-white p-8 group hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-transparent hover:border-gray-200">
-                <cat.icon size={32} className="mb-6 transition-colors duration-300" style={{ color: COLORS.gold }} />
-                <h3 className="text-xl mb-2 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>{cat.name}</h3>
-                <p className="text-sm uppercase tracking-wider font-light" style={{ color: COLORS.textLight }}>{cat.count} Sản phẩm</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 5. FEATURED PROJECTS */}
-      <section className="py-24 bg-white">
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <div>
-              <h2 className="text-4xl md:text-5xl mb-4 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Dự án Nổi bật</h2>
-              <p className="text-lg max-w-xl font-light" style={{ color: COLORS.textLight }}>Những kiệt tác kiến trúc được tuyển chọn kỹ lưỡng, mang đến trải nghiệm sống vượt thời gian.</p>
-            </div>
-            <button 
-              onClick={() => navigate('projects')}
-              className="group flex items-center gap-2 pb-1 border-b uppercase text-sm tracking-widest font-medium" 
-              style={{ borderColor: COLORS.primary, color: COLORS.primary }}
+          {/* Row 2: Selectors + Submit Button */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2 text-xs">
+            <select
+              value={filterPropType}
+              onChange={e => setFilterPropType(e.target.value)}
+              className="bg-white text-slate-800 px-3 py-2 rounded-lg font-bold focus:outline-none cursor-pointer"
             >
-              Xem tất cả <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-            </button>
-          </div>
+              <option value="all">Loại bất động sản</option>
+              <option value="biet-thu">Biệt thự</option>
+              <option value="nha-mat-tien">Nhà mặt tiền</option>
+              <option value="nha-ngo-hem">Nhà ngõ, hẻm</option>
+              <option value="phong-tro">Phòng trọ</option>
+            </select>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {MINIMAL_APARTMENTS.slice(0, 3).map((proj) => (
-              <div key={proj.id} className="group cursor-pointer" onClick={() => setSelectedProject(proj)}>
-                <div className="relative h-80 overflow-hidden mb-6 bg-gray-100">
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={proj.img} alt={proj.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 text-xs uppercase tracking-wider font-medium">Mới ra mắt</div>
-                </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-2xl mb-2 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>{proj.name}</h3>
-                    <p className="flex items-center gap-1.5 text-sm font-light" style={{ color: COLORS.textLight }}>
-                      <MapPin size={14} /> {proj.loc}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <span className="block font-medium" style={{ color: COLORS.gold }}>{proj.priceLabel}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 6. ABOUT PREVIEW */}
-      <section className="py-24 bg-gray-50">
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <div className="flex flex-col md:flex-row items-center gap-16">
-            <div className="w-full md:w-1/2">
-              <h2 className="text-4xl md:text-5xl mb-8 leading-tight font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>
-                Triết lý sống <br />
-                <span className="italic font-light" style={{ color: COLORS.textLight }}>Less is More.</span>
-              </h2>
-              <p className="text-lg leading-relaxed mb-6 font-light" style={{ color: COLORS.textLight }}>
-                Chúng tôi tin rằng sự xa xỉ thực sự không nằm ở những chi tiết phô trương, mà ẩn giấu trong khoảng không gian trống, chất liệu nguyên bản và ánh sáng tự nhiên.
-              </p>
-              <p className="text-lg leading-relaxed mb-10 font-light" style={{ color: COLORS.textLight }}>
-                Mỗi dự án tại Minimal là một bản giao hương tĩnh lặng giữa kiến trúc đương đại và nhịp sống đô thị, tạo nên chốn về bình yên giữa lòng phố thị.
-              </p>
-              <button 
-                onClick={() => navigate('about')}
-                className="px-8 py-3 text-sm uppercase tracking-widest border transition-colors hover:bg-gray-100 font-medium"
-                style={{ borderColor: COLORS.primary, color: COLORS.primary }}
-              >
-                Về Minimal
-              </button>
-            </div>
-            <div className="w-full md:w-1/2">
-              <div className="relative pt-[120%] md:pt-[100%] w-full bg-gray-200">
-                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
-                  src="https://images.unsplash.com/photo-1600607687931-cebf10cb7254?w=800&q=80" 
-                  alt="Minimal Architecture" 
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. WHY CHOOSE US / CORE VALUES */}
-      <section className="py-24 bg-white">
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl mb-6 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Giá trị Cốt lõi</h2>
-            <p className="max-w-2xl mx-auto text-lg font-light" style={{ color: COLORS.textLight }}>Sự khác biệt tạo nên đẳng cấp thực sự của Minimal.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[
-              { title: 'Thiết kế Độc bản', desc: 'Mỗi dự án là một tác phẩm nghệ thuật kiến trúc riêng biệt.' },
-              { title: 'Chất liệu Tinh tế', desc: 'Sử dụng vật liệu tự nhiên, bền vững và thân thiện môi trường.' },
-              { title: 'Vị trí Đắc địa', desc: 'Kết nối hoàn hảo, nằm tại những khu vực trung tâm sầm uất nhất.' },
-              { title: 'Dịch vụ Đặc quyền', desc: 'Trải nghiệm sống đẳng cấp với tiện ích đo ni đóng giày.' }
-            ].map((item, idx) => (
-              <div key={idx} className="p-8 border border-gray-100 hover:border-gray-300 transition-colors bg-gray-50/50">
-                <div className="w-12 h-12 mb-6 flex items-center justify-center rounded-full bg-white border" style={{ borderColor: COLORS.border, color: COLORS.primary }}>
-                  <span className="font-medium font-serif" style={{ fontFamily: FONTS.heading }}>0{idx + 1}</span>
-                </div>
-                <h3 className="text-xl mb-4 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>{item.title}</h3>
-                <p className="text-sm leading-relaxed font-light" style={{ color: COLORS.textLight }}>{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 8. AMENITIES */}
-      <section className="py-24 bg-[#F5F5F5]">
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <div className="flex flex-col md:flex-row justify-between mb-16">
-            <h2 className="text-4xl md:text-5xl mb-6 md:mb-0 max-w-lg font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Đặc quyền <br/>Tiện ích</h2>
-            <p className="max-w-md text-lg font-light" style={{ color: COLORS.textLight }}>Tận hưởng hệ sinh thái tiện ích hoàn hảo, chăm sóc toàn diện thân - tâm - trí ngay thềm nhà.</p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-6 text-center">
-            {[
-              { icon: Wind, label: 'Công viên Zen' },
-              { icon: Droplets, label: 'Hồ bơi Vô cực' },
-              { icon: Sun, label: 'Sky Lounge' },
-              { icon: Activity, label: 'Gym & Yoga' },
-              { icon: Coffee, label: 'Café & Bistro' },
-              { icon: Shield, label: 'An ninh 24/7' }
-            ].map((amenity, idx) => (
-              <div key={idx} className="bg-white p-6 flex flex-col items-center justify-center aspect-square transition-transform hover:-translate-y-2 cursor-pointer border hover:border-gray-300 border-transparent">
-                <amenity.icon size={32} className="mb-4" style={{ color: COLORS.primary }} />
-                <span className="text-xs uppercase tracking-wider font-semibold text-gray-800">{amenity.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 9. MASTER PLAN / FLOOR PLANS */}
-      <section className="py-24 bg-white">
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl mb-6 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Mặt Bằng Căn Hộ</h2>
-            <p className="max-w-2xl mx-auto text-lg mb-10 font-light" style={{ color: COLORS.textLight }}>Tối ưu hóa không gian, đón ánh sáng tự nhiên tuyệt đối.</p>
-            
-            <div className="flex justify-center gap-4 mb-12 flex-wrap">
-              {['1 Phòng ngủ', '2 Phòng ngủ', '3 Phòng ngủ'].map((tab, idx) => (
-                <button 
-                  key={idx}
-                  onClick={() => setActiveTab(idx)}
-                  className={`px-6 py-2 border rounded-full text-sm font-medium transition-colors ${activeTab === idx ? 'bg-gray-900 text-white border-gray-900' : 'bg-transparent text-gray-500 border-gray-200 hover:border-gray-900 hover:text-gray-900'}`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-          </div>
-          
-          <div className="max-w-4xl mx-auto bg-gray-50 p-8 md:p-16 border" style={{ borderColor: COLORS.border }}>
-            <div className="flex flex-col md:flex-row gap-12 items-center">
-              <div className="w-full md:w-1/2">
-                <div className="aspect-square bg-white border flex items-center justify-center p-8" style={{ borderColor: COLORS.border }}>
-                  <div className="w-full h-full border-2 border-gray-300 relative flex items-center justify-center bg-gray-55">
-                    <span className="text-gray-400 font-mono tracking-widest text-sm uppercase">Layout {activeTab + 1}PN</span>
-                    <div className="absolute top-1/2 left-0 w-full border-t border-gray-200"></div>
-                    <div className="absolute left-1/2 top-0 h-full border-l border-gray-200"></div>
-                  </div>
-                </div>
-              </div>
-              <div className="w-full md:w-1/2 space-y-6">
-                <h3 className="text-3xl font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Type {String.fromCharCode(65 + activeTab)}</h3>
-                <div className="space-y-4 pt-4 border-t font-light text-sm" style={{ borderColor: COLORS.border }}>
-                  <div className="flex justify-between">
-                    <span style={{ color: COLORS.textLight }}>Diện tích tim tường</span>
-                    <span className="font-semibold text-gray-800">{55 + activeTab * 25} m²</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span style={{ color: COLORS.textLight }}>Diện tích thông thủy</span>
-                    <span className="font-semibold text-gray-800">{50 + activeTab * 23} m²</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span style={{ color: COLORS.textLight }}>Hướng cửa</span>
-                    <span className="font-medium text-gray-800">Đông Nam / Tây Bắc</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 10. GALLERY MASONRY */}
-      <section className="py-24 bg-gray-50">
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl mb-6 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Thư Viện Ảnh</h2>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="col-span-2 row-span-2 relative group overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85" 
-                onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}
-                alt="Phòng khách tối giản" 
-                className="w-full h-full object-cover min-h-[400px] hover:opacity-90 transition-opacity cursor-pointer bg-gray-200 group-hover:scale-105 transition-all duration-500" 
-                onClick={() => setSelectedGalleryImg("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85")}
-              />
-            </div>
-            <div className="relative group overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=800&q=80" 
-                onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}
-                alt="Phòng ngủ hiện đại" 
-                className="w-full h-full object-cover h-[200px] hover:opacity-90 transition-opacity cursor-pointer bg-gray-200 group-hover:scale-105 transition-all duration-500" 
-                onClick={() => setSelectedGalleryImg("https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=800&q=80")}
-              />
-            </div>
-            <div className="relative group overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80" 
-                onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}
-                alt="Khu vực bàn ăn" 
-                className="w-full h-full object-cover h-[200px] hover:opacity-90 transition-opacity cursor-pointer bg-gray-200 group-hover:scale-105 transition-all duration-500" 
-                onClick={() => setSelectedGalleryImg("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80")}
-              />
-            </div>
-            <div className="relative group overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=800&q=80" 
-                onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}
-                alt="Ban công rộng mở" 
-                className="w-full h-full object-cover h-[200px] hover:opacity-90 transition-opacity cursor-pointer bg-gray-200 group-hover:scale-105 transition-all duration-500" 
-                onClick={() => setSelectedGalleryImg("https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=800&q=80")}
-              />
-            </div>
-            <div className="col-span-2 relative group overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1600585154526-990dced4e56d?w=1200&q=85" 
-                onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}
-                alt="Kiến trúc tổng thể" 
-                className="w-full h-full object-cover h-[200px] hover:opacity-90 transition-opacity cursor-pointer bg-gray-200 group-hover:scale-105 transition-all duration-500" 
-                onClick={() => setSelectedGalleryImg("https://images.unsplash.com/photo-1600585154526-990dced4e56d?w=1200&q=85")}
-              />
-            </div>
-          </div>
-
-          <div className="text-center mt-12">
-            <button 
-              onClick={() => navigate('gallery')} 
-              className="uppercase text-sm tracking-widest border-b pb-1 font-medium hover:text-gray-500 transition-colors" 
-              style={{ borderColor: COLORS.primary }}
+            <select
+              value={filterDistrict}
+              onChange={e => setFilterDistrict(e.target.value)}
+              className="bg-white text-slate-800 px-3 py-2 rounded-lg font-bold focus:outline-none cursor-pointer"
             >
-              Xem toàn bộ thư viện
-            </button>
-          </div>
-        </div>
-      </section>
+              <option value="all">Quận/ huyện</option>
+              <option value="Thanh Khê">Quận Thanh Khê</option>
+              <option value="Hải Châu">Quận Hải Châu</option>
+              <option value="Sơn Trà">Quận Sơn Trà</option>
+              <option value="Ngũ Hành Sơn">Quận Ngũ Hành Sơn</option>
+            </select>
 
-      {/* 11. TESTIMONIALS */}
-      <section className="py-24 bg-white">
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl mb-6 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Câu Chuyện Khách Hàng</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { name: 'Nguyễn Văn A', role: 'CEO Tech Company', text: 'Sự tối giản trong thiết kế đã mang lại cho tôi một không gian sống thực sự bình yên sau những giờ làm việc căng thẳng.' },
-              { name: 'Trần Thị B', role: 'Nhà thiết kế thời trang', text: 'Từng chi tiết vật liệu đều thể hiện sự tinh tế. Ánh sáng tự nhiên được tận dụng tối đa khiến căn hộ luôn tràn đầy năng lượng.' },
-              { name: 'Lê Hoàng C', role: 'Nhà đầu tư', text: 'Giá trị bền vững và tính thẩm mỹ vượt thời gian là lý do tôi chọn đầu tư nhiều sản phẩm của Minimal.' }
-            ].map((testi, idx) => (
-              <div key={idx} className="p-10 bg-gray-50 border" style={{ borderColor: COLORS.border }}>
-                <div className="flex gap-1 mb-6">
-                  {[1,2,3,4,5].map(star => <Star key={star} size={16} className="fill-current text-black" />)}
-                </div>
-                <p className="text-lg italic mb-8 leading-relaxed font-light" style={{ color: COLORS.textLight }}>"{testi.text}"</p>
-                <div>
-                  <h4 className="font-semibold mb-1 font-serif text-gray-800" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>{testi.name}</h4>
-                  <span className="text-xs uppercase tracking-wider text-gray-400 font-medium">{testi.role}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 12. TIMELINE */}
-      <section className="py-24 bg-[#111111] text-white">
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <div className="mb-16 text-center md:text-left">
-            <h2 className="text-4xl md:text-5xl mb-6 font-serif" style={{ fontFamily: FONTS.heading }}>Tiến độ Dự án</h2>
-            <p className="text-gray-400 font-light">Cam kết chất lượng và thời gian chuẩn xác.</p>
-          </div>
-          <div className="relative">
-            <div className="absolute top-1/2 left-0 w-full h-px bg-gray-800 -translate-y-1/2 hidden md:block"></div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              {[
-                { time: 'Q1 2024', title: 'Khởi công & Móng', status: 'completed' },
-                { time: 'Q3 2024', title: 'Cất nóc', status: 'completed' },
-                { time: 'Q1 2025', title: 'Hoàn thiện Nội thất', status: 'active' },
-                { time: 'Q4 2025', title: 'Bàn giao', status: 'pending' }
-              ].map((step, idx) => (
-                <div key={idx} className="relative pt-8 md:pt-0">
-                  <div className={`w-4 h-4 rounded-full mb-6 mx-auto md:mx-0 relative z-10 ${step.status === 'completed' ? 'bg-white' : step.status === 'active' ? 'bg-[#C8A96E]' : 'bg-gray-800'}`}></div>
-                  <div className="text-center md:text-left">
-                    <span className="text-xs uppercase tracking-widest text-gray-400 block mb-2">{step.time}</span>
-                    <h4 className="text-lg font-serif" style={{ fontFamily: FONTS.heading }}>{step.title}</h4>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 13. LATEST NEWS */}
-      <section className="py-24 bg-white">
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <div className="flex justify-between items-end mb-16">
-            <h2 className="text-4xl md:text-5xl font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Góc Nhìn</h2>
-            <button onClick={() => navigate('news')} className="uppercase text-sm tracking-widest border-b pb-1 hidden md:block font-medium">Xem tất cả</button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {NEWS_ARTICLES.slice(0, 3).map((news) => (
-              <div key={news.id} className="group cursor-pointer animate-in fade-in duration-300" onClick={() => handleOpenArticle(news)}>
-                <div className="overflow-hidden mb-6 bg-gray-100 aspect-[4/3]">
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={news.img} alt={news.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                </div>
-                <span className="text-xs uppercase tracking-widest text-gray-400 mb-3 block font-semibold">{news.date}</span>
-                <h3 className="text-xl group-hover:text-gray-500 transition-colors leading-snug font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>{news.title}</h3>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 14. FAQ ACCORDION */}
-      <section className="py-24 bg-gray-50">
-        <div className={`mx-auto px-6 max-w-4xl`}>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl mb-6 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Câu Hỏi Thường Gặp</h2>
-          </div>
-          <div className="space-y-4">
-            {[
-              { q: 'Quy trình thanh toán như thế nào?', a: 'Khách hàng có thể thanh toán theo tiến độ xây dựng (10 đợt) hoặc thanh toán nhanh 95% để nhận chiết khấu 8%. Ngân hàng hỗ trợ vay 70%.' },
-              { q: 'Pháp lý dự án đã hoàn thiện chưa?', a: 'Dự án đã có đầy đủ giấy phép xây dựng, phê duyệt 1/500 và văn bản đủ điều kiện huy động vốn từ Sở Xây dựng.' },
-              { q: 'Tiêu chuẩn bàn giao bao gồm những gì?', a: 'Căn hộ được bàn giao hoàn thiện cơ bản với nội thất liền tường cao cấp từ các thương hiệu như Hafele, Kohler, Daikin.' },
-              { q: 'Phí quản lý dự kiến là bao nhiêu?', a: 'Phí quản lý dự kiến là 25,000 VND/m2/tháng (chưa VAT), miễn phí năm đầu tiên cho cư dân.' }
-            ].map((faq, idx) => (
-              <div key={idx} className="bg-white border border-gray-200">
-                <button 
-                  className="w-full px-6 py-5 flex justify-between items-center text-left"
-                  onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
-                >
-                  <span className="font-semibold text-lg font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>{faq.q}</span>
-                  {activeFaq === idx ? <Minus size={20} /> : <Plus size={20} />}
-                </button>
-                {activeFaq === idx && (
-                  <div className="px-6 pb-6 text-gray-600 leading-relaxed border-t border-gray-100 pt-4 font-light text-sm">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 15. CONTACT CTA */}
-      <section className="py-24 bg-white">
-        <div className={`mx-auto px-6 max-w-3xl text-center`}>
-          {contactSubmitted ? (
-            <div className="py-12 bg-gray-50 border border-gray-200 rounded-sm px-6">
-              <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Check size={36} />
-              </div>
-              <h2 className="text-3xl mb-4 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>
-                Gửi Yêu Cầu Thành Công!
-              </h2>
-              <p className="text-gray-500 mb-8 font-light max-w-md mx-auto">
-                Cảm ơn {contactName || 'quý khách'}. Chuyên viên tư vấn của Minimal sẽ liên hệ lại qua số điện thoại <strong className="text-gray-800">{contactPhone}</strong> trong vòng 15 phút.
-              </p>
-              <button 
-                onClick={() => {
-                  setContactSubmitted(false);
-                  setContactName('');
-                  setContactPhone('');
-                  setContactEmail('');
-                  setContactMessage('');
-                }}
-                className="px-8 py-3 bg-gray-900 hover:bg-black text-white text-sm uppercase tracking-widest font-medium transition-colors"
-              >
-                Gửi lại yêu cầu khác
-              </button>
-            </div>
-          ) : (
-            <>
-              <h2 className="text-4xl md:text-5xl mb-6 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Kết nối với Minimal</h2>
-              <p className="text-lg text-gray-500 mb-12 font-light">Để lại thông tin, chuyên viên tư vấn của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.</p>
-              {contactError && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 text-sm text-left">
-                  {contactError}
-                </div>
-              )}
-              <form className="space-y-6 text-left" onSubmit={handleContactSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <input 
-                    type="text" 
-                    placeholder="Họ và tên *" 
-                    value={contactName}
-                    onChange={(e) => setContactName(e.target.value)}
-                    className="w-full px-4 py-4 bg-gray-50 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors text-sm font-light" 
-                  />
-                  <input 
-                    type="text" 
-                    placeholder="Số điện thoại *" 
-                    value={contactPhone}
-                    onChange={(e) => setContactPhone(e.target.value)}
-                    className="w-full px-4 py-4 bg-gray-50 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors text-sm font-light" 
-                  />
-                </div>
-                <input 
-                  type="email" 
-                  placeholder="Email *" 
-                  value={contactEmail}
-                  onChange={(e) => setContactEmail(e.target.value)}
-                  className="w-full px-4 py-4 bg-gray-50 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors text-sm font-light" 
-                />
-                <textarea 
-                  placeholder="Bạn quan tâm đến sản phẩm nào?" 
-                  rows={4} 
-                  value={contactMessage}
-                  onChange={(e) => setContactMessage(e.target.value)}
-                  className="w-full px-4 py-4 bg-gray-50 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors text-sm font-light"
-                ></textarea>
-                <button type="submit" className="w-full py-4 text-white uppercase tracking-widest font-semibold bg-gray-900 hover:bg-black transition-colors text-sm">Gửi Yêu Cầu</button>
-              </form>
-            </>
-          )}
-        </div>
-      </section>
-
-      {/* 16. NEWSLETTER */}
-      <section className="py-20 bg-[#111111] text-white">
-        <div className={`mx-auto px-6 ${MAX_W} text-center`}>
-          <h3 className="text-2xl mb-4 font-serif" style={{ fontFamily: FONTS.heading }}>Đăng ký nhận bản tin</h3>
-          {newsletterSubmitted ? (
-            <p className="text-[#C8A96E] font-medium animate-pulse mt-4">Cảm ơn bạn đã đăng ký nhận bản tin của Minimal!</p>
-          ) : (
-            <>
-              <p className="text-gray-400 mb-8 max-w-md mx-auto font-light">Nhận thông tin cập nhật mới nhất về các dự án và xu hướng thiết kế nội thất.</p>
-              <form onSubmit={handleNewsletterSubmit} className="flex max-w-md mx-auto border-b border-gray-600 focus-within:border-white transition-colors pb-2">
-                <input 
-                  type="email" 
-                  placeholder="Nhập địa chỉ email của bạn..." 
-                  value={newsletterEmail}
-                  onChange={(e) => setNewsletterEmail(e.target.value)}
-                  className="w-full bg-transparent outline-none text-white placeholder-gray-500 font-light" 
-                />
-                <button type="submit" className="uppercase text-sm tracking-widest ml-4 hover:text-gray-300 whitespace-nowrap font-medium">Đăng ký</button>
-              </form>
-            </>
-          )}
-        </div>
-      </section>
-    </div>
-  );
-
-  const renderProjects = () => (
-    <div className="py-24 bg-white min-h-screen">
-      <div className={`mx-auto px-6 ${MAX_W}`}>
-        <h1 className="text-5xl md:text-6xl mb-4 text-center font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Bộ Sưu Tập Dự Án</h1>
-        <p className="text-center text-gray-500 mb-12 max-w-2xl mx-auto font-light">
-          Khám phá các kiệt tác không gian sống mang đậm phong cách tối giản.
-        </p>
-
-        {/* Filter bar */}
-        <div className="bg-gray-50 p-6 mb-16 border flex flex-col lg:flex-row gap-4 items-center justify-between" style={{ borderColor: COLORS.border }}>
-          {/* Search bar */}
-          <div className="relative w-full lg:w-1/3">
-            <input 
-              type="text"
-              placeholder="Tìm kiếm dự án, khu vực..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 outline-none text-sm focus:border-gray-900 transition-colors font-light"
-            />
-            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-            {searchQuery && (
-              <button 
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs"
-              >
-                Xóa
-              </button>
-            )}
-          </div>
-
-          {/* Dropdown Filters */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full lg:w-2/3">
-            {/* Style Filter */}
-            <div className="flex flex-col">
-              <select
-                value={styleFilter}
-                onChange={(e) => setStyleFilter(e.target.value)}
-                className="w-full px-4 py-3 bg-white border border-gray-200 outline-none text-sm focus:border-gray-900 transition-colors font-light text-gray-700"
-              >
-                <option value="all">Tất cả phong cách</option>
-                <option value="Japandi">Japandi</option>
-                <option value="Scandinavian">Scandinavian</option>
-                <option value="Industrial">Industrial</option>
-              </select>
-            </div>
-
-            {/* Size Filter */}
-            <div className="flex flex-col">
-              <select
-                value={sizeFilter}
-                onChange={(e) => setSizeFilter(e.target.value)}
-                className="w-full px-4 py-3 bg-white border border-gray-200 outline-none text-sm focus:border-gray-900 transition-colors font-light text-gray-700"
-              >
-                <option value="all">Tất cả diện tích</option>
-                <option value="under-60">Dưới 60 m²</option>
-                <option value="60-100">60 - 100 m²</option>
-                <option value="over-100">Trên 100 m²</option>
-              </select>
-            </div>
-
-            {/* Price Filter */}
-            <div className="flex flex-col">
-              <select
-                value={priceFilter}
-                onChange={(e) => setPriceFilter(e.target.value)}
-                className="w-full px-4 py-3 bg-white border border-gray-200 outline-none text-sm focus:border-gray-900 transition-colors font-light text-gray-700"
-              >
-                <option value="all">Tất cả giá</option>
-                <option value="under-5">Dưới 5 Tỷ</option>
-                <option value="5-8">5 - 8 Tỷ</option>
-                <option value="over-8">Trên 8 Tỷ</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Projects List */}
-        {filteredProjects.length > 0 ? (
-          <div className="space-y-24">
-            {filteredProjects.map((proj, idx) => (
-              <div key={proj.id} className={`flex flex-col ${idx % 2 === 1 ? 'md:flex-row-reverse' : 'md:flex-row'} gap-12 items-center`}>
-                <div 
-                  className="w-full md:w-2/3 bg-gray-100 aspect-video relative overflow-hidden cursor-pointer group"
-                  onClick={() => setSelectedProject(proj)}
-                >
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
-                    src={proj.img} 
-                    alt={proj.name} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                  />
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 text-xs uppercase tracking-wider font-semibold">
-                    {proj.style}
-                  </div>
-                </div>
-                <div className="w-full md:w-1/3">
-                  <span className="text-xs uppercase tracking-widest text-gray-400 block mb-2 font-medium">{proj.loc}</span>
-                  <h3 className="text-4xl mb-4 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>{proj.name}</h3>
-                  <p className="text-gray-500 mb-8 leading-relaxed font-light">{proj.desc}</p>
-                  <div className="space-y-3 mb-8 text-sm border-t border-b py-4 font-light" style={{ borderColor: COLORS.border }}>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Diện tích</span>
-                      <span className="font-semibold text-gray-800">{proj.size} m²</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Thiết kế</span>
-                      <span className="font-semibold text-gray-800">{proj.bedrooms} PN / {proj.bathrooms} WC</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Giá dự kiến</span>
-                      <span className="font-bold" style={{ color: COLORS.gold }}>{proj.priceLabel}</span>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => setSelectedProject(proj)}
-                    className="uppercase text-sm tracking-widest border-b border-gray-900 pb-1 font-semibold hover:text-gray-500 transition-colors"
-                  >
-                    Xem chi tiết
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20 bg-gray-50 border border-dashed rounded-sm">
-            <Info size={48} className="mx-auto text-gray-400 mb-4" />
-            <h3 className="text-2xl mb-2 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Không tìm thấy dự án phù hợp</h3>
-            <p className="text-gray-500 mb-6 max-w-md mx-auto font-light">Vui lòng điều chỉnh hoặc xóa các bộ lọc để tìm thấy kết quả mong muốn.</p>
-            <button 
-              onClick={() => {
-                setSearchQuery('');
-                setStyleFilter('all');
-                setSizeFilter('all');
-                setPriceFilter('all');
-              }}
-              className="px-6 py-2.5 bg-gray-900 hover:bg-black text-white text-xs uppercase tracking-widest font-semibold transition-colors"
+            <select
+              value={filterArea}
+              onChange={e => setFilterArea(e.target.value)}
+              className="bg-white text-slate-800 px-3 py-2 rounded-lg font-bold focus:outline-none cursor-pointer"
             >
-              Thiết lập lại bộ lọc
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+              <option value="all">Diện tích</option>
+              <option value="under-50">Dưới 50 m²</option>
+              <option value="50-100">50 - 100 m²</option>
+              <option value="above-100">Trên 100 m²</option>
+            </select>
 
-  const renderAbout = () => (
-    <div className="bg-white min-h-screen">
-      {/* Hero */}
-      <section className="py-24 bg-gray-50">
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <div className="max-w-3xl mx-auto text-center">
-            <span className="text-xs uppercase tracking-widest text-gray-400 block mb-3 font-semibold">Về chúng tôi</span>
-            <h1 className="text-5xl md:text-6xl mb-8 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Triết lý Minimal</h1>
-            <p className="text-xl text-gray-500 leading-relaxed mb-12 font-light">
-              Chúng tôi không xây dựng những tòa nhà. Chúng tôi kiến tạo những không gian tĩnh lặng, nơi con người tìm thấy sự bình yên và kết nối lại với chính mình.
-            </p>
-            <div className="aspect-video bg-gray-200 w-full mb-16 relative overflow-hidden">
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600607687931-cebf10cb7254?w=1200&q=80" alt="About Hero" className="w-full h-full object-cover" />
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 mt-24">
-            <div>
-              <span className="text-sm uppercase tracking-widest font-semibold" style={{ color: COLORS.gold }}>01 / Tầm nhìn</span>
-              <h2 className="text-3xl mt-2 mb-6 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Tầm nhìn</h2>
-              <p className="text-gray-500 leading-relaxed font-light">
-                Trở thành biểu tượng của phong cách sống tối giản và tinh tế tại Việt Nam. Minimal tiên phong mang đến những kiệt tác kiến trúc vượt thời gian, loại bỏ sự dư thừa, giữ lại tinh hoa để tôn vinh sự thư thái đích thực trong tâm hồn.
-              </p>
-            </div>
-            <div>
-              <span className="text-sm uppercase tracking-widest font-semibold" style={{ color: COLORS.gold }}>02 / Sứ mệnh</span>
-              <h2 className="text-3xl mt-2 mb-6 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Sứ mệnh</h2>
-              <p className="text-gray-500 leading-relaxed font-light">
-                Định hình lại không gian sống đô thị thông qua thiết kế tối giản, vật liệu bền vững và sự kết nối hài hòa giữa con người - thiên nhiên - kiến trúc, mang đến giá trị sống vững bền cho các thế hệ cư dân.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Core Values */}
-      <section className="py-24 bg-white border-b" style={{ borderColor: COLORS.border }}>
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <div className="text-center mb-16">
-            <span className="text-xs uppercase tracking-widest text-gray-400 block mb-3 font-semibold">Hệ giá trị</span>
-            <h2 className="text-4xl md:text-5xl font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Giá Trị Cốt Lõi</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[
-              { title: 'Tối giản', subtitle: 'Minimalism', desc: 'Loại bỏ các chi tiết thừa thãi để tập trung vào những giá trị cốt lõi nhất của không gian.' },
-              { title: 'Bền vững', subtitle: 'Sustainability', desc: 'Sử dụng vật liệu thân thiện môi trường và tối ưu hóa năng lượng tự nhiên.' },
-              { title: 'Tinh tế', subtitle: 'Refinement', desc: 'Mọi đường nét, màu sắc và ánh sáng đều được thiết kế có chủ ý với sự chuẩn xác cao.' },
-              { title: 'Chân thực', subtitle: 'Authenticity', desc: 'Kiến tạo chốn về trung thực với cảm xúc bản nguyên, nuôi dưỡng thân - tâm - trí.' }
-            ].map((val, idx) => (
-              <div key={idx} className="p-8 bg-gray-50 border border-gray-100 relative group hover:border-gray-900 transition-colors">
-                <span className="absolute right-6 top-6 text-3xl font-serif text-gray-200 group-hover:text-gray-800 transition-colors duration-300 font-bold">0{idx + 1}</span>
-                <h3 className="text-2xl mb-1 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>{val.title}</h3>
-                <span className="text-xs uppercase tracking-widest text-gray-450 block mb-4 font-semibold">{val.subtitle}</span>
-                <p className="text-sm text-gray-500 leading-relaxed font-light">{val.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Timeline Milestones */}
-      <section className="py-24 bg-gray-50 border-b" style={{ borderColor: COLORS.border }}>
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <div className="text-center mb-20">
-            <span className="text-xs uppercase tracking-widest text-gray-400 block mb-3 font-semibold">Hành trình phát triển</span>
-            <h2 className="text-4xl md:text-5xl font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Cột Mốc Lịch Sử</h2>
-          </div>
-          
-          <div className="relative border-l border-gray-205 max-w-3xl mx-auto pl-8 space-y-12">
-            {[
-              { year: '2012', title: 'Thành lập thương hiệu', desc: 'Khởi đầu từ văn phòng thiết kế kiến trúc phong cách tối giản với 5 thành viên sáng lập.' },
-              { year: '2015', title: 'Dự án đầu tay The M - Riverside', desc: 'Bàn giao tổ hợp căn hộ tối giản đầu tiên tại Quận 2, ghi nhận 100% tỷ lệ lấp đầy trong 3 tháng.' },
-              { year: '2018', title: 'Giải thưởng Kiến trúc Quốc tế', desc: 'Được vinh danh tại hạng mục "Thiết kế Nội thất Tối giản xuất sắc nhất" khu vực Đông Nam Á.' },
-              { year: '2021', title: 'Tiên phong Vật liệu Xanh', desc: 'Ứng dụng các giải pháp xây dựng tuần hoàn và sơn hiệu ứng đất sét tự nhiên cho 100% căn hộ.' },
-              { year: '2024', title: 'Hệ sinh thái BĐS Quiet Luxury', desc: 'Mở rộng quy mô phát triển các dự án căn hộ cao cấp và dòng biệt thự ven sông độc bản.' },
-              { year: '2026', title: 'Tái định vị thương hiệu', desc: 'Nâng tầm Minimal trở thành đơn vị tiên phong phát triển phong cách tối giản cao cấp tại Việt Nam.' }
-            ].map((milestone, idx) => (
-              <div key={idx} className="relative">
-                <div className="absolute -left-[41px] top-1.5 w-6 h-6 rounded-full border-4 border-white bg-gray-900 flex items-center justify-center"></div>
-                <span className="text-2xl font-serif font-bold" style={{ fontFamily: FONTS.heading, color: COLORS.gold }}>{milestone.year}</span>
-                <h4 className="text-xl font-medium mt-1 mb-2 text-gray-800">{milestone.title}</h4>
-                <p className="text-gray-500 font-light text-sm leading-relaxed">{milestone.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      
-      {/* Leadership */}
-      <section className="py-24 bg-white">
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <div className="text-center mb-16">
-            <span className="text-xs uppercase tracking-widest text-gray-400 block mb-3 font-semibold">Đội ngũ sáng lập</span>
-            <h2 className="text-4xl text-center mb-4 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Ban Sáng Lập</h2>
-            <p className="text-gray-500 max-w-md mx-auto font-light">Những người đặt nền móng và định hướng cho triết lý phát triển của Minimal.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {[
-              { name: 'David Nguyen', role: 'Founder & CEO', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80', bio: 'Cựu kiến trúc sư trưởng tại Nhật Bản, 20 năm kinh nghiệm thiết kế quy hoạch đô thị tối giản.' },
-              { name: 'Sarah Tran', role: 'Chief Architect', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80', bio: 'Thạc sĩ Kiến trúc Đan Mạch, người thổi hồn phong cách Bắc Âu (Scandinavian) ấm áp vào từng dự án.' },
-              { name: 'Michael Le', role: 'Design Director', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80', bio: 'Nhà thiết kế nội thất đạt nhiều giải thưởng châu Á, chuyên gia về vật liệu tự nhiên và nghệ thuật ánh sáng.' }
-            ].map((member, idx) => (
-              <div key={idx} className="text-center group">
-                <div className="w-56 h-56 mx-auto rounded-full overflow-hidden mb-6 bg-gray-100 grayscale group-hover:grayscale-0 transition-all duration-500 border border-gray-200 p-1">
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={member.img} alt={member.name} className="w-full h-full object-cover rounded-full" />
-                </div>
-                <h3 className="text-2xl mb-1 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>{member.name}</h3>
-                <p className="text-xs uppercase tracking-widest mb-4 font-semibold" style={{ color: COLORS.gold }}>{member.role}</p>
-                <p className="text-sm text-gray-500 max-w-xs mx-auto leading-relaxed font-light">{member.bio}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    </div>
-  );
-
-  const renderGallery = () => {
-    const filteredGallery = GALLERY_ITEMS.filter(item => selectedGalleryTab === 'all' || item.cat === selectedGalleryTab);
-    return (
-      <div className="py-24 bg-white min-h-screen">
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <h1 className="text-5xl md:text-6xl mb-4 text-center font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Thư Viện Ảnh</h1>
-          <p className="text-center text-gray-500 mb-16 font-light max-w-md mx-auto">
-            Chiêm ngưỡng những góc nhìn chân thực và tinh khiết nhất tại các dự án độc quyền của Minimal.
-          </p>
-          
-          {/* Tabs */}
-          <div className="flex justify-center gap-6 mb-12 flex-wrap border-b pb-4" style={{ borderColor: COLORS.border }}>
-            {[
-              { id: 'all', label: 'Tất cả' },
-              { id: 'exterior', label: 'Ngoại thất' },
-              { id: 'interior', label: 'Nội thất' },
-              { id: 'amenities', label: 'Tiện ích' }
-            ].map(tab => (
-              <button 
-                key={tab.id}
-                onClick={() => setSelectedGalleryTab(tab.id)}
-                className={`uppercase text-sm tracking-widest pb-1 font-medium transition-all ${selectedGalleryTab === tab.id ? 'border-b-2 border-gray-900 text-gray-900' : 'text-gray-400 hover:text-gray-900'}`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Grid list */}
-          {filteredGallery.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {filteredGallery.map((item, idx) => {
-                const isWide = idx === 4 || idx === 5;
-                return (
-                  <div 
-                    key={item.id} 
-                    className={`relative group overflow-hidden bg-gray-100 cursor-pointer ${isWide ? 'md:col-span-2 aspect-[2/1]' : 'aspect-square'}`}
-                    onClick={() => setSelectedGalleryImg(item.img)}
-                  >
-                    <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
-                      src={item.img} 
-                      alt={item.title} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                      <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                        <span className="text-xs uppercase tracking-widest text-white/70 block mb-1">{item.cat}</span>
-                        <h4 className="text-white text-lg font-serif" style={{ fontFamily: FONTS.heading }}>{item.title}</h4>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="text-center py-20 text-gray-500 font-light">Không có hình ảnh nào trong chủ đề này.</div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const renderNews = () => {
-    const filteredNews = NEWS_ARTICLES.filter(article => {
-      const matchSearch = article.title.toLowerCase().includes(searchNewsQuery.toLowerCase()) ||
-                          article.summary.toLowerCase().includes(searchNewsQuery.toLowerCase()) ||
-                          article.cat.toLowerCase().includes(searchNewsQuery.toLowerCase());
-      return matchSearch;
-    });
-
-    const featuredArticle = filteredNews[0];
-    const restArticles = filteredNews.slice(1);
-
-    return (
-      <div className="py-24 bg-gray-50 min-h-screen">
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <h1 className="text-5xl md:text-6xl mb-4 text-center font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Tin tức & Cẩm nang</h1>
-          <p className="text-center text-gray-500 mb-12 font-light max-w-md mx-auto">
-            Nơi chia sẻ các bài viết về kiến trúc tối giản, triết lý thiết kế và cập nhật tiến độ dự án.
-          </p>
-
-          {/* Search News */}
-          <div className="max-w-md mx-auto mb-16 relative">
-            <input 
-              type="text"
-              placeholder="Tìm kiếm bài viết..."
-              value={searchNewsQuery}
-              onChange={(e) => setSearchNewsQuery(e.target.value)}
-              className="w-full px-4 py-3 bg-white border border-gray-200 outline-none text-sm focus:border-gray-900 transition-colors pl-10 font-light"
-            />
-            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-            {searchNewsQuery && (
-              <button 
-                onClick={() => setSearchNewsQuery('')}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs"
-              >
-                Xóa
-              </button>
-            )}
-          </div>
-
-          {/* Featured Article */}
-          {featuredArticle && !searchNewsQuery && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20 bg-white p-6 md:p-8 border border-gray-100 hover:shadow-lg transition-shadow">
-              <div 
-                className="bg-gray-250 aspect-video overflow-hidden group cursor-pointer"
-                onClick={() => setSelectedArticle(featuredArticle)}
-              >
-                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
-                  src={featuredArticle.img} 
-                  alt={featuredArticle.title} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                />
-              </div>
-              <div className="flex flex-col justify-center">
-                <span className="text-sm uppercase tracking-widest text-gray-500 mb-4 block font-semibold">
-                  {featuredArticle.cat} • {featuredArticle.date}
-                </span>
-                <h2 
-                  onClick={() => setSelectedArticle(featuredArticle)}
-                  className="text-3xl md:text-4xl mb-6 leading-tight hover:text-gray-605 cursor-pointer transition-colors font-serif" 
-                  style={{ fontFamily: FONTS.heading, color: COLORS.primary }}
-                >
-                  {featuredArticle.title}
-                </h2>
-                <p className="text-gray-550 mb-8 leading-relaxed font-light text-sm">{featuredArticle.summary}</p>
-                <div>
-                   <button 
-                     onClick={() => setSelectedArticle(featuredArticle)}
-                     className="uppercase text-sm tracking-widest border-b border-gray-900 pb-1 font-semibold hover:text-gray-650 transition-colors"
-                   >
-                     Đọc tiếp
-                   </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Grid of matched articles */}
-          {filteredNews.length > 0 ? (
-            <div>
-              {searchNewsQuery && (
-                <h3 className="text-xl mb-8 font-light">
-                  Kết quả tìm kiếm cho "{searchNewsQuery}" ({filteredNews.length} bài viết):
-                </h3>
-              )}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {(searchNewsQuery ? filteredNews : restArticles).map((news) => (
-                  <div 
-                    key={news.id} 
-                    className="group cursor-pointer bg-white p-4 border border-gray-100 hover:shadow-lg transition-all flex flex-col justify-between"
-                    onClick={() => handleOpenArticle(news)}
-                  >
-                    <div>
-                      <div className="overflow-hidden mb-6 bg-gray-100 aspect-video">
-                        <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
-                          src={news.img} 
-                          alt={news.title} 
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                        />
-                      </div>
-                      <span className="text-xs uppercase tracking-widest text-gray-400 mb-2 block font-semibold">{news.cat} • {news.date}</span>
-                      <h3 className="text-lg group-hover:text-gray-605 transition-colors leading-snug font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>
-                        {news.title}
-                      </h3>
-                    </div>
-                    <div className="mt-4 pt-4 border-t border-gray-50">
-                      <span className="text-sm font-semibold uppercase tracking-wider text-gray-900 group-hover:underline">Đọc bài</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="text-center py-20 bg-white border border-dashed rounded-sm">
-              <Info size={48} className="mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl mb-2 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Không tìm thấy bài viết nào</h3>
-              <p className="text-gray-500 font-light">Vui lòng thử lại với từ khóa khác.</p>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const renderContact = () => {
-    if (contactSubmitted) {
-      return (
-        <div className="py-24 bg-white min-h-[60vh] flex items-center justify-center animate-in fade-in duration-300">
-          <div className="max-w-md w-full text-center px-6 py-12 bg-gray-50 border border-gray-200 rounded-sm">
-            <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Check size={36} />
-            </div>
-            <h2 className="text-3xl mb-4 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>
-              Gửi Yêu Cầu Thành Công!
-            </h2>
-            <p className="text-gray-500 mb-8 font-light text-sm leading-relaxed">
-              Cảm ơn <strong>{contactName}</strong>. Chuyên viên tư vấn của Minimal sẽ liên hệ lại với quý khách qua số điện thoại <strong className="text-gray-800">{contactPhone}</strong> hoặc email <strong className="text-gray-800">{contactEmail}</strong> trong vòng 15 phút.
-            </p>
-            <button 
-              onClick={() => {
-                setContactSubmitted(false);
-                setContactName('');
-                setContactPhone('');
-                setContactEmail('');
-                setContactMessage('');
-              }}
-              className="px-8 py-3 bg-gray-900 hover:bg-black text-white text-sm uppercase tracking-widest font-semibold transition-colors"
+            <select
+              value={filterPrice}
+              onChange={e => setFilterPrice(e.target.value)}
+              className="bg-white text-slate-800 px-3 py-2 rounded-lg font-bold focus:outline-none cursor-pointer"
             >
-              Gửi tin nhắn mới
-            </button>
-          </div>
-        </div>
-      );
-    }
+              <option value="all">Khoảng giá</option>
+              <option value="under-3">Dưới 3 Tỷ</option>
+              <option value="3-10">Từ 3 - 10 Tỷ</option>
+              <option value="above-10">Trên 10 Tỷ</option>
+            </select>
 
-    return (
-      <div className="py-24 bg-white min-h-screen">
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          <div className="flex flex-col md:flex-row gap-16">
-            <div className="w-full md:w-1/3">
-              <h1 className="text-5xl mb-8 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Liên hệ</h1>
-              <p className="text-gray-500 mb-12 font-light">Đội ngũ chuyên viên của Minimal luôn sẵn sàng hỗ trợ và tư vấn chi tiết về các dự án.</p>
-              
-              <div className="space-y-8">
-                <div>
-                  <h4 className="text-xs uppercase tracking-widest text-gray-400 mb-2 font-semibold">Văn phòng chính</h4>
-                  <p className="text-gray-800 font-light">Tầng 15, Tòa nhà Minimal, 123 Đường Tôn Đức Thắng, Quận 1, TP.HCM</p>
-                </div>
-                <div>
-                  <h4 className="text-xs uppercase tracking-widest text-gray-400 mb-2 font-semibold">Điện thoại</h4>
-                  <p className="text-gray-800 font-light">0909 123 456</p>
-                </div>
-                <div>
-                  <h4 className="text-xs uppercase tracking-widest text-gray-400 mb-2 font-semibold">Email</h4>
-                  <p className="text-gray-800 font-light">contact@minimal.vn</p>
-                </div>
-                <div>
-                  <h4 className="text-xs uppercase tracking-widest text-gray-400 mb-2 font-semibold">Giờ làm việc</h4>
-                  <p className="text-gray-800 font-light">Thứ 2 - Thứ 7: 8:00 - 18:00<br/>Chủ nhật: Đặt lịch hẹn trước</p>
-                </div>
-              </div>
-
-              {/* Interactive Google Map */}
-              <div className="mt-8 overflow-hidden border border-gray-200 shadow-sm flex flex-col h-48 bg-gray-50">
-                <div className="px-3.5 py-2 bg-gray-900 text-white flex items-center justify-between text-xs">
-                  <span className="font-medium text-gray-300 truncate">123 Tôn Đức Thắng, Q.1</span>
-                  <a
-                    href="https://www.google.com/maps/search/?api=1&query=123+T%C3%B4n+%C4%90%E1%BB%A9c+Th%E1%BA%AFng,+Qu%E1%BA%ADn+1,+TP.HCM"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-2 py-0.5 bg-white text-gray-900 font-semibold text-[10px] shrink-0 hover:bg-gray-200 transition-colors"
-                  >
-                    Mở Maps
-                  </a>
-                </div>
-                <div className="flex-1 w-full h-full">
-                  <iframe
-                    title="Bản đồ Minimal Tôn Đức Thắng"
-                    src="https://maps.google.com/maps?q=123+T%C3%B4n+%C4%90%E1%BB%A9c+Th%E1%BA%AFng,+Qu%E1%BA%ADn+1,+TP.HCM&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                    className="w-full h-full border-0"
-                    loading="lazy"
-                    allowFullScreen
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <div className="w-full md:w-2/3 bg-gray-50 p-8 md:p-12 border border-gray-100">
-              <h2 className="text-2xl mb-8 font-serif" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Gửi tin nhắn cho chúng tôi</h2>
-              {contactError && (
-                <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm">
-                  {contactError}
-                </div>
-              )}
-              <form className="space-y-6" onSubmit={handleContactSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs uppercase tracking-widest text-gray-550 mb-2 font-semibold">Họ và tên *</label>
-                    <input 
-                      type="text" 
-                      value={contactName}
-                      onChange={(e) => setContactName(e.target.value)}
-                      className="w-full px-0 py-3 bg-transparent border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors text-sm font-light" 
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs uppercase tracking-widest text-gray-550 mb-2 font-semibold">Số điện thoại *</label>
-                    <input 
-                      type="text" 
-                      value={contactPhone}
-                      onChange={(e) => setContactPhone(e.target.value)}
-                      className="w-full px-0 py-3 bg-transparent border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors text-sm font-light" 
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs uppercase tracking-widest text-gray-550 mb-2 font-semibold">Email *</label>
-                  <input 
-                    type="email" 
-                    value={contactEmail}
-                    onChange={(e) => setContactEmail(e.target.value)}
-                    className="w-full px-0 py-3 bg-transparent border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors text-sm font-light" 
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs uppercase tracking-widest text-gray-550 mb-2 font-semibold">Nội dung quan tâm</label>
-                  <textarea 
-                    rows={4} 
-                    value={contactMessage}
-                    onChange={(e) => setContactMessage(e.target.value)}
-                    className="w-full px-0 py-3 bg-transparent border-b border-gray-300 focus:outline-none focus:border-gray-900 transition-colors text-sm font-light"
-                  ></textarea>
-                </div>
-                <button 
-                  type="submit"
-                  className="uppercase text-sm tracking-widest bg-gray-900 text-white px-10 py-4 hover:bg-black transition-colors w-full md:w-auto font-semibold"
-                >
-                  Gửi yêu cầu
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Render Project Details Modal overlay
-  const renderProjectModal = () => {
-    if (!selectedProject) return null;
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto" onClick={() => setSelectedProject(null)}>
-        <div className="bg-white max-w-4xl w-full max-h-[90vh] overflow-y-auto relative animate-in fade-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
-          <button 
-            onClick={() => setSelectedProject(null)}
-            className="absolute top-4 right-4 p-2 bg-white/80 hover:bg-white rounded-full transition-colors shadow-sm z-10"
-          >
-            <X size={24} style={{ color: COLORS.primary }} />
-          </button>
-          
-          <div className="aspect-[21/9] w-full bg-gray-100 relative">
-            <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedProject.img} alt={selectedProject.name} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
-              <div>
-                <span className="px-3 py-1 bg-white/20 text-white backdrop-blur text-xs uppercase tracking-wider font-semibold inline-block mb-3">
-                  Phong cách {selectedProject.style}
-                </span>
-                <h2 className="text-3xl md:text-5xl text-white font-serif" style={{ fontFamily: FONTS.heading }}>
-                  {selectedProject.name}
-                </h2>
-              </div>
-            </div>
-          </div>
-          
-          <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="md:col-span-2 space-y-6">
-              <div>
-                <h3 className="text-xl font-semibold mb-3 font-serif" style={{ color: COLORS.primary }}>Mô tả dự án</h3>
-                <p className="text-gray-600 leading-relaxed font-light text-sm">{selectedProject.description}</p>
-              </div>
-              
-              <div>
-                <h3 className="text-xl font-semibold mb-3 font-serif" style={{ color: COLORS.primary }}>Đặc điểm nổi bật</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {selectedProject.features.map((feat, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-sm text-gray-600 font-light">
-                      <Check size={16} className="text-emerald-600 shrink-0" />
-                      <span>{feat}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-gray-50 p-6 border border-gray-100 rounded-sm space-y-6">
-              <h3 className="text-lg font-serif border-b pb-2 text-gray-805" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>Thông số chi tiết</h3>
-              <div className="space-y-3 text-sm font-light">
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Giá bán</span>
-                  <span className="font-bold text-gray-950" style={{ color: COLORS.gold }}>{selectedProject.priceLabel}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Vị trí</span>
-                  <span className="font-semibold text-gray-800">{selectedProject.loc}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Diện tích</span>
-                  <span className="font-semibold text-gray-800">{selectedProject.size} m²</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Phong cách</span>
-                  <span className="font-semibold text-gray-800">{selectedProject.style}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Thiết kế</span>
-                  <span className="font-semibold text-gray-800">{selectedProject.bedrooms} PN / {selectedProject.bathrooms} WC</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Bàn giao</span>
-                  <span className="font-semibold text-gray-800">{selectedProject.delivery}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Quy mô</span>
-                  <span className="font-semibold text-gray-800">{selectedProject.scale}</span>
-                </div>
-              </div>
-              
-              <button 
-                onClick={() => {
-                  setSelectedProject(null);
-                  setContactSubmitted(false);
-                  navigate('contact');
-                }}
-                className="w-full py-3 bg-gray-900 hover:bg-black text-white text-xs uppercase tracking-widest font-semibold transition-colors"
-              >
-                Nhận tư vấn mặt bằng
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Render Gallery Lightbox overlay
-  const renderGalleryLightbox = () => {
-    if (!selectedGalleryImg) return null;
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 animate-in fade-in duration-200" onClick={() => setSelectedGalleryImg(null)}>
-        <button 
-          onClick={() => setSelectedGalleryImg(null)}
-          className="absolute top-6 right-6 p-2 text-white/70 hover:text-white transition-colors z-10"
-        >
-          <X size={32} />
-        </button>
-        <div className="max-w-5xl max-h-[85vh] relative flex flex-col items-center justify-center" onClick={(e) => e.stopPropagation()}>
-          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedGalleryImg} alt="Gallery Lightbox" className="max-w-full max-h-[75vh] object-contain shadow-2xl" />
-          <p className="text-white/80 mt-4 text-center tracking-wide text-lg font-serif">
-            {GALLERY_ITEMS.find(item => item.img === selectedGalleryImg)?.title || 'Minimal Space Design'}
-          </p>
-        </div>
-      </div>
-    );
-  };
-
-  const renderNewsDetailPage = () => {
-    if (!selectedArticle) return null;
-    return (
-      <div className="pt-32 pb-32 bg-white">
-        <div className={`mx-auto px-6 ${MAX_W}`}>
-          {/* Breadcrumb & Navigation */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-6 mb-12">
-            <nav className="flex items-center gap-2 text-xs uppercase tracking-widest text-gray-500 font-medium">
-              <button onClick={() => navigate('home')} className="hover:text-gray-900 transition">Trang chủ</button>
-              <span>/</span>
-              <button onClick={() => navigate('news')} className="hover:text-gray-900 transition">Góc nhìn</button>
-              <span>/</span>
-              <span className="text-gray-900 font-bold truncate max-w-xs sm:max-w-md">{selectedArticle.title}</span>
-            </nav>
             <button
-              onClick={() => navigate('news')}
-              className="text-xs uppercase tracking-widest font-semibold flex items-center gap-1.5 px-4 py-2 border border-gray-300 text-gray-800 hover:bg-gray-50 transition"
+              onClick={() => navigate('nha-mat-tien')}
+              className="bg-[#D8232A] hover:bg-red-700 text-white font-black px-4 py-2 rounded-lg transition shadow flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
             >
-              <ChevronLeft size={16} /> Quay lại danh sách bài viết
+              <Search size={14} /> Tìm kiếm
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  );
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            <article className="lg:col-span-8 space-y-8">
-              <div className="flex items-center gap-3 text-xs uppercase tracking-widest text-gray-400 font-semibold">
-                <span className="px-2.5 py-1 bg-gray-100 text-gray-800">{selectedArticle.cat}</span>
-                <span>•</span>
-                <span>{selectedArticle.date}</span>
-              </div>
+  // ── RIGHT SIDEBAR COMPONENT ──
+  const renderRightSidebar = () => (
+    <aside className="space-y-6">
+      {/* Box 1: Quick Search Widget */}
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+        <div className="bg-[#0D3F8D] px-4 py-2.5 text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5">
+          <Search size={14} /> Tìm kiếm bất động sản
+        </div>
+        <div className="p-3.5 space-y-2 text-xs bg-slate-50 border-t border-slate-100">
+          <input
+            type="text"
+            placeholder="Nhập địa điểm cần tìm..."
+            value={searchLocation}
+            onChange={e => setSearchLocation(e.target.value)}
+            className="w-full bg-white border border-red-500 rounded-md px-3 py-2 text-xs focus:outline-none"
+          />
+          <select
+            value={filterPropType}
+            onChange={e => setFilterPropType(e.target.value)}
+            className="w-full bg-white border border-slate-300 rounded-md px-2.5 py-1.5 text-xs font-bold cursor-pointer"
+          >
+            <option value="all">Loại bất động sản</option>
+            <option value="biet-thu">Biệt thự</option>
+            <option value="nha-mat-tien">Nhà mặt tiền</option>
+            <option value="nha-ngo-hem">Nhà ngõ, hẻm</option>
+            <option value="phong-tro">Phòng trọ</option>
+          </select>
+          <select
+            value={filterDistrict}
+            onChange={e => setFilterDistrict(e.target.value)}
+            className="w-full bg-white border border-slate-300 rounded-md px-2.5 py-1.5 text-xs font-bold cursor-pointer"
+          >
+            <option value="all">Quận/ huyện</option>
+            <option value="Thanh Khê">Quận Thanh Khê</option>
+            <option value="Hải Châu">Quận Hải Châu</option>
+            <option value="Sơn Trà">Quận Sơn Trà</option>
+            <option value="Ngũ Hành Sơn">Quận Ngũ Hành Sơn</option>
+          </select>
+          <select
+            value={filterArea}
+            onChange={e => setFilterArea(e.target.value)}
+            className="w-full bg-white border border-slate-300 rounded-md px-2.5 py-1.5 text-xs font-bold cursor-pointer"
+          >
+            <option value="all">Diện tích</option>
+            <option value="under-50">Dưới 50 m²</option>
+            <option value="50-100">50 - 100 m²</option>
+            <option value="above-100">Trên 100 m²</option>
+          </select>
+          <select
+            value={filterPrice}
+            onChange={e => setFilterPrice(e.target.value)}
+            className="w-full bg-white border border-slate-300 rounded-md px-2.5 py-1.5 text-xs font-bold cursor-pointer"
+          >
+            <option value="all">Khoảng giá</option>
+            <option value="under-3">Dưới 3 Tỷ</option>
+            <option value="3-10">Từ 3 - 10 Tỷ</option>
+            <option value="above-10">Trên 10 Tỷ</option>
+          </select>
+          <button
+            onClick={() => navigate('nha-mat-tien')}
+            className="w-full bg-[#0D3F8D] hover:bg-blue-900 text-white font-black py-2 rounded-md transition cursor-pointer"
+          >
+            Tìm kiếm
+          </button>
+        </div>
+      </div>
 
-              <h1 className="text-3xl md:text-5xl font-serif text-gray-900 leading-tight" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>
-                {selectedArticle.title}
-              </h1>
+      {/* Box 2: VIP Ad Banner */}
+      <div className="rounded-xl overflow-hidden shadow-md relative group cursor-pointer" onClick={() => navigate('biet-thu')}>
+        <img
+          src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80"
+          alt="Biệt thự biển VIP"
+          onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
+          className="w-full h-48 object-cover group-hover:scale-105 transition duration-500"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-4 flex flex-col justify-end text-white text-center">
+          <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 bg-amber-400/20 px-2 py-0.5 rounded-full w-fit mx-auto mb-1">
+            VINPEARL RESORT
+          </span>
+          <h4 className="text-sm font-black uppercase">ĐẦU TƯ BIỆT THỰ BIỂN</h4>
+          <p className="text-[11px] text-amber-300 font-bold">Cam kết sinh lời 10%/năm</p>
+          <span className="mt-2 text-[10px] font-bold bg-red-600 text-white py-1 px-3 rounded w-fit mx-auto">XEM NGAY ›</span>
+        </div>
+      </div>
 
-              <div className="aspect-[16/9] w-full overflow-hidden bg-gray-100 shadow-sm">
-                <img src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
-              </div>
+      {/* Box 3: Bất Động Sản Bán Theo Quận */}
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+        <div className="bg-[#D8232A] px-4 py-2 text-white font-black text-xs uppercase tracking-wider">
+          BẤT ĐỘNG SẢN BÁN THEO QUẬN
+        </div>
+        <div className="p-3 space-y-1.5 text-xs font-bold text-slate-700">
+          {[
+            { label: 'Bán nhà Quận Hải Châu', district: 'Hải Châu' },
+            { label: 'Bán nhà Quận Thanh Khê', district: 'Thanh Khê' },
+            { label: 'Bán nhà Quận Sơn Trà', district: 'Sơn Trà' },
+            { label: 'Bán nhà Quận Ngũ Hành Sơn', district: 'Ngũ Hành Sơn' },
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              onClick={() => {
+                setFilterDistrict(item.district);
+                navigate('nha-mat-tien');
+              }}
+              className="flex items-center justify-between py-1.5 px-2 hover:bg-red-50 hover:text-red-600 rounded transition cursor-pointer"
+            >
+              <span>› {item.label}</span>
+              <span className="text-[10px] text-slate-400">›</span>
+            </div>
+          ))}
+        </div>
+      </div>
 
-              <div className="p-6 bg-gray-50 border-l-4 text-lg font-medium text-gray-800 leading-relaxed font-serif" style={{ borderColor: COLORS.gold }}>
-                {selectedArticle.summary}
-              </div>
+      {/* Box 4: Bất Động Sản Cho Thuê */}
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+        <div className="bg-[#D8232A] px-4 py-2 text-white font-black text-xs uppercase tracking-wider">
+          BẤT ĐỘNG SẢN CHO THUÊ
+        </div>
+        <div className="p-3 space-y-1.5 text-xs font-bold text-slate-700">
+          {[
+            { label: 'Cho thuê căn hộ dịch vụ', cat: 'phong-tro' },
+            { label: 'Cho thuê nhà mặt tiền', cat: 'nha-mat-tien' },
+            { label: 'Cho thuê phòng trọ giá rẻ', cat: 'phong-tro' },
+            { label: 'Cho thuê biệt thự nghỉ dưỡng', cat: 'biet-thu' },
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              onClick={() => {
+                setFilterPropType(item.cat);
+                navigate(item.cat);
+              }}
+              className="flex items-center justify-between py-1.5 px-2 hover:bg-red-50 hover:text-red-600 rounded transition cursor-pointer"
+            >
+              <span>› {item.label}</span>
+              <span className="text-[10px] text-slate-400">›</span>
+            </div>
+          ))}
+        </div>
+      </div>
 
-              <div className="space-y-6 text-gray-700 leading-relaxed text-base font-light">
-                {selectedArticle.content.split('\n\n').map((paragraph, idx) => (
-                  <p key={idx}>{paragraph}</p>
-                ))}
-              </div>
+      {/* Box 5: Bất Động Sản Theo Khoảng Giá */}
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+        <div className="bg-[#D8232A] px-4 py-2 text-white font-black text-xs uppercase tracking-wider">
+          BẤT ĐỘNG SẢN THEO KHOẢNG GIÁ
+        </div>
+        <div className="p-3 space-y-1.5 text-xs font-bold text-slate-700">
+          {[
+            { label: 'Nhà đất dưới 3 Tỷ', price: 'under-3' },
+            { label: 'Nhà đất từ 3 - 10 Tỷ', price: '3-10' },
+            { label: 'Nhà đất trên 10 Tỷ', price: 'above-10' },
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              onClick={() => {
+                setFilterPrice(item.price);
+                navigate('nha-mat-tien');
+              }}
+              className="flex items-center justify-between py-1.5 px-2 hover:bg-red-50 hover:text-red-600 rounded transition cursor-pointer"
+            >
+              <span>› {item.label}</span>
+              <span className="text-[10px] text-slate-400">›</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </aside>
+  );
 
-              <div className="p-8 bg-gray-900 text-white mt-12 flex flex-col sm:flex-row items-center justify-between gap-6">
-                <div>
-                  <h4 className="text-2xl font-serif mb-1" style={{ fontFamily: FONTS.heading }}>Tư Vấn Phong Cách Sống Minimal</h4>
-                  <p className="text-gray-400 text-xs font-light">Kết nối trực tiếp cùng chuyên viên tư vấn không gian nội thất cao cấp.</p>
+  // ── DENSE HORIZONTAL LISTING CARD (NOVIHOME STYLE) ──
+  const renderDenseListingRow = (item: PropertyItem) => (
+    <div
+      key={item.id}
+      onClick={() => handleOpenProperty(item)}
+      className="bg-white rounded-xl border border-slate-200 hover:border-red-500 p-3 flex flex-col sm:flex-row gap-3.5 shadow-xs hover:shadow-md transition cursor-pointer group"
+    >
+      <div className="w-full sm:w-44 h-36 sm:h-32 shrink-0 rounded-lg overflow-hidden bg-slate-100 relative">
+        <img
+          src={item.image}
+          alt={item.title}
+          onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
+          className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+        />
+        <span className="absolute top-1.5 left-1.5 px-2 py-0.5 bg-red-600 text-white font-bold text-[10px] rounded">
+          {item.type}
+        </span>
+      </div>
+
+      <div className="flex-1 flex flex-col justify-between space-y-1.5">
+        <div>
+          <h3 className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-red-600 transition leading-snug line-clamp-2">
+            🔥 {item.title}
+          </h3>
+          <p className="text-[11px] text-slate-500 line-clamp-2 mt-1 leading-relaxed">
+            {item.desc}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[11px] bg-slate-50 p-2 rounded-md border border-slate-100 font-medium">
+          <div>Giá: <strong className="text-red-600">{item.price}</strong></div>
+          <div>Diện tích: <strong>{item.area}</strong></div>
+          <div>Hướng: <strong>{item.direction}</strong></div>
+          <div>Phòng ngủ: <strong>{item.bedrooms} PN</strong></div>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-100 gap-2">
+          <div className="flex items-center gap-1 truncate">
+            <MapPin size={11} className="text-red-500 shrink-0" /> <span className="truncate">{item.location}</span>
+          </div>
+          <span className="text-red-600 font-bold shrink-0">Chi tiết ›</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ── HOMEPAGE RENDERER ──
+  const renderHomePage = () => {
+    const featuredItems = BDS02_PROPERTIES.filter(p => p.featured);
+    const thanhKheItems = BDS02_PROPERTIES.filter(p => p.district === 'Thanh Khê');
+    const sonTraItems = BDS02_PROPERTIES.filter(p => p.district === 'Sơn Trà');
+
+    return (
+      <div className="bg-[#F8FAFC] space-y-8 pb-12">
+        {renderHeroSearchBanner()}
+
+        <div className={`${MAX_W} mx-auto px-4`}>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Left Main Content (70%) */}
+            <div className="lg:col-span-8 space-y-8">
+              {/* 1. BẤT ĐỘNG SẢN NỔI BẬT */}
+              <section className="space-y-4">
+                <div className="bg-[#0D3F8D] px-4 py-2.5 rounded-t-lg text-white font-black text-xs uppercase tracking-wider flex items-center justify-between">
+                  <span>BẤT ĐỘNG SẢN NỔI BẬT</span>
+                  <span className="text-[10px] text-blue-200 font-medium">Cập nhật liên tục</span>
                 </div>
-                <button
-                  onClick={() => navigate('contact')}
-                  className="px-6 py-3.5 bg-white text-gray-900 hover:bg-gray-100 font-semibold uppercase tracking-widest text-xs shrink-0 transition"
-                >
-                  Liên Hệ Ngay
-                </button>
-              </div>
-            </article>
-
-            <aside className="lg:col-span-4 space-y-8">
-              <div className="bg-gray-50 p-8 border border-gray-100 space-y-6">
-                <h3 className="text-xl font-serif pb-4 border-b border-gray-200 uppercase tracking-wider" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>
-                  Bài Viết Liên Quan
-                </h3>
-                <div className="space-y-6">
-                  {NEWS_ARTICLES.filter(n => n.id !== selectedArticle.id).slice(0, 4).map(item => (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {featuredItems.map(item => (
                     <div
                       key={item.id}
-                      onClick={() => handleOpenArticle(item)}
-                      className="flex gap-4 items-start group cursor-pointer"
+                      onClick={() => handleOpenProperty(item)}
+                      className="bg-white rounded-xl border border-slate-200 hover:border-red-500 overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer group flex flex-col justify-between"
                     >
-                      <img
-                        src={item.img}
-                        alt={item.title}
-                        className="w-24 h-16 object-cover flex-shrink-0 group-hover:opacity-80 transition"
-                      />
-                      <div>
-                        <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider block mb-1">{item.date}</span>
-                        <h4 className="text-xs font-medium text-gray-900 group-hover:text-gray-500 transition line-clamp-2 leading-snug font-serif" style={{ fontFamily: FONTS.heading }}>
+                      <div className="h-36 relative overflow-hidden bg-slate-100">
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
+                          className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                        />
+                        <span className="absolute bottom-1.5 left-1.5 px-2 py-0.5 bg-black/70 text-white font-bold text-[10px] rounded">
+                          {item.type}
+                        </span>
+                      </div>
+                      <div className="p-3 space-y-1.5 flex-1 flex flex-col justify-between">
+                        <h4 className="font-bold text-xs text-slate-900 group-hover:text-red-600 transition line-clamp-2 leading-snug">
                           {item.title}
                         </h4>
+                        <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                          <span className="font-black text-xs text-red-600">{item.price}</span>
+                          <span className="text-[10px] text-slate-400">{item.area}</span>
+                        </div>
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
-            </aside>
+              </section>
+
+              {/* 2. TIN BẤT ĐỘNG SẢN QUẬN THANH KHÊ */}
+              <section className="space-y-4">
+                <div className="bg-[#0D3F8D] px-4 py-2.5 rounded-t-lg text-white font-black text-xs uppercase tracking-wider flex items-center justify-between">
+                  <span>TIN BẤT ĐỘNG SẢN QUẬN THANH KHÊ</span>
+                  <button onClick={() => navigate('nha-mat-tien')} className="text-[11px] text-blue-200 hover:text-white font-bold">
+                    Xem tất cả ›
+                  </button>
+                </div>
+                <div className="space-y-3">
+                  {thanhKheItems.map(renderDenseListingRow)}
+                </div>
+                <div className="flex justify-center pt-2">
+                  <button
+                    onClick={() => { setFilterDistrict('Thanh Khê'); navigate('nha-mat-tien'); }}
+                    className="px-5 py-2 border border-blue-700 hover:bg-blue-50 text-blue-800 rounded-full font-bold text-xs transition cursor-pointer"
+                  >
+                    Xem thêm nhà đất Thanh Khê ›
+                  </button>
+                </div>
+              </section>
+
+              {/* 3. TIN BẤT ĐỘNG SẢN QUẬN SƠN TRÀ */}
+              <section className="space-y-4">
+                <div className="bg-[#0D3F8D] px-4 py-2.5 rounded-t-lg text-white font-black text-xs uppercase tracking-wider flex items-center justify-between">
+                  <span>TIN BẤT ĐỘNG SẢN QUẬN SƠN TRÀ</span>
+                  <button onClick={() => navigate('biet-thu')} className="text-[11px] text-blue-200 hover:text-white font-bold">
+                    Xem tất cả ›
+                  </button>
+                </div>
+                <div className="space-y-3">
+                  {sonTraItems.map(renderDenseListingRow)}
+                </div>
+                <div className="flex justify-center pt-2">
+                  <button
+                    onClick={() => { setFilterDistrict('Sơn Trà'); navigate('biet-thu'); }}
+                    className="px-5 py-2 border border-blue-700 hover:bg-blue-50 text-blue-800 rounded-full font-bold text-xs transition cursor-pointer"
+                  >
+                    Xem thêm nhà đất Sơn Trà ›
+                  </button>
+                </div>
+              </section>
+
+              {/* 4. CẨM NANG & TIN TỨC BẤT ĐỘNG SẢN */}
+              <section className="space-y-4">
+                <div className="bg-[#0D3F8D] px-4 py-2.5 rounded-t-lg text-white font-black text-xs uppercase tracking-wider flex items-center justify-between">
+                  <span>CẨM NANG - TIN TỨC</span>
+                  <button onClick={() => navigate('news')} className="text-[11px] text-blue-200 hover:text-white font-bold">
+                    Xem tất cả ›
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {BDS02_NEWS.map(art => (
+                    <div
+                      key={art.id}
+                      onClick={() => handleOpenArticle(art)}
+                      className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer group flex flex-col justify-between"
+                    >
+                      <div className="h-32 overflow-hidden bg-slate-100">
+                        <img
+                          src={art.image}
+                          alt={art.title}
+                          onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
+                          className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                        />
+                      </div>
+                      <div className="p-3 space-y-1.5 flex-1 flex flex-col justify-between">
+                        <h4 className="font-bold text-xs text-slate-900 group-hover:text-red-600 transition line-clamp-2 leading-snug">
+                          {art.title}
+                        </h4>
+                        <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+                          <span>{art.date}</span>
+                          <span className="text-red-600 font-bold">&lt;&lt; Xem chi tiết &gt;&gt;</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </div>
+
+            {/* Right Sidebar (30%) */}
+            <div className="lg:col-span-4">
+              {renderRightSidebar()}
+            </div>
           </div>
         </div>
       </div>
     );
   };
 
-  return (
-    <div className="min-h-screen text-gray-900" style={{ backgroundColor: COLORS.bg, fontFamily: FONTS.body }}>
-      {renderHeader()}
-      <main>
-        {['home'].includes(currentPage) && renderHome()}
-        {['projects', 'du-an', 'san-pham'].includes(currentPage) && renderProjects()}
-        {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAbout()}
-        {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGallery()}
-        {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNews()}
-        {['news-detail'].includes(currentPage) && renderNewsDetailPage()}
-        {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContact()}
-        {!['home', 'projects', 'du-an', 'san-pham', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'news-detail', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
-      </main>
-      {renderFooter()}
+  // ── LISTING CATALOG PAGE (BIỆT THỰ, NHÀ MẶT TIỀN, NHÀ NGÕ HẺM, PHÒNG TRỌ) ──
+  const renderListingCatalogPage = () => {
+    const currentTitle = PAGE_NAMES_VN[currentPage] || 'Danh Sách Nhà Đất';
+    return (
+      <div className="bg-[#F8FAFC] py-6 min-h-screen">
+        <div className={`${MAX_W} mx-auto px-4 space-y-4`}>
+          {/* Breadcrumb */}
+          <div className="text-xs text-slate-500 flex items-center gap-1.5">
+            <span onClick={() => navigate('home')} className="hover:text-red-600 cursor-pointer">Trang chủ</span>
+            <span>/</span>
+            <span className="text-red-600 font-extrabold">{currentTitle}</span>
+          </div>
 
-      {/* Detail Overlays */}
-      {selectedProject && renderProjectModal()}
-      {selectedGalleryImg && renderGalleryLightbox()}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-8 space-y-4">
+              <div className="bg-[#0D3F8D] px-4 py-3 rounded-t-lg text-white font-black text-sm uppercase tracking-wider flex items-center justify-between">
+                <span>{currentTitle}</span>
+                <span className="text-xs font-normal text-blue-200">Hiển thị {filteredList.length} kết quả</span>
+              </div>
+
+              {filteredList.length === 0 ? (
+                <div className="bg-white p-12 rounded-xl text-center border border-slate-200 shadow-xs">
+                  <p className="text-sm font-bold text-slate-600">Không tìm thấy bất động sản nào theo tiêu chí đã chọn.</p>
+                  <button
+                    onClick={() => { setFilterPropType('all'); setFilterDistrict('all'); setFilterPrice('all'); setSearchLocation(''); }}
+                    className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition cursor-pointer"
+                  >
+                    Xem tất cả nhà đất
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {filteredList.map(renderDenseListingRow)}
+                </div>
+              )}
+            </div>
+
+            <div className="lg:col-span-4">
+              {renderRightSidebar()}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ── NEWS CATALOG PAGE ──
+  const renderNewsPage = () => (
+    <div className="bg-[#F8FAFC] py-6 min-h-screen">
+      <div className={`${MAX_W} mx-auto px-4 space-y-4`}>
+        <div className="text-xs text-slate-500 flex items-center gap-1.5">
+          <span onClick={() => navigate('home')} className="hover:text-red-600 cursor-pointer">Trang chủ</span>
+          <span>/</span>
+          <span className="text-red-600 font-extrabold">Tin Tức & Cẩm Nang</span>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-8 space-y-4">
+            <div className="bg-[#0D3F8D] px-4 py-3 rounded-t-lg text-white font-black text-sm uppercase tracking-wider">
+              TIN BẤT ĐỘNG SẢN TIN TỨC
+            </div>
+            <div className="space-y-4">
+              {BDS02_NEWS.map(art => (
+                <div
+                  key={art.id}
+                  onClick={() => handleOpenArticle(art)}
+                  className="bg-white rounded-xl border border-slate-200 hover:border-red-500 p-4 flex flex-col sm:flex-row gap-4 shadow-xs hover:shadow-md transition cursor-pointer group"
+                >
+                  <div className="w-full sm:w-48 h-36 shrink-0 rounded-lg overflow-hidden bg-slate-100">
+                    <img
+                      src={art.image}
+                      alt={art.title}
+                      onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
+                      className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                    />
+                  </div>
+                  <div className="flex-1 flex flex-col justify-between space-y-2">
+                    <div>
+                      <h3 className="font-bold text-sm sm:text-base text-red-600 group-hover:text-blue-900 transition leading-snug">
+                        {art.title}
+                      </h3>
+                      <div className="text-[10px] text-slate-400 mt-1">{art.date} • Tác giả: {art.author}</div>
+                      <p className="text-xs text-slate-600 line-clamp-2 mt-2 leading-relaxed">
+                        {art.desc}
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold text-slate-500 group-hover:text-red-600">&lt;&lt; Xem chi tiết tin đăng &gt;&gt;</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="lg:col-span-4">
+            {renderRightSidebar()}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ── NEWS DETAIL PAGE ──
+  const renderArticleDetailPage = () => (
+    <div className="bg-[#F8FAFC] py-6 min-h-screen">
+      <div className={`${MAX_W} mx-auto px-4 space-y-4`}>
+        <div className="text-xs text-slate-500 flex items-center gap-1.5">
+          <span onClick={() => navigate('home')} className="hover:text-red-600 cursor-pointer">Trang chủ</span>
+          <span>/</span>
+          <span onClick={() => navigate('news')} className="hover:text-red-600 cursor-pointer">Tin tức</span>
+          <span>/</span>
+          <span className="text-red-600 font-extrabold truncate">{selectedArticle.title}</span>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-6">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
+              {selectedArticle.title}
+            </h1>
+            <div className="flex items-center gap-4 text-xs text-slate-400 border-b border-slate-100 pb-3">
+              <span>Ngày đăng: {selectedArticle.date}</span>
+              <span>•</span>
+              <span>Tác giả: {selectedArticle.author}</span>
+              <span>•</span>
+              <span>{selectedArticle.views} lượt xem</span>
+            </div>
+
+            <div className="rounded-xl overflow-hidden shadow-sm">
+              <img
+                src={selectedArticle.image}
+                alt={selectedArticle.title}
+                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
+                className="w-full h-80 object-cover"
+              />
+            </div>
+
+            <div className="space-y-4 text-sm text-slate-700 leading-relaxed">
+              {selectedArticle.content.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
+
+            <div className="pt-4 border-t border-slate-100 flex flex-wrap gap-2 items-center">
+              <span className="text-xs font-bold text-slate-500">Từ khóa:</span>
+              {selectedArticle.tags.map((tag, i) => (
+                <span key={i} className="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs font-medium rounded-md">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="lg:col-span-4">
+            {renderRightSidebar()}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ── PROPERTY DETAIL PAGE ──
+  const renderPropertyDetailPage = () => (
+    <div className="bg-[#F8FAFC] py-6 min-h-screen">
+      <div className={`${MAX_W} mx-auto px-4 space-y-4`}>
+        <div className="text-xs text-slate-500 flex items-center gap-1.5">
+          <span onClick={() => navigate('home')} className="hover:text-red-600 cursor-pointer">Trang chủ</span>
+          <span>/</span>
+          <span onClick={() => navigate(selectedProperty.category)} className="hover:text-red-600 cursor-pointer">{selectedProperty.type}</span>
+          <span>/</span>
+          <span className="text-red-600 font-extrabold truncate">{selectedProperty.title}</span>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-8 space-y-6">
+            {/* Title & Price Header */}
+            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-3">
+              <h1 className="text-lg sm:text-2xl font-black text-slate-900 leading-snug">
+                {selectedProperty.title}
+              </h1>
+              <p className="text-xs text-slate-500 flex items-center gap-1.5">
+                <MapPin size={14} className="text-red-500 shrink-0" /> {selectedProperty.location}
+              </p>
+              <div className="flex flex-wrap items-center justify-between pt-3 border-t border-slate-100 gap-3">
+                <span className="text-xl sm:text-2xl font-black text-red-600">{selectedProperty.price}</span>
+                <div className="flex items-center gap-2 text-xs font-bold text-slate-600">
+                  <span>Diện tích: {selectedProperty.area}</span>
+                  <span>•</span>
+                  <span>Hướng: {selectedProperty.direction}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Photo Gallery */}
+            <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs space-y-3">
+              <div className="h-80 sm:h-96 rounded-lg overflow-hidden bg-slate-100">
+                <img
+                  src={selectedProperty.gallery[activeGalleryIdx] || selectedProperty.image}
+                  alt={selectedProperty.title}
+                  onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="grid grid-cols-4 gap-2.5">
+                {selectedProperty.gallery.map((img, i) => (
+                  <div
+                    key={i}
+                    onClick={() => setActiveGalleryIdx(i)}
+                    className={`h-20 rounded-lg overflow-hidden cursor-pointer border-2 transition ${
+                      activeGalleryIdx === i ? 'border-red-600' : 'border-transparent opacity-70 hover:opacity-100'
+                    }`}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Specifications */}
+            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
+              <h3 className="font-black text-sm text-[#0D3F8D] uppercase tracking-wider border-b border-slate-100 pb-2">
+                THÔNG SỐ CHI TIẾT BẤT ĐỘNG SẢN
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
+                <div className="p-3 bg-slate-50 rounded-lg">Mức giá: <strong className="text-red-600">{selectedProperty.price}</strong></div>
+                <div className="p-3 bg-slate-50 rounded-lg">Diện tích: <strong>{selectedProperty.area}</strong></div>
+                <div className="p-3 bg-slate-50 rounded-lg">Số phòng ngủ: <strong>{selectedProperty.bedrooms} PN</strong></div>
+                <div className="p-3 bg-slate-50 rounded-lg">Số phòng tắm: <strong>{selectedProperty.bathrooms} WC</strong></div>
+                <div className="p-3 bg-slate-50 rounded-lg">Hướng nhà: <strong>{selectedProperty.direction}</strong></div>
+                <div className="p-3 bg-slate-50 rounded-lg">Pháp lý: <strong>{selectedProperty.legal}</strong></div>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-3">
+              <h3 className="font-black text-sm text-[#0D3F8D] uppercase tracking-wider border-b border-slate-100 pb-2">
+                MÔ TẢ CHI TIẾT
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{selectedProperty.desc}</p>
+            </div>
+
+            {/* Mortgage Calculator */}
+            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
+              <h3 className="font-black text-sm text-[#0D3F8D] uppercase tracking-wider border-b border-slate-100 pb-2 flex items-center gap-1.5">
+                <Calculator size={16} /> BẢNG TÍNH LÃI SUẤT VAY MUA NHÀ
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                <div>
+                  <label className="font-bold text-slate-600 block mb-1">Tỷ lệ vay (%)</label>
+                  <select
+                    value={loanPercent}
+                    onChange={e => setLoanPercent(Number(e.target.value))}
+                    className="w-full border border-slate-300 rounded p-2 font-bold cursor-pointer"
+                  >
+                    <option value={50}>50% giá trị nhà</option>
+                    <option value={70}>70% giá trị nhà</option>
+                    <option value={80}>80% giá trị nhà</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="font-bold text-slate-600 block mb-1">Thời gian vay</label>
+                  <select
+                    value={loanYears}
+                    onChange={e => setLoanYears(Number(e.target.value))}
+                    className="w-full border border-slate-300 rounded p-2 font-bold cursor-pointer"
+                  >
+                    <option value={10}>10 năm (120 tháng)</option>
+                    <option value={15}>15 năm (180 tháng)</option>
+                    <option value={20}>20 năm (240 tháng)</option>
+                    <option value={25}>25 năm (300 tháng)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="font-bold text-slate-600 block mb-1">Lãi suất (%/năm)</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={interestRate}
+                    onChange={e => setInterestRate(Number(e.target.value))}
+                    className="w-full border border-slate-300 rounded p-2 font-bold"
+                  />
+                </div>
+              </div>
+              <div className="p-4 bg-blue-50 rounded-xl grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-slate-800">
+                <div>Số tiền vay: <strong className="text-blue-900 block font-black">{(mortgageCalc.loanAmount / 1_000_000_000).toFixed(2)} Tỷ</strong></div>
+                <div>Gốc + Lãi tháng đầu: <strong className="text-red-600 block font-black">{(mortgageCalc.monthlyPayment / 1_000_000).toFixed(1)} Triệu/tháng</strong></div>
+                <div>Tổng lãi phải trả: <strong className="text-slate-900 block font-black">{(mortgageCalc.totalInterest / 1_000_000_000).toFixed(2)} Tỷ</strong></div>
+              </div>
+            </div>
+
+            {/* Google Map Embed */}
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+              <div className="bg-[#0D3F8D] px-4 py-2 text-white font-black text-xs uppercase">
+                VỊ TRÍ BẤT ĐỘNG SẢN TRÊN BẢN ĐỒ
+              </div>
+              <iframe
+                title="Bản đồ vị trí BĐS"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3833.918908754117!2d108.20455017585577!3d16.069695639433436!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314218338e55e0a1%3A0x6b30f5b119cb4974!2zxJDDoCBO4bq1bmcsIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1700000000000!5m2!1svi!2s"
+                width="100%"
+                height="280"
+                style={{ border: 0 }}
+                loading="lazy"
+              />
+            </div>
+          </div>
+
+          <div className="lg:col-span-4 space-y-6">
+            {/* Agent Contact Card */}
+            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4 text-center">
+              <div className="w-20 h-20 rounded-full overflow-hidden mx-auto border-2 border-red-600 shadow-md">
+                <img src={selectedProperty.author.avatar} alt="" className="w-full h-full object-cover" />
+              </div>
+              <div>
+                <h4 className="font-black text-base text-slate-900">{selectedProperty.author.name}</h4>
+                <p className="text-xs text-slate-400">Chuyên viên tư vấn khu vực {selectedProperty.district}</p>
+              </div>
+              <div className="space-y-2 pt-2">
+                <a
+                  href={`tel:${selectedProperty.author.phone}`}
+                  className="block w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-black text-xs rounded-lg shadow transition cursor-pointer"
+                >
+                  📞 GỌI {selectedProperty.author.phone}
+                </a>
+                <a
+                  href={`https://zalo.me/${selectedProperty.author.zalo}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs rounded-lg shadow transition cursor-pointer"
+                >
+                  💬 CHAT ZALO VỚI CHUYÊN VIÊN
+                </a>
+              </div>
+            </div>
+
+            {renderRightSidebar()}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ── CONTACT & FEEDBACK PAGE (AS SHOWN IN MEDIA SCREENSHOT) ──
+  const renderContactPage = () => (
+    <div className="bg-[#F8FAFC] space-y-8 pb-12 min-h-screen">
+      {renderHeroSearchBanner()}
+
+      <div className={`${MAX_W} mx-auto px-4`}>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-5">
+            <h2 className="text-base sm:text-lg font-black text-[#0D3F8D] leading-snug">
+              Thông tin góp ý - phản hồi của bạn sẽ giúp chúng tôi phục vụ bạn ngày càng tốt hơn
+            </h2>
+
+            <form onSubmit={handleFeedbackSubmit} className="space-y-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
+                <label className="font-bold text-slate-700">Họ tên:</label>
+                <input
+                  type="text"
+                  placeholder="Nhập họ tên..."
+                  value={feedbackForm.name}
+                  onChange={e => setFeedbackForm({ ...feedbackForm, name: e.target.value })}
+                  required
+                  className="sm:col-span-3 border border-slate-300 rounded-md p-2.5 focus:outline-none focus:border-blue-700 bg-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
+                <label className="font-bold text-slate-700">Số điện thoại:</label>
+                <input
+                  type="tel"
+                  placeholder="Nhập số điện thoại..."
+                  value={feedbackForm.phone}
+                  onChange={e => setFeedbackForm({ ...feedbackForm, phone: e.target.value })}
+                  required
+                  className="sm:col-span-3 border border-slate-300 rounded-md p-2.5 focus:outline-none focus:border-blue-700 bg-white font-bold text-blue-700"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
+                <label className="font-bold text-slate-700">Địa chỉ:</label>
+                <input
+                  type="text"
+                  placeholder="Nhập địa chỉ..."
+                  value={feedbackForm.address}
+                  onChange={e => setFeedbackForm({ ...feedbackForm, address: e.target.value })}
+                  className="sm:col-span-3 border border-slate-300 rounded-md p-2.5 focus:outline-none focus:border-blue-700 bg-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2">
+                <label className="font-bold text-slate-700">Tiêu đề:</label>
+                <input
+                  type="text"
+                  placeholder="Nhập tiêu đề..."
+                  value={feedbackForm.subject}
+                  onChange={e => setFeedbackForm({ ...feedbackForm, subject: e.target.value })}
+                  className="sm:col-span-3 border border-slate-300 rounded-md p-2.5 focus:outline-none focus:border-blue-700 bg-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-4 items-start gap-2">
+                <label className="font-bold text-slate-700 pt-2">Nội dung:</label>
+                <textarea
+                  rows={5}
+                  placeholder="Nội dung liên hệ / góp ý..."
+                  value={feedbackForm.content}
+                  onChange={e => setFeedbackForm({ ...feedbackForm, content: e.target.value })}
+                  required
+                  className="sm:col-span-3 border border-slate-300 rounded-md p-2.5 focus:outline-none focus:border-blue-700 bg-white"
+                />
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 bg-[#0D3F8D] hover:bg-blue-900 text-white font-black text-xs rounded-md transition shadow-md cursor-pointer active:scale-95"
+                >
+                  GỬI THÔNG TIN
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div className="lg:col-span-4">
+            {renderRightSidebar()}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ── CONSIGNMENT PAGE (KÝ GỬI NHÀ ĐẤT) ──
+  const renderConsignmentPage = () => (
+    <div className="bg-[#F8FAFC] py-8 min-h-screen">
+      <div className={`${MAX_W} mx-auto px-4 max-w-4xl space-y-6`}>
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-md space-y-6">
+          <div className="text-center space-y-2">
+            <span className="px-3 py-1 bg-red-100 text-red-600 font-bold text-xs rounded-full">
+              DỊCH VỤ CHUYÊN NGHIỆP
+            </span>
+            <h1 className="text-2xl font-black text-slate-900">KÝ GỬI BẤT ĐỘNG SẢN CHÍNH CHỦ</h1>
+            <p className="text-xs text-slate-500 max-w-md mx-auto">
+              Hệ thống tiếp cận hơn 50,000 khách mua thực mỗi tháng. Cam kết bảo mật thông tin và thẩm định giá chuẩn xác.
+            </p>
+          </div>
+
+          <form onSubmit={handleConsignmentSubmit} className="space-y-4 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Họ & Tên (*)</label>
+                <input
+                  type="text"
+                  placeholder="Ví dụ: Nguyễn Văn A..."
+                  value={consignmentForm.name}
+                  onChange={e => setConsignmentForm({ ...consignmentForm, name: e.target.value })}
+                  required
+                  className="w-full border border-slate-300 rounded-lg p-2.5 bg-white"
+                />
+              </div>
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Số điện thoại (*)</label>
+                <input
+                  type="tel"
+                  placeholder="Ví dụ: 0972.939.xxx..."
+                  value={consignmentForm.phone}
+                  onChange={e => setConsignmentForm({ ...consignmentForm, phone: e.target.value })}
+                  required
+                  className="w-full border border-slate-300 rounded-lg p-2.5 bg-white font-bold text-blue-700"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Loại BĐS Ký Gửi</label>
+                <select
+                  value={consignmentForm.propType}
+                  onChange={e => setConsignmentForm({ ...consignmentForm, propType: e.target.value })}
+                  className="w-full border border-slate-300 rounded-lg p-2.5 bg-white font-bold"
+                >
+                  <option value="Nhà mặt tiền">Nhà mặt tiền</option>
+                  <option value="Biệt thự">Biệt thự</option>
+                  <option value="Nhà ngõ hẻm">Nhà ngõ, hẻm</option>
+                  <option value="Phòng trọ">Phòng trọ / Căn hộ dịch vụ</option>
+                  <option value="Đất nền">Đất nền dự án</option>
+                </select>
+              </div>
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Mức giá kỳ vọng (VNĐ)</label>
+                <input
+                  type="text"
+                  placeholder="Ví dụ: 5.5 Tỷ..."
+                  value={consignmentForm.price}
+                  onChange={e => setConsignmentForm({ ...consignmentForm, price: e.target.value })}
+                  className="w-full border border-slate-300 rounded-lg p-2.5 bg-white"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="font-bold text-slate-700 block mb-1">Địa chỉ chi tiết bất động sản (*)</label>
+              <input
+                type="text"
+                placeholder="Số nhà, tên đường, phường/xã, quận/huyện..."
+                value={consignmentForm.address}
+                onChange={e => setConsignmentForm({ ...consignmentForm, address: e.target.value })}
+                required
+                className="w-full border border-slate-300 rounded-lg p-2.5 bg-white"
+              />
+            </div>
+
+            <div>
+              <label className="font-bold text-slate-700 block mb-1">Ghi chú bổ sung (diện tích, số tầng, tình trạng pháp lý...)</label>
+              <textarea
+                rows={4}
+                placeholder="Mô tả thêm về bất động sản của bạn..."
+                value={consignmentForm.note}
+                onChange={e => setConsignmentForm({ ...consignmentForm, note: e.target.value })}
+                className="w-full border border-slate-300 rounded-lg p-2.5 bg-white"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3 bg-[#D8232A] hover:bg-red-700 text-white font-black text-xs rounded-xl shadow-lg transition cursor-pointer"
+            >
+              GỬI YÊU CẦU KÝ GỬI NGAY
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ── ABOUT PAGE ──
+  const renderAboutPage = () => (
+    <div className="bg-[#F8FAFC] py-8 min-h-screen">
+      <div className={`${MAX_W} mx-auto px-4 max-w-4xl space-y-6`}>
+        <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm space-y-6">
+          <h1 className="text-2xl font-black text-[#0D3F8D]">VỀ CHÚNG TÔI — SÀN GIAO DỊCH BẤT ĐỘNG SẢN</h1>
+          <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+            Chúng tôi tự hào là đơn vị phân phối và môi giới bất động sản uy tín hàng đầu, chuyên cung cấp các giải pháp mua bán, cho thuê nhà mặt tiền, biệt thự nghỉ dưỡng, nhà phố và căn hộ dịch vụ cao cấp.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-100 text-center">
+            <div className="p-4 bg-slate-50 rounded-xl">
+              <div className="text-2xl font-black text-red-600">10+ Năm</div>
+              <div className="text-xs text-slate-500 mt-1">Kinh nghiệm thị trường</div>
+            </div>
+            <div className="p-4 bg-slate-50 rounded-xl">
+              <div className="text-2xl font-black text-[#0D3F8D]">5,000+</div>
+              <div className="text-xs text-slate-500 mt-1">Giao dịch thành công</div>
+            </div>
+            <div className="p-4 bg-slate-50 rounded-xl">
+              <div className="text-2xl font-black text-amber-500">100%</div>
+              <div className="text-xs text-slate-500 mt-1">Pháp lý minh bạch</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className={`min-h-screen flex flex-col justify-between bg-[#F8FAFC] font-sans antialiased text-slate-800 relative ${isSmall ? 'text-xs' : ''}`}>
+      {renderHeader()}
+      <main className="flex-1 w-full">
+        {currentPage === 'home' && renderHomePage()}
+        {['biet-thu', 'nha-mat-tien', 'nha-ngo-hem', 'phong-tro', 'can-ho'].includes(currentPage) && renderListingCatalogPage()}
+        {currentPage === 'news' && renderNewsPage()}
+        {currentPage === 'property-detail' && renderPropertyDetailPage()}
+        {currentPage === 'news-detail' && renderArticleDetailPage()}
+        {currentPage === 'ky-gui' && renderConsignmentPage()}
+        {currentPage === 'about' && renderAboutPage()}
+        {currentPage === 'contact' && renderContactPage()}
+        {!['home', 'biet-thu', 'nha-mat-tien', 'nha-ngo-hem', 'phong-tro', 'can-ho', 'news', 'property-detail', 'news-detail', 'ky-gui', 'about', 'contact'].includes(currentPage) && renderHomePage()}
+      </main>
+      <UniversalTemplateFooter
+        company={company}
+        templateName="BDS-02 (Novihome Portal Pro)"
+        onNavigate={navigate}
+        zaloPhone={selectedProperty?.author?.zalo}
+        hotlinePhone={company?.phone}
+      />
     </div>
   );
 }
-
