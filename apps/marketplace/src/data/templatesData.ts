@@ -1827,6 +1827,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "KHỞI ĐẦU CUỘC SỐNG THUẦN KHIẾT GIỮA THIÊN NHIÊN",
       heroSubtitle: "Hơn 12.000 biệt thự đảo, farmstay sinh thái và căn hộ vườn treo chuẩn LEED."
     }
+  },
+  // ─── PORTAL 07. COASTAL & RESORT LIVING PORTAL ─────────────────────────────
+  {
+    id: "portal-07",
+    name: "Template #07 - Coastal & Resort Living Portal",
+    slug: "portal-07",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #07",
+    badgeBg: "#0284C7",
+    badgeColor: "#FFFFFF",
+    accentColor: "#0284C7",
+    description: "Cổng thông tin và sàn giao dịch bất động sản nghỉ dưỡng biển, condotel 5 sao và biệt thự mặt biển. Tông màu Xanh Đại Dương & Cát Vàng nhiệt đới, hiển thị cự ly ra bãi tắm và cam kết dòng tiền cho thuê %/năm.",
+    shortDescription: "BĐS nghỉ dưỡng biển · Condotel 5 sao · Cam kết dòng tiền Cashflow",
+    thumbnail: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục đậm chất đại dương với tông Xanh Biển & Cát Vàng nhiệt đới",
+      "Thẻ tin Ocean View Wide Card hiển thị cự ly ra biển (50m/100m)",
+      "Tích hợp bảng tính bài toán dòng tiền Cashflow & lợi nhuận cho thuê",
+      "Trang chi tiết BĐS kèm chính sách chia sẻ doanh thu và đơn vị vận hành",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án, Cẩm nang, Giới thiệu, Liên hệ",
+      "Kết nối thông tin các thủ phủ du lịch biển: Phú Quốc, Đà Nẵng, Nha Trang"
+    ],
+    priceBuy: 749000,
+    priceBuySource: 2190000,
+    priceRentMonthly: 169000,
+    isActive: true,
+    sortOrder: 31,
+    targetAudience: ["Sàn phân phối BĐS nghỉ dưỡng ven biển", "Đại lý bán condotel và shophouse biển Sun Group / Vingroup", "Đơn vị quản lý vận hành cho thuê biệt thự biển"],
+    highlights: ["Ocean View 16:9 Cards", "Cashflow Yield Calculator", "Distance to Beach Meters", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["OceanCardModule", "YieldCalculatorModule", "ResortProjectModule", "CoastalTourismModule"],
+    benefits: ["Tăng 340% niềm tin nhà đầu tư tìm kiếm dòng tiền cho thuê", "Hiển thị minh bạch lợi nhuận và đơn vị quản lý quốc tế", "Đồng bộ URL slug chuẩn SEO du lịch"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#0284C7",
+      secondaryColor: "#0369A1",
+      accentColor: "#F59E0B",
+      bgColor: "#F0F9FF",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "1.5rem",
+      shadowToken: "0 10px 15px -3px rgba(2, 132, 199, 0.1)"
+    },
+    layoutConfig: {
+      heroStyle: "Coastal Resort Hero với Search Bar cự ly biển",
+      navigationStyle: "Sky Clean Rounded Navbar",
+      cardStyle: "Ocean View Wide Card (Ảnh 16:9, badge cự ly biển m)",
+      galleryStyle: "Coastal Panoramic Slider",
+      ctaStyle: "Ocean Blue Action Button",
+      spacingScale: "Tropical Spacious Spacing"
+    },
+    wireframe: ["HeaderOceanEstate", "HeroCoastalSearch", "OceanListingsGrid", "TopResortComplexes", "FooterOceanEstate"],
+    sectionConfig: {
+      sourceSlug: "portal-07",
+      heroTitle: "SỞ HỮU BẤT ĐỘNG SẢN VEN BIỂN ĐẸP NHẤT VIỆT NAM",
+      heroSubtitle: "Hơn 8.000 biệt thự mặt biển, shophouse phố biển và condotel 5 sao quản lý quốc tế."
+    }
   }
 ];
 
@@ -1869,6 +1933,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-06': 'portal-06',
   'portal-eco': 'portal-06',
   'eco-estate': 'portal-06',
+  'portal-07': 'portal-07',
+  'portal-coastal': 'portal-07',
+  'ocean-estate': 'portal-07',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
