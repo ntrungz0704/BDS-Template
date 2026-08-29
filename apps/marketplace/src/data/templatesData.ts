@@ -2403,6 +2403,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "SÀN SHOPHOUSE KHỐI ĐẾ & MẶT BẰNG THƯƠNG MẠI",
       heroSubtitle: "Hơn 2.500 mặt bằng khối đế chung cư cư dân đông đúc, nhà phố ngã tư góc 2 mặt tiền và TTTM sầm uất."
     }
+  },
+  // ─── PORTAL 16. ELITE PERSONAL BROKER PORTAL ───────────────────────────────
+  {
+    id: "portal-16",
+    name: "Template #16 - Elite Personal Broker Portal",
+    slug: "portal-16",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #16",
+    badgeBg: "#090A0F",
+    badgeColor: "#FB7185",
+    accentColor: "#E11D48",
+    description: "Cổng thông tin và sàn giao dịch xây dựng thương hiệu cá nhân của môi giới ngôi sao (Top Star Broker / Private Broker). Giới thiệu hồ sơ năng lực 10+ năm kinh nghiệm, giỏ hàng ủy quyền độc quyền, đàm phán trực tiếp 1-1 và bảo mật thông tin tuyệt đối.",
+    shortDescription: "Thương hiệu Top Broker · Giỏ hàng VIP độc quyền · Tư vấn 1-1 kín đáo",
+    thumbnail: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục Private Advisor đẳng cấp với tông Đen Midnight & Vàng Hồng Rose Gold",
+      "Thẻ tin Exclusive Agent Card hiển thị dấu ấn thẩm định và cam kết đàm phán 1-1",
+      "Bộ lọc giỏ hàng độc quyền cá nhân: Penthouse áp mái, Biệt thự compound, Đất trung tâm",
+      "Trang chi tiết BĐS kèm video review thực tế và góc nhìn nhận định của Broker",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án đại sứ, Góc nhìn, Hồ sơ, Tư vấn",
+      "Tích hợp form đặt lịch hẹn tư vấn riêng tư (Private Meeting) tại Lounge sang trọng"
+    ],
+    priceBuy: 749000,
+    priceBuySource: 2190000,
+    priceRentMonthly: 169000,
+    isActive: true,
+    sortOrder: 40,
+    targetAudience: ["Môi giới ngôi sao (Top Producer / Star Broker) xây dựng thương hiệu cá nhân", "Chuyên gia cố vấn BĐS cho giới siêu giàu (Family Office)", "Trưởng phòng / Giám đốc sàn muốn sở hữu website cá nhân chuyên nghiệp"],
+    highlights: ["Exclusive Agent Portfolio Cards", "Private Broker Profile", "Confidential 1-on-1 Consultation", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["PersonalBrokerCardModule", "ExclusiveDossierModule", "PrivateMeetingModule", "MarketInsightModule"],
+    benefits: ["Xây dựng vị thế chuyên gia cố vấn hàng đầu trong mắt khách hàng VIP", "Gia tăng 400% số lượng BĐS giá trị cao được chủ nhà ủy quyền độc quyền", "Tối ưu hóa hình ảnh cá nhân"],
+    themeConfig: {
+      fontHeading: "'Playfair Display', serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#090A0F",
+      secondaryColor: "#12131A",
+      accentColor: "#E11D48",
+      bgColor: "#090A0F",
+      cardBgColor: "#12131A",
+      textColor: "#F1F5F9",
+      radiusToken: "1rem",
+      shadowToken: "0 10px 15px -3px rgba(225, 29, 72, 0.15)"
+    },
+    layoutConfig: {
+      heroStyle: "Elite Broker Portrait Hero với Search Bar giỏ hàng kín",
+      navigationStyle: "Midnight Rose Gold Navbar",
+      cardStyle: "Exclusive Agent Portfolio Card (Viền Rose Gold, badge độc quyền)",
+      galleryStyle: "Private Wealth Slider",
+      ctaStyle: "Rose Gold Gradient Button",
+      spacingScale: "VIP Bespoke Spacing"
+    },
+    wireframe: ["HeaderAlexanderEstate", "HeroEliteBrokerSearch", "ExclusiveListingsGrid", "BrandAmbassadorProjects", "FooterAlexanderEstate"],
+    sectionConfig: {
+      sourceSlug: "portal-16",
+      heroTitle: "CỐ VẤN BẤT ĐỘNG SẢN CAO CẤP RIÊNG BIỆT",
+      heroSubtitle: "Hơn 10 năm kinh nghiệm đồng hành cùng 500+ gia tộc thượng lưu và nhà đầu tư cá nhân VIP tại Việt Nam."
+    }
   }
 ];
 
@@ -2472,6 +2536,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-15': 'portal-15',
   'portal-commercial': 'portal-15',
   'retail-podium-portal': 'portal-15',
+  'portal-16': 'portal-16',
+  'portal-broker': 'portal-16',
+  'elite-broker': 'portal-16',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
