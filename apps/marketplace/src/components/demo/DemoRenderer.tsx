@@ -52,14 +52,24 @@ interface DemoRendererProps {
 export const normalizePageSlug = (p?: string): string => {
   if (!p) return 'home';
   const clean = p.toLowerCase().trim();
-  if (['lien-he', 'contact', 'tu-van', 'dat-lich'].includes(clean)) return 'contact';
+  if (['lien-he', 'contact', 'tu-van', 'dat-lich', 'ky-gui'].includes(clean)) return 'contact';
   if (['gioi-thieu', 'about', 've-chung-toi', 'nang-luc'].includes(clean)) return 'about';
-  if (['du-an', 'projects', 'san-pham', 'can-ho', 'bat-dong-san', 'danh-muc'].includes(clean)) return 'projects';
+  if (['du-an', 'projects', 'san-pham', 'can-ho', 'bat-dong-san', 'danh-muc', 'properties', 'listings'].includes(clean)) return 'projects';
   if (['thu-vien', 'gallery', 'hinh-anh', 'album'].includes(clean)) return 'gallery';
-  if (['tin-tuc', 'news', 'bai-viet', 'blog', 'thi-truong'].includes(clean)) return 'news';
+  if (['tin-tuc', 'news', 'bai-viet', 'blog', 'thi-truong', 'cam-nang'].includes(clean)) return 'news';
   if (['vi-tri', 'location', 'khu-vuc', 'ha-tang'].includes(clean)) return 'location';
-  if (['tien-ich', 'amenities', 'dich-vu'].includes(clean)) return 'amenities';
-  if (['mat-bang', 'floorplans', 'so-do'].includes(clean)) return 'floorplans';
+  if (['tien-ich', 'amenities', 'dich-vu', 'services'].includes(clean)) return 'amenities';
+  if (['mat-bang', 'floorplans', 'so-do', 'units'].includes(clean)) return 'floorplans';
+  if (['nha-dat-ban', 'ban', 'sale', 'ban-nha'].includes(clean)) return 'sale';
+  if (['cho-thue', 'thue', 'rent', 'thue-nha'].includes(clean)) return 'rent';
+  if (['sang-nhuong', 'transfer'].includes(clean)) return 'transfer';
+  if (['phong-thuy', 'fengshui', 'xem-tuoi-xay-nha', 'huong-nha', 'xem-tuoi-xay---huong-nha'].includes(clean)) return 'fengshui';
+  if (['dau-gia', 'auctions', 'auction'].includes(clean)) return 'auctions';
+  if (['tinh-thanh', 'cities'].includes(clean)) return 'cities';
+  if (['kien-thuc', 'knowledge'].includes(clean)) return 'knowledge';
+  if (['tuyen-dung', 'career', 'careers'].includes(clean)) return 'career';
+  if (['can-mua', 'can-thue', 'requests', 'can-mua-can-thue'].includes(clean)) return 'requests';
+  if (['dang-tin', 'post'].includes(clean)) return 'post';
   return clean;
 };
 

@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import Link from 'next/link';
 import { Crown, Star, Phone, Mail, MapPin, ChevronRight, Play, Download, Award, Users, Building2, TrendingUp, Shield, Clock, ArrowRight, CheckCircle, ChevronDown, Menu, X, Search, Facebook, Youtube, Instagram } from 'lucide-react';
 import { MAX_W } from '../design-system';
@@ -375,16 +376,28 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
   useEffect(() => {
     setCurrentPageState(normalizeLuxuryPage(initialPage));
   }, [initialPage]);
-  const setCurrentPage = (p: string) => {
+
+  const setCurrentPage = (p: string, customSlug?: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
     if (typeof setSelectedArticle === "function") setSelectedArticle(null);
 
     setCurrentPageState(p);
-    if (typeof window !== 'undefined') {
-      const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
-    }
+    const tSlug = template?.slug || 'bds-02';
+    syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-02') ? parts[1] : 'home');
+      if (sub) {
+        setCurrentPageState(normalizeLuxuryPage(sub));
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [template?.slug]);
+
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [activeFloor, setActiveFloor] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -418,15 +431,15 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
   const isTablet = viewport === 'tablet';
   const isSmall = isMobile || isTablet;
 
-  const getPageHref = (page: string) => `/demo/${template.slug}${page === 'home' ? '' : '/' + page}`;
-  const projectName = template.name || 'LUMIÈRE';
+  const getPageHref = (page: string) => `/demo/${template?.slug || 'bds-02'}${page === 'home' ? '' : '/' + page}`;
+  const projectName = template?.name || 'LUMIÈRE';
 
-  const handlePageChange = (page: string, e: React.MouseEvent) => {
-    e.preventDefault();
+  const handlePageChange = (page: string, e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     setCurrentPage(page);
     setSelectedProject(null);
     setSelectedArticle(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // ─ NAV ──────────────────────────────────────────────────────────────────────

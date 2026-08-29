@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import {
   Search, MapPin, Building, Phone, Mail, ArrowRight, ChevronRight, ChevronLeft,
   CheckCircle2, Calendar, X, Share2, Heart, Eye, Clock, Award, Users, Plus, Minus,
@@ -258,16 +259,27 @@ export const MinhKhaiApartmentTemplate: React.FC<MinhKhaiApartmentTemplateProps>
 
   const navigate = (page: string, slugParam?: string) => {
     setCurrentPage(page);
+    const targetSlug = page === 'home' ? '' : (slugParam ? `${page}/${slugParam}` : page);
+    syncDemoUrl(targetSlug, 'bds-20');
     if (typeof window !== 'undefined') {
-      const basePath = window.location.pathname.split('/').slice(0, 3).join('/');
-      let newUrl = basePath;
-      if (page !== 'home') {
-        newUrl += slugParam ? `/${page}/${slugParam}` : `/${page}`;
-      }
-      window.history.pushState(null, '', newUrl);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts.slice(2).join('/') : (parts[1] !== 'bds-20' ? parts[1] : 'home');
+      if (sub) {
+        const r = resolveRoute(sub);
+        setCurrentPage(r.page);
+        if (r.proj) setSelectedProject(r.proj);
+        if (r.article) setSelectedArticle(r.article);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const handleSelectProject = (proj: any) => {
     setSelectedProject(proj);

@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
-
 import React, { useState, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import {
   MapPin, Phone, Mail, ChevronDown, ChevronUp, Star, Award, Clock,
   ArrowRight, Trees, Shield, Compass,
@@ -304,13 +304,24 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
   useEffect(() => {
     setPageState(normalizeClassicPage(initialPage));
   }, [initialPage]);
-  const setPage = (p: string) => {
+
+  const setPage = (p: string, customSlug?: string) => {
     setPageState(p);
-    if (typeof window !== 'undefined') {
-      const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
-    }
+    const tSlug = template?.slug || 'bds-09';
+    syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-09') ? parts[1] : 'home');
+      if (sub) {
+        setPageState(normalizeClassicPage(sub));
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [template?.slug]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 

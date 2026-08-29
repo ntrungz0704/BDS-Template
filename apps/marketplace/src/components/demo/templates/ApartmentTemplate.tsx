@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import { 
   Building2, MapPin, Phone, Mail, Search, ChevronRight, Menu, X,
   CheckCircle2, Star, Clock, Home, Users, ArrowRight, Bath, Bed,
@@ -404,16 +405,26 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
   useEffect(() => {
     setCurrentPageState(normalizeApartmentPage(initialPage));
   }, [initialPage]);
-  const setCurrentPage = (p: string) => {
-    if (typeof setSelectedArticle === "function") setSelectedArticle(null);
 
-    setCurrentPageState(p);
+  const setCurrentPage = (p: string, customSlug?: string) => {
     if (typeof setSelectedArticle === "function") setSelectedArticle(null);
-    if (typeof window !== 'undefined') {
-      const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
-    }
+    setCurrentPageState(p);
+    const tSlug = template?.slug || 'bds-01';
+    syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-01') ? parts[1] : 'home');
+      if (sub) {
+        setCurrentPageState(normalizeApartmentPage(sub));
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [template?.slug]);
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
   const [activeFloorPlan, setActiveFloorPlan] = useState<number>(0);
@@ -451,10 +462,10 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
   const fontHeading = { fontFamily: "'Manrope', sans-serif" };
   const fontBody = { fontFamily: "'DM Sans', sans-serif" };
 
-  const navigateTo = (page: string) => {
-    setCurrentPage(page);
+  const navigateTo = (page: string, customSlug?: string) => {
+    setCurrentPage(page, customSlug);
     setMobileMenuOpen(false);
-    window.scrollTo(0, 0);
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Helper for quick newsletter sign up

@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import {
   Search,
   MapPin,
@@ -117,6 +118,26 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
     });
   }, [keyword]);
 
+  const navigateTo = (page: string, customSlug?: string) => {
+    setCurrentPage(page);
+    setSelectedProperty(null);
+    setMobileMenuOpen(false);
+    syncDemoUrl(customSlug || page, 'bds-18');
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts[2] : (parts[1] !== 'bds-18' ? parts[1] : 'home');
+      if (sub) {
+        setCurrentPage(sub);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const handleConsultSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!consultPhone) {
@@ -150,7 +171,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
         <div className="max-w-[1240px] mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-6">
             <div 
-              onClick={() => { setCurrentPage('home'); setSelectedProperty(null); }}
+              onClick={() => navigateTo('home', '')}
               className="cursor-pointer flex items-center gap-1.5"
             >
               <div className="w-8 h-8 rounded-lg bg-[#0072bc] flex items-center justify-center text-white font-black text-base shadow-sm">
@@ -164,16 +185,17 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
             {/* Desktop Navbar */}
             <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider">
               {[
-                { key: 'home', label: 'Trang chủ' },
-                { key: 'sale', label: 'Nhà đất bán' },
-                { key: 'rent', label: 'Nhà đất cho thuê' },
-                { key: 'projects', label: 'Dự án' },
-                { key: 'news', label: 'Tin tức' },
-                { key: 'contact', label: 'Liên hệ & Bản đồ' }
+                { key: 'home', slug: '', label: 'Trang chủ' },
+                { key: 'sale', slug: 'nha-dat-ban', label: 'Nhà đất bán' },
+                { key: 'rent', slug: 'cho-thue', label: 'Nhà đất cho thuê' },
+                { key: 'projects', slug: 'du-an', label: 'Dự án' },
+                { key: 'news', slug: 'tin-tuc', label: 'Tin tức' },
+                { key: 'about', slug: 'gioi-thieu', label: 'Giới thiệu' },
+                { key: 'contact', slug: 'lien-he', label: 'Liên hệ & Bản đồ' }
               ].map(tab => (
                 <button
                   key={tab.key}
-                  onClick={() => { setCurrentPage(tab.key); setSelectedProperty(null); }}
+                  onClick={() => navigateTo(tab.key, tab.slug)}
                   className={`px-3 py-2 rounded-lg transition-colors ${
                     currentPage === tab.key
                       ? 'text-[#0072bc] bg-blue-50'
@@ -188,7 +210,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
 
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setCurrentPage('contact')}
+              onClick={() => navigateTo('contact', 'lien-he')}
               className="bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider px-4 py-2 rounded-lg shadow-sm transition-all flex items-center gap-1.5"
             >
               <span>+ Đăng Tin</span>
@@ -206,20 +228,17 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
         {mobileMenuOpen && (
           <div className="lg:hidden bg-white border-t border-slate-200 px-4 py-3 space-y-2">
             {[
-              { key: 'home', label: 'Trang chủ' },
-              { key: 'sale', label: 'Nhà đất bán' },
-              { key: 'rent', label: 'Nhà đất cho thuê' },
-              { key: 'projects', label: 'Dự án' },
-              { key: 'news', label: 'Tin tức' },
-              { key: 'contact', label: 'Liên hệ & Bản đồ' }
+              { key: 'home', slug: '', label: 'Trang chủ' },
+              { key: 'sale', slug: 'nha-dat-ban', label: 'Nhà đất bán' },
+              { key: 'rent', slug: 'cho-thue', label: 'Nhà đất cho thuê' },
+              { key: 'projects', slug: 'du-an', label: 'Dự án' },
+              { key: 'news', slug: 'tin-tuc', label: 'Tin tức' },
+              { key: 'about', slug: 'gioi-thieu', label: 'Giới thiệu' },
+              { key: 'contact', slug: 'lien-he', label: 'Liên hệ & Bản đồ' }
             ].map(tab => (
               <button
                 key={tab.key}
-                onClick={() => {
-                  setCurrentPage(tab.key);
-                  setSelectedProperty(null);
-                  setMobileMenuOpen(false);
-                }}
+                onClick={() => navigateTo(tab.key, tab.slug)}
                 className="block w-full text-left px-3 py-2 rounded text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-[#0072bc]"
               >
                 {tab.label}
@@ -291,7 +310,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                   <option value="Đất nền">Đất nền dự án</option>
                 </select>
                 <button
-                  onClick={() => setCurrentPage(searchTab)}
+                  onClick={() => navigateTo(searchTab, searchTab === 'sale' ? 'nha-dat-ban' : 'cho-thue')}
                   className="bg-[#0072bc] hover:bg-[#005c99] text-white font-bold text-xs uppercase px-6 py-2.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 shrink-0"
                 >
                   <Search className="w-3.5 h-3.5" />
@@ -305,7 +324,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 {['Căn hộ Hà Nội', 'Nhà phố TP.HCM', 'Biệt thự Ecopark', 'Đất nền Đà Nẵng', 'Nhà thuê Quận 1'].map((tag, idx) => (
                   <button
                     key={idx}
-                    onClick={() => { setKeyword(tag); setCurrentPage(searchTab); }}
+                    onClick={() => { setKeyword(tag); navigateTo(searchTab, searchTab === 'sale' ? 'nha-dat-ban' : 'cho-thue'); }}
                     className="bg-white hover:bg-blue-50 hover:text-blue-600 px-2.5 py-1 rounded-md border border-slate-200 text-slate-600 font-medium"
                   >
                     {tag}
@@ -329,7 +348,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 <MapPin className="w-5 h-5 text-blue-600" />
                 <span>Bất Động Sản Theo Khu Vực</span>
               </h2>
-              <button onClick={() => setCurrentPage('sale')} className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
+              <button onClick={() => navigateTo('sale', 'nha-dat-ban')} className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
                 Xem tất cả <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -338,7 +357,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
               {REGIONS.map((reg) => (
                 <div
                   key={reg.id}
-                  onClick={() => { setKeyword(reg.name); setCurrentPage('sale'); }}
+                  onClick={() => { setKeyword(reg.name); navigateTo('sale', 'nha-dat-ban'); }}
                   className="group relative h-40 rounded-xl overflow-hidden cursor-pointer border border-slate-100 shadow-xs"
                 >
                   <img
@@ -363,7 +382,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 <Building className="w-5 h-5 text-blue-600" />
                 <span>Dự Án Nổi Bật</span>
               </h2>
-              <button onClick={() => setCurrentPage('projects')} className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
+              <button onClick={() => navigateTo('projects', 'du-an')} className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
                 Xem tất cả <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -372,7 +391,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
               {FEATURED_PROJECTS.map((proj) => (
                 <div
                   key={proj.id}
-                  onClick={() => setCurrentPage('projects')}
+                  onClick={() => navigateTo('projects', 'du-an')}
                   className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
                 >
                   <div className="h-32 overflow-hidden relative">
@@ -408,7 +427,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 </h2>
                 <p className="text-xs text-slate-500">Tin đăng mới nhất có sổ đỏ chính chủ</p>
               </div>
-              <button onClick={() => setCurrentPage('sale')} className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
+              <button onClick={() => navigateTo('sale', 'nha-dat-ban')} className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
                 Xem thêm tin bán <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -473,7 +492,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 </h2>
                 <p className="text-xs text-slate-500">Căn hộ, văn phòng và mặt bằng kinh doanh sinh lời</p>
               </div>
-              <button onClick={() => setCurrentPage('rent')} className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
+              <button onClick={() => navigateTo('rent', 'cho-thue')} className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
                 Xem thêm tin thuê <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -579,7 +598,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
               <p className="text-xs text-slate-500">Tìm thấy {(currentPage === 'sale' ? filteredSales : filteredRents).length} kết quả phù hợp</p>
             </div>
             <button
-              onClick={() => { setCurrentPage('home'); setKeyword(''); }}
+              onClick={() => { navigateTo('home', ''); setKeyword(''); }}
               className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1"
             >
               <ChevronLeft className="w-4 h-4" /> Quay lại trang chủ
@@ -632,7 +651,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
               <p className="text-xs text-slate-500">Các đại đô thị, chung cư cao cấp và dự án nghỉ dưỡng hàng đầu</p>
             </div>
             <button
-              onClick={() => setCurrentPage('home')}
+              onClick={() => navigateTo('home', '')}
               className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1"
             >
               <ChevronLeft className="w-4 h-4" /> Quay lại trang chủ
@@ -643,7 +662,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
             {FEATURED_PROJECTS.map((proj) => (
               <div
                 key={proj.id}
-                onClick={() => setCurrentPage('contact')}
+                onClick={() => navigateTo('contact', 'lien-he')}
                 className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
@@ -683,7 +702,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
               <p className="text-xs text-slate-500">Cập nhật xu hướng giá cả, biến động thị trường và tư vấn pháp lý</p>
             </div>
             <button
-              onClick={() => setCurrentPage('home')}
+              onClick={() => navigateTo('home', '')}
               className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1"
             >
               <ChevronLeft className="w-4 h-4" /> Quay lại trang chủ
@@ -965,10 +984,10 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
           <div>
             <h4 className="font-bold text-white text-xs uppercase tracking-wider mb-3">Liên Kết Nhanh</h4>
             <ul className="space-y-2 text-slate-400">
-              <li><button onClick={() => setCurrentPage('home')} className="hover:text-white">Trang chủ</button></li>
-              <li><button onClick={() => setCurrentPage('sale')} className="hover:text-white">Nhà đất bán</button></li>
-              <li><button onClick={() => setCurrentPage('rent')} className="hover:text-white">Nhà đất cho thuê</button></li>
-              <li><button onClick={() => setCurrentPage('projects')} className="hover:text-white">Dự án bất động sản</button></li>
+              <li><button onClick={() => navigateTo('home', '')} className="hover:text-white">Trang chủ</button></li>
+              <li><button onClick={() => navigateTo('sale', 'nha-dat-ban')} className="hover:text-white">Nhà đất bán</button></li>
+              <li><button onClick={() => navigateTo('rent', 'cho-thue')} className="hover:text-white">Nhà đất cho thuê</button></li>
+              <li><button onClick={() => navigateTo('projects', 'du-an')} className="hover:text-white">Dự án bất động sản</button></li>
             </ul>
           </div>
 

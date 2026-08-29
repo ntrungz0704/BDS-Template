@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import Link from 'next/link';
 import { 
   Menu, X, Phone, Mail, MapPin, Search, ChevronRight, 
@@ -34,13 +35,24 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
   useEffect(() => {
     setActivePageState(normalizeCorporatePage(initialPage));
   }, [initialPage]);
-  const setActivePage = (p: string) => {
+
+  const setActivePage = (p: string, customSlug?: string) => {
     setActivePageState(p);
-    if (typeof window !== 'undefined') {
-      const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
-    }
+    const tSlug = template?.slug || 'bds-04';
+    syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-04') ? parts[1] : 'home');
+      if (sub) {
+        setActivePageState(normalizeCorporatePage(sub));
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [template?.slug]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [homeSubmitted, setHomeSubmitted] = useState(false);

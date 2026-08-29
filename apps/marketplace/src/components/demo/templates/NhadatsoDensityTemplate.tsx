@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import {
   Search,
   MapPin,
@@ -105,6 +106,26 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
     });
   }, [filterTab, searchKeyword, selectedCity]);
 
+  const navigateTo = (page: string, customSlug?: string) => {
+    setCurrentPage(page);
+    setSelectedProperty(null);
+    setMobileMenuOpen(false);
+    syncDemoUrl(customSlug || page, 'bds-19');
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts[2] : (parts[1] !== 'bds-19' ? parts[1] : 'home');
+      if (sub) {
+        setCurrentPage(sub);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const handleConsultSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!consultPhone) return;
@@ -121,7 +142,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
         <div className="max-w-[1200px] mx-auto flex flex-wrap items-center justify-between gap-3">
           {/* Brand Logo */}
           <div 
-            onClick={() => { setCurrentPage('home'); setSelectedProperty(null); }}
+            onClick={() => navigateTo('home', '')}
             className="flex items-center gap-2 cursor-pointer"
           >
             <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-black text-lg">
@@ -151,7 +172,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
 
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setCurrentPage('contact')}
+              onClick={() => navigateTo('contact', 'lien-he')}
               className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-md flex items-center gap-1.5 shadow-sm transition-all"
             >
               <span>📝 Đăng tin miễn phí</span>
@@ -171,22 +192,21 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
         <div className="max-w-[1200px] mx-auto px-4 flex items-center justify-between">
           <div className="hidden md:flex items-center text-xs font-bold uppercase tracking-wide">
             {[
-              { key: 'home', label: 'Trang chủ', icon: Home },
-              { key: 'sale', label: 'Nhà đất bán' },
-              { key: 'rent', label: 'Nhà đất cho thuê' },
-              { key: 'transfer', label: 'Nhà đất sang nhượng' },
-              { key: 'news', label: 'Tin bất động sản' },
-              { key: 'fengshui', label: 'Xem tuổi xây - hướng nhà' },
-              { key: 'contact', label: 'Liên hệ' }
+              { key: 'home', slug: '', label: 'Trang chủ', icon: Home },
+              { key: 'sale', slug: 'nha-dat-ban', label: 'Nhà đất bán' },
+              { key: 'rent', slug: 'cho-thue', label: 'Nhà đất cho thuê' },
+              { key: 'transfer', slug: 'sang-nhuong', label: 'Nhà đất sang nhượng' },
+              { key: 'news', slug: 'tin-tuc', label: 'Tin bất động sản' },
+              { key: 'fengshui', slug: 'phong-thuy', label: 'Xem tuổi xây - hướng nhà' },
+              { key: 'contact', slug: 'lien-he', label: 'Liên hệ' }
             ].map(item => (
               <button
                 key={item.key}
                 onClick={() => {
-                  setCurrentPage(item.key);
                   if (item.key === 'sale') setFilterTab('sale');
                   if (item.key === 'rent') setFilterTab('rent');
                   if (item.key === 'transfer') setFilterTab('transfer');
-                  setSelectedProperty(null);
+                  navigateTo(item.key, item.slug);
                 }}
                 className={`px-3.5 py-3 border-r border-emerald-700 hover:bg-emerald-700 flex items-center gap-1.5 transition-colors ${
                   currentPage === item.key ? 'bg-emerald-800 font-black' : ''
@@ -206,20 +226,18 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
         {mobileMenuOpen && (
           <div className="md:hidden bg-emerald-800 px-4 py-2 space-y-1">
             {[
-              { key: 'home', label: 'Trang chủ' },
-              { key: 'sale', label: 'Nhà đất bán' },
-              { key: 'rent', label: 'Nhà đất cho thuê' },
-              { key: 'transfer', label: 'Nhà đất sang nhượng' },
-              { key: 'news', label: 'Tin bất động sản' },
-              { key: 'fengshui', label: 'Xem tuổi xây - hướng nhà' },
-              { key: 'contact', label: 'Liên hệ' }
+              { key: 'home', slug: '', label: 'Trang chủ' },
+              { key: 'sale', slug: 'nha-dat-ban', label: 'Nhà đất bán' },
+              { key: 'rent', slug: 'cho-thue', label: 'Nhà đất cho thuê' },
+              { key: 'transfer', slug: 'sang-nhuong', label: 'Nhà đất sang nhượng' },
+              { key: 'news', slug: 'tin-tuc', label: 'Tin bất động sản' },
+              { key: 'fengshui', slug: 'phong-thuy', label: 'Xem tuổi xây - hướng nhà' },
+              { key: 'contact', slug: 'lien-he', label: 'Liên hệ' }
             ].map(item => (
               <button
                 key={item.key}
                 onClick={() => {
-                  setCurrentPage(item.key);
-                  setSelectedProperty(null);
-                  setMobileMenuOpen(false);
+                  navigateTo(item.key, item.slug);
                 }}
                 className="block w-full text-left py-1.5 text-xs text-white hover:text-amber-300 font-bold"
               >
@@ -302,34 +320,14 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
               <div>
                 <select className="w-full px-2 py-1.5 border border-slate-300 rounded bg-white text-xs text-slate-700 focus:outline-none">
                   <option value="all">Chọn Quận/Huyện</option>
-                  <option value="bc">Bình Chánh</option>
-                  <option value="tp">Tân Phú</option>
-                  <option value="q1">Quận 1</option>
-                  <option value="q7">Quận 7</option>
-                </select>
-              </div>
-              <div>
-                <select className="w-full px-2 py-1.5 border border-slate-300 rounded bg-white text-xs text-slate-700 focus:outline-none">
-                  <option value="all">Chọn Hướng nhà</option>
-                  <option value="dn">Đông Nam</option>
-                  <option value="d">Đông</option>
-                  <option value="n">Nam</option>
-                  <option value="t">Tây</option>
-                  <option value="b">Bắc</option>
-                </select>
-              </div>
-              <div>
-                <select className="w-full px-2 py-1.5 border border-slate-300 rounded bg-white text-xs text-slate-700 focus:outline-none">
-                  <option value="all">Giá thấp nhất</option>
-                  <option value="500">Từ 500 Triệu</option>
-                  <option value="1000">Từ 1 Tỷ</option>
-                  <option value="2000">Từ 2 Tỷ</option>
-                  <option value="5000">Từ 5 Tỷ</option>
+                  <option value="q1">Quận 1 / Hoàn Kiếm</option>
+                  <option value="q2">Quận 2 / Cầu Giấy</option>
+                  <option value="q7">Quận 7 / Nam Từ Liêm</option>
                 </select>
               </div>
               <div>
                 <button
-                  onClick={() => setCurrentPage('sale')}
+                  onClick={() => navigateTo('sale', 'nha-dat-ban')}
                   className="w-full bg-[#1E8449] hover:bg-emerald-800 text-white font-bold py-1.5 rounded text-xs uppercase flex items-center justify-center gap-1 shadow-xs transition-colors"
                 >
                   <Search className="w-3 h-3" />
@@ -358,7 +356,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
 
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
                   {/* Big Featured News */}
-                  <div className="sm:col-span-7 cursor-pointer group" onClick={() => setCurrentPage('news')}>
+                  <div className="sm:col-span-7 cursor-pointer group" onClick={() => navigateTo('news', 'tin-tuc')}>
                     <div className="aspect-[16/10] overflow-hidden rounded bg-slate-100 mb-2">
                       <img
                         src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80"
@@ -379,7 +377,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                     {ADVICE_ARTICLES.map((art, idx) => (
                       <div
                         key={idx}
-                        onClick={() => setCurrentPage('news')}
+                        onClick={() => navigateTo('news', 'tin-tuc')}
                         className="flex items-start gap-2 cursor-pointer group border-b border-slate-100 pb-2 last:border-0 last:pb-0"
                       >
                         <img
@@ -438,7 +436,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
               <div className="bg-white border border-slate-300 rounded p-4 shadow-xs">
                 <div className="bg-[#1E8449] text-white font-black text-xs uppercase px-3 py-1.5 -mx-4 -mt-4 mb-4 rounded-t flex items-center justify-between">
                   <span>NHÀ ĐẤT BÁN</span>
-                  <button onClick={() => setCurrentPage('sale')} className="text-[10px] font-normal text-emerald-100 hover:underline">
+                  <button onClick={() => navigateTo('sale', 'nha-dat-ban')} className="text-[10px] font-normal text-emerald-100 hover:underline">
                     Xem thêm &gt;&gt;
                   </button>
                 </div>
@@ -484,7 +482,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
               <div className="bg-white border border-slate-300 rounded p-4 shadow-xs">
                 <div className="bg-[#1C2833] text-white font-black text-xs uppercase px-3 py-1.5 -mx-4 -mt-4 mb-4 rounded-t flex items-center justify-between">
                   <span>NHÀ ĐẤT CHO THUÊ</span>
-                  <button onClick={() => setCurrentPage('rent')} className="text-[10px] font-normal text-slate-300 hover:underline">
+                  <button onClick={() => navigateTo('rent', 'cho-thue')} className="text-[10px] font-normal text-slate-300 hover:underline">
                     Xem thêm &gt;&gt;
                   </button>
                 </div>
@@ -504,10 +502,10 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                       <div className="flex-1 flex flex-col justify-between">
                         <div>
                           <div className="flex items-start justify-between gap-2 mb-1">
-                            <h3 className="font-bold text-xs text-blue-800 group-hover:text-emerald-700 leading-snug line-clamp-2">
+                            <h3 className="font-bold text-xs text-slate-800 group-hover:text-emerald-700 leading-snug line-clamp-2">
                               {item.title}
                             </h3>
-                            <span className="px-2 py-0.5 rounded bg-[#48C774] text-white font-bold text-[10px] whitespace-nowrap">
+                            <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-bold text-[10px] whitespace-nowrap">
                               {item.price}
                             </span>
                           </div>
@@ -538,7 +536,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                   {PROVINCES.map((prov, idx) => (
                     <li key={idx}>
                       <button
-                        onClick={() => { setSelectedCity(prov); setCurrentPage('sale'); }}
+                        onClick={() => { setSelectedCity(prov); navigateTo('sale', 'nha-dat-ban'); }}
                         className="w-full text-left py-1 px-1.5 hover:bg-emerald-50 hover:text-emerald-700 rounded flex items-center justify-between transition-colors"
                       >
                         <span className="flex items-center gap-1.5 font-medium">
@@ -559,7 +557,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                   {ADVICE_ARTICLES.slice(0, 3).map((art, idx) => (
                     <div
                       key={idx}
-                      onClick={() => setCurrentPage('news')}
+                      onClick={() => navigateTo('news', 'tin-tuc')}
                       className="flex items-center gap-2 cursor-pointer group border-b border-slate-100 pb-2 last:border-0 last:pb-0"
                     >
                       <img src={art.image} alt={art.title} className="w-12 h-10 rounded object-cover shrink-0" />
@@ -577,13 +575,13 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                   PHONG THỦY NHÀ ĐẤT
                 </h3>
                 <ul className="space-y-2 text-[11px] text-slate-700">
-                  <li onClick={() => setCurrentPage('fengshui')} className="hover:text-emerald-700 cursor-pointer flex items-start gap-1.5">
+                  <li onClick={() => navigateTo('fengshui', 'phong-thuy')} className="hover:text-emerald-700 cursor-pointer flex items-start gap-1.5">
                     <span>🧭</span> <span>Cách chọn hướng nhà đón tài lộc cho gia chủ tuổi Tý, Sửu, Dần</span>
                   </li>
-                  <li onClick={() => setCurrentPage('fengshui')} className="hover:text-emerald-700 cursor-pointer flex items-start gap-1.5">
+                  <li onClick={() => navigateTo('fengshui', 'phong-thuy')} className="hover:text-emerald-700 cursor-pointer flex items-start gap-1.5">
                     <span>🧭</span> <span>Bố trí phòng khách và cửa chính hợp phong thủy năm 2026</span>
                   </li>
-                  <li onClick={() => setCurrentPage('fengshui')} className="hover:text-emerald-700 cursor-pointer flex items-start gap-1.5">
+                  <li onClick={() => navigateTo('fengshui', 'phong-thuy')} className="hover:text-emerald-700 cursor-pointer flex items-start gap-1.5">
                     <span>🧭</span> <span>Những điều đại kỵ cần tránh khi mua đất nền, nhà phố</span>
                   </li>
                 </ul>
@@ -646,7 +644,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
               </h1>
               <p className="text-[11px] text-slate-500">Danh sách tin đăng cập nhật liên tục</p>
             </div>
-            <button onClick={() => setCurrentPage('home')} className="text-xs font-bold text-emerald-700 hover:underline">
+            <button onClick={() => navigateTo('home', '')} className="text-xs font-bold text-emerald-700 hover:underline">
               ← Quay lại Trang Chủ
             </button>
           </div>
@@ -686,7 +684,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
           <div className="bg-white border border-slate-300 rounded p-4 mb-5 shadow-xs flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="flex items-center gap-2 text-[11px] text-slate-500 mb-1">
-                <button onClick={() => setCurrentPage('home')} className="hover:text-emerald-700 font-bold">Trang chủ</button>
+                <button onClick={() => navigateTo('home', '')} className="hover:text-emerald-700 font-bold">Trang chủ</button>
                 <span>/</span>
                 <span className="text-emerald-700 font-semibold">Tin bất động sản 24/7</span>
               </div>
@@ -941,7 +939,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
             </div>
 
             <div className="pt-2">
-              <button onClick={() => setCurrentPage('home')} className="text-xs font-bold text-emerald-700 underline">
+              <button onClick={() => navigateTo('home', '')} className="text-xs font-bold text-emerald-700 underline">
                 ← Quay lại trang chủ
               </button>
             </div>
@@ -961,7 +959,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
               </h1>
               <p className="text-[11px] text-slate-500">Khu đô thị, chung cư cao cấp và đại đô thị quy hoạch chuẩn mực</p>
             </div>
-            <button onClick={() => setCurrentPage('home')} className="text-xs font-bold text-emerald-700 hover:underline">
+            <button onClick={() => navigateTo('home', '')} className="text-xs font-bold text-emerald-700 hover:underline">
               ← Quay lại Trang Chủ
             </button>
           </div>
@@ -1018,7 +1016,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                 <p className="text-xs text-amber-800">Hợp các hướng: Tây, Tây Bắc, Tây Nam, Đông Bắc. Gia đạo bình an, kinh doanh hưng thịnh.</p>
               </div>
             </div>
-            <button onClick={() => setCurrentPage('home')} className="text-xs font-bold text-emerald-700 underline">
+            <button onClick={() => navigateTo('home', '')} className="text-xs font-bold text-emerald-700 underline">
               ← Quay lại trang chủ
             </button>
           </div>
@@ -1193,24 +1191,24 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
           <div>
             <h4 className="font-bold text-white text-xs uppercase tracking-wider mb-3">NHÀ ĐẤT BÁN</h4>
             <ul className="space-y-1.5 text-slate-400">
-              <li><button onClick={() => { setSelectedCity('TP.HCM'); setCurrentPage('sale'); }} className="hover:text-white">Hồ Chí Minh</button></li>
-              <li><button onClick={() => { setSelectedCity('Hà Nội'); setCurrentPage('sale'); }} className="hover:text-white">Hà Nội</button></li>
-              <li><button onClick={() => { setSelectedCity('Đà Nẵng'); setCurrentPage('sale'); }} className="hover:text-white">Đà Nẵng</button></li>
-              <li><button onClick={() => { setSelectedCity('Hải Phòng'); setCurrentPage('sale'); }} className="hover:text-white">Hải Phòng</button></li>
-              <li><button onClick={() => { setSelectedCity('Bình Dương'); setCurrentPage('sale'); }} className="hover:text-white">Bình Dương</button></li>
-              <li><button onClick={() => { setSelectedCity('Đồng Nai'); setCurrentPage('sale'); }} className="hover:text-white">Đồng Nai</button></li>
+              <li><button onClick={() => { setSelectedCity('TP.HCM'); navigateTo('sale', 'nha-dat-ban'); }} className="hover:text-white">Hồ Chí Minh</button></li>
+              <li><button onClick={() => { setSelectedCity('Hà Nội'); navigateTo('sale', 'nha-dat-ban'); }} className="hover:text-white">Hà Nội</button></li>
+              <li><button onClick={() => { setSelectedCity('Đà Nẵng'); navigateTo('sale', 'nha-dat-ban'); }} className="hover:text-white">Đà Nẵng</button></li>
+              <li><button onClick={() => { setSelectedCity('Hải Phòng'); navigateTo('sale', 'nha-dat-ban'); }} className="hover:text-white">Hải Phòng</button></li>
+              <li><button onClick={() => { setSelectedCity('Bình Dương'); navigateTo('sale', 'nha-dat-ban'); }} className="hover:text-white">Bình Dương</button></li>
+              <li><button onClick={() => { setSelectedCity('Đồng Nai'); navigateTo('sale', 'nha-dat-ban'); }} className="hover:text-white">Đồng Nai</button></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-bold text-white text-xs uppercase tracking-wider mb-3">NHÀ ĐẤT CHO THUÊ</h4>
             <ul className="space-y-1.5 text-slate-400">
-              <li><button onClick={() => { setSelectedCity('TP.HCM'); setCurrentPage('rent'); }} className="hover:text-white">Hồ Chí Minh</button></li>
-              <li><button onClick={() => { setSelectedCity('Hà Nội'); setCurrentPage('rent'); }} className="hover:text-white">Hà Nội</button></li>
-              <li><button onClick={() => { setSelectedCity('Đà Nẵng'); setCurrentPage('rent'); }} className="hover:text-white">Đà Nẵng</button></li>
-              <li><button onClick={() => { setSelectedCity('Hải Phòng'); setCurrentPage('rent'); }} className="hover:text-white">Hải Phòng</button></li>
-              <li><button onClick={() => { setSelectedCity('Bình Dương'); setCurrentPage('rent'); }} className="hover:text-white">Bình Dương</button></li>
-              <li><button onClick={() => { setSelectedCity('Đồng Nai'); setCurrentPage('rent'); }} className="hover:text-white">Đồng Nai</button></li>
+              <li><button onClick={() => { setSelectedCity('TP.HCM'); navigateTo('rent', 'cho-thue'); }} className="hover:text-white">Hồ Chí Minh</button></li>
+              <li><button onClick={() => { setSelectedCity('Hà Nội'); navigateTo('rent', 'cho-thue'); }} className="hover:text-white">Hà Nội</button></li>
+              <li><button onClick={() => { setSelectedCity('Đà Nẵng'); navigateTo('rent', 'cho-thue'); }} className="hover:text-white">Đà Nẵng</button></li>
+              <li><button onClick={() => { setSelectedCity('Hải Phòng'); navigateTo('rent', 'cho-thue'); }} className="hover:text-white">Hải Phòng</button></li>
+              <li><button onClick={() => { setSelectedCity('Bình Dương'); navigateTo('rent', 'cho-thue'); }} className="hover:text-white">Bình Dương</button></li>
+              <li><button onClick={() => { setSelectedCity('Đồng Nai'); navigateTo('rent', 'cho-thue'); }} className="hover:text-white">Đồng Nai</button></li>
             </ul>
           </div>
 
@@ -1220,7 +1218,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
               <li><a href="#rule" className="hover:text-white">Quy chế hoạt động</a></li>
               <li><a href="#privacy" className="hover:text-white">Quy định sử dụng</a></li>
               <li><a href="#policy" className="hover:text-white">Quy trình đăng tin</a></li>
-              <li><button onClick={() => setCurrentPage('fengshui')} className="hover:text-white">Cẩm nang phong thủy</button></li>
+              <li><button onClick={() => navigateTo('fengshui', 'phong-thuy')} className="hover:text-white">Cẩm nang phong thủy</button></li>
             </ul>
           </div>
 

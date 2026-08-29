@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import {
   Search, MapPin, Building, Phone, Mail, ArrowRight, ChevronRight,
   CheckCircle2, X, Eye, Sparkles, Send, Tag, Layers, Home, ArrowLeft,
@@ -139,16 +140,27 @@ export const HappyLandResortTemplate: React.FC<HappyLandResortTemplateProps> = (
 
   const navigate = (page: string, slugParam?: string) => {
     setCurrentPage(page);
+    const targetSlug = page === 'home' ? '' : (slugParam ? `${page}/${slugParam}` : page);
+    syncDemoUrl(targetSlug, 'bds-22');
     if (typeof window !== 'undefined') {
-      const basePath = window.location.pathname.split('/').slice(0, 3).join('/');
-      let newUrl = basePath;
-      if (page !== 'home') {
-        newUrl += slugParam ? `/${page}/${slugParam}` : `/${page}`;
-      }
-      window.history.pushState(null, '', newUrl);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts.slice(2).join('/') : (parts[1] !== 'bds-22' ? parts[1] : 'home');
+      if (sub) {
+        const r = resolveRoute(sub);
+        setCurrentPage(r.page);
+        if (r.unit) setSelectedUnit(r.unit);
+        if (r.article) setSelectedArticle(r.article);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const handleSelectUnit = (u: any) => {
     setSelectedUnit(u);

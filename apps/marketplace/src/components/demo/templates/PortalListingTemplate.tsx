@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { syncDemoUrl } from '../../../utils/demo';
 import {
   Search, MapPin, Building, ChevronRight, ChevronLeft, Menu, X,
   Phone, Mail, ArrowRight, Star, TrendingUp, Shield, Clock, Home,
@@ -308,6 +309,25 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
   const [selectedCity, setSelectedCity] = useState('all');
   const [activeTab, setActiveTab] = useState<'sale' | 'rent'>('sale');
   
+  const navigateTo = (page: string, customSlug?: string) => {
+    setCurrentPage(page);
+    setMobileMenuOpen(false);
+    syncDemoUrl(customSlug || page, 'bds-17');
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const sub = parts.length > 2 ? parts[2] : (parts[1] !== 'bds-17' ? parts[1] : 'home');
+      if (sub) {
+        setCurrentPage(sub);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+  
   // Spotlight project carousel index
   const [spotlightIdx, setSpotlightIdx] = useState(0);
   const SPOTLIGHT_PROJECTS = [
@@ -344,31 +364,19 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
     return Math.round(payment);
   }, [loanAmount, loanTermYears, interestRate]);
 
-  const navigateTo = (page: string, slugParam?: string) => {
-    setCurrentPage(page);
-    if (typeof window !== 'undefined') {
-      const basePath = window.location.pathname.split('/').slice(0, 3).join('/');
-      let newUrl = basePath;
-      if (page !== 'home') {
-        newUrl += slugParam ? `/${page}/${slugParam}` : `/${page}`;
-      }
-      window.history.pushState(null, '', newUrl);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
   const handleOpenDetail = (prop: any) => {
     setSelectedProperty(prop);
     navigateTo('detail', prop.id);
   };
 
   const navItems = [
-    { id: 'home', label: 'Trang chủ' },
-    { id: 'sale', label: 'Nhà đất bán' },
-    { id: 'rent', label: 'Cho thuê' },
-    { id: 'projects', label: 'Dự án' },
-    { id: 'news', label: 'Tin tức' },
-    { id: 'contact', label: 'Liên hệ & Ký gửi' },
+    { id: 'home', slug: '', label: 'Trang chủ' },
+    { id: 'sale', slug: 'nha-dat-ban', label: 'Nhà đất bán' },
+    { id: 'rent', slug: 'cho-thue', label: 'Cho thuê' },
+    { id: 'projects', slug: 'du-an', label: 'Dự án' },
+    { id: 'news', slug: 'tin-tuc', label: 'Tin tức' },
+    { id: 'about', slug: 'gioi-thieu', label: 'Giới thiệu' },
+    { id: 'contact', slug: 'lien-he', label: 'Liên hệ & Ký gửi' },
   ];
 
   return (
@@ -386,11 +394,11 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
             </a>
           </div>
           <div className="flex items-center gap-3 font-semibold">
-            <button onClick={() => setCurrentPage('contact')} className="hover:text-blue-400 transition-colors">
+            <button onClick={() => navigateTo('contact', 'lien-he')} className="hover:text-blue-400 transition-colors">
               Đăng tin BĐS
             </button>
             <span>•</span>
-            <button onClick={() => setCurrentPage('contact')} className="hover:text-blue-400 transition-colors">
+            <button onClick={() => navigateTo('contact', 'lien-he')} className="hover:text-blue-400 transition-colors">
               Đăng nhập / Đăng ký
             </button>
           </div>
@@ -402,7 +410,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
         <div className="max-w-[1360px] mx-auto px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4">
           {/* Logo */}
           <div 
-            onClick={() => setCurrentPage('home')} 
+            onClick={() => navigateTo('home', '')} 
             className="flex items-center gap-2.5 cursor-pointer select-none group"
           >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
@@ -423,10 +431,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
               return (
                 <button
                   key={item.id}
-                  onClick={() => {
-                    setCurrentPage(item.id);
-                    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
+                  onClick={() => navigateTo(item.id, item.slug)}
                   className={`px-3.5 py-2 rounded-xl text-xs xl:text-sm font-bold transition-all ${
                     active
                       ? 'text-blue-600 bg-blue-50/80 shadow-xs'
@@ -442,7 +447,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
           {/* Action Right */}
           <div className="flex items-center gap-2 sm:gap-3">
             <button
-              onClick={() => setCurrentPage('contact')}
+              onClick={() => navigateTo('contact', 'lien-he')}
               className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-600/20 transition-all hover:scale-102"
             >
               <Send className="w-3.5 h-3.5" />
@@ -465,10 +470,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
             {navItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => {
-                  setCurrentPage(item.id);
-                  setMobileMenuOpen(false);
-                }}
+                onClick={() => navigateTo(item.id, item.slug)}
                 className={`w-full text-left py-2.5 px-3 rounded-lg text-sm font-bold ${
                   currentPage === item.id ? 'bg-blue-50 text-blue-600' : 'text-slate-700'
                 }`}
@@ -478,10 +480,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
             ))}
             <div className="pt-3 border-t border-slate-100 flex flex-col gap-2">
               <button
-                onClick={() => {
-                  setCurrentPage('contact');
-                  setMobileMenuOpen(false);
-                }}
+                onClick={() => navigateTo('contact', 'lien-he')}
                 className="w-full py-2.5 bg-blue-600 text-white font-bold rounded-xl text-center text-xs"
               >
                 Đăng tin ký gửi nhà đất
@@ -574,7 +573,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                         key={cat.label}
                         onClick={() => {
                           setSelectedType(cat.type);
-                          setCurrentPage('sale');
+                          navigateTo('sale', 'nha-dat-ban');
                         }}
                         className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-blue-50 hover:text-blue-600 transition-all group"
                       >
@@ -666,10 +665,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
 
               <div className="text-center mt-10">
                 <button
-                  onClick={() => {
-                    setCurrentPage('sale');
-                    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
+                  onClick={() => navigateTo('sale', 'nha-dat-ban')}
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white border border-slate-300 hover:border-blue-600 text-slate-800 hover:text-blue-600 text-xs font-bold shadow-xs hover:shadow-md transition-all"
                 >
                   <span>Xem tất cả bất động sản cho bán</span>
@@ -684,7 +680,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                 <div className="flex items-center justify-between mb-8">
                   <div>
                     <span className="text-xs font-extrabold uppercase text-blue-600 tracking-wider">Tâm điểm đầu tư 2026</span>
-                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Dự Án Nổi Bật</h2>
+                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Dự Án Nổi BẬt</h2>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
@@ -755,10 +751,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                             <span className="text-xl font-black text-blue-600 font-mono">{proj.price}</span>
                           </div>
                           <button
-                            onClick={() => {
-                              setCurrentPage('projects');
-                              if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }}
+                            onClick={() => navigateTo('projects', 'du-an')}
                             className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black uppercase tracking-wider shadow-md shadow-blue-600/20 transition-all flex items-center gap-1.5 shrink-0"
                           >
                             <span>Xem ngay</span>
@@ -836,10 +829,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
 
               <div className="text-center mt-10">
                 <button
-                  onClick={() => {
-                    setCurrentPage('rent');
-                    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
+                  onClick={() => navigateTo('rent', 'cho-thue')}
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white border border-slate-300 hover:border-blue-600 text-slate-800 hover:text-blue-600 text-xs font-bold shadow-xs hover:shadow-md transition-all"
                 >
                   <span>Xem tất cả bất động sản cho thuê</span>
@@ -866,7 +856,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                       key={city.name}
                       onClick={() => {
                         setSelectedCity(city.name);
-                        setCurrentPage('sale');
+                        navigateTo('sale', 'nha-dat-ban');
                       }}
                       className="group relative h-48 sm:h-56 rounded-2xl overflow-hidden border border-white/10 shadow-lg cursor-pointer"
                     >
@@ -915,7 +905,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                 {/* Column 1: Featured Big News */}
                 <div 
-                  onClick={() => setCurrentPage('news')}
+                  onClick={() => navigateTo('news', 'tin-tuc')}
                   className="lg:col-span-6 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-shadow cursor-pointer flex flex-col justify-between group"
                 >
                   <div className="aspect-[16/10] overflow-hidden bg-slate-100 relative">
@@ -1613,10 +1603,10 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
             <div>
               <h4 className="font-bold text-white uppercase tracking-wider mb-3">BĐS Mua Bán</h4>
               <ul className="space-y-2 text-slate-400">
-                <li><button onClick={() => setCurrentPage('sale')} className="hover:text-white transition-colors">Căn hộ chung cư</button></li>
-                <li><button onClick={() => setCurrentPage('sale')} className="hover:text-white transition-colors">Biệt thự nhà vườn</button></li>
-                <li><button onClick={() => setCurrentPage('sale')} className="hover:text-white transition-colors">Nhà phố mặt tiền</button></li>
-                <li><button onClick={() => setCurrentPage('sale')} className="hover:text-white transition-colors">Đất nền dự án</button></li>
+                <li><button onClick={() => navigateTo('sale', 'nha-dat-ban')} className="hover:text-white transition-colors">Căn hộ chung cư</button></li>
+                <li><button onClick={() => navigateTo('sale', 'nha-dat-ban')} className="hover:text-white transition-colors">Biệt thự nhà vườn</button></li>
+                <li><button onClick={() => navigateTo('sale', 'nha-dat-ban')} className="hover:text-white transition-colors">Nhà phố mặt tiền</button></li>
+                <li><button onClick={() => navigateTo('sale', 'nha-dat-ban')} className="hover:text-white transition-colors">Đất nền dự án</button></li>
               </ul>
             </div>
 
@@ -1624,10 +1614,10 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
             <div>
               <h4 className="font-bold text-white uppercase tracking-wider mb-3">BĐS Cho Thuê</h4>
               <ul className="space-y-2 text-slate-400">
-                <li><button onClick={() => setCurrentPage('rent')} className="hover:text-white transition-colors">Căn hộ dịch vụ</button></li>
-                <li><button onClick={() => setCurrentPage('rent')} className="hover:text-white transition-colors">Shophouse thương mại</button></li>
-                <li><button onClick={() => setCurrentPage('rent')} className="hover:text-white transition-colors">Mặt bằng văn phòng</button></li>
-                <li><button onClick={() => setCurrentPage('rent')} className="hover:text-white transition-colors">Kho xưởng KCN</button></li>
+                <li><button onClick={() => navigateTo('rent', 'cho-thue')} className="hover:text-white transition-colors">Căn hộ dịch vụ</button></li>
+                <li><button onClick={() => navigateTo('rent', 'cho-thue')} className="hover:text-white transition-colors">Shophouse thương mại</button></li>
+                <li><button onClick={() => navigateTo('rent', 'cho-thue')} className="hover:text-white transition-colors">Mặt bằng văn phòng</button></li>
+                <li><button onClick={() => navigateTo('rent', 'cho-thue')} className="hover:text-white transition-colors">Kho xưởng KCN</button></li>
               </ul>
             </div>
 
@@ -1635,10 +1625,10 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
             <div>
               <h4 className="font-bold text-white uppercase tracking-wider mb-3">Liên Kết Nhanh</h4>
               <ul className="space-y-2 text-slate-400">
-                <li><button onClick={() => setCurrentPage('projects')} className="hover:text-white transition-colors">Dự án mới 2026</button></li>
-                <li><button onClick={() => setCurrentPage('news')} className="hover:text-white transition-colors">Tin tức thị trường</button></li>
-                <li><button onClick={() => setCurrentPage('contact')} className="hover:text-white transition-colors">Gửi ký gửi nhà đất</button></li>
-                <li><button onClick={() => setCurrentPage('contact')} className="hover:text-white transition-colors">Tư vấn vay ngân hàng</button></li>
+                <li><button onClick={() => navigateTo('projects', 'du-an')} className="hover:text-white transition-colors">Dự án mới 2026</button></li>
+                <li><button onClick={() => navigateTo('news', 'tin-tuc')} className="hover:text-white transition-colors">Tin tức thị trường</button></li>
+                <li><button onClick={() => navigateTo('contact', 'lien-he')} className="hover:text-white transition-colors">Gửi ký gửi nhà đất</button></li>
+                <li><button onClick={() => navigateTo('contact', 'lien-he')} className="hover:text-white transition-colors">Tư vấn vay ngân hàng</button></li>
               </ul>
             </div>
           </div>
