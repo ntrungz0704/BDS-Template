@@ -902,21 +902,42 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
 
         <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-slate-700">
-          <button onClick={() => navigate('home')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${currentPage === 'home' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Trang Chủ</button>
-          <button onClick={() => navigate('about')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${currentPage === 'about' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Giới Thiệu</button>
-          <button onClick={() => navigate('can-ho')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${currentPage === 'can-ho' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Căn Hộ</button>
-          <button onClick={() => navigate('nha-pho')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${currentPage === 'nha-pho' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Nhà Phố</button>
-          <button onClick={() => navigate('biet-thu')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${currentPage === 'biet-thu' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Biệt Thự</button>
-          <button onClick={() => navigate('chung-cu')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${currentPage === 'chung-cu' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Chung Cư</button>
-          <button onClick={() => navigate('van-phong')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${currentPage === 'van-phong' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Văn Phòng</button>
-          <button onClick={() => navigate('news')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${['news', 'news-detail'].includes(currentPage) ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Tin Tức</button>
-          <button onClick={() => navigate('contact')} className={`px-3 py-2 rounded-lg cursor-pointer transition ${currentPage === 'contact' ? 'text-blue-600 font-black' : 'hover:text-blue-600'}`}>Liên Hệ</button>
+          {[
+            { id: 'home', label: 'Trang Chủ' },
+            { id: 'about', label: 'Giới Thiệu' },
+            { id: 'can-ho', label: 'Căn Hộ' },
+            { id: 'nha-pho', label: 'Nhà Phố' },
+            { id: 'biet-thu', label: 'Biệt Thự' },
+            { id: 'chung-cu', label: 'Chung Cư' },
+            { id: 'van-phong', label: 'Văn Phòng' },
+            { id: 'news', label: 'Tin Tức' },
+            { id: 'contact', label: 'Liên Hệ' },
+          ].map((navItem) => {
+            const isActive = currentPage === navItem.id || (navItem.id === 'news' && currentPage === 'news-detail');
+            return (
+              <button
+                key={navItem.id}
+                onClick={() => navigate(navItem.id)}
+                className={`px-3 py-1.5 rounded-lg cursor-pointer transition-all duration-200 ${
+                  isActive
+                    ? 'bg-blue-600 text-white font-black shadow-sm ring-2 ring-blue-600/30'
+                    : 'text-slate-700 hover:text-blue-600 hover:bg-slate-100/80 font-bold'
+                }`}
+              >
+                {navItem.label}
+              </button>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() => navigate('ky-gui')}
-            className="hidden sm:flex px-4 py-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold text-xs rounded-lg shadow-sm transition items-center gap-1.5 cursor-pointer"
+            className={`hidden sm:flex px-4 py-2 text-white font-bold text-xs rounded-lg shadow-sm transition items-center gap-1.5 cursor-pointer ${
+              currentPage === 'ky-gui'
+                ? 'bg-amber-500 hover:bg-amber-600 ring-2 ring-amber-400 font-black'
+                : 'bg-blue-600 hover:bg-blue-700 active:scale-95'
+            }`}
           >
             <UploadCloud size={14} /> Ký Gửi Nhà Đất
           </button>
@@ -930,17 +951,43 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       </div>
 
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-slate-200 px-4 py-3 space-y-1 text-xs font-bold uppercase text-slate-700 shadow-xl">
-          <button onClick={() => navigate('home')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Trang Chủ</button>
-          <button onClick={() => navigate('about')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Giới Thiệu</button>
-          <button onClick={() => navigate('can-ho')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Căn Hộ</button>
-          <button onClick={() => navigate('nha-pho')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Nhà Phố</button>
-          <button onClick={() => navigate('biet-thu')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Biệt Thự</button>
-          <button onClick={() => navigate('chung-cu')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Chung Cư</button>
-          <button onClick={() => navigate('van-phong')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Văn Phòng</button>
-          <button onClick={() => navigate('news')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Tin Tức</button>
-          <button onClick={() => navigate('contact')} className="block w-full text-left py-2 px-3 hover:bg-slate-50 rounded-lg cursor-pointer">Liên Hệ</button>
-          <button onClick={() => navigate('ky-gui')} className="block w-full text-left py-2 px-3 bg-blue-50 text-blue-700 rounded-lg font-black cursor-pointer">Ký Gửi Nhà Đất</button>
+        <div className="lg:hidden bg-white border-t border-slate-200 px-4 py-3 space-y-1.5 text-xs font-bold uppercase text-slate-700 shadow-xl">
+          {[
+            { id: 'home', label: 'Trang Chủ' },
+            { id: 'about', label: 'Giới Thiệu' },
+            { id: 'can-ho', label: 'Căn Hộ' },
+            { id: 'nha-pho', label: 'Nhà Phố' },
+            { id: 'biet-thu', label: 'Biệt Thự' },
+            { id: 'chung-cu', label: 'Chung Cư' },
+            { id: 'van-phong', label: 'Văn Phòng' },
+            { id: 'news', label: 'Tin Tức' },
+            { id: 'contact', label: 'Liên Hệ' },
+          ].map((navItem) => {
+            const isActive = currentPage === navItem.id || (navItem.id === 'news' && currentPage === 'news-detail');
+            return (
+              <button
+                key={navItem.id}
+                onClick={() => navigate(navItem.id)}
+                className={`block w-full text-left py-2 px-3 rounded-lg cursor-pointer transition ${
+                  isActive
+                    ? 'bg-blue-600 text-white font-black shadow-sm'
+                    : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                {navItem.label}
+              </button>
+            );
+          })}
+          <button
+            onClick={() => navigate('ky-gui')}
+            className={`block w-full text-left py-2 px-3 rounded-lg font-black cursor-pointer ${
+              currentPage === 'ky-gui'
+                ? 'bg-amber-500 text-slate-950 shadow-sm'
+                : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+            }`}
+          >
+            Ký Gửi Nhà Đất
+          </button>
         </div>
       )}
     </header>
@@ -1253,65 +1300,91 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     </div>
   );
 
+  const CATEGORY_NAMES_VN: Record<string, string> = {
+    'can-ho': 'Căn Hộ Cao Cấp',
+    'nha-pho': 'Nhà Phố Thương Mại',
+    'biet-thu': 'Biệt Thự Nghỉ Dưỡng',
+    'chung-cu': 'Chung Cư Hiện Đại',
+    'van-phong': 'Văn Phòng Cho Thuê',
+    'news': 'Tin Tức & Cẩm Nang BĐS',
+    'news-detail': 'Chi Tiết Bài Viết',
+    'property-detail': 'Chi Tiết Bất Động Sản',
+    'ky-gui': 'Ký Gửi Nhà Đất',
+    'about': 'Giới Thiệu Doanh Nghiệp',
+    'contact': 'Liên Hệ & Bản Đồ',
+  };
+
   const renderRightSidebar = () => (
     <aside className="space-y-6">
-      <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-xs">
-        <h3 className="font-black text-xs text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3">
-          Danh mục
+      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
+        <h3 className="font-black text-xs text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3 flex items-center justify-between">
+          <span>DANH MỤC SẢN PHẨM</span>
+          <span className="w-2 h-2 rounded-full bg-blue-600"></span>
         </h3>
-        <div className="space-y-2 text-xs font-bold text-slate-700">
+        <div className="space-y-1.5 text-xs font-bold text-slate-700">
           {[
-            { label: 'Biệt thự', page: 'biet-thu' },
-            { label: 'Căn hộ', page: 'can-ho' },
-            { label: 'Chung cư', page: 'chung-cu' },
-            { label: 'Nhà phố', page: 'nha-pho' },
-            { label: 'Văn phòng', page: 'van-phong' },
-          ].map((c, i) => (
-            <div
-              key={i}
-              onClick={() => navigate(c.page)}
-              className="flex items-center justify-between py-1.5 px-2 hover:bg-blue-50 hover:text-blue-600 rounded transition cursor-pointer"
-            >
-              <span>&gt; {c.label}</span>
-            </div>
-          ))}
+            { label: 'Căn hộ cao cấp', page: 'can-ho' },
+            { label: 'Nhà phố thương mại', page: 'nha-pho' },
+            { label: 'Biệt thự nghỉ dưỡng', page: 'biet-thu' },
+            { label: 'Chung cư hiện đại', page: 'chung-cu' },
+            { label: 'Văn phòng cho thuê', page: 'van-phong' },
+          ].map((c, i) => {
+            const isCatActive = currentPage === c.page;
+            return (
+              <div
+                key={i}
+                onClick={() => navigate(c.page)}
+                className={`flex items-center justify-between py-2 px-3 rounded-lg transition-all cursor-pointer ${
+                  isCatActive
+                    ? 'bg-blue-600 text-white font-black shadow-sm translate-x-1'
+                    : 'hover:bg-blue-50 hover:text-blue-600 text-slate-700 hover:translate-x-1'
+                }`}
+              >
+                <span className="flex items-center gap-2">
+                  <span className={isCatActive ? 'text-white' : 'text-blue-600'}>›</span>
+                  {c.label}
+                </span>
+                {isCatActive && <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded text-white font-mono">Đang xem</span>}
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-xs">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
         <h3 className="font-black text-xs text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3">
-          Các dự án bạn vừa xem
+          CÁC DỰ ÁN BẠN VỪA XEM
         </h3>
         <div className="space-y-3">
           <div
             onClick={() => handleOpenProperty(INITIAL_PROPERTIES[5])}
             className="flex gap-2.5 items-center cursor-pointer group"
           >
-            <div className="w-14 h-12 rounded overflow-hidden shrink-0 bg-slate-100">
+            <div className="w-16 h-12 rounded-lg overflow-hidden shrink-0 bg-slate-100">
               <img src={INITIAL_PROPERTIES[5].image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition" />
             </div>
             <div>
               <h4 className="font-bold text-[11px] text-slate-900 group-hover:text-blue-600 transition line-clamp-1">
                 {INITIAL_PROPERTIES[5].title}
               </h4>
-              <span className="text-[11px] font-bold text-blue-700">{INITIAL_PROPERTIES[5].price}</span>
+              <span className="text-[11px] font-black text-blue-700">{INITIAL_PROPERTIES[5].price}</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-xs">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
         <h3 className="font-black text-xs text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 mb-3">
-          Tin tức mới nhất
+          TIN TỨC MỚI NHẤT
         </h3>
         <div className="space-y-3">
-          {NEWS_ARTICLES.map(art => (
+          {NEWS_ARTICLES.slice(0, 3).map(art => (
             <div
               key={art.id}
               onClick={() => handleOpenArticle(art)}
               className="flex gap-2.5 items-center cursor-pointer group"
             >
-              <div className="w-14 h-12 rounded overflow-hidden shrink-0 bg-slate-100">
+              <div className="w-16 h-12 rounded-lg overflow-hidden shrink-0 bg-slate-100">
                 <img src={art.image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition" />
               </div>
               <h4 className="font-bold text-[11px] text-slate-900 group-hover:text-blue-600 transition line-clamp-2 leading-snug">
@@ -1324,84 +1397,98 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     </aside>
   );
 
-  const renderListingCatalogPage = () => (
-    <div className="py-6 bg-[#F8FAFC] min-h-screen">
-      <div className={`${MAX_W} mx-auto px-4 space-y-4`}>
-        <div className="text-xs text-slate-500 flex items-center gap-1.5">
-          <span onClick={() => navigate('home')} className="hover:text-blue-600 cursor-pointer">Trang chủ</span>
-          <span>/</span>
-          <span className="text-slate-800 font-bold capitalize">{currentPage.replace('-', ' ')}</span>
-        </div>
-
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <h1 className="text-xl font-black text-slate-900 capitalize">{currentPage.replace('-', ' ')}</h1>
-
-          <div className="flex flex-wrap items-center gap-2 text-xs">
-            <select
-              value={filterCity}
-              onChange={e => setFilterCity(e.target.value)}
-              className="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 font-bold focus:outline-none"
-            >
-              <option value="all">Toàn bộ Tỉnh/Thành</option>
-              <option value="Hà Nội">Hà Nội</option>
-              <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
-              <option value="Đà Nẵng">Đà Nẵng</option>
-            </select>
-
-            <select
-              value={filterPriceRange}
-              onChange={e => setFilterPriceRange(e.target.value)}
-              className="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 font-bold focus:outline-none"
-            >
-              <option value="all">Tất cả mức giá</option>
-              <option value="under-5">Dưới 5 Tỷ</option>
-              <option value="5-10">Từ 5 - 10 Tỷ</option>
-              <option value="above-10">Trên 10 Tỷ</option>
-            </select>
-
-            <select
-              value={sortBy}
-              onChange={e => setSortBy(e.target.value)}
-              className="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 font-bold focus:outline-none"
-            >
-              <option value="default">Thứ tự mặc định</option>
-              <option value="price-asc">Giá: Thấp đến Cao</option>
-              <option value="price-desc">Giá: Cao đến Thấp</option>
-              <option value="area-desc">Diện tích: Lớn đến Nhỏ</option>
-            </select>
+  const renderListingCatalogPage = () => {
+    const currentTitle = CATEGORY_NAMES_VN[currentPage] || 'Danh Mục Bất Động Sản';
+    return (
+      <div className="py-6 bg-[#F8FAFC] min-h-screen">
+        <div className={`${MAX_W} mx-auto px-4 space-y-4`}>
+          <div className="text-xs text-slate-500 flex items-center gap-1.5">
+            <span onClick={() => navigate('home')} className="hover:text-blue-600 cursor-pointer">Trang chủ</span>
+            <span>/</span>
+            <span className="text-blue-600 font-extrabold">{currentTitle}</span>
           </div>
-        </div>
 
-        <div className="text-xs text-slate-500 border-b border-slate-200 pb-2">
-          Hiển thị tất cả <strong>{allPropertyList.length}</strong> kết quả phù hợp
-        </div>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-black text-slate-900">{currentTitle}</h1>
+              <p className="text-xs text-slate-500 mt-1">Danh sách bất động sản được thẩm định pháp lý và có giá tốt nhất</p>
+            </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
-          <div className="lg:col-span-8">
-            {allPropertyList.length === 0 ? (
-              <div className="bg-white p-12 rounded-xl text-center border border-slate-200">
-                <p className="text-sm font-bold text-slate-500">Không tìm thấy bất động sản phù hợp với bộ lọc hiện tại.</p>
-                <button
-                  onClick={() => { setFilterCity('all'); setFilterPriceRange('all'); setSearchKeyword(''); }}
-                  className="mt-3 text-xs text-blue-600 font-bold hover:underline"
-                >
-                  Xóa bộ lọc để xem tất cả
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-                {allPropertyList.map(renderCard)}
-              </div>
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <select
+                value={filterCity}
+                onChange={e => setFilterCity(e.target.value)}
+                className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500/20 shadow-xs cursor-pointer"
+              >
+                <option value="all">Toàn bộ Tỉnh / Thành Phố</option>
+                <option value="Hà Nội">TP. Hà Nội</option>
+                <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                <option value="Đà Nẵng">TP. Đà Nẵng</option>
+              </select>
+
+              <select
+                value={filterPriceRange}
+                onChange={e => setFilterPriceRange(e.target.value)}
+                className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500/20 shadow-xs cursor-pointer"
+              >
+                <option value="all">Tất cả khoảng giá</option>
+                <option value="under-5">Dưới 5 Tỷ VNĐ</option>
+                <option value="5-10">Từ 5 - 10 Tỷ VNĐ</option>
+                <option value="above-10">Trên 10 Tỷ VNĐ</option>
+              </select>
+
+              <select
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value)}
+                className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500/20 shadow-xs cursor-pointer"
+              >
+                <option value="default">Thứ tự mặc định</option>
+                <option value="price-asc">Giá: Thấp đến Cao</option>
+                <option value="price-desc">Giá: Cao đến Thấp</option>
+                <option value="area-desc">Diện tích: Lớn đến Nhỏ</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="text-xs text-slate-500 border-b border-slate-200 pb-2 flex justify-between items-center">
+            <span>Hiển thị tất cả <strong>{allPropertyList.length}</strong> bất động sản phù hợp</span>
+            {(filterCity !== 'all' || filterPriceRange !== 'all') && (
+              <button
+                onClick={() => { setFilterCity('all'); setFilterPriceRange('all'); setSearchKeyword(''); }}
+                className="text-blue-600 font-bold hover:underline cursor-pointer"
+              >
+                ↺ Đặt lại bộ lọc
+              </button>
             )}
           </div>
 
-          <div className="lg:col-span-4">
-            {renderRightSidebar()}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
+            <div className="lg:col-span-8">
+              {allPropertyList.length === 0 ? (
+                <div className="bg-white p-12 rounded-xl text-center border border-slate-200 shadow-xs">
+                  <p className="text-sm font-bold text-slate-600">Không tìm thấy bất động sản phù hợp với tiêu chí lọc.</p>
+                  <button
+                    onClick={() => { setFilterCity('all'); setFilterPriceRange('all'); setSearchKeyword(''); }}
+                    className="mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition cursor-pointer"
+                  >
+                    Xem tất cả bất động sản
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+                  {allPropertyList.map(renderCard)}
+                </div>
+              )}
+            </div>
+
+            <div className="lg:col-span-4">
+              {renderRightSidebar()}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderNewsPage = () => (
     <div className="py-6 bg-[#F8FAFC] min-h-screen">
