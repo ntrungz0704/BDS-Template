@@ -1076,69 +1076,6 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
     </div>
   );
 
-  // ── FOOTER WIDGET (DEEP NAVY #16284F MATCHING SCREENSHOT) ──
-  const renderNavyFooter = () => (
-    <footer className="bg-[#16284F] text-slate-300 text-xs pt-12 pb-6 border-t border-slate-800">
-      <div className={`${MAX_W} mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pb-10 border-b border-white/10`}>
-        {/* Cột 1: THÔNG TIN LIÊN HỆ */}
-        <div className="space-y-3">
-          <h4 className="font-bold text-sm text-white uppercase tracking-wider">THÔNG TIN LIÊN HỆ</h4>
-          <div className="space-y-2 text-slate-300">
-            <p className="flex items-start gap-2">
-              <MapPin size={15} className="text-[#0084FF] shrink-0 mt-0.5" />
-              <span>{activeAddress}</span>
-            </p>
-            <p className="flex items-center gap-2">
-              <Phone size={15} className="text-[#0084FF] shrink-0" />
-              <span>Hotline: <strong className="text-white">{activeHotline}</strong></span>
-            </p>
-            <p className="flex items-center gap-2">
-              <Mail size={15} className="text-[#0084FF] shrink-0" />
-              <span>{activeEmail}</span>
-            </p>
-          </div>
-        </div>
-
-        {/* Cột 2: VỀ CHÚNG TÔI */}
-        <div className="space-y-3">
-          <h4 className="font-bold text-sm text-white uppercase tracking-wider">VỀ CHÚNG TÔI</h4>
-          <p className="text-slate-400 leading-relaxed text-[11px]">
-            Chúng tôi chuyên cho thuê biệt thự nghỉ dưỡng tại khu đô thị An Viên — Nha Trang. Với chi phí ưu đãi, biệt thự đẹp, mới, mang đến cho bạn một kỳ nghỉ dưỡng an lành.
-          </p>
-        </div>
-
-        {/* Cột 3: DANH MỤC */}
-        <div className="space-y-3">
-          <h4 className="font-bold text-sm text-white uppercase tracking-wider">DANH MỤC</h4>
-          <div className="space-y-1.5 text-[11px]">
-            {['Đất dự án', 'Đất nền', 'Nhà ở', 'Nhà cho thuê', 'Tin tức'].map((item, idx) => (
-              <div key={idx} onClick={() => navigate('dat-du-an')} className="hover:text-[#0084FF] transition cursor-pointer">
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Cột 4: FANPAGE FACEBOOK */}
-        <div className="space-y-3">
-          <h4 className="font-bold text-sm text-white uppercase tracking-wider">FANPAGE FACEBOOK</h4>
-          <div className="p-3 bg-white/5 rounded-lg border border-white/10 space-y-2">
-            <div className="flex items-center gap-2">
-              <Facebook size={16} className="text-blue-400" />
-              <span className="font-bold text-white text-xs">Biệt Thự An Viên Nha Trang</span>
-            </div>
-            <p className="text-[10px] text-slate-400">Theo dõi fanpage để nhận voucher ưu đãi 20% khi thuê biệt thự.</p>
-          </div>
-        </div>
-      </div>
-
-      <div className={`${MAX_W} mx-auto px-4 pt-6 text-center text-[11px] text-slate-400 space-y-1`}>
-        <div>Copyright 2026 © Biệt Thự An Viên — Chuyên biệt thự nghỉ dưỡng Khu đô thị An Viên</div>
-        <div className="text-slate-400 text-[10px]">Phát triển bởi nền tảng công nghệ TEMPLATEBDS</div>
-      </div>
-    </footer>
-  );
-
   return (
     <div className={`min-h-screen flex flex-col justify-between bg-[#F8F9FA] font-sans antialiased text-slate-800 relative ${isSmall ? 'text-xs' : ''}`}>
       {renderHeader()}
@@ -1151,7 +1088,13 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
         {currentPage === 'contact' && renderArchivePage()}
         {!['home', 'dat-du-an', 'dat-nen', 'nha-o', 'nha-cho-thue', 'news', 'property-detail', 'news-detail', 'contact'].includes(currentPage) && renderHomePage()}
       </main>
-      {renderNavyFooter()}
+      <UniversalTemplateFooter
+        company={company}
+        templateName="BDS-05 (Urban City — Biệt Thự An Viên)"
+        onNavigate={navigate}
+        hotlinePhone={activeHotline}
+        zaloPhone="0919006030"
+      />
     </div>
   );
 }
