@@ -53,6 +53,7 @@ const Portal08IndustrialHubTemplate = dynamic(() => import('./portal-templates/P
 const Portal09HeritageColonialTemplate = dynamic(() => import('./portal-templates/Portal09HeritageColonialTemplate'), { loading: () => <LoadingSkeleton /> });
 const Portal10InvestmentYieldTemplate = dynamic(() => import('./portal-templates/Portal10InvestmentYieldTemplate'), { loading: () => <LoadingSkeleton /> });
 const Portal11VillaWaterfrontTemplate = dynamic(() => import('./portal-templates/Portal11VillaWaterfrontTemplate'), { loading: () => <LoadingSkeleton /> });
+const Portal12MegaDeveloperTemplate = dynamic(() => import('./portal-templates/Portal12MegaDeveloperTemplate'), { loading: () => <LoadingSkeleton /> });
 
 interface DemoRendererProps {
   template: Template;
@@ -1109,6 +1110,9 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
     }
     if (slug === 'portal-11' || slug === 'portal-waterfront' || slug === 'waterfront-villa' || sourceSlug === 'portal-11' || sourceSlug === 'portal-waterfront') {
       return <Portal11VillaWaterfrontTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+    }
+    if (slug === 'portal-12' || slug === 'portal-mega' || slug === 'mega-developer' || sourceSlug === 'portal-12' || sourceSlug === 'portal-mega') {
+      return <Portal12MegaDeveloperTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
     if (slug === 'bds-01' || sourceSlug === 'luxury-gold' || slug === 'luxury-gold') {
       return <LuxuryTemplate template={template} viewport={viewport} initialPage={initialPage} />;

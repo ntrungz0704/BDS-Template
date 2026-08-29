@@ -2147,6 +2147,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "TUYỆT TÁC BIỆT THỰ & DINH THỰ VEN SÔNG BIỂU TƯỢNG",
       heroSubtitle: "Bộ sưu tập dinh thự có bến đỗ du thuyền riêng, view panorama sông lớn và an ninh compound."
     }
+  },
+  // ─── PORTAL 12. MEGA DEVELOPER ECOSYSTEM PORTAL ────────────────────────────
+  {
+    id: "portal-12",
+    name: "Template #12 - Mega Developer Ecosystem Portal",
+    slug: "portal-12",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #12",
+    badgeBg: "#1E3A8A",
+    badgeColor: "#FFFFFF",
+    accentColor: "#D97706",
+    description: "Cổng thông tin hệ sinh thái đại đô thị trực tiếp từ chủ đầu tư tập đoàn lớn (Vingroup, Masterise Homes, Sun Group, Novaland). Tổng hợp giỏ hàng F1 phân khu mở bán, chính sách chiết khấu 15% đợt 1, ân hạn lãi gốc và quà tặng độc quyền.",
+    shortDescription: "Giỏ hàng F1 đại đô thị · Chiết khấu 15% đợt 1 · Trực tiếp chủ đầu tư",
+    thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục tập đoàn hùng hậu với tông Xanh Navy Hoàng Gia & Vàng Gold Kim Cương",
+      "Thẻ tin Sub-Division Card hiển thị phân khu, tiến độ thi công và chính sách chiết khấu F1",
+      "Bộ lọc BĐS theo phân khu cao tầng / thấp tầng / thương mại giải trí",
+      "Trang chi tiết BĐS kèm bảng tiến độ thanh toán chuẩn & thanh toán sớm",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Đại đô thị, Tiến độ, Giới thiệu, Liên hệ",
+      "Tích hợp nút tải trọn bộ hồ sơ pháp lý 1/500 và bảng giá gốc F1"
+    ],
+    priceBuy: 799000,
+    priceBuySource: 2490000,
+    priceRentMonthly: 199000,
+    isActive: true,
+    sortOrder: 36,
+    targetAudience: ["Đại lý phân phối F1 chiến lược của các chủ đầu tư lớn", "Công ty sàn giao dịch BĐS tổng hợp đa dự án", "Đội ngũ sales chuyên bán dự án quy mô đại đô thị"],
+    highlights: ["Master Plan Sub-Division Cards", "F1 Direct Developer Pricing", "Discount & Payment Policy", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["SubDivisionCardModule", "DeveloperDiscountModule", "MegaProjectModule", "ConstructionProgressModule"],
+    benefits: ["Tạo dựng uy tín tuyệt đối với tư cách đại lý F1 chiến lược", "Cung cấp đầy đủ thông tin chính sách bán hàng mới nhất", "Tăng 380% tỷ lệ đăng ký nhận bảng giá F1"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#1E3A8A",
+      secondaryColor: "#172554",
+      accentColor: "#D97706",
+      bgColor: "#F8FAFC",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "1rem",
+      shadowToken: "0 10px 15px -3px rgba(30, 58, 138, 0.15)"
+    },
+    layoutConfig: {
+      heroStyle: "Mega Developer Hero với Search Bar phân khu F1",
+      navigationStyle: "Corporate Navy Rounded Navbar",
+      cardStyle: "Sub-Division Master Card (Grid chiết khấu % & quà tặng)",
+      galleryStyle: "Mega Masterplan Slider",
+      ctaStyle: "Royal Navy Corporate Button",
+      spacingScale: "Grand Masterplan Spacing"
+    },
+    wireframe: ["HeaderMegaDeveloper", "HeroMegaSearch", "SubDivisionListingsGrid", "TopMegaProjects", "FooterMegaDeveloper"],
+    sectionConfig: {
+      sourceSlug: "portal-12",
+      heroTitle: "GIỎ HÀNG GỐC TRỰC TIẾP TỪ CHỦ ĐẦU TƯ",
+      heroSubtitle: "Khám phá các đại đô thị quy mô hàng trăm hecta với chính sách chiết khấu đợt 1 và quà tặng đặc quyền."
+    }
   }
 ];
 
@@ -2204,6 +2268,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-11': 'portal-11',
   'portal-waterfront': 'portal-11',
   'waterfront-villa': 'portal-11',
+  'portal-12': 'portal-12',
+  'portal-mega': 'portal-12',
+  'mega-ecosystem': 'portal-12',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
