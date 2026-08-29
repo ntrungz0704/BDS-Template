@@ -2,7 +2,7 @@ import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { syncDemoUrl } from '../../../utils/demo';
 import { 
-  Building2, MapPin, Phone, Mail, Search, ChevronRight, Menu, X,
+  Building2, MapPin, Phone, Mail, Search, ChevronRight, ChevronLeft, Menu, X,
   CheckCircle2, Star, Clock, Home, Users, ArrowRight, Bath, Bed,
   Maximize, Trees, Dumbbell, Shield, Coffee, Car, Quote, Calendar, Plus, Minus,
   Camera, Check
@@ -200,6 +200,7 @@ const LIST_APARTMENTS = [
 const LIST_NEWS = [
   {
     id: 1,
+    slug: 'le-ra-mat-phan-khu-diamond',
     title: 'Lễ ra mắt phân khu Diamond đẳng cấp nhất dự án SmartUrban',
     date: '20/10/2026',
     category: 'Sự kiện',
@@ -214,6 +215,7 @@ const LIST_NEWS = [
   },
   {
     id: 2,
+    slug: 'cap-nhat-tien-do-thi-cong-thang-10',
     title: 'Cập nhật tiến độ thi công dự án SmartUrban tháng 10/2026',
     date: '15/10/2026',
     category: 'Tiến độ',
@@ -228,6 +230,7 @@ const LIST_NEWS = [
   },
   {
     id: 3,
+    slug: 'chinh-sach-ban-hang-uu-dai-cuoi-nam',
     title: 'Chính sách bán hàng ưu đãi đặc biệt nhân dịp cuối năm 2026',
     date: '01/10/2026',
     category: 'Chính sách',
@@ -242,6 +245,7 @@ const LIST_NEWS = [
   },
   {
     id: 4,
+    slug: 'khai-truong-nha-mau-phong-cach-chau-au',
     title: 'Khai trương cụm nhà mẫu thực tế phong cách Châu Âu tại SmartUrban',
     date: '25/09/2026',
     category: 'Sự kiện',
@@ -256,6 +260,7 @@ const LIST_NEWS = [
   },
   {
     id: 5,
+    slug: 'ky-ket-hop-tac-chien-luoc-techcombank',
     title: 'Ký kết hợp tác chiến lược bảo lãnh dự án giữa SmartUrban và Techcombank',
     date: '10/09/2026',
     category: 'Chính sách',
@@ -270,6 +275,7 @@ const LIST_NEWS = [
   },
   {
     id: 6,
+    slug: 'thiet-ke-canh-quan-xanh-nhan-giai-thuong',
     title: 'Thiết kế cảnh quan xanh SmartUrban vinh dự nhận giải thưởng Quốc tế',
     date: '05/09/2026',
     category: 'Thị trường',
@@ -284,6 +290,7 @@ const LIST_NEWS = [
   },
   {
     id: 7,
+    slug: 'phan-tich-tiem-nang-dau-tu-bds-2026',
     title: 'Phân tích tiềm năng đầu tư bất động sản khu vực phía Nam năm 2026',
     date: '20/08/2026',
     category: 'Thị trường',
@@ -400,25 +407,62 @@ const normalizeApartmentPage = (p: string) => {
 };
 
 export default function ApartmentTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const [currentPage, setCurrentPageState] = useState(normalizeApartmentPage(initialPage));
+  const resolveInitialArticle = () => {
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      return LIST_NEWS.find(n => n.slug === sub || String(n.id) === sub) || LIST_NEWS[0];
+    }
+    return null;
+  };
+
+  const initialArticle = resolveInitialArticle();
+  const [selectedArticle, setSelectedArticle] = useState<any>(initialArticle);
+  const [currentPage, setCurrentPageState] = useState(initialArticle ? 'news-detail' : normalizeApartmentPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(normalizeApartmentPage(initialPage));
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      const found = LIST_NEWS.find(n => n.slug === sub || String(n.id) === sub) || LIST_NEWS[0];
+      setSelectedArticle(found);
+      setCurrentPageState('news-detail');
+    } else {
+      setSelectedArticle(null);
+      setCurrentPageState(normalizeApartmentPage(initialPage));
+    }
   }, [initialPage]);
 
   const setCurrentPage = (p: string, customSlug?: string) => {
-    if (typeof setSelectedArticle === "function") setSelectedArticle(null);
+    if (p !== 'news-detail') {
+      setSelectedArticle(null);
+    }
     setCurrentPageState(p);
     const tSlug = template?.slug || 'bds-01';
     syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
   };
 
+  const handleOpenArticle = (item: any) => {
+    setSelectedArticle(item);
+    setCurrentPageState('news-detail');
+    setMobileMenuOpen(false);
+    const tSlug = template?.slug || 'bds-01';
+    syncDemoUrl(`tin-tuc/${item.slug || item.id}`, tSlug);
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   useEffect(() => {
     const handlePopState = () => {
       const parts = window.location.pathname.split('/').filter(Boolean);
-      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-01') ? parts[1] : 'home');
+      const sub = parts.length > 2 ? parts.slice(2).join('/') : (parts[1] !== (template?.slug || 'bds-01') ? parts[1] : 'home');
       if (sub) {
-        setCurrentPageState(normalizeApartmentPage(sub));
+        if (sub.startsWith('tin-tuc/') || sub.startsWith('news/') || sub.startsWith('bai-viet/')) {
+          const artSlug = sub.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+          const found = LIST_NEWS.find(n => n.slug === artSlug || String(n.id) === artSlug) || LIST_NEWS[0];
+          setSelectedArticle(found);
+          setCurrentPageState('news-detail');
+        } else {
+          setSelectedArticle(null);
+          setCurrentPageState(normalizeApartmentPage(sub));
+        }
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -443,7 +487,6 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
   
   const [searchNewsQuery, setSearchNewsQuery] = useState('');
   const [selectedNewsCategory, setSelectedNewsCategory] = useState('Tất cả');
-  const [selectedArticle, setSelectedArticle] = useState<any>(null);
   
   const [contactName, setContactName] = useState('');
   const [contactPhone, setContactPhone] = useState('');
@@ -945,7 +988,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             <div 
               key={n.id} 
               className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition border border-violet-100 group cursor-pointer" 
-              onClick={() => setSelectedArticle(n)}
+              onClick={() => handleOpenArticle(n)}
             >
               <div className="overflow-hidden h-56">
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={n.img} alt={n.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
@@ -1559,7 +1602,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           {searchNewsQuery === '' && selectedNewsCategory === 'Tất cả' && featuredArticle && (
             <div 
               className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20 cursor-pointer group" 
-              onClick={() => setSelectedArticle(featuredArticle)}
+              onClick={() => handleOpenArticle(featuredArticle)}
             >
               <div className="rounded-[3rem] overflow-hidden shadow-2xl relative h-[500px]">
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={featuredArticle.img} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt="News main" />
@@ -1572,7 +1615,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               
               <div className="flex flex-col gap-6 justify-between">
                 {LIST_NEWS.filter(news => !news.featured).slice(0, 3).map((n) => (
-                  <div key={n.id} className="flex gap-6 items-center bg-violet-50 p-6 rounded-[2rem] hover:shadow-lg hover:bg-white hover:border hover:border-violet-100 transition border border-transparent h-full">
+                  <div key={n.id} onClick={() => handleOpenArticle(n)} className="flex gap-6 items-center bg-violet-50 p-6 rounded-[2rem] hover:shadow-lg hover:bg-white hover:border hover:border-violet-100 transition border border-transparent h-full cursor-pointer group">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={n.img} className="w-32 h-32 lg:w-40 lg:h-40 object-cover rounded-2xl shrink-0 group-hover:scale-105 transition duration-500" alt="Thumb" />
                     <div>
                       <div className="flex items-center gap-2 text-amber-500 text-sm font-bold mb-3 uppercase tracking-wider">
@@ -1603,7 +1646,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 <div 
                   key={n.id} 
                   className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition border border-violet-100 group cursor-pointer" 
-                  onClick={() => setSelectedArticle(n)}
+                  onClick={() => handleOpenArticle(n)}
                 >
                   <div className="overflow-hidden h-56">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={n.img} alt={n.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
@@ -1621,6 +1664,113 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               ))}
             </div>
           )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderNewsDetailPage = () => {
+    if (!selectedArticle) return null;
+    return (
+      <div className="bg-white min-h-screen pt-20 pb-32" style={fontBody}>
+        <div className={`${MAX_W} px-4`}>
+          {/* Breadcrumb & Back */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-violet-100 pb-6 mb-10">
+            <nav className="flex items-center gap-2 text-sm text-slate-500 font-medium">
+              <button onClick={() => navigateTo('home')} className="hover:text-violet-600">Trang chủ</button>
+              <span>/</span>
+              <button onClick={() => navigateTo('news', 'tin-tuc')} className="hover:text-violet-600">Tin tức & Sự kiện</button>
+              <span>/</span>
+              <span className="text-violet-950 font-bold truncate max-w-xs sm:max-w-md">{selectedArticle.title}</span>
+            </nav>
+            <button
+              onClick={() => navigateTo('news', 'tin-tuc')}
+              className="text-sm font-bold text-violet-600 hover:text-violet-800 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-violet-50 hover:bg-violet-100 transition"
+            >
+              <ChevronLeft size={18} /> Quay lại danh sách tin tức
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            {/* Main Article */}
+            <article className="lg:col-span-8 space-y-8">
+              <div className="flex flex-wrap items-center gap-3 text-sm">
+                <span className="px-4 py-1.5 rounded-full bg-amber-500 text-white font-bold uppercase tracking-wider text-xs">
+                  {selectedArticle.category}
+                </span>
+                <span className="text-slate-400">•</span>
+                <span className="text-slate-500 flex items-center gap-1.5 font-medium">
+                  <Calendar size={16} className="text-amber-500" /> {selectedArticle.date}
+                </span>
+              </div>
+
+              <h1 className="text-3xl md:text-5xl font-extrabold text-violet-950 leading-tight" style={fontHeading}>
+                {selectedArticle.title}
+              </h1>
+
+              <div className="rounded-[2.5rem] overflow-hidden shadow-xl aspect-[16/10] w-full bg-slate-100">
+                <img 
+                  src={selectedArticle.img} 
+                  alt={selectedArticle.title} 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              <div className="p-6 bg-violet-50 rounded-2xl border-l-4 border-violet-600 text-violet-950 font-semibold text-lg leading-relaxed">
+                {selectedArticle.excerpt}
+              </div>
+
+              <div className="space-y-6 text-slate-700 leading-relaxed text-lg pt-4">
+                {selectedArticle.content.map((paragraph: string, idx: number) => (
+                  <p key={idx}>{paragraph}</p>
+                ))}
+              </div>
+
+              {/* CTA Box */}
+              <div className="p-8 rounded-3xl bg-gradient-to-r from-violet-900 to-indigo-900 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl mt-12">
+                <div>
+                  <h4 className="font-bold text-xl mb-1" style={fontHeading}>Đăng Ký Nhận Thông Tin Dự Án SmartUrban</h4>
+                  <p className="text-violet-200 text-sm">Nhận trọn bộ bảng giá, mặt bằng và ưu đãi độc quyền trực tiếp từ CĐT</p>
+                </div>
+                <button
+                  onClick={() => navigateTo('contact', 'lien-he')}
+                  className="px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-sm shrink-0 transition shadow-lg"
+                >
+                  Nhận Bảng Giá Ngay
+                </button>
+              </div>
+            </article>
+
+            {/* Sidebar */}
+            <aside className="lg:col-span-4 space-y-8">
+              <div className="bg-violet-50 p-8 rounded-[2rem] border border-violet-100 space-y-6">
+                <h3 className="text-xl font-bold text-violet-950 pb-4 border-b border-violet-200" style={fontHeading}>
+                  Tin Liên Quan
+                </h3>
+                <div className="space-y-6">
+                  {LIST_NEWS.filter(n => n.id !== selectedArticle.id).slice(0, 4).map(item => (
+                    <div
+                      key={item.id}
+                      onClick={() => handleOpenArticle(item)}
+                      className="flex gap-4 items-start group cursor-pointer"
+                    >
+                      <img
+                        src={item.img}
+                        alt={item.title}
+                        className="w-24 h-20 rounded-2xl object-cover shrink-0 group-hover:scale-105 transition"
+                      />
+                      <div>
+                        <span className="text-xs text-amber-500 font-bold uppercase block mb-1">{item.category}</span>
+                        <h4 className="text-sm font-bold text-violet-950 group-hover:text-violet-600 transition line-clamp-2 leading-snug">
+                          {item.title}
+                        </h4>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </aside>
+          </div>
         </div>
       </div>
     );
@@ -1844,8 +1994,9 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
         {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAboutPage()}
         {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGalleryPage()}
         {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNewsPage()}
+        {['news-detail'].includes(currentPage) && renderNewsDetailPage()}
         {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContactPage()}
-        {!['home', 'projects', 'du-an', 'san-pham', 'can-ho', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'can-ho', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'news-detail', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
       </main>
 
       {renderFooter()}
@@ -1940,53 +2091,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
         </div>
       )}
 
-      {/* NEWS DETAIL MODAL */}
-      {selectedArticle && (
-        <div className="fixed inset-0 z-50 bg-violet-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-3xl overflow-hidden shadow-2xl relative border border-violet-50 max-h-[90vh] flex flex-col">
-            <button 
-              onClick={() => setSelectedArticle(null)}
-              className="absolute top-4 right-4 z-10 bg-violet-950/60 text-white hover:bg-violet-600 transition p-2.5 rounded-full backdrop-blur-sm"
-            >
-              <X size={24} />
-            </button>
-            
-            <div className="overflow-y-auto">
-              <div className="relative h-64 md:h-80 w-full">
-                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-violet-950/60 to-transparent"></div>
-                <span className="absolute bottom-6 left-6 bg-amber-500 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
-                  {selectedArticle.category}
-                </span>
-              </div>
-              
-              <div className="p-8 md:p-12">
-                <div className="flex items-center gap-2 text-sm text-amber-500 mb-4 font-bold">
-                  <Calendar size={16} /> {selectedArticle.date}
-                </div>
-                <h2 className="text-3xl font-extrabold text-violet-950 mb-6 leading-snug" style={fontHeading}>
-                  {selectedArticle.title}
-                </h2>
-                <div className="space-y-4 text-slate-600 leading-relaxed text-lg">
-                  {selectedArticle.content.map((paragraph: string, idx: number) => (
-                    <p key={idx}>{paragraph}</p>
-                  ))}
-                </div>
-                
-                <div className="mt-8 pt-8 border-t border-violet-50 flex justify-between items-center">
-                  <span className="text-slate-500 text-sm">SmartUrban Ban biên tập</span>
-                  <button 
-                    onClick={() => setSelectedArticle(null)}
-                    className="bg-violet-50 text-violet-600 hover:bg-violet-600 hover:text-white transition font-bold px-6 py-3 rounded-xl"
-                  >
-                    Đóng Bài Viết
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+
 
       {/* LEADER DETAIL MODAL */}
       {selectedLeader && (

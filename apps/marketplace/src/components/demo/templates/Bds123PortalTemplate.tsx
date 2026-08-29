@@ -82,14 +82,95 @@ const DEVELOPERS = [
   { name: 'Hưng Thịnh Corp', logo: '🏗️', projects: '28+ Dự án' }
 ];
 
+const BDS123_ARTICLES = [
+  {
+    id: 1,
+    slug: 'thi-truong-bds-2026-co-hoi-vang',
+    title: 'Thị trường bất động sản năm 2026: Cơ hội vàng cho nhà đầu tư dài hạn',
+    date: 'Hôm nay',
+    category: 'Phân tích thị trường',
+    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80',
+    desc: 'Dòng tiền bắt đầu giải ngân mạnh vào các dự án có pháp lý hoàn chỉnh và vị trí kết nối giao thông đồng bộ giữa các vùng kinh tế trọng điểm.',
+    author: 'Ban Phân Tích BĐS123',
+    readTime: '5 phút đọc'
+  },
+  {
+    id: 2,
+    slug: 'bi-quyet-chon-can-ho-phong-thuy',
+    title: 'Bí quyết chọn căn hộ chung cư hợp phong thủy đón tài lộc',
+    date: 'Hôm qua',
+    category: 'Cẩm nang mua nhà',
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+    desc: 'Hướng ban công, vị trí bếp và phòng khách là những yếu tố then chốt tạo sinh khí cho gia chủ khi nhận bàn giao nhà mới.',
+    author: 'KTS. Nguyễn Hoàng Phong',
+    readTime: '6 phút đọc'
+  },
+  {
+    id: 3,
+    slug: 'bang-gia-dat-moi-tac-dong-so-do',
+    title: 'Bảng giá đất mới: Tác động thế nào tới chi phí làm sổ đỏ và thuế chuyển nhượng?',
+    date: '2 ngày trước',
+    category: 'Tư vấn pháp lý',
+    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
+    desc: 'Chi tiết hướng dẫn cách tính nghĩa vụ tài chính và các trường hợp được miễn giảm lệ phí theo luật mới năm 2026.',
+    author: 'Luật sư Trần Văn Minh',
+    readTime: '7 phút đọc'
+  },
+  {
+    id: 4,
+    slug: 'top-5-khu-do-thi-xanh-phia-dong',
+    title: 'Top 5 khu đô thị xanh đáng sống nhất khu vực phía Đông',
+    date: '3 ngày trước',
+    category: 'Không gian sống',
+    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
+    desc: 'Không gian mặt nước, công viên cây xanh và hệ thống trường học quốc tế mang lại chuẩn sống tiện nghi vượt trội.',
+    author: 'Hội đồng Thẩm định BĐS',
+    readTime: '4 phút đọc'
+  },
+  {
+    id: 5,
+    slug: 'kinh-nghiem-dam-phan-gia-nha-pho',
+    title: 'Kinh nghiệm đàm phán giá khi mua nhà phố thứ cấp',
+    date: '4 ngày trước',
+    category: 'Kinh nghiệm đầu tư',
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+    desc: 'Cách định giá chính xác tài sản, kiểm tra quy hoạch lộ giới và kỹ năng thương lượng với chủ nhà để có giá mua hời nhất.',
+    author: 'Lê Minh Hùng - Môi giới Senior',
+    readTime: '5 phút đọc'
+  },
+  {
+    id: 6,
+    slug: 'lai-suat-vay-mua-nha-ngan-hang',
+    title: 'Lãi suất vay mua nhà các ngân hàng thương mại cập nhật mới nhất',
+    date: '5 ngày trước',
+    category: 'Tài chính ngân hàng',
+    image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80',
+    desc: 'Gói vay ưu đãi cố định 2-3 năm đầu từ 5.5%/năm giúp giảm áp lực tài chính cho người mua nhà lần đầu.',
+    author: 'Chuyên viên Tín dụng Vietcombank',
+    readTime: '4 phút đọc'
+  }
+];
+
 export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
   initialPage = 'home',
   company
 }) => {
-  const [currentPage, setCurrentPage] = useState<string>(initialPage);
+  const resolveInitialArticle = () => {
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      return BDS123_ARTICLES.find(n => n.slug === sub || String(n.id) === sub) || BDS123_ARTICLES[0];
+    }
+    return null;
+  };
+
+  const initialArticle = resolveInitialArticle();
+  const [selectedArticle, setSelectedArticle] = useState<any>(initialArticle);
+  const [currentPage, setCurrentPage] = useState<string>(initialArticle ? 'news-detail' : (initialPage || 'home'));
+
   const isHome = useMemo(() => {
-    return currentPage === 'home' || !['sale', 'rent', 'projects', 'du-an', 'news', 'tin-tuc', 'about', 'gioi-thieu', 'contact'].includes(currentPage);
-  }, [currentPage]);
+    return (currentPage === 'home' || !['sale', 'rent', 'projects', 'du-an', 'news', 'tin-tuc', 'news-detail', 'about', 'gioi-thieu', 'contact'].includes(currentPage)) && !selectedArticle;
+  }, [currentPage, selectedArticle]);
+
   const [searchTab, setSearchTab] = useState<'sale' | 'rent'>('sale');
   const [keyword, setKeyword] = useState<string>('');
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
@@ -119,6 +200,9 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
   }, [keyword]);
 
   const navigateTo = (page: string, customSlug?: string) => {
+    if (page !== 'news-detail') {
+      setSelectedArticle(null);
+    }
     setCurrentPage(page);
     setSelectedProperty(null);
     setMobileMenuOpen(false);
@@ -126,12 +210,37 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleOpenArticle = (item: any) => {
+    setSelectedArticle(item);
+    setCurrentPage('news-detail');
+    setMobileMenuOpen(false);
+    syncDemoUrl(`tin-tuc/${item.slug || item.id}`, 'bds-18');
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      const found = BDS123_ARTICLES.find(n => n.slug === sub || String(n.id) === sub) || BDS123_ARTICLES[0];
+      setSelectedArticle(found);
+      setCurrentPage('news-detail');
+    }
+  }, [initialPage]);
+
   useEffect(() => {
     const handlePopState = () => {
       const parts = window.location.pathname.split('/').filter(Boolean);
-      const sub = parts.length > 2 ? parts[2] : (parts[1] !== 'bds-18' ? parts[1] : 'home');
+      const sub = parts.length > 2 ? parts.slice(2).join('/') : (parts[1] !== 'bds-18' ? parts[1] : 'home');
       if (sub) {
-        setCurrentPage(sub);
+        if (sub.startsWith('tin-tuc/') || sub.startsWith('news/') || sub.startsWith('bai-viet/')) {
+          const artSlug = sub.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+          const found = BDS123_ARTICLES.find(n => n.slug === artSlug || String(n.id) === artSlug) || BDS123_ARTICLES[0];
+          setSelectedArticle(found);
+          setCurrentPage('news-detail');
+        } else {
+          setSelectedArticle(null);
+          setCurrentPage(sub);
+        }
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -692,9 +801,9 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
       )}
 
       {/* ─────────────────────────────────────────────────────────────
-          PAGE: TIN TỨC BẤT ĐỘNG SẢN (NEWS)
+          PAGE: TIN TỨC BẤT ĐỘNG SẢN (NEWS LIST)
       ───────────────────────────────────────────────────────────── */}
-      {(currentPage === 'news' || currentPage === 'tin-tuc' || currentPage.startsWith('tin-tuc')) && !selectedProperty && (
+      {currentPage === 'news' && !selectedProperty && (
         <main className="max-w-[1240px] mx-auto px-4 py-8 space-y-8">
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
             <div>
@@ -710,15 +819,12 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { title: 'Thị trường bất động sản năm 2026: Cơ hội vàng cho nhà đầu tư dài hạn', date: 'Hôm nay', category: 'Phân tích thị trường', image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80', desc: 'Dòng tiền bắt đầu giải ngân mạnh vào các dự án có pháp lý hoàn chỉnh và vị trí kết nối giao thông đồng bộ.' },
-              { title: 'Bí quyết chọn căn hộ chung cư hợp phong thủy đón tài lộc', date: 'Hôm qua', category: 'Cẩm nang mua nhà', image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80', desc: 'Hướng ban công, vị trí bếp và phòng khách là những yếu tố then chốt tạo sinh khí cho gia chủ.' },
-              { title: 'Bảng giá đất mới: Tác động thế nào tới chi phí làm sổ đỏ và thuế chuyển nhượng?', date: '2 ngày trước', category: 'Tư vấn pháp lý', image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80', desc: 'Chi tiết hướng dẫn cách tính nghĩa vụ tài chính và các trường hợp được miễn giảm lệ phí theo luật mới.' },
-              { title: 'Top 5 khu đô thị xanh đáng sống nhất khu vực phía Đông', date: '3 ngày trước', category: 'Không gian sống', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80', desc: 'Không gian mặt nước, công viên cây xanh và hệ thống trường học quốc tế mang lại chuẩn sống tiện nghi.' },
-              { title: 'Kinh nghiệm đàm phán giá khi mua nhà phố thứ cấp', date: '4 ngày trước', category: 'Kinh nghiệm đầu tư', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80', desc: 'Cách định giá chính xác tài sản, kiểm tra quy hoạch lộ giới và kỹ năng thương lượng với chủ nhà.' },
-              { title: 'Lãi suất vay mua nhà các ngân hàng thương mại cập nhật mới nhất', date: '5 ngày trước', category: 'Tài chính ngân hàng', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80', desc: 'Gói vay ưu đãi cố định 2-3 năm đầu từ 5.5%/năm giúp giảm áp lực tài chính cho người mua nhà lần đầu.' }
-            ].map((art, idx) => (
-              <div key={idx} className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all p-4 flex flex-col justify-between group cursor-pointer">
+            {BDS123_ARTICLES.map((art) => (
+              <div 
+                key={art.id} 
+                onClick={() => handleOpenArticle(art)}
+                className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all p-4 flex flex-col justify-between group cursor-pointer"
+              >
                 <div>
                   <div className="aspect-[16/10] overflow-hidden rounded-lg mb-3 bg-slate-100">
                     <img src={art.image} alt={art.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
@@ -733,6 +839,118 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 </div>
               </div>
             ))}
+          </div>
+        </main>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          PAGE: CHI TIẾT BÀI VIẾT BĐS123 (ARTICLE FULL PAGE)
+      ───────────────────────────────────────────────────────────── */}
+      {currentPage === 'news-detail' && selectedArticle && !selectedProperty && (
+        <main className="max-w-[1240px] mx-auto px-4 py-8 space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
+            <nav className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+              <button onClick={() => navigateTo('home', '')} className="hover:text-blue-600">Trang chủ</button>
+              <span>/</span>
+              <button onClick={() => navigateTo('news', 'tin-tuc')} className="hover:text-blue-600">Tin tức thị trường</button>
+              <span>/</span>
+              <span className="text-slate-900 font-bold truncate max-w-xs sm:max-w-md">{selectedArticle.title}</span>
+            </nav>
+            <button
+              onClick={() => navigateTo('news', 'tin-tuc')}
+              className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-200"
+            >
+              <ChevronLeft className="w-4 h-4" /> Quay lại danh sách tin
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <article className="lg:col-span-8 bg-white rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-xs space-y-6">
+              <div className="flex flex-wrap items-center gap-3 text-xs">
+                <span className="px-3 py-1 rounded-md bg-blue-600 text-white font-bold uppercase tracking-wider text-[11px]">
+                  {selectedArticle.category}
+                </span>
+                <span className="text-slate-400">•</span>
+                <span className="text-slate-500">{selectedArticle.date}</span>
+                <span className="text-slate-400">•</span>
+                <span className="text-slate-500">⏱️ {selectedArticle.readTime || '5 phút đọc'}</span>
+              </div>
+
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">
+                {selectedArticle.title}
+              </h1>
+
+              <div className="flex items-center gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-100 text-xs">
+                <div className="w-9 h-9 rounded-full bg-blue-600 text-white font-black flex items-center justify-center text-xs">
+                  123
+                </div>
+                <div>
+                  <p className="font-bold text-slate-900">{selectedArticle.author || 'Ban Phân Tích BĐS123'}</p>
+                  <p className="text-[11px] text-slate-500">Chuyên trang phân tích pháp lý & dữ liệu thị trường</p>
+                </div>
+              </div>
+
+              <div className="aspect-[16/9] w-full rounded-xl overflow-hidden bg-slate-900 shadow-md">
+                <img src={selectedArticle.image} alt={selectedArticle.title} className="w-full h-full object-cover" />
+              </div>
+
+              <div className="p-5 rounded-xl bg-blue-50/80 border-l-4 border-blue-600 text-slate-800 text-sm font-semibold leading-relaxed">
+                {selectedArticle.desc}
+              </div>
+
+              <div className="space-y-4 text-sm text-slate-700 leading-relaxed">
+                <h2 className="text-lg font-bold text-slate-900">1. Động lực phục hồi của thị trường bất động sản</h2>
+                <p>
+                  Sự thẩm thấu của các chính sách vĩ mô kết hợp cùng mặt bằng lãi suất cho vay mua nhà ở mức hợp lý đã giúp thanh khoản trên toàn thị trường tăng trưởng tích cực. Đặc biệt, phân khúc căn hộ tầm trung và nhà phố khu vực vệ tinh ghi nhận lượng giao dịch thành công tăng vọt.
+                </p>
+                <h2 className="text-lg font-bold text-slate-900">2. Lời khuyên tối ưu dòng tiền cho nhà đầu tư</h2>
+                <p>
+                  Các chuyên gia khuyên rằng nhà đầu tư nên phân bổ 60% dòng vốn vào các tài sản có thể khai thác cho thuê ngay để đảm bảo an toàn thanh khoản, và 40% còn lại dành cho đất nền hoặc dự án hình thành trong tương lai có pháp lý minh bạch 100%.
+                </p>
+              </div>
+
+              <div className="p-5 bg-gradient-to-r from-slate-900 to-blue-950 text-white rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+                <div>
+                  <h4 className="font-bold text-sm">Nhận Cẩm Nang Pháp Lý & Bảng Giá Đất 2026</h4>
+                  <p className="text-xs text-slate-300">Tài liệu miễn phí dành cho khách hàng đăng ký</p>
+                </div>
+                <button
+                  onClick={() => alert('Đăng ký nhận cẩm nang thành công!')}
+                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-xs"
+                >
+                  Tải Cẩm Nang Miễn Phí
+                </button>
+              </div>
+            </article>
+
+            <aside className="lg:col-span-4 space-y-6">
+              <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
+                <h3 className="font-black text-sm text-slate-900 pb-2 border-b border-slate-100">
+                  Tin Liên Quan Khác
+                </h3>
+                <div className="space-y-3">
+                  {BDS123_ARTICLES.filter(n => n.id !== selectedArticle.id).map(item => (
+                    <div
+                      key={item.id}
+                      onClick={() => handleOpenArticle(item)}
+                      className="flex gap-2.5 items-start group cursor-pointer border-b border-slate-100 pb-2.5 last:border-0 last:pb-0"
+                    >
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-16 h-12 rounded-lg object-cover shrink-0 group-hover:scale-105 transition-transform"
+                      />
+                      <div>
+                        <span className="text-[9px] font-bold text-blue-600 block">{item.category}</span>
+                        <h4 className="text-[11px] font-bold text-slate-800 group-hover:text-blue-600 transition-colors line-clamp-2 leading-tight">
+                          {item.title}
+                        </h4>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </aside>
           </div>
         </main>
       )}

@@ -136,6 +136,7 @@ const MOCK_PROJECTS = [
 const MOCK_NEWS = [
   {
     id: 1,
+    slug: 'xu-huong-dong-tien-bds-nghi-duong',
     title: 'Xu hướng đầu tư bất động sản nghỉ dưỡng nửa cuối năm 2026',
     date: '15 Th07, 2026',
     img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
@@ -145,6 +146,7 @@ const MOCK_NEWS = [
   },
   {
     id: 2,
+    slug: 'dac-quyen-cham-soc-suc-khoe-resort-paradise',
     title: 'Đặc quyền chăm sóc sức khỏe toàn diện tại Resort Paradise',
     date: '10 Th07, 2026',
     img: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=80',
@@ -154,6 +156,7 @@ const MOCK_NEWS = [
   },
   {
     id: 3,
+    slug: 'nghe-thuat-am-thuc-nha-hang-ven-bien',
     title: 'Nghệ thuật ẩm thực tại nhà hàng ven biển độc quyền',
     date: '05 Th07, 2026',
     img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=800&q=80',
@@ -163,6 +166,7 @@ const MOCK_NEWS = [
   },
   {
     id: 4,
+    slug: 'amanoi-resort-nhan-giai-thuong-chau-a',
     title: 'Amanoi Resort nhận giải thưởng Khu Nghỉ Dưỡng Hàng Đầu Châu Á 2026',
     date: '01 Th07, 2026',
     img: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=800&q=80',
@@ -172,6 +176,7 @@ const MOCK_NEWS = [
   },
   {
     id: 5,
+    slug: 'bds-bien-phu-quoc-tang-nhiet',
     title: 'Bất động sản biển Phú Quốc tăng nhiệt nhờ quy hoạch mới',
     date: '28 Th06, 2026',
     img: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=800&q=80',
@@ -181,6 +186,7 @@ const MOCK_NEWS = [
   },
   {
     id: 6,
+    slug: 'kien-truc-xanh-resort-hien-dai',
     title: 'Kiến trúc xanh và tính bền vững trong thiết kế Resort hiện đại',
     date: '22 Th06, 2026',
     img: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80',
@@ -267,27 +273,64 @@ const normalizeResortPage = (p: string) => {
 };
 
 export default function ResortTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const [currentPage, setCurrentPageState] = useState(normalizeResortPage(initialPage));
+  const resolveInitialArticle = () => {
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      return MOCK_NEWS.find(n => n.slug === sub || String(n.id) === sub) || MOCK_NEWS[0];
+    }
+    return null;
+  };
+
+  const initialArticle = resolveInitialArticle();
+  const [selectedArticle, setSelectedArticle] = useState<typeof MOCK_NEWS[0] | null>(initialArticle);
+  const [currentPage, setCurrentPageState] = useState(initialArticle ? 'news-detail' : normalizeResortPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(normalizeResortPage(initialPage));
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      const found = MOCK_NEWS.find(n => n.slug === sub || String(n.id) === sub) || MOCK_NEWS[0];
+      setSelectedArticle(found);
+      setCurrentPageState('news-detail');
+    } else {
+      setSelectedArticle(null);
+      setCurrentPageState(normalizeResortPage(initialPage));
+    }
   }, [initialPage]);
 
   const setCurrentPage = (p: string, customSlug?: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
-    if (typeof setSelectedArticle === "function") setSelectedArticle(null);
+    if (p !== 'news-detail') {
+      setSelectedArticle(null);
+    }
 
     setCurrentPageState(p);
     const tSlug = template?.slug || 'bds-05';
     syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
   };
 
+  const handleOpenArticle = (item: any) => {
+    setSelectedArticle(item);
+    setCurrentPageState('news-detail');
+    setIsMobileMenuOpen(false);
+    const tSlug = template?.slug || 'bds-05';
+    syncDemoUrl(`tin-tuc/${item.slug || item.id}`, tSlug);
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   useEffect(() => {
     const handlePopState = () => {
       const parts = window.location.pathname.split('/').filter(Boolean);
-      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-05') ? parts[1] : 'home');
+      const sub = parts.length > 2 ? parts.slice(2).join('/') : (parts[1] !== (template?.slug || 'bds-03') ? parts[1] : 'home');
       if (sub) {
-        setCurrentPageState(normalizeResortPage(sub));
+        if (sub.startsWith('tin-tuc/') || sub.startsWith('news/') || sub.startsWith('bai-viet/')) {
+          const artSlug = sub.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+          const found = MOCK_NEWS.find(n => n.slug === artSlug || String(n.id) === artSlug) || MOCK_NEWS[0];
+          setSelectedArticle(found);
+          setCurrentPageState('news-detail');
+        } else {
+          setSelectedArticle(null);
+          setCurrentPageState(normalizeResortPage(sub));
+        }
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -312,7 +355,6 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
   const [selectedGalleryTab, setSelectedGalleryTab] = useState('All');
   const [selectedGalleryImg, setSelectedGalleryImg] = useState<string | null>(null);
   const [searchNewsQuery, setSearchNewsQuery] = useState('');
-  const [selectedArticle, setSelectedArticle] = useState<typeof MOCK_NEWS[0] | null>(null);
 
   // Form states
   const [contactSubmitted, setContactSubmitted] = useState(false);
@@ -354,10 +396,10 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
     { id: 'contact', label: 'Liên Hệ' },
   ];
 
-  const navigateTo = (pageId: string) => {
-    setCurrentPage(pageId);
+  const navigateTo = (pageId: string, customSlug?: string) => {
+    setCurrentPage(pageId, customSlug);
     setIsMobileMenuOpen(false);
-    window.scrollTo(0, 0);
+    if (typeof window !== 'undefined') window.scrollTo(0, 0);
   };
 
   const handleQuickSearch = () => {
@@ -926,7 +968,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {MOCK_NEWS.slice(0, 3).map((news) => (
-              <div key={news.id} onClick={() => setSelectedArticle(news)} className="bg-white group cursor-pointer border border-gray-100 shadow-sm hover:shadow-md transition-all rounded-sm overflow-hidden flex flex-col justify-between">
+              <div key={news.id} onClick={() => handleOpenArticle(news)} className="bg-white group cursor-pointer border border-gray-100 shadow-sm hover:shadow-md transition-all rounded-sm overflow-hidden flex flex-col justify-between">
                 <div>
                   <div className="relative h-60 overflow-hidden">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={news.img} alt={news.title} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" />
@@ -1457,7 +1499,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
               {filteredNews.map((news) => (
                 <div 
                   key={news.id} 
-                  onClick={() => setSelectedArticle(news)}
+                  onClick={() => handleOpenArticle(news)}
                   className="bg-white group cursor-pointer shadow-sm hover:shadow-xl transition-all rounded-sm overflow-hidden border border-gray-100 flex flex-col justify-between"
                 >
                   <div>
@@ -1750,55 +1792,98 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
     );
   };
 
-  const renderArticleModal = () => {
+  const renderNewsDetailPage = () => {
     if (!selectedArticle) return null;
     return (
-      <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div className="bg-white rounded-sm max-w-3xl w-full max-h-[90vh] overflow-y-auto relative shadow-2xl">
-          <button 
-            onClick={() => setSelectedArticle(null)}
-            className="absolute top-4 right-4 z-10 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow transition-all"
-          >
-            <X size={24} />
-          </button>
-          
-          <div className="h-64 sm:h-96 relative">
-            <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-            <div className="absolute bottom-6 left-6 right-6 text-white">
-              <span className="bg-[#F59E0B] text-white text-xs px-3 py-1 uppercase tracking-widest font-semibold rounded-sm mb-3 inline-block">
-                Tạp chí nghỉ dưỡng
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-2 leading-tight" style={fontHead}>{selectedArticle.title}</h2>
-              <div className="flex gap-4 text-xs text-white/80">
+      <div className="pt-32 pb-32" style={{ backgroundColor: colors.bg }}>
+        <div className={`${MAX_W} px-6`}>
+          {/* Breadcrumb & Navigation */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-6 mb-12">
+            <nav className="flex items-center gap-2 text-xs uppercase tracking-widest text-gray-500 font-medium">
+              <button onClick={() => navigateTo('home')} className="hover:text-[#065A82] transition">Trang chủ</button>
+              <span>/</span>
+              <button onClick={() => navigateTo('news', 'tin-tuc')} className="hover:text-[#065A82] transition">Tạp chí nghỉ dưỡng</button>
+              <span>/</span>
+              <span className="text-[#0A2540] font-bold truncate max-w-xs sm:max-w-md">{selectedArticle.title}</span>
+            </nav>
+            <button
+              onClick={() => navigateTo('news', 'tin-tuc')}
+              className="text-xs uppercase tracking-widest font-semibold flex items-center gap-1.5 px-4 py-2 border border-gray-300 text-[#065A82] hover:bg-white transition rounded-sm shadow-sm"
+            >
+              <ChevronLeft size={16} /> Quay lại danh sách bài viết
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <article className="lg:col-span-8 space-y-8">
+              <div className="flex items-center gap-3 text-xs uppercase tracking-widest text-[#F59E0B] font-semibold">
+                <span>Tạp chí nghỉ dưỡng</span>
+                <span>•</span>
                 <span>{selectedArticle.date}</span>
                 <span>•</span>
                 <span>Tác giả: {selectedArticle.author}</span>
               </div>
-            </div>
-          </div>
-          
-          <div className="p-6 sm:p-8 bg-white">
-            <p className="text-gray-800 font-medium text-lg leading-relaxed mb-6 border-l-4 border-[#065A82] pl-4">
-              {selectedArticle.excerpt}
-            </p>
-            <div className="text-gray-600 font-light leading-relaxed space-y-4 text-sm md:text-base">
-              <p>{selectedArticle.content}</p>
-              <p>Đối với các nhà đầu tư cá nhân, việc tìm kiếm một sản phẩm bất động sản vừa có thể nghỉ dưỡng vừa mang lại dòng tiền thụ động ổn định đang trở thành ưu tiên hàng đầu. Với vị thế đắc địa và các chính sách ưu đãi tài chính hấp dẫn từ chủ đầu tư Resort Paradise, đây chắc chắn là thời điểm vàng để sở hữu các tuyệt tác này.</p>
-              <p>Hãy liên hệ ngay với chúng tôi để nhận trọn bộ tài liệu phân tích thị trường và giỏ hàng độc quyền mới nhất.</p>
-            </div>
-            
-            <div className="mt-8 pt-6 border-t border-gray-100 flex justify-end">
-              <button 
-                onClick={() => {
-                  setSelectedArticle(null);
-                  navigateTo('contact');
-                }}
-                className="bg-[#0A2540] text-white px-6 py-3 font-semibold uppercase tracking-widest text-xs hover:bg-[#065A82] transition-colors rounded-sm"
-              >
-                Liên hệ nhận thông tin
-              </button>
-            </div>
+
+              <h1 className="text-3xl md:text-5xl font-bold text-[#0A2540] leading-tight" style={fontHead}>
+                {selectedArticle.title}
+              </h1>
+
+              <div className="aspect-[16/9] w-full overflow-hidden rounded-sm shadow-lg">
+                <img src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
+              </div>
+
+              <div className="p-6 bg-white border-l-4 border-[#065A82] text-lg font-medium text-gray-800 leading-relaxed shadow-sm">
+                {selectedArticle.excerpt}
+              </div>
+
+              <div className="space-y-6 text-gray-700 leading-relaxed text-base font-light">
+                <p>{selectedArticle.content}</p>
+                <p>Đối với các nhà đầu tư cá nhân, việc tìm kiếm một sản phẩm bất động sản vừa có thể nghỉ dưỡng vừa mang lại dòng tiền thụ động ổn định đang trở thành ưu tiên hàng đầu. Với vị thế đắc địa và các chính sách ưu đãi tài chính hấp dẫn từ chủ đầu tư Resort Paradise, đây chắc chắn là thời điểm vàng để sở hữu các tuyệt tác này.</p>
+                <p>Hãy liên hệ ngay với chúng tôi để nhận trọn bộ tài liệu phân tích thị trường và giỏ hàng độc quyền mới nhất.</p>
+              </div>
+
+              <div className="p-8 bg-[#0A2540] text-white rounded-sm mt-12 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+                <div>
+                  <h4 className="text-2xl font-bold mb-1" style={fontHead}>Đăng Ký Nhận Thông Tin Dự Án</h4>
+                  <p className="text-gray-300 text-sm font-light">Nhận trọn bộ brochure, bảng giá và chính sách ưu đãi phân khu biển.</p>
+                </div>
+                <button
+                  onClick={() => navigateTo('contact', 'lien-he')}
+                  className="px-6 py-3.5 bg-[#F59E0B] hover:bg-[#d97706] text-white font-bold uppercase tracking-widest text-xs rounded-sm shrink-0 transition"
+                >
+                  Nhận Báo Giá Ngay
+                </button>
+              </div>
+            </article>
+
+            <aside className="lg:col-span-4 space-y-8">
+              <div className="bg-white p-8 rounded-sm border border-gray-100 shadow-sm space-y-6">
+                <h3 className="text-xl font-bold text-[#0A2540] pb-4 border-b border-gray-100 uppercase tracking-wider" style={fontHead}>
+                  Bài Viết Liên Quan
+                </h3>
+                <div className="space-y-6">
+                  {MOCK_NEWS.filter(n => n.id !== selectedArticle.id).slice(0, 4).map(item => (
+                    <div
+                      key={item.id}
+                      onClick={() => handleOpenArticle(item)}
+                      className="flex gap-4 items-start group cursor-pointer"
+                    >
+                      <img
+                        src={item.img}
+                        alt={item.title}
+                        className="w-24 h-16 object-cover rounded-sm flex-shrink-0 group-hover:scale-105 transition"
+                      />
+                      <div>
+                        <span className="text-[10px] text-[#F59E0B] font-semibold uppercase tracking-wider block mb-1">{item.date}</span>
+                        <h4 className="text-xs font-bold text-[#0A2540] group-hover:text-[#065A82] transition line-clamp-2 leading-snug" style={fontHead}>
+                          {item.title}
+                        </h4>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </aside>
           </div>
         </div>
       </div>
@@ -1853,14 +1938,14 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
         {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAbout()}
         {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGallery()}
         {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNews()}
+        {['news-detail'].includes(currentPage) && renderNewsDetailPage()}
         {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContact()}
-        {!['home', 'projects', 'du-an', 'san-pham', 'villa', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'villa', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'news-detail', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
       </main>
       {renderFooter()}
 
       {/* Modals & Overlays */}
       {renderProjectModal()}
-      {renderArticleModal()}
       {renderGalleryLightbox()}
     </div>
   );

@@ -70,21 +70,95 @@ const PROVINCES = [
   'Tỉnh Long An'
 ];
 
-const ADVICE_ARTICLES = [
-  { title: 'Cách bắt mạch bong bóng bất động sản năm 2026 đã vượt qua', date: 'Mới nhất', image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=300&q=80' },
-  { title: 'Mua chung cư cuối năm, người mua nhà cần quan tâm điều gì?', date: 'Mới nhất', image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=300&q=80' },
-  { title: 'Bất động sản 2026: Thị trường nóng sốt dự báo giá tăng loạt tầng', date: 'Mới nhất', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=300&q=80' },
-  { title: 'Đầu tư bất động sản 2026: Trả tiền vào đâu hiệu quả nhất?', date: 'Mới nhất', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=300&q=80' },
+const NHADATSO_ARTICLES = [
+  {
+    id: 1,
+    slug: 'toan-canh-thi-truong-bds-2026',
+    title: 'Toàn cảnh thị trường BĐS năm 2026: Dòng tiền thông minh đang dịch chuyển về đâu?',
+    category: 'TIÊU ĐIỂM THỊ TRƯỜNG',
+    date: 'Hôm nay, 08:00',
+    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80',
+    desc: 'Phân tích chi tiết chu kỳ phục hồi của phân khúc đất nền ven đô và căn hộ thương mại. Lãi suất ngân hàng duy trì mức hấp dẫn giúp thanh khoản bất động sản tăng trưởng hơn 35% so với cùng kỳ.',
+    author: 'Ban Phân Tích Nhà Đất Số',
+    readTime: '6 phút đọc'
+  },
+  {
+    id: 2,
+    slug: 'cach-bat-mach-bong-bong-bds-2026',
+    title: 'Cách bắt mạch bong bóng bất động sản năm 2026 đã vượt qua',
+    category: 'Phân tích đầu tư',
+    date: 'Hôm nay, 08:30',
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+    desc: 'Nhận diện chu kỳ thị trường bất động sản ngay thời điểm hiện nay để đón chu kỳ tăng trưởng mới với mức lợi nhuận tối ưu.',
+    author: 'Chuyên gia Đặng Quốc Toàn',
+    readTime: '5 phút đọc'
+  },
+  {
+    id: 3,
+    slug: 'mua-chung-cu-cuoi-nam-can-luu-y-gi',
+    title: 'Mua chung cư cuối năm, người mua nhà cần quan tâm điều gì?',
+    category: 'Kinh nghiệm mua nhà',
+    date: 'Hôm nay, 09:15',
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+    desc: 'Tổng hợp các tiêu chí kiểm tra pháp lý, tiến độ bàn giao, quỹ bảo trì và tiện ích thực tế trước khi đặt cọc.',
+    author: 'Phan Tuấn Kiệt - KTS Đô thị',
+    readTime: '4 phút đọc'
+  },
+  {
+    id: 4,
+    slug: 'bat-dong-san-2026-gia-tang-loat-tang',
+    title: 'Bất động sản 2026: Thị trường nóng sốt dự báo giá tăng loạt tầng',
+    category: 'Quy hoạch & Hạ tầng',
+    date: 'Hôm qua',
+    image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80',
+    desc: 'Đánh giá tác động của các tuyến đường Vành đai 3, cao tốc liên vùng tới mức giá bất động sản các tỉnh lân cận.',
+    author: 'Võ Minh Hoàng - Ban Hạ Tầng',
+    readTime: '5 phút đọc'
+  },
+  {
+    id: 5,
+    slug: 'luat-dat-dai-moi-quyen-loi-nguoi-mua-nha',
+    title: 'Luật Đất đai mới có hiệu lực: Quyền lợi người mua nhà được bảo vệ ra sao?',
+    category: 'Pháp lý BĐS',
+    date: '2 ngày trước',
+    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
+    desc: 'Những điểm cốt lõi về việc cấp sổ đỏ, minh bạch thông tin giao dịch và bảng giá đất sát thực tế thị trường.',
+    author: 'Luật sư Hoàng Thị Kim Oanh',
+    readTime: '7 phút đọc'
+  },
+  {
+    id: 6,
+    slug: 'top-5-khu-vuc-ven-tphcm-ha-tang-but-pha',
+    title: 'Top 5 khu vực ven TP.HCM có hạ tầng bứt phá mạnh nhất năm 2026',
+    category: 'Thị trường TP.HCM',
+    date: '3 ngày trước',
+    image: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&q=80',
+    desc: 'Bình Chánh, Củ Chi, Hóc Môn và Nhơn Trạch đang đón làn sóng đầu tư mạnh mẽ từ các doanh nghiệp bất động sản lớn.',
+    author: 'Nguyễn Văn Đạt - Hội Môi giới BĐS',
+    readTime: '6 phút đọc'
+  }
 ];
 
 export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = ({
   initialPage = 'home',
   company
 }) => {
-  const [currentPage, setCurrentPage] = useState<string>(initialPage);
+  const resolveInitialArticle = () => {
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      return NHADATSO_ARTICLES.find(n => n.slug === sub || String(n.id) === sub) || NHADATSO_ARTICLES[0];
+    }
+    return null;
+  };
+
+  const initialArticle = resolveInitialArticle();
+  const [selectedArticle, setSelectedArticle] = useState<any>(initialArticle);
+  const [currentPage, setCurrentPage] = useState<string>(initialArticle ? 'news-detail' : (initialPage || 'home'));
+
   const isHome = useMemo(() => {
-    return currentPage === 'home' || !['sale', 'rent', 'transfer', 'news', 'tin-tuc', 'about', 'gioi-thieu', 'projects', 'du-an', 'fengshui', 'contact'].includes(currentPage);
-  }, [currentPage]);
+    return (currentPage === 'home' || !['sale', 'rent', 'transfer', 'news', 'tin-tuc', 'news-detail', 'about', 'gioi-thieu', 'projects', 'du-an', 'fengshui', 'contact'].includes(currentPage)) && !selectedArticle;
+  }, [currentPage, selectedArticle]);
+
   const [filterTab, setFilterTab] = useState<'sale' | 'rent' | 'transfer'>('sale');
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [selectedCity, setSelectedCity] = useState<string>('all');
@@ -107,6 +181,9 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
   }, [filterTab, searchKeyword, selectedCity]);
 
   const navigateTo = (page: string, customSlug?: string) => {
+    if (page !== 'news-detail') {
+      setSelectedArticle(null);
+    }
     setCurrentPage(page);
     setSelectedProperty(null);
     setMobileMenuOpen(false);
@@ -114,12 +191,37 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleOpenArticle = (item: any) => {
+    setSelectedArticle(item);
+    setCurrentPage('news-detail');
+    setMobileMenuOpen(false);
+    syncDemoUrl(`tin-tuc/${item.slug || item.id}`, 'bds-19');
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      const found = NHADATSO_ARTICLES.find(n => n.slug === sub || String(n.id) === sub) || NHADATSO_ARTICLES[0];
+      setSelectedArticle(found);
+      setCurrentPage('news-detail');
+    }
+  }, [initialPage]);
+
   useEffect(() => {
     const handlePopState = () => {
       const parts = window.location.pathname.split('/').filter(Boolean);
-      const sub = parts.length > 2 ? parts[2] : (parts[1] !== 'bds-19' ? parts[1] : 'home');
+      const sub = parts.length > 2 ? parts.slice(2).join('/') : (parts[1] !== 'bds-19' ? parts[1] : 'home');
       if (sub) {
-        setCurrentPage(sub);
+        if (sub.startsWith('tin-tuc/') || sub.startsWith('news/') || sub.startsWith('bai-viet/')) {
+          const artSlug = sub.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+          const found = NHADATSO_ARTICLES.find(n => n.slug === artSlug || String(n.id) === artSlug) || NHADATSO_ARTICLES[0];
+          setSelectedArticle(found);
+          setCurrentPage('news-detail');
+        } else {
+          setSelectedArticle(null);
+          setCurrentPage(sub);
+        }
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -356,28 +458,28 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
 
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
                   {/* Big Featured News */}
-                  <div className="sm:col-span-7 cursor-pointer group" onClick={() => navigateTo('news', 'tin-tuc')}>
+                  <div className="sm:col-span-7 cursor-pointer group" onClick={() => handleOpenArticle(NHADATSO_ARTICLES[0])}>
                     <div className="aspect-[16/10] overflow-hidden rounded bg-slate-100 mb-2">
                       <img
-                        src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80"
-                        alt="Bong bóng BĐS"
+                        src={NHADATSO_ARTICLES[0].image}
+                        alt={NHADATSO_ARTICLES[0].title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                       />
                     </div>
                     <h3 className="font-bold text-sm text-slate-900 group-hover:text-emerald-700 leading-snug mb-1">
-                      Cách bắt mạch bong bóng bất động sản năm 2026 đã vượt qua
+                      {NHADATSO_ARTICLES[0].title}
                     </h3>
                     <p className="text-[11px] text-slate-500 line-clamp-3 leading-relaxed">
-                      Triệu chứng và nguy cơ tự vấn đề đất đai khi thanh khoản tăng cao. Nhận diện chu kỳ thị trường bất động sản ngay thời điểm hiện nay để đón chu kỳ tăng trưởng mới.
+                      {NHADATSO_ARTICLES[0].desc}
                     </p>
                   </div>
 
-                  {/* 4 Side News Thumbnails */}
+                  {/* Side News Thumbnails */}
                   <div className="sm:col-span-5 space-y-3">
-                    {ADVICE_ARTICLES.map((art, idx) => (
+                    {NHADATSO_ARTICLES.slice(1, 5).map((art) => (
                       <div
-                        key={idx}
-                        onClick={() => navigateTo('news', 'tin-tuc')}
+                        key={art.id}
+                        onClick={() => handleOpenArticle(art)}
                         className="flex items-start gap-2 cursor-pointer group border-b border-slate-100 pb-2 last:border-0 last:pb-0"
                       >
                         <img
@@ -554,7 +656,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                   TƯ VẤN BẤT ĐỘNG SẢN
                 </h3>
                 <div className="space-y-2">
-                  {ADVICE_ARTICLES.slice(0, 3).map((art, idx) => (
+                  {NHADATSO_ARTICLES.slice(0, 3).map((art, idx) => (
                     <div
                       key={idx}
                       onClick={() => navigateTo('news', 'tin-tuc')}
@@ -701,30 +803,33 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
             <div className="lg:col-span-8 space-y-6">
-              <div className="bg-white border border-slate-300 rounded overflow-hidden shadow-xs">
+              <div 
+                onClick={() => handleOpenArticle(NHADATSO_ARTICLES[0])}
+                className="bg-white border border-slate-300 rounded overflow-hidden shadow-xs cursor-pointer group"
+              >
                 <div className="grid grid-cols-1 md:grid-cols-12">
                   <div className="md:col-span-7 aspect-[16/10] md:aspect-auto overflow-hidden">
                     <img
-                      src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80"
-                      alt="Thị trường 2026"
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                      src={NHADATSO_ARTICLES[0].image}
+                      alt={NHADATSO_ARTICLES[0].title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
                   <div className="md:col-span-5 p-5 flex flex-col justify-between bg-slate-50/50">
                     <div>
                       <span className="px-2 py-0.5 rounded bg-red-600 text-white font-black text-[9px] uppercase tracking-wider mb-2 inline-block">
-                        TIÊU ĐIỂM THỊ TRƯỜNG
+                        {NHADATSO_ARTICLES[0].category}
                       </span>
-                      <h2 className="text-sm font-black text-slate-900 hover:text-emerald-700 leading-snug mb-2 cursor-pointer">
-                        Toàn cảnh thị trường BĐS năm 2026: Dòng tiền thông minh đang dịch chuyển về đâu?
+                      <h2 className="text-sm font-black text-slate-900 group-hover:text-emerald-700 leading-snug mb-2">
+                        {NHADATSO_ARTICLES[0].title}
                       </h2>
                       <p className="text-[11px] text-slate-600 line-clamp-4 leading-relaxed">
-                        Phân tích chi tiết chu kỳ phục hồi của phân khúc đất nền ven đô và căn hộ thương mại. Lãi suất ngân hàng duy trì mức hấp dẫn giúp thanh khoản bất động sản tăng trưởng hơn 35% so với cùng kỳ.
+                        {NHADATSO_ARTICLES[0].desc}
                       </p>
                     </div>
                     <div className="flex items-center justify-between text-[10px] text-slate-400 pt-3 border-t border-slate-200 mt-3">
-                      <span>✍️ Ban Phân Tích Nhà Đất Số</span>
-                      <span>🕒 15 phút trước</span>
+                      <span>✍️ {NHADATSO_ARTICLES[0].author}</span>
+                      <span>🕒 {NHADATSO_ARTICLES[0].date}</span>
                     </div>
                   </div>
                 </div>
@@ -737,51 +842,12 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {[
-                    {
-                      title: 'Cách bắt mạch bong bóng bất động sản năm 2026 đã vượt qua',
-                      category: 'Phân tích đầu tư',
-                      date: 'Hôm nay, 08:30',
-                      image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=500&q=80',
-                      desc: 'Nhận diện chu kỳ thị trường bất động sản ngay thời điểm hiện nay để đón chu kỳ tăng trưởng mới với mức lợi nhuận tối ưu.',
-                    },
-                    {
-                      title: 'Mua chung cư cuối năm, người mua nhà cần quan tâm điều gì?',
-                      category: 'Kinh nghiệm mua nhà',
-                      date: 'Hôm nay, 09:15',
-                      image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500&q=80',
-                      desc: 'Tổng hợp các tiêu chí kiểm tra pháp lý, tiến độ bàn giao, quỹ bảo trì và tiện ích thực tế trước khi đặt cọc.',
-                    },
-                    {
-                      title: 'Bất động sản 2026: Thị trường nóng sốt dự báo giá tăng loạt tầng',
-                      category: 'Quy hoạch & Hạ tầng',
-                      date: 'Hôm qua',
-                      image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500&q=80',
-                      desc: 'Đánh giá tác động của các tuyến đường Vành đai 3, cao tốc liên vùng tới mức giá bất động sản các tỉnh lân cận.',
-                    },
-                    {
-                      title: 'Luật Đất đai mới có hiệu lực: Quyền lợi người mua nhà được bảo vệ ra sao?',
-                      category: 'Pháp lý BĐS',
-                      date: '2 ngày trước',
-                      image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500&q=80',
-                      desc: 'Những điểm cốt lõi về việc cấp sổ đỏ, minh bạch thông tin giao dịch và bảng giá đất sát thực tế thị trường.',
-                    },
-                    {
-                      title: 'Top 5 khu vực ven TP.HCM có hạ tầng bứt phá mạnh nhất năm 2026',
-                      category: 'Thị trường TP.HCM',
-                      date: '3 ngày trước',
-                      image: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=500&q=80',
-                      desc: 'Bình Chánh, Củ Chi, Hóc Môn và Nhơn Trạch đang đón làn sóng đầu tư mạnh mẽ từ các doanh nghiệp bất động sản lớn.',
-                    },
-                    {
-                      title: 'Chiến lược phân bổ vốn: Nên đầu tư đất nền lãi vốn hay căn hộ dòng tiền?',
-                      category: 'Cẩm nang tài chính',
-                      date: '4 ngày trước',
-                      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=500&q=80',
-                      desc: 'So sánh chi tiết tỷ suất sinh lời thực tế và độ an toàn giữa 2 phân khúc được quan tâm nhất hiện nay.',
-                    }
-                  ].map((post, idx) => (
-                    <article key={idx} className="border border-slate-200 rounded p-3 hover:border-emerald-600 hover:shadow-xs transition-all flex flex-col justify-between group cursor-pointer bg-white">
+                  {NHADATSO_ARTICLES.slice(1).map((post) => (
+                    <article 
+                      key={post.id} 
+                      onClick={() => handleOpenArticle(post)}
+                      className="border border-slate-200 rounded p-3 hover:border-emerald-600 hover:shadow-xs transition-all flex flex-col justify-between group cursor-pointer bg-white"
+                    >
                       <div>
                         <div className="aspect-[16/10] overflow-hidden rounded mb-2 bg-slate-100">
                           <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
@@ -856,7 +922,7 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                   TIN ĐỌC NHIỀU NHẤT
                 </h3>
                 <div className="space-y-2.5">
-                  {ADVICE_ARTICLES.map((art, idx) => (
+                  {NHADATSO_ARTICLES.slice(0, 5).map((art, idx) => (
                     <div key={idx} className="flex items-start gap-2.5 border-b border-slate-100 pb-2 last:border-0 last:pb-0 group cursor-pointer">
                       <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] flex items-center justify-center shrink-0">
                         {idx + 1}
@@ -872,6 +938,118 @@ export const NhadatsoDensityTemplate: React.FC<NhadatsoDensityTemplateProps> = (
                 </div>
               </div>
             </div>
+          </div>
+        </main>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          PAGE: CHI TIẾT BÀI VIẾT NHÀ ĐẤT SỐ (ARTICLE FULL PAGE)
+      ───────────────────────────────────────────────────────────── */}
+      {currentPage === 'news-detail' && selectedArticle && !selectedProperty && (
+        <main className="max-w-[1200px] mx-auto px-4 py-6 space-y-5">
+          <div className="bg-white border border-slate-300 rounded px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+            <nav className="flex items-center gap-2 text-[11px] text-slate-500 font-medium">
+              <button onClick={() => navigateTo('home', '')} className="hover:text-emerald-700">Trang chủ</button>
+              <span>/</span>
+              <button onClick={() => navigateTo('news', 'tin-tuc')} className="hover:text-emerald-700">Tin tức thị trường</button>
+              <span>/</span>
+              <span className="text-slate-900 font-bold truncate max-w-xs sm:max-w-md">{selectedArticle.title}</span>
+            </nav>
+            <button
+              onClick={() => navigateTo('news', 'tin-tuc')}
+              className="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 px-3 py-1 rounded bg-emerald-50 border border-emerald-200"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" /> Quay lại danh sách tin
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+            <article className="lg:col-span-8 bg-white border border-slate-300 rounded p-6 sm:p-8 shadow-xs space-y-5">
+              <div className="flex flex-wrap items-center gap-2 text-[11px]">
+                <span className="px-2.5 py-0.5 rounded bg-emerald-700 text-white font-bold uppercase text-[9px]">
+                  {selectedArticle.category}
+                </span>
+                <span className="text-slate-400">•</span>
+                <span className="text-slate-500">{selectedArticle.date}</span>
+                <span className="text-slate-400">•</span>
+                <span className="text-slate-500">⏱️ {selectedArticle.readTime || '5 phút đọc'}</span>
+              </div>
+
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
+                {selectedArticle.title}
+              </h1>
+
+              <div className="flex items-center gap-3 p-3 bg-slate-50 rounded border border-slate-200 text-xs">
+                <div className="w-8 h-8 rounded bg-emerald-700 text-white font-black flex items-center justify-center text-xs">
+                  NĐS
+                </div>
+                <div>
+                  <p className="font-bold text-slate-900">{selectedArticle.author || 'Ban Phân Tích Nhà Đất Số'}</p>
+                  <p className="text-[10px] text-slate-500">Chuyên trang phân tích dữ liệu & định giá bất động sản</p>
+                </div>
+              </div>
+
+              <div className="aspect-[16/9] w-full rounded overflow-hidden bg-slate-900 shadow-sm">
+                <img src={selectedArticle.image} alt={selectedArticle.title} className="w-full h-full object-cover" />
+              </div>
+
+              <div className="p-4 rounded bg-emerald-50/70 border-l-4 border-emerald-700 text-slate-800 text-xs font-semibold leading-relaxed">
+                {selectedArticle.desc}
+              </div>
+
+              <div className="space-y-4 text-xs text-slate-700 leading-relaxed">
+                <h2 className="text-sm font-bold text-slate-900 uppercase">1. Động lực phục hồi của thị trường bất động sản</h2>
+                <p>
+                  Sự thẩm thấu của các chính sách vĩ mô kết hợp cùng mặt bằng lãi suất cho vay mua nhà ở mức hợp lý đã giúp thanh khoản trên toàn thị trường tăng trưởng tích cực. Đặc biệt, phân khúc căn hộ tầm trung và nhà phố khu vực vệ tinh ghi nhận lượng giao dịch thành công tăng vọt.
+                </p>
+                <h2 className="text-sm font-bold text-slate-900 uppercase">2. Lời khuyên tối ưu dòng tiền cho nhà đầu tư</h2>
+                <p>
+                  Các chuyên gia khuyên rằng nhà đầu tư nên phân bổ 60% dòng vốn vào các tài sản có thể khai thác cho thuê ngay để đảm bảo an toàn thanh khoản, và 40% còn lại dành cho đất nền hoặc dự án hình thành trong tương lai có pháp lý minh bạch 100%.
+                </p>
+              </div>
+
+              <div className="p-4 bg-slate-900 text-white rounded flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+                <div>
+                  <h4 className="font-bold text-xs">Nhận Cẩm Nang Pháp Lý & Bảng Giá Đất 2026</h4>
+                  <p className="text-[11px] text-slate-300">Tài liệu miễn phí cập nhật liên tục từ Nhà Đất Số</p>
+                </div>
+                <button
+                  onClick={() => alert('Đăng ký nhận cẩm nang thành công!')}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded text-xs"
+                >
+                  Tải Cẩm Nang Miễn Phí
+                </button>
+              </div>
+            </article>
+
+            <aside className="lg:col-span-4 space-y-5">
+              <div className="bg-white border border-slate-300 rounded p-4 shadow-xs space-y-3">
+                <h3 className="bg-[#1C2833] text-white font-black text-xs uppercase px-3 py-1.5 -mx-4 -mt-4 mb-3 rounded-t">
+                  TIN NỔI BẬT KHÁC
+                </h3>
+                <div className="space-y-3">
+                  {NHADATSO_ARTICLES.filter(n => n.id !== selectedArticle.id).map(item => (
+                    <div
+                      key={item.id}
+                      onClick={() => handleOpenArticle(item)}
+                      className="flex gap-2.5 items-start group cursor-pointer border-b border-slate-100 pb-2.5 last:border-0 last:pb-0"
+                    >
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-16 h-12 rounded object-cover shrink-0 group-hover:opacity-90"
+                      />
+                      <div>
+                        <span className="text-[9px] font-bold text-emerald-700 block">{item.category}</span>
+                        <h4 className="text-[11px] font-bold text-slate-800 group-hover:text-emerald-700 transition-colors line-clamp-2 leading-tight">
+                          {item.title}
+                        </h4>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </aside>
           </div>
         </main>
       )}

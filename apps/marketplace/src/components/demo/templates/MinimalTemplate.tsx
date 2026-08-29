@@ -2,7 +2,7 @@ import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { syncDemoUrl } from '../../../utils/demo';
 import { 
-  Menu, X, Search, ChevronDown, ChevronRight, 
+  Menu, X, Search, ChevronDown, ChevronRight, ChevronLeft,
   MapPin, Phone, Mail, ArrowRight, Star, 
   Check, Calendar, Info, Shield, Layers, Home as HomeIcon,
   Wind, Droplets, Sun, Activity, Coffee, Maximize, Play, Plus, Minus
@@ -253,28 +253,64 @@ const normalizeMinimalPage = (p: string) => {
 };
 
 export default function MinimalTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  // Page state
-  const [currentPage, setCurrentPageState] = useState(normalizeMinimalPage(initialPage));
+  const resolveInitialArticle = () => {
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      return NEWS_ARTICLES.find(n => n.id === sub || (n as any).slug === sub) || NEWS_ARTICLES[0];
+    }
+    return null;
+  };
+
+  const initialArticle = resolveInitialArticle();
+  const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(initialArticle);
+  const [currentPage, setCurrentPageState] = useState(initialArticle ? 'news-detail' : normalizeMinimalPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(normalizeMinimalPage(initialPage));
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      const found = NEWS_ARTICLES.find(n => n.id === sub || (n as any).slug === sub) || NEWS_ARTICLES[0];
+      setSelectedArticle(found);
+      setCurrentPageState('news-detail');
+    } else {
+      setSelectedArticle(null);
+      setCurrentPageState(normalizeMinimalPage(initialPage));
+    }
   }, [initialPage]);
 
   const setCurrentPage = (p: string, customSlug?: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
-    if (typeof setSelectedArticle === "function") setSelectedArticle(null);
+    if (p !== 'news-detail') {
+      setSelectedArticle(null);
+    }
 
     setCurrentPageState(p);
-    const tSlug = template?.slug || 'bds-03';
+    const tSlug = template?.slug || 'bds-02';
     syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
+  };
+
+  const handleOpenArticle = (item: any) => {
+    setSelectedArticle(item);
+    setCurrentPageState('news-detail');
+    setIsMobileMenuOpen(false);
+    const tSlug = template?.slug || 'bds-02';
+    syncDemoUrl(`tin-tuc/${item.id || item.slug}`, tSlug);
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   useEffect(() => {
     const handlePopState = () => {
       const parts = window.location.pathname.split('/').filter(Boolean);
-      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-03') ? parts[1] : 'home');
+      const sub = parts.length > 2 ? parts.slice(2).join('/') : (parts[1] !== (template?.slug || 'bds-02') ? parts[1] : 'home');
       if (sub) {
-        setCurrentPageState(normalizeMinimalPage(sub));
+        if (sub.startsWith('tin-tuc/') || sub.startsWith('news/') || sub.startsWith('bai-viet/')) {
+          const artSlug = sub.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+          const found = NEWS_ARTICLES.find(n => n.id === artSlug || (n as any).slug === artSlug) || NEWS_ARTICLES[0];
+          setSelectedArticle(found);
+          setCurrentPageState('news-detail');
+        } else {
+          setSelectedArticle(null);
+          setCurrentPageState(normalizeMinimalPage(sub));
+        }
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -295,7 +331,6 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
   const [selectedGalleryTab, setSelectedGalleryTab] = useState('all');
   const [selectedGalleryImg, setSelectedGalleryImg] = useState<string | null>(null);
   const [searchNewsQuery, setSearchNewsQuery] = useState('');
-  const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(null);
 
   // Contact States
   const [contactName, setContactName] = useState('');
@@ -993,7 +1028,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {NEWS_ARTICLES.slice(0, 3).map((news) => (
-              <div key={news.id} className="group cursor-pointer animate-in fade-in duration-300" onClick={() => setSelectedArticle(news)}>
+              <div key={news.id} className="group cursor-pointer animate-in fade-in duration-300" onClick={() => handleOpenArticle(news)}>
                 <div className="overflow-hidden mb-6 bg-gray-100 aspect-[4/3]">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={news.img} alt={news.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 </div>
@@ -1549,7 +1584,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
                   <div 
                     key={news.id} 
                     className="group cursor-pointer bg-white p-4 border border-gray-100 hover:shadow-lg transition-all flex flex-col justify-between"
-                    onClick={() => setSelectedArticle(news)}
+                    onClick={() => handleOpenArticle(news)}
                   >
                     <div>
                       <div className="overflow-hidden mb-6 bg-gray-100 aspect-video">
@@ -1844,54 +1879,96 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
     );
   };
 
-  // Render News Article read modal overlay
-  const renderNewsModal = () => {
+  const renderNewsDetailPage = () => {
     if (!selectedArticle) return null;
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto" onClick={() => setSelectedArticle(null)}>
-        <div className="bg-white max-w-3xl w-full max-h-[90vh] overflow-y-auto relative animate-in fade-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
-          <button 
-            onClick={() => setSelectedArticle(null)}
-            className="absolute top-4 right-4 p-2 bg-white/80 hover:bg-white rounded-full transition-colors shadow-sm z-10"
-          >
-            <X size={24} style={{ color: COLORS.primary }} />
-          </button>
-          
-          <div className="aspect-[16/9] w-full bg-gray-100 relative">
-            <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-8">
-              <div>
-                <span className="px-3 py-1 bg-white/20 text-white backdrop-blur text-xs uppercase tracking-wider font-semibold inline-block mb-3">
-                  {selectedArticle.cat}
-                </span>
-                <h2 className="text-2xl md:text-4xl text-white font-serif leading-tight" style={{ fontFamily: FONTS.heading }}>
-                  {selectedArticle.title}
-                </h2>
-                <p className="text-white/80 text-xs mt-2 font-medium">{selectedArticle.date}</p>
-              </div>
-            </div>
+      <div className="pt-32 pb-32 bg-white">
+        <div className={`mx-auto px-6 ${MAX_W}`}>
+          {/* Breadcrumb & Navigation */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-6 mb-12">
+            <nav className="flex items-center gap-2 text-xs uppercase tracking-widest text-gray-500 font-medium">
+              <button onClick={() => navigate('home')} className="hover:text-gray-900 transition">Trang chủ</button>
+              <span>/</span>
+              <button onClick={() => navigate('news')} className="hover:text-gray-900 transition">Góc nhìn</button>
+              <span>/</span>
+              <span className="text-gray-900 font-bold truncate max-w-xs sm:max-w-md">{selectedArticle.title}</span>
+            </nav>
+            <button
+              onClick={() => navigate('news')}
+              className="text-xs uppercase tracking-widest font-semibold flex items-center gap-1.5 px-4 py-2 border border-gray-300 text-gray-800 hover:bg-gray-50 transition"
+            >
+              <ChevronLeft size={16} /> Quay lại danh sách bài viết
+            </button>
           </div>
-          
-          <div className="p-8">
-            <p className="text-lg font-medium text-gray-800 leading-relaxed mb-6 border-l-4 pl-4 font-serif" style={{ borderColor: COLORS.gold }}>
-              {selectedArticle.summary}
-            </p>
-            
-            <div className="text-gray-600 leading-relaxed space-y-4 font-light text-sm">
-              {selectedArticle.content.split('\n\n').map((paragraph, idx) => (
-                <p key={idx}>{paragraph}</p>
-              ))}
-            </div>
-            
-            <div className="mt-12 pt-6 border-t flex justify-between items-center" style={{ borderColor: COLORS.border }}>
-              <span className="text-sm text-gray-500">Chủ đề: <strong className="text-gray-700">{selectedArticle.cat}</strong></span>
-              <button 
-                onClick={() => setSelectedArticle(null)}
-                className="px-6 py-2 bg-gray-150 hover:bg-gray-200 text-gray-800 text-xs font-semibold uppercase tracking-wider transition-colors"
-              >
-                Đóng bài viết
-              </button>
-            </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <article className="lg:col-span-8 space-y-8">
+              <div className="flex items-center gap-3 text-xs uppercase tracking-widest text-gray-400 font-semibold">
+                <span className="px-2.5 py-1 bg-gray-100 text-gray-800">{selectedArticle.cat}</span>
+                <span>•</span>
+                <span>{selectedArticle.date}</span>
+              </div>
+
+              <h1 className="text-3xl md:text-5xl font-serif text-gray-900 leading-tight" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>
+                {selectedArticle.title}
+              </h1>
+
+              <div className="aspect-[16/9] w-full overflow-hidden bg-gray-100 shadow-sm">
+                <img src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
+              </div>
+
+              <div className="p-6 bg-gray-50 border-l-4 text-lg font-medium text-gray-800 leading-relaxed font-serif" style={{ borderColor: COLORS.gold }}>
+                {selectedArticle.summary}
+              </div>
+
+              <div className="space-y-6 text-gray-700 leading-relaxed text-base font-light">
+                {selectedArticle.content.split('\n\n').map((paragraph, idx) => (
+                  <p key={idx}>{paragraph}</p>
+                ))}
+              </div>
+
+              <div className="p-8 bg-gray-900 text-white mt-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div>
+                  <h4 className="text-2xl font-serif mb-1" style={{ fontFamily: FONTS.heading }}>Tư Vấn Phong Cách Sống Minimal</h4>
+                  <p className="text-gray-400 text-xs font-light">Kết nối trực tiếp cùng chuyên viên tư vấn không gian nội thất cao cấp.</p>
+                </div>
+                <button
+                  onClick={() => navigate('contact')}
+                  className="px-6 py-3.5 bg-white text-gray-900 hover:bg-gray-100 font-semibold uppercase tracking-widest text-xs shrink-0 transition"
+                >
+                  Liên Hệ Ngay
+                </button>
+              </div>
+            </article>
+
+            <aside className="lg:col-span-4 space-y-8">
+              <div className="bg-gray-50 p-8 border border-gray-100 space-y-6">
+                <h3 className="text-xl font-serif pb-4 border-b border-gray-200 uppercase tracking-wider" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>
+                  Bài Viết Liên Quan
+                </h3>
+                <div className="space-y-6">
+                  {NEWS_ARTICLES.filter(n => n.id !== selectedArticle.id).slice(0, 4).map(item => (
+                    <div
+                      key={item.id}
+                      onClick={() => handleOpenArticle(item)}
+                      className="flex gap-4 items-start group cursor-pointer"
+                    >
+                      <img
+                        src={item.img}
+                        alt={item.title}
+                        className="w-24 h-16 object-cover flex-shrink-0 group-hover:opacity-80 transition"
+                      />
+                      <div>
+                        <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider block mb-1">{item.date}</span>
+                        <h4 className="text-xs font-medium text-gray-900 group-hover:text-gray-500 transition line-clamp-2 leading-snug font-serif" style={{ fontFamily: FONTS.heading }}>
+                          {item.title}
+                        </h4>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </aside>
           </div>
         </div>
       </div>
@@ -1907,15 +1984,15 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
         {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAbout()}
         {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGallery()}
         {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNews()}
+        {['news-detail'].includes(currentPage) && renderNewsDetailPage()}
         {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContact()}
-        {!['home', 'projects', 'du-an', 'san-pham', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'news-detail', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
       </main>
       {renderFooter()}
 
       {/* Detail Overlays */}
       {selectedProject && renderProjectModal()}
       {selectedGalleryImg && renderGalleryLightbox()}
-      {selectedArticle && renderNewsModal()}
     </div>
   );
 }

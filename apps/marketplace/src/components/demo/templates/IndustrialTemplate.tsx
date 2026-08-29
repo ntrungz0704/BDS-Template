@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { 
   Menu, X, Search, MapPin, Phone, Mail, ArrowRight, CheckCircle2, 
   Building2, Factory, Warehouse, ChevronDown, Check, Globe, Shield, 
-  Zap, Truck, Scale, ChevronRight, BarChart3, Filter, Award, Activity, Box, Maximize
+  Zap, Truck, Scale, ChevronRight, ChevronLeft, Clock, BarChart3, Filter, Award, Activity, Box, Maximize
 } from 'lucide-react';
 import { MAX_W } from '../design-system';
 import { FacebookIcon, LinkedinIcon, YoutubeIcon, ZaloIcon } from '../../icons/SocialIcons';
@@ -135,10 +135,10 @@ const MILESTONE_DATA = [
 ];
 
 const NEWS_DATA = [
-  { id: 1, img: "https://images.unsplash.com/photo-1586528116493-a02822a94567?auto=format&fit=crop&w=800&q=80", title: "Báo cáo thị trường BĐS Công nghiệp Quý 3/2026: Vốn FDI đổ mạnh vào miền Bắc", date: "12 Thg 10, 2026", cat: "Báo Cáo", content: "Trong quý 3 năm 2026, dòng vốn FDI đầu tư vào các khu công nghiệp miền Bắc ghi nhận mức tăng trưởng kỷ lục 25% so với cùng kỳ năm ngoái. Các tỉnh thành trọng điểm như Bắc Ninh, Hải Phòng, Quảng Ninh tiếp tục là điểm sáng nhờ hạ tầng logistics kết nối tốt với Trung Quốc và hệ thống cảng biển nước sâu." },
-  { id: 2, img: "https://images.unsplash.com/photo-1581091226033-d5c48150dba5?auto=format&fit=crop&w=800&q=80", title: "Khởi công giai đoạn 2 Cụm công nghiệp Nam Đình Vũ với quy mô 200ha", date: "05 Thg 10, 2026", cat: "Sự Kiện", content: "Chính thức động thổ phân khu phía Nam thuộc KCN Nam Đình Vũ với tổng vốn đầu tư hơn 120 triệu USD. Phân khu này tập trung phát triển hệ thống nhà xưởng xây sẵn (RBF) cao tầng và kho bãi thông minh tích hợp điện mặt trời mái nhà." },
-  { id: 3, img: "https://images.unsplash.com/photo-1581092918056-0c4c3cb27c9f?auto=format&fit=crop&w=800&q=80", title: "Quy định mới về ưu đãi thuế Thu nhập Doanh nghiệp cho KCN sinh thái", date: "28 Thg 09, 2026", cat: "Chính Sách", content: "Nghị định mới ban hành bổ sung thêm các điều khoản miễn giảm thuế thu nhập doanh nghiệp kéo dài lên tới 6 năm đối với các dự án sản xuất đạt chuẩn ESG và hoạt động trong khu công nghiệp đạt tiêu chuẩn sinh thái quốc gia." },
-  { id: 4, img: "https://images.unsplash.com/photo-1581092583537-20d7710c79ab?auto=format&fit=crop&w=800&q=80", title: "Ứng dụng công nghệ IoT vào việc tự động hóa giám sát năng lượng nhà máy", date: "15 Thg 09, 2026", cat: "Công Nghệ", content: "PlatformBDS triển khai thí điểm hệ thống cảm biến thông minh giúp đo lường lượng điện năng, lượng nước tiêu thụ và lượng phát thải khí carbon theo thời gian thực tại cụm nhà xưởng VSIP Bình Dương, hỗ trợ khách thuê đạt chuẩn Net-Zero." }
+  { id: 1, slug: 'bao-cao-thi-truong-bds-cong-nghiep-q3-2026', img: "https://images.unsplash.com/photo-1586528116493-a02822a94567?auto=format&fit=crop&w=800&q=80", title: "Báo cáo thị trường BĐS Công nghiệp Quý 3/2026: Vốn FDI đổ mạnh vào miền Bắc", date: "12 Thg 10, 2026", cat: "Báo Cáo", content: "Trong quý 3 năm 2026, dòng vốn FDI đầu tư vào các khu công nghiệp miền Bắc ghi nhận mức tăng trưởng kỷ lục 25% so với cùng kỳ năm ngoái. Các tỉnh thành trọng điểm như Bắc Ninh, Hải Phòng, Quảng Ninh tiếp tục là điểm sáng nhờ hạ tầng logistics kết nối tốt với Trung Quốc và hệ thống cảng biển nước sâu." },
+  { id: 2, slug: 'khoi-cong-giai-doan-2-cum-cong-nghiep-nam-dinh-vu', img: "https://images.unsplash.com/photo-1581091226033-d5c48150dba5?auto=format&fit=crop&w=800&q=80", title: "Khởi công giai đoạn 2 Cụm công nghiệp Nam Đình Vũ với quy mô 200ha", date: "05 Thg 10, 2026", cat: "Sự Kiện", content: "Chính thức động thổ phân khu phía Nam thuộc KCN Nam Đình Vũ với tổng vốn đầu tư hơn 120 triệu USD. Phân khu này tập trung phát triển hệ thống nhà xưởng xây sẵn (RBF) cao tầng và kho bãi thông minh tích hợp điện mặt trời mái nhà." },
+  { id: 3, slug: 'quy-dinh-moi-ve-uu-dai-thue-tndn-kcn-sinh-thai', img: "https://images.unsplash.com/photo-1581092918056-0c4c3cb27c9f?auto=format&fit=crop&w=800&q=80", title: "Quy định mới về ưu đãi thuế Thu nhập Doanh nghiệp cho KCN sinh thái", date: "28 Thg 09, 2026", cat: "Chính Sách", content: "Nghị định mới ban hành bổ sung thêm các điều khoản miễn giảm thuế thu nhập doanh nghiệp kéo dài lên tới 6 năm đối với các dự án sản xuất đạt chuẩn ESG và hoạt động trong khu công nghiệp đạt tiêu chuẩn sinh thái quốc gia." },
+  { id: 4, slug: 'ung-dung-cong-nghe-iot-giam-sat-nang-luong-nha-may', img: "https://images.unsplash.com/photo-1581092583537-20d7710c79ab?auto=format&fit=crop&w=800&q=80", title: "Ứng dụng công nghệ IoT vào việc tự động hóa giám sát năng lượng nhà máy", date: "15 Thg 09, 2026", cat: "Công Nghệ", content: "PlatformBDS triển khai thí điểm hệ thống cảm biến thông minh giúp đo lường lượng điện năng, lượng nước tiêu thụ và lượng phát thải khí carbon theo thời gian thực tại cụm nhà xưởng VSIP Bình Dương, hỗ trợ khách thuê đạt chuẩn Net-Zero." }
 ];
 
 const GALLERY_DATA = [
@@ -169,24 +169,62 @@ const normalizeIndustrialPage = (p: string) => {
 };
 
 export default function IndustrialTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const [activePage, setActivePageState] = useState(normalizeIndustrialPage(initialPage));
+  const resolveInitialArticle = () => {
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      return NEWS_DATA.find(n => n.slug === sub || String(n.id) === sub) || NEWS_DATA[0];
+    }
+    return null;
+  };
+
+  const initialArticle = resolveInitialArticle();
+  const [selectedArticle, setSelectedArticle] = useState<typeof NEWS_DATA[0] | null>(initialArticle);
+  const [activePage, setActivePageState] = useState(initialArticle ? 'news-detail' : normalizeIndustrialPage(initialPage));
 
   useEffect(() => {
-    setActivePageState(normalizeIndustrialPage(initialPage));
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      const found = NEWS_DATA.find(n => n.slug === sub || String(n.id) === sub) || NEWS_DATA[0];
+      setSelectedArticle(found);
+      setActivePageState('news-detail');
+    } else {
+      setSelectedArticle(null);
+      setActivePageState(normalizeIndustrialPage(initialPage));
+    }
   }, [initialPage]);
 
   const setActivePage = (p: string, customSlug?: string) => {
+    if (p !== 'news-detail') {
+      setSelectedArticle(null);
+    }
     setActivePageState(p);
     const tSlug = template?.slug || 'bds-06';
     syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
   };
 
+  const handleOpenArticle = (item: any) => {
+    setSelectedArticle(item);
+    setActivePageState('news-detail');
+    setIsMenuOpen(false);
+    const tSlug = template?.slug || 'bds-06';
+    syncDemoUrl(`tin-tuc/${item.slug || item.id}`, tSlug);
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   useEffect(() => {
     const handlePopState = () => {
       const parts = window.location.pathname.split('/').filter(Boolean);
-      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-06') ? parts[1] : 'home');
+      const sub = parts.length > 2 ? parts.slice(2).join('/') : (parts[1] !== (template?.slug || 'bds-06') ? parts[1] : 'home');
       if (sub) {
-        setActivePageState(normalizeIndustrialPage(sub));
+        if (sub.startsWith('tin-tuc/') || sub.startsWith('news/') || sub.startsWith('bai-viet/')) {
+          const artSlug = sub.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+          const found = NEWS_DATA.find(n => n.slug === artSlug || String(n.id) === artSlug) || NEWS_DATA[0];
+          setSelectedArticle(found);
+          setActivePageState('news-detail');
+        } else {
+          setSelectedArticle(null);
+          setActivePageState(normalizeIndustrialPage(sub));
+        }
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -206,7 +244,6 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
   const [selectedGalleryImg, setSelectedGalleryImg] = useState<string | null>(null);
   
   const [searchNewsQuery, setSearchNewsQuery] = useState('');
-  const [selectedArticle, setSelectedArticle] = useState<typeof NEWS_DATA[0] | null>(null);
   
   const [contactSubmitted, setContactSubmitted] = useState(false);
 
@@ -677,41 +714,30 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                img: "https://images.unsplash.com/photo-1586528116493-a02822a94567?w=800&q=80",
-                cat: "Báo Cáo", date: "12 Thg 10, 2023",
-                title: "Báo cáo thị trường BĐS Công nghiệp Quý 3/2023: Vốn FDI đổ mạnh vào miền Bắc"
-              },
-              {
-                img: "https://images.unsplash.com/photo-1581091226033-d5c48150dba5?w=800&q=80",
-                cat: "Tin Tập Đoàn", date: "05 Thg 10, 2023",
-                title: "Khởi công giai đoạn 2 Cụm công nghiệp Nam Đình Vũ với diện tích 200ha"
-              },
-              {
-                img: "https://images.unsplash.com/photo-1581092918056-0c4c3cb27c9f?w=800&q=80",
-                cat: "Chính Sách", date: "28 Thg 09, 2023",
-                title: "Quy định mới về ưu đãi thuế Thu nhập Doanh nghiệp cho khu công nghiệp cao"
-              }
-            ].map((news, idx) => (
-              <div key={idx} className="bg-white border border-gray-200 group">
-                <div className="relative h-56 overflow-hidden">
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={news.img} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute top-0 left-0 bg-[#1E40AF] text-white px-3 py-1 text-xs font-bold uppercase">
-                    {news.cat}
+            {NEWS_DATA.slice(0, 3).map((news) => (
+              <div 
+                key={news.id} 
+                onClick={() => handleOpenArticle(news)}
+                className="bg-white border border-gray-200 group cursor-pointer flex flex-col justify-between hover:shadow-lg transition-shadow"
+              >
+                <div>
+                  <div className="relative h-56 overflow-hidden">
+                    <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={news.img} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute top-0 left-0 bg-[#1E40AF] text-white px-3 py-1 text-xs font-bold uppercase">
+                      {news.cat}
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="text-gray-500 text-sm mb-3 font-medium">{news.date}</div>
+                    <h3 className="text-lg font-bold text-[#0F172A] mb-4 group-hover:text-[#1E40AF] transition-colors leading-snug line-clamp-2" style={{ fontFamily: fontHeading }}>
+                      {news.title}
+                    </h3>
                   </div>
                 </div>
-                <div className="p-6">
-                  <div className="text-gray-500 text-sm mb-3 font-medium">{news.date}</div>
-                  <h3 className="text-lg font-bold text-[#0F172A] mb-4 group-hover:text-[#1E40AF] transition-colors leading-snug" style={{ fontFamily: fontHeading }}>
-                    {news.title}
-                  </h3>
-                  <button 
-                    onClick={() => setActivePage('news')}
-                    className="text-[#0F172A] font-bold text-sm uppercase flex items-center hover:text-[#F59E0B] transition-colors cursor-pointer"
-                  >
+                <div className="p-6 pt-0">
+                  <span className="text-[#0F172A] font-bold text-sm uppercase flex items-center group-hover:text-[#F59E0B] transition-colors">
                     Đọc Bài Viết <ArrowRight className="w-4 h-4 ml-1" />
-                  </button>
+                  </span>
                 </div>
               </div>
             ))}
@@ -1139,7 +1165,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                         <span className="text-gray-500 text-xs font-semibold">{news.date}</span>
                       </div>
                       <h3 
-                        onClick={() => setSelectedArticle(news)}
+                        onClick={() => handleOpenArticle(news)}
                         className="text-lg font-bold text-[#0F172A] hover:text-[#1E40AF] cursor-pointer line-clamp-2"
                       >
                         {news.title}
@@ -1147,7 +1173,7 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                       <p className="text-gray-500 text-sm mt-2 line-clamp-2">{news.content}</p>
                     </div>
                     <button 
-                      onClick={() => setSelectedArticle(news)}
+                      onClick={() => handleOpenArticle(news)}
                       className="text-[#1E40AF] font-bold text-sm uppercase flex items-center hover:text-[#F59E0B] transition-colors mt-4 self-start"
                     >
                       Đọc Bài Viết <ArrowRight className="w-4 h-4 ml-1" />
@@ -1157,6 +1183,101 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
               ))}
             </div>
           )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderNewsDetailPage = () => {
+    if (!selectedArticle) return null;
+    return (
+      <div className="py-20 bg-gray-50">
+        <div className={`${MAX_W} px-4`}>
+          {/* Breadcrumbs & Navigation */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-6 mb-12">
+            <nav className="flex items-center gap-2 text-xs uppercase tracking-widest text-gray-500 font-medium">
+              <button onClick={() => setActivePage('home')} className="hover:text-[#1E40AF] transition">Trang chủ</button>
+              <span>/</span>
+              <button onClick={() => setActivePage('news')} className="hover:text-[#1E40AF] transition">Tin tức B2B</button>
+              <span>/</span>
+              <span className="text-[#0F172A] font-bold truncate max-w-xs sm:max-w-md">{selectedArticle.title}</span>
+            </nav>
+            <button
+              onClick={() => setActivePage('news')}
+              className="text-xs uppercase tracking-widest font-semibold flex items-center gap-1.5 px-4 py-2 border border-gray-300 text-[#1E40AF] hover:bg-white transition rounded shadow-sm"
+            >
+              <ChevronLeft size={16} /> Quay lại tin tức
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <article className="lg:col-span-8 space-y-8 bg-white p-8 md:p-12 shadow-sm border border-gray-200 rounded">
+              <div className="flex items-center gap-3 text-xs uppercase tracking-widest font-semibold">
+                <span className="text-[#1E40AF] bg-blue-100 px-2.5 py-0.5 rounded">{selectedArticle.cat}</span>
+                <span>•</span>
+                <span className="text-gray-500">{selectedArticle.date}</span>
+              </div>
+
+              <h1 className="text-3xl md:text-5xl font-bold text-[#0F172A] leading-tight" style={{ fontFamily: fontHeading }}>
+                {selectedArticle.title}
+              </h1>
+
+              <div className="aspect-[16/9] w-full overflow-hidden rounded shadow">
+                <img src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
+              </div>
+
+              <div className="p-6 bg-blue-50/60 border-l-4 border-[#1E40AF] text-lg font-medium text-gray-800 leading-relaxed">
+                {selectedArticle.content}
+              </div>
+
+              <div className="space-y-6 text-gray-700 leading-relaxed text-base">
+                <p>Hệ sinh thái công nghiệp đang chuyển dịch mạnh mẽ theo hướng bền vững. Việc các tập đoàn FDI lớn yêu cầu khắt khe về chứng chỉ xanh (LEED, Lotus, Edge) và sử dụng năng lượng tái chế đang thúc đẩy các chủ đầu tư Việt Nam phải cải tiến hạ tầng, chuyển đổi số toàn diện các khâu vận hành KCN.</p>
+                <p>PlatformBDS cam kết đồng hành cùng các nhà đầu tư thứ cấp bằng việc cung cấp hạ tầng công nghệ và giải pháp tư vấn ưu đãi thuế tối đa, giúp doanh nghiệp thiết lập nhà máy nhanh chóng và đi vào sản xuất hiệu quả.</p>
+              </div>
+
+              <div className="p-8 bg-[#0F172A] text-white rounded mt-12 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+                <div>
+                  <h4 className="text-2xl font-bold mb-1 text-[#F59E0B]" style={{ fontFamily: fontHeading }}>Đăng Ký Tư Vấn Thuê Kho Xưởng</h4>
+                  <p className="text-gray-300 text-xs">Nhận báo cáo giá thuê và chính sách ưu đãi KCN trong 24h.</p>
+                </div>
+                <button
+                  onClick={() => setActivePage('contact')}
+                  className="px-6 py-3.5 bg-[#1E40AF] hover:bg-[#F59E0B] hover:text-[#0F172A] text-white font-bold uppercase tracking-widest text-xs rounded transition shrink-0"
+                >
+                  Liên Hệ Ngay
+                </button>
+              </div>
+            </article>
+
+            <aside className="lg:col-span-4 space-y-8">
+              <div className="bg-white p-8 rounded border border-gray-200 shadow-sm space-y-6">
+                <h3 className="text-xl font-bold text-[#0F172A] pb-4 border-b border-gray-100 uppercase tracking-wider" style={{ fontFamily: fontHeading }}>
+                  Tin B2B Khác
+                </h3>
+                <div className="space-y-6">
+                  {NEWS_DATA.filter(n => n.id !== selectedArticle.id).slice(0, 4).map(item => (
+                    <div
+                      key={item.id}
+                      onClick={() => handleOpenArticle(item)}
+                      className="flex gap-4 items-start group cursor-pointer"
+                    >
+                      <img
+                        src={item.img}
+                        alt={item.title}
+                        className="w-24 h-16 object-cover rounded flex-shrink-0 group-hover:opacity-80 transition"
+                      />
+                      <div>
+                        <span className="text-[10px] text-[#1E40AF] font-bold uppercase tracking-wider block mb-1">{item.date}</span>
+                        <h4 className="text-xs font-bold text-[#0F172A] group-hover:text-[#1E40AF] transition line-clamp-2 leading-snug" style={{ fontFamily: fontHeading }}>
+                          {item.title}
+                        </h4>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </aside>
+          </div>
         </div>
       </div>
     );
@@ -1181,7 +1302,11 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                 </div>
                 <div className="flex items-center">
                   <Mail className="w-6 h-6 mr-4 text-[#F59E0B]" />
-                  <span className="text-sm">b2b@platformbds.vn</span>
+                  <span className="text-sm">contact@industrial-platform.vn</span>
+                </div>
+                <div className="flex items-center">
+                  <Clock className="w-6 h-6 mr-4 text-[#F59E0B]" />
+                  <span className="text-sm">Thứ 2 - Thứ 7: 08:00 - 17:30</span>
                 </div>
               </div>
 
@@ -1212,25 +1337,27 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
             
             <div className="md:w-2/3 p-10 bg-white">
               {contactSubmitted ? (
-                <div className="text-center py-12">
-                  <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-4 animate-bounce" />
-                  <h3 className="text-2xl font-bold text-[#0F172A] mb-2">ĐÃ GỬI YÊU CẦU THÀNH CÔNG</h3>
-                  <p className="text-gray-600 mb-6 font-medium">Chuyên viên tư vấn B2B sẽ phản hồi thông tin chi tiết đến bạn trong vòng 2 giờ làm việc.</p>
+                <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-8 rounded text-center">
+                  <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto mb-4" />
+                  <h4 className="text-xl font-bold mb-2">Đăng Ký Tư Vấn Thành Công!</h4>
+                  <p className="text-sm text-gray-600 mb-6">Chuyên viên phụ trách khu vực của chúng tôi sẽ liên hệ lại với quý doanh nghiệp trong vòng 15 phút làm việc.</p>
                   <button 
                     onClick={() => setContactSubmitted(false)}
-                    className="bg-[#1E40AF] text-white font-bold px-6 py-2.5 rounded hover:bg-[#0F172A] transition-colors"
+                    className="bg-[#1E40AF] text-white px-6 py-2 rounded text-sm font-bold uppercase"
                   >
-                    Gửi yêu cầu khác
+                    Gửi Yêu Cầu Khác
                   </button>
                 </div>
               ) : (
                 <>
-                  <h3 className="text-2xl font-bold text-[#0F172A] mb-6">GỬI YÊU CẦU TƯ VẤN DỰ ÁN</h3>
+                  <h3 className="text-2xl font-bold text-[#0F172A] mb-2" style={{ fontFamily: fontHeading }}>GỬI YÊU CẦU TƯ VẤN B2B</h3>
+                  <p className="text-gray-500 text-sm mb-6">Vui lòng điền đầy đủ thông tin bên dưới để nhận hồ sơ pháp lý & báo giá ưu đãi độc quyền.</p>
+                  
                   <form 
-                    className="space-y-4" 
-                    onSubmit={(e) => { 
-                      e.preventDefault(); 
-                      setContactSubmitted(true); 
+                    className="space-y-4"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      setContactSubmitted(true);
                     }}
                   >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1272,8 +1399,9 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
         {['about', 'gioi-thieu', 've-chung-toi'].includes(activePage) && renderAbout()}
         {['gallery', 'thu-vien', 'hinh-anh'].includes(activePage) && renderGallery()}
         {['news', 'tin-tuc', 'bai-viet'].includes(activePage) && renderNews()}
+        {['news-detail'].includes(activePage) && renderNewsDetailPage()}
         {['contact', 'lien-he', 'tu-van'].includes(activePage) && renderContact()}
-        {!['home', 'projects', 'du-an', 'san-pham', 'kho-xuong', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(activePage) && renderHome()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'kho-xuong', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'news-detail', 'contact', 'lien-he', 'tu-van'].includes(activePage) && renderHome()}
       </main>
 
       {/* 17. FOOTER */}
@@ -1328,79 +1456,76 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
             <h4 className="text-white font-bold uppercase tracking-widest mb-6" style={{ fontFamily: fontHeading }}>LIÊN HỆ TRỤ SỞ</h4>
             <ul className="space-y-4">
               <li>
-                <a href="https://maps.google.com/?q=Bitexco+2+Hai+Trieu+Quan+1+TPHCM" target="_blank" rel="noopener noreferrer" className="flex items-start hover:text-white transition-colors">
+                <div className="flex items-start text-gray-400">
                   <MapPin className="w-5 h-5 mr-3 text-[#F59E0B] flex-shrink-0 mt-0.5" />
-                  <span>Tầng 15, Tòa nhà Bitexco Financial Tower, Số 2 Hải Triều, Q.1, TP.HCM</span>
-                </a>
+                  <span>Bitexco Financial Tower, Số 2 Hải Triều, Quận 1, TP. Hồ Chí Minh</span>
+                </div>
               </li>
               <li>
-                <a href="tel:0919006030" className="flex items-center hover:text-white transition-colors">
+                <div className="flex items-center text-gray-400">
                   <Phone className="w-5 h-5 mr-3 text-[#F59E0B] flex-shrink-0" />
-                  <span className="whitespace-nowrap">0919 006 030 (Hotline Đầu Tư)</span>
-                </a>
+                  <span>+84 90 123 4567 / (028) 3822 8888</span>
+                </div>
               </li>
               <li>
-                <a href="mailto:invest@aireviewbds.com" className="flex items-center hover:text-white transition-colors">
+                <div className="flex items-center text-gray-400">
                   <Mail className="w-5 h-5 mr-3 text-[#F59E0B] flex-shrink-0" />
-                  <span>invest@aireviewbds.com</span>
-                </a>
+                  <span>industrial@platformbds.vn</span>
+                </div>
               </li>
             </ul>
           </div>
         </div>
         
-        <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500">
-          <p>&copy; {new Date().getFullYear()} TEMPLATES BDS - Industrial Division. All rights reserved.</p>
+        <div className={`mt-12 pt-8 border-t border-gray-800 ${MAX_W} px-4 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500`}>
+          <p>© 2026 PLATFORMBDS INDUSTRIAL REAL ESTATE. ALL RIGHTS RESERVED.</p>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            <a href="#" className="hover:text-white">Điều khoản sử dụng</a>
+            <a href="#" className="hover:text-white">Chính sách bảo mật</a>
+            <a href="#" className="hover:text-white">Quy chế hoạt động B2B</a>
+          </div>
         </div>
       </footer>
 
       {/* PROJECT DETAIL MODAL */}
       {selectedProject && (
         <div className="fixed inset-0 bg-black bg-opacity-75 z-[99999] flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white rounded max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+          <div className="bg-white rounded max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
             <button 
               onClick={() => setSelectedProject(null)}
               className="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full transition-colors z-10"
             >
               <X className="w-5 h-5" />
             </button>
-            <div className="h-64 relative">
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedProject.img} alt={selectedProject.title} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
-              <div className="absolute bottom-6 left-6 text-white pr-10">
-                <span className="bg-[#F59E0B] text-[#0F172A] text-xs font-black px-2.5 py-1 uppercase rounded mb-2 inline-block">
-                  {selectedProject.type}
-                </span>
-                <h3 className="text-2xl font-bold">{selectedProject.title}</h3>
-              </div>
-            </div>
             <div className="p-8">
-              <div className="flex flex-wrap gap-6 mb-6 pb-6 border-b border-gray-200 text-sm font-semibold text-gray-600">
-                <span className="flex items-center"><MapPin className="w-4 h-4 mr-2 text-[#1E40AF]" /> {selectedProject.loc}</span>
-                <span>Quy mô: {selectedProject.area}</span>
-                <span className="text-[#1E40AF]">{selectedProject.price}</span>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="bg-[#1E40AF] text-white px-3 py-1 text-xs font-bold uppercase rounded">{selectedProject.type}</span>
+                <span className="text-emerald-600 font-bold text-xs bg-emerald-50 px-3 py-1 rounded border border-emerald-200">{selectedProject.region}</span>
               </div>
-
-              <h4 className="font-bold text-lg mb-2 text-[#0F172A]">MÔ TẢ CHI TIẾT</h4>
-              <p className="text-gray-600 text-sm mb-6 leading-relaxed">{selectedProject.desc}</p>
-
-              <h4 className="font-bold text-lg mb-3 text-[#0F172A]">THÔNG SỐ HẠ TẦNG KỸ THUẬT</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm mb-8">
+              <h2 className="text-2xl md:text-3xl font-bold text-[#0F172A] mb-2" style={{ fontFamily: fontHeading }}>{selectedProject.title}</h2>
+              <div className="flex items-center text-gray-500 mb-6 text-sm">
+                <MapPin className="w-4 h-4 mr-1 text-[#F59E0B]" />
+                {selectedProject.loc}
+              </div>
+              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedProject.img} alt={selectedProject.title} className="w-full h-80 object-cover rounded mb-6" />
+              
+              <h4 className="font-bold text-lg mb-4 text-[#0F172A]" style={{ fontFamily: fontHeading }}>THÔNG SỐ KỸ THUẬT & TIỆN ÍCH HẠ TẦNG</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8 text-sm">
                 <div className="p-3 bg-gray-50 border border-gray-200 rounded">
-                  <span className="font-bold text-gray-700 block">⚡ Trạm điện:</span>
+                  <span className="font-bold text-gray-700 block">📐 Diện tích:</span>
+                  <span className="text-gray-600">{selectedProject.area}</span>
+                </div>
+                <div className="p-3 bg-gray-50 border border-gray-200 rounded">
+                  <span className="font-bold text-gray-700 block">💵 Giá thuê tham khảo:</span>
+                  <span className="text-gray-600 font-semibold text-[#1E40AF]">{selectedProject.price}</span>
+                </div>
+                <div className="p-3 bg-gray-50 border border-gray-200 rounded">
+                  <span className="font-bold text-gray-700 block">⚡ Trạm điện nội khu:</span>
                   <span className="text-gray-600">{selectedProject.specs.power}</span>
                 </div>
                 <div className="p-3 bg-gray-50 border border-gray-200 rounded">
                   <span className="font-bold text-gray-700 block">💧 Nguồn nước:</span>
                   <span className="text-gray-600">{selectedProject.specs.water}</span>
-                </div>
-                <div className="p-3 bg-gray-50 border border-gray-200 rounded">
-                  <span className="font-bold text-gray-700 block">🌀 Xử lý nước thải:</span>
-                  <span className="text-gray-600">{selectedProject.specs.waste}</span>
-                </div>
-                <div className="p-3 bg-gray-50 border border-gray-200 rounded">
-                  <span className="font-bold text-gray-700 block">🚒 Hệ thống PCCC:</span>
-                  <span className="text-gray-600">{selectedProject.specs.fire}</span>
                 </div>
               </div>
 
@@ -1434,33 +1559,6 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
             <X className="w-8 h-8" />
           </button>
           <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedGalleryImg} alt="Lightbox Preview" className="max-w-full max-h-[85vh] object-contain rounded" />
-        </div>
-      )}
-
-      {/* ARTICLE DETAIL MODAL */}
-      {selectedArticle && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 z-[99999] flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white rounded max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
-            <button 
-              onClick={() => setSelectedArticle(null)}
-              className="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full transition-colors z-10"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <div className="p-8">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-[#1E40AF] font-bold text-xs bg-blue-100 px-2.5 py-0.5 rounded">{selectedArticle.cat}</span>
-                <span className="text-gray-500 text-xs font-semibold">{selectedArticle.date}</span>
-              </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-[#0F172A] mb-6 leading-tight" style={{ fontFamily: fontHeading }}>{selectedArticle.title}</h2>
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-80 object-cover rounded mb-6" />
-              <div className="text-gray-700 leading-relaxed space-y-4 text-sm md:text-base">
-                <p className="font-semibold text-gray-900">{selectedArticle.content}</p>
-                <p>Hệ sinh thái công nghiệp đang chuyển dịch mạnh mẽ theo hướng bền vững. Việc các tập đoàn FDI lớn yêu cầu khắt khe về chứng chỉ xanh (LEED, Lotus, Edge) và sử dụng năng lượng tái chế đang thúc đẩy các chủ đầu tư Việt Nam phải cải tiến hạ tầng, chuyển đổi số toàn diện các khâu vận hành KCN.</p>
-                <p>PlatformBDS cam kết đồng hành cùng các nhà đầu tư thứ cấp bằng việc cung cấp hạ tầng công nghệ và giải pháp tư vấn ưu đãi thuế tối đa, giúp doanh nghiệp thiết lập nhà máy nhanh chóng và đi vào sản xuất hiệu quả.</p>
-              </div>
-            </div>
-          </div>
         </div>
       )}
     </div>

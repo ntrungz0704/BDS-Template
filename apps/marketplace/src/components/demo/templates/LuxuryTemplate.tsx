@@ -3,7 +3,7 @@ import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { syncDemoUrl } from '../../../utils/demo';
 import Link from 'next/link';
-import { Crown, Star, Phone, Mail, MapPin, ChevronRight, Play, Download, Award, Users, Building2, TrendingUp, Shield, Clock, ArrowRight, CheckCircle, ChevronDown, Menu, X, Search, Facebook, Youtube, Instagram } from 'lucide-react';
+import { Crown, Star, Phone, Mail, MapPin, ChevronRight, ChevronLeft, Play, Download, Award, Users, Building2, TrendingUp, Shield, Clock, ArrowRight, CheckCircle, ChevronDown, Menu, X, Search, Facebook, Youtube, Instagram } from 'lucide-react';
 import { MAX_W } from '../design-system';
 
 interface TemplateProps {
@@ -239,6 +239,7 @@ const TESTIMONIALS = [
 const NEWS = [
   {
     id: 1,
+    slug: 'lumiere-top-10-du-an-xa-xi',
     date: '10/07/2026',
     category: 'Tin tức dự án',
     title: 'Lumière Grand Palace lọt top 10 dự án xa xỉ nhất Đông Nam Á 2026',
@@ -248,6 +249,7 @@ const NEWS = [
   },
   {
     id: 2,
+    slug: 'so-do-lau-dai-cam-ket-phap-ly',
     date: '05/07/2026',
     category: 'Pháp lý',
     title: 'Sổ đỏ lâu dài — Cam kết pháp lý minh bạch từ Lumière',
@@ -257,6 +259,7 @@ const NEWS = [
   },
   {
     id: 3,
+    slug: 'bds-sieu-sang-tang-truong-35-phan-tram',
     date: '28/06/2026',
     category: 'Thị trường',
     title: 'BĐS hạng siêu sang tại Việt Nam tăng trưởng 35% trong năm 2026',
@@ -266,6 +269,7 @@ const NEWS = [
   },
   {
     id: 4,
+    slug: 'hop-tac-chien-luoc-ritz-carlton',
     date: '20/06/2026',
     category: 'Sự kiện',
     title: 'Lumière Group ký kết hợp tác chiến lược với chuỗi quản lý Ritz-Carlton',
@@ -275,6 +279,7 @@ const NEWS = [
   },
   {
     id: 5,
+    slug: 'ra-mat-dinh-thu-the-royal-signature',
     date: '15/06/2026',
     category: 'Dự án',
     title: 'Lễ ra mắt phân khu dinh thự hoàng gia "The Royal Signature" tại Đà Nẵng',
@@ -284,6 +289,7 @@ const NEWS = [
   },
   {
     id: 6,
+    slug: 'xu-huong-thiet-ke-eco-luxury',
     date: '10/06/2026',
     category: 'Xu hướng',
     title: 'Xu hướng thiết kế bền vững (Eco-Luxury) lên ngôi trong giới thượng lưu',
@@ -371,27 +377,64 @@ const normalizeLuxuryPage = (p: string) => {
 };
 
 export default function LuxuryTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const [currentPage, setCurrentPageState] = useState(normalizeLuxuryPage(initialPage));
+  const resolveInitialArticle = () => {
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      return NEWS.find(n => n.slug === sub || String(n.id) === sub) || NEWS[0];
+    }
+    return null;
+  };
+
+  const initialArticle = resolveInitialArticle();
+  const [selectedArticle, setSelectedArticle] = useState<any | null>(initialArticle);
+  const [currentPage, setCurrentPageState] = useState(initialArticle ? 'news-detail' : normalizeLuxuryPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(normalizeLuxuryPage(initialPage));
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      const found = NEWS.find(n => n.slug === sub || String(n.id) === sub) || NEWS[0];
+      setSelectedArticle(found);
+      setCurrentPageState('news-detail');
+    } else {
+      setSelectedArticle(null);
+      setCurrentPageState(normalizeLuxuryPage(initialPage));
+    }
   }, [initialPage]);
 
   const setCurrentPage = (p: string, customSlug?: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
-    if (typeof setSelectedArticle === "function") setSelectedArticle(null);
+    if (p !== 'news-detail') {
+      setSelectedArticle(null);
+    }
 
     setCurrentPageState(p);
     const tSlug = template?.slug || 'bds-02';
     syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
   };
 
+  const handleOpenArticle = (item: any) => {
+    setSelectedArticle(item);
+    setCurrentPageState('news-detail');
+    setMobileMenuOpen(false);
+    const tSlug = template?.slug || 'bds-02';
+    syncDemoUrl(`tin-tuc/${item.slug || item.id}`, tSlug);
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   useEffect(() => {
     const handlePopState = () => {
       const parts = window.location.pathname.split('/').filter(Boolean);
-      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-02') ? parts[1] : 'home');
+      const sub = parts.length > 2 ? parts.slice(2).join('/') : (parts[1] !== (template?.slug || 'bds-02') ? parts[1] : 'home');
       if (sub) {
-        setCurrentPageState(normalizeLuxuryPage(sub));
+        if (sub.startsWith('tin-tuc/') || sub.startsWith('news/') || sub.startsWith('bai-viet/')) {
+          const artSlug = sub.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+          const found = NEWS.find(n => n.slug === artSlug || String(n.id) === artSlug) || NEWS[0];
+          setSelectedArticle(found);
+          setCurrentPageState('news-detail');
+        } else {
+          setSelectedArticle(null);
+          setCurrentPageState(normalizeLuxuryPage(sub));
+        }
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -410,7 +453,6 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
   // Modals / Details
   const [selectedProject, setSelectedProject] = useState<any | null>(null);
-  const [selectedArticle, setSelectedArticle] = useState<any | null>(null);
   const [selectedGalleryImg, setSelectedGalleryImg] = useState<string | null>(null);
   
   // Gallery Tab
@@ -438,7 +480,9 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     if (e) e.preventDefault();
     setCurrentPage(page);
     setSelectedProject(null);
-    setSelectedArticle(null);
+    if (page !== 'news-detail') {
+      setSelectedArticle(null);
+    }
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -941,7 +985,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           </div>
           <div className={`grid ${isSmall ? 'grid-cols-1' : 'grid-cols-3'} gap-8`}>
             {NEWS.slice(0, 3).map((n) => (
-              <article key={n.id} onClick={() => setSelectedArticle(n)} className="group cursor-pointer">
+              <article key={n.id} onClick={() => handleOpenArticle(n)} className="group cursor-pointer">
                 <div className="overflow-hidden mb-5" style={{ border: `1px solid rgba(201,168,76,0.1)` }}>
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={n.img} alt={n.title} className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
@@ -1623,7 +1667,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
               {filteredNews.map((n) => (
                 <article
                   key={n.id}
-                  onClick={() => setSelectedArticle(n)}
+                  onClick={() => handleOpenArticle(n)}
                   className="group cursor-pointer flex flex-col justify-between"
                   style={{ border: `1px solid rgba(201,168,76,0.12)`, backgroundColor: 'rgba(255,255,255,0.01)' }}
                 >
@@ -1653,6 +1697,99 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
               ))}
             </div>
           )}
+        </div>
+      </main>
+    );
+  };
+
+  const renderNewsDetailPage = () => {
+    if (!selectedArticle) return null;
+    return (
+      <main className="min-h-screen pt-32 pb-32" style={{ backgroundColor: DARK, color: 'white' }}>
+        <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
+          {/* Breadcrumb & Navigation */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800 pb-6 mb-12">
+            <nav className="flex items-center gap-2 text-xs uppercase tracking-widest text-zinc-400 font-light" style={{ fontFamily: FONT_BODY }}>
+              <button onClick={(e) => handlePageChange('home', e)} className="hover:text-white transition">Trang chủ</button>
+              <span>/</span>
+              <button onClick={(e) => handlePageChange('news', e)} className="hover:text-white transition">Tin tức & Thị trường</button>
+              <span>/</span>
+              <span style={{ color: GOLD }} className="truncate max-w-xs sm:max-w-md">{selectedArticle.title}</span>
+            </nav>
+            <button
+              onClick={(e) => handlePageChange('news', e)}
+              className="text-xs uppercase tracking-widest font-semibold flex items-center gap-1 px-4 py-2 border transition"
+              style={{ color: GOLD, borderColor: 'rgba(201,168,76,0.3)', fontFamily: FONT_BODY }}
+            >
+              <ChevronLeft className="w-4 h-4" /> Quay lại danh sách tin
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <article className="lg:col-span-8 space-y-8">
+              <div className="flex items-center gap-3 text-xs uppercase tracking-widest" style={{ color: GOLD, fontFamily: FONT_BODY }}>
+                <span>{selectedArticle.category}</span>
+                <span>•</span>
+                <span>{selectedArticle.date}</span>
+              </div>
+
+              <h1 className="text-3xl md:text-5xl font-light leading-tight text-white" style={{ fontFamily: FONT_HEADING }}>
+                {selectedArticle.title}
+              </h1>
+
+              <div className="aspect-[16/9] w-full overflow-hidden shadow-2xl border" style={{ borderColor: 'rgba(201,168,76,0.2)' }}>
+                <img src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
+              </div>
+
+              <div className="p-6 border-l-2 text-lg font-light leading-relaxed text-zinc-200" style={{ borderColor: GOLD, backgroundColor: 'rgba(255,255,255,0.02)', fontFamily: FONT_BODY }}>
+                {selectedArticle.excerpt}
+              </div>
+
+              <div className="space-y-6 text-base font-light text-zinc-300 leading-relaxed" style={{ fontFamily: FONT_BODY }}>
+                <p>{selectedArticle.content}</p>
+                <p>
+                  Các chuyên gia quốc tế nhận định rằng việc sở hữu một bất động sản tại phân khu này không chỉ là một khoản đầu tư sinh lời bền vững mà còn là một di sản vô giá truyền đời cho các thế hệ tương lai.
+                </p>
+              </div>
+
+              <div className="p-8 border mt-12 flex flex-col sm:flex-row items-center justify-between gap-6" style={{ borderColor: 'rgba(201,168,76,0.3)', backgroundColor: DARK2 }}>
+                <div>
+                  <h4 className="text-xl font-light text-white mb-1" style={{ fontFamily: FONT_HEADING }}>Đăng Ký Tham Quan Căn Hộ Thực Tế</h4>
+                  <p className="text-xs font-light text-zinc-400" style={{ fontFamily: FONT_BODY }}>Trải nghiệm không gian sống thượng lưu cùng chuyên viên tư vấn riêng 1-1.</p>
+                </div>
+                <GoldButton onClick={(e) => handlePageChange('contact', e)}>Đặt Lịch Riêng</GoldButton>
+              </div>
+            </article>
+
+            <aside className="lg:col-span-4 space-y-8">
+              <div className="p-8 border space-y-6" style={{ borderColor: 'rgba(201,168,76,0.2)', backgroundColor: DARK2 }}>
+                <h3 className="text-lg font-light text-white pb-4 border-b border-zinc-800 uppercase tracking-wider" style={{ fontFamily: FONT_HEADING }}>
+                  Tin Tức Liên Quan
+                </h3>
+                <div className="space-y-6">
+                  {NEWS.filter(n => n.id !== selectedArticle.id).slice(0, 4).map(item => (
+                    <div
+                      key={item.id}
+                      onClick={() => handleOpenArticle(item)}
+                      className="flex gap-4 items-start group cursor-pointer"
+                    >
+                      <img
+                        src={item.img}
+                        alt={item.title}
+                        className="w-24 h-16 object-cover flex-shrink-0 group-hover:opacity-80 transition"
+                      />
+                      <div>
+                        <span className="text-[10px] uppercase tracking-widest block mb-1" style={{ color: GOLD }}>{item.category}</span>
+                        <h4 className="text-xs font-light text-white group-hover:text-[#E8C97E] transition line-clamp-2 leading-snug" style={{ fontFamily: FONT_HEADING }}>
+                          {item.title}
+                        </h4>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </aside>
+          </div>
         </div>
       </main>
     );
@@ -1841,6 +1978,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           </div>
         </main>
       )}
+      {currentPage === 'news-detail' && renderNewsDetailPage()}
 
       {renderFooter()}
 
@@ -1929,40 +2067,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       )}
 
-      {/* News Article Modal */}
-      {selectedArticle && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
-          <div className="relative w-full max-w-3xl bg-zinc-950 border border-[#C9A84C] overflow-hidden rounded-none shadow-2xl my-8 max-h-[90vh] flex flex-col">
-            {/* Close Button */}
-            <button
-              onClick={() => setSelectedArticle(null)}
-              className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center bg-black/60 border border-[#C9A84C] text-white hover:bg-[#C9A84C] hover:text-black transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
 
-            {/* Modal Content Scrollable container */}
-            <div className="overflow-y-auto p-6 md:p-8">
-              <div className="aspect-video w-full overflow-hidden mb-6 border border-zinc-800">
-                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
-              </div>
-              
-              <div className="text-xs uppercase tracking-widest mb-2" style={{ color: GOLD, fontFamily: FONT_BODY }}>
-                {selectedArticle.category} · {selectedArticle.date}
-              </div>
-
-              <h2 className="text-2xl md:text-3xl font-light text-white mb-6 leading-snug" style={{ fontFamily: FONT_HEADING }}>
-                {selectedArticle.title}
-              </h2>
-
-              <div className="text-zinc-300 font-light text-sm md:text-base leading-relaxed space-y-4" style={{ fontFamily: FONT_BODY }}>
-                <p className="font-semibold text-zinc-200">{selectedArticle.excerpt}</p>
-                <p>{selectedArticle.content}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Gallery Lightbox */}
       {selectedGalleryImg && (

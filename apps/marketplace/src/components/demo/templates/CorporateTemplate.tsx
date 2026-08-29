@@ -8,7 +8,7 @@ import {
   CheckCircle2, Clock, Globe, Briefcase, Award, Star,
   ChevronDown, ChevronUp, Facebook, Twitter, Linkedin,
   Play, Building, Home, Map, Calendar, Quote, Check,
-  Instagram, Youtube
+  Instagram, Youtube, ChevronLeft
 } from 'lucide-react';
 import { MAX_W } from '../design-system';
 import { FacebookIcon, LinkedinIcon, YoutubeIcon, ZaloIcon } from '../../icons/SocialIcons';
@@ -18,6 +18,59 @@ interface TemplateProps {
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
 }
+
+const CORPORATE_NEWS = [
+  {
+    id: 1,
+    slug: 'vinacorp-ky-ket-hop-tac-marriott',
+    title: 'VinaCorp Ký Kết Hợp Tác Cùng Marriott International',
+    date: '15 Tháng 10, 2026',
+    category: 'Hợp Tác Quốc Tế',
+    img: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80',
+    excerpt: 'Lễ ký kết hợp tác chiến lược mở rộng chuỗi khách sạn và căn hộ dịch vụ cao cấp chuẩn quốc tế tại Việt Nam.',
+    content: 'Tập đoàn VinaCorp chính thức ký kết thỏa thuận hợp tác chiến lược toàn diện với Marriott International nhằm quản lý và vận hành chuỗi tổ hợp khách sạn 5 sao và căn hộ dịch vụ cao cấp tại 3 thành phố lớn: Hà Nội, TP. Hồ Chí Minh và Đà Nẵng. Sự hợp tác này đánh dấu bước tiến quan trọng trong chiến lược nâng tầm chuẩn mực dịch vụ và gia tăng giá trị tài sản bền vững cho các nhà đầu tư.'
+  },
+  {
+    id: 2,
+    slug: 'cat-noc-toa-thap-tai-chinh-vinacorp-center',
+    title: 'Cất Nóc Dự Án Tòa Tháp Tài Chính VinaCorp Center',
+    date: '02 Tháng 10, 2026',
+    category: 'Tiến Độ Dự Án',
+    img: 'https://images.unsplash.com/photo-1590240562544-a141b2c4e511?w=800&q=80',
+    excerpt: 'Tòa tháp tài chính biểu tượng cao 45 tầng tại trung tâm Quận 1 chính thức cất nóc vượt tiến độ 15 ngày.',
+    content: 'Sáng ngày 02/10/2026, VinaCorp cùng liên danh nhà thầu đã tổ chức thành công lễ cất nóc tòa tháp tài chính VinaCorp Center. Dự án sở hữu kiến trúc hiện đại đạt chuẩn LEED Gold, trang bị hệ thống lọc khí trung tâm và thang máy tốc độ cao 8m/s. Tòa nhà dự kiến sẽ đi vào vận hành từ Quý 2/2027, cung cấp hơn 60.000m² sàn văn phòng hạng A.'
+  },
+  {
+    id: 3,
+    slug: 'bao-cao-tai-chinh-quy-3-2026',
+    title: 'Báo Cáo Tài Chính Quý 3/2026: Lợi Nhuận Vượt Kế Hoạch 120%',
+    date: '28 Tháng 09, 2026',
+    category: 'Quan Hệ Cổ Đông',
+    img: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80',
+    excerpt: 'Doanh thu thuần và lợi nhuận sau thuế của VinaCorp tiếp tục tăng trưởng ấn tượng trong 9 tháng đầu năm 2026.',
+    content: 'HĐQT VinaCorp vừa công bố báo cáo kết quả kinh doanh hợp nhất Quý 3/2026. Tổng doanh thu thuần đạt 4.850 tỷ đồng, tăng 38% so với cùng kỳ năm ngoái. Động lực tăng trưởng chính đến từ việc bàn giao các dự án khu đô thị sinh thái và mảng kinh doanh văn phòng cho thuê duy trì tỷ lệ lấp đầy trên 95%.'
+  },
+  {
+    id: 4,
+    slug: 'vinacorp-nhan-giai-thuong-chu-dau-tu-xuat-sac',
+    title: 'VinaCorp Nhận Cúp "Chủ Đầu Tư Xuất Sắc Nhất Châu Á 2026"',
+    date: '15 Tháng 09, 2026',
+    category: 'Giải Thưởng',
+    img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80',
+    excerpt: 'Vinh danh những đóng góp bền bỉ của tập đoàn trong việc phát triển các dự án bất động sản xanh và bền vững.',
+    content: 'Tại lễ trao giải Asia Property Awards 2026 được tổ chức tại Singapore, VinaCorp vinh dự được xướng tên ở hạng mục "Chủ đầu tư xuất sắc nhất Châu Á". Đây là sự khẳng định cho uy tín thương hiệu, năng lực tài chính vững mạnh và triết lý kiến tạo giá trị thực cho cộng đồng của tập đoàn.'
+  },
+  {
+    id: 5,
+    slug: 'phat-dong-chien-dich-xanh-2026',
+    title: 'Phát Động Chiến Dịch Xanh: Giảm 50% Phát Thải Carbon Đến Năm 2030',
+    date: '01 Tháng 09, 2026',
+    category: 'Phát Triển Bền Vững',
+    img: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800&q=80',
+    excerpt: 'Cam kết áp dụng tiêu chuẩn ESG cho 100% các công trình bất động sản phát triển mới.',
+    content: 'VinaCorp chính thức công bố lộ trình phát triển bền vững theo tiêu chuẩn ESG (Môi trường - Xã hội - Quản trị). Tập đoàn cam kết sử dụng 100% vật liệu thân thiện môi trường trong các dự án mới, lắp đặt hệ thống điện mặt trời mái nhà và tái sử dụng nước mưa tưới tiêu toàn khu đô thị.'
+  }
+];
 
 const normalizeCorporatePage = (p: string) => {
   const clean = (p || '').toLowerCase().trim();
@@ -30,24 +83,62 @@ const normalizeCorporatePage = (p: string) => {
 };
 
 export default function CorporateTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const [activePage, setActivePageState] = useState(normalizeCorporatePage(initialPage));
+  const resolveInitialArticle = () => {
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      return CORPORATE_NEWS.find(n => n.slug === sub || String(n.id) === sub) || CORPORATE_NEWS[0];
+    }
+    return null;
+  };
+
+  const initialArticle = resolveInitialArticle();
+  const [selectedArticle, setSelectedArticle] = useState<any | null>(initialArticle);
+  const [activePage, setActivePageState] = useState(initialArticle ? 'news-detail' : normalizeCorporatePage(initialPage));
 
   useEffect(() => {
-    setActivePageState(normalizeCorporatePage(initialPage));
+    if (initialPage && (initialPage.startsWith('tin-tuc/') || initialPage.startsWith('news/') || initialPage.startsWith('bai-viet/'))) {
+      const sub = initialPage.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+      const found = CORPORATE_NEWS.find(n => n.slug === sub || String(n.id) === sub) || CORPORATE_NEWS[0];
+      setSelectedArticle(found);
+      setActivePageState('news-detail');
+    } else {
+      setSelectedArticle(null);
+      setActivePageState(normalizeCorporatePage(initialPage));
+    }
   }, [initialPage]);
 
   const setActivePage = (p: string, customSlug?: string) => {
+    if (p !== 'news-detail') {
+      setSelectedArticle(null);
+    }
     setActivePageState(p);
-    const tSlug = template?.slug || 'bds-04';
+    const tSlug = template?.slug || 'bds-03';
     syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
+  };
+
+  const handleOpenArticle = (item: any) => {
+    setSelectedArticle(item);
+    setActivePageState('news-detail');
+    setIsMobileMenuOpen(false);
+    const tSlug = template?.slug || 'bds-03';
+    syncDemoUrl(`tin-tuc/${item.slug || item.id}`, tSlug);
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   useEffect(() => {
     const handlePopState = () => {
       const parts = window.location.pathname.split('/').filter(Boolean);
-      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-04') ? parts[1] : 'home');
+      const sub = parts.length > 2 ? parts.slice(2).join('/') : (parts[1] !== (template?.slug || 'bds-03') ? parts[1] : 'home');
       if (sub) {
-        setActivePageState(normalizeCorporatePage(sub));
+        if (sub.startsWith('tin-tuc/') || sub.startsWith('news/') || sub.startsWith('bai-viet/')) {
+          const artSlug = sub.replace(/^(tin-tuc|news|bai-viet)\/?/, '');
+          const found = CORPORATE_NEWS.find(n => n.slug === artSlug || String(n.id) === artSlug) || CORPORATE_NEWS[0];
+          setSelectedArticle(found);
+          setActivePageState('news-detail');
+        } else {
+          setSelectedArticle(null);
+          setActivePageState(normalizeCorporatePage(sub));
+        }
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -656,33 +747,32 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { title: 'VinaCorp Ký Kết Hợp Tác Cùng Marriott International', date: '15 Tháng 10, 2026', img: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80' },
-              { title: 'Cất Nóc Dự Án Tòa Tháp Tài Chính VinaCorp Center', date: '02 Tháng 10, 2026', img: 'https://images.unsplash.com/photo-1590240562544-a141b2c4e511?w=800&q=80' },
-              { title: 'Báo Cáo Tài Chính Quý 3/2026: Lợi Nhuận Vượt Kế Hoạch 120%', date: '28 Tháng 9, 2026', img: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80' }
-            ].map((news, i) => (
-              <div key={i} className="bg-white shadow-md overflow-hidden group">
-                <div className="overflow-hidden h-56 relative">
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={news.img} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: colors.accent }}>
-                    <Calendar size={14} className="mr-2" /> {news.date}
+            {CORPORATE_NEWS.slice(0, 3).map((news) => (
+              <div key={news.id} onClick={() => handleOpenArticle(news)} className="bg-white shadow-md overflow-hidden group cursor-pointer flex flex-col justify-between">
+                <div>
+                  <div className="overflow-hidden h-56 relative">
+                    <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={news.img} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   </div>
-                  <h4 
-                    onClick={() => handleNavClick('news')}
-                    className="font-bold text-xl mb-4 leading-snug group-hover:text-blue-700 transition-colors cursor-pointer" 
-                    style={{ color: colors.text, fontFamily: fonts.heading }}
-                  >
-                    {news.title}
-                  </h4>
-                  <button 
-                    onClick={() => handleNavClick('news')}
-                    className="text-sm font-semibold uppercase flex items-center transition-colors hover:opacity-70 cursor-pointer" 
+                  <div className="p-6">
+                    <div className="flex items-center text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: colors.accent }}>
+                      <Calendar size={14} className="mr-2" /> {news.date}
+                    </div>
+                    <h4 
+                      className="font-bold text-xl mb-4 leading-snug group-hover:text-blue-700 transition-colors" 
+                      style={{ color: colors.text, fontFamily: fonts.heading }}
+                    >
+                      {news.title}
+                    </h4>
+                    <p className="text-gray-600 text-sm line-clamp-2 mb-4 font-light">{news.excerpt}</p>
+                  </div>
+                </div>
+                <div className="p-6 pt-0">
+                  <span 
+                    className="text-sm font-semibold uppercase flex items-center transition-colors group-hover:text-blue-700" 
                     style={{ color: colors.primary }}
                   >
                     Đọc tiếp <ArrowRight size={14} className="ml-1" />
-                  </button>
+                  </span>
                 </div>
               </div>
             ))}
@@ -879,16 +969,36 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
   const renderNews = () => (
     <div className="py-20 animate-in fade-in">
       <div className={`${MAX_W} mx-auto px-4`}>
-        <h2 className="text-4xl font-bold mb-10 text-center" style={{ color: colors.text, fontFamily: fonts.heading }}>Tin Tức Doanh Nghiệp</h2>
-        <div className="max-w-5xl mx-auto space-y-12">
-          {[1,2,3].map(i => (
-            <div key={i} className="flex flex-col md:flex-row gap-8 bg-white p-6 shadow-sm border border-gray-100">
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={`https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80&sig=${i}`} className="w-full md:w-1/3 h-48 object-cover" alt="News" />
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <h2 className="text-4xl font-bold mb-4" style={{ color: colors.text, fontFamily: fonts.heading }}>Tin Tức & Thông Cáo Báo Chí</h2>
+          <p className="text-gray-600">Cập nhật những hoạt động chiến lược, kết quả kinh doanh và tiến độ các dự án bất động sản trọng điểm của VinaCorp.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {CORPORATE_NEWS.map(item => (
+            <div 
+              key={item.id} 
+              onClick={() => handleOpenArticle(item)}
+              className="flex flex-col justify-between bg-white rounded shadow-sm border border-gray-100 overflow-hidden group cursor-pointer hover:shadow-xl transition-all"
+            >
               <div>
-                <p className="text-sm font-bold text-amber-500 mb-2">15 Tháng 10, 2026</p>
-                <h3 className="text-2xl font-bold mb-4" style={{ color: colors.primary }}>Thông cáo báo chí: Khai trương dự án mới #{i}</h3>
-                <p className="text-gray-600 mb-4">Buổi lễ khai trương đã diễn ra thành công tốt đẹp với sự góp mặt của hàng trăm quan khách và nhà đầu tư chiến lược...</p>
-                <button onClick={() => handleNavClick('contact')} className="font-bold text-blue-800 uppercase text-sm hover:underline cursor-pointer">Đọc tiếp</button>
+                <div className="overflow-hidden h-52 relative">
+                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.img} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={item.title} />
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: colors.accent }}>
+                    <Calendar size={14} className="mr-1.5" /> {item.date}
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 group-hover:text-blue-800 transition leading-snug line-clamp-2" style={{ color: colors.primary, fontFamily: fonts.heading }}>
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm line-clamp-3 mb-4 font-light leading-relaxed">{item.excerpt}</p>
+                </div>
+              </div>
+              <div className="p-6 pt-0">
+                <span className="font-bold text-blue-800 uppercase text-xs flex items-center group-hover:underline">
+                  Đọc tiếp <ChevronRight size={14} className="ml-1" />
+                </span>
               </div>
             </div>
           ))}
@@ -896,6 +1006,102 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
       </div>
     </div>
   );
+
+  const renderNewsDetailPage = () => {
+    if (!selectedArticle) return null;
+    return (
+      <div className="py-24 animate-in fade-in" style={{ backgroundColor: colors.body }}>
+        <div className={`${MAX_W} mx-auto px-4`}>
+          {/* Breadcrumbs & Navigation */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-6 mb-12">
+            <nav className="flex items-center gap-2 text-xs uppercase tracking-widest text-gray-500 font-medium">
+              <button onClick={() => handleNavClick('home')} className="hover:text-blue-800 transition">Trang chủ</button>
+              <span>/</span>
+              <button onClick={() => handleNavClick('news')} className="hover:text-blue-800 transition">Tin tức doanh nghiệp</button>
+              <span>/</span>
+              <span className="text-gray-900 font-bold truncate max-w-xs sm:max-w-md">{selectedArticle.title}</span>
+            </nav>
+            <button
+              onClick={() => handleNavClick('news')}
+              className="text-xs uppercase tracking-widest font-semibold flex items-center gap-1.5 px-4 py-2 border border-gray-300 text-gray-800 hover:bg-white transition shadow-sm"
+            >
+              <ChevronLeft size={16} /> Quay lại tin tức
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <article className="lg:col-span-8 space-y-8 bg-white p-8 md:p-12 shadow-sm border border-gray-100">
+              <div className="flex items-center gap-3 text-xs uppercase tracking-widest font-semibold" style={{ color: colors.accent }}>
+                <span>{selectedArticle.category || 'Tin Doanh Nghiệp'}</span>
+                <span>•</span>
+                <span>{selectedArticle.date}</span>
+              </div>
+
+              <h1 className="text-3xl md:text-5xl font-bold leading-tight" style={{ color: colors.text, fontFamily: fonts.heading }}>
+                {selectedArticle.title}
+              </h1>
+
+              <div className="aspect-[16/9] w-full overflow-hidden shadow-md">
+                <img src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
+              </div>
+
+              <div className="p-6 bg-slate-50 border-l-4 text-lg font-medium text-gray-800 leading-relaxed" style={{ borderColor: colors.primary }}>
+                {selectedArticle.excerpt}
+              </div>
+
+              <div className="space-y-6 text-gray-700 leading-relaxed text-base">
+                <p>{selectedArticle.content}</p>
+                <p>Với tôn chỉ phát triển bền vững và đặt lợi ích của khách hàng làm trọng tâm, Tập đoàn VinaCorp cam kết tiếp tục mang lại những giá trị vượt trội thông qua các công trình chất lượng và dịch vụ quản lý vận hành chuyên nghiệp.</p>
+                <p>Mọi thắc mắc hoặc yêu cầu cung cấp thêm thông tin báo chí, vui lòng liên hệ phòng Quan hệ Cổ đông & Truyền thông của chúng tôi.</p>
+              </div>
+
+              <div className="p-8 text-white mt-12 flex flex-col sm:flex-row items-center justify-between gap-6" style={{ backgroundColor: colors.primary }}>
+                <div>
+                  <h4 className="text-2xl font-bold mb-1" style={{ fontFamily: fonts.heading }}>Đăng Ký Nhận Bản Tin Cổ Đông</h4>
+                  <p className="text-blue-100 text-xs">Cập nhật nhanh nhất báo cáo phân tích và thông cáo báo chí định kỳ.</p>
+                </div>
+                <button
+                  onClick={() => handleNavClick('contact')}
+                  className="px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold uppercase tracking-widest text-xs shrink-0 transition"
+                >
+                  Liên Hệ Ngay
+                </button>
+              </div>
+            </article>
+
+            <aside className="lg:col-span-4 space-y-8">
+              <div className="bg-white p-8 border border-gray-100 shadow-sm space-y-6">
+                <h3 className="text-xl font-bold pb-4 border-b border-gray-100 uppercase tracking-wider" style={{ color: colors.text, fontFamily: fonts.heading }}>
+                  Tin Tức Liên Quan
+                </h3>
+                <div className="space-y-6">
+                  {CORPORATE_NEWS.filter(n => n.id !== selectedArticle.id).slice(0, 4).map(item => (
+                    <div
+                      key={item.id}
+                      onClick={() => handleOpenArticle(item)}
+                      className="flex gap-4 items-start group cursor-pointer"
+                    >
+                      <img
+                        src={item.img}
+                        alt={item.title}
+                        className="w-24 h-16 object-cover flex-shrink-0 group-hover:opacity-80 transition"
+                      />
+                      <div>
+                        <span className="text-[10px] text-amber-500 font-semibold uppercase tracking-wider block mb-1">{item.date}</span>
+                        <h4 className="text-xs font-bold text-gray-900 group-hover:text-blue-800 transition line-clamp-2 leading-snug" style={{ fontFamily: fonts.heading }}>
+                          {item.title}
+                        </h4>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const renderContact = () => (
     <div className="py-20 animate-in fade-in">
@@ -929,18 +1135,16 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                   rel="noopener noreferrer"
                   className="px-2 py-1 rounded bg-blue-800 hover:bg-blue-700 text-white text-[10px] font-bold shrink-0"
                 >
-                  Mở Google Maps
+                  Xem Bản Đồ
                 </a>
               </div>
-              <div className="flex-1 w-full h-full">
-                <iframe
-                  title="Bản đồ VinaCorp Center"
-                  src="https://maps.google.com/maps?q=72+L%C3%AA+Th%C3%A1nh+T%C3%B4n,+B%E1%BA%BFn+Ngh%C3%A9,+Qu%E1%BA%ADn+1,+TP.+HCM&t=&z=16&ie=UTF8&iwloc=&output=embed"
-                  className="w-full h-full border-0"
-                  loading="lazy"
-                  allowFullScreen
-                />
-              </div>
+              <iframe
+                title="Bản đồ VinaCorp Center"
+                src="https://maps.google.com/maps?q=72+L%C3%AA+Th%C3%A1nh+T%C3%B4n,+B%E1%BA%BFn+Ngh%C3%A9,+Qu%E1%BA%ADn+1,+TP.+HCM&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                className="w-full h-full border-0"
+                loading="lazy"
+                allowFullScreen
+              />
             </div>
           </div>
           <div className="bg-gray-50 p-8 rounded border">
@@ -1118,7 +1322,8 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
         {['gallery', 'thu-vien', 'hinh-anh'].includes(activePage) && renderGallery()}
         {['contact', 'lien-he', 'tu-van'].includes(activePage) && renderContact()}
         {['news', 'tin-tuc', 'bai-viet'].includes(activePage) && renderNews()}
-        {!['home', 'projects', 'du-an', 'san-pham', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'contact', 'lien-he', 'tu-van', 'news', 'tin-tuc', 'bai-viet'].includes(activePage) && renderHome()}
+        {['news-detail'].includes(activePage) && renderNewsDetailPage()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'contact', 'lien-he', 'tu-van', 'news', 'tin-tuc', 'bai-viet', 'news-detail'].includes(activePage) && renderHome()}
       </main>
       {renderFooter()}
     </div>
