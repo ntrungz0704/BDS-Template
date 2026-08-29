@@ -1528,11 +1528,27 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 </div>
               ))}
             </div>
-            <div className="mt-10 aspect-video overflow-hidden" style={{ border: `1px solid rgba(201,168,76,0.15)` }}>
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4355!2d106.700980!3d10.776889!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDQ2JzM2LjgiTiAxMDbCsDQyJzAzLjUiRQ!5e0!3m2!1sen!2s!4v1!5m2!1sen!2s"
-                width="100%" height="100%" style={{ border: 0 }} loading="lazy"
-              />
+            <div className="mt-8 overflow-hidden rounded flex flex-col" style={{ border: `1px solid rgba(201,168,76,0.25)` }}>
+              <div className="px-4 py-2 bg-[#0d0f14] text-white flex items-center justify-between text-xs" style={{ borderBottom: `1px solid rgba(201,168,76,0.2)` }}>
+                <span className="font-light tracking-wide text-[#E8C76A] truncate">1 Lê Duẩn, Quận 1, TP. Hồ Chí Minh</span>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=1+L%C3%AA+Du%E1%BA%A9n,+B%E1%BA%BFn+Ngh%C3%A9,+Qu%E1%BA%ADn+1,+TP.HCM"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1 text-[10px] uppercase tracking-wider font-semibold text-[#0B0D11] shrink-0"
+                  style={{ backgroundColor: GOLD }}
+                >
+                  Mở Google Maps
+                </a>
+              </div>
+              <div className="h-56 w-full">
+                <iframe
+                  title="Bản đồ 1 Lê Duẩn"
+                  src="https://maps.google.com/maps?q=1+L%C3%AA+Du%E1%BA%A9n,+Qu%E1%BA%ADn+1,+TP.HCM&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                  width="100%" height="100%" style={{ border: 0 }} loading="lazy"
+                  allowFullScreen
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -1889,6 +1889,30 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
                     </div>
                   </li>
                 </ul>
+
+                {/* Interactive Google Map */}
+                <div className="mt-8 rounded-2xl overflow-hidden border border-slate-200 shadow-md flex flex-col h-56">
+                  <div className="px-3.5 py-2 bg-slate-900 text-white flex items-center justify-between text-xs">
+                    <span className="font-bold flex items-center gap-1.5 truncate"><MapPin size={14} className="text-amber-400" /> KĐT Nam Sài Gòn, Quận 7, TP.HCM</span>
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Nam+S%C3%A0i+G%C3%B2n,+Qu%E1%BA%ADn+7,+TP.HCM"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-2 py-1 rounded bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-bold shrink-0"
+                    >
+                      Mở Google Maps
+                    </a>
+                  </div>
+                  <div className="flex-1 w-full h-full">
+                    <iframe
+                      title="Bản đồ KĐT Nam Sài Gòn"
+                      src="https://maps.google.com/maps?q=Qu%E1%BA%ADn+7,+TP.HCM&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                      className="w-full h-full border-0"
+                      loading="lazy"
+                      allowFullScreen
+                    />
+                  </div>
+                </div>
               </div>
 
               <div style={{ borderTop: '1px solid #E5E7EB', paddingTop: '1.5rem', marginTop: '2rem' }}>

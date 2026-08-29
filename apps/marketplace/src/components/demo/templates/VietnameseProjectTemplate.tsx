@@ -138,6 +138,7 @@ export default function VietnameseProjectTemplate({ template, initialPage = 'hom
   const [menuOpen, setMenuOpen] = useState(false);
   const [leadName, setLeadName] = useState('');
   const [leadPhone, setLeadPhone] = useState('');
+  const [activeLocationIdx, setActiveLocationIdx] = useState(0);
   const [submitted, setSubmitted] = useState(false);
 
   const cfg = VARIANTS[template.slug] || VARIANTS['bds-17'];
@@ -376,28 +377,83 @@ export default function VietnameseProjectTemplate({ template, initialPage = 'hom
                 Mạng Lưới Phân Phối Trọng Điểm Toàn Quốc
               </h2>
               <p className="text-sm opacity-80 leading-7">
-                Hiện diện tại các cực tăng trưởng kinh tế hàng đầu Việt Nam: TP. Hồ Chí Minh, Hà Nội, Đà Nẵng, Hải Phòng và Bình Dương.
+                Hiện diện tại các cực tăng trưởng kinh tế hàng đầu Việt Nam: TP. Hồ Chí Minh, Hà Nội, Đà Nẵng, Hải Phòng và Bình Dương. Bấm chọn chi nhánh bên dưới để hiển thị bản đồ trực tiếp.
               </p>
               <div className="space-y-3 pt-2">
-                {['Trụ sở chính: Tòa nhà Landmark 81 — TP. Hồ Chí Minh', 'Chi nhánh Hà Nội: Tòa tháp Keangnam Landmark 72', 'Chi nhánh Đà Nẵng: Tòa nhà Indochina Riverside', 'Chi nhánh Hải Phòng: Vincom Plaza Lê Thánh Tông'].map((loc, idx) => (
-                  <div key={idx} className="flex items-center gap-3 p-3.5 rounded-xl bg-white/10 border border-white/15 text-xs font-semibold">
-                    <MapPin className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>{loc}</span>
-                  </div>
-                ))}
+                {[
+                  { name: 'Trụ sở chính TP. Hồ Chí Minh', address: 'Tòa nhà Landmark 81, Vinhomes Central Park, Bình Thạnh, TP.HCM' },
+                  { name: 'Chi nhánh Hà Nội', address: 'Tòa tháp Keangnam Landmark 72, Phạm Hùng, Cầu Giấy, Hà Nội' },
+                  { name: 'Chi nhánh Đà Nẵng', address: 'Tòa nhà Indochina Riverside, 74 Bạch Đằng, Hải Châu, Đà Nẵng' },
+                  { name: 'Chi nhánh Hải Phòng', address: 'Vincom Plaza Lê Thánh Tông, Ngô Quyền, Hải Phòng' }
+                ].map((loc, idx) => {
+                  const isActive = activeLocationIdx === idx;
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setActiveLocationIdx(idx)}
+                      className={`w-full flex items-center justify-between p-4 rounded-2xl border text-xs font-semibold transition-all text-left cursor-pointer ${
+                        isActive
+                          ? 'bg-white/25 border-white shadow-xl backdrop-blur-md translate-x-2'
+                          : 'bg-white/10 border-white/15 hover:bg-white/15 hover:border-white/30'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform ${isActive ? 'bg-amber-400 text-slate-900 scale-110 shadow' : 'bg-white/10 text-white'}`}>
+                          <MapPin className="w-4 h-4" />
+                        </span>
+                        <div>
+                          <strong className={`block text-sm ${isActive ? 'text-white font-black' : 'text-white/90'}`}>{loc.name}</strong>
+                          <span className="text-[11px] text-white/70 block mt-0.5">{loc.address}</span>
+                        </div>
+                      </div>
+                      {isActive && <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0" />}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            <div className="grid min-h-[360px] place-items-center rounded-3xl border border-white/20 bg-white/10 p-8 backdrop-blur text-center">
-              <div>
-                <MapPin className="mx-auto h-12 w-12 text-amber-400 animate-bounce" />
-                <h4 className="mt-4 text-xl font-black">Bản Đồ Kết Nối Trực Tuyến</h4>
-                <p className="mt-2 text-xs text-white/70 max-w-sm">Xem chi tiết tọa độ và hướng dẫn chỉ đường bằng Google Maps.</p>
-                <button onClick={() => alert('Đang mở bản đồ Google Maps...')} className="mt-6 px-6 py-3 text-xs font-black bg-white text-slate-900 rounded-xl shadow hover:scale-105 transition">
-                  🗺️ Mở Bản Đồ Chỉ Đường 4K
-                </button>
-              </div>
-            </div>
+            {(() => {
+              const locations = [
+                { name: 'Trụ sở chính TP. Hồ Chí Minh', address: 'Landmark 81, Vinhomes Central Park, TP. Hồ Chí Minh' },
+                { name: 'Chi nhánh Hà Nội', address: 'Keangnam Landmark 72, Phạm Hùng, Hà Nội' },
+                { name: 'Chi nhánh Đà Nẵng', address: 'Indochina Riverside, Bạch Đằng, Hải Châu, Đà Nẵng' },
+                { name: 'Chi nhánh Hải Phòng', address: 'Vincom Plaza Lê Thánh Tông, Hải Phòng' }
+              ];
+              const cur = locations[activeLocationIdx] || locations[0];
+              const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(cur.address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+              const searchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cur.address)}`;
+              return (
+                <div className="overflow-hidden rounded-3xl border border-white/20 bg-slate-950/90 shadow-2xl backdrop-blur flex flex-col h-[460px]">
+                  <div className="px-5 py-3.5 bg-white/10 border-b border-white/15 flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2 font-bold truncate">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                      <span className="truncate">Đang xem: <strong className="text-white font-black">{cur.name}</strong></span>
+                    </div>
+                    <a
+                      href={searchUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-black text-xs transition-transform hover:scale-105 shadow-md shrink-0"
+                    >
+                      <span>Mở Google Maps</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                  <div className="flex-1 w-full h-full relative bg-slate-900">
+                    <iframe
+                      key={cur.address}
+                      title={`Google Map - ${cur.name}`}
+                      src={mapUrl}
+                      className="w-full h-full border-0"
+                      loading="lazy"
+                      allowFullScreen
+                    />
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </section>
 

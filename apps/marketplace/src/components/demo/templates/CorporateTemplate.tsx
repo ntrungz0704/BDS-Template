@@ -906,6 +906,30 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
                 <p>contact@vinacorporate.vn</p>
               </div>
             </div>
+
+            {/* Interactive Google Map */}
+            <div className="mt-8 rounded-2xl overflow-hidden border border-slate-200 shadow-md flex flex-col h-60">
+              <div className="px-4 py-2 bg-slate-900 text-white flex items-center justify-between text-xs">
+                <span className="font-bold truncate">VinaCorp Center, Quận 1, TP.HCM</span>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=72+L%C3%AA+Th%C3%A1nh+T%C3%B4n,+B%E1%BA%BFn+Ngh%C3%A9,+Qu%E1%BA%ADn+1,+TP.+HCM"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2 py-1 rounded bg-blue-800 hover:bg-blue-700 text-white text-[10px] font-bold shrink-0"
+                >
+                  Mở Google Maps
+                </a>
+              </div>
+              <div className="flex-1 w-full h-full">
+                <iframe
+                  title="Bản đồ VinaCorp Center"
+                  src="https://maps.google.com/maps?q=72+L%C3%AA+Th%C3%A1nh+T%C3%B4n,+B%E1%BA%BFn+Ngh%C3%A9,+Qu%E1%BA%ADn+1,+TP.+HCM&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                  className="w-full h-full border-0"
+                  loading="lazy"
+                  allowFullScreen
+                />
+              </div>
+            </div>
           </div>
           <div className="bg-gray-50 p-8 rounded border">
             <h3 className="text-2xl font-bold mb-6">Gửi Tin Nhắn</h3>

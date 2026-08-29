@@ -1835,14 +1835,27 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                 </ul>
               </div>
 
-              {/* Styled Mock Map Card */}
-              <div className="mt-8 rounded-2xl overflow-hidden border border-gray-200 relative h-48 bg-gray-100 flex items-center justify-center">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&q=80')] bg-cover opacity-60"></div>
-                <div className="absolute inset-0 bg-pink-900/10"></div>
-                <div className="relative z-10 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-lg text-center max-w-[250px]">
-                  <MapPin className="w-8 h-8 mx-auto mb-1 text-[#BE185D]" />
-                  <span className="font-bold text-xs text-gray-900 block">VĂN PHÒNG CHÍNH</span>
-                  <span className="text-[10px] text-gray-500 mt-1 block">Quận 7, TP.HCM</span>
+              {/* Real Interactive Google Map */}
+              <div className="mt-8 rounded-2xl overflow-hidden border border-gray-200 relative h-64 bg-gray-100 flex flex-col shadow-md">
+                <div className="px-3.5 py-2 bg-slate-900 text-white flex items-center justify-between text-xs z-10">
+                  <span className="font-bold flex items-center gap-1.5 truncate"><MapPin className="w-3.5 h-3.5 text-[#F43F5E]" /> 123 Nguyễn Văn Linh, Quận 7, TP.HCM</span>
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=123+Nguy%E1%BB%85n+V%C4%83n+Linh,+T%C3%A2n+Phong,+Qu%E1%BA%ADn+7,+TP.HCM"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-2 py-1 rounded bg-[#BE185D] hover:bg-[#9D174D] text-white text-[10px] font-bold shrink-0"
+                  >
+                    Mở Google Maps
+                  </a>
+                </div>
+                <div className="flex-1 w-full h-full">
+                  <iframe
+                    title="Bản đồ Nguyễn Văn Linh Quận 7"
+                    src="https://maps.google.com/maps?q=123+Nguy%E1%BB%85n+V%C4%83n+Linh,+T%C3%A2n+Phong,+Qu%E1%BA%ADn+7,+TP.HCM&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                    className="w-full h-full border-0"
+                    loading="lazy"
+                    allowFullScreen
+                  />
                 </div>
               </div>
             </div>

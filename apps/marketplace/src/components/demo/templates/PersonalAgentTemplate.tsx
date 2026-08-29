@@ -1582,6 +1582,30 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                     <p className="text-gray-300 text-sm">Thứ 2 - Chủ Nhật: 8:00 - 20:00</p>
                   </div>
                 </div>
+
+                {/* Interactive Google Map */}
+                <div className="mt-6 rounded-2xl overflow-hidden border border-slate-700 shadow-md flex flex-col h-48 bg-slate-800">
+                  <div className="px-3.5 py-2 bg-slate-950 text-white flex items-center justify-between text-xs">
+                    <span className="font-bold truncate">Bitexco Tower, Quận 1, TP.HCM</span>
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Bitexco+Financial+Tower,+2+H%E1%BA%A3i+Tri%E1%BB%81u,+Qu%E1%BA%ADn+1,+TP.HCM"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-2 py-0.5 rounded bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[10px] shrink-0"
+                    >
+                      Mở Maps
+                    </a>
+                  </div>
+                  <div className="flex-1 w-full h-full">
+                    <iframe
+                      title="Bản đồ Bitexco Financial Tower"
+                      src="https://maps.google.com/maps?q=Bitexco+Financial+Tower,+Qu%E1%BA%ADn+1,+TP.HCM&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                      className="w-full h-full border-0"
+                      loading="lazy"
+                      allowFullScreen
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 

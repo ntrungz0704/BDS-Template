@@ -228,7 +228,7 @@ export default function CartPage() {
                 Hãy lựa chọn những mẫu giao diện bất động sản ưng ý nhất tại kho giao diện để bắt đầu xây dựng thương hiệu trực tuyến.
               </p>
               <Link href="/templates" className="mt-6 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl text-xs hover:bg-blue-700 hover:scale-105 transition-all shadow-md">
-                Xem Kho 16 Mẫu Website
+                Xem Kho Mẫu Website BĐS
               </Link>
             </div>
           ) : (

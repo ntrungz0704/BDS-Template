@@ -4,23 +4,25 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Crown, Star, Phone, Mail, MapPin, ChevronRight, Play, Download, Award, Users, Building2, TrendingUp, Shield, Clock, ArrowRight, CheckCircle, ChevronDown, Menu, X, Search, Facebook, Youtube, Instagram } from 'lucide-react';
 import { MAX_W } from '../design-system';
-import { getSectionContent, isSectionVisible } from '../../utils/useSectionContent';
 
 interface TemplateProps {
-  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, any> };
+  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
-  company?: any;
-  theme?: any;
-  projects?: any[];
-  posts?: any[];
-  pageContent?: any;
 }
 
-// ── DESIGN TOKENS (defaults — overridden by dynamicTheme inside component) ──
-// Moved to inside the function component to use dynamicTheme values.
-// See line ~366 where GOLD, DARK, etc. are resolved from dynamicTheme prop.
+// ── DESIGN TOKENS ────────────────────────────────────────────────────────────
+const GOLD = '#C9A84C';
+const GOLD_LIGHT = '#E8C97E';
+const DARK = '#0A0A0F';
+const DARK2 = '#12121A';
+const DARK3 = '#1A1A24';
+const WHITE = '#FFFFFF';
+const OFFWHITE = '#F8F5EF';
+const MUTED = '#9A9AA8';
 
+const FONT_HEADING = "'Playfair Display', 'Cormorant Garamond', Georgia, serif";
+const FONT_BODY = "'Plus Jakarta Sans', 'Inter', sans-serif";
 
 // ── REAL ESTATE DATA ─────────────────────────────────────────────────────────
 const PROJECTS = [
@@ -319,196 +321,59 @@ const FAQ = [
   { q: 'Dịch vụ sau bàn giao bao gồm những gì?', a: 'Concierge 24/7, quản gia riêng, bảo trì định kỳ miễn phí 5 năm, dịch vụ cho thuê sinh lời, quản lý tài sản toàn diện theo chuẩn Ritz-Carlton.' },
 ];
 
+// ── HELPER COMPONENTS ─────────────────────────────────────────────────────────
+const SectionLabel = ({ children }: { children: React.ReactNode }) => (
+  <div className="flex items-center gap-3 mb-4">
+    <span className="w-8 h-px" style={{ backgroundColor: GOLD }} />
+    <span className="text-xs tracking-[0.25em] uppercase" style={{ color: GOLD, fontFamily: FONT_BODY }}>{children}</span>
+    <span className="w-8 h-px" style={{ backgroundColor: GOLD }} />
+  </div>
+);
 
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+}
+
+const GoldButton = ({ children, className = '', style = {}, ...props }: ButtonProps) => (
+  <button
+    className={`inline-flex items-center gap-2 px-8 py-4 text-sm tracking-[0.15em] uppercase font-semibold transition-all duration-300 ${className}`}
+    style={{ backgroundColor: GOLD, color: DARK, fontFamily: FONT_BODY, ...style }}
+    onMouseEnter={e => (e.currentTarget.style.backgroundColor = GOLD_LIGHT)}
+    onMouseLeave={e => (e.currentTarget.style.backgroundColor = GOLD)}
+    {...props}
+  >
+    {children}
+  </button>
+);
+
+const OutlineButton = ({ children, className = '', ...props }: ButtonProps) => (
+  <button
+    className={`inline-flex items-center gap-2 px-8 py-4 text-sm tracking-[0.15em] uppercase font-medium border transition-all duration-300 hover:bg-white/5 ${className}`}
+    style={{ borderColor: GOLD, color: GOLD, fontFamily: FONT_BODY }}
+    {...props}
+  >
+    {children}
+  </button>
+);
 
 // ══ MAIN COMPONENT ════════════════════════════════════════════════════════════
-export default function LuxuryTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts, pageContent }: TemplateProps) {
-  // Shadowing variables
-  const GOLD = dynamicTheme?.primaryColor || '#C9A84C';
-  const GOLD_LIGHT = dynamicTheme?.secondaryColor || '#E8C97E';
-  const DARK = dynamicTheme?.backgroundColor || '#0A0A0F';
-  const DARK2 = dynamicTheme?.surfaceColor || '#12121A';
-  const DARK3 = dynamicTheme?.borderColor || '#1A1A24';
-  const WHITE = dynamicTheme?.textColor || '#FFFFFF';
-  const MUTED = dynamicTheme?.textMutedColor || '#9A9AA8';
+const normalizeLuxuryPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  if (['mat-bang', 'floorplans', 'so-do'].includes(clean)) return 'floorplans';
+  if (['tien-ich', 'amenities'].includes(clean)) return 'amenities';
+  return clean || 'home';
+};
 
-  const FONT_HEADING = dynamicTheme?.fontHeading ? `'${dynamicTheme.fontHeading}', serif` : "'Playfair Display', 'Cormorant Garamond', Georgia, serif";
-  const FONT_BODY = dynamicTheme?.fontBody ? `'${dynamicTheme.fontBody}', sans-serif` : "'Plus Jakarta Sans', 'Inter', sans-serif";
-
-  // ── DYNAMIC SECTION CONTENT (DB → fallback to hardcoded defaults) ──
-  const sections = pageContent?.sections || [];
-
-  const heroContent = getSectionContent(sections, 'hero', {
-    badge: 'Lumière Grand Palace — Vinhomes Riverside',
-    heading: 'Kiệt Tác\nĐỉnh Cao\nSống Thượng Lưu',
-    headingAccent: 'Đỉnh Cao',
-    subtitle: '18 dinh thự độc bản được kiến trúc sư người Ý thiết kế riêng cho 18 vị chủ nhân tinh hoa. Tọa lạc bên dòng sông ngọc Hà Nội.',
-    ctaText: 'Khám phá dự án',
-    ctaUrl: 'projects',
-    backgroundImage: 'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=1920&q=90',
-    quickStats: [
-      { label: 'Diện tích', value: 'Từ 280m²' },
-      { label: 'Giá từ', value: '28 Tỷ VNĐ' },
-      { label: 'Pháp lý', value: 'Sổ đỏ vĩnh viễn' },
-      { label: 'Bàn giao', value: 'Q2 / 2027' },
-    ],
-  });
-
-  const introContent = getSectionContent(sections, 'intro', {
-    quote: 'Chúng tôi không xây những ngôi nhà. Chúng tôi kiến tạo những di sản trường tồn theo năm tháng.',
-    quoteAccent: 'di sản trường tồn',
-    description: 'Lumière Group — 18 năm kiến tạo những không gian sống đỉnh cao chỉ dành cho 2.800+ vị chủ nhân tinh hoa nhất Việt Nam và khu vực.',
-  });
-
-  const statsContent = getSectionContent(sections, 'stats', {
-    items: [
-      { value: '18+', label: 'Năm kinh nghiệm', iconName: 'Clock' },
-      { value: '350+', label: 'Dinh thự đã bàn giao', iconName: 'Building2' },
-      { value: '2,800+', label: 'Chủ nhân tinh hoa', iconName: 'Users' },
-      { value: '98%', label: 'Hài lòng tuyệt đối', iconName: 'Star' },
-    ],
-  });
-
-  const amenitiesContent = getSectionContent(sections, 'amenities', {
-    heading: 'Chuẩn Mực 6 Sao Quốc Tế',
-    headingAccent: '6 Sao',
-    sectionLabel: 'Đặc quyền & tiện ích',
-    items: AMENITIES,
-  });
-
-  const testimonialsContent = getSectionContent(sections, 'testimonials', {
-    heading: 'Tiếng Nói Từ Giới Tinh Hoa',
-    headingAccent: 'Giới Tinh Hoa',
-    sectionLabel: 'Chủ nhân nói gì',
-    items: TESTIMONIALS,
-  });
-
-  const timelineContent = getSectionContent(sections, 'timeline', {
-    heading: '18 Năm Kiến Tạo Di Sản',
-    headingAccent: 'Kiến Tạo Di Sản',
-    sectionLabel: 'Hành trình phát triển',
-    items: TIMELINE,
-  });
-
-  const faqContent = getSectionContent(sections, 'faq', {
-    heading: 'Câu Hỏi Thường Gặp',
-    headingAccent: 'Thường Gặp',
-    sectionLabel: 'Giải đáp thắc mắc',
-    items: FAQ,
-  });
-
-  const ctaContent = getSectionContent(sections, 'cta', {
-    heading: 'Bắt Đầu Hành Trình\nSống Đỉnh Cao Của Bạn',
-    headingAccent: 'Sống Đỉnh Cao',
-    description: 'Quản gia cá nhân của chúng tôi sẽ thiết kế riêng một buổi thưởng lãm dành cho quý vị. Tuyệt đối bảo mật.',
-    ctaText: 'Yêu Cầu Tư Vấn VIP',
-  });
-
-  const floorPlansContent = getSectionContent(sections, 'floor_plans', {
-    heading: 'Bản Giao Hưởng Kiến Trúc',
-    headingAccent: 'Kiến Trúc',
-    sectionLabel: 'Mặt bằng dự án',
-    items: FLOOR_PLANS,
-  });
-
-  const galleryContent = getSectionContent(sections, 'gallery', {
-    heading: 'Nghệ Thuật Của Sự Hoàn Mỹ',
-    headingAccent: 'Của Sự Hoàn Mỹ',
-    sectionLabel: 'Thư viện hình ảnh',
-    items: GALLERY_ITEMS,
-  });
-
-  const partnersContent = getSectionContent(sections, 'partners', {
-    items: ['VINHOMES', 'MASTERISE', 'SUN GROUP', 'CAPITALAND', 'KNIGHT FRANK'],
-  });
-
-  // Local helper components to capture the shadowed theme variables
-  const SectionLabel = ({ children }: { children: React.ReactNode }) => (
-    <div className="flex items-center gap-3 mb-4">
-      <span className="w-8 h-px" style={{ backgroundColor: GOLD }} />
-      <span className="text-xs tracking-[0.25em] uppercase" style={{ color: GOLD, fontFamily: FONT_BODY }}>{children}</span>
-      <span className="w-8 h-px" style={{ backgroundColor: GOLD }} />
-    </div>
-  );
-
-  const GoldButton = ({ children, className = '', style = {}, ...props }: any) => (
-    <button
-      className={`inline-flex items-center gap-2 px-8 py-4 text-sm tracking-[0.15em] uppercase font-semibold transition-all duration-300 ${className}`}
-      style={{ backgroundColor: GOLD, color: DARK, fontFamily: FONT_BODY, ...style }}
-      onMouseEnter={e => (e.currentTarget.style.backgroundColor = GOLD_LIGHT)}
-      onMouseLeave={e => (e.currentTarget.style.backgroundColor = GOLD)}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-
-  const OutlineButton = ({ children, className = '', ...props }: any) => (
-    <button
-      className={`inline-flex items-center gap-2 px-8 py-4 text-sm tracking-[0.15em] uppercase font-medium border transition-all duration-300 hover:bg-white/5 ${className}`}
-      style={{ borderColor: GOLD, color: GOLD, fontFamily: FONT_BODY }}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-
-  // Dynamic Projects Override & Shadowing Variable via globalThis reference
-  const activeProjects = projects && projects.length > 0
-    ? projects.map((p, index) => ({
-        id: p.id || String(index),
-        name: p.title,
-        title: p.title,
-        location: p.address || 'Hệ thống',
-        price: p.price,
-        priceLabel: p.price,
-        area: p.area || '—',
-        type: p.type || 'Dự Án',
-        status: p.status || 'SELLING',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        tag: index === 0 ? 'EXCLUSIVE' : 'HOT',
-        desc: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        description: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        shortDescription: p.shortDescription || '',
-        specs: p.shortDescription || `${p.area} · ${p.type}`,
-        priceVal: parseFloat(p.price) || 0,
-        loc: p.address || 'Hệ thống',
-        size: parseFloat(p.area) || 0,
-        bedrooms: 3,
-        bathrooms: 2,
-        features: [p.type],
-        style: 'Modern',
-        delivery: '2026',
-        scale: '1 block'
-      }))
-    : ((globalThis as any).__projects_ref || []);
-
-  // Shadowing variables
-  const PROJECTS: any = activeProjects;
-
-  const activePosts = posts && posts.length > 0
-    ? posts.map((p, index) => ({
-        id: p.id || String(index),
-        title: p.title,
-        category: p.category?.name || 'Bất Động Sản',
-        date: p.createdAt ? new Date(p.createdAt).toLocaleDateString('vi-VN') : '12/07/2026',
-        author: p.author?.fullName || 'Chuyên viên BĐS',
-        excerpt: p.shortDescription || p.description || 'Tóm tắt bài viết...',
-        summary: p.shortDescription || p.description || 'Tóm tắt bài viết...',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
-        content: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        readTime: '5 phút đọc'
-      }))
-    : ((globalThis as any).__posts_ref || []);
-
-  const NEWS: any = activePosts;
-
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+export default function LuxuryTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
+  const [currentPage, setCurrentPageState] = useState(normalizeLuxuryPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizeLuxuryPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
@@ -517,7 +382,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
+      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
     }
   };
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
@@ -553,8 +418,8 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
   const isTablet = viewport === 'tablet';
   const isSmall = isMobile || isTablet;
 
-  const getPageHref = (page: string) => page === 'home' ? '/' : '?page=' + page;
-  const projectName = company?.name || template.name || "LUMIÈRE";
+  const getPageHref = (page: string) => `/demo/${template.slug}${page === 'home' ? '' : '/' + page}`;
+  const projectName = template.name || 'LUMIÈRE';
 
   const handlePageChange = (page: string, e: React.MouseEvent) => {
     e.preventDefault();
@@ -578,28 +443,28 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
   const renderNav = () => (
     <nav className="sticky top-0 w-full z-50" style={{ backgroundColor: 'rgba(10,10,15,0.92)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(201,168,76,0.15)' }}>
-      <div className={`${MAX_W} mx-auto px-4 md:px-8 flex justify-between items-center h-20 gap-4`}>
+      <div className={`${MAX_W} mx-auto px-4 md:px-8 flex justify-between items-center h-20`}>
         {/* Logo */}
-        <Link href={getPageHref('home')} onClick={(e) => handlePageChange('home', e)} className="flex items-center gap-3 group shrink-0">
-          <Crown className="w-7 h-7 group-hover:scale-110 transition-transform shrink-0" style={{ color: GOLD }} />
+        <Link href={getPageHref('home')} onClick={(e) => handlePageChange('home', e)} className="flex items-center gap-3 group">
+          <Crown className="w-7 h-7 group-hover:scale-110 transition-transform" style={{ color: GOLD }} />
           <div>
-            <div className="text-base sm:text-lg tracking-[0.15em] uppercase font-light text-white whitespace-nowrap" style={{ fontFamily: FONT_HEADING }}>{projectName}</div>
-            <div className="text-[9px] tracking-[0.25em] uppercase whitespace-nowrap" style={{ color: GOLD }}>{company?.slogan || 'Luxury Real Estate'}</div>
+            <div className="text-lg tracking-[0.25em] uppercase font-light text-white" style={{ fontFamily: FONT_HEADING }}>{projectName}</div>
+            <div className="text-[9px] tracking-[0.3em] uppercase" style={{ color: GOLD }}>Luxury Real Estate</div>
           </div>
         </Link>
 
         {/* Desktop Nav */}
         {!isSmall && (
-          <div className="flex items-center gap-3 md:gap-4 lg:gap-6 xl:gap-7 text-[11px] tracking-[0.08em] uppercase font-medium whitespace-nowrap" style={{ color: '#9A9AA8', fontFamily: FONT_BODY }}>
+          <div className="flex items-center gap-8 text-[11px] tracking-[0.15em] uppercase font-medium" style={{ color: '#9A9AA8', fontFamily: FONT_BODY }}>
             {navItems.map(item => (
               <Link key={item.page} href={getPageHref(item.page)}
                 onClick={(e) => handlePageChange(item.page, e)}
-                className={`hover:text-white transition-colors pb-1 whitespace-nowrap ${currentPage === item.page ? 'text-white border-b' : ''}`}
+                className={`hover:text-white transition-colors pb-1 ${currentPage === item.page ? 'text-white border-b' : ''}`}
                 style={currentPage === item.page ? { borderColor: GOLD } : {}}>
                 {item.label}
               </Link>
             ))}
-            <GoldButton onClick={(e) => handlePageChange('contact', e)} className="ml-2 lg:ml-3 py-2 px-4 lg:px-5 text-[10px] whitespace-nowrap shrink-0" style={{ color: DARK }}>
+            <GoldButton onClick={(e) => handlePageChange('contact', e)} className="ml-4 py-2.5 px-6 text-[10px]" style={{ color: DARK }}>
               VIP Concierge
             </GoldButton>
           </div>
@@ -636,12 +501,20 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
   // ─ FLOATING CTA ──────────────────────────────────────────────────────────────
   const renderFloatingCTA = () => (
     <div className="fixed right-6 bottom-8 z-40 flex flex-col gap-3">
-      <button className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110"
-        style={{ backgroundColor: '#25D366' }} title="Zalo / WhatsApp">
+      <button 
+        onClick={() => alert('Đang kết nối Zalo / Hotline: 0901 234 567')}
+        className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 cursor-pointer"
+        style={{ backgroundColor: '#25D366' }} 
+        title="Zalo / WhatsApp"
+      >
         <Phone className="w-5 h-5 text-white" />
       </button>
-      <button className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110"
-        style={{ backgroundColor: GOLD }} title="Tư vấn">
+      <button 
+        onClick={() => { setCurrentPage('contact'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+        className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 cursor-pointer"
+        style={{ backgroundColor: GOLD }} 
+        title="Tư vấn"
+      >
         <Mail className="w-5 h-5" style={{ color: DARK }} />
       </button>
     </div>
@@ -653,7 +526,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       {/* ── HERO ── */}
       <section className="relative h-screen min-h-[700px] flex items-end justify-start overflow-hidden" style={{ backgroundColor: DARK }}>
         <div className="absolute inset-0">
-          <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}             src={heroContent.backgroundImage}
+          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }}             src="https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=1920&q=90"
             alt="Luxury Villa"
             className="w-full h-full object-cover"
             style={{ opacity: 0.55 }}
@@ -664,29 +537,27 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         {/* Content */}
         <div className={`${MAX_W} mx-auto px-4 md:px-8 pb-20 md:pb-28 relative z-10 w-full`}>
           <div className="max-w-3xl">
-            <SectionLabel>{heroContent.badge}</SectionLabel>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-light text-white leading-none mb-6 heading-safe" style={{ fontFamily: FONT_HEADING }}>
-              {heroContent.heading.split('\n').map((line: string, i: number) => (
-                <React.Fragment key={i}>
-                  {line.includes(heroContent.headingAccent) ? (
-                    <span className="italic" style={{ color: GOLD }}>{line}</span>
-                  ) : (
-                    line
-                  )}
-                  {i < heroContent.heading.split('\n').length - 1 && <br />}
-                </React.Fragment>
-              ))}
+            <SectionLabel>Lumière Grand Palace — Vinhomes Riverside</SectionLabel>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-light text-white leading-none mb-6" style={{ fontFamily: FONT_HEADING }}>
+              Kiệt Tác<br />
+              <span className="italic" style={{ color: GOLD }}>Đỉnh Cao</span><br />
+              Sống Thượng Lưu
             </h1>
-            <p className="text-lg md:text-xl font-light leading-relaxed mb-10 max-w-xl text-safe" style={{ color: '#B0B0C0', fontFamily: FONT_BODY }}>
-              {heroContent.subtitle}
+            <p className="text-lg md:text-xl font-light leading-relaxed mb-10 max-w-xl" style={{ color: '#B0B0C0', fontFamily: FONT_BODY }}>
+              18 dinh thự độc bản được kiến trúc sư người Ý thiết kế riêng cho 18 vị chủ nhân tinh hoa. Tọa lạc bên dòng sông ngọc Hà Nội.
             </p>
             <div className="flex flex-wrap gap-4 mb-12">
-              <GoldButton onClick={(e) => handlePageChange(heroContent.ctaUrl || 'projects', e)}><ArrowRight className="w-4 h-4" /> {heroContent.ctaText}</GoldButton>
+              <GoldButton onClick={(e) => handlePageChange('projects', e)}><ArrowRight className="w-4 h-4" /> Khám phá dự án</GoldButton>
               <OutlineButton><Play className="w-4 h-4" /> Xem phim ngắn</OutlineButton>
             </div>
             {/* Stats row */}
             <div className="flex flex-wrap gap-8">
-              {(heroContent.quickStats || []).map((s: any) => (
+              {[
+                { label: 'Diện tích', value: 'Từ 280m²' },
+                { label: 'Giá từ', value: '28 Tỷ VNĐ' },
+                { label: 'Pháp lý', value: 'Sổ đỏ vĩnh viễn' },
+                { label: 'Bàn giao', value: 'Q2 / 2027' },
+              ].map(s => (
                 <div key={s.label}>
                   <div className="text-xs tracking-widest uppercase mb-1" style={{ color: MUTED, fontFamily: FONT_BODY }}>{s.label}</div>
                   <div className="text-base font-semibold text-white" style={{ fontFamily: FONT_BODY }}>{s.value}</div>
@@ -767,36 +638,29 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       </section>
 
       {/* ── INTRO STATEMENT ── */}
-      {isSectionVisible(sections, 'intro') && <section className="py-28 md:py-36 text-center relative overflow-hidden" style={{ backgroundColor: DARK }}>
+      <section className="py-28 md:py-36 text-center relative overflow-hidden" style={{ backgroundColor: DARK }}>
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24" style={{ background: `linear-gradient(to bottom, ${GOLD}, transparent)` }} />
         <div className="max-w-4xl mx-auto px-4">
           <Crown className="w-10 h-10 mx-auto mb-10 opacity-40" style={{ color: GOLD }} />
           <blockquote className="text-2xl md:text-4xl font-light leading-relaxed mb-8 text-white" style={{ fontFamily: FONT_HEADING }}>
-            &quot;{introContent.quote.includes(introContent.quoteAccent) 
-              ? <>{introContent.quote.split(introContent.quoteAccent)[0]}<span className="italic" style={{ color: GOLD }}>{introContent.quoteAccent}</span>{introContent.quote.split(introContent.quoteAccent)[1]}</>  
-              : introContent.quote
-            }&quot;
+            "Chúng tôi không xây những ngôi nhà. Chúng tôi kiến tạo những <span className="italic" style={{ color: GOLD }}>di sản trường tồn</span> theo năm tháng."
           </blockquote>
           <p className="text-base font-light leading-loose max-w-2xl mx-auto" style={{ color: MUTED, fontFamily: FONT_BODY }}>
-            {introContent.description}
+            Lumière Group — 18 năm kiến tạo những không gian sống đỉnh cao chỉ dành cho 2.800+ vị chủ nhân tinh hoa nhất Việt Nam và khu vực.
           </p>
         </div>
-      </section>}
+      </section>
 
       {/* ── STATS ── */}
       <section className="py-20" style={{ backgroundColor: DARK3, borderTop: `1px solid rgba(201,168,76,0.1)`, borderBottom: `1px solid rgba(201,168,76,0.1)` }}>
         <div className={`${MAX_W} mx-auto px-4 md:px-8 grid grid-cols-2 md:grid-cols-4 gap-12`}>
-          {statsContent.items.map((s: any, i: number) => {
-            const iconMap: Record<string, any> = { Clock, Building2, Users, Star, TrendingUp, Award, Shield };
-            const IconComp = iconMap[s.iconName || s.icon] || Star;
-            return (
-              <div key={i} className="text-center">
-                <IconComp className="w-6 h-6 mx-auto mb-4 opacity-50" style={{ color: GOLD }} />
-                <div className="text-3xl md:text-5xl font-light mb-2 text-white text-safe" style={{ fontFamily: FONT_HEADING }}>{s.value}</div>
-                <div className="text-xs uppercase tracking-widest text-safe" style={{ color: MUTED, fontFamily: FONT_BODY }}>{s.label}</div>
-              </div>
-            );
-          })}
+          {STATS.map((s, i) => (
+            <div key={i} className="text-center">
+              <s.icon className="w-6 h-6 mx-auto mb-4 opacity-50" style={{ color: GOLD }} />
+              <div className="text-3xl md:text-5xl font-light mb-2 text-white" style={{ fontFamily: FONT_HEADING }}>{s.value}</div>
+              <div className="text-xs uppercase tracking-widest" style={{ color: MUTED, fontFamily: FONT_BODY }}>{s.label}</div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -821,7 +685,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             {PROJECTS.slice(0, 6).map(project => (
               <div key={project.id} onClick={() => setSelectedProject(project)} className="group relative overflow-hidden cursor-pointer" style={{ border: '1px solid rgba(201,168,76,0.15)' }}>
                 <div className="relative overflow-hidden aspect-[4/3]">
-                  <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={project.img} alt={project.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={project.img} alt={project.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,10,15,0.95) 0%, rgba(10,10,15,0) 60%)' }} />
                   <span className="absolute top-4 right-4 text-[10px] px-3 py-1 tracking-widest font-semibold text-black"
                     style={{ backgroundColor: GOLD, fontFamily: FONT_BODY }}>
@@ -876,7 +740,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
               <GoldButton onClick={(e) => handlePageChange('about', e)}>Tìm hiểu thêm <ArrowRight className="w-4 h-4" /></GoldButton>
             </div>
             <div className={`${isSmall ? 'order-first' : ''} relative`}>
-              <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=900&q=80" alt="About" className="w-full h-[500px] object-cover" style={{ border: `1px solid rgba(201,168,76,0.2)` }} />
+              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=900&q=80" alt="About" className="w-full h-[500px] object-cover" style={{ border: `1px solid rgba(201,168,76,0.2)` }} />
               <div className="absolute -bottom-6 -left-6 p-6 hidden md:block" style={{ backgroundColor: GOLD }}>
                 <div className="text-3xl font-light mb-1" style={{ color: DARK, fontFamily: FONT_HEADING }}>18+</div>
                 <div className="text-xs uppercase tracking-widest" style={{ color: DARK, fontFamily: FONT_BODY }}>Năm kinh nghiệm</div>
@@ -898,7 +762,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
           {/* Floor tabs */}
           <div className="flex gap-1 mb-10 overflow-x-auto">
-            {floorPlansContent.items.map((fp: any, i: number) => (
+            {FLOOR_PLANS.map((fp, i) => (
               <button key={fp.id} onClick={() => setActiveFloor(i)}
                 className="px-5 py-3 text-xs uppercase tracking-widest whitespace-nowrap transition-all"
                 style={{
@@ -913,17 +777,17 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           </div>
 
           {/* Active floor */}
-          {floorPlansContent.items[activeFloor] && (
+          {FLOOR_PLANS[activeFloor] && (
             <div className={`grid ${isSmall ? 'grid-cols-1' : 'grid-cols-2'} gap-12 items-center`}>
-              <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={floorPlansContent.items[activeFloor].img} alt={floorPlansContent.items[activeFloor].label} className="w-full h-[400px] object-cover" style={{ border: `1px solid rgba(201,168,76,0.2)` }} />
+              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={FLOOR_PLANS[activeFloor].img} alt={FLOOR_PLANS[activeFloor].label} className="w-full h-[400px] object-cover" style={{ border: `1px solid rgba(201,168,76,0.2)` }} />
               <div>
-                <div className="text-xs uppercase tracking-widest mb-3" style={{ color: GOLD, fontFamily: FONT_BODY }}>{floorPlansContent.items[activeFloor].label}</div>
-                <h3 className="text-3xl font-light text-white mb-4" style={{ fontFamily: FONT_HEADING }}>{floorPlansContent.items[activeFloor].desc}</h3>
+                <div className="text-xs uppercase tracking-widest mb-3" style={{ color: GOLD, fontFamily: FONT_BODY }}>{FLOOR_PLANS[activeFloor].label}</div>
+                <h3 className="text-3xl font-light text-white mb-4" style={{ fontFamily: FONT_HEADING }}>{FLOOR_PLANS[activeFloor].desc}</h3>
                 <div className="grid grid-cols-3 gap-6 mb-8 py-6" style={{ borderTop: `1px solid rgba(201,168,76,0.1)`, borderBottom: `1px solid rgba(201,168,76,0.1)` }}>
                   {[
-                    { label: 'Phòng ngủ', value: floorPlansContent.items[activeFloor].bedrooms },
-                    { label: 'Phòng tắm', value: floorPlansContent.items[activeFloor].bathrooms },
-                    { label: 'Mức giá', value: floorPlansContent.items[activeFloor].price },
+                    { label: 'Phòng ngủ', value: FLOOR_PLANS[activeFloor].bedrooms },
+                    { label: 'Phòng tắm', value: FLOOR_PLANS[activeFloor].bathrooms },
+                    { label: 'Mức giá', value: FLOOR_PLANS[activeFloor].price },
                   ].map(d => (
                     <div key={d.label} className="text-center">
                       <div className="text-xl font-light mb-1" style={{ color: GOLD, fontFamily: FONT_HEADING }}>{d.value}</div>
@@ -945,17 +809,17 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       <section className="py-24 md:py-32" style={{ backgroundColor: DARK3 }}>
         <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
           <div className="text-center mb-16">
-            <SectionLabel>{amenitiesContent.sectionLabel}</SectionLabel>
-            <h2 className="text-3xl md:text-5xl font-light text-white heading-safe" style={{ fontFamily: FONT_HEADING }}>
-              {amenitiesContent.heading.split(amenitiesContent.headingAccent)[0]}<span className="italic" style={{ color: GOLD }}>{amenitiesContent.headingAccent}</span>{amenitiesContent.heading.split(amenitiesContent.headingAccent).slice(1).join(amenitiesContent.headingAccent)}
+            <SectionLabel>Đặc quyền & tiện ích</SectionLabel>
+            <h2 className="text-3xl md:text-5xl font-light text-white" style={{ fontFamily: FONT_HEADING }}>
+              Chuẩn Mực <span className="italic" style={{ color: GOLD }}>6 Sao</span> Quốc Tế
             </h2>
           </div>
           <div className={`grid ${isSmall ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-3'} gap-8`}>
-            {amenitiesContent.items.map((a: any, i: number) => (
+            {AMENITIES.map((a, i) => (
               <div key={i} className="p-8 group hover:border-opacity-50 transition-all" style={{ border: `1px solid rgba(201,168,76,0.15)`, backgroundColor: 'rgba(255,255,255,0.02)' }}>
-                <div className="text-4xl mb-5 text-safe">{a.icon}</div>
-                <h3 className="text-base font-semibold text-white mb-3 text-safe" style={{ fontFamily: FONT_BODY }}>{a.title}</h3>
-                <p className="text-sm font-light leading-relaxed text-safe" style={{ color: MUTED, fontFamily: FONT_BODY }}>{a.desc}</p>
+                <div className="text-4xl mb-5">{a.icon}</div>
+                <h3 className="text-base font-semibold text-white mb-3" style={{ fontFamily: FONT_BODY }}>{a.title}</h3>
+                <p className="text-sm font-light leading-relaxed" style={{ color: MUTED, fontFamily: FONT_BODY }}>{a.desc}</p>
               </div>
             ))}
           </div>
@@ -995,23 +859,23 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       <section className="py-24 md:py-32" style={{ backgroundColor: DARK2 }}>
         <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
           <div className="text-center mb-16">
-            <SectionLabel>{testimonialsContent.sectionLabel}</SectionLabel>
-            <h2 className="text-3xl md:text-5xl font-light text-white heading-safe" style={{ fontFamily: FONT_HEADING }}>
-              {testimonialsContent.heading.split(testimonialsContent.headingAccent)[0]}<span className="italic" style={{ color: GOLD }}>{testimonialsContent.headingAccent}</span>{testimonialsContent.heading.split(testimonialsContent.headingAccent).slice(1).join(testimonialsContent.headingAccent)}
+            <SectionLabel>Chủ nhân nói gì</SectionLabel>
+            <h2 className="text-3xl md:text-5xl font-light text-white" style={{ fontFamily: FONT_HEADING }}>
+              Tiếng Nói Từ <span className="italic" style={{ color: GOLD }}>Giới Tinh Hoa</span>
             </h2>
           </div>
           <div className={`grid ${isSmall ? 'grid-cols-1' : 'grid-cols-3'} gap-8`}>
-            {testimonialsContent.items.map((t: any, i: number) => (
+            {TESTIMONIALS.map((t, i) => (
               <div key={i} className="p-8 relative" style={{ border: `1px solid rgba(201,168,76,0.2)`, backgroundColor: 'rgba(255,255,255,0.02)' }}>
                 <div className="flex gap-1 mb-6">
-                  {Array.from({ length: t.rating || 5 }).map((_, j) => <Star key={j} className="w-4 h-4 fill-current" style={{ color: GOLD }} />)}
+                  {Array.from({ length: t.rating }).map((_, j) => <Star key={j} className="w-4 h-4 fill-current" style={{ color: GOLD }} />)}
                 </div>
-                <p className="text-base font-light leading-relaxed mb-8 italic text-safe" style={{ color: '#D0D0E0', fontFamily: FONT_HEADING }}>&ldquo;{t.text}&rdquo;</p>
+                <p className="text-base font-light leading-relaxed mb-8 italic" style={{ color: '#D0D0E0', fontFamily: FONT_HEADING }}>"{t.text}"</p>
                 <div className="flex items-center gap-4">
-                  <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={t.img || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80"} alt={t.name} className="w-12 h-12 rounded-full object-cover" style={{ border: `2px solid ${GOLD}` }} />
+                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={t.img} alt={t.name} className="w-12 h-12 rounded-full object-cover" style={{ border: `2px solid ${GOLD}` }} />
                   <div>
-                    <div className="text-sm font-semibold text-white text-safe" style={{ fontFamily: FONT_BODY }}>{t.name}</div>
-                    <div className="text-xs text-safe" style={{ color: MUTED, fontFamily: FONT_BODY }}>{t.title}</div>
+                    <div className="text-sm font-semibold text-white" style={{ fontFamily: FONT_BODY }}>{t.name}</div>
+                    <div className="text-xs" style={{ color: MUTED, fontFamily: FONT_BODY }}>{t.title}</div>
                   </div>
                 </div>
               </div>
@@ -1024,20 +888,20 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       <section className="py-24 md:py-32" style={{ backgroundColor: DARK }}>
         <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
           <div className="text-center mb-16">
-            <SectionLabel>{timelineContent.sectionLabel}</SectionLabel>
-            <h2 className="text-3xl md:text-5xl font-light text-white heading-safe" style={{ fontFamily: FONT_HEADING }}>
-              {timelineContent.heading.split(timelineContent.headingAccent)[0]}<span className="italic" style={{ color: GOLD }}>{timelineContent.headingAccent}</span>{timelineContent.heading.split(timelineContent.headingAccent).slice(1).join(timelineContent.headingAccent)}
+            <SectionLabel>Hành trình phát triển</SectionLabel>
+            <h2 className="text-3xl md:text-5xl font-light text-white" style={{ fontFamily: FONT_HEADING }}>
+              18 Năm <span className="italic" style={{ color: GOLD }}>Kiến Tạo Di Sản</span>
             </h2>
           </div>
           <div className="relative">
             <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px hidden md:block" style={{ backgroundColor: 'rgba(201,168,76,0.2)' }} />
             <div className="space-y-12">
-              {timelineContent.items.map((item: any, i: number) => (
+              {TIMELINE.map((item, i) => (
                 <div key={i} className={`flex ${isSmall ? 'flex-col' : i % 2 === 0 ? 'flex-row' : 'flex-row-reverse'} gap-8 items-center`}>
                   <div className={`${isSmall ? 'w-full' : 'w-1/2'} ${!isSmall && i % 2 === 0 ? 'text-right' : 'text-left'}`}>
-                    <div className="text-4xl font-light mb-2 text-safe" style={{ color: GOLD, fontFamily: FONT_HEADING }}>{item.year}</div>
-                    <h3 className="text-xl font-light text-white mb-2 text-safe" style={{ fontFamily: FONT_HEADING }}>{item.title}</h3>
-                    <p className="text-sm font-light leading-relaxed text-safe" style={{ color: MUTED, fontFamily: FONT_BODY }}>{item.desc}</p>
+                    <div className="text-4xl font-light mb-2" style={{ color: GOLD, fontFamily: FONT_HEADING }}>{item.year}</div>
+                    <h3 className="text-xl font-light text-white mb-2" style={{ fontFamily: FONT_HEADING }}>{item.title}</h3>
+                    <p className="text-sm font-light leading-relaxed" style={{ color: MUTED, fontFamily: FONT_BODY }}>{item.desc}</p>
                   </div>
                   {!isSmall && (
                     <div className="w-4 h-4 rounded-full flex-shrink-0 border-2" style={{ backgroundColor: GOLD, borderColor: DARK, zIndex: 1 }} />
@@ -1066,7 +930,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             {NEWS.slice(0, 3).map((n) => (
               <article key={n.id} onClick={() => setSelectedArticle(n)} className="group cursor-pointer">
                 <div className="overflow-hidden mb-5" style={{ border: `1px solid rgba(201,168,76,0.1)` }}>
-                  <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={n.img} alt={n.title} className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={n.img} alt={n.title} className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
                 <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: GOLD, fontFamily: FONT_BODY }}>{n.category} · {n.date}</div>
                 <h3 className="text-base font-light text-white leading-snug mb-3 group-hover:text-[#E8C97E] transition-colors" style={{ fontFamily: FONT_HEADING }}>{n.title}</h3>
@@ -1081,13 +945,13 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       <section className="py-24 md:py-32" style={{ backgroundColor: DARK2 }}>
         <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
           <div className="text-center mb-16">
-            <SectionLabel>{faqContent.sectionLabel}</SectionLabel>
-            <h2 className="text-3xl md:text-5xl font-light text-white heading-safe" style={{ fontFamily: FONT_HEADING }}>
-              {faqContent.heading.split(faqContent.headingAccent)[0]}<span className="italic" style={{ color: GOLD }}>{faqContent.headingAccent}</span>{faqContent.heading.split(faqContent.headingAccent).slice(1).join(faqContent.headingAccent)}
+            <SectionLabel>Giải đáp thắc mắc</SectionLabel>
+            <h2 className="text-3xl md:text-5xl font-light text-white" style={{ fontFamily: FONT_HEADING }}>
+              Câu Hỏi <span className="italic" style={{ color: GOLD }}>Thường Gặp</span>
             </h2>
           </div>
           <div className="max-w-3xl mx-auto space-y-4">
-            {faqContent.items.map((item: any, i: number) => (
+            {FAQ.map((item, i) => (
               <div key={i} className="overflow-hidden" style={{ border: `1px solid rgba(201,168,76,0.15)` }}>
                 <button
                   className="w-full flex items-center justify-between p-6 text-left"
@@ -1114,8 +978,8 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             <div className="text-xs uppercase tracking-widest" style={{ color: MUTED, fontFamily: FONT_BODY }}>Đối tác chiến lược</div>
           </div>
           <div className="flex flex-wrap justify-center items-center gap-12 opacity-50">
-            {partnersContent.items.map((p: any) => (
-              <div key={typeof p === 'string' ? p : p.name} className="text-lg font-light tracking-widest uppercase text-safe" style={{ color: WHITE, fontFamily: FONT_BODY }}>{typeof p === 'string' ? p : p.name}</div>
+            {['VINHOMES', 'MASTERISE', 'SUN GROUP', 'CAPITALAND', 'KNIGHT FRANK'].map(p => (
+              <div key={p} className="text-lg font-light tracking-widest uppercase" style={{ color: WHITE, fontFamily: FONT_BODY }}>{p}</div>
             ))}
           </div>
         </div>
@@ -1124,21 +988,16 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       {/* ── CONTACT CTA ── */}
       <section className="py-28 md:py-36 text-center relative overflow-hidden" style={{ backgroundColor: DARK2 }}>
         <div className="absolute inset-0 opacity-10">
-          <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1920&q=80" alt="" className="w-full h-full object-cover" />
+          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1920&q=80" alt="" className="w-full h-full object-cover" />
         </div>
         <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, ${DARK2}, rgba(18,18,26,0.95))` }} />
         <div className="relative z-10 max-w-2xl mx-auto px-4">
           <Crown className="w-10 h-10 mx-auto mb-8" style={{ color: GOLD, opacity: 0.6 }} />
-          <h2 className="text-3xl md:text-5xl font-light text-white mb-6 leading-tight heading-safe" style={{ fontFamily: FONT_HEADING }}>
-            {ctaContent.heading.split('\n').map((line: string, i: number) => (
-              <React.Fragment key={i}>
-                {line.includes(ctaContent.headingAccent) ? <>{line.split(ctaContent.headingAccent)[0]}<span className="italic" style={{ color: GOLD }}>{ctaContent.headingAccent}</span>{line.split(ctaContent.headingAccent).slice(1).join(ctaContent.headingAccent)}</> : line}
-                {i < ctaContent.heading.split('\n').length - 1 && <br />}
-              </React.Fragment>
-            ))}
+          <h2 className="text-3xl md:text-5xl font-light text-white mb-6 leading-tight" style={{ fontFamily: FONT_HEADING }}>
+            Bắt Đầu Hành Trình<br /><span className="italic" style={{ color: GOLD }}>Sống Đỉnh Cao</span> Của Bạn
           </h2>
-          <p className="text-base font-light mb-10 leading-loose text-safe" style={{ color: MUTED, fontFamily: FONT_BODY }}>
-            {ctaContent.description}
+          <p className="text-base font-light mb-10 leading-loose" style={{ color: MUTED, fontFamily: FONT_BODY }}>
+            Quản gia cá nhân của chúng tôi sẽ thiết kế riêng một buổi thưởng lãm dành cho quý vị. Tuyệt đối bảo mật.
           </p>
           {homeContactSubmitted ? (
             <div className="p-8 border max-w-lg mx-auto text-center" style={{ borderColor: GOLD, backgroundColor: 'rgba(255,255,255,0.01)' }}>
@@ -1148,29 +1007,37 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             </div>
           ) : (
             <form 
-              onSubmit={(e) => {
-                e.preventDefault();
+              onSubmit={async (e) => { 
+                e.preventDefault(); 
                 const form = e.currentTarget;
-                const nameInput = form.querySelector('input[type="text"]') as HTMLInputElement;
-                const phoneInput = form.querySelector('input[type="tel"]') as HTMLInputElement;
-                if (typeof (globalThis as any).submitContactForm === 'function') {
-                  (globalThis as any).submitContactForm({
-                    fullName: nameInput?.value || 'Khách hàng quan tâm VIP',
-                    phone: phoneInput?.value || '',
-                    email: '',
-                    message: 'Khách đăng ký tư vấn VIP từ trang chủ.',
-                    source: 'luxury_gold_home_form'
-                  }).then(() => setHomeContactSubmitted(true))
-                    .catch((err: any) => alert(err.message));
-                } else {
-                  setHomeContactSubmitted(true);
+                const name = (form.elements[0] as HTMLInputElement).value;
+                const phone = (form.elements[1] as HTMLInputElement).value;
+                const phoneClean = phone.replace(/\s/g, '');
+                if (!/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
+                  alert('Số điện thoại phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.');
+                  return;
                 }
-              }}
+                try {
+                  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
+                  await fetch(`${API_URL}/api/marketplace/contact`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      fullName: name.trim() || 'Khách VIP',
+                      phone: phoneClean,
+                      selectedTemplate: 'luxury-gold',
+                      packageInterest: 'Yêu cầu tư vấn VIP Luxury Gold',
+                      message: 'Đăng ký nhận tư vấn VIP từ trang chủ Luxury Gold',
+                    }),
+                  });
+                } catch (err) {}
+                setHomeContactSubmitted(true); 
+              }} 
               className="max-w-lg mx-auto space-y-5 mb-8"
             >
               <input required type="text" placeholder="Danh xưng & Họ Tên" className="w-full bg-transparent border-b py-4 px-2 text-white text-sm placeholder-zinc-600 focus:outline-none transition-colors" style={{ borderColor: 'rgba(201,168,76,0.3)', fontFamily: FONT_BODY }} />
               <input required type="tel" placeholder="Số điện thoại" className="w-full bg-transparent border-b py-4 px-2 text-white text-sm placeholder-zinc-600 focus:outline-none transition-colors" style={{ borderColor: 'rgba(201,168,76,0.3)', fontFamily: FONT_BODY }} />
-              <GoldButton className="w-full justify-center py-5 text-sm" style={{ color: DARK }}>{ctaContent.ctaText}</GoldButton>
+              <GoldButton className="w-full justify-center py-5 text-sm" style={{ color: DARK }}>Yêu Cầu Tư Vấn VIP</GoldButton>
             </form>
           )}
           <p className="text-xs mt-4 animate-fade-in" style={{ color: MUTED, fontFamily: FONT_BODY }}>Cam kết bảo mật thông tin · Phản hồi trong vòng 2 giờ</p>
@@ -1191,26 +1058,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 <span className="text-sm text-zinc-300" style={{ fontFamily: FONT_BODY }}>Cảm ơn bạn đã đăng ký nhận bản tin Lumière!</span>
               </div>
             ) : (
-              <form 
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const form = e.currentTarget;
-                  const emailInput = form.querySelector('input[type="email"]') as HTMLInputElement;
-                  if (typeof (globalThis as any).submitContactForm === 'function') {
-                    (globalThis as any).submitContactForm({
-                      fullName: 'Đăng ký bản tin',
-                      phone: '0000000000',
-                      email: emailInput?.value || '',
-                      message: 'Đăng ký nhận bản tin Lumière độc quyền.',
-                      source: 'luxury_gold_newsletter'
-                    }).then(() => setNewsletterSubmitted(true))
-                      .catch((err: any) => alert(err.message));
-                  } else {
-                    setNewsletterSubmitted(true);
-                  }
-                }}
-                className="flex gap-2 w-full max-w-md"
-              >
+              <form onSubmit={(e) => { e.preventDefault(); setNewsletterSubmitted(true); }} className="flex gap-2 w-full max-w-md">
                 <input required type="email" placeholder="Email của bạn" className="flex-1 bg-transparent border-b py-3 px-2 text-white text-sm placeholder-zinc-600 focus:outline-none" style={{ borderColor: 'rgba(201,168,76,0.3)', fontFamily: FONT_BODY }} />
                 <button type="submit" className="px-6 py-3 text-xs uppercase tracking-widest font-medium" style={{ backgroundColor: GOLD, color: DARK, fontFamily: FONT_BODY }}>
                   Đăng ký
@@ -1377,7 +1225,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                   style={{ border: `1px solid rgba(201,168,76,0.12)`, backgroundColor: 'rgba(255,255,255,0.01)' }}
                 >
                   <div className="overflow-hidden aspect-[4/3] relative">
-                    <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={p.img} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={p.img} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,10,15,0.9) 0%, rgba(10,10,15,0) 50%)' }} />
                     <span className="absolute top-3 right-3 px-3 py-1 text-[10px] uppercase tracking-widest text-black" style={{ backgroundColor: GOLD, fontFamily: FONT_BODY }}>{p.tag}</span>
                   </div>
@@ -1469,7 +1317,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 return (
                   <div key={item.year} className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div className="overflow-hidden aspect-video md:aspect-square border border-zinc-800">
-                      <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={item.img} alt={item.title} className="w-full h-full object-cover animate-fade-in" />
+                      <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.img} alt={item.title} className="w-full h-full object-cover animate-fade-in" />
                     </div>
                     <div>
                       <span className="text-xs uppercase tracking-widest animate-fade-in" style={{ color: GOLD, fontFamily: FONT_BODY }}>Năm {item.year}</span>
@@ -1506,7 +1354,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             ].map((l, i) => (
               <div key={i} className="text-center group p-6 border border-zinc-900 bg-zinc-950/20">
                 <div className="relative inline-block mb-6 overflow-hidden rounded-full">
-                  <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={l.img} alt={l.name} className="w-32 h-32 rounded-full object-cover mx-auto group-hover:scale-105 transition-transform duration-500" style={{ border: `2px solid ${GOLD}` }} />
+                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={l.img} alt={l.name} className="w-32 h-32 rounded-full object-cover mx-auto group-hover:scale-105 transition-transform duration-500" style={{ border: `2px solid ${GOLD}` }} />
                 </div>
                 <h3 className="text-lg font-light text-white mb-1" style={{ fontFamily: FONT_HEADING }}>{l.name}</h3>
                 <div className="text-xs uppercase tracking-widest mb-4 font-semibold" style={{ color: GOLD, fontFamily: FONT_BODY }}>{l.title}</div>
@@ -1522,12 +1370,9 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
   // ─ GALLERY PAGE ─────────────────────────────────────────────────────────────
   const renderGallery = () => {
     const categories = ['Tất cả', 'Ngoại thất', 'Nội thất', 'Tiện ích', 'Phối cảnh'];
-    const dynamicGallery = (galleryContent.items && galleryContent.items.length > 0) ? galleryContent.items : GALLERY_ITEMS;
     const filteredGallery = selectedGalleryTab === 'Tất cả'
-      ? dynamicGallery
-      : dynamicGallery.filter((img: any) => img.category === selectedGalleryTab);
-
-
+      ? GALLERY_ITEMS
+      : GALLERY_ITEMS.filter(img => img.category === selectedGalleryTab);
 
     return (
       <main className="pt-24 min-h-screen" style={{ backgroundColor: DARK }}>
@@ -1565,7 +1410,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 className="group overflow-hidden aspect-[4/3] cursor-pointer relative"
                 style={{ border: `1px solid rgba(201,168,76,0.1)` }}
               >
-                <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}                   src={img.url}
+                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }}                   src={img.url}
                   alt={img.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 group-hover:opacity-90"
                 />
@@ -1617,41 +1462,44 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
               </div>
             ) : (
               <form
-                onSubmit={(e) => {
+                onSubmit={async (e) => {
                   e.preventDefault();
                   const form = e.currentTarget;
-                  const inputs = form.querySelectorAll('input');
-                  const textarea = form.querySelector('textarea');
-                  const nameVal = inputs[0]?.value || '';
-                  const phoneVal = inputs[1]?.value || '';
-                  const emailVal = inputs[2]?.value || '';
-                  const interestVal = inputs[3]?.value || '';
-                  const msgVal = textarea?.value || '';
+                  const name = (form.elements[0] as HTMLInputElement).value;
+                  const phone = (form.elements[1] as HTMLInputElement).value;
+                  const email = (form.elements[2] as HTMLInputElement).value;
+                  const propType = (form.elements[3] as HTMLInputElement).value;
+                  const message = (form.elements[4] as HTMLTextAreaElement).value;
                   
-                  const messageBody = interestVal 
-                    ? `[Quan tâm: ${interestVal}] ${msgVal}`
-                    : msgVal;
-
-                  if (typeof (globalThis as any).submitContactForm === 'function') {
-                    (globalThis as any).submitContactForm({
-                      fullName: nameVal || 'Khách hàng quan tâm',
-                      phone: phoneVal || '',
-                      email: emailVal,
-                      message: messageBody || 'Yêu cầu tư vấn chi tiết.',
-                      source: 'luxury_gold_footer_form'
-                    }).then(() => setContactSubmitted(true))
-                      .catch((err: any) => alert(err.message));
-                  } else {
-                    setContactSubmitted(true);
+                  const phoneClean = phone.replace(/\s/g, '');
+                  if (!/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
+                    alert('Số điện thoại phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.');
+                    return;
                   }
+                  try {
+                    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
+                    await fetch(`${API_URL}/api/marketplace/contact`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        fullName: name.trim() || 'Khách VIP',
+                        phone: phoneClean,
+                        email: email.trim(),
+                        selectedTemplate: 'luxury-gold',
+                        packageInterest: propType ? `Quan tâm: ${propType}` : 'Tư vấn Luxury Gold',
+                        message: message?.trim() || 'Khách gửi từ trang liên hệ Luxury Gold',
+                      }),
+                    });
+                  } catch (err) {}
+                  setContactSubmitted(true);
                 }}
                 className="space-y-6"
               >
-                <input required type="text" placeholder="Danh xưng & Họ Tên" className="w-full bg-transparent border-b py-4 text-white text-sm placeholder-zinc-600 focus:outline-none"
+                <input required type="text" placeholder="Danh xưng & Họ Tên *" className="w-full bg-transparent border-b py-4 text-white text-sm placeholder-zinc-600 focus:outline-none"
                   style={{ borderColor: 'rgba(201,168,76,0.25)', fontFamily: FONT_BODY }} />
-                <input required type="tel" placeholder="Số điện thoại" className="w-full bg-transparent border-b py-4 text-white text-sm placeholder-zinc-600 focus:outline-none"
+                <input required type="tel" placeholder="Số điện thoại *" className="w-full bg-transparent border-b py-4 text-white text-sm placeholder-zinc-600 focus:outline-none"
                   style={{ borderColor: 'rgba(201,168,76,0.25)', fontFamily: FONT_BODY }} />
-                <input required type="email" placeholder="Email" className="w-full bg-transparent border-b py-4 text-white text-sm placeholder-zinc-600 focus:outline-none"
+                <input required type="email" placeholder="Email *" className="w-full bg-transparent border-b py-4 text-white text-sm placeholder-zinc-600 focus:outline-none"
                   style={{ borderColor: 'rgba(201,168,76,0.25)', fontFamily: FONT_BODY }} />
                 <input type="text" placeholder="Loại bất động sản quan tâm (vd: Penthouse)" className="w-full bg-transparent border-b py-4 text-white text-sm placeholder-zinc-600 focus:outline-none"
                   style={{ borderColor: 'rgba(201,168,76,0.25)', fontFamily: FONT_BODY }} />
@@ -1680,11 +1528,27 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 </div>
               ))}
             </div>
-            <div className="mt-10 aspect-video overflow-hidden" style={{ border: `1px solid rgba(201,168,76,0.15)` }}>
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4355!2d106.700980!3d10.776889!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDQ2JzM2LjgiTiAxMDbCsDQyJzAzLjUiRQ!5e0!3m2!1sen!2s!4v1!5m2!1sen!2s"
-                width="100%" height="100%" style={{ border: 0 }} loading="lazy"
-              />
+            <div className="mt-8 overflow-hidden rounded flex flex-col" style={{ border: `1px solid rgba(201,168,76,0.25)` }}>
+              <div className="px-4 py-2 bg-[#0d0f14] text-white flex items-center justify-between text-xs" style={{ borderBottom: `1px solid rgba(201,168,76,0.2)` }}>
+                <span className="font-light tracking-wide text-[#E8C76A] truncate">1 Lê Duẩn, Quận 1, TP. Hồ Chí Minh</span>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=1+L%C3%AA+Du%E1%BA%A9n,+B%E1%BA%BFn+Ngh%C3%A9,+Qu%E1%BA%ADn+1,+TP.HCM"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1 text-[10px] uppercase tracking-wider font-semibold text-[#0B0D11] shrink-0"
+                  style={{ backgroundColor: GOLD }}
+                >
+                  Mở Google Maps
+                </a>
+              </div>
+              <div className="h-56 w-full">
+                <iframe
+                  title="Bản đồ 1 Lê Duẩn"
+                  src="https://maps.google.com/maps?q=1+L%C3%AA+Du%E1%BA%A9n,+Qu%E1%BA%ADn+1,+TP.HCM&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                  width="100%" height="100%" style={{ border: 0 }} loading="lazy"
+                  allowFullScreen
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -1752,7 +1616,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 >
                   <div>
                     <div className="overflow-hidden aspect-video">
-                      <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}                         src={n.img}
+                      <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }}                         src={n.img}
                         alt={n.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
@@ -1793,26 +1657,16 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
               <span className="text-xl tracking-[0.2em] uppercase font-light text-white" style={{ fontFamily: FONT_HEADING }}>{projectName}</span>
             </div>
             <p className="text-sm font-light leading-relaxed mb-6 text-zinc-400" style={{ fontFamily: FONT_BODY }}>
-              {company?.description || company?.slogan || '18 năm kiến tạo những không gian sống đỉnh cao, nơi nghệ thuật gặp gỡ sự hoàn mỹ.'}
+              18 năm kiến tạo những không gian sống đỉnh cao, nơi nghệ thuật gặp gỡ sự hoàn mỹ.
             </p>
             <div className="flex gap-4">
-              {company?.facebook && (
-                <a href={company.facebook} target="_blank" rel="noreferrer" className="w-9 h-9 flex items-center justify-center transition-all border border-zinc-800 hover:border-[#C9A84C]" style={{ backgroundColor: 'transparent' }}>
-                  <Facebook className="w-4 h-4" style={{ color: MUTED }} />
-                </a>
-              )}
-              {company?.youtube && (
-                <a href={company.youtube} target="_blank" rel="noreferrer" className="w-9 h-9 flex items-center justify-center transition-all border border-zinc-800 hover:border-[#C9A84C]" style={{ backgroundColor: 'transparent' }}>
-                  <Youtube className="w-4 h-4" style={{ color: MUTED }} />
-                </a>
-              )}
-              {company?.zalo && (
-                <a href={`https://zalo.me/${company.zalo}`} target="_blank" rel="noreferrer" className="px-2 h-9 flex items-center justify-center text-xs font-bold transition-all border border-zinc-800 hover:border-[#C9A84C]" style={{ color: MUTED, backgroundColor: 'transparent' }}>
-                  Zalo
-                </a>
-              )}
-              {!company?.facebook && !company?.youtube && !company?.zalo && [Facebook, Youtube, Instagram].map((Icon, i) => (
-                <button key={i} className="w-9 h-9 flex items-center justify-center transition-all border border-zinc-800 hover:border-[#C9A84C]" style={{ backgroundColor: 'transparent' }}>
+              {[Facebook, Youtube, Instagram].map((Icon, i) => (
+                <button 
+                  key={i} 
+                  onClick={() => alert('Mở liên kết mạng xã hội')}
+                  className="w-9 h-9 flex items-center justify-center transition-all border border-zinc-800 hover:border-[#C9A84C] cursor-pointer" 
+                  style={{ backgroundColor: 'transparent' }}
+                >
                   <Icon className="w-4 h-4" style={{ color: MUTED }} />
                 </button>
               ))}
@@ -1871,9 +1725,9 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           <div>
             <div className="text-xs uppercase tracking-widest mb-6" style={{ color: GOLD, fontFamily: FONT_BODY }}>Liên Hệ</div>
             <div className="space-y-4 text-sm font-light" style={{ color: MUTED, fontFamily: FONT_BODY }}>
-              <div className="flex items-start gap-3"><Phone className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: GOLD }} /><span>{company?.phone || company?.hotline || '+84 28 3333 8888'}</span></div>
-              <div className="flex items-start gap-3"><Mail className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: GOLD }} /><span>{company?.email || 'concierge@lumiere.vn'}</span></div>
-              <div className="flex items-start gap-3"><MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: GOLD }} /><span>{company?.address || '1 Lê Duẩn, Quận 1, TP.HCM'}</span></div>
+              <div className="flex items-start gap-3"><Phone className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: GOLD }} /><span>+84 28 3333 8888</span></div>
+              <div className="flex items-start gap-3"><Mail className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: GOLD }} /><span>concierge@lumiere.vn</span></div>
+              <div className="flex items-start gap-3"><MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: GOLD }} /><span>1 Lê Duẩn, Quận 1, TP.HCM</span></div>
             </div>
           </div>
         </div>
@@ -1884,9 +1738,9 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             © 2026 {projectName} Group. All rights reserved.
           </p>
           <div className="flex gap-6 text-xs" style={{ color: 'rgba(154,154,168,0.5)', fontFamily: FONT_BODY }}>
-            <a href="#" className="hover:text-white transition-colors">Điều khoản sử dụng</a>
-            <a href="#" className="hover:text-white transition-colors">Chính sách bảo mật</a>
-            <a href="#" className="hover:text-white transition-colors">Cookie</a>
+            <button onClick={() => { setCurrentPage('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition-colors cursor-pointer">Điều khoản sử dụng</button>
+            <button onClick={() => { setCurrentPage('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition-colors cursor-pointer">Chính sách bảo mật</button>
+            <button onClick={() => { setCurrentPage('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition-colors cursor-pointer">Cookie</button>
           </div>
         </div>
       </div>
@@ -1899,12 +1753,13 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       {renderNav()}
       {renderFloatingCTA()}
 
-      {currentPage === 'home' && renderHome()}
-      {currentPage === 'projects' && renderProjects()}
-      {currentPage === 'about' && renderAbout()}
-      {currentPage === 'gallery' && renderGallery()}
-      {currentPage === 'contact' && renderContact()}
-      {currentPage === 'news' && renderNews()}
+      {['home'].includes(currentPage) && renderHome()}
+      {['projects', 'du-an', 'san-pham'].includes(currentPage) && renderProjects()}
+      {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAbout()}
+      {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGallery()}
+      {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContact()}
+      {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNews()}
+      {!['home', 'projects', 'du-an', 'san-pham', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'contact', 'lien-he', 'tu-van', 'news', 'tin-tuc', 'bai-viet', 'floorplans', 'amenities'].includes(currentPage) && renderHome()}
       {currentPage === 'floorplans' && (
         <main className="pt-24 min-h-screen" style={{ backgroundColor: DARK }}>
           <div className="py-20" style={{ backgroundColor: DARK2 }}>
@@ -1919,7 +1774,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             {FLOOR_PLANS.map((fp, idx) => (
               <div key={fp.id} className={`flex flex-col ${!isSmall && idx % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row'} gap-16 items-center`}>
                 <div className="w-full md:w-1/2">
-                  <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={fp.img} alt={fp.label} className="w-full h-[400px] object-cover" style={{ border: `1px solid rgba(201,168,76,0.15)` }} />
+                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={fp.img} alt={fp.label} className="w-full h-[400px] object-cover" style={{ border: `1px solid rgba(201,168,76,0.15)` }} />
                 </div>
                 <div className="w-full md:w-1/2">
                   <div className="text-xs uppercase tracking-widest mb-3" style={{ color: GOLD, fontFamily: FONT_BODY }}>{fp.label}</div>
@@ -1990,7 +1845,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
             {/* Left Side: Image */}
             <div className="w-full md:w-1/2 relative min-h-[300px] md:min-h-full">
-              <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}                 src={selectedProject.img}
+              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }}                 src={selectedProject.img}
                 alt={selectedProject.name}
                 className="absolute inset-0 w-full h-full object-cover"
               />
@@ -2076,7 +1931,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             {/* Modal Content Scrollable container */}
             <div className="overflow-y-auto p-6 md:p-8">
               <div className="aspect-video w-full overflow-hidden mb-6 border border-zinc-800">
-                <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }} src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
+                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
               </div>
               
               <div className="text-xs uppercase tracking-widest mb-2" style={{ color: GOLD, fontFamily: FONT_BODY }}>
@@ -2106,7 +1961,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
             <X className="w-5 h-5" />
           </button>
           <div className="relative max-w-5xl max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
-            <img onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=85"; }}               src={selectedGalleryImg}
+            <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }}               src={selectedGalleryImg}
               alt="Gallery Extended"
               className="max-w-full max-h-[85vh] object-contain border border-[#C9A84C]"
             />
@@ -2115,10 +1970,5 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
       )}
     </div>
   );
-}
-
-// @ts-ignore
-if (typeof globalThis !== 'undefined') {
-  (globalThis as any).__news_ref = NEWS;
 }
 

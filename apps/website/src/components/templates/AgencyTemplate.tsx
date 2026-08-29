@@ -39,13 +39,9 @@ import {
 import { MAX_W } from '../design-system';
 
 interface TemplateProps {
-  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, any> };
+  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
-  company?: any;
-  theme?: any;
-  projects?: any[];
-  posts?: any[];
 }
 
 const COLORS = {
@@ -411,77 +407,21 @@ const MOCK_GALLERY = [
   { id: 10, category: 'Interior', title: 'Phòng tắm cao cấp bàn giao Kohler', img: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&q=80' }
 ];
 
-export default function AgencyTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
-  const COLORS = {
-    bg: dynamicTheme?.backgroundColor || '#FDF2F8', 
-    primary: dynamicTheme?.primaryColor || '#BE185D', 
-    accent: dynamicTheme?.accentColor || '#F43F5E', 
-    text: dynamicTheme?.textColor || '#111827',
-    textMuted: dynamicTheme?.textMutedColor || '#4B5563',
-    white: '#FFFFFF',
-    lightGray: '#F3F4F6',
-    lightPink: '#FCE7F3'
-  };
-  // Dynamic Posts Override & Shadowing Variable via globalThis reference
-  const activePosts = posts && posts.length > 0
-    ? posts.map((p, index) => ({
-        id: p.id || String(index),
-        title: p.title,
-        category: p.category?.name || 'Bất Động Sản',
-        cat: p.category?.name || 'Bất Động Sản',
-        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : '12/07/2026',
-        author: p.author?.fullName || 'Chuyên viên BĐS',
-        excerpt: p.summary || p.description || 'Tóm tắt bài viết...',
-        summary: p.summary || p.description || 'Tóm tắt bài viết...',
-        description: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        content: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        readTime: '5 phút đọc'
-      }))
-    : ((globalThis as any).__mock_news_ref || []);
+const normalizeAgencyPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
 
-  // Shadowing variables
-  const MOCK_NEWS: any = activePosts;
-
-  // Dynamic Projects Override & Shadowing Variable via globalThis reference
-  const activeProjects = projects && projects.length > 0
-    ? projects.map((p, index) => ({
-        id: p.id || String(index),
-        name: p.title,
-        title: p.title,
-        location: p.address || 'Hệ thống',
-        price: p.price,
-        priceLabel: p.price,
-        area: p.area || '—',
-        type: p.type || 'Dự Án',
-        status: p.status || 'SELLING',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        tag: index === 0 ? 'EXCLUSIVE' : 'HOT',
-        desc: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        description: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        shortDescription: p.shortDescription || '',
-        specs: p.shortDescription || `${p.area} · ${p.type}`,
-        priceVal: parseFloat(p.price) || 0,
-        loc: p.address || 'Hệ thống',
-        size: parseFloat(p.area) || 0,
-        bedrooms: 3,
-        bathrooms: 2,
-        features: [p.type],
-        style: 'Modern',
-        delivery: '2026',
-        scale: '1 block'
-      }))
-    : ((globalThis as any).__mock_projects_ref || []);
-
-  // Shadowing variables
-  const MOCK_PROJECTS: any = activeProjects;
-
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+export default function AgencyTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
+  const [currentPage, setCurrentPageState] = useState(normalizeAgencyPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizeAgencyPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
@@ -490,7 +430,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
+      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
     }
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -597,19 +537,15 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
     >
       <div className={`${MAX_W} px-4 flex justify-between items-center`}>
         <div 
-          className="flex items-center gap-2 cursor-pointer text-left"
+          className="flex items-center gap-2 cursor-pointer"
           onClick={() => { setCurrentPage('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
         >
-          <div style={{ backgroundColor: COLORS.primary }} className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-xl shrink-0">
-            {(company?.name || 'A').charAt(0).toUpperCase()}
+          <div style={{ backgroundColor: COLORS.primary }} className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-xl">
+            T
           </div>
           <div>
-            <h1 style={{ color: COLORS.primary }} className="font-extrabold text-xl sm:text-2xl tracking-tight leading-none uppercase">
-              {company?.name || template?.name || 'TRUNG NGUYEN'}
-            </h1>
-            <p style={{ color: COLORS.accent }} className="text-xs font-bold uppercase tracking-widest mt-1">
-              {company?.slogan || 'Real Estate Expert'}
-            </p>
+            <h1 style={{ color: COLORS.primary }} className="font-extrabold text-xl sm:text-2xl tracking-tight leading-none">TRUNG NGUYEN</h1>
+            <p style={{ color: COLORS.accent }} className="text-xs font-bold uppercase tracking-widest mt-1">Real Estate Expert</p>
           </div>
         </div>
         
@@ -634,12 +570,12 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
         <div className="flex items-center gap-4">
           {!isSmall && (
             <a 
-              href={`tel:${company?.phone || '0983312219'}`} 
+              href="tel:0909123456" 
               style={{ backgroundColor: COLORS.accent }}
               className="hidden lg:flex items-center gap-2 text-white px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
             >
               <Phone className="w-5 h-5" />
-              {company?.phone || '0983 312 219'}
+              0909.123.456
             </a>
           )}
           {isSmall && (
@@ -975,9 +911,13 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
             </button>
             <div className="flex gap-2">
               {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
-                <a key={i} href="#" className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-gray-400 hover:text-[#BE185D] hover:shadow-md transition-all">
+                <button 
+                  key={i} 
+                  onClick={() => alert('Mở liên kết mạng xã hội')}
+                  className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-gray-400 hover:text-[#BE185D] hover:shadow-md transition-all cursor-pointer"
+                >
                   <Icon className="w-5 h-5" />
-                </a>
+                </button>
               ))}
             </div>
           </div>
@@ -1095,7 +1035,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                  <div className="flex text-yellow-400 mb-4">
                    {[1,2,3,4,5].map(s => <Star key={s} className="w-5 h-5 fill-current" />)}
                  </div>
-                 <p className="text-gray-600 mb-6 italic">&ldquo;{item.txt}&rdquo;</p>
+                 <p className="text-gray-600 mb-6 italic">"{item.txt}"</p>
                </div>
                <div className="flex items-center gap-4 border-t border-gray-50 pt-4">
                  <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center font-bold text-pink-700">
@@ -1314,10 +1254,10 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
         <div>
           <h4 className="text-white font-bold mb-6 text-lg">Hỗ Trợ</h4>
           <ul className="space-y-3 text-sm">
-            <li><a href="#" className="hover:text-white transition-colors">Chính Sách Bảo Mật</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Điều Khoản Sử Dụng</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Câu Hỏi Thường Gặp</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Quy hoạch 2026</a></li>
+            <li><button onClick={() => { setCurrentPage('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition-colors cursor-pointer text-left">Chính Sách Bảo Mật</button></li>
+            <li><button onClick={() => { setCurrentPage('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition-colors cursor-pointer text-left">Điều Khoản Sử Dụng</button></li>
+            <li><button onClick={() => { setCurrentPage('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition-colors cursor-pointer text-left">Câu Hỏi Thường Gặp</button></li>
+            <li><button onClick={() => { setCurrentPage('projects'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition-colors cursor-pointer text-left">Quy hoạch 2026</button></li>
           </ul>
         </div>
         <div>
@@ -1329,11 +1269,11 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
             </li>
             <li className="flex items-center gap-3">
               <Phone className="w-5 h-5 text-[#F43F5E] shrink-0" />
-              <span>{company?.phone || company?.hotline || company?.phone || company?.hotline || '0909.123.456'}</span>
+              <span>0909.123.456</span>
             </li>
             <li className="flex items-center gap-3">
               <MessageSquare className="w-5 h-5 text-[#F43F5E] shrink-0" />
-              <span>{company?.email || company?.email || 'trungnguyen.realestate@gmail.com'}</span>
+              <span>trungnguyen.realestate@gmail.com</span>
             </li>
           </ul>
         </div>
@@ -1650,9 +1590,13 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                   <p className="text-gray-500 text-sm mb-6 leading-relaxed">{leader.bio}</p>
                   <div className="flex gap-3 justify-center">
                     {[Facebook, Linkedin, Mail].map((Icon, idx) => (
-                      <a key={idx} href="#" className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-[#BE185D] hover:bg-pink-50 transition-all">
+                      <button 
+                        key={idx} 
+                        onClick={() => alert('Liên hệ trực tiếp với chuyên gia')}
+                        className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-[#BE185D] hover:bg-pink-50 transition-all cursor-pointer"
+                      >
                         <Icon className="w-4 h-4" />
-                      </a>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -1885,20 +1829,33 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                     </div>
                     <div>
                       <h4 className="font-bold text-gray-800">Địa chỉ Email</h4>
-                      <p className="text-gray-500 text-sm mt-0.5">{company?.email || company?.email || 'trungnguyen.realestate@gmail.com'}</p>
+                      <p className="text-gray-500 text-sm mt-0.5">trungnguyen.realestate@gmail.com</p>
                     </div>
                   </li>
                 </ul>
               </div>
 
-              {/* Styled Mock Map Card */}
-              <div className="mt-8 rounded-2xl overflow-hidden border border-gray-200 relative h-48 bg-gray-100 flex items-center justify-center">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&q=80')] bg-cover opacity-60"></div>
-                <div className="absolute inset-0 bg-pink-900/10"></div>
-                <div className="relative z-10 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-lg text-center max-w-[250px]">
-                  <MapPin className="w-8 h-8 mx-auto mb-1 text-[#BE185D]" />
-                  <span className="font-bold text-xs text-gray-900 block">VĂN PHÒNG CHÍNH</span>
-                  <span className="text-[10px] text-gray-500 mt-1 block">Quận 7, TP.HCM</span>
+              {/* Real Interactive Google Map */}
+              <div className="mt-8 rounded-2xl overflow-hidden border border-gray-200 relative h-64 bg-gray-100 flex flex-col shadow-md">
+                <div className="px-3.5 py-2 bg-slate-900 text-white flex items-center justify-between text-xs z-10">
+                  <span className="font-bold flex items-center gap-1.5 truncate"><MapPin className="w-3.5 h-3.5 text-[#F43F5E]" /> 123 Nguyễn Văn Linh, Quận 7, TP.HCM</span>
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=123+Nguy%E1%BB%85n+V%C4%83n+Linh,+T%C3%A2n+Phong,+Qu%E1%BA%ADn+7,+TP.HCM"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-2 py-1 rounded bg-[#BE185D] hover:bg-[#9D174D] text-white text-[10px] font-bold shrink-0"
+                  >
+                    Mở Google Maps
+                  </a>
+                </div>
+                <div className="flex-1 w-full h-full">
+                  <iframe
+                    title="Bản đồ Nguyễn Văn Linh Quận 7"
+                    src="https://maps.google.com/maps?q=123+Nguy%E1%BB%85n+V%C4%83n+Linh,+T%C3%A2n+Phong,+Qu%E1%BA%ADn+7,+TP.HCM&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                    className="w-full h-full border-0"
+                    loading="lazy"
+                    allowFullScreen
+                  />
                 </div>
               </div>
             </div>
@@ -2033,13 +1990,29 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
 
   const renderContent = () => {
     switch (currentPage) {
-      case 'projects': return renderProjectsPage();
-      case 'about': return renderAboutPage();
-      case 'gallery': return renderGalleryPage();
-      case 'news': return renderNewsPage();
-      case 'contact': return renderContactPage();
+      case 'projects':
+      case 'du-an':
+      case 'san-pham':
+        return renderProjectsPage();
+      case 'about':
+      case 'gioi-thieu':
+      case 've-chung-toi':
+        return renderAboutPage();
+      case 'gallery':
+      case 'thu-vien':
+      case 'hinh-anh':
+        return renderGalleryPage();
+      case 'news':
+      case 'tin-tuc':
+      case 'bai-viet':
+        return renderNewsPage();
+      case 'contact':
+      case 'lien-he':
+      case 'tu-van':
+        return renderContactPage();
       case 'home':
-      default: return renderHome();
+      default:
+        return renderHome();
     }
   };
 

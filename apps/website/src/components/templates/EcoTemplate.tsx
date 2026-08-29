@@ -5,19 +5,15 @@ import Link from 'next/link';
 import { 
   Leaf, Trees, Droplets, Sun, Wind, ChevronRight, Play, Check, MapPin, 
   ArrowRight, Star, Phone, Mail, ChevronDown, Menu, X, Award, Users, 
-  Building2, TrendingUp, Heart, Shield, Zap, Coffee, BookOpen, Bike, Search, Filter, Send 
+  Building2, TrendingUp, Heart, Shield, Zap, Coffee, BookOpen, Bike, Search, Filter 
 } from 'lucide-react';
 import { MAX_W } from '../design-system';
 import { FacebookIcon, YoutubeIcon, TiktokIcon, ZaloIcon, InstagramIcon } from '../icons/SocialIcons';
 
 interface TemplateProps {
-  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, any> };
+  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
-  company?: any;
-  theme?: any;
-  projects?: any[];
-  posts?: any[];
 }
 
 const t = {
@@ -303,83 +299,21 @@ const CORE_VALUES = [
   { icon: Users, title: 'Cộng Đồng Nhân Văn (Community)', desc: 'Kiến tạo những hoạt động gắn kết cư dân, hướng đến lối sống lành mạnh, gắn bó mật thiết với thiên nhiên.' }
 ];
 
-export default function EcoTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
-  const brandPrimary = dynamicTheme?.primaryColor || '#15803D';
-  const brandAccent = dynamicTheme?.accentColor || '#22C55E';
-  const t = {
-    bg: dynamicTheme?.backgroundColor || '#f0fdf4',
-    headerBg: '#ffffff',
-    primary: brandPrimary,
-    secondary: dynamicTheme?.primaryColor || '#166534',
-    accent: brandAccent,
-    accentDark: brandPrimary,
-    text: dynamicTheme?.textColor || '#1e3a2f',
-    muted: '#4b7a55',
-    heading: '#052e16',
-    surface: '#ffffff',
-    dark: '#052e16',
-    gold: '#d4a72c',
-  };
-  // Dynamic Posts Override & Shadowing Variable via globalThis reference
-  const activePosts = posts && posts.length > 0
-    ? posts.map((p, index) => ({
-        id: p.id || String(index),
-        title: p.title,
-        category: p.category?.name || 'Bất Động Sản',
-        cat: p.category?.name || 'Bất Động Sản',
-        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : '12/07/2026',
-        author: p.author?.fullName || 'Chuyên viên BĐS',
-        excerpt: p.summary || p.description || 'Tóm tắt bài viết...',
-        summary: p.summary || p.description || 'Tóm tắt bài viết...',
-        description: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        content: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        readTime: '5 phút đọc'
-      }))
-    : ((globalThis as any).__news_ref || []);
+const normalizeEcoPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham', 'sinh-thai'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
 
-  // Shadowing variables
-  const NEWS: any = activePosts;
-
-  // Dynamic Projects Override & Shadowing Variable via globalThis reference
-  const activeProjects = projects && projects.length > 0
-    ? projects.map((p, index) => ({
-        id: p.id || String(index),
-        name: p.title,
-        title: p.title,
-        location: p.address || 'Hệ thống',
-        price: p.price,
-        priceLabel: p.price,
-        area: p.area || '—',
-        type: p.type || 'Dự Án',
-        status: p.status || 'SELLING',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        tag: index === 0 ? 'EXCLUSIVE' : 'HOT',
-        desc: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        description: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        shortDescription: p.shortDescription || '',
-        specs: p.shortDescription || `${p.area} · ${p.type}`,
-        priceVal: parseFloat(p.price) || 0,
-        loc: p.address || 'Hệ thống',
-        size: parseFloat(p.area) || 0,
-        bedrooms: 3,
-        bathrooms: 2,
-        features: [p.type],
-        style: 'Modern',
-        delivery: '2026',
-        scale: '1 block'
-      }))
-    : ((globalThis as any).__eco_properties_ref || []);
-
-  // Shadowing variables
-  const ECO_PROPERTIES: any = activeProjects;
-
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+export default function EcoTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
+  const [currentPage, setCurrentPageState] = useState(normalizeEcoPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizeEcoPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
@@ -387,15 +321,8 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
 
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const tenant = params.get('tenant');
-      if (p === 'home') {
-        const query = tenant ? `/?tenant=${tenant}` : window.location.pathname;
-        window.history.pushState(null, '', query);
-      } else {
-        const query = tenant ? `/?tenant=${tenant}&page=${p}` : `/?page=${p}`;
-        window.history.pushState(null, '', query);
-      }
+      const templateSlug = template?.slug || '';
+      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
     }
   };
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
@@ -441,16 +368,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
   const isMobile = viewport === 'mobile';
   const isSmall = isMobile || viewport === 'tablet';
 
-  const getPageHref = (page: string) => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const tenant = params.get('tenant');
-      if (tenant) {
-        return page === 'home' ? `/?tenant=${tenant}` : `/?tenant=${tenant}&page=${page}`;
-      }
-    }
-    return page === 'home' ? '/' : `/?page=${page}`;
-  };
+  const getPageHref = (page: string) => `/demo/${template.slug}${page === 'home' ? '' : '/' + page}`;
 
   const navLinks = [
     { label: 'Trang chủ', page: 'home' },
@@ -512,20 +430,11 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
   const renderNav = () => (
     <nav className="sticky top-0 z-40 shadow-sm transition-all duration-300" style={{ backgroundColor: t.headerBg }}>
       <div className={`${MAX_W} mx-auto px-4 md:px-8 flex justify-between items-center h-20`}>
-        <button onClick={() => { setCurrentPage('home'); resetFilters(); }} className="flex items-center gap-2.5 group text-left">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center transition-colors shrink-0" style={{ backgroundColor: t.primary }}>
+        <button onClick={() => { setCurrentPage('home'); resetFilters(); }} className="flex items-center gap-2.5 group">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center transition-colors" style={{ backgroundColor: t.primary }}>
             <Leaf className="w-5 h-5 text-white" />
           </div>
-          <div>
-            <span className="text-xl font-black tracking-tight block uppercase" style={{ color: t.heading }}>
-              {company?.name || template.name || 'ECO LIVING'}
-            </span>
-            {company?.slogan && (
-              <span className="text-[10px] tracking-wider uppercase font-semibold block opacity-75" style={{ color: t.text }}>
-                {company.slogan}
-              </span>
-            )}
-          </div>
+          <span className="text-xl font-black tracking-tight" style={{ color: t.heading }}>{template.name || 'ECO LIVING'}</span>
         </button>
 
         {!isSmall ? (
@@ -888,14 +797,14 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 Để lại thông tin, chuyên viên tư vấn sẽ liên hệ trong vòng 30 phút và tư vấn miễn phí về dự án phù hợp nhất với bạn.
               </p>
               <div className="flex flex-col gap-4">
-                <a href={`tel:${(company?.phone || '0919006030').replace(/\s/g, '')}`} className="flex items-center gap-3 hover:underline transition-colors" style={{ color: t.accent }}>
-                  <Phone className="w-5 h-5 shrink-0" /> <span className="whitespace-nowrap">{company?.phone || '0919 006 030 (Hotline CSKH)'}</span>
+                <a href="tel:0919006030" className="flex items-center gap-3 hover:underline transition-colors" style={{ color: t.accent }}>
+                  <Phone className="w-5 h-5 shrink-0" /> <span>0919 006 030 (Hotline CSKH)</span>
                 </a>
-                <a href={`mailto:${company?.email || 'hello@ecoliving.vn'}`} className="flex items-center gap-3 hover:underline transition-colors" style={{ color: t.accent }}>
-                  <Mail className="w-5 h-5 shrink-0" /> <span>{company?.email || 'hello@ecoliving.vn'}</span>
+                <a href="mailto:hello@ecoliving.vn" className="flex items-center gap-3 hover:underline transition-colors" style={{ color: t.accent }}>
+                  <Mail className="w-5 h-5 shrink-0" /> <span>hello@ecoliving.vn</span>
                 </a>
-                <a href={`https://maps.google.com/?q=${encodeURIComponent(company?.address || 'Tầng 12, Vinhomes Center, 208 Giảng Võ, Hà Nội')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:underline transition-colors" style={{ color: t.accent }}>
-                  <MapPin className="w-5 h-5 shrink-0" /> <span>{company?.address || 'Tầng 12, Vinhomes Center, 208 Giảng Võ, Hà Nội'}</span>
+                <a href="https://maps.google.com/?q=208+Giang+Vo+Ba+Dinh+Ha+Noi" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:underline transition-colors" style={{ color: t.accent }}>
+                  <MapPin className="w-5 h-5 shrink-0" /> <span>Tầng 12, Vinhomes Center, 208 Giảng Võ, Hà Nội</span>
                 </a>
               </div>
             </div>
@@ -928,14 +837,6 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                   if (!phoneClean || !/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
                     alert('Số điện thoại phải từ 10-11 số (VD: 0919006030 hoặc +84919006030).');
                     return;
-                  }
-                  if (typeof (globalThis as any).submitContactForm === 'function') {
-                    (globalThis as any).submitContactForm({
-                      fullName: consultName,
-                      phone: phoneClean,
-                      message: `${consultInterest ? `Quan tâm: ${consultInterest}. ` : ''}${consultMessage || ''}`.trim(),
-                      source: 'website_contact_form',
-                    }).catch(() => {});
                   }
                   if (consultName.trim()) {
                     setConsultSubmitted(true);
@@ -1343,6 +1244,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
       </div>
     </main>
   );
+
   const renderNews = () => (
     <main className="py-24 min-h-screen" style={{ backgroundColor: t.bg }}>
       <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
@@ -1359,8 +1261,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
             <input 
               type="text" 
               placeholder="Tìm kiếm bài viết..."
-              className="w-full pl-9 pr-4 py-2.5 text-sm border rounded-xl focus:outline-none bg-transparent text-slate-800"
-              style={{ borderColor: t.accent }}
+              className="w-full pl-9 pr-4 py-2.5 text-sm border rounded-xl focus:outline-none focus:border-green-600 bg-transparent text-slate-800"
               value={searchNewsQuery}
               onChange={(e) => setSearchNewsQuery(e.target.value)}
             />
@@ -1406,11 +1307,11 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                       <span>{n.date}</span>
                       <span>{n.views}</span>
                     </div>
-                    <h3 className="text-base font-black mb-3 leading-snug text-slate-900 line-clamp-2 hover:opacity-80 transition-opacity">{n.title}</h3>
+                    <h3 className="text-base font-black mb-3 leading-snug text-slate-900 line-clamp-2 hover:text-green-700 transition-colors">{n.title}</h3>
                     <p className="text-xs text-slate-500 line-clamp-3">{n.summary}</p>
                   </div>
                 </div>
-                <div className="px-6 pb-6 pt-4 border-t border-slate-50 flex justify-between items-center text-xs font-bold" style={{ color: t.primary }}>
+                <div className="px-6 pb-6 pt-4 border-t border-slate-50 flex justify-between items-center text-xs font-bold text-green-700">
                   <span>Tác giả: {n.author}</span>
                   <span>Đọc tiếp →</span>
                 </div>
@@ -1421,7 +1322,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
           <div className="text-center py-20 bg-white rounded-3xl border border-slate-200">
             <BookOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-black text-slate-700 mb-2">Không Tìm Thấy Tin Tức Phù Hợp</h3>
-            <p className="text-slate-500 text-sm max-w-md mx-auto mb-4">Vui lòng thử gõ từ khoá khác hoặc click vào nút &ldquo;Tất cả&rdquo; danh mục ở trên.</p>
+            <p className="text-slate-500 text-sm max-w-md mx-auto mb-4">Vui lòng thử gõ từ khoá khác hoặc click vào nút "Tất cả" danh mục ở trên.</p>
             <button onClick={() => { setSearchNewsQuery(''); setNewsCategory('Tất cả'); }} className="px-6 py-2.5 rounded-full text-white font-bold text-sm" style={{ backgroundColor: t.primary }}>Tất cả bài viết</button>
           </div>
         )}
@@ -1441,12 +1342,12 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Info cards */}
           <div className="space-y-6">
-            <h2 className="text-2xl font-black mb-6" style={{ color: t.heading }}>Hệ Thống Văn Phòng</h2>
+            <h2 className="text-2xl font-black mb-6" style={{ color: t.heading }}>Hệ Thống Văn Phòng & Bản Đồ</h2>
             {[
               { icon: Phone, label: 'Hotline Chăm sóc khách hàng', val: '1800 1234 (Miễn phí 24/7)' },
-              { icon: Mail, label: 'Email Hỗ trợ pháp lý & thông tin', val: company?.email || 'hello@ecoliving.vn' },
-              { icon: MapPin, label: 'Văn phòng giao dịch Hà Nội', val: 'Tầng 12, Vinhomes Center, 208 Giảng Võ, Ba Đình' },
-              { icon: MapPin, label: 'Văn phòng giao dịch TP. Hồ Chí Minh', val: 'Tầng 8, Saigon Center, 65 Lê Lợi, Quận 1' },
+              { icon: Mail, label: 'Email Hỗ trợ pháp lý & thông tin', val: 'hello@ecoliving.vn' },
+              { icon: MapPin, label: 'Văn phòng giao dịch Hà Nội', val: '208 Giảng Võ, Ba Đình, Hà Nội' },
+              { icon: MapPin, label: 'Văn phòng giao dịch TP. Hồ Chí Minh', val: '65 Lê Lợi, Quận 1, TP.HCM' },
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4 p-5 rounded-2xl bg-white shadow-sm border border-slate-50">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${t.primary}15` }}>
@@ -1458,6 +1359,30 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 </div>
               </div>
             ))}
+
+            {/* Interactive Google Map */}
+            <div className="rounded-3xl overflow-hidden border border-emerald-100 shadow-md flex flex-col h-64 bg-white">
+              <div className="px-4 py-2.5 bg-emerald-950 text-white flex items-center justify-between text-xs">
+                <span className="font-bold flex items-center gap-1.5 truncate"><MapPin className="w-3.5 h-3.5 text-emerald-400" /> Trụ sở Eco Living — 208 Giảng Võ, Ba Đình, Hà Nội</span>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=208+Gi%E1%BA%A3ng+V%C3%B5,+Ba+%C4%90%C3%ACnh,+H%C3%A0+N%E1%BB%99i"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shrink-0"
+                >
+                  Mở Google Maps
+                </a>
+              </div>
+              <div className="flex-1 w-full h-full">
+                <iframe
+                  title="Bản đồ Eco Living Giảng Võ"
+                  src="https://maps.google.com/maps?q=208+Gi%E1%BA%A3ng+V%C3%B5,+Ba+%C4%90%C3%ACnh,+H%C3%A0+N%E1%BB%99i&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  className="w-full h-full border-0"
+                  loading="lazy"
+                  allowFullScreen
+                />
+              </div>
+            </div>
           </div>
 
           {/* Form and success box */}
@@ -1481,8 +1406,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                       setContactPhone('');
                       setContactMessage('');
                     }}
-                    className="px-6 py-3 rounded-xl font-bold text-sm border hover:bg-slate-50 transition-colors"
-                    style={{ borderColor: t.primary, color: t.primary }}
+                    className="px-6 py-3 rounded-xl font-bold text-sm border border-green-700 text-green-700 hover:bg-slate-50 transition-colors"
                   >
                     Gửi tin nhắn khác
                   </button>
@@ -1492,10 +1416,9 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                       setContactSubmitted(false);
                       setCurrentPage('home');
                     }}
-                    className="px-6 py-3 rounded-xl font-bold text-sm text-white hover:opacity-90 transition-opacity shadow-md"
-                    style={{ backgroundColor: t.primary }}
+                    className="px-6 py-3 rounded-xl font-bold text-sm text-white bg-green-700 hover:bg-green-800 transition-colors"
                   >
-                    Trở về trang chủ
+                    Về Trang Chủ
                   </button>
                 </div>
               </div>
@@ -1505,63 +1428,60 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 if (contactName.trim() && contactEmail.trim() && contactPhone.trim()) {
                   setContactSubmitted(true);
                 }
-              }} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Họ và tên của bạn (*)</label>
-                  <input 
-                    type="text" 
-                    required 
-                    value={contactName}
-                    onChange={(e) => setContactName(e.target.value)}
-                    placeholder="Nguyễn Văn A" 
-                    className="w-full px-4 py-3 rounded-xl text-sm outline-none border bg-transparent text-slate-800" 
-                    style={{ borderColor: t.accent }}
-                  />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              }}>
+                <h3 className="text-2xl font-black mb-6 text-slate-900">Gửi Tin Nhắn Cho Chúng Tôi</h3>
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Email (*)</label>
+                    <label className="block text-xs font-bold text-slate-500 mb-1">Họ và tên *</label>
                     <input 
-                      type="email" 
-                      required 
-                      value={contactEmail}
-                      onChange={(e) => setContactEmail(e.target.value)}
-                      placeholder="email@example.com" 
-                      className="w-full px-4 py-3 rounded-xl text-sm outline-none border bg-transparent text-slate-800" 
+                      type="text" 
+                      placeholder="Nguyễn Văn A" 
+                      required
+                      className="w-full px-4 py-3 rounded-xl text-sm outline-none border focus:border-green-600 bg-transparent text-slate-800" 
                       style={{ borderColor: t.accent }}
+                      value={contactName}
+                      onChange={(e) => setContactName(e.target.value)}
                     />
                   </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 mb-1">Số điện thoại *</label>
+                      <input 
+                        type="tel" 
+                        placeholder="0901234567" 
+                        required
+                        className="w-full px-4 py-3 rounded-xl text-sm outline-none border focus:border-green-600 bg-transparent text-slate-800" 
+                        style={{ borderColor: t.accent }}
+                        value={contactPhone}
+                        onChange={(e) => setContactPhone(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 mb-1">Email liên hệ *</label>
+                      <input 
+                        type="email" 
+                        placeholder="ten@email.com" 
+                        required
+                        className="w-full px-4 py-3 rounded-xl text-sm outline-none border focus:border-green-600 bg-transparent text-slate-800" 
+                        style={{ borderColor: t.accent }}
+                        value={contactEmail}
+                        onChange={(e) => setContactEmail(e.target.value)}
+                      />
+                    </div>
+                  </div>
                   <div>
-                    <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Số điện thoại (*)</label>
-                    <input 
-                      type="tel" 
-                      required 
-                      value={contactPhone}
-                      onChange={(e) => setContactPhone(e.target.value)}
-                      placeholder="0912 345 678" 
-                      className="w-full px-4 py-3 rounded-xl text-sm outline-none border bg-transparent text-slate-800" 
+                    <label className="block text-xs font-bold text-slate-500 mb-1">Nội dung tin nhắn</label>
+                    <textarea 
+                      placeholder="Tôi muốn tìm hiểu kỹ hơn về các dự án có chứng chỉ LEED Platinum..." 
+                      rows={5} 
+                      className="w-full px-4 py-3 rounded-xl text-sm outline-none border focus:border-green-600 resize-none bg-transparent text-slate-800" 
                       style={{ borderColor: t.accent }}
+                      value={contactMessage}
+                      onChange={(e) => setContactMessage(e.target.value)}
                     />
                   </div>
+                  <button type="submit" className="w-full py-4 rounded-xl font-black text-white hover:opacity-95 transition-opacity text-base shadow-sm" style={{ backgroundColor: t.primary }}>Gửi tin nhắn ngay →</button>
                 </div>
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Nội dung tin nhắn</label>
-                  <textarea 
-                    rows={4} 
-                    value={contactMessage}
-                    onChange={(e) => setContactMessage(e.target.value)}
-                    placeholder="Bạn quan tâm đến dự án nào của chúng tôi? Hãy để lại yêu cầu..." 
-                    className="w-full px-4 py-3 rounded-xl text-sm outline-none border resize-none bg-transparent text-slate-800" 
-                    style={{ borderColor: t.accent }}
-                  ></textarea>
-                </div>
-                <button 
-                  type="submit" 
-                  className="w-full py-4 rounded-xl font-bold text-white shadow-lg transition-transform active:scale-[0.99] mt-2 flex items-center justify-center gap-2"
-                  style={{ backgroundColor: t.primary }}
-                >
-                  <Send className="w-4 h-4" /> Gửi Thông Tin Liên Hệ
-                </button>
               </form>
             )}
           </div>
@@ -1584,7 +1504,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
             </p>
             <div className="flex items-center gap-2.5">
               <a
-                href={company?.socialLinks?.facebook || "https://facebook.com"}
+                href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Facebook"
@@ -1594,7 +1514,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 <FacebookIcon className="w-4 h-4" />
               </a>
               <a
-                href={`https://zalo.me/${company?.phone || '0919006030'}`}
+                href="https://zalo.me/0919006030"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Zalo Chat"
@@ -1604,7 +1524,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 <ZaloIcon className="w-full h-full" />
               </a>
               <a
-                href={company?.socialLinks?.youtube || "https://youtube.com"}
+                href="https://youtube.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="YouTube"
@@ -1614,7 +1534,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 <YoutubeIcon className="w-4 h-4" />
               </a>
               <a
-                href={company?.socialLinks?.tiktok || "https://tiktok.com"}
+                href="https://tiktok.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="TikTok"
@@ -1624,7 +1544,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 <TiktokIcon className="w-4 h-4" />
               </a>
               <a
-                href={company?.socialLinks?.instagram || "https://instagram.com"}
+                href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Instagram"
@@ -1662,12 +1582,13 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
     <div className="font-sans min-h-screen flex flex-col justify-between" style={{ backgroundColor: t.bg }}>
       <div>
         {renderNav()}
-        {currentPage === 'home' && renderHome()}
-        {currentPage === 'projects' && renderProjects()}
-        {currentPage === 'about' && renderAbout()}
-        {currentPage === 'gallery' && renderGallery()}
-        {currentPage === 'news' && renderNews()}
-        {currentPage === 'contact' && renderContact()}
+        {['home'].includes(currentPage) && renderHome()}
+        {['projects', 'du-an', 'san-pham', 'sinh-thai'].includes(currentPage) && renderProjects()}
+        {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAbout()}
+        {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGallery()}
+        {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNews()}
+        {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContact()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'sinh-thai', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
       </div>
       {renderFooter()}
 
@@ -1686,10 +1607,10 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
               <div className="relative h-64 md:h-auto min-h-[300px]">
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedProject.img} alt={selectedProject.name} className="w-full h-full object-cover" />
                 <div className="absolute top-4 left-4 flex flex-col gap-2">
-                  <span className="px-3 py-1 rounded-full text-xs font-black text-white shadow-md" style={{ backgroundColor: t.primary }}>
+                  <span className="px-3 py-1 rounded-full text-xs font-black text-white bg-green-600 shadow-md">
                     {selectedProject.badge}
                   </span>
-                  <span className="px-3 py-1 rounded-full text-xs font-black text-white shadow-md flex items-center gap-1" style={{ backgroundColor: t.secondary }}>
+                  <span className="px-3 py-1 rounded-full text-xs font-black text-white bg-emerald-700 shadow-md flex items-center gap-1">
                     <Leaf className="w-3.5 h-3.5" /> {selectedProject.cert}
                   </span>
                 </div>
@@ -1697,18 +1618,18 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
 
               <div className="p-8 md:p-10 flex flex-col justify-between text-slate-800">
                 <div>
-                  <div className="text-sm font-bold uppercase tracking-wider mb-2" style={{ color: t.primary }}>{selectedProject.type}</div>
+                  <div className="text-sm font-bold uppercase tracking-wider text-green-600 mb-2">{selectedProject.type}</div>
                   <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-4">{selectedProject.name}</h2>
                   
                   <div className="flex items-center gap-1 text-sm text-slate-500 mb-6">
-                    <MapPin className="w-4 h-4" style={{ color: t.primary }} />
+                    <MapPin className="w-4 h-4 text-emerald-600" />
                     <span>{selectedProject.loc}</span>
                   </div>
 
                   <div className="grid grid-cols-3 gap-4 py-4 border-t border-b border-slate-100 mb-6">
                     <div>
                       <div className="text-xs text-slate-400 font-semibold mb-0.5">Giá bán</div>
-                      <div className="text-lg font-black" style={{ color: t.primary }}>{selectedProject.price} tỷ</div>
+                      <div className="text-lg font-black text-green-700">{selectedProject.price} tỷ</div>
                     </div>
                     <div>
                       <div className="text-xs text-slate-400 font-semibold mb-0.5">Diện tích</div>
@@ -1753,8 +1674,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                         <input 
                           type="tel" 
                           placeholder="Nhập số điện thoại..." 
-                          className="flex-1 px-4 py-2 text-sm border rounded-xl focus:outline-none bg-transparent text-slate-800"
-                          style={{ borderColor: t.accent }}
+                          className="flex-1 px-4 py-2 text-sm border rounded-xl focus:outline-none focus:border-green-600 bg-transparent text-slate-800"
                           value={consultPhone}
                           onChange={(e) => setConsultPhone(e.target.value)}
                         />
@@ -1765,8 +1685,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                               setTimeout(() => setConsultSubmitted(false), 5000);
                             }
                           }}
-                          className="px-6 py-2 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90"
-                          style={{ backgroundColor: t.primary }}
+                          className="px-6 py-2 rounded-xl text-sm font-bold text-white bg-green-600 hover:bg-green-700 transition-colors"
                         >
                           Đăng ký tư vấn
                         </button>
@@ -1821,7 +1740,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
 
             <div className="p-6 md:p-10 max-h-[85vh] overflow-y-auto">
               <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 mb-4">
-                <span className="px-3 py-1 rounded-full font-bold bg-green-50 border border-green-200" style={{ color: t.primary }}>
+                <span className="px-3 py-1 rounded-full font-bold text-green-700 bg-green-50 border border-green-200">
                   {selectedArticle.cat}
                 </span>
                 <span>• {selectedArticle.date}</span>
@@ -1835,7 +1754,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
               </div>
 
-              <p className="text-base text-slate-700 font-bold leading-relaxed mb-6 border-l-4 pl-4 bg-slate-50 py-3 rounded-r-xl" style={{ borderLeftColor: t.primary }}>
+              <p className="text-base text-slate-700 font-bold leading-relaxed mb-6 border-l-4 border-green-600 pl-4 bg-slate-50 py-3 rounded-r-xl">
                 {selectedArticle.summary}
               </p>
 
@@ -1848,8 +1767,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
               <div className="border-t border-slate-100 pt-6 mt-8 flex justify-end">
                 <button 
                   onClick={() => setSelectedArticle(null)}
-                  className="px-6 py-2.5 rounded-xl font-bold text-sm text-white hover:opacity-90 transition-opacity"
-                  style={{ backgroundColor: t.primary }}
+                  className="px-6 py-2.5 rounded-xl font-bold text-sm text-white bg-green-700 hover:bg-green-800 transition-colors"
                 >
                   Đóng bài viết
                 </button>

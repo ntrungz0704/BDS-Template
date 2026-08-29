@@ -1628,6 +1628,30 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
                   <p className="text-gray-800 font-light">Thứ 2 - Thứ 7: 8:00 - 18:00<br/>Chủ nhật: Đặt lịch hẹn trước</p>
                 </div>
               </div>
+
+              {/* Interactive Google Map */}
+              <div className="mt-8 overflow-hidden border border-gray-200 shadow-sm flex flex-col h-48 bg-gray-50">
+                <div className="px-3.5 py-2 bg-gray-900 text-white flex items-center justify-between text-xs">
+                  <span className="font-medium text-gray-300 truncate">123 Tôn Đức Thắng, Q.1</span>
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=123+T%C3%B4n+%C4%90%E1%BB%A9c+Th%E1%BA%AFng,+Qu%E1%BA%ADn+1,+TP.HCM"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-2 py-0.5 bg-white text-gray-900 font-semibold text-[10px] shrink-0 hover:bg-gray-200 transition-colors"
+                  >
+                    Mở Maps
+                  </a>
+                </div>
+                <div className="flex-1 w-full h-full">
+                  <iframe
+                    title="Bản đồ Minimal Tôn Đức Thắng"
+                    src="https://maps.google.com/maps?q=123+T%C3%B4n+%C4%90%E1%BB%A9c+Th%E1%BA%AFng,+Qu%E1%BA%ADn+1,+TP.HCM&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                    className="w-full h-full border-0"
+                    loading="lazy"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
             </div>
             
             <div className="w-full md:w-2/3 bg-gray-50 p-8 md:p-12 border border-gray-100">

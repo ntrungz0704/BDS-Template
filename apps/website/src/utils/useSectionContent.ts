@@ -149,10 +149,11 @@ function deepMerge<T extends Record<string, any>>(
   return result;
 }
 
-export default {
+const sectionUtils = {
   getSectionContent,
   getSectionSettings,
   isSectionVisible,
   getSortedSectionKeys,
 };
 
+export default sectionUtils;

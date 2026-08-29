@@ -28,28 +28,48 @@ export default function TemplatesPage() {
     }
   }, [router.isReady, router.query]);
 
-  const categories = [{ id: 'all', label: `BĐS 01 → BĐS ${String(ALL_TEMPLATES.length).padStart(2, '0')}` }];
+  const categories = [
+    { id: 'all', label: 'Tất cả', count: ALL_TEMPLATES.length },
+    { id: 'PORTAL_SAN', label: 'Cổng Tin & Sàn BĐS', count: 5 },
+    { id: 'CHUNG_CU', label: 'Căn Hộ & Chung Cư', count: 3 },
+    { id: 'BIET_THU', label: 'Biệt Thự & Villa', count: 4 },
+    { id: 'NGHI_DUONG', label: 'Nghỉ Dưỡng & Biển', count: 3 },
+    { id: 'CA_NHAN', label: 'Nhà Phố & Môi Giới', count: 4 },
+    { id: 'DAT_THUONG_MAI', label: 'Đất Nền & Đầu Tư', count: 4 },
+    { id: 'KCN_NHA_XUONG', label: 'KCN & Nhà Xưởng', count: 1 },
+  ];
 
   const filteredTemplates = ALL_TEMPLATES.filter((tpl) => {
     const matchSearch = tpl.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                         tpl.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
                         tpl.shortDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        tpl.collectionName.toLowerCase().includes(searchQuery.toLowerCase());
+                        tpl.collectionName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        tpl.slug.toLowerCase().includes(searchQuery.toLowerCase());
     if (!matchSearch) return false;
 
     if (activeCategory === 'all') return true;
-    if (activeCategory === 'luxury' && (tpl.collectionSlug === 'luxury' || tpl.collectionSlug === 'villa')) return true;
-    if (activeCategory === 'minimal' && tpl.collectionSlug === 'minimal') return true;
-    if (activeCategory === 'corporate' && tpl.collectionSlug === 'corporate') return true;
-    if (activeCategory === 'resort' && tpl.collectionSlug === 'resort') return true;
-    if (activeCategory === 'apartment' && tpl.collectionSlug === 'apartment') return true;
-    if (activeCategory === 'industrial' && tpl.collectionSlug === 'industrial') return true;
-    if (activeCategory === 'eco' && tpl.collectionSlug === 'eco') return true;
-    if (activeCategory === 'classic' && tpl.collectionSlug === 'classic') return true;
-    if (activeCategory === 'investment' && tpl.collectionSlug === 'investment') return true;
-    if (activeCategory === 'agency' && tpl.collectionSlug === 'agency') return true;
-    if (activeCategory === 'developer' && tpl.collectionSlug === 'developer') return true;
-    return tpl.collectionSlug === activeCategory;
+    if (activeCategory === 'PORTAL_SAN') {
+      return ['bds-17', 'bds-18', 'bds-19', 'bds-21', 'bds-24'].includes(tpl.slug);
+    }
+    if (activeCategory === 'CHUNG_CU') {
+      return ['bds-02', 'bds-05', 'bds-20'].includes(tpl.slug);
+    }
+    if (activeCategory === 'BIET_THU') {
+      return ['bds-01', 'bds-07', 'bds-09', 'bds-12'].includes(tpl.slug);
+    }
+    if (activeCategory === 'NGHI_DUONG') {
+      return ['bds-04', 'bds-08', 'bds-22'].includes(tpl.slug);
+    }
+    if (activeCategory === 'CA_NHAN') {
+      return ['bds-11', 'bds-13', 'bds-16', 'bds-23'].includes(tpl.slug);
+    }
+    if (activeCategory === 'DAT_THUONG_MAI') {
+      return ['bds-03', 'bds-10', 'bds-14', 'bds-15'].includes(tpl.slug);
+    }
+    if (activeCategory === 'KCN_NHA_XUONG') {
+      return ['bds-06'].includes(tpl.slug);
+    }
+    return true;
   }).sort((a, b) => {
     if (sortBy === 'price-asc') return a.priceBuy - b.priceBuy;
     if (sortBy === 'price-desc') return b.priceBuy - a.priceBuy;
@@ -128,7 +148,29 @@ export default function TemplatesPage() {
             </div>
 
             {/* Categories pills */}
-            <div className="pt-3 border-t border-slate-100 text-xs font-bold text-blue-700">{categories[0].label} · 32 giao diện có URL và thumbnail riêng</div>
+            <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center gap-2">
+              {categories.map((cat) => {
+                const isActive = activeCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setActiveCategory(cat.id)}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                      isActive
+                        ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/20'
+                        : 'bg-slate-50 text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200'
+                    }`}
+                  >
+                    <span>{cat.label}</span>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                      isActive ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
+                    }`}>
+                      {cat.count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Templates Display */}
@@ -142,66 +184,6 @@ export default function TemplatesPage() {
               >
                 Xem toàn bộ {ALL_TEMPLATES.length} mẫu
               </button>
-
-            </div>
-          ) : viewMode === 'family' && activeCategory === 'all' && searchQuery === '' ? (
-            /* Family Architecture Grouped View */
-            <div className="space-y-8">
-              {DESIGN_COLLECTIONS.map((col) => {
-                const familyTemplates = filteredTemplates.filter(t => t.collectionSlug === col.collectionSlug);
-                if (familyTemplates.length === 0) return null;
-                return (
-                  <div key={col.id} className="bg-white border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-                      {/* Left: Family Specifications & Story */}
-                      <div className="lg:col-span-5 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-100 pb-5 lg:pb-0 lg:pr-6">
-                        <div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-blue-50 text-blue-600 border border-blue-200">
-                              {col.badge}
-                            </span>
-                          </div>
-                          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight mb-2">{col.name}</h2>
-                          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal mb-4">{col.description}</p>
-                          
-                          <div className="space-y-2 bg-slate-50 rounded-xl p-3.5 text-xs border border-slate-100">
-                            <div className="flex items-center gap-2 text-slate-700 font-medium">
-                              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
-                              <span>Phong cách: <strong>{col.designLanguage.mood}</strong></span>
-                            </div>
-                            <div className="flex items-center gap-2 text-slate-700 font-medium">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0"></span>
-                              <span>Tối ưu chuẩn SEO & Tốc độ tải trang &lt; 1s</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-slate-700 font-medium">
-                              <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0"></span>
-                              <span>Tích hợp CMS quản trị & CRM thu thập Leads</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                          <span>Phù hợp: <strong className="text-slate-800">{col.targetMarket.split(',')[0]}</strong></span>
-                          <span className="text-blue-600 font-bold">{familyTemplates.length} Mẫu thiết kế</span>
-                        </div>
-                      </div>
-
-                      {/* Right: Template Cards in this Family */}
-                      <div className={`lg:col-span-7 grid ${familyTemplates.length > 1 ? 'grid-cols-1 md:grid-cols-2 gap-4' : 'grid-cols-1 max-w-md mx-auto w-full'}`}>
-                        {familyTemplates.map((template) => (
-                          <div key={template.id} className="h-full">
-                            <ProductCard
-                              template={template}
-                              onSelect={(tpl) => setSelectedTemplate(tpl)}
-                              onOpenDetails={(tpl) => setSelectedTemplate(tpl)}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
             </div>
           ) : (
             /* Standard Grid View */
@@ -225,7 +207,7 @@ export default function TemplatesPage() {
                 Được tích hợp sẵn công nghệ bán hàng BĐS hàng đầu
               </h2>
               <p className="text-blue-100 text-sm mb-8 leading-relaxed font-medium">
-                Tất cả 16 mẫu website của PlatformBDS đều đi kèm bộ CMS quản lý tin đăng độc quyền, hỗ trợ cập nhật giá, giỏ hàng, thông báo Zalo OA tự động khi có khách đăng ký.
+                Tất cả {ALL_TEMPLATES.length} mẫu website của PlatformBDS đều đi kèm bộ CMS quản lý tin đăng độc quyền, hỗ trợ cập nhật giá, giỏ hàng, thông báo Zalo OA tự động khi có khách đăng ký.
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-left">
                 {[
@@ -262,4 +244,3 @@ export default function TemplatesPage() {
     </>
   );
 }
-

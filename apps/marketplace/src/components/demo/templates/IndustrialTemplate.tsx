@@ -1172,6 +1172,30 @@ export default function IndustrialTemplate({ template, viewport = 'desktop', ini
                   <span className="text-sm">b2b@platformbds.vn</span>
                 </div>
               </div>
+
+              {/* Interactive Google Map */}
+              <div className="mt-8 rounded-xl overflow-hidden border border-slate-700 shadow-md flex flex-col h-48 bg-slate-900">
+                <div className="px-3 py-1.5 bg-slate-800 text-white flex items-center justify-between text-[11px]">
+                  <span className="font-bold truncate">Bitexco Financial Tower, Q.1</span>
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=Bitexco+Financial+Tower,+2+H%E1%BA%A3i+Tri%E1%BB%81u,+Qu%E1%BA%ADn+1,+TP.HCM"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-2 py-0.5 rounded bg-[#F59E0B] text-slate-900 font-black text-[10px] shrink-0"
+                  >
+                    Mở Maps
+                  </a>
+                </div>
+                <div className="flex-1 w-full h-full">
+                  <iframe
+                    title="Bản đồ KCN Bitexco"
+                    src="https://maps.google.com/maps?q=Bitexco+Financial+Tower,+Qu%E1%BA%ADn+1,+TP.HCM&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                    className="w-full h-full border-0"
+                    loading="lazy"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
             </div>
             
             <div className="md:w-2/3 p-10 bg-white">

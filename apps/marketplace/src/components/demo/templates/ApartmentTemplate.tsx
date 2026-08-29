@@ -1664,6 +1664,30 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 <p className="text-slate-600 leading-relaxed">info@smarturban.vn</p>
               </div>
             </div>
+
+            {/* Interactive Google Map Box */}
+            <div className="bg-white rounded-3xl border border-violet-100 overflow-hidden shadow-md flex flex-col h-64">
+              <div className="px-4 py-2.5 bg-violet-950 text-white flex items-center justify-between text-xs">
+                <span className="font-bold flex items-center gap-1.5 truncate"><MapPin className="w-3.5 h-3.5 text-amber-400" /> Số 1 Đại lộ Mới, Quận Trung Tâm, TP.HCM</span>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=S%E1%BB%91+1+%C4%90%E1%BA%A1i+l%E1%BB%99+M%E1%BB%9Bi,+Qu%E1%BA%ADn+1,+TP.HCM"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1 rounded bg-violet-600 hover:bg-violet-500 text-white text-[11px] font-bold shrink-0"
+                >
+                  Mở Google Maps
+                </a>
+              </div>
+              <div className="flex-1 w-full h-full">
+                <iframe
+                  title="Bản đồ Nhà mẫu Smart Urban"
+                  src="https://maps.google.com/maps?q=Qu%E1%BA%ADn+1,+TP.HCM&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  className="w-full h-full border-0"
+                  loading="lazy"
+                  allowFullScreen
+                />
+              </div>
+            </div>
           </div>
           
           <div className="lg:w-2/3">

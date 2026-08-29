@@ -11,13 +11,9 @@ import {
 import { MAX_W } from '../design-system';
 
 interface TemplateProps {
-  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, any> };
+  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
-  company?: any;
-  theme?: any;
-  projects?: any[];
-  posts?: any[];
 }
 
 // 1. Elevated Mock Listings (availableSpaces)
@@ -207,67 +203,21 @@ const galleryImages = [
   { url: 'https://images.unsplash.com/photo-1542385151-efd9000785a0?w=800&q=80', category: 'Shophouse', caption: 'Mặt tiền Shophouse góc hai mặt lộ lớn' },
 ];
 
-export default function RetailTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
-  // Dynamic Posts Override & Shadowing Variable via globalThis reference
-  const activePosts = posts && posts.length > 0
-    ? posts.map((p, index) => ({
-        id: p.id || String(index),
-        title: p.title,
-        category: p.category?.name || 'Bất Động Sản',
-        cat: p.category?.name || 'Bất Động Sản',
-        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : '12/07/2026',
-        author: p.author?.fullName || 'Chuyên viên BĐS',
-        excerpt: p.summary || p.description || 'Tóm tắt bài viết...',
-        summary: p.summary || p.description || 'Tóm tắt bài viết...',
-        description: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        content: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        readTime: '5 phút đọc'
-      }))
-    : ((globalThis as any).__newsarticles_ref || []);
+const normalizeRetailPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham', 'shophouse', 'thuong-mai'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
 
-  // Shadowing variables
-  const newsArticles: any = activePosts;
-
-  // Dynamic Projects Override & Shadowing Variable via globalThis reference
-  const activeProjects = projects && projects.length > 0
-    ? projects.map((p, index) => ({
-        id: p.id || String(index),
-        name: p.title,
-        title: p.title,
-        location: p.address || 'Hệ thống',
-        price: p.price,
-        priceLabel: p.price,
-        area: p.area || '—',
-        type: p.type || 'Dự Án',
-        status: p.status || 'SELLING',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        tag: index === 0 ? 'EXCLUSIVE' : 'HOT',
-        desc: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        description: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        shortDescription: p.shortDescription || '',
-        specs: p.shortDescription || `${p.area} · ${p.type}`,
-        priceVal: parseFloat(p.price) || 0,
-        loc: p.address || 'Hệ thống',
-        size: parseFloat(p.area) || 0,
-        bedrooms: 3,
-        bathrooms: 2,
-        features: [p.type],
-        style: 'Modern',
-        delivery: '2026',
-        scale: '1 block'
-      }))
-    : ((globalThis as any).__retail_properties_ref || []);
-
-  // Shadowing variables
-  const RETAIL_PROPERTIES: any = activeProjects;
-
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+export default function RetailTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
+  const [currentPage, setCurrentPageState] = useState(normalizeRetailPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizeRetailPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
@@ -276,7 +226,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
+      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
     }
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -305,19 +255,14 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
   const isMobile = viewport === 'mobile';
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
 
-  const brandPrimary = dynamicTheme?.primaryColor || '#B45309';
-  const brandAccent = dynamicTheme?.accentColor || '#F59E0B';
-
   const theme = {
-    bg: dynamicTheme?.backgroundColor || '#FFFBF0',
-    primary: brandPrimary,
-    accent: brandAccent,
-    text: dynamicTheme?.textColor || '#1F2937',
-    textLight: dynamicTheme?.textMutedColor || '#4B5563',
-    surface: dynamicTheme?.surfaceColor || '#FFFFFF',
-    border: dynamicTheme?.borderColor || '#FDE68A',
-    fontHeading: dynamicTheme?.fontHeading ? `'${dynamicTheme.fontHeading}', sans-serif` : '"Syne", sans-serif',
-    fontBody: dynamicTheme?.fontBody ? `'${dynamicTheme.fontBody}', sans-serif` : '"DM Sans", sans-serif'
+    bg: '#FFFBF0',
+    primary: '#B45309',
+    accent: '#F59E0B',
+    text: '#1F2937',
+    textLight: '#4B5563',
+    fontHeading: '"Syne", sans-serif',
+    fontBody: '"DM Sans", sans-serif'
   };
 
   const navLinks = [
@@ -395,20 +340,11 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-amber-100 shadow-sm transition-all duration-300">
       <div className={`${MAX_W} mx-auto px-4 sm:px-6 lg:px-8`}>
         <div className="flex items-center justify-between h-20">
-          <div className="flex-shrink-0 cursor-pointer text-left" onClick={() => setCurrentPage('home')}>
-            <div className="flex items-center gap-2">
-              <Store className="w-8 h-8 shrink-0" style={{ color: theme.primary }} />
-              <div>
-                <h1 style={{ fontFamily: theme.fontHeading, color: theme.primary }} className="text-xl sm:text-2xl font-bold tracking-tighter uppercase leading-none">
-                  {company?.name || template?.name || 'PlatformBDS'}
-                </h1>
-                {company?.slogan && (
-                  <p style={{ color: theme.accent }} className="text-[10px] font-semibold tracking-wider uppercase mt-1">
-                    {company.slogan}
-                  </p>
-                )}
-              </div>
-            </div>
+          <div className="flex-shrink-0 cursor-pointer" onClick={() => setCurrentPage('home')}>
+            <h1 style={{ fontFamily: theme.fontHeading, color: theme.primary }} className="text-2xl font-bold tracking-tighter flex items-center gap-2">
+              <Store className="w-8 h-8" />
+              PlatformBDS<span style={{ color: theme.accent }}>.</span>
+            </h1>
           </div>
           
           {!isMobile && (
@@ -429,14 +365,14 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
           )}
 
           <div className="flex items-center gap-4">
-            <a 
-              href={`tel:${company?.phone || '0983312219'}`}
+            <button 
+              onClick={() => setCurrentPage('contact')}
               className="hidden sm:flex items-center gap-2 px-6 py-2.5 rounded-full text-white font-medium transition-all transform hover:scale-105"
               style={{ backgroundColor: theme.accent, fontFamily: theme.fontBody }}
             >
               <Phone size={18} />
-              <span>{company?.phone || company?.hotline || '0983 312 219'}</span>
-            </a>
+              <span>0909.888.999</span>
+            </button>
             {isMobile && (
               <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-gray-600">
                 {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -847,7 +783,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                 </div>
                 <Quote className="text-amber-200 w-12 h-12 absolute top-8 right-8" />
                 <div className="pt-8">
-                  <p className="text-gray-600 mb-6 italic leading-relaxed relative z-10">&ldquo;{testi.content}&rdquo;</p>
+                  <p className="text-gray-600 mb-6 italic leading-relaxed relative z-10">"{testi.content}"</p>
                   <h5 className="font-bold text-gray-900">{testi.name}</h5>
                   <p className="text-sm text-amber-600">{testi.role}</p>
                 </div>
@@ -1381,27 +1317,51 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                     <Phone className="text-amber-400" size={24} />
                     <div>
                       <p className="text-sm text-amber-200">Hotline Tư Vấn</p>
-                      <p className="font-bold text-xl">{company?.phone || company?.hotline || company?.phone || company?.hotline || '0909.888.999'}</p>
+                      <p className="font-bold text-xl">0909.888.999</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
                     <Mail className="text-amber-400" size={24} />
                     <div>
                       <p className="text-sm text-amber-200">Email Hỗ Trợ</p>
-                      <p className="font-bold text-lg">{company?.email || company?.email || 'sales@platformbds.com'}</p>
+                      <p className="font-bold text-lg">sales@platformbds.com</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
-                    <MapPin className="text-amber-400" size={24} />
+                    <MapPin className="text-amber-400 shrink-0" size={24} />
                     <div>
                       <p className="text-sm text-amber-200">Văn Phòng Sales Gallery</p>
                       <p className="font-medium">123 Đại lộ Thương Mại, Quận 1, TP. Hồ Chí Minh</p>
                     </div>
                   </div>
                 </div>
+
+                {/* Interactive Google Map */}
+                <div className="mt-8 rounded-2xl overflow-hidden border border-amber-800 shadow-md flex flex-col h-48 bg-amber-950">
+                  <div className="px-3.5 py-2 bg-amber-950 text-white flex items-center justify-between text-xs">
+                    <span className="font-bold truncate text-amber-300">Sales Gallery Quận 1, TP.HCM</span>
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Qu%E1%BA%ADn+1,+TP.+H%E1%BB%93+Ch%C3%AD+Minh"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-2 py-0.5 rounded bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-[10px] shrink-0"
+                    >
+                      Mở Maps
+                    </a>
+                  </div>
+                  <div className="flex-1 w-full h-full">
+                    <iframe
+                      title="Bản đồ Sales Gallery Quận 1"
+                      src="https://maps.google.com/maps?q=Qu%E1%BA%ADn+1,+TP.+H%E1%BB%93+Ch%C3%AD+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                      className="w-full h-full border-0"
+                      loading="lazy"
+                      allowFullScreen
+                    />
+                  </div>
+                </div>
               </div>
               
-              <div className="mt-12 pt-8 border-t border-amber-800/60 text-xs text-amber-200/60">
+              <div className="mt-6 pt-4 border-t border-amber-800/60 text-xs text-amber-200/60">
                 Làm việc từ 8:00 đến 21:00 hàng ngày (kể cả Thứ 7 & Chủ Nhật)
               </div>
             </div>
@@ -1507,9 +1467,9 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
               Tổ hợp thương mại đỉnh cao, nơi hội tụ các thương hiệu lớn và kiến tạo cơ hội đầu tư sinh lời bền vững tại trung tâm thành phố.
             </p>
             <div className="flex gap-4">
-              <button className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors"><Facebook size={18}/></button>
-              <button className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors"><Instagram size={18}/></button>
-              <button className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors"><Twitter size={18}/></button>
+              <button onClick={() => alert('Mở Facebook')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors cursor-pointer"><Facebook size={18}/></button>
+              <button onClick={() => alert('Mở Instagram')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors cursor-pointer"><Instagram size={18}/></button>
+              <button onClick={() => alert('Mở Twitter')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors cursor-pointer"><Twitter size={18}/></button>
             </div>
           </div>
           
@@ -1530,10 +1490,10 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
           <div>
             <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Thông Tin Pháp Lý</h4>
             <ul className="space-y-3 text-sm">
-              <li><button className="hover:text-amber-400 transition-colors">Chính sách bảo mật</button></li>
-              <li><button className="hover:text-amber-400 transition-colors">Điều khoản sử dụng</button></li>
-              <li><button className="hover:text-amber-400 transition-colors">Quy định giao dịch</button></li>
-              <li><button className="hover:text-amber-400 transition-colors">Sổ tay cư dân & khách thuê</button></li>
+              <li><button onClick={() => setCurrentPage('about')} className="hover:text-amber-400 transition-colors cursor-pointer">Chính sách bảo mật</button></li>
+              <li><button onClick={() => setCurrentPage('about')} className="hover:text-amber-400 transition-colors cursor-pointer">Điều khoản sử dụng</button></li>
+              <li><button onClick={() => setCurrentPage('about')} className="hover:text-amber-400 transition-colors cursor-pointer">Quy định giao dịch</button></li>
+              <li><button onClick={() => setCurrentPage('about')} className="hover:text-amber-400 transition-colors cursor-pointer">Sổ tay cư dân & khách thuê</button></li>
             </ul>
           </div>
 
@@ -1551,7 +1511,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={18} className="text-amber-500 flex-shrink-0" />
-                <span>{company?.email || company?.email || 'sales@platformbds.com'}</span>
+                <span>sales@platformbds.com</span>
               </li>
             </ul>
           </div>
@@ -1733,12 +1693,13 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
       {renderHeader()}
       
       <main className="flex-grow">
-        {currentPage === 'home' && renderHome()}
-        {currentPage === 'projects' && renderProjects()}
-        {currentPage === 'about' && renderAbout()}
-        {currentPage === 'gallery' && renderGallery()}
-        {currentPage === 'news' && renderNews()}
-        {currentPage === 'contact' && renderContact()}
+        {['home'].includes(currentPage) && renderHome()}
+        {['projects', 'du-an', 'san-pham', 'shophouse', 'thuong-mai'].includes(currentPage) && renderProjects()}
+        {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAbout()}
+        {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGallery()}
+        {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNews()}
+        {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContact()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'shophouse', 'thuong-mai', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
       </main>
       
       {renderFooter()}

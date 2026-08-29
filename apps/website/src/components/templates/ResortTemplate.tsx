@@ -12,13 +12,9 @@ import {
 import { MAX_W } from '../design-system';
 
 interface TemplateProps {
-  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, any> };
+  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
-  company?: any;
-  theme?: any;
-  projects?: any[];
-  posts?: any[];
 }
 
 const MOCK_PROJECTS = [
@@ -259,67 +255,21 @@ const MOCK_GALLERY = [
   }
 ];
 
-export default function ResortTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
-  // Dynamic Posts Override & Shadowing Variable via globalThis reference
-  const activePosts = posts && posts.length > 0
-    ? posts.map((p, index) => ({
-        id: p.id || String(index),
-        title: p.title,
-        category: p.category?.name || 'Bất Động Sản',
-        cat: p.category?.name || 'Bất Động Sản',
-        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : '12/07/2026',
-        author: p.author?.fullName || 'Chuyên viên BĐS',
-        excerpt: p.summary || p.description || 'Tóm tắt bài viết...',
-        summary: p.summary || p.description || 'Tóm tắt bài viết...',
-        description: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        content: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        readTime: '5 phút đọc'
-      }))
-    : ((globalThis as any).__mock_news_ref || []);
+const normalizeResortPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham', 'villa'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
 
-  // Shadowing variables
-  const MOCK_NEWS: any = activePosts;
-
-  // Dynamic Projects Override & Shadowing Variable via globalThis reference
-  const activeProjects = projects && projects.length > 0
-    ? projects.map((p, index) => ({
-        id: p.id || String(index),
-        name: p.title,
-        title: p.title,
-        location: p.address || 'Hệ thống',
-        price: p.price,
-        priceLabel: p.price,
-        area: p.area || '—',
-        type: p.type || 'Dự Án',
-        status: p.status || 'SELLING',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        tag: index === 0 ? 'EXCLUSIVE' : 'HOT',
-        desc: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        description: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        shortDescription: p.shortDescription || '',
-        specs: p.shortDescription || `${p.area} · ${p.type}`,
-        priceVal: parseFloat(p.price) || 0,
-        loc: p.address || 'Hệ thống',
-        size: parseFloat(p.area) || 0,
-        bedrooms: 3,
-        bathrooms: 2,
-        features: [p.type],
-        style: 'Modern',
-        delivery: '2026',
-        scale: '1 block'
-      }))
-    : ((globalThis as any).__resort_villas_ref || []);
-
-  // Shadowing variables
-  const RESORT_VILLAS: any = activeProjects;
-
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+export default function ResortTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
+  const [currentPage, setCurrentPageState] = useState(normalizeResortPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizeResortPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
@@ -328,7 +278,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
+      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
     }
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -373,10 +323,10 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
 
   const colors = {
-    bg: dynamicTheme?.backgroundColor || '#FAFEFF',
-    primary: dynamicTheme?.primaryColor || '#065A82',
-    accent: dynamicTheme?.accentColor || '#F59E0B',
-    dark: dynamicTheme?.secondaryColor || '#0A2540',
+    bg: '#FAFEFF',
+    primary: '#065A82',
+    accent: '#F59E0B',
+    dark: '#0A2540',
     light: '#FFFFFF'
   };
 
@@ -503,17 +453,11 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
     <header className="absolute top-0 w-full z-50 transition-all duration-300 border-b border-white/20" style={{ backgroundColor: currentPage === 'home' ? 'transparent' : colors.primary }}>
       <div className={`${MAX_W} px-6 h-24 flex items-center justify-between`}>
         <div 
-          className="cursor-pointer text-left" 
+          className="text-3xl font-bold text-white cursor-pointer" 
+          style={fontHead}
           onClick={() => navigateTo('home')}
         >
-          <div className="text-2xl sm:text-3xl font-bold text-white tracking-wider uppercase" style={fontHead}>
-            {company?.name || template?.name || 'Resort Paradise'}
-          </div>
-          {company?.slogan && (
-            <div className="text-[10px] text-[#F59E0B] tracking-[0.2em] uppercase font-medium" style={fontBody}>
-              {company.slogan}
-            </div>
-          )}
+          Resort Paradise
         </div>
         
         {!isSmall ? (
@@ -558,13 +502,13 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
     <footer style={{ backgroundColor: colors.dark, color: '#e2e8f0' }} className="pt-20 pb-10">
       <div className={`${MAX_W} px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-16`}>
         <div>
-          <h3 className="text-2xl font-bold text-white mb-6" style={fontHead}>{company?.name || 'Resort Paradise'}</h3>
-          <p className="mb-6 opacity-80 leading-relaxed text-sm font-light">{company?.slogan || company?.description || 'Tiên phong kiến tạo chuẩn mực sống sang trọng nơi thiên đường nghỉ dưỡng ven biển.'}</p>
+          <h3 className="text-2xl font-bold text-white mb-6" style={fontHead}>Resort Paradise</h3>
+          <p className="mb-6 opacity-80 leading-relaxed text-sm font-light">Tiên phong kiến tạo chuẩn mực sống sang trọng nơi thiên đường nghỉ dưỡng ven biển.</p>
           <div className="flex space-x-4">
-            <button className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all"><Facebook size={18} /></button>
-            <button className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all"><Instagram size={18} /></button>
-            <button className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all"><Twitter size={18} /></button>
-            <button className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all"><Linkedin size={18} /></button>
+            <button onClick={() => alert('Mở Facebook')} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all cursor-pointer"><Facebook size={18} /></button>
+            <button onClick={() => alert('Mở Instagram')} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all cursor-pointer"><Instagram size={18} /></button>
+            <button onClick={() => alert('Mở Twitter')} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all cursor-pointer"><Twitter size={18} /></button>
+            <button onClick={() => alert('Mở LinkedIn')} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F59E0B] hover:text-white transition-all cursor-pointer"><Linkedin size={18} /></button>
           </div>
         </div>
         
@@ -590,14 +534,14 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
         <div>
           <h4 className="text-sm font-bold text-white mb-6 uppercase tracking-wider">Liên Hệ</h4>
           <ul className="space-y-4 opacity-80 text-sm font-light">
-            <li className="flex items-start"><MapPin size={20} className="mr-3 text-[#F59E0B] shrink-0 mt-1" /> {company?.address || '123 Đường Ven Biển, Nha Trang, Việt Nam'}</li>
-            <li className="flex items-center"><Phone size={20} className="mr-3 text-[#F59E0B] shrink-0" /> {company?.phone || company?.hotline || '1900 8888 9999'}</li>
-            <li className="flex items-center"><Mail size={20} className="mr-3 text-[#F59E0B] shrink-0" /> {company?.email || 'contact@resortparadise.vn'}</li>
+            <li className="flex items-start"><MapPin size={20} className="mr-3 text-[#F59E0B] shrink-0 mt-1" /> 123 Đường Ven Biển, Nha Trang, Việt Nam</li>
+            <li className="flex items-center"><Phone size={20} className="mr-3 text-[#F59E0B] shrink-0" /> 1900 8888 9999</li>
+            <li className="flex items-center"><Mail size={20} className="mr-3 text-[#F59E0B] shrink-0" /> contact@resortparadise.vn</li>
           </ul>
         </div>
       </div>
       <div className="border-t border-white/10 pt-8 text-center opacity-60 text-sm font-light">
-        <p>© {new Date().getFullYear()} {company?.name || 'Resort Paradise'}. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Resort Paradise. All rights reserved.</p>
       </div>
     </footer>
   );
@@ -942,7 +886,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
                 <div className="flex mb-4 text-[#F59E0B]">
                   {[1,2,3,4,5].map(star => <Star key={star} size={16} fill="currentColor" />)}
                 </div>
-                <p className="text-gray-650 mb-8 italic text-sm leading-relaxed">&ldquo;{item.text}&rdquo;</p>
+                <p className="text-gray-600 mb-8 italic text-sm leading-relaxed">"{item.text}"</p>
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-gray-200 rounded-full mr-4 flex items-center justify-center font-bold text-[#0A2540]">{item.author[0]}</div>
                   <div>
@@ -1321,7 +1265,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
                 )}
                 {activeAboutTab === 'philosophy' && (
                   <p className="text-gray-600 font-light leading-relaxed">
-                    &ldquo;Tôn trọng và Hòa quyện cùng Thiên nhiên&rdquo;. Chúng tôi tin rằng kiến trúc xuất sắc nhất là kiến trúc tôn vinh, bảo vệ và hòa mình làm một với cảnh quan tự nhiên hoang sơ của địa phương.
+                    "Tôn trọng và Hòa quyện cùng Thiên nhiên". Chúng tôi tin rằng kiến trúc xuất sắc nhất là kiến trúc tôn vinh, bảo vệ và hòa mình làm một với cảnh quan tự nhiên hoang sơ của địa phương.
                   </p>
                 )}
               </div>
@@ -1394,7 +1338,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
                   <div className="h-96 overflow-hidden rounded-sm mb-6 relative">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={leader.img} alt={leader.name} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
                     <div className="absolute inset-0 bg-[#0A2540]/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-6 text-center">
-                      <p className="text-white italic text-sm">&ldquo;{leader.quote}&rdquo;</p>
+                      <p className="text-white italic text-sm">"{leader.quote}"</p>
                     </div>
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-1" style={fontHead}>{leader.name}</h3>
@@ -1605,8 +1549,32 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
                   </div>
                   <div>
                     <h4 className="font-bold text-[#0A2540] mb-1">Email liên hệ</h4>
-                    <p className="text-gray-600 text-sm font-light">{company?.email || company?.email || 'contact@resortparadise.vn'}</p>
+                    <p className="text-gray-600 text-sm font-light">contact@resortparadise.vn</p>
                   </div>
+                </div>
+              </div>
+
+              {/* Interactive Google Map */}
+              <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-md flex flex-col h-60 bg-white mb-8">
+                <div className="px-4 py-2 bg-slate-900 text-white flex items-center justify-between text-xs">
+                  <span className="font-bold flex items-center gap-1.5 truncate"><MapPin size={14} className="text-[#F59E0B]" /> Đường Ven Biển, Nha Trang</span>
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=%C4%90%C6%B0%E1%BB%9Dng+Tr%E1%BA%A7n+Ph%C3%BA,+Nha+Trang"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-2.5 py-1 rounded bg-[#065A82] hover:bg-[#04405D] text-white text-[10px] font-bold shrink-0"
+                  >
+                    Mở Google Maps
+                  </a>
+                </div>
+                <div className="flex-1 w-full h-full">
+                  <iframe
+                    title="Bản đồ Nha Trang Resort"
+                    src="https://maps.google.com/maps?q=Tr%E1%BA%A7n+Ph%C3%BA,+Nha+Trang&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                    className="w-full h-full border-0"
+                    loading="lazy"
+                    allowFullScreen
+                  />
                 </div>
               </div>
             </div>
@@ -1868,12 +1836,13 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
       <FontImports />
       {renderHeader()}
       <main className="flex-grow">
-        {currentPage === 'home' && renderHome()}
-        {currentPage === 'projects' && renderProjects()}
-        {currentPage === 'about' && renderAbout()}
-        {currentPage === 'gallery' && renderGallery()}
-        {currentPage === 'news' && renderNews()}
-        {currentPage === 'contact' && renderContact()}
+        {['home'].includes(currentPage) && renderHome()}
+        {['projects', 'du-an', 'san-pham', 'villa'].includes(currentPage) && renderProjects()}
+        {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAbout()}
+        {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGallery()}
+        {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNews()}
+        {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContact()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'villa', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
       </main>
       {renderFooter()}
 

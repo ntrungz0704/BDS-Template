@@ -1772,23 +1772,30 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                 </div>
               </div>
 
-              {/* Map Placeholder */}
-              <div className="w-full h-72 bg-[#060B20] rounded-3xl border border-white/10 overflow-hidden relative shadow-inner">
-                <div className="absolute inset-0 bg-[#020617] opacity-60"></div>
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10">
-                  <div className="w-12 h-12 bg-sky-500/20 text-[#38BDF8] rounded-full flex items-center justify-center mb-3 animate-bounce">
-                    <MapPin size={28} />
+              {/* Interactive Google Map */}
+              <div className="w-full h-80 bg-[#060B20] rounded-3xl border border-white/10 overflow-hidden relative shadow-2xl flex flex-col">
+                <div className="px-4 py-2.5 bg-slate-900/90 border-b border-white/10 flex items-center justify-between text-xs z-10">
+                  <div className="flex items-center gap-2 text-white font-bold truncate">
+                    <MapPin size={14} className="text-[#38BDF8] shrink-0" />
+                    <span className="truncate">Bitexco Financial Tower — Quận 1, TP.HCM</span>
                   </div>
-                  <h4 className="text-white font-bold mb-1">Bitexco Financial Tower</h4>
-                  <p className="text-slate-400 text-xs max-w-xs">2 Hải Triều, Bến Nghé, Quận 1, Hồ Chí Minh</p>
                   <a 
-                    href="https://maps.google.com" 
+                    href="https://www.google.com/maps/search/?api=1&query=Bitexco+Financial+Tower,+2+H%E1%BA%A3i+Tri%E1%BB%81u,+B%E1%BA%BFn+Ngh%C3%A9,+Qu%E1%BA%ADn+1,+H%E1%BB%93+Ch%C3%AD+Minh" 
                     target="_blank" 
                     rel="noreferrer"
-                    className="mt-4 text-[#38BDF8] text-xs font-bold uppercase tracking-wider flex items-center gap-1 hover:text-white transition-colors"
+                    className="px-2.5 py-1 rounded-lg bg-[#0284C7] hover:bg-[#0369A1] text-white text-[11px] font-bold flex items-center gap-1 transition-transform hover:scale-105 shrink-0"
                   >
-                    Xem trên Google Maps <ChevronRight size={14} />
+                    Mở Google Maps <ChevronRight size={12} />
                   </a>
+                </div>
+                <div className="flex-1 w-full h-full relative">
+                  <iframe
+                    title="Google Map Bitexco"
+                    src="https://maps.google.com/maps?q=Bitexco+Financial+Tower,+2+H%E1%BA%A3i+Tri%E1%BB%81u,+B%E1%BA%BFn+Ngh%C3%A9,+Qu%E1%BA%ADn+1,+H%E1%BB%93+Ch%C3%AD+Minh&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                    className="w-full h-full border-0"
+                    loading="lazy"
+                    allowFullScreen
+                  />
                 </div>
               </div>
             </div>

@@ -390,7 +390,7 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
                         onClick={() => setIsSearchFocused(false)}
                         className="inline-block mt-2 font-bold text-blue-600 hover:underline"
                       >
-                        Xem tất cả 16 mẫu website →
+                        Xem tất cả {ALL_TEMPLATES.length} mẫu website →
                       </Link>
                     </div>
                   )}

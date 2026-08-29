@@ -10,11 +10,11 @@ import { approveOrder } from './admin.controller';
 import { websiteProvisioningService } from '../services/website-provisioning.service';
 import { TemplatePackagingService } from '../services/template-packaging.service';
 
-// ?nh nghia schemas Zod validation
+// Định nghĩa schemas Zod validation
 const createOrderSchema = z.object({
-  templateId: z.string().min(1, 'ID Template khng du?c d? tr?ng.'),
+  templateId: z.string().min(1, 'ID Template không được để trống.'),
   type: z.enum(['BUY', 'RENT', 'BUY_SOURCE']),
-  fullName: z.string().min(2, 'H? v tn t?i thi?u ph?i c 2 k t?.'),
+  fullName: z.string().min(2, 'Họ và tên tối thiểu phải có 2 ký tự.'),
   email: z.string().email('Định dạng email không hợp lệ.'),
   phone: z.string().regex(/^(0|\+84)[0-9]{9,10}$/, 'SĐT phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.'),
   subdomain: z.string().optional(),
@@ -22,48 +22,46 @@ const createOrderSchema = z.object({
 });
 
 const uploadPaymentSchema = z.object({
-  transactionCode: z.string().min(3, 'M giao d?ch t?i thi?u 3 k t?.'),
-  billImageUrl: z.string().url('URL ?nh ha don khng h?p l?.'),
+  transactionCode: z.string().min(3, 'Mã giao dịch tối thiểu 3 ký tự.'),
+  billImageUrl: z.string().url('URL ảnh hóa đơn không hợp lệ.'),
 });
 
-// Legacy development catalog. Marketplace endpoints intentionally never use
-// it: purchasable templates must always come from the database.
+const contactSubmissionSchema = z.object({
+  fullName: z.string().min(2, 'Họ và tên tối thiểu 2 ký tự.'),
+  phone: z.string().regex(/^(0|\+84)[0-9]{9,10}$/, 'SĐT phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.'),
+  email: z.string().email('Định dạng email không hợp lệ.').optional().or(z.literal('')),
+  selectedTemplate: z.string().optional(),
+  packageInterest: z.string().optional(),
+  message: z.string().optional(),
+});
+
+// Legacy development catalog
 const LEGACY_MOCK_TEMPLATES = [
   { id: 'mock-1', name: 'Luxury Gold Style', slug: 'luxury-gold', shortDescription: 'Giao diện sang trọng phong cách vàng cao cấp', description: 'Website BĐS cao cấp với tông màu vàng sang trọng, phù hợp cho dự án hạng A.', thumbnail: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'luxury', tags: ['luxury', 'gold', 'premium'], isActive: true, sortOrder: 1, isFeatured: true, templateConfig: null },
   { id: 'mock-2', name: 'Minimal White Style', slug: 'minimal-white', shortDescription: 'Thiết kế tối giản, hiện đại, sạch sẽ', description: 'Website BĐS với thiết kế tối giản, trắng tinh tế, phù hợp thương hiệu hiện đại.', thumbnail: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'minimal', tags: ['minimal', 'white', 'modern'], isActive: true, sortOrder: 2, isFeatured: true, templateConfig: null },
-  { id: 'mock-3', name: 'Modern Corporate Style', slug: 'modern-corporate', shortDescription: 'Phong cách doanh nghiệp chuyên nghiệp', description: 'Giao diện doanh nghiệp BĐS chuyên nghiệp, uy tín, phù hợp văn phòng môi giới lớn.', thumbnail: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'corporate', tags: ['corporate', 'professional', 'blue'], isActive: true, sortOrder: 3, isFeatured: false, templateConfig: null },
-  { id: 'mock-4', name: 'Eco Green Style', slug: 'eco-green', shortDescription: 'Phong cách xanh mát, gần gũi thiên nhiên', description: 'Website BĐS xanh, thân thiện thiên nhiên, phù hợp dự án nhà vườn sinh thái.', thumbnail: 'https://images.unsplash.com/photo-1448630360428-65456885c650?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'eco', tags: ['eco', 'green', 'nature'], isActive: true, sortOrder: 4, isFeatured: false, templateConfig: null },
-  { id: 'mock-5', name: 'Dark Prestige Style', slug: 'dark-prestige', shortDescription: 'Phong cách tối sang trọng, uy lực', description: 'Giao diện tối màu đẳng cấp cho dự án BĐS cao cấp hướng khách hàng VIP.', thumbnail: 'https://images.unsplash.com/photo-1531971589569-0d9370cbe1e5?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'dark', tags: ['dark', 'prestige', 'vip'], isActive: true, sortOrder: 5, isFeatured: true, templateConfig: null },
-  { id: 'mock-6', name: 'Ocean Blue Style', slug: 'ocean-blue', shortDescription: 'Phong cách biển xanh tươi mát', description: 'Website BĐS biển, nghỉ dưỡng ven biển với tông xanh dương tươi sáng.', thumbnail: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'coastal', tags: ['ocean', 'blue', 'coastal'], isActive: true, sortOrder: 6, isFeatured: false, templateConfig: null },
-  { id: 'mock-7', name: 'Industrial Estate Style', slug: 'industrial-estate', shortDescription: 'Chuyên biệt cho BĐS khu công nghiệp', description: 'Giao diện chuyên nghiệp dành riêng cho môi giới khu công nghiệp, nhà xưởng.', thumbnail: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'industrial', tags: ['industrial', 'factory', 'b2b'], isActive: true, sortOrder: 7, isFeatured: false, templateConfig: null },
-  { id: 'mock-8', name: 'Agency OnePage Style', slug: 'agency-onepage', shortDescription: 'Landing page một trang cho agency', description: 'Website một trang tối ưu conversion cho sàn môi giới, agency BĐS chuyên nghiệp.', thumbnail: 'https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'onepage', tags: ['agency', 'onepage', 'landing'], isActive: true, sortOrder: 8, isFeatured: false, templateConfig: null },
-  { id: 'mock-9', name: 'Apartment Premium Style', slug: 'apartment-premium', shortDescription: 'Chuyên biệt cho căn hộ cao cấp', description: 'Giao diện chuyên biệt cho dự án căn hộ cao cấp, chung cư hạng sang.', thumbnail: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'apartment', tags: ['apartment', 'condo', 'premium'], isActive: true, sortOrder: 9, isFeatured: false, templateConfig: null },
-  { id: 'mock-10', name: 'Villa Luxury Style', slug: 'villa-luxury', shortDescription: 'Chuyên biệt cho biệt thự, villa cao cấp', description: 'Website BĐS sang trọng dành riêng cho dự án biệt thự, villa nghỉ dưỡng.', thumbnail: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'villa', tags: ['villa', 'luxury', 'resort'], isActive: true, sortOrder: 10, isFeatured: true, templateConfig: null },
-  { id: 'mock-11', name: 'Land Plot Style', slug: 'land-plot', shortDescription: 'Chuyên biệt cho đất nền, đất phân lô', description: 'Giao diện tối ưu cho sàn môi giới đất nền, đất phân lô dự án khu đô thị.', thumbnail: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'land', tags: ['land', 'plot', 'subdivision'], isActive: true, sortOrder: 11, isFeatured: false, templateConfig: null },
-  { id: 'mock-12', name: 'Office Commercial Style', slug: 'office-commercial', shortDescription: 'Chuyên cho văn phòng, thương mại', description: 'Website BĐS thương mại, văn phòng cho thuê chuyên nghiệp, uy tín.', thumbnail: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'commercial', tags: ['office', 'commercial', 'rent'], isActive: true, sortOrder: 12, isFeatured: false, templateConfig: null },
 ];
 
 export async function getTemplates(req: Request, res: Response, next: NextFunction) {
   try {
     const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 12;
+    const limit = parseInt(req.query.limit as string) || 16;
     const search = req.query.q as string || '';
     const skip = (page - 1) * limit;
 
     const where: any = {
-        isActive: true,
-        ...(search && {
-          OR: [
-            { name: { contains: search, mode: 'insensitive' } },
-            { description: { contains: search, mode: 'insensitive' } },
-          ],
-        }),
-      };
+      isActive: true,
+      ...(search && {
+        OR: [
+          { name: { contains: search, mode: 'insensitive' } },
+          { description: { contains: search, mode: 'insensitive' } },
+        ],
+      }),
+    };
 
     const [templates, total] = await prisma.$transaction([
-        prisma.template.findMany({ where, skip, take: limit, orderBy: { sortOrder: 'asc' } }),
-        prisma.template.count({ where }),
-      ]);
+      prisma.template.findMany({ where, skip, take: limit, orderBy: { sortOrder: 'asc' } }),
+      prisma.template.count({ where }),
+    ]);
 
     res.status(200).json({
       success: true,
@@ -80,14 +78,14 @@ export async function getTemplateDetail(req: Request, res: Response, next: NextF
 
   try {
     const template = await prisma.template.findUnique({
-        where: { slug, isActive: true },
-        include: { templateConfig: true },
-      });
+      where: { slug, isActive: true },
+      include: { templateConfig: true },
+    });
 
     if (!template) {
       return res.status(404).json({
         success: false,
-        error: { code: 'TEMPLATE_NOT_FOUND', message: 'Kh�ng t�m th?y th�ng tin Template giao di?n n�y.' },
+        error: { code: 'TEMPLATE_NOT_FOUND', message: 'Không tìm thấy thông tin Template giao diện này.' },
       });
     }
 
@@ -105,22 +103,19 @@ export async function checkSubdomain(req: Request, res: Response, next: NextFunc
       success: false,
       error: {
         code: 'MISSING_SLUG',
-        message: 'Thi?u tham s? subdomain slug c?n ki?m tra.',
+        message: 'Thiếu tham số subdomain slug cần kiểm tra.',
       },
     });
   }
 
-  // Chu?n h�a slug
   const normalizedSlug = slug.toLowerCase().trim();
-  
-  // Ki?m tra blacklist subdomains h? th?ng
   const blacklist = ['www', 'admin', 'cms', 'api', 'website', 'myplatform', 'platform'];
   if (blacklist.includes(normalizedSlug)) {
     return res.status(200).json({
       success: true,
       data: {
         available: false,
-        message: 'T�n subdomain n�y n?m trong danh m?c b?o luu h? th?ng.',
+        message: 'Tên subdomain này nằm trong danh mục bảo lưu hệ thống.',
       },
     });
   }
@@ -135,8 +130,8 @@ export async function checkSubdomain(req: Request, res: Response, next: NextFunc
       data: {
         available: !existingTenant,
         message: existingTenant 
-          ? 'T�n mi?n d� du?c dang k� s? d?ng b?i ngu?i kh�c.' 
-          : 'T�n mi?n ho�n to�n kh? d?ng.',
+          ? 'Tên miền đã được đăng ký sử dụng bởi người khác.' 
+          : 'Tên miền hoàn toàn khả dụng.',
       },
     });
   } catch (error) {
@@ -148,7 +143,6 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
   try {
     const data = createOrderSchema.parse(req.body);
 
-    // 1. The selected template lookup (flexible by id, slug, or normalized slug)
     const cleanSlug = data.templateId.replace(/^template-/, '').toLowerCase();
     let template = await prisma.template.findFirst({
       where: {
@@ -161,7 +155,6 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
       },
     });
 
-    // Fallback: if template record not found yet in DB, pick the first active template
     if (!template) {
       template = await prisma.template.findFirst({
         where: { isActive: true },
@@ -179,8 +172,6 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
       });
     }
 
-
-    // 2. N?u l don thu (RENT), chu?n ha subdomain
     let normalizedSubdomain = '';
     if (data.type === 'RENT') {
       if (!data.subdomain) {
@@ -188,7 +179,7 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
           success: false,
           error: {
             code: 'MISSING_SUBDOMAIN',
-            message: 'Thu� website b?t bu?c ph?i khai b�o subdomain.',
+            message: 'Thuê website bắt buộc phải khai báo subdomain.',
           },
         });
       }
@@ -209,7 +200,6 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
       }
     }
 
-    // 3. Tính toán số tiền thanh toán tương ứng
     const amount = data.type === 'BUY'
       ? template.priceBuy
       : data.type === 'BUY_SOURCE'
@@ -219,30 +209,27 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
       return res.status(409).json({ success: false, error: { code: 'PRICE_UNAVAILABLE', message: 'Sản phẩm chưa được cấu hình giá.' } });
     }
 
-    // 4. Sinh m don hng duy nh?t ORD-YYYYMMDD-XXXX
     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
     const randomHex = crypto.randomBytes(2).toString('hex').toUpperCase();
     const orderNumber = `ORD-${dateStr}-${randomHex}`;
 
-    // 5. Persist the order. A failed database must never become a fake order.
     const order = await prisma.order.create({
-        data: {
-          orderNumber,
-          fullName: data.fullName,
-          email: data.email,
-          phone: data.phone,
-          type: data.type,
-          status: 'PENDING',
-          templateId: template.id,
-          amount,
-          subdomain: normalizedSubdomain || null,
-          note: data.note,
-          userId: (req as any).user?.userId || null,
-        },
-      });
+      data: {
+        orderNumber,
+        fullName: data.fullName,
+        email: data.email,
+        phone: data.phone,
+        type: data.type,
+        status: 'PENDING',
+        templateId: template.id,
+        amount,
+        subdomain: normalizedSubdomain || null,
+        note: data.note,
+        userId: (req as any).user?.userId || null,
+      },
+    });
     logger.info(`Đã tạo đơn hàng ${orderNumber} - ${amount} VNĐ`);
 
-    // Tạo thông báo cho tất cả SUPER_ADMIN
     try {
       const admins = await prisma.user.findMany({ where: { role: 'SUPER_ADMIN', isActive: true } });
       if (admins.length > 0) {
@@ -268,7 +255,7 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
         success: false,
         error: {
           code: 'VALIDATION_ERROR',
-          message: 'D? li?u don h�ng kh�ng d�ng d?nh d?ng.',
+          message: 'Dữ liệu đơn hàng không đúng định dạng.',
           details: error.errors,
         },
       });
@@ -283,11 +270,10 @@ export async function uploadPaymentProof(req: Request, res: Response, next: Next
   try {
     const data = uploadPaymentSchema.parse(req.body);
 
-    // [P0-FIX] Auth check
     const userId = req.user?.userId;
     const userEmail = req.user?.email;
     if (!userId) {
-      return res.status(401).json({ success: false, error: { code: "UNAUTHENTICATED", message: "Vui long dang nhap de xac nhan thanh toan." } });
+      return res.status(401).json({ success: false, error: { code: 'UNAUTHENTICATED', message: 'Vui lòng đăng nhập để xác nhận thanh toán.' } });
     }
 
     const order = await prisma.order.findUnique({
@@ -299,14 +285,13 @@ export async function uploadPaymentProof(req: Request, res: Response, next: Next
         success: false,
         error: {
           code: 'ORDER_NOT_FOUND',
-          message: '�on h�ng kh�ng t?n t?i tr�n h? th?ng.',
+          message: 'Đơn hàng không tồn tại trên hệ thống.',
         },
       });
     }
 
-    // [P0-FIX] Verify order ownership
-    if (order.userId !== userId && order.email !== userEmail && req.user?.role !== "SUPER_ADMIN") {
-      return res.status(403).json({ success: false, error: { code: "FORBIDDEN", message: "Ban khong co quyen thao tac tren don hang nay." } });
+    if (order.userId !== userId && order.email !== userEmail && req.user?.role !== 'SUPER_ADMIN') {
+      return res.status(403).json({ success: false, error: { code: 'FORBIDDEN', message: 'Bạn không có quyền thao tác trên đơn hàng này.' } });
     }
 
     if (order.status !== 'PENDING') {
@@ -314,12 +299,11 @@ export async function uploadPaymentProof(req: Request, res: Response, next: Next
         success: false,
         error: {
           code: 'ORDER_NOT_PENDING',
-          message: '�on h�ng n�y kh�ng c�n ? tr?ng th�i ch? thanh to�n.',
+          message: 'Đơn hàng này không còn ở trạng thái chờ thanh toán.',
         },
       });
     }
 
-    // Ki?m tra xem transactionCode n�y d� b? don h�ng kh�c s? d?ng chua (Unique check)
     const existingTransaction = await prisma.order.findUnique({
       where: { transactionCode: data.transactionCode },
     });
@@ -329,12 +313,11 @@ export async function uploadPaymentProof(req: Request, res: Response, next: Next
         success: false,
         error: {
           code: 'TRANSACTION_CODE_DUPLICATED',
-          message: 'M� giao d?ch ng�n h�ng n�y d� du?c khai b�o cho don h�ng kh�c.',
+          message: 'Mã giao dịch ngân hàng này đã được khai báo cho đơn hàng khác.',
         },
       });
     }
 
-    // C?p nh?t tr?ng th�i don h�ng sang WAITING_CONFIRM v� d�nh k�m b?ng ch?ng
     const updatedOrder = await prisma.order.update({
       where: { id, version: order.version },
       data: {
@@ -345,7 +328,7 @@ export async function uploadPaymentProof(req: Request, res: Response, next: Next
       },
     });
 
-    logger.info(`Kh�ch h�ng d� t?i h�a don thanh to�n cho don h�ng: ${order.orderNumber}`);
+    logger.info(`Khách hàng đã tải hóa đơn thanh toán cho đơn hàng: ${order.orderNumber}`);
 
     res.status(200).json({
       success: true,
@@ -357,7 +340,7 @@ export async function uploadPaymentProof(req: Request, res: Response, next: Next
         success: false,
         error: {
           code: 'VALIDATION_ERROR',
-          message: 'Th�ng tin x�c nh?n thanh to�n sai d?nh d?ng.',
+          message: 'Thông tin xác nhận thanh toán sai định dạng.',
           details: error.errors,
         },
       });
@@ -366,12 +349,6 @@ export async function uploadPaymentProof(req: Request, res: Response, next: Next
   }
 }
 
-
-/**
- * GET /api/marketplace/stats
- * Trả về số liệu thực tế DB để hiển thị trên landing page.
- * Public endpoint - không cần auth.
- */
 export async function getMarketplaceStats(req: Request, res: Response, next: NextFunction) {
   try {
     const [totalTenants, totalTemplates, completedOrders] = await Promise.all([
@@ -394,18 +371,13 @@ export async function getMarketplaceStats(req: Request, res: Response, next: Nex
   }
 }
 
-/**
- * GET /api/marketplace/templates/:slug/download
- * Cho phép tải trọn bộ mã nguồn Next.js 15 cấu hình sẵn cho mẫu tương ứng dưới dạng ZIP.
- */
 export async function downloadTemplateSource(req: Request, res: Response, next: NextFunction) {
   const { slug } = req.params;
 
   try {
-    // [P0-FIX] Auth + purchase verification
     const userId = req.user?.userId;
     if (!userId) {
-      return res.status(401).json({ success: false, error: { code: "UNAUTHENTICATED", message: "Vui long dang nhap de tai ma nguon." } });
+      return res.status(401).json({ success: false, error: { code: 'UNAUTHENTICATED', message: 'Vui lòng đăng nhập để tải mã nguồn.' } });
     }
     const cleanSlug = slug.toLowerCase().trim();
     let tpl = await prisma.template.findFirst({
@@ -429,14 +401,14 @@ export async function downloadTemplateSource(req: Request, res: Response, next: 
           ...(userEmail ? [{ email: userEmail }] : []),
         ],
         ...(tpl ? { templateId: tpl.id } : {}),
-        type: { in: ["BUY", "BUY_SOURCE"] },
-        status: "COMPLETED",
+        type: { in: ['BUY', 'BUY_SOURCE'] },
+        status: 'COMPLETED',
       },
       orderBy: { createdAt: 'desc' },
     });
 
-    if (!paidOrder && req.user?.role !== "SUPER_ADMIN") {
-      return res.status(403).json({ success: false, error: { code: "NO_PURCHASE", message: "Ban chua mua ban quyen mau nay hoac don hang chua hoan tat." } });
+    if (!paidOrder && req.user?.role !== 'SUPER_ADMIN') {
+      return res.status(403).json({ success: false, error: { code: 'NO_PURCHASE', message: 'Bạn chưa mua bản quyền mẫu này hoặc đơn hàng chưa hoàn tất.' } });
     }
 
     const packageResult = await TemplatePackagingService.generateStandalonePackage({
@@ -458,10 +430,6 @@ export async function downloadTemplateSource(req: Request, res: Response, next: 
   }
 }
 
-/**
- * POST /api/marketplace/orders/:id/quick-approve
- * Duyet nhanh don hang - Yeu cau xac thuc va phan quyen SUPER_ADMIN / ADMIN
- */
 export async function quickApproveOrder(req: Request, res: Response, next: NextFunction) {
   try {
     return await approveOrder(req, res, next);
@@ -470,10 +438,6 @@ export async function quickApproveOrder(req: Request, res: Response, next: NextF
   }
 }
 
-/**
- * POST /api/marketplace/webhook/sepay
- * Webhook tự động nhận thông báo biến động số dư từ SePay
- */
 export async function handleSepayWebhook(req: Request, res: Response, next: NextFunction) {
   try {
     const webhookSecret = process.env.SEPAY_WEBHOOK_SECRET;
@@ -490,12 +454,10 @@ export async function handleSepayWebhook(req: Request, res: Response, next: Next
     const payload = req.body;
     logger.info(`[SePay Webhook] Received payload: ${JSON.stringify(payload)}`);
 
-    // Payload SePay gồm: content, transferAmount, referenceCode, id, gateway, etc.
     const content = payload.content || payload.description || '';
     const transferAmount = Number(payload.transferAmount) || 0;
     const refCode = payload.referenceCode || String(payload.id || '');
 
-    // 1. Trích xuất mã đơn hàng từ nội dung chuyển khoản (ORD-YYYYMMDD-XXXX hoặc ORD-XXXXX)
     const match = content.match(/ORD-[A-Za-z0-9-]+/i);
     if (!match) {
       logger.warn(`[SePay Webhook] Không tìm thấy mã đơn hàng trong nội dung: "${content}"`);
@@ -518,7 +480,6 @@ export async function handleSepayWebhook(req: Request, res: Response, next: Next
       return res.status(200).json({ success: true, message: `Order ${orderNumber} already completed` });
     }
 
-    // 2. Kiểm tra số tiền chuyển
     if (transferAmount > 0 && transferAmount < order.amount) {
       logger.warn(`[SePay Webhook] Số tiền chuyển ${transferAmount} nhỏ hơn giá trị đơn ${order.amount}`);
       await prisma.order.update({
@@ -528,7 +489,6 @@ export async function handleSepayWebhook(req: Request, res: Response, next: Next
       return res.status(200).json({ success: true, message: 'Partial payment received' });
     }
 
-    // 3. Cập nhật trạng thái đơn hàng thành COMPLETED
     await prisma.order.update({
       where: { id: order.id },
       data: {
@@ -538,7 +498,6 @@ export async function handleSepayWebhook(req: Request, res: Response, next: Next
       },
     });
 
-    // 4. Tự động khởi tạo Website Instance cho khách hàng
     const candidateSubdomain = order.subdomain || order.phone.replace(/[^a-zA-Z0-9]/g, '') || `site-${Date.now().toString().slice(-6)}`;
     const cleanSubdomain = candidateSubdomain.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 30);
 
@@ -577,10 +536,6 @@ export async function handleSepayWebhook(req: Request, res: Response, next: Next
   }
 }
 
-/**
- * GET /api/marketplace/orders/:orderNumber/status
- * Kiểm tra trạng thái đơn hàng realtime cho frontend polling
- */
 export async function getOrderStatus(req: Request, res: Response, next: NextFunction) {
   try {
     const { orderNumber } = req.params;
@@ -595,13 +550,11 @@ export async function getOrderStatus(req: Request, res: Response, next: NextFunc
 
     let tenant = null;
     if (order.status === 'COMPLETED') {
-      // Ưu tiên tìm tenant trực tiếp từ order.tenantId (đáng tin nhất)
       if (order.tenantId) {
         tenant = await prisma.tenant.findUnique({
           where: { id: order.tenantId },
         });
       }
-      // Fallback: tìm theo email relationship
       if (!tenant) {
         tenant = await prisma.tenant.findFirst({
           where: {
@@ -638,10 +591,6 @@ export async function getOrderStatus(req: Request, res: Response, next: NextFunc
   }
 }
 
-/**
- * POST /api/marketplace/orders/:orderNumber/simulate-payment
- * Dev test sandbox: Giả lập thanh toán thành công ngay lập tức
- */
 export async function simulatePayment(req: Request, res: Response, next: NextFunction) {
   try {
     if (process.env.NODE_ENV === 'production') {
@@ -662,7 +611,6 @@ export async function simulatePayment(req: Request, res: Response, next: NextFun
       return res.status(200).json({ success: true, message: 'Đơn hàng đã được thanh toán và kích hoạt trước đó.' });
     }
 
-    // 1. Cập nhật trạng thái
     await prisma.order.update({
       where: { id: order.id },
       data: {
@@ -672,11 +620,10 @@ export async function simulatePayment(req: Request, res: Response, next: NextFun
       },
     });
 
-    // 2. Tự động provision website instance
     const slugifyBrand = (text: string) => {
       return (text || '')
         .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[̀-ͯ]/g, '')
         .replace(/đ/g, 'd')
         .replace(/Đ/g, 'd')
         .toLowerCase()
@@ -724,10 +671,6 @@ export async function simulatePayment(req: Request, res: Response, next: NextFun
   }
 }
 
-/**
- * GET /api/marketplace/orders/my-orders
- * Khách hàng đã đăng nhập xem lại lịch sử đơn hàng (như TMĐT)
- */
 export async function getMyOrders(req: Request, res: Response, next: NextFunction) {
   try {
     const userId = (req as any).user?.userId;
@@ -740,7 +683,6 @@ export async function getMyOrders(req: Request, res: Response, next: NextFunctio
       });
     }
 
-    // Tìm tất cả đơn hàng theo userId HOẶC email (phòng trường hợp đơn cũ chưa có userId)
     const orders = await prisma.order.findMany({
       where: {
         OR: [
@@ -766,25 +708,14 @@ export async function getMyOrders(req: Request, res: Response, next: NextFunctio
   }
 }
 
-const contactSubmissionSchema = z.object({
-  fullName: z.string().min(2, 'Họ và tên tối thiểu 2 ký tự.'),
-  phone: z.string().regex(/^(0|\+84)[0-9]{9,10}$/, 'SĐT phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.'),
-  email: z.string().email('Định dạng email không hợp lệ.').optional().or(z.literal('')),
-  selectedTemplate: z.string().optional(),
-  packageInterest: z.string().optional(),
-  message: z.string().optional(),
-});
-
 export async function createContactSubmission(req: Request, res: Response, next: NextFunction) {
   try {
     const data = contactSubmissionSchema.parse(req.body);
 
-    // Tạo đơn hàng/liên hệ với type CONTACT
     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
     const randomHex = crypto.randomBytes(2).toString('hex').toUpperCase();
     const orderNumber = `CTT-${dateStr}-${randomHex}`;
 
-    // Tìm template nếu có
     let templateId: string | null = null;
     let templateName = data.selectedTemplate || 'Chưa chọn';
     if (data.selectedTemplate) {
@@ -811,7 +742,6 @@ export async function createContactSubmission(req: Request, res: Response, next:
       },
     });
 
-    // Tạo thông báo cho tất cả SUPER_ADMIN
     try {
       const admins = await prisma.user.findMany({ where: { role: 'SUPER_ADMIN', isActive: true } });
       if (admins.length > 0) {
@@ -847,4 +777,3 @@ export async function createContactSubmission(req: Request, res: Response, next:
     next(error);
   }
 }
-

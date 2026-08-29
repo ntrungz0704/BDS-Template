@@ -11,13 +11,9 @@ import {
 import { MAX_W } from '../design-system';
 
 interface TemplateProps {
-  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, any> };
+  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
-  company?: any;
-  theme?: any;
-  projects?: any[];
-  posts?: any[];
 }
 
 interface Auction {
@@ -298,69 +294,21 @@ const GALLERY_ITEMS: GalleryItem[] = [
   { id: 10, title: "Phòng ngủ view hồ Tây Liễu Giai", image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80", category: "can-ho" }
 ];
 
-export default function AuctionTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
-  const brandPrimary = dynamicTheme?.primaryColor || '#DC2626';
-  const brandAccent = dynamicTheme?.accentColor || '#EF4444';
-  // Dynamic Posts Override & Shadowing Variable via globalThis reference
-  const activePosts = posts && posts.length > 0
-    ? posts.map((p, index) => ({
-        id: p.id || String(index),
-        title: p.title,
-        category: p.category?.name || 'Bất Động Sản',
-        cat: p.category?.name || 'Bất Động Sản',
-        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : '12/07/2026',
-        author: p.author?.fullName || 'Chuyên viên BĐS',
-        excerpt: p.summary || p.description || 'Tóm tắt bài viết...',
-        summary: p.summary || p.description || 'Tóm tắt bài viết...',
-        description: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        content: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        readTime: '5 phút đọc'
-      }))
-    : ((globalThis as any).__mock_news_ref || []);
+const normalizeAuctionPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham', 'dau-gia', 'auctions'].includes(clean)) return 'auctions';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
 
-  // Shadowing variables
-  const MOCK_NEWS: any = activePosts;
-
-  // Dynamic Projects Override & Shadowing Variable via globalThis reference
-  const activeProjects = projects && projects.length > 0
-    ? projects.map((p, index) => ({
-        id: p.id || String(index),
-        name: p.title,
-        title: p.title,
-        location: p.address || 'Hệ thống',
-        price: p.price,
-        priceLabel: p.price,
-        area: p.area || '—',
-        type: p.type || 'Dự Án',
-        status: p.status || 'SELLING',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        tag: index === 0 ? 'EXCLUSIVE' : 'HOT',
-        desc: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        description: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        shortDescription: p.shortDescription || '',
-        specs: p.shortDescription || `${p.area} · ${p.type}`,
-        priceVal: parseFloat(p.price) || 0,
-        loc: p.address || 'Hệ thống',
-        size: parseFloat(p.area) || 0,
-        bedrooms: 3,
-        bathrooms: 2,
-        features: [p.type],
-        style: 'Modern',
-        delivery: '2026',
-        scale: '1 block'
-      }))
-    : ((globalThis as any).__auction_properties_ref || []);
-
-  // Shadowing variables
-  const AUCTION_PROPERTIES: any = activeProjects;
-
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+export default function AuctionTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
+  const [currentPage, setCurrentPageState] = useState(normalizeAuctionPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizeAuctionPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedArticle === "function") setSelectedArticle(null);
@@ -369,7 +317,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
     if (typeof setSelectedArticle === "function") setSelectedArticle(null);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
+      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
     }
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -452,12 +400,12 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
 
   const NavLinks = () => (
     <>
-      <button onClick={() => navigateTo('home')} style={currentPage === 'home' ? { color: brandPrimary } : undefined} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'home' ? '' : 'text-gray-850 hover:opacity-80'}`}>Trang Chủ</button>
-      <button onClick={() => navigateTo('auctions')} style={currentPage === 'auctions' ? { color: brandPrimary } : undefined} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'auctions' ? '' : 'text-gray-850 hover:opacity-80'}`}>Đang Đấu Giá</button>
-      <button onClick={() => navigateTo('about')} style={currentPage === 'about' ? { color: brandPrimary } : undefined} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'about' ? '' : 'text-gray-850 hover:opacity-80'}`}>Về Chúng Tôi</button>
-      <button onClick={() => navigateTo('gallery')} style={currentPage === 'gallery' ? { color: brandPrimary } : undefined} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'gallery' ? '' : 'text-gray-850 hover:opacity-80'}`}>Hình Ảnh</button>
-      <button onClick={() => navigateTo('news')} style={currentPage === 'news' ? { color: brandPrimary } : undefined} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'news' ? '' : 'text-gray-850 hover:opacity-80'}`}>Tin Tức</button>
-      <button onClick={() => navigateTo('contact')} style={currentPage === 'contact' ? { color: brandPrimary } : undefined} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'contact' ? '' : 'text-gray-850 hover:opacity-80'}`}>Liên Hệ</button>
+      <button onClick={() => navigateTo('home')} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'home' ? 'text-red-600' : 'text-gray-850 hover:text-red-600'}`}>Trang Chủ</button>
+      <button onClick={() => navigateTo('auctions')} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'auctions' ? 'text-red-600' : 'text-gray-850 hover:text-red-600'}`}>Đang Đấu Giá</button>
+      <button onClick={() => navigateTo('about')} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'about' ? 'text-red-600' : 'text-gray-850 hover:text-red-600'}`}>Về Chúng Tôi</button>
+      <button onClick={() => navigateTo('gallery')} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'gallery' ? 'text-red-600' : 'text-gray-850 hover:text-red-600'}`}>Hình Ảnh</button>
+      <button onClick={() => navigateTo('news')} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'news' ? 'text-red-600' : 'text-gray-850 hover:text-red-600'}`}>Tin Tức</button>
+      <button onClick={() => navigateTo('contact')} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'contact' ? 'text-red-600' : 'text-gray-850 hover:text-red-600'}`}>Liên Hệ</button>
     </>
   );
 
@@ -478,9 +426,9 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
 
     return (
       <div className="flex gap-2 text-center text-xs font-bold font-['Barlow']">
-        <div style={{ backgroundColor: brandPrimary }} className="text-white rounded p-1 w-10">{time.h.toString().padStart(2, '0')}<span className="block text-[8px] uppercase font-light mt-1">Giờ</span></div>
-        <div style={{ backgroundColor: brandPrimary }} className="text-white rounded p-1 w-10">{time.m.toString().padStart(2, '0')}<span className="block text-[8px] uppercase font-light mt-1">Phút</span></div>
-        <div style={{ backgroundColor: brandPrimary }} className="text-white rounded p-1 w-10">{time.s.toString().padStart(2, '0')}<span className="block text-[8px] uppercase font-light mt-1">Giây</span></div>
+        <div className="bg-red-600 text-white rounded p-1 w-10">{time.h.toString().padStart(2, '0')}<span className="block text-[8px] uppercase font-light mt-1">Giờ</span></div>
+        <div className="bg-red-600 text-white rounded p-1 w-10">{time.m.toString().padStart(2, '0')}<span className="block text-[8px] uppercase font-light mt-1">Phút</span></div>
+        <div className="bg-red-600 text-white rounded p-1 w-10">{time.s.toString().padStart(2, '0')}<span className="block text-[8px] uppercase font-light mt-1">Giây</span></div>
       </div>
     );
   };
@@ -499,7 +447,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
             Nền tảng đấu giá trực tuyến số 1 Việt Nam
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-['Barlow_Condensed'] font-bold text-white uppercase leading-tight mb-6 tracking-tight drop-shadow-lg">
-            Đấu Giá <span style={{ color: brandAccent }}>Minh Bạch</span><br />
+            Đấu Giá <span className="text-red-500">Minh Bạch</span><br />
             Giá Trị <span className="text-amber-400">Thực Tế</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-200 max-w-2xl font-light mb-10">
@@ -533,8 +481,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
             </div>
             <button 
               onClick={() => navigateTo('auctions')}
-              style={{ backgroundColor: brandPrimary }}
-              className="w-full md:w-auto hover:opacity-90 text-white px-8 py-3 rounded-lg font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 text-lg"
+              className="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 text-lg"
             >
               <Search size={20} /> Tìm Kiếm
             </button>
@@ -553,16 +500,16 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
         <div className={`${MAX_W} px-4 mx-auto`}>
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b-2 border-red-100 pb-4">
             <div>
-              <div style={{ color: brandPrimary }} className="inline-flex items-center gap-2 font-bold uppercase tracking-widest text-sm mb-2">
+              <div className="inline-flex items-center gap-2 text-red-600 font-bold uppercase tracking-widest text-sm mb-2">
                 <span className="relative flex h-3 w-3">
-                  <span style={{ backgroundColor: brandAccent }} className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"></span>
-                  <span style={{ backgroundColor: brandPrimary }} className="relative inline-flex rounded-full h-3 w-3"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
                 </span>
                 Đang Diễn Ra
               </div>
-              <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Phiên Đấu Giá <span style={{ color: brandPrimary }}>Trực Tiếp</span></h2>
+              <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Phiên Đấu Giá <span className="text-red-600">Trực Tiếp</span></h2>
             </div>
-            <button onClick={() => navigateTo('auctions')} style={{ color: brandPrimary }} className="hidden md:flex items-center gap-2 font-bold hover:opacity-80 transition-colors uppercase tracking-wider">
+            <button onClick={() => navigateTo('auctions')} className="hidden md:flex items-center gap-2 text-red-600 font-bold hover:text-red-800 transition-colors uppercase tracking-wider">
               Xem tất cả <ArrowRight size={20} />
             </button>
           </div>
@@ -572,7 +519,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
               <div key={item.id} onClick={() => { setSelectedAuction(item); setBidError(''); setBidSuccess(''); }} className="bg-white rounded-2xl shadow-xl overflow-hidden border border-red-50 hover:-translate-y-1 transition-transform duration-300 group cursor-pointer">
                 <div className="relative h-64 overflow-hidden">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                  <div style={{ backgroundColor: brandPrimary }} className="absolute top-4 left-4 text-white px-3 py-1 rounded font-bold text-sm shadow flex items-center gap-2 uppercase tracking-wider">
+                  <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded font-bold text-sm shadow flex items-center gap-2 uppercase tracking-wider">
                     <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span> LIVE
                   </div>
                   <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white px-3 py-1 rounded text-sm shadow flex items-center gap-1 font-medium">
@@ -587,9 +534,9 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                 </div>
                 <div className="p-6">
                   <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-2">
-                    <MapPin size={14} style={{ color: brandAccent }} /> {item.location}
+                    <MapPin size={14} className="text-red-500"/> {item.location}
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 line-clamp-2 hover:opacity-80 transition-colors font-['Barlow_Condensed'] uppercase tracking-wide">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4 line-clamp-2 hover:text-red-600 transition-colors font-['Barlow_Condensed'] uppercase tracking-wide">
                     {item.title}
                   </h3>
                   
@@ -600,7 +547,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                     </div>
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-gray-500 font-medium">Giá hiện tại:</span>
-                      <span style={{ color: brandPrimary }} className="font-bold text-lg">{item.currentPrice.toLocaleString('vi-VN')} VNĐ</span>
+                      <span className="font-bold text-red-600 text-lg">{item.currentPrice.toLocaleString('vi-VN')} VNĐ</span>
                     </div>
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-gray-500 font-medium">Bước giá:</span>
@@ -608,7 +555,10 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                     </div>
                   </div>
                   
-                  <button style={{ backgroundColor: brandPrimary }} className="w-full hover:opacity-90 text-white py-3 rounded-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 text-lg shadow-lg">
+                  <button 
+                    onClick={() => setSelectedAuction(item)}
+                    className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 text-lg shadow-lg shadow-red-600/30 cursor-pointer"
+                  >
                     <Gavel size={20} /> Đặt Giá Ngay
                   </button>
                 </div>
@@ -616,7 +566,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
             ))}
           </div>
           {isMobile && (
-             <button onClick={() => navigateTo('auctions')} style={{ color: brandPrimary }} className="w-full mt-8 flex items-center justify-center gap-2 bg-gray-100 font-bold py-3 rounded-xl uppercase tracking-wider">
+             <button onClick={() => navigateTo('auctions')} className="w-full mt-8 flex items-center justify-center gap-2 bg-gray-100 text-red-600 font-bold py-3 rounded-xl uppercase tracking-wider">
                Xem tất cả <ArrowRight size={20} />
              </button>
           )}
@@ -627,8 +577,8 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
       <section className="py-20 bg-[#FEF2F2]">
         <div className={`${MAX_W} px-4 mx-auto`}>
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span style={{ color: brandPrimary }} className="font-bold uppercase tracking-widest text-sm mb-2 block">Lịch Đấu Giá</span>
-            <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Sắp <span style={{ color: brandPrimary }}>Diễn Ra</span></h2>
+            <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Lịch Đấu Giá</span>
+            <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Sắp <span className="text-red-600">Diễn Ra</span></h2>
             <p className="mt-4 text-gray-600 font-medium text-lg">Đăng ký ngay hôm nay để không bỏ lỡ các tài sản vàng sắp được lên sàn đấu giá với mức giá khởi điểm hấp dẫn.</p>
           </div>
           
@@ -643,11 +593,11 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                   <div className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1 flex items-center gap-1">
                     <Calendar size={12} /> {item.startDate}
                   </div>
-                  <h4 className="font-['Barlow_Condensed'] font-bold text-lg text-gray-900 truncate uppercase tracking-wide group-hover:opacity-80 transition-colors">{item.title}</h4>
+                  <h4 className="font-['Barlow_Condensed'] font-bold text-lg text-gray-900 truncate uppercase tracking-wide group-hover:text-red-600 transition-colors">{item.title}</h4>
                   <p className="text-sm text-gray-500 font-medium flex items-center gap-1 mt-1 truncate"><MapPin size={12} /> {item.location}</p>
-                  <p style={{ color: brandPrimary }} className="text-sm font-bold mt-1">Khởi điểm: {(item.startPrice / 1000000000).toFixed(1)} Tỷ</p>
+                  <p className="text-sm font-bold text-red-600 mt-1">Khởi điểm: {(item.startPrice / 1000000000).toFixed(1)} Tỷ</p>
                 </div>
-                <div style={{ backgroundColor: brandPrimary, color: '#FFFFFF' }} className="w-10 h-10 rounded-full flex items-center justify-center transition-colors shrink-0">
+                <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white transition-colors shrink-0">
                   <ChevronRight size={20} />
                 </div>
               </div>
@@ -661,8 +611,8 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1555529771-835f59bfc50c?auto=format&fit=crop&w=1920&q=80')] opacity-10 bg-cover bg-center mix-blend-overlay"></div>
         <div className={`${MAX_W} px-4 mx-auto relative z-10`}>
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span style={{ color: brandAccent }} className="font-bold uppercase tracking-widest text-sm mb-2 block">Quy Trình Chuẩn</span>
-            <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold uppercase">5 Bước <span style={{ color: brandAccent }}>Đấu Giá Dễ Dàng</span></h2>
+            <span className="text-red-500 font-bold uppercase tracking-widest text-sm mb-2 block">Quy Trình Chuẩn</span>
+            <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold uppercase">5 Bước <span className="text-red-500">Đấu Giá Dễ Dàng</span></h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-5 gap-8 relative">
@@ -677,11 +627,11 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
               { step: '05', title: 'Thanh Toán', desc: 'Hoàn tất thủ tục pháp lý', icon: FileText }
             ].map((item, index) => (
               <div key={index} className="relative z-10 flex flex-col items-center text-center group">
-                <div style={{ borderColor: brandAccent }} className="w-20 h-20 bg-gray-800 rounded-2xl flex items-center justify-center border-2 group-hover:bg-opacity-80 transition-colors duration-300 relative mb-6 shadow-lg">
+                <div className="w-20 h-20 bg-gray-800 rounded-2xl flex items-center justify-center border-2 border-red-500 group-hover:bg-red-600 transition-colors duration-300 relative mb-6 shadow-[0_0_15px_rgba(220,38,38,0.3)]">
                   <span className="absolute -top-3 -right-3 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center text-gray-900 font-bold text-sm">
                     {item.step}
                   </span>
-                  <item.icon size={32} style={{ color: brandAccent }} className="group-hover:text-white transition-colors" />
+                  <item.icon size={32} className="text-red-500 group-hover:text-white transition-colors" />
                 </div>
                 <h3 className="text-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wide mb-2">{item.title}</h3>
                 <p className="text-gray-400 text-sm font-medium">{item.desc}</p>
@@ -696,8 +646,8 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
         <div className={`${MAX_W} px-4 mx-auto`}>
            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b-2 border-red-100 pb-4">
             <div>
-              <span style={{ color: brandPrimary }} className="font-bold uppercase tracking-widest text-sm mb-2 block">Danh Mục</span>
-              <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Loại Hình <span style={{ color: brandPrimary }}>Tài Sản</span></h2>
+              <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Danh Mục</span>
+              <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Loại Hình <span className="text-red-600">Tài Sản</span></h2>
             </div>
             <p className="text-gray-600 font-medium max-w-md mt-4 md:mt-0 text-right hidden md:block">
               Đa dạng các loại hình bất động sản phù hợp với mọi nhu cầu đầu tư và an cư của bạn.
@@ -715,7 +665,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={`https://images.unsplash.com/photo-${cat.img}?auto=format&fit=crop&w=600&q=80`} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
                 <div className="absolute bottom-0 left-0 w-full p-6 text-white text-center">
-                  <div style={{ backgroundColor: brandPrimary }} className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:-translate-y-2 transition-transform shadow-lg backdrop-blur-sm">
+                  <div className="w-12 h-12 bg-red-600/90 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:-translate-y-2 transition-transform shadow-lg shadow-red-600/50 backdrop-blur-sm">
                     <cat.icon size={24} />
                   </div>
                   <h3 className="font-['Barlow_Condensed'] font-bold text-2xl uppercase tracking-wider mb-1">{cat.name}</h3>
@@ -732,12 +682,12 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
         <div className={`${MAX_W} px-4 mx-auto`}>
           <div className="flex flex-col lg:flex-row gap-12 items-center">
             <div className="lg:w-1/2 relative">
-              <div style={{ backgroundColor: brandPrimary }} className="absolute -inset-4 rounded-3xl transform rotate-3 opacity-20"></div>
+              <div className="absolute -inset-4 bg-red-600 rounded-3xl transform rotate-3 opacity-20"></div>
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80" alt="About" className="relative rounded-3xl shadow-2xl z-10 w-full h-[500px] object-cover" />
               <div className="absolute -bottom-8 -right-8 bg-white p-6 rounded-2xl shadow-xl z-20 hidden md:block">
                 <div className="flex items-center gap-4">
-                  <div style={{ backgroundColor: brandPrimary + '20' }} className="w-16 h-16 rounded-full flex items-center justify-center">
-                    <Gavel style={{ color: brandPrimary }} size={32} />
+                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                    <Gavel className="text-red-600" size={32} />
                   </div>
                   <div>
                     <p className="font-['Barlow_Condensed'] text-4xl font-bold text-gray-900">10+</p>
@@ -748,9 +698,9 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
             </div>
             
             <div className="lg:w-1/2">
-              <span style={{ color: brandPrimary }} className="font-bold uppercase tracking-widest text-sm mb-2 block">Về Sàn Đấu Giá</span>
+              <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Về Sàn Đấu Giá</span>
               <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-6 leading-tight">
-                Nền Tảng Đấu Giá <br/><span style={{ color: brandPrimary }}>Bất Động Sản Số 1</span>
+                Nền Tảng Đấu Giá <br/><span className="text-red-600">Bất Động Sản Số 1</span>
               </h2>
               <p className="text-gray-600 font-medium text-lg mb-6 leading-relaxed">
                 Chúng tôi tự hào là đơn vị tiên phong trong việc ứng dụng công nghệ vào lĩnh vực đấu giá bất động sản, mang lại sự minh bạch, công bằng và hiệu quả tối đa cho cả người bán và người mua.
@@ -764,8 +714,8 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                   'Quy trình làm việc đạt chuẩn ISO 9001:2015'
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 font-medium text-gray-700">
-                    <div style={{ backgroundColor: brandPrimary + '20' }} className="w-6 h-6 rounded-full flex items-center justify-center shrink-0">
-                      <CheckCircle2 size={16} style={{ color: brandPrimary }} />
+                    <div className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                      <CheckCircle2 size={16} className="text-red-600" />
                     </div>
                     {item}
                   </li>
@@ -787,7 +737,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
               { number: '15.5K', label: 'Tỷ VNĐ Giao Dịch' },
             ].map((stat, i) => (
               <div key={i} className="bg-white p-8 rounded-2xl text-center shadow-lg border border-red-50 hover:-translate-y-2 transition-transform">
-                <div style={{ color: brandPrimary }} className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold mb-2">{stat.number}</div>
+                <div className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-red-600 mb-2">{stat.number}</div>
                 <div className="text-gray-500 font-bold uppercase tracking-wider text-sm">{stat.label}</div>
               </div>
             ))}
@@ -806,7 +756,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
               </h2>
               <div className="bg-gray-50 p-6 rounded-2xl border-l-4 border-amber-500 mb-8">
                 <p className="text-gray-700 font-medium italic">
-                  &ldquo;Mọi phiên đấu giá trên hệ thống đều được giám sát chặt chẽ và tuân thủ đúng quy định của Luật Đấu giá tài sản 2016.&rdquo;
+                  "Mọi phiên đấu giá trên hệ thống đều được giám sát chặt chẽ và tuân thủ đúng quy định của Luật Đấu giá tài sản 2016."
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -830,9 +780,9 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
             </div>
             
             <div>
-              <span style={{ color: brandPrimary }} className="font-bold uppercase tracking-widest text-sm mb-2 block">Dịch Vụ Hỗ Trợ</span>
+              <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Dịch Vụ Hỗ Trợ</span>
               <h2 className="text-3xl md:text-4xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8">
-                Hỗ Trợ <span style={{ color: brandPrimary }}>Toàn Diện</span>
+                Hỗ Trợ <span className="text-red-600">Toàn Diện</span>
               </h2>
               <div className="space-y-6">
                 {[
@@ -841,8 +791,8 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                   { title: 'Thẩm Định Giá Độc Lập', desc: 'Báo cáo thẩm định giá chi tiết từ các đơn vị uy tín hàng đầu.', icon: HelpCircle },
                 ].map((s, i) => (
                   <div key={i} className="flex gap-4">
-                    <div style={{ backgroundColor: brandPrimary + '15' }} className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0">
-                      <s.icon size={24} style={{ color: brandPrimary }} />
+                    <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center shrink-0">
+                      <s.icon size={24} className="text-red-600" />
                     </div>
                     <div>
                       <h4 className="font-bold text-gray-900 text-lg mb-1">{s.title}</h4>
@@ -860,8 +810,8 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
       <section className="py-20 bg-gray-900">
         <div className="w-full">
           <div className="text-center max-w-2xl mx-auto mb-12 px-4">
-            <span style={{ color: brandAccent }} className="font-bold uppercase tracking-widest text-sm mb-2 block">Thư Viện Ảnh</span>
-            <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-white uppercase">Tài Sản <span style={{ color: brandAccent }}>Tiêu Biểu</span></h2>
+            <span className="text-red-500 font-bold uppercase tracking-widest text-sm mb-2 block">Thư Viện Ảnh</span>
+            <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-white uppercase">Tài Sản <span className="text-red-500">Tiêu Biểu</span></h2>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-1">
@@ -869,7 +819,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
               <div key={item.id} onClick={() => setSelectedGalleryImg(item.image)} className={`relative overflow-hidden group ${i === 0 || i === 5 ? 'col-span-2 row-span-2' : ''} aspect-square cursor-pointer`}>
                 <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-red-950/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
-                  <div style={{ color: brandPrimary }} className="w-12 h-12 bg-white rounded-full flex items-center justify-center translate-y-4 group-hover:translate-y-0 transition-transform duration-300 shadow-lg mb-2">
+                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-red-600 translate-y-4 group-hover:translate-y-0 transition-transform duration-300 shadow-lg mb-2">
                     <Search size={20} />
                   </div>
                   <p className="text-white text-sm font-bold uppercase tracking-wider text-center translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75 line-clamp-1">{item.title}</p>
@@ -884,14 +834,14 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
       <section className="py-20 bg-[#FEF2F2]">
         <div className={`${MAX_W} px-4 mx-auto`}>
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span style={{ color: brandPrimary }} className="font-bold uppercase tracking-widest text-sm mb-2 block">Khách Hàng Nói Gì</span>
-            <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Câu Chuyện <span style={{ color: brandPrimary }}>Thành Công</span></h2>
+            <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Khách Hàng Nói Gì</span>
+            <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Câu Chuyện <span className="text-red-600">Thành Công</span></h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[1, 2, 3].map((item) => (
-              <div key={item} style={{ borderTopColor: brandPrimary }} className="bg-white p-8 rounded-2xl shadow-lg relative border-t-4">
-                <div className="text-red-200 text-6xl font-serif absolute top-4 right-4 opacity-50">&ldquo;</div>
+              <div key={item} className="bg-white p-8 rounded-2xl shadow-lg relative border-t-4 border-red-600">
+                <div className="text-red-200 text-6xl font-serif absolute top-4 right-4 opacity-50">"</div>
                 <div className="flex gap-1 mb-4 text-amber-500">
                   <Star size={16} fill="currentColor" />
                   <Star size={16} fill="currentColor" />
@@ -900,13 +850,13 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                   <Star size={16} fill="currentColor" />
                 </div>
                 <p className="text-gray-600 italic font-medium mb-8 relative z-10">
-                  &ldquo;Hệ thống đấu giá chạy rất mượt mà. Tôi đã trúng đấu giá lô đất với mức giá tốt hơn thị trường 15%. Quy trình pháp lý sau đó được đội ngũ hỗ trợ rất nhanh chóng.&rdquo;
+                  "Hệ thống đấu giá chạy rất mượt mà. Tôi đã trúng đấu giá lô đất với mức giá tốt hơn thị trường 15%. Quy trình pháp lý sau đó được đội ngũ hỗ trợ rất nhanh chóng."
                 </p>
                 <div className="flex items-center gap-4">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={`https://i.pravatar.cc/100?img=${item + 10}`} alt="User" className="w-14 h-14 rounded-full object-cover border-2 border-red-100" />
                   <div>
                     <h4 className="font-bold text-gray-900 uppercase tracking-wide">Nguyễn Văn {String.fromCharCode(64+item)}</h4>
-                    <p style={{ color: brandPrimary }} className="text-xs font-bold uppercase tracking-wider">Nhà Đầu Tư</p>
+                    <p className="text-xs text-red-600 font-bold uppercase tracking-wider">Nhà Đầu Tư</p>
                   </div>
                 </div>
               </div>
@@ -920,10 +870,10 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
         <div className={`${MAX_W} px-4 mx-auto`}>
            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b-2 border-red-100 pb-4">
             <div>
-              <span style={{ color: brandPrimary }} className="font-bold uppercase tracking-widest text-sm mb-2 block">Tin Tức Mới</span>
-              <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Thị Trường <span style={{ color: brandPrimary }}>Đấu Giá</span></h2>
+              <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Tin Tức Mới</span>
+              <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Thị Trường <span className="text-red-600">Đấu Giá</span></h2>
             </div>
-            <button onClick={() => navigateTo('news')} style={{ color: brandPrimary }} className="hidden md:flex items-center gap-2 font-bold hover:opacity-80 transition-colors uppercase tracking-wider">
+            <button onClick={() => navigateTo('news')} className="hidden md:flex items-center gap-2 text-red-600 font-bold hover:text-red-800 transition-colors uppercase tracking-wider">
               Xem tất cả tin tức <ArrowRight size={20} />
             </button>
           </div>
@@ -933,15 +883,15 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
               <div key={item.id} className="group cursor-pointer" onClick={() => setSelectedArticle(item)}>
                 <div className="relative rounded-2xl overflow-hidden mb-6 aspect-video">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div style={{ backgroundColor: brandPrimary }} className="absolute top-4 left-4 text-white px-3 py-1 rounded text-sm font-bold uppercase tracking-wider shadow-lg">
+                  <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded text-sm font-bold uppercase tracking-wider shadow-lg">
                     {item.category}
                   </div>
                 </div>
                 <div className="flex items-center gap-4 text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
-                  <span className="flex items-center gap-1"><Calendar size={14} style={{ color: brandAccent }} /> {item.date}</span>
-                  <span className="flex items-center gap-1"><Users size={14} style={{ color: brandAccent }} /> {item.author}</span>
+                  <span className="flex items-center gap-1"><Calendar size={14} className="text-red-500"/> {item.date}</span>
+                  <span className="flex items-center gap-1"><Users size={14} className="text-red-500"/> {item.author}</span>
                 </div>
-                <h3 className="text-xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase tracking-wide mb-3 group-hover:opacity-80 transition-colors">
+                <h3 className="text-xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase tracking-wide mb-3 group-hover:text-red-600 transition-colors">
                   {item.title}
                 </h3>
                 <p className="text-gray-600 font-medium text-sm line-clamp-2">
@@ -957,8 +907,8 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
       <section className="py-20 bg-[#FEF2F2]">
         <div className={`${MAX_W} px-4 mx-auto max-w-4xl`}>
           <div className="text-center mb-16">
-            <span style={{ color: brandPrimary }} className="font-bold uppercase tracking-widest text-sm mb-2 block">Giải Đáp Thắc Mắc</span>
-            <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Câu Hỏi <span style={{ color: brandPrimary }}>Thường Gặp</span></h2>
+            <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Giải Đáp Thắc Mắc</span>
+            <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Câu Hỏi <span className="text-red-600">Thường Gặp</span></h2>
           </div>
           
           <div className="space-y-4">
@@ -970,11 +920,11 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
             ].map((faq, i) => (
               <div key={i} className="bg-white rounded-2xl shadow-sm border border-red-50 overflow-hidden">
                 <button 
-                  className="w-full text-left px-6 py-5 flex justify-between items-center font-bold text-gray-900 hover:opacity-80 transition-colors uppercase tracking-wide font-['Barlow_Condensed'] text-lg"
+                  className="w-full text-left px-6 py-5 flex justify-between items-center font-bold text-gray-900 hover:text-red-600 transition-colors uppercase tracking-wide font-['Barlow_Condensed'] text-lg"
                   onClick={() => setActiveFaq(activeFaq === i ? null : i)}
                 >
                   {faq.q}
-                  <ChevronRight size={20} style={activeFaq === i ? { color: brandPrimary } : undefined} className={`transform transition-transform ${activeFaq === i ? 'rotate-90' : 'text-gray-400'}`} />
+                  <ChevronRight size={20} className={`transform transition-transform ${activeFaq === i ? 'rotate-90 text-red-600' : 'text-gray-400'}`} />
                 </button>
                 <div className={`px-6 overflow-hidden transition-all duration-300 ${activeFaq === i ? 'max-h-48 pb-5 opacity-100' : 'max-h-0 opacity-0'}`}>
                   <p className="text-gray-600 font-medium leading-relaxed">{faq.a}</p>
@@ -986,9 +936,9 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
       </section>
 
       {/* 15. CONTACT CTA / NEWSLETTER */}
-      <section style={{ backgroundColor: brandPrimary }} className="py-24 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl opacity-50 translate-x-1/3 -translate-y-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-black/10 rounded-full blur-3xl opacity-50 -translate-x-1/3 translate-y-1/3"></div>
+      <section className="py-24 bg-red-600 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-red-500 rounded-full blur-3xl opacity-50 translate-x-1/3 -translate-y-1/3"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-red-700 rounded-full blur-3xl opacity-50 -translate-x-1/3 translate-y-1/3"></div>
         
         <div className={`${MAX_W} px-4 mx-auto relative z-10 text-center`}>
           <Gavel size={64} className="text-white mx-auto mb-6 opacity-80" />
@@ -999,12 +949,19 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
             Đăng ký thành viên ngay hôm nay để nhận thông báo sớm nhất về các phiên đấu giá hấp dẫn và ưu đãi đặc quyền.
           </p>
           
-          <div className="flex flex-col sm:flex-row justify-center gap-4 max-w-lg mx-auto">
-            <input type="email" placeholder="Nhập địa chỉ email của bạn..." className="w-full px-6 py-4 rounded-xl text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-red-400" />
-            <button className="bg-gray-900 hover:bg-black text-white px-8 py-4 rounded-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors shadow-xl shrink-0 whitespace-nowrap">
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              alert('Đăng ký nhận thông tin đấu giá thành công!');
+              (e.currentTarget.elements[0] as HTMLInputElement).value = '';
+            }}
+            className="flex flex-col sm:flex-row justify-center gap-4 max-w-lg mx-auto"
+          >
+            <input required type="email" placeholder="Nhập địa chỉ email của bạn..." className="w-full px-6 py-4 rounded-xl text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-red-400 bg-white" />
+            <button type="submit" className="bg-gray-900 hover:bg-black text-white px-8 py-4 rounded-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors shadow-xl shrink-0 whitespace-nowrap cursor-pointer">
               Đăng Ký Nhận Tin
             </button>
-          </div>
+          </form>
         </div>
       </section>
     </main>
@@ -1032,7 +989,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
     return (
       <div className="w-full font-['Barlow'] bg-[#FEF2F2] pt-24 pb-20">
         <div className={`${MAX_W} px-4 mx-auto`}>
-          <h1 style={{ borderLeftColor: brandPrimary }} className="text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8 border-l-8 pl-6">Sàn Đấu Giá</h1>
+          <h1 className="text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8 border-l-8 border-red-600 pl-6">Sàn Đấu Giá</h1>
           
           {/* Reactive Filter Controls */}
           <div className="bg-white p-6 rounded-2xl shadow-md border border-red-50 flex flex-col lg:flex-row gap-4 items-center mb-8">
@@ -1099,8 +1056,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
             {(searchQuery || filterType || filterRegion || filterPrice) && (
               <button 
                 onClick={() => { setSearchQuery(''); setFilterType(''); setFilterRegion(''); setFilterPrice(''); }}
-                style={{ color: brandPrimary }}
-                className="w-full lg:w-auto hover:opacity-80 font-bold transition-colors font-['Barlow_Condensed'] uppercase tracking-wider text-sm px-4 whitespace-nowrap"
+                className="w-full lg:w-auto text-red-600 hover:text-red-800 font-bold transition-colors font-['Barlow_Condensed'] uppercase tracking-wider text-sm px-4 whitespace-nowrap"
               >
                 Xóa lọc
               </button>
@@ -1109,7 +1065,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
           
           {/* Results Count */}
           <div className="text-gray-650 font-medium mb-6">
-            Tìm thấy <span style={{ color: brandPrimary }} className="font-bold">{filteredAuctions.length}</span> tài sản phù hợp.
+            Tìm thấy <span className="font-bold text-red-600">{filteredAuctions.length}</span> tài sản phù hợp.
           </div>
           
           {/* Listings Grid */}
@@ -1126,7 +1082,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                   <div>
                     <div className="relative h-56 overflow-hidden">
                       <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                      <div style={item.status === 'live' ? { backgroundColor: brandPrimary } : undefined} className={`absolute top-4 left-4 text-white px-3 py-1 rounded font-bold text-sm shadow flex items-center gap-2 uppercase tracking-wider ${item.status === 'live' ? '' : 'bg-amber-500'}`}>
+                      <div className={`absolute top-4 left-4 text-white px-3 py-1 rounded font-bold text-sm shadow flex items-center gap-2 uppercase tracking-wider ${item.status === 'live' ? 'bg-red-600' : 'bg-amber-500'}`}>
                         {item.status === 'live' ? (
                           <>
                             <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span> LIVE
@@ -1147,9 +1103,9 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                     </div>
                     <div className="p-6">
                       <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-2">
-                        <MapPin size={14} style={{ color: brandAccent }} /> {item.location}
+                        <MapPin size={14} className="text-red-500"/> {item.location}
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-4 line-clamp-2 hover:opacity-80 transition-colors font-['Barlow_Condensed'] uppercase tracking-wide">
+                      <h3 className="text-xl font-bold text-gray-900 mb-4 line-clamp-2 hover:text-red-600 transition-colors font-['Barlow_Condensed'] uppercase tracking-wide">
                         {item.title}
                       </h3>
                       
@@ -1162,14 +1118,14 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                             </div>
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-gray-500 font-medium">Giá hiện tại:</span>
-                              <span style={{ color: brandPrimary }} className="font-bold text-lg">{(item.currentPrice / 1000000000).toLocaleString('vi-VN')} Tỷ VNĐ</span>
+                              <span className="font-bold text-red-600 text-lg">{(item.currentPrice / 1000000000).toLocaleString('vi-VN')} Tỷ VNĐ</span>
                             </div>
                           </>
                         ) : (
                           <>
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-gray-500 font-medium">Giá khởi điểm:</span>
-                              <span style={{ color: brandPrimary }} className="font-bold text-lg">{(item.startPrice / 1000000000).toFixed(1)} Tỷ VNĐ</span>
+                              <span className="font-bold text-red-600 text-lg">{(item.startPrice / 1000000000).toFixed(1)} Tỷ VNĐ</span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-gray-500 font-medium">Ngày bắt đầu:</span>
@@ -1185,7 +1141,10 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                     </div>
                   </div>
                   <div className="px-6 pb-6">
-                    <button style={{ backgroundColor: brandPrimary }} className="w-full hover:opacity-90 text-white py-3 rounded-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 text-lg shadow-lg">
+                    <button 
+                      onClick={() => setSelectedAuction(item)}
+                      className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 text-lg shadow-lg cursor-pointer"
+                    >
                       <Gavel size={20} /> {item.status === 'live' ? 'Đấu Giá / Đặt Cọc' : 'Xem Chi Tiết'}
                     </button>
                   </div>
@@ -1230,13 +1189,13 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
     return (
       <div className="w-full font-['Barlow'] bg-[#FEF2F2] pt-24 pb-20">
         <div className={`${MAX_W} px-4 mx-auto`}>
-          <h1 style={{ borderLeftColor: brandPrimary }} className="text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8 border-l-8 pl-6">Về Chúng Tôi</h1>
+          <h1 className="text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8 border-l-8 border-red-600 pl-6">Về Chúng Tôi</h1>
           
           {/* Main Intro */}
           <div className="bg-white rounded-2xl shadow-xl p-8 lg:p-12 border border-red-50 mb-16">
             <div className="flex flex-col lg:flex-row gap-12 items-center">
               <div className="w-full lg:w-1/2">
-                <span style={{ color: brandPrimary }} className="font-bold uppercase tracking-widest text-sm mb-2 block">Thương Hiệu Tiên Phong</span>
+                <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Thương Hiệu Tiên Phong</span>
                 <h2 className="text-3xl md:text-4xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-6">
                   Kiến tạo môi trường giao dịch bất động sản công khai, minh bạch
                 </h2>
@@ -1244,7 +1203,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                   PlatformBDS tự hào là doanh nghiệp tiên phong triển khai giải pháp công nghệ số vào hoạt động đấu giá bất động sản tại Việt Nam. Chúng tôi đồng hành cùng các cơ quan nhà nước, ngân hàng thương mại và các tập đoàn lớn để đưa những tài sản chất lượng tới tay khách hàng một cách công bằng nhất.
                 </p>
                 <div className="flex items-center gap-4">
-                  <div style={{ backgroundColor: brandPrimary + '15', color: brandPrimary }} className="p-4 rounded-2xl">
+                  <div className="bg-red-50 text-red-600 p-4 rounded-2xl">
                     <ShieldCheck size={36} />
                   </div>
                   <div>
@@ -1275,8 +1234,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                   <button
                     key={tab.id}
                     onClick={() => setAboutTab(tab.id)}
-                    style={aboutTab === tab.id ? { borderBottomColor: brandPrimary, color: brandPrimary } : undefined}
-                    className={`pb-4 px-2 font-['Barlow_Condensed'] font-bold text-xl uppercase tracking-wider flex items-center gap-2 border-b-4 transition-all whitespace-nowrap ${aboutTab === tab.id ? '' : 'border-transparent text-gray-500 hover:text-gray-800'}`}
+                    className={`pb-4 px-2 font-['Barlow_Condensed'] font-bold text-xl uppercase tracking-wider flex items-center gap-2 border-b-4 transition-all whitespace-nowrap ${aboutTab === tab.id ? 'border-red-600 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-800'}`}
                   >
                     <tab.icon size={20} /> {tab.label}
                   </button>
@@ -1293,9 +1251,9 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                       Sứ mệnh của chúng tôi là minh bạch hóa thị trường bất động sản thông qua công nghệ. PlatformBDS giúp loại bỏ rào cản địa lý, kết nối người mua thực và người bán thực, mang đến trải nghiệm đấu giá an toàn, tiện lợi nhất, đồng thời tối ưu hóa lợi ích tài chính cho toàn xã hội.
                     </p>
                   </div>
-                  <div style={{ backgroundColor: brandPrimary + '15', borderLeftColor: brandPrimary }} className="p-6 rounded-2xl border-l-4">
-                    <p style={{ color: brandPrimary }} className="italic font-semibold">
-                      &ldquo;Công khai - Công bằng - Minh bạch - Chuyên nghiệp là kim chỉ nam cho mọi hoạt động của sàn đấu giá.&rdquo;
+                  <div className="bg-red-50 p-6 rounded-2xl border-l-4 border-red-600">
+                    <p className="italic text-red-800 font-semibold">
+                      "Công khai - Công bằng - Minh bạch - Chuyên nghiệp là kim chỉ nam cho mọi hoạt động của sàn đấu giá."
                     </p>
                   </div>
                 </div>
@@ -1310,11 +1268,11 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-gray-50 p-4 rounded-xl text-center shadow-sm">
-                      <p style={{ color: brandPrimary }} className="text-3xl font-extrabold">50K+</p>
+                      <p className="text-3xl font-extrabold text-red-600">50K+</p>
                       <p className="text-xs text-gray-500 font-bold uppercase mt-1">Thành viên đăng ký</p>
                     </div>
                     <div className="bg-gray-50 p-4 rounded-xl text-center shadow-sm">
-                      <p style={{ color: brandPrimary }} className="text-3xl font-extrabold">100%</p>
+                      <p className="text-3xl font-extrabold text-red-600">100%</p>
                       <p className="text-xs text-gray-500 font-bold uppercase mt-1">Số hóa toàn diện</p>
                     </div>
                   </div>
@@ -1328,7 +1286,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                     { title: "Khách Hàng Là Trọng Tâm", desc: "Không ngừng cải tiến trải nghiệm người dùng, hỗ trợ khách hàng trước, trong và sau phiên đấu giá." }
                   ].map((val, idx) => (
                     <div key={idx} className="bg-gray-50 p-6 rounded-2xl border border-gray-150 shadow-sm">
-                      <div style={{ backgroundColor: brandPrimary }} className="w-10 h-10 text-white rounded-lg flex items-center justify-center font-bold mb-4">{idx + 1}</div>
+                      <div className="w-10 h-10 bg-red-600 text-white rounded-lg flex items-center justify-center font-bold mb-4">{idx + 1}</div>
                       <h4 className="font-bold text-gray-900 text-lg mb-2">{val.title}</h4>
                       <p className="text-gray-650 font-medium text-sm">{val.desc}</p>
                     </div>
@@ -1344,7 +1302,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
             <div className="relative border-l-2 border-red-200 ml-4 md:ml-32">
               {milestones.map((ms, idx) => (
                 <div key={idx} className="mb-10 ml-6 relative">
-                  <span style={{ backgroundColor: brandPrimary }} className="absolute -left-[35px] top-1 text-white text-xs font-bold px-3 py-1 rounded-full border-4 border-white shadow-md">
+                  <span className="absolute -left-[35px] top-1 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full border-4 border-white shadow-md">
                     {ms.year}
                   </span>
                   <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-150 hover:shadow-md transition-shadow">
@@ -1366,15 +1324,15 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={leader.image} alt={leader.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
                       <div className="flex gap-3 text-white">
-                        <Facebook size={18} className="hover:opacity-80 cursor-pointer transition-colors" />
-                        <Twitter size={18} className="hover:opacity-80 cursor-pointer transition-colors" />
-                        <Linkedin size={18} className="hover:opacity-80 cursor-pointer transition-colors" />
+                        <Facebook size={18} className="hover:text-red-500 cursor-pointer transition-colors" />
+                        <Twitter size={18} className="hover:text-red-500 cursor-pointer transition-colors" />
+                        <Linkedin size={18} className="hover:text-red-500 cursor-pointer transition-colors" />
                       </div>
                     </div>
                   </div>
                   <div className="p-6">
                     <h3 className="font-['Barlow_Condensed'] font-bold text-xl uppercase tracking-wide text-gray-900 mb-1">{leader.name}</h3>
-                    <p style={{ color: brandPrimary }} className="font-bold text-sm uppercase mb-3">{leader.role}</p>
+                    <p className="text-red-600 font-bold text-sm uppercase mb-3">{leader.role}</p>
                     <p className="text-gray-500 font-medium text-sm leading-relaxed">{leader.bio}</p>
                   </div>
                 </div>
@@ -1403,7 +1361,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
     return (
       <div className="w-full font-['Barlow'] bg-[#FEF2F2] pt-24 pb-20">
         <div className={`${MAX_W} px-4 mx-auto`}>
-          <h1 style={{ borderLeftColor: brandPrimary }} className="text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8 border-l-8 pl-6">Thư Viện Ảnh</h1>
+          <h1 className="text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8 border-l-8 border-red-600 pl-6">Thư Viện Ảnh</h1>
           
           {/* Gallery Filter Tabs */}
           <div className="flex flex-wrap gap-2 justify-center mb-12">
@@ -1411,8 +1369,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
               <button
                 key={tab.id}
                 onClick={() => setSelectedGalleryTab(tab.id)}
-                style={selectedGalleryTab === tab.id ? { backgroundColor: brandPrimary } : undefined}
-                className={`px-6 py-2 rounded-full font-['Barlow_Condensed'] font-bold text-lg uppercase tracking-wider transition-colors ${selectedGalleryTab === tab.id ? 'text-white shadow-md' : 'bg-white text-gray-600 hover:bg-red-50'}`}
+                className={`px-6 py-2 rounded-full font-['Barlow_Condensed'] font-bold text-lg uppercase tracking-wider transition-colors ${selectedGalleryTab === tab.id ? 'bg-red-600 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-red-50'}`}
               >
                 {tab.label}
               </button>
@@ -1434,8 +1391,8 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                   </div>
                 </div>
                 <div className="p-4 text-center">
-                  <span style={{ color: brandPrimary }} className="text-[10px] bg-red-50 px-2.5 py-1 rounded font-bold uppercase tracking-wider">{item.category === 'dat-nen' ? 'Đất nền' : item.category === 'can-ho' ? 'Căn hộ' : item.category === 'biet-thu' ? 'Biệt thự' : 'Nhà phố'}</span>
-                  <h3 className="font-bold text-gray-800 text-base mt-2 line-clamp-1 group-hover:opacity-80 transition-colors uppercase tracking-wide font-['Barlow_Condensed']">{item.title}</h3>
+                  <span className="text-[10px] bg-red-50 text-red-600 px-2.5 py-1 rounded font-bold uppercase tracking-wider">{item.category === 'dat-nen' ? 'Đất nền' : item.category === 'can-ho' ? 'Căn hộ' : item.category === 'biet-thu' ? 'Biệt thự' : 'Nhà phố'}</span>
+                  <h3 className="font-bold text-gray-800 text-base mt-2 line-clamp-1 group-hover:text-red-600 transition-colors uppercase tracking-wide font-['Barlow_Condensed']">{item.title}</h3>
                 </div>
               </div>
             ))}
@@ -1455,7 +1412,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
     return (
       <div className="w-full font-['Barlow'] bg-[#FEF2F2] pt-24 pb-20">
         <div className={`${MAX_W} px-4 mx-auto`}>
-          <h1 style={{ borderLeftColor: brandPrimary }} className="text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8 border-l-8 pl-6">Tin Tức</h1>
+          <h1 className="text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8 border-l-8 border-red-600 pl-6">Tin Tức</h1>
           
           {/* News Search Bar */}
           <div className="relative max-w-md mx-auto mb-12">
@@ -1483,16 +1440,16 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                   <div>
                     <div className="relative h-56 overflow-hidden">
                       <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      <div style={{ backgroundColor: brandPrimary }} className="absolute top-4 left-4 text-white px-3 py-1 rounded text-xs font-bold uppercase tracking-wider shadow">
+                      <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded text-xs font-bold uppercase tracking-wider shadow">
                         {item.category}
                       </div>
                     </div>
                     <div className="p-6">
                       <div className="flex items-center gap-4 text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
-                        <span className="flex items-center gap-1"><Calendar size={14} style={{ color: brandAccent }} /> {item.date}</span>
-                        <span className="flex items-center gap-1"><Users size={14} style={{ color: brandAccent }} /> {item.author}</span>
+                        <span className="flex items-center gap-1"><Calendar size={14} className="text-red-500"/> {item.date}</span>
+                        <span className="flex items-center gap-1"><Users size={14} className="text-red-500"/> {item.author}</span>
                       </div>
-                      <h3 className="text-xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase tracking-wide mb-3 group-hover:opacity-80 transition-colors line-clamp-2">
+                      <h3 className="text-xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase tracking-wide mb-3 group-hover:text-red-600 transition-colors line-clamp-2">
                         {item.title}
                       </h3>
                       <p className="text-gray-600 font-medium text-sm line-clamp-3">
@@ -1501,7 +1458,10 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                     </div>
                   </div>
                   <div className="px-6 pb-6">
-                    <button style={{ color: brandPrimary }} className="hover:opacity-80 font-bold uppercase tracking-wider text-sm flex items-center gap-2">
+                    <button 
+                      onClick={() => setSelectedArticle(item)}
+                      className="text-red-600 group-hover:text-red-800 font-bold uppercase tracking-wider text-sm flex items-center gap-2 cursor-pointer"
+                    >
                       Đọc Tiếp <ArrowRight size={16} />
                     </button>
                   </div>
@@ -1532,48 +1492,48 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
     return (
       <div className="w-full font-['Barlow'] bg-[#FEF2F2] pt-24 pb-20">
         <div className={`${MAX_W} px-4 mx-auto`}>
-          <h1 style={{ borderLeftColor: brandPrimary }} className="text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8 border-l-8 pl-6">Liên Hệ</h1>
+          <h1 className="text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8 border-l-8 border-red-600 pl-6">Liên Hệ</h1>
           
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-red-50 grid grid-cols-1 lg:grid-cols-3">
             {/* Contact Info Panel */}
             <div className="bg-gray-900 p-8 lg:p-12 text-white flex flex-col justify-between">
               <div>
-                <h2 style={{ color: brandAccent }} className="text-3xl font-['Barlow_Condensed'] font-bold uppercase mb-6 tracking-wide">Thông Tin Liên Hệ</h2>
+                <h2 className="text-3xl font-['Barlow_Condensed'] font-bold uppercase mb-6 tracking-wide text-red-500">Thông Tin Liên Hệ</h2>
                 <p className="text-gray-400 font-medium mb-8">
                   Hãy liên hệ với chúng tôi bất cứ khi nào bạn có thắc mắc về hồ sơ, quy trình đặt tiền trước hay thủ tục bàn giao bất động sản.
                 </p>
                 
                 <ul className="space-y-6">
                   <li className="flex items-start gap-4">
-                    <MapPin style={{ color: brandAccent }} className="shrink-0 mt-1" size={20} />
+                    <MapPin className="text-red-500 shrink-0 mt-1" size={20} />
                     <div>
                       <p className="font-bold uppercase tracking-wider text-sm text-gray-300">Địa chỉ</p>
-                      <p className="text-gray-400 text-sm font-medium">{company?.address || company?.address || '123 Đường Đấu Giá, Phường Bình An, Quận 2, TP.HCM'}</p>
+                      <p className="text-gray-400 text-sm font-medium">123 Đường Đấu Giá, Phường Bình An, Quận 2, TP.HCM</p>
                     </div>
                   </li>
                   <li className="flex items-start gap-4">
-                    <Phone style={{ color: brandAccent }} className="shrink-0 mt-1" size={20} />
+                    <Phone className="text-red-500 shrink-0 mt-1" size={20} />
                     <div>
                       <p className="font-bold uppercase tracking-wider text-sm text-gray-300">Tổng đài hỗ trợ</p>
                       <p className="text-gray-400 text-sm font-medium">1900 6868 (Hotline 24/7)</p>
                     </div>
                   </li>
                   <li className="flex items-start gap-4">
-                    <Mail style={{ color: brandAccent }} className="shrink-0 mt-1" size={20} />
+                    <Mail className="text-red-500 shrink-0 mt-1" size={20} />
                     <div>
                       <p className="font-bold uppercase tracking-wider text-sm text-gray-300">Email nhận hồ sơ</p>
-                      <p className="text-gray-400 text-sm font-medium">{company?.email || company?.email || 'contact@auctionbds.vn'}</p>
+                      <p className="text-gray-400 text-sm font-medium">contact@auctionbds.vn</p>
                     </div>
                   </li>
                 </ul>
               </div>
               
               <div className="mt-12">
-                <p style={{ color: brandAccent }} className="font-bold uppercase tracking-wider text-xs mb-3">Kết nối với chúng tôi</p>
+                <p className="font-bold uppercase tracking-wider text-xs text-red-500 mb-3">Kết nối với chúng tôi</p>
                 <div className="flex gap-4">
-                  <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:opacity-80 transition-colors cursor-pointer"><Facebook size={18}/></div>
-                  <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:opacity-80 transition-colors cursor-pointer"><Twitter size={18}/></div>
-                  <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:opacity-80 transition-colors cursor-pointer"><Instagram size={18}/></div>
+                  <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-red-600 transition-colors cursor-pointer"><Facebook size={18}/></div>
+                  <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-red-600 transition-colors cursor-pointer"><Twitter size={18}/></div>
+                  <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-red-600 transition-colors cursor-pointer"><Instagram size={18}/></div>
                 </div>
               </div>
             </div>
@@ -1591,8 +1551,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                   </p>
                   <button 
                     onClick={handleResetContact}
-                    style={{ backgroundColor: brandPrimary }}
-                    className="hover:opacity-90 text-white px-8 py-3 rounded-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors text-lg"
+                    className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors text-lg"
                   >
                     Gửi tin nhắn khác
                   </button>
@@ -1659,13 +1618,36 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                   
                   <button 
                     type="submit"
-                    style={{ backgroundColor: brandPrimary }}
-                    className="w-full hover:opacity-90 text-white py-4 rounded-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 text-lg shadow-lg"
+                    className="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 text-lg shadow-lg"
                   >
                     <Send size={20} /> Gửi Lời Nhắn
                   </button>
                 </form>
               )}
+            </div>
+          </div>
+
+          {/* Interactive Google Map Section */}
+          <div className="mt-12 bg-white rounded-2xl p-4 shadow-xl border border-red-50 overflow-hidden flex flex-col">
+            <div className="px-4 py-3 bg-gray-900 rounded-xl text-white flex items-center justify-between text-xs mb-4">
+              <span className="font-bold flex items-center gap-2 text-sm text-white"><MapPin size={16} className="text-red-500" /> Trụ sở Sàn Đấu Giá BĐS — Bình An, Quận 2, TP.HCM</span>
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=Ph%C6%B0%E1%BB%9Dng+B%C3%ACnh+An,+Qu%E1%BA%ADn+2,+TP.HCM"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-xs"
+              >
+                Mở Google Maps
+              </a>
+            </div>
+            <div className="w-full h-80 rounded-xl overflow-hidden">
+              <iframe
+                title="Bản đồ Sàn đấu giá Quận 2"
+                src="https://maps.google.com/maps?q=Ph%C6%B0%E1%BB%9Dng+B%C3%ACnh+An,+Qu%E1%BA%ADn+2,+TP.HCM&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                className="w-full h-full border-0"
+                loading="lazy"
+                allowFullScreen
+              />
             </div>
           </div>
         </div>
@@ -1678,18 +1660,18 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
   );
 
   return (
-    <div className="min-h-screen flex flex-col font-['Barlow']">
+    <div className="min-h-screen flex flex-col font-['Barlow'] selection:bg-red-600 selection:text-white">
       {/* 1. HEADER */}
       <header className="sticky w-full top-0 z-50 bg-white/95 backdrop-blur-md border-b border-red-100 shadow-sm transition-all duration-300">
         <div className="bg-gray-900 text-white py-1">
           <div className={`${MAX_W} px-4 mx-auto flex justify-between items-center text-xs font-medium uppercase tracking-wider`}>
             <div className="flex gap-4">
-              <span className="flex items-center gap-1"><Phone size={12} style={{ color: brandAccent }} /> {company?.phone || '1900 6868'}</span>
-              <span className="hidden sm:flex items-center gap-1"><Mail size={12} style={{ color: brandAccent }} /> {company?.email || 'contact@auctionbds.vn'}</span>
+              <span className="flex items-center gap-1"><Phone size={12} className="text-red-500" /> 1900 6868</span>
+              <span className="hidden sm:flex items-center gap-1"><Mail size={12} className="text-red-500" /> contact@auctionbds.vn</span>
             </div>
             <div className="flex gap-4">
-              <span className="hidden sm:inline-block text-gray-400">{company?.workingHours || 'Giờ làm việc: 08:00 - 17:30'}</span>
-              <div className="flex items-center gap-2" style={{ color: brandAccent }}>
+              <span className="hidden sm:inline-block text-gray-400">Giờ làm việc: 08:00 - 17:30</span>
+              <div className="flex items-center gap-2 text-red-500">
                 <Facebook size={12} className="hover:text-white cursor-pointer" />
                 <Instagram size={12} className="hover:text-white cursor-pointer" />
                 <Linkedin size={12} className="hover:text-white cursor-pointer" />
@@ -1699,24 +1681,14 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
         </div>
         <div className={`${MAX_W} px-4 mx-auto h-20 flex items-center justify-between`}>
           <div 
-            className="flex items-center gap-2 cursor-pointer group text-left"
+            className="flex items-center gap-2 cursor-pointer group"
             onClick={() => navigateTo('home')}
           >
-            <div 
-              style={{ backgroundColor: brandPrimary }}
-              className="w-10 h-10 text-white rounded-lg flex items-center justify-center transform group-hover:rotate-12 transition-transform shadow-lg shrink-0"
-            >
+            <div className="w-10 h-10 bg-red-600 text-white rounded-lg flex items-center justify-center transform group-hover:rotate-12 transition-transform shadow-lg shadow-red-600/30">
               <Gavel size={24} />
             </div>
-            <div>
-              <div className="font-['Barlow_Condensed'] font-bold text-2xl uppercase tracking-tighter text-gray-900 leading-none">
-                {company?.name || template?.name || 'PlatformBDS'}
-              </div>
-              {company?.slogan && (
-                <div style={{ color: brandPrimary }} className="text-[10px] font-semibold tracking-wider uppercase">
-                  {company.slogan}
-                </div>
-              )}
+            <div className="font-['Barlow_Condensed'] font-bold text-2xl uppercase tracking-tighter text-gray-900">
+              Platform<span className="text-red-600">BDS</span>
             </div>
           </div>
 
@@ -1725,10 +1697,10 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
           </nav>
 
           <div className="hidden lg:flex items-center gap-4">
-             <button className="text-gray-900 font-bold font-['Barlow_Condensed'] uppercase tracking-wider hover:opacity-80 transition-colors">
+             <button onClick={() => navigateTo('contact')} className="text-gray-900 font-bold font-['Barlow_Condensed'] uppercase tracking-wider hover:text-red-600 transition-colors cursor-pointer">
                Đăng Nhập
              </button>
-             <button style={{ backgroundColor: brandPrimary }} className="hover:opacity-90 text-white px-6 py-2.5 rounded-lg font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors shadow-lg">
+             <button onClick={() => navigateTo('contact')} className="bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-lg font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors shadow-lg shadow-red-600/30 cursor-pointer">
                Đăng Ký Ngay
              </button>
           </div>
@@ -1748,10 +1720,10 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
               <NavLinks />
             </div>
             <div className="flex flex-col gap-3 pt-2">
-              <button className="w-full bg-gray-100 text-gray-900 font-bold py-3 rounded-xl font-['Barlow_Condensed'] uppercase tracking-wider">
+              <button onClick={() => navigateTo('contact')} className="w-full bg-gray-100 text-gray-900 font-bold py-3 rounded-xl font-['Barlow_Condensed'] uppercase tracking-wider cursor-pointer">
                 Đăng Nhập
               </button>
-              <button style={{ backgroundColor: brandPrimary }} className="w-full text-white font-bold py-3 rounded-xl font-['Barlow_Condensed'] uppercase tracking-wider">
+              <button onClick={() => navigateTo('contact')} className="w-full bg-red-600 text-white font-bold py-3 rounded-xl font-['Barlow_Condensed'] uppercase tracking-wider cursor-pointer">
                 Đăng Ký
               </button>
             </div>
@@ -1761,18 +1733,19 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
 
       {/* PAGE CONTENT */}
       <div className="flex-1 mt-[104px]">
-        {currentPage === 'home' && renderHome()}
-        {currentPage === 'auctions' && renderAuctions()}
-        {currentPage === 'about' && renderAbout()}
-        {currentPage === 'gallery' && renderGallery()}
-        {currentPage === 'news' && renderNews()}
-        {currentPage === 'contact' && renderContact()}
+        {['home'].includes(currentPage) && renderHome()}
+        {['auctions', 'projects', 'du-an', 'san-pham', 'dau-gia'].includes(currentPage) && renderAuctions()}
+        {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAbout()}
+        {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGallery()}
+        {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNews()}
+        {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContact()}
+        {!['home', 'auctions', 'projects', 'du-an', 'san-pham', 'dau-gia', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
       </div>
 
       {/* DETAIL MODAL */}
       {selectedAuction && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
-          <div style={{ borderTopColor: brandPrimary }} className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative border-t-8 flex flex-col md:flex-row text-gray-800">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative border-t-8 border-red-600 flex flex-col md:flex-row text-gray-800">
             <button 
               onClick={() => { setSelectedAuction(null); setBidError(''); setBidSuccess(''); }}
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 bg-white/95 rounded-full p-2 shadow-md z-10"
@@ -1808,14 +1781,14 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
 
             <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-between">
               <div>
-                <span style={auctionsData.find(a => a.id === selectedAuction.id)?.status === 'live' ? { backgroundColor: brandPrimary } : undefined} className={`inline-block text-[10px] text-white px-2.5 py-1 rounded font-bold uppercase tracking-wider mb-3 ${auctionsData.find(a => a.id === selectedAuction.id)?.status === 'live' ? '' : 'bg-amber-500'}`}>
+                <span className={`inline-block text-[10px] text-white px-2.5 py-1 rounded font-bold uppercase tracking-wider mb-3 ${auctionsData.find(a => a.id === selectedAuction.id)?.status === 'live' ? 'bg-red-600' : 'bg-amber-500'}`}>
                   {auctionsData.find(a => a.id === selectedAuction.id)?.status === 'live' ? 'Đang đấu giá' : 'Sắp diễn ra'}
                 </span>
                 <h2 className="text-2xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase tracking-wide leading-tight mb-4">
                   {selectedAuction.title}
                 </h2>
                 <p className="text-gray-500 font-medium text-sm flex items-center gap-1 mb-6">
-                  <MapPin size={16} style={{ color: brandAccent }} /> {selectedAuction.location}
+                  <MapPin size={16} className="text-red-500" /> {selectedAuction.location}
                 </p>
                 <p className="text-gray-600 font-medium text-sm leading-relaxed mb-6">
                   {selectedAuction.description}
@@ -1828,7 +1801,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                   </div>
                   <div className="flex justify-between items-center text-sm mb-1.5">
                     <span className="text-gray-500 font-medium">Giá hiện tại:</span>
-                    <span style={{ color: brandPrimary }} className="font-bold text-xl">{(auctionsData.find(a => a.id === selectedAuction.id)?.currentPrice ?? selectedAuction.currentPrice).toLocaleString('vi-VN')} VNĐ</span>
+                    <span className="font-bold text-red-600 text-xl">{(auctionsData.find(a => a.id === selectedAuction.id)?.currentPrice ?? selectedAuction.currentPrice).toLocaleString('vi-VN')} VNĐ</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-500 font-medium">Bước giá:</span>
@@ -1852,8 +1825,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                       </div>
                       <button 
                         onClick={() => handlePlaceBid(selectedAuction.id)}
-                        style={{ backgroundColor: brandPrimary }}
-                        className="hover:opacity-90 text-white px-6 py-2 rounded-lg font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors shadow-lg"
+                        className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors shadow-lg"
                       >
                         Gửi
                       </button>
@@ -1907,7 +1879,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
         <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/95 backdrop-blur-sm p-4">
           <button 
             onClick={() => setSelectedGalleryImg(null)}
-            className="absolute top-6 right-6 text-white hover:opacity-80 bg-gray-800 rounded-full p-3 shadow-lg transition-colors"
+            className="absolute top-6 right-6 text-white hover:text-red-500 bg-gray-800 rounded-full p-3 shadow-lg transition-colors"
           >
             <X size={24} />
           </button>
@@ -1919,7 +1891,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                 const prevIndex = currentIndex === 0 ? GALLERY_ITEMS.length - 1 : currentIndex - 1;
                 setSelectedGalleryImg(GALLERY_ITEMS[prevIndex].image);
               }}
-              className="text-white hover:opacity-80 bg-gray-800 rounded-full p-3 shadow-lg transition-colors shrink-0"
+              className="text-white hover:text-red-500 bg-gray-800 rounded-full p-3 shadow-lg transition-colors shrink-0"
             >
               <ChevronLeft size={24} />
             </button>
@@ -1938,7 +1910,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                 const nextIndex = currentIndex === GALLERY_ITEMS.length - 1 ? 0 : currentIndex + 1;
                 setSelectedGalleryImg(GALLERY_ITEMS[nextIndex].image);
               }}
-              className="text-white hover:opacity-80 bg-gray-800 rounded-full p-3 shadow-lg transition-colors shrink-0"
+              className="text-white hover:text-red-500 bg-gray-800 rounded-full p-3 shadow-lg transition-colors shrink-0"
             >
               <ChevronRight size={24} />
             </button>
@@ -1949,7 +1921,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
       {/* NEWS ARTICLE MODAL */}
       {selectedArticle && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto text-gray-800">
-          <div style={{ borderTopColor: brandPrimary }} className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[85vh] overflow-y-auto relative border-t-8 p-6 md:p-8">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[85vh] overflow-y-auto relative border-t-8 border-red-600 p-6 md:p-8">
             <button 
               onClick={() => setSelectedArticle(null)}
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 bg-white/95 rounded-full p-2 shadow-md z-10"
@@ -1958,15 +1930,15 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
             </button>
             
             <div className="mb-6">
-              <span style={{ color: brandPrimary }} className="bg-red-50 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">
+              <span className="bg-red-50 text-red-600 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">
                 {selectedArticle.category}
               </span>
               <h2 className="text-3xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase tracking-wide leading-tight mt-3 mb-4">
                 {selectedArticle.title}
               </h2>
               <div className="flex items-center gap-4 text-xs font-bold text-gray-500 uppercase tracking-wider pb-6 border-b border-gray-150">
-                <span className="flex items-center gap-1"><Calendar size={14} style={{ color: brandAccent }} /> {selectedArticle.date}</span>
-                <span className="flex items-center gap-1"><Users size={14} style={{ color: brandAccent }} /> {selectedArticle.author}</span>
+                <span className="flex items-center gap-1"><Calendar size={14} className="text-red-500"/> {selectedArticle.date}</span>
+                <span className="flex items-center gap-1"><Users size={14} className="text-red-500"/> {selectedArticle.author}</span>
               </div>
             </div>
             
@@ -1986,54 +1958,54 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
       )}
 
       {/* 16. FOOTER */}
-      <footer style={{ borderTopColor: brandPrimary }} className="bg-gray-900 pt-20 pb-10 border-t-4 relative z-10">
+      <footer className="bg-gray-900 pt-20 pb-10 border-t-4 border-red-600 relative z-10">
         <div className={`${MAX_W} px-4 mx-auto`}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
             <div>
               <div className="flex items-center gap-2 mb-6">
-                <div style={{ backgroundColor: brandPrimary }} className="w-10 h-10 text-white rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-red-600 text-white rounded-lg flex items-center justify-center">
                   <Gavel size={24} />
                 </div>
                 <div className="font-['Barlow_Condensed'] font-bold text-2xl uppercase tracking-tighter text-white">
-                  Platform<span style={{ color: brandPrimary }}>BDS</span>
+                  Platform<span className="text-red-600">BDS</span>
                 </div>
               </div>
               <p className="text-gray-400 font-medium mb-6">
                 Nền tảng đấu giá bất động sản trực tuyến hàng đầu Việt Nam. Mang lại sự minh bạch, an toàn và hiệu quả cho mọi giao dịch.
               </p>
               <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:opacity-80 transition-colors cursor-pointer"><Facebook size={18}/></div>
-                <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:opacity-80 transition-colors cursor-pointer"><Twitter size={18}/></div>
-                <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:opacity-80 transition-colors cursor-pointer"><Instagram size={18}/></div>
+                <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-red-600 transition-colors cursor-pointer"><Facebook size={18}/></div>
+                <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-red-600 transition-colors cursor-pointer"><Twitter size={18}/></div>
+                <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-red-600 transition-colors cursor-pointer"><Instagram size={18}/></div>
               </div>
             </div>
             
             <div>
               <h3 className="font-['Barlow_Condensed'] text-xl font-bold text-white uppercase tracking-wider mb-6">Liên Hệ</h3>
               <ul className="space-y-4 text-gray-400 font-medium text-sm">
-                <li className="flex items-start gap-3"><MapPin size={18} style={{ color: brandAccent }} className="shrink-0 mt-0.5" /> 123 Đường Đấu Giá, Phường Bình An, Quận 2, TP.HCM</li>
-                <li className="flex items-center gap-3"><Phone size={18} style={{ color: brandAccent }} className="shrink-0" /> 1900 6868 (Hotline)</li>
-                <li className="flex items-center gap-3"><Mail size={18} style={{ color: brandAccent }} className="shrink-0" /> contact@auctionbds.vn</li>
+                <li className="flex items-start gap-3"><MapPin size={18} className="text-red-500 shrink-0 mt-0.5" /> 123 Đường Đấu Giá, Phường Bình An, Quận 2, TP.HCM</li>
+                <li className="flex items-center gap-3"><Phone size={18} className="text-red-500 shrink-0" /> 1900 6868 (Hotline)</li>
+                <li className="flex items-center gap-3"><Mail size={18} className="text-red-500 shrink-0" /> contact@auctionbds.vn</li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-['Barlow_Condensed'] text-xl font-bold text-white uppercase tracking-wider mb-6">Liên Kết Nhanh</h3>
               <ul className="space-y-3 text-gray-400 font-medium text-sm">
-                <li><button onClick={() => navigateTo('home')} className="hover:opacity-80 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Trang chủ</button></li>
-                <li><button onClick={() => navigateTo('auctions')} className="hover:opacity-80 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Sàn đấu giá</button></li>
-                <li><button onClick={() => navigateTo('about')} className="hover:opacity-80 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Về chúng tôi</button></li>
-                <li><button onClick={() => navigateTo('news')} className="hover:opacity-80 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Tin tức & Sự kiện</button></li>
+                <li><button onClick={() => navigateTo('home')} className="hover:text-red-500 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Trang chủ</button></li>
+                <li><button onClick={() => navigateTo('auctions')} className="hover:text-red-500 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Sàn đấu giá</button></li>
+                <li><button onClick={() => navigateTo('about')} className="hover:text-red-500 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Về chúng tôi</button></li>
+                <li><button onClick={() => navigateTo('news')} className="hover:text-red-500 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Tin tức & Sự kiện</button></li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-['Barlow_Condensed'] text-xl font-bold text-white uppercase tracking-wider mb-6">Chính Sách</h3>
               <ul className="space-y-3 text-gray-400 font-medium text-sm">
-                <li><button className="hover:opacity-80 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Quy chế hoạt động</button></li>
-                <li><button className="hover:opacity-80 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Chính sách bảo mật</button></li>
-                <li><button className="hover:opacity-80 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Cơ chế giải quyết tranh chấp</button></li>
-                <li><button className="hover:opacity-80 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Hướng dẫn thanh toán</button></li>
+                <li><button onClick={() => navigateTo('about')} className="hover:text-red-500 transition-colors flex items-center gap-2 cursor-pointer"><ChevronRight size={14}/> Quy chế hoạt động</button></li>
+                <li><button onClick={() => navigateTo('about')} className="hover:text-red-500 transition-colors flex items-center gap-2 cursor-pointer"><ChevronRight size={14}/> Chính sách bảo mật</button></li>
+                <li><button onClick={() => navigateTo('about')} className="hover:text-red-500 transition-colors flex items-center gap-2 cursor-pointer"><ChevronRight size={14}/> Cơ chế giải quyết tranh chấp</button></li>
+                <li><button onClick={() => navigateTo('about')} className="hover:text-red-500 transition-colors flex items-center gap-2 cursor-pointer"><ChevronRight size={14}/> Hướng dẫn thanh toán</button></li>
               </ul>
             </div>
           </div>

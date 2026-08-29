@@ -1328,16 +1328,40 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
-                    <MapPin className="text-amber-400" size={24} />
+                    <MapPin className="text-amber-400 shrink-0" size={24} />
                     <div>
                       <p className="text-sm text-amber-200">Văn Phòng Sales Gallery</p>
                       <p className="font-medium">123 Đại lộ Thương Mại, Quận 1, TP. Hồ Chí Minh</p>
                     </div>
                   </div>
                 </div>
+
+                {/* Interactive Google Map */}
+                <div className="mt-8 rounded-2xl overflow-hidden border border-amber-800 shadow-md flex flex-col h-48 bg-amber-950">
+                  <div className="px-3.5 py-2 bg-amber-950 text-white flex items-center justify-between text-xs">
+                    <span className="font-bold truncate text-amber-300">Sales Gallery Quận 1, TP.HCM</span>
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Qu%E1%BA%ADn+1,+TP.+H%E1%BB%93+Ch%C3%AD+Minh"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-2 py-0.5 rounded bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-[10px] shrink-0"
+                    >
+                      Mở Maps
+                    </a>
+                  </div>
+                  <div className="flex-1 w-full h-full">
+                    <iframe
+                      title="Bản đồ Sales Gallery Quận 1"
+                      src="https://maps.google.com/maps?q=Qu%E1%BA%ADn+1,+TP.+H%E1%BB%93+Ch%C3%AD+Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                      className="w-full h-full border-0"
+                      loading="lazy"
+                      allowFullScreen
+                    />
+                  </div>
+                </div>
               </div>
               
-              <div className="mt-12 pt-8 border-t border-amber-800/60 text-xs text-amber-200/60">
+              <div className="mt-6 pt-4 border-t border-amber-800/60 text-xs text-amber-200/60">
                 Làm việc từ 8:00 đến 21:00 hàng ngày (kể cả Thứ 7 & Chủ Nhật)
               </div>
             </div>

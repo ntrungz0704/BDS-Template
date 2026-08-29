@@ -1779,6 +1779,30 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
                 </div>
               </div>
             </div>
+
+            {/* Interactive Google Map */}
+            <div className="rounded-2xl overflow-hidden border border-blue-100 shadow-md flex flex-col h-60 bg-white">
+              <div className="px-4 py-2 bg-slate-900 text-white flex items-center justify-between text-xs">
+                <span className="font-bold flex items-center gap-1.5 truncate"><MapPin size={14} className="text-[#10B981]" /> Bitexco Financial Tower — Quận 1, TP.HCM</span>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=Bitexco+Financial+Tower,+2+H%E1%BA%A3i+Tri%E1%BB%81u,+Qu%E1%BA%ADn+1,+TP.HCM"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1 rounded bg-[#1E40AF] hover:bg-[#1D4ED8] text-white text-[10px] font-bold shrink-0"
+                >
+                  Mở Google Maps
+                </a>
+              </div>
+              <div className="flex-1 w-full h-full">
+                <iframe
+                  title="Bản đồ Bitexco Financial Tower"
+                  src="https://maps.google.com/maps?q=Bitexco+Financial+Tower,+Qu%E1%BA%ADn+1,+TP.HCM&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                  className="w-full h-full border-0"
+                  loading="lazy"
+                  allowFullScreen
+                />
+              </div>
+            </div>
           </div>
           
           <div>

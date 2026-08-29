@@ -173,78 +173,26 @@ const mockGalleryPhotos = [
 ];
 
 interface TemplateProps {
-  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, any> };
+  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
-  company?: any;
-  theme?: any;
-  projects?: any[];
-  posts?: any[];
 }
 
-export default function PersonalAgentTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
-  const brandPrimary = dynamicTheme?.primaryColor || '#0284C7';
-  const brandAccent = dynamicTheme?.accentColor || '#38BDF8';
-  // Dynamic Posts Override & Shadowing Variable via globalThis reference
-  const activePosts = posts && posts.length > 0
-    ? posts.map((p, index) => ({
-        id: p.id || String(index),
-        title: p.title,
-        category: p.category?.name || 'Bất Động Sản',
-        cat: p.category?.name || 'Bất Động Sản',
-        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : '12/07/2026',
-        author: p.author?.fullName || 'Chuyên viên BĐS',
-        excerpt: p.summary || p.description || 'Tóm tắt bài viết...',
-        summary: p.summary || p.description || 'Tóm tắt bài viết...',
-        description: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        content: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        readTime: '5 phút đọc'
-      }))
-    : ((globalThis as any).__mockarticles_ref || []);
+const normalizePersonalAgentPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van', 'dat-lich'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham', 'bat-dong-san'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
 
-  // Shadowing variables
-  const mockArticles: any = activePosts;
-
-  // Dynamic Projects Override & Shadowing Variable via globalThis reference
-  const activeProjects = projects && projects.length > 0
-    ? projects.map((p, index) => ({
-        id: p.id || String(index),
-        name: p.title,
-        title: p.title,
-        location: p.address || 'Hệ thống',
-        price: p.price,
-        priceLabel: p.price,
-        area: p.area || '—',
-        type: p.type || 'Dự Án',
-        status: p.status || 'SELLING',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        tag: index === 0 ? 'EXCLUSIVE' : 'HOT',
-        desc: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        description: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        shortDescription: p.shortDescription || '',
-        specs: p.shortDescription || `${p.area} · ${p.type}`,
-        priceVal: parseFloat(p.price) || 0,
-        loc: p.address || 'Hệ thống',
-        size: parseFloat(p.area) || 0,
-        bedrooms: 3,
-        bathrooms: 2,
-        features: [p.type],
-        style: 'Modern',
-        delivery: '2026',
-        scale: '1 block'
-      }))
-    : ((globalThis as any).__featured_properties_ref || []);
-
-  // Shadowing variables
-  const FEATURED_PROPERTIES: any = activeProjects;
-
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+export default function PersonalAgentTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
+  const [currentPage, setCurrentPageState] = useState(normalizePersonalAgentPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizePersonalAgentPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
@@ -253,7 +201,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
+      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
     }
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -305,20 +253,11 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
   const renderHeader = () => (
     <header className="sticky top-4 w-full z-50 px-4">
       <div className={`mx-auto bg-white/90 backdrop-blur-md shadow-lg rounded-full px-6 py-3 flex items-center justify-between ${MAX_W}`}>
-        <div className="flex items-center gap-2 cursor-pointer text-left" onClick={() => navigateTo('home')}>
-          <div style={{ backgroundColor: brandPrimary }} className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xl shrink-0">
-            {(company?.name || 'A').charAt(0).toUpperCase()}
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigateTo('home')}>
+          <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+            T
           </div>
-          <div>
-            <span className="text-xl font-bold text-gray-900 tracking-tight uppercase block">
-              {company?.name || template?.name || 'Trần Anh Tuấn'}
-            </span>
-            {company?.slogan && (
-              <span style={{ color: brandPrimary }} className="text-[10px] font-semibold tracking-wider uppercase block">
-                {company.slogan}
-              </span>
-            )}
-          </div>
+          <span className="text-xl font-bold text-gray-900 tracking-tight">Trần Anh <span className="text-indigo-600">Tuấn</span></span>
         </div>
 
         {/* Desktop Nav */}
@@ -335,9 +274,8 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               <button
                 key={item.id}
                 onClick={() => navigateTo(item.id)}
-                style={currentPage === item.id ? { color: brandPrimary } : undefined}
                 className={`text-sm font-medium transition-colors ${
-                  currentPage === item.id ? '' : 'text-gray-600 hover:opacity-80'
+                  currentPage === item.id ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'
                 }`}
               >
                 {item.label}
@@ -347,14 +285,13 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
         )}
 
         {!isMobile && !isTablet && (
-          <a 
-            href={`tel:${company?.phone || '0983312219'}`}
-            style={{ backgroundColor: brandPrimary }}
-            className="text-white px-6 py-2.5 rounded-full text-sm font-medium hover:opacity-90 transition-opacity flex items-center gap-2"
+          <button 
+            onClick={() => navigateTo('contact')}
+            className="bg-indigo-600 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-indigo-700 transition-colors flex items-center gap-2"
           >
             <Phone size={16} />
-            {company?.phone || '0983 312 219'}
-          </a>
+            090 123 4567
+          </button>
         )}
 
         {(isMobile || isTablet) && (
@@ -378,22 +315,20 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
             <button
               key={item.id}
               onClick={() => navigateTo(item.id)}
-              style={currentPage === item.id ? { color: brandPrimary, backgroundColor: brandPrimary + '15' } : undefined}
               className={`text-left text-lg font-medium p-2 rounded-lg ${
-                currentPage === item.id ? '' : 'text-gray-800'
+                currentPage === item.id ? 'bg-indigo-50 text-indigo-600' : 'text-gray-800'
               }`}
             >
               {item.label}
             </button>
           ))}
-          <a 
-            href={`tel:${company?.phone || '0983312219'}`}
-            style={{ backgroundColor: brandPrimary }}
-            className="w-full text-white px-6 py-3 rounded-xl text-base font-medium mt-2 flex justify-center items-center gap-2"
+          <button 
+            onClick={() => navigateTo('contact')}
+            className="w-full bg-indigo-600 text-white px-6 py-3 rounded-xl text-base font-medium mt-2 flex justify-center items-center gap-2"
           >
             <Phone size={18} />
-            Gọi ngay {company?.phone || '0983 312 219'}
-          </a>
+            Gọi ngay 090 123 4567
+          </button>
         </div>
       )}
     </header>
@@ -406,29 +341,27 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div>
             <div className="flex items-center gap-2 mb-6">
-              <div style={{ backgroundColor: brandPrimary }} className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                {(company?.name || 'A').charAt(0).toUpperCase()}
+              <div className="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                T
               </div>
-              <span className="text-2xl font-bold text-white tracking-tight uppercase">
-                {company?.name || 'Trần Anh Tuấn'}
-              </span>
+              <span className="text-2xl font-bold text-white tracking-tight">Trần Anh Tuấn</span>
             </div>
             <p className="text-gray-400 mb-6 text-sm leading-relaxed">
-              {company?.slogan || company?.description || 'Chuyên gia tư vấn bất động sản cao cấp, mang đến giải pháp an cư và đầu tư sinh lời vượt trội cho khách hàng.'}
+              Chuyên gia tư vấn bất động sản cao cấp, mang đến giải pháp an cư và đầu tư sinh lời vượt trội cho khách hàng tại thị trường TP.HCM.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:opacity-80 transition-colors">
+              <button onClick={() => alert('Mở Facebook')} className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors cursor-pointer">
                 <Facebook size={18} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:opacity-80 transition-colors">
+              </button>
+              <button onClick={() => alert('Mở Instagram')} className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors cursor-pointer">
                 <Instagram size={18} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:opacity-80 transition-colors">
+              </button>
+              <button onClick={() => alert('Mở LinkedIn')} className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors cursor-pointer">
                 <Linkedin size={18} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:opacity-80 transition-colors">
+              </button>
+              <button onClick={() => alert('Mở Twitter')} className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-500 transition-colors cursor-pointer">
                 <Twitter size={18} />
-              </a>
+              </button>
             </div>
           </div>
 
@@ -437,8 +370,8 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
             <ul className="space-y-3">
               {['Trang chủ', 'Dự án nổi bật', 'Về tôi', 'Góc chuyên gia', 'Liên hệ'].map((item, i) => (
                 <li key={i}>
-                  <button onClick={() => navigateTo('home')} className="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2">
-                    <ChevronRight size={14} style={{ color: brandPrimary }} /> {item}
+                  <button onClick={() => navigateTo('home')} className="text-gray-400 hover:text-indigo-400 transition-colors text-sm flex items-center gap-2">
+                    <ChevronRight size={14} /> {item}
                   </button>
                 </li>
               ))}
@@ -451,7 +384,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               {['Quận 1 - Trung tâm', 'Quận 2 - Thủ Thiêm', 'Quận 7 - Phú Mỹ Hưng', 'Bình Thạnh - Riverside', 'TP Thủ Đức'].map((item, i) => (
                 <li key={i}>
                   <span className="text-gray-400 text-sm flex items-center gap-2">
-                    <MapPin size={14} style={{ color: brandPrimary }} /> {item}
+                    <MapPin size={14} className="text-indigo-500" /> {item}
                   </span>
                 </li>
               ))}
@@ -462,20 +395,20 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
             <h4 className="text-lg font-bold mb-6 border-b border-gray-800 pb-2">Thông Tin Liên Hệ</h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
-                <MapPin style={{ color: brandPrimary }} className="mt-1 flex-shrink-0" size={18} />
-                <span className="text-gray-400 text-sm">{company?.address || 'Tầng 12, Tòa nhà Bitexco, Số 2 Hải Triều, Bến Nghé, Quận 1, TP.HCM'}</span>
+                <MapPin className="text-indigo-500 mt-1 flex-shrink-0" size={18} />
+                <span className="text-gray-400 text-sm">Tầng 12, Tòa nhà Bitexco, Số 2 Hải Triều, Bến Nghé, Quận 1, TP.HCM</span>
               </li>
               <li className="flex items-center gap-3">
-                <Phone style={{ color: brandPrimary }} className="flex-shrink-0" size={18} />
-                <span className="text-gray-400 text-sm">{company?.phone || company?.hotline || '0983 312 219'}</span>
+                <Phone className="text-indigo-500 flex-shrink-0" size={18} />
+                <span className="text-gray-400 text-sm">090 123 4567</span>
               </li>
               <li className="flex items-center gap-3">
-                <Mail style={{ color: brandPrimary }} className="flex-shrink-0" size={18} />
-                <span className="text-gray-400 text-sm">{company?.email || 'contact@platformbds.vn'}</span>
+                <Mail className="text-indigo-500 flex-shrink-0" size={18} />
+                <span className="text-gray-400 text-sm">tuan.tran@luxuryhomes.vn</span>
               </li>
               <li className="flex items-center gap-3">
-                <Clock style={{ color: brandPrimary }} className="flex-shrink-0" size={18} />
-                <span className="text-gray-400 text-sm">{company?.workingHours || 'T2 - CN: 8:00 - 20:00'}</span>
+                <Clock className="text-indigo-500 flex-shrink-0" size={18} />
+                <span className="text-gray-400 text-sm">T2 - CN: 8:00 - 20:00</span>
               </li>
             </ul>
           </div>
@@ -483,7 +416,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
 
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-500 text-sm text-center md:text-left">
-            &copy; {new Date().getFullYear()} {company?.name || 'Personal Agent'}. All rights reserved.
+            &copy; 2024 Trần Anh Tuấn Real Estate. All rights reserved.
           </p>
           <div className="flex gap-4">
             <span className="text-gray-500 text-sm hover:text-white cursor-pointer">Chính sách bảo mật</span>
@@ -499,35 +432,31 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
       {/* 2. Hero */}
       <section className="relative min-h-[90vh] flex items-center pt-24 pb-16 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <div style={{ backgroundColor: brandPrimary + '10' }} className="absolute top-0 right-0 w-2/3 h-full rounded-bl-[100px] transform translate-x-1/4"></div>
-          <div style={{ backgroundColor: brandPrimary + '20' }} className="absolute top-20 right-20 w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
-          <div style={{ backgroundColor: brandAccent + '20' }} className="absolute bottom-20 left-20 w-72 h-72 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
+          <div className="absolute top-0 right-0 w-2/3 h-full bg-indigo-50 rounded-bl-[100px] transform translate-x-1/4"></div>
+          <div className="absolute top-20 right-20 w-64 h-64 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
+          <div className="absolute bottom-20 left-20 w-72 h-72 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
         </div>
         
         <div className={`mx-auto px-4 w-full relative z-10 ${MAX_W}`}>
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
             <div className="flex-1 text-center lg:text-left mt-12 lg:mt-0">
-              <div style={{ backgroundColor: brandPrimary + '15', color: brandPrimary }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium text-sm mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 font-medium text-sm mb-6">
                 <Star size={16} fill="currentColor" />
                 Chuyên gia tư vấn BĐS cao cấp
               </div>
               <h1 className="text-5xl lg:text-7xl font-extrabold text-gray-900 leading-tight mb-6">
-                Tìm kiếm <span style={{ color: brandPrimary }}>tổ ấm</span>,<br />
-                Đầu tư <span style={{ color: brandAccent }}>tương lai</span>
+                Tìm kiếm <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">tổ ấm</span>,<br />
+                Đầu tư <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">tương lai</span>
               </h1>
               <p className="text-lg text-gray-600 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
                 Đồng hành cùng bạn trong mọi quyết định mua bán bất động sản. Từ những căn hộ sang trọng đến biệt thự đẳng cấp, tôi cam kết mang lại giá trị thực cho từng khách hàng.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10">
-                <button 
-                  onClick={() => navigateTo('projects')} 
-                  style={{ backgroundColor: brandPrimary }}
-                  className="px-8 py-4 text-white rounded-xl font-bold text-lg hover:opacity-90 transition-all shadow-lg flex items-center justify-center gap-2"
-                >
+                <button onClick={() => navigateTo('projects')} className="px-8 py-4 bg-indigo-600 text-white rounded-xl font-bold text-lg hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2">
                   Xem Dự Án <ArrowUpRight size={20} />
                 </button>
-                <button onClick={() => navigateTo('contact')} className="px-8 py-4 bg-white text-gray-900 rounded-xl font-bold text-lg border-2 border-gray-200 hover:border-gray-400 transition-all flex items-center justify-center gap-2">
+                <button onClick={() => navigateTo('contact')} className="px-8 py-4 bg-white text-gray-900 rounded-xl font-bold text-lg border-2 border-gray-200 hover:border-indigo-600 transition-all flex items-center justify-center gap-2">
                   Liên Hệ Tư Vấn <Phone size={20} />
                 </button>
               </div>
@@ -542,8 +471,8 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
                   <div className="text-white">
-                    <p className="text-2xl font-bold mb-1">{company?.name || template?.name || 'Trần Anh Tuấn'}</p>
-                    <p style={{ color: brandAccent }} className="font-medium text-sm">{company?.slogan || 'CEO & Founder tại Luxury Homes'}</p>
+                    <p className="text-2xl font-bold mb-1">Trần Anh Tuấn</p>
+                    <p className="text-indigo-300 font-medium text-sm">CEO & Founder tại Luxury Homes</p>
                   </div>
                 </div>
               </div>
@@ -574,7 +503,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
       </section>
 
       {/* 3. Stats */}
-      <section style={{ backgroundColor: brandPrimary }} className="py-16 text-white relative z-20 -mt-10 mx-4 md:mx-auto max-w-6xl rounded-3xl shadow-2xl overflow-hidden">
+      <section className="bg-indigo-900 py-16 text-white relative z-20 -mt-10 mx-4 md:mx-auto max-w-6xl rounded-3xl shadow-2xl overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
         <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-8 px-8">
           {[
@@ -584,8 +513,8 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
             { value: '300+', label: 'Khách Hàng Thân Thiết' }
           ].map((stat, i) => (
             <div key={i} className="text-center">
-              <p className="text-4xl md:text-5xl font-extrabold mb-2">{stat.value}</p>
-              <p className="text-white/80 text-sm font-medium uppercase tracking-wider">{stat.label}</p>
+              <p className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-white mb-2">{stat.value}</p>
+              <p className="text-indigo-200 text-sm font-medium uppercase tracking-wider">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -595,7 +524,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
       <section className="py-24 bg-gray-50">
         <div className={`mx-auto px-4 ${MAX_W}`}>
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 style={{ color: brandPrimary }} className="text-sm font-bold tracking-widest uppercase mb-2">Chuyên Môn</h2>
+            <h2 className="text-sm font-bold text-indigo-600 tracking-widest uppercase mb-2">Chuyên Môn</h2>
             <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Lĩnh Vực Trọng Tâm</h3>
             <p className="text-gray-600 text-lg">Tôi tập trung vào các phân khúc bất động sản cao cấp, mang lại trải nghiệm sống đỉnh cao và tiềm năng đầu tư sinh lời vượt trội.</p>
           </div>
@@ -603,19 +532,19 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                icon: <Home size={40} style={{ color: brandPrimary }} />,
+                icon: <Home size={40} className="text-indigo-600" />,
                 title: 'Biệt Thự Hạng Sang',
                 desc: 'Khám phá bộ sưu tập biệt thự ven sông, biệt thự compound với không gian sống biệt lập, an ninh tuyệt đối tại các khu vực đắc địa.',
                 img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80'
               },
               {
-                icon: <Building size={40} style={{ color: brandPrimary }} />,
+                icon: <Building size={40} className="text-indigo-600" />,
                 title: 'Căn Hộ Penthouse',
                 desc: 'Tận hưởng tầm nhìn panorama ôm trọn thành phố với các siêu phẩm Penthouse, Duplex tại trung tâm tài chính và khu đô thị mới.',
                 img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80'
               },
               {
-                icon: <TrendingUp size={40} style={{ color: brandPrimary }} />,
+                icon: <TrendingUp size={40} className="text-indigo-600" />,
                 title: 'Đầu Tư Thương Mại',
                 desc: 'Tư vấn chiến lược danh mục đầu tư bất động sản thương mại: Shophouse, tòa nhà văn phòng với tỷ suất sinh lời ổn định và tiềm năng tăng giá.',
                 img: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&q=80'
@@ -631,11 +560,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   </div>
                   <h4 className="text-xl font-bold text-gray-900 mt-4 mb-3">{spec.title}</h4>
                   <p className="text-gray-600 mb-6 leading-relaxed">{spec.desc}</p>
-                  <button 
-                    onClick={() => navigateTo('projects')} 
-                    style={{ color: brandPrimary }}
-                    className="font-semibold flex items-center gap-2 group-hover:gap-3 transition-all"
-                  >
+                  <button onClick={() => navigateTo('projects')} className="text-indigo-600 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
                     Tìm hiểu thêm <ArrowRight size={18} />
                   </button>
                 </div>
@@ -650,14 +575,10 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
         <div className={`mx-auto px-4 ${MAX_W}`}>
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
             <div>
-              <h2 style={{ color: brandPrimary }} className="text-sm font-bold tracking-widest uppercase mb-2">Bất Động Sản Nổi Bật</h2>
+              <h2 className="text-sm font-bold text-indigo-600 tracking-widest uppercase mb-2">Bất Động Sản Nổi Bật</h2>
               <h3 className="text-3xl md:text-4xl font-bold text-gray-900">Danh Mục Đầu Tư Phân Bổ</h3>
             </div>
-            <button 
-              onClick={() => navigateTo('projects')} 
-              style={{ borderColor: brandPrimary, color: brandPrimary }}
-              className="px-6 py-3 border rounded-full font-medium hover:bg-gray-50 transition-colors flex items-center gap-2"
-            >
+            <button onClick={() => navigateTo('projects')} className="px-6 py-3 border border-gray-200 rounded-full font-medium hover:border-indigo-600 hover:text-indigo-600 transition-colors flex items-center gap-2">
               Xem tất cả <ArrowRight size={18} />
             </button>
           </div>
@@ -667,7 +588,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-xl transition-all">
                 <div className="relative h-64 overflow-hidden">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={listing.img} alt={listing.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                  <div style={{ backgroundColor: brandPrimary }} className="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                  <div className="absolute top-4 left-4 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                     {listing.type}
                   </div>
                   {listing.featured && (
@@ -681,17 +602,13 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80"></div>
                 </div>
                 <div className="p-6">
-                  <h4 className="text-xl font-bold text-gray-900 mb-2 truncate hover:opacity-80 cursor-pointer" onClick={() => setSelectedProject(listing)}>{listing.title}</h4>
+                  <h4 className="text-xl font-bold text-gray-900 mb-2 truncate hover:text-indigo-600 cursor-pointer" onClick={() => setSelectedProject(listing)}>{listing.title}</h4>
                   <p className="text-gray-500 text-sm flex items-center gap-1 mb-4">
-                    <MapPin size={16} style={{ color: brandPrimary }} /> {listing.loc}
+                    <MapPin size={16} /> {listing.loc}
                   </p>
                   <div className="border-t border-gray-100 pt-4 flex justify-between items-center text-sm font-medium text-gray-700">
                     <span>{listing.specs}</span>
-                    <button 
-                      onClick={() => setSelectedProject(listing)} 
-                      style={{ backgroundColor: brandPrimary + '15', color: brandPrimary }}
-                      className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-colors"
-                    >
+                    <button onClick={() => setSelectedProject(listing)} className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors">
                       <ChevronRight size={18} />
                     </button>
                   </div>
@@ -703,7 +620,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
       </section>
 
       {/* 6. About Agent */}
-      <section style={{ backgroundColor: brandPrimary + '08' }} className="py-24">
+      <section className="py-24 bg-indigo-50">
         <div className={`mx-auto px-4 ${MAX_W}`}>
           <div className="flex flex-col lg:flex-row items-center gap-16">
             <div className="w-full lg:w-1/2 relative">
@@ -715,26 +632,26 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 />
               </div>
               <div className="absolute top-1/2 -right-8 lg:-right-12 bg-white p-6 rounded-2xl shadow-xl z-20">
-                <p style={{ color: brandPrimary }} className="text-4xl font-extrabold mb-1">10+</p>
+                <p className="text-4xl font-extrabold text-indigo-600 mb-1">10+</p>
                 <p className="text-gray-900 font-bold mb-2">Năm Kinh Nghiệm</p>
                 <p className="text-sm text-gray-500">Trong thị trường BĐS hạng sang</p>
               </div>
-              <div style={{ backgroundColor: brandAccent + '25' }} className="absolute -bottom-8 -left-8 w-48 h-48 rounded-full mix-blend-multiply opacity-50 z-0 blur-2xl"></div>
+              <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-indigo-200 rounded-full mix-blend-multiply opacity-50 z-0 blur-2xl"></div>
             </div>
             
             <div className="w-full lg:w-1/2">
-              <h2 style={{ color: brandPrimary }} className="text-sm font-bold tracking-widest uppercase mb-2">Câu Chuyện Của Tôi</h2>
+              <h2 className="text-sm font-bold text-indigo-600 tracking-widest uppercase mb-2">Câu Chuyện Của Tôi</h2>
               <h3 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">Đam mê kiến tạo không gian sống hoàn mỹ</h3>
               <p className="text-gray-600 text-lg mb-6 leading-relaxed">
                 Chào bạn, tôi là Trần Anh Tuấn. Khởi nghiệp từ năm 2013 với niềm đam mê cháy bỏng dành cho kiến trúc và không gian sống, tôi đã có hơn một thập kỷ đắm mình trong phân khúc bất động sản hạng sang.
               </p>
               <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-                Triết lý của tôi rất đơn giản: <strong>&ldquo;Bán nhà không chỉ là bán những bức tường, mà là bán phong cách sống và tầm nhìn tương lai.&rdquo;</strong> Tôi luôn đặt mình vào vị trí của khách hàng để tìm kiếm những tài sản phù hợp nhất với nhu cầu, sở thích và định hướng tài chính.
+                Triết lý của tôi rất đơn giản: <strong>"Bán nhà không chỉ là bán những bức tường, mà là bán phong cách sống và tầm nhìn tương lai."</strong> Tôi luôn đặt mình vào vị trí của khách hàng để tìm kiếm những tài sản phù hợp nhất với nhu cầu, sở thích và định hướng tài chính.
               </p>
               
               <div className="grid grid-cols-2 gap-6 mb-10">
                 <div className="flex items-start gap-4">
-                  <div style={{ backgroundColor: brandPrimary + '15', color: brandPrimary }} className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0 text-indigo-600">
                     <Award size={24} />
                   </div>
                   <div>
@@ -743,7 +660,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div style={{ backgroundColor: brandPrimary + '15', color: brandPrimary }} className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0 text-indigo-600">
                     <Shield size={24} />
                   </div>
                   <div>
@@ -761,7 +678,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
       <section className="py-24 bg-white">
         <div className={`mx-auto px-4 ${MAX_W}`}>
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 style={{ color: brandPrimary }} className="text-sm font-bold tracking-widest uppercase mb-2">Dịch Vụ Toàn Diện</h2>
+            <h2 className="text-sm font-bold text-indigo-600 tracking-widest uppercase mb-2">Dịch Vụ Toàn Diện</h2>
             <h3 className="text-3xl md:text-4xl font-bold text-gray-900">Giải Pháp Bất Động Sản Từ A-Z</h3>
           </div>
 
@@ -772,8 +689,8 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               { icon: <Briefcase size={32}/>, title: 'Quản Lý Đầu Tư', desc: 'Phân tích thị trường, lập kế hoạch dòng tiền và tối ưu hóa lợi nhuận danh mục.' },
               { icon: <Shield size={32}/>, title: 'Hỗ Trợ Pháp Lý', desc: 'Kiểm tra quy hoạch, hợp đồng, hoàn thiện thủ tục công chứng sang tên nhanh chóng.' }
             ].map((srv, i) => (
-              <div key={i} className="border border-gray-100 p-8 rounded-2xl hover:shadow-xl transition-all bg-white group">
-                <div style={{ backgroundColor: brandPrimary + '15', color: brandPrimary }} className="w-16 h-16 rounded-full flex items-center justify-center mb-6 transition-colors">
+              <div key={i} className="border border-gray-100 p-8 rounded-2xl hover:shadow-xl hover:border-indigo-100 transition-all bg-white group">
+                <div className="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                   {srv.icon}
                 </div>
                 <h4 className="text-xl font-bold text-gray-900 mb-3">{srv.title}</h4>
@@ -789,16 +706,16 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
         <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1600&q=20')] bg-cover bg-center"></div>
         <div className={`mx-auto px-4 relative z-10 ${MAX_W}`}>
           <div className="text-center mb-16">
-            <h2 style={{ color: brandAccent }} className="text-sm font-bold tracking-widest uppercase mb-2">Đánh Giá Khách Hàng</h2>
+            <h2 className="text-sm font-bold text-indigo-400 tracking-widest uppercase mb-2">Đánh Giá Khách Hàng</h2>
             <h3 className="text-3xl md:text-4xl font-bold">Uy Tín Được Khẳng Định Bằng Niềm Tin</h3>
           </div>
 
           <div className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory hide-scrollbar">
             {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="min-w-[320px] md:min-w-[400px] snap-center bg-gray-800 p-8 rounded-2xl border border-gray-700">
-                <Quote size={40} style={{ color: brandPrimary }} className="mb-6 opacity-50" />
+                <Quote size={40} className="text-indigo-500 mb-6 opacity-50" />
                 <p className="text-gray-300 mb-8 italic leading-relaxed">
-                  &ldquo;Tuấn không chỉ là một môi giới, mà là một cố vấn đích thực. Cậu ấy hiểu rõ gu của tôi và đã giúp gia đình tôi tìm được căn penthouse hoàn hảo tại Thủ Thiêm. Rất chuyên nghiệp và tận tâm!&rdquo;
+                  "Tuấn không chỉ là một môi giới, mà là một cố vấn đích thực. Cậu ấy hiểu rõ gu của tôi và đã giúp gia đình tôi tìm được căn penthouse hoàn hảo tại Thủ Thiêm. Rất chuyên nghiệp và tận tâm!"
                 </p>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-gray-600 rounded-full overflow-hidden">
@@ -825,7 +742,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
       <section className="py-24 bg-white">
         <div className={`mx-auto px-4 ${MAX_W}`}>
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 style={{ color: brandPrimary }} className="text-sm font-bold tracking-widest uppercase mb-2">Quy Trình Làm Việc</h2>
+            <h2 className="text-sm font-bold text-indigo-600 tracking-widest uppercase mb-2">Quy Trình Làm Việc</h2>
             <h3 className="text-3xl md:text-4xl font-bold text-gray-900">Đơn Giản, Minh Bạch & Hiệu Quả</h3>
           </div>
 
@@ -837,7 +754,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               { step: '04', title: 'Đàm Phán & Chốt Cọc', desc: 'Đại diện thương lượng giá tốt nhất và hỗ trợ mọi thủ tục pháp lý đến khi nhận nhà.' }
             ].map((p, i) => (
               <div key={i} className="relative group">
-                <div className="text-7xl font-extrabold text-gray-100 absolute -top-10 left-0 z-0 group-hover:opacity-75 transition-colors">{p.step}</div>
+                <div className="text-7xl font-extrabold text-gray-100 absolute -top-10 left-0 z-0 group-hover:text-indigo-50 transition-colors">{p.step}</div>
                 <div className="relative z-10 pt-4">
                   <h4 className="text-xl font-bold text-gray-900 mb-3">{p.title}</h4>
                   <p className="text-gray-600 text-sm leading-relaxed">{p.desc}</p>
@@ -873,7 +790,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
             <div className="col-span-2 row-span-2 relative group rounded-2xl overflow-hidden">
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80" alt="Gal 1" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <span style={{ backgroundColor: brandPrimary }} className="text-white font-bold text-xl px-6 py-2 rounded-full">Đã Bán - 45 Tỷ</span>
+                <span className="text-white font-bold text-xl bg-indigo-600/90 px-6 py-2 rounded-full">Đã Bán - 45 Tỷ</span>
               </div>
             </div>
             <div className="relative group rounded-2xl overflow-hidden">
@@ -885,16 +802,12 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
             <div className="col-span-2 relative group rounded-2xl overflow-hidden">
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600047509358-9dc75507daeb?w=800&q=80" alt="Gal 4" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <span style={{ backgroundColor: brandPrimary }} className="text-white font-bold text-xl px-6 py-2 rounded-full">Cho Thuê - $5,000/tháng</span>
+                <span className="text-white font-bold text-xl bg-indigo-600/90 px-6 py-2 rounded-full">Cho Thuê - $5,000/tháng</span>
               </div>
             </div>
           </div>
           <div className="text-center mt-8">
-            <button 
-              onClick={() => navigateTo('gallery')} 
-              style={{ color: brandPrimary }}
-              className="font-bold hover:underline flex items-center gap-2 justify-center mx-auto"
-            >
+            <button onClick={() => navigateTo('gallery')} className="text-indigo-600 font-bold hover:underline flex items-center gap-2 justify-center mx-auto">
               Xem toàn bộ thư viện ảnh <ChevronRight size={18} />
             </button>
           </div>
@@ -906,14 +819,10 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
         <div className={`mx-auto px-4 ${MAX_W}`}>
           <div className="flex justify-between items-end mb-12">
             <div>
-              <h2 style={{ color: brandPrimary }} className="text-sm font-bold tracking-widest uppercase mb-2">Góc Chuyên Gia</h2>
+              <h2 className="text-sm font-bold text-indigo-600 tracking-widest uppercase mb-2">Góc Chuyên Gia</h2>
               <h3 className="text-3xl md:text-4xl font-bold text-gray-900">Bài Viết & Phân Tích</h3>
             </div>
-            <button 
-              onClick={() => navigateTo('news')} 
-              style={{ color: brandPrimary }}
-              className="hidden md:flex items-center gap-2 font-medium hover:underline"
-            >
+            <button onClick={() => navigateTo('news')} className="hidden md:flex items-center gap-2 text-indigo-600 font-medium hover:underline">
               Xem tất cả <ArrowRight size={18} />
             </button>
           </div>
@@ -925,11 +834,11 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={news.img} alt={news.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 </div>
                 <div className="flex items-center gap-4 text-xs font-bold text-gray-500 mb-3 uppercase tracking-wider">
-                  <span style={{ color: brandPrimary }}>{news.cat}</span>
+                  <span className="text-indigo-600">{news.cat}</span>
                   <span>•</span>
                   <span>{news.date}</span>
                 </div>
-                <h4 className="text-xl font-bold text-gray-900 group-hover:opacity-80 transition-colors leading-snug">{news.title}</h4>
+                <h4 className="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors leading-snug">{news.title}</h4>
               </div>
             ))}
           </div>
@@ -956,7 +865,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   className="w-full px-6 py-5 text-left font-bold text-gray-900 flex justify-between items-center hover:bg-gray-50 transition-colors"
                 >
                   {faq.q}
-                  {openFaqIndex === i ? <ChevronUp size={20} style={{ color: brandPrimary }} /> : <ChevronDown size={20} className="text-gray-400" />}
+                  {openFaqIndex === i ? <ChevronUp size={20} className="text-indigo-600" /> : <ChevronDown size={20} className="text-gray-400" />}
                 </button>
                 {openFaqIndex === i && (
                   <div className="px-6 pb-6 text-gray-600 leading-relaxed border-t border-gray-50 pt-4">
@@ -972,12 +881,12 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
       {/* 14. Contact Form */}
       <section className="py-24 bg-white">
         <div className={`mx-auto px-4 ${MAX_W}`}>
-          <div style={{ backgroundColor: brandPrimary }} className="rounded-[3rem] p-8 md:p-16 flex flex-col lg:flex-row gap-16 relative overflow-hidden shadow-2xl">
+          <div className="bg-indigo-600 rounded-[3rem] p-8 md:p-16 flex flex-col lg:flex-row gap-16 relative overflow-hidden shadow-2xl">
             <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
             
             <div className="w-full lg:w-5/12 relative z-10 text-white">
               <h2 className="text-4xl md:text-5xl font-bold mb-6">Bạn đã sẵn sàng để sở hữu BĐS trong mơ?</h2>
-              <p className="text-white/80 text-lg mb-12">Hãy để lại thông tin, tôi sẽ liên hệ tư vấn cá nhân hóa theo đúng nhu cầu của bạn trong vòng 24 giờ.</p>
+              <p className="text-indigo-100 text-lg mb-12">Hãy để lại thông tin, tôi sẽ liên hệ tư vấn cá nhân hóa theo đúng nhu cầu của bạn trong vòng 24 giờ.</p>
               
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
@@ -985,8 +894,8 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                     <Phone size={20} />
                   </div>
                   <div>
-                    <p className="text-sm text-white/80">Gọi Trực Tiếp</p>
-                    <p className="font-bold text-xl">{company?.phone || '0983 312 219'}</p>
+                    <p className="text-sm text-indigo-200">Gọi Trực Tiếp</p>
+                    <p className="font-bold text-xl">090 123 4567</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -994,8 +903,8 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                     <Mail size={20} />
                   </div>
                   <div>
-                    <p className="text-sm text-white/80">Gửi Email</p>
-                    <p className="font-bold text-lg">{company?.email || 'tuan.tran@luxuryhomes.vn'}</p>
+                    <p className="text-sm text-indigo-200">Gửi Email</p>
+                    <p className="font-bold text-lg">tuan.tran@luxuryhomes.vn</p>
                   </div>
                 </div>
               </div>
@@ -1008,20 +917,20 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Họ và tên *</label>
-                      <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent" placeholder="Nguyễn Văn A" />
+                      <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent" placeholder="Nguyễn Văn A" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại *</label>
-                      <input type="tel" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent" placeholder="090..." />
+                      <input type="tel" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent" placeholder="090..." />
                     </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent" placeholder="email@example.com" />
+                    <input type="email" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent" placeholder="email@example.com" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Nhu cầu quan tâm</label>
-                    <select className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent">
+                    <select className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent">
                       <option>Mua nhà/căn hộ để ở</option>
                       <option>Đầu tư dự án</option>
                       <option>Ký gửi bán/cho thuê</option>
@@ -1030,12 +939,15 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Lời nhắn</label>
-                    <textarea rows={4} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent" placeholder="Bạn cần tôi hỗ trợ thêm điều gì?"></textarea>
+                    <textarea rows={4} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent" placeholder="Bạn cần tôi hỗ trợ thêm điều gì?"></textarea>
                   </div>
                   <button 
-                    type="button" 
-                    style={{ backgroundColor: brandPrimary }}
-                    className="w-full text-white font-bold py-4 rounded-xl hover:opacity-90 transition-opacity mt-4"
+                    type="submit" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      alert('Gửi yêu cầu tư vấn thành công! Tôi sẽ liên hệ lại sớm nhất.');
+                    }}
+                    className="w-full bg-gray-900 text-white font-bold py-4 rounded-xl hover:bg-indigo-600 transition-colors mt-4 cursor-pointer"
                   >
                     Gửi Yêu Cầu Tư Vấn
                   </button>
@@ -1049,18 +961,22 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
       {/* 15. Newsletter */}
       <section className="py-16 border-t border-gray-100 bg-white">
         <div className={`mx-auto px-4 text-center max-w-2xl ${MAX_W}`}>
-          <Mail size={40} style={{ color: brandAccent }} className="mx-auto mb-6" />
+          <Mail size={40} className="mx-auto text-indigo-300 mb-6" />
           <h3 className="text-2xl font-bold text-gray-900 mb-4">Nhận Bản Tin Thị Trường BĐS</h3>
           <p className="text-gray-600 mb-8">Đăng ký email để nhận các báo cáo phân tích độc quyền và thông tin dự án mới nhất từ tôi.</p>
-          <div className="flex gap-2 max-w-md mx-auto">
-            <input type="email" placeholder="Địa chỉ email của bạn..." className="flex-1 px-6 py-4 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500" />
-            <button 
-              style={{ backgroundColor: brandPrimary }}
-              className="px-8 py-4 text-white rounded-full font-bold hover:opacity-90 transition-opacity whitespace-nowrap"
-            >
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              alert('Đăng ký nhận bản tin thành công!');
+              (e.currentTarget.elements[0] as HTMLInputElement).value = '';
+            }}
+            className="flex gap-2 max-w-md mx-auto"
+          >
+            <input required type="email" placeholder="Địa chỉ email của bạn..." className="flex-1 px-6 py-4 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+            <button type="submit" className="px-8 py-4 bg-indigo-600 text-white rounded-full font-bold hover:bg-indigo-700 transition-colors whitespace-nowrap cursor-pointer">
               Đăng Ký
             </button>
-          </div>
+          </form>
         </div>
       </section>
     </div>
@@ -1105,7 +1021,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   placeholder="Tìm kiếm dự án, địa điểm..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
+                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm"
                 />
               </div>
 
@@ -1114,7 +1030,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 <select
                   value={dropdownFilters.type}
                   onChange={(e) => setDropdownFilters({ ...dropdownFilters, type: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm appearance-none cursor-pointer"
                 >
                   <option value="all">Tất cả loại hình</option>
                   <option value="Penthouse">Penthouse</option>
@@ -1129,7 +1045,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 <select
                   value={dropdownFilters.priceRange}
                   onChange={(e) => setDropdownFilters({ ...dropdownFilters, priceRange: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm appearance-none cursor-pointer"
                 >
                   <option value="all">Tất cả mức giá</option>
                   <option value="<30">Dưới 30 Tỷ</option>
@@ -1143,7 +1059,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 <select
                   value={dropdownFilters.region}
                   onChange={(e) => setDropdownFilters({ ...dropdownFilters, region: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm appearance-none cursor-pointer"
                 >
                   <option value="all">Tất cả khu vực</option>
                   <option value="Quận 1">Quận 1</option>
@@ -1161,8 +1077,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                     setSearchQuery('');
                     setDropdownFilters({ type: 'all', priceRange: 'all', region: 'all' });
                   }}
-                  style={{ color: brandPrimary }}
-                  className="text-sm font-semibold hover:opacity-80 transition-opacity"
+                  className="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors"
                 >
                   Xóa bộ lọc
                 </button>
@@ -1184,8 +1099,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   setSearchQuery('');
                   setDropdownFilters({ type: 'all', priceRange: 'all', region: 'all' });
                 }}
-                style={{ backgroundColor: brandPrimary }}
-                className="px-6 py-2.5 text-white font-medium rounded-full hover:opacity-90 transition-opacity"
+                className="px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-full hover:bg-indigo-700 transition-colors"
               >
                 Đặt lại bộ lọc
               </button>
@@ -1196,7 +1110,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 <div key={listing.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-xl transition-all">
                   <div className="relative h-64 overflow-hidden">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={listing.img} alt={listing.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                    <div style={{ backgroundColor: brandPrimary }} className="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    <div className="absolute top-4 left-4 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                       {listing.type}
                     </div>
                     {listing.featured && (
@@ -1210,18 +1124,14 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80"></div>
                   </div>
                   <div className="p-6">
-                    <h4 className="text-xl font-bold text-gray-900 mb-2 truncate hover:opacity-80 cursor-pointer" onClick={() => setSelectedProject(listing)}>{listing.title}</h4>
+                    <h4 className="text-xl font-bold text-gray-900 mb-2 truncate hover:text-indigo-600 cursor-pointer" onClick={() => setSelectedProject(listing)}>{listing.title}</h4>
                     <p className="text-gray-500 text-sm flex items-center gap-1 mb-4">
-                      <MapPin size={16} style={{ color: brandPrimary }} /> {listing.loc}
+                      <MapPin size={16} /> {listing.loc}
                     </p>
                     <p className="text-gray-600 text-sm line-clamp-2 mb-4 leading-relaxed">{listing.desc}</p>
                     <div className="border-t border-gray-100 pt-4 flex justify-between items-center text-sm font-medium text-gray-700">
                       <span>{listing.specs}</span>
-                      <button 
-                        onClick={() => setSelectedProject(listing)} 
-                        style={{ backgroundColor: brandPrimary + '15', color: brandPrimary }}
-                        className="px-4 py-2 rounded-xl hover:opacity-80 transition-opacity text-xs font-bold text-center"
-                      >
+                      <button onClick={() => setSelectedProject(listing)} className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-colors text-xs font-bold text-center">
                         Chi tiết
                       </button>
                     </div>
@@ -1257,10 +1167,10 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               </div>
             </div>
             <div className="w-full lg:w-1/2">
-              <h1 style={{ color: brandPrimary }} className="text-sm font-bold tracking-widest uppercase mb-2">Về Tôi</h1>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">{company?.name || template?.name || 'Trần Anh Tuấn'}</h2>
+              <h1 className="text-sm font-bold text-indigo-600 tracking-widest uppercase mb-2">Về Tôi</h1>
+              <h2 className="text-4xl font-bold text-gray-900 mb-6">Trần Anh Tuấn</h2>
               <p className="text-gray-600 text-lg mb-6 leading-relaxed">
-                Chào bạn! Tôi là {company?.name || template?.name || 'Trần Anh Tuấn'}, nhà sáng lập {company?.name || 'Luxury Homes'} và là chuyên gia tư vấn bất động sản cao cấp với hơn 10 năm kinh nghiệm tại thị trường TP.HCM.
+                Chào bạn! Tôi là Trần Anh Tuấn, nhà sáng lập Luxury Homes và là chuyên gia tư vấn bất động sản cao cấp với hơn 10 năm kinh nghiệm tại thị trường TP.HCM.
               </p>
               <p className="text-gray-600 text-lg mb-8 leading-relaxed">
                 Từ một người đam mê kiến trúc và thị trường bất động sản, tôi đã xây dựng sự nghiệp dựa trên giá trị cốt lõi: sự trung thực và tính chuyên nghiệp. Tôi không chỉ giúp khách hàng mua được một tài sản, mà là tìm thấy nơi dựng xây tổ ấm và tối ưu hóa danh mục đầu tư dài hạn.
@@ -1268,20 +1178,20 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
 
               {/* Core Values grid */}
               <div className="grid grid-cols-2 gap-4">
-                <div style={{ backgroundColor: brandPrimary + '08', borderColor: brandPrimary + '20' }} className="p-4 border rounded-2xl">
-                  <h4 style={{ color: brandPrimary }} className="font-bold mb-1">Minh Bạch</h4>
+                <div className="p-4 border border-indigo-50 rounded-2xl bg-indigo-50/30">
+                  <h4 className="font-bold text-indigo-900 mb-1">Minh Bạch</h4>
                   <p className="text-xs text-gray-500">Mọi thông tin về quy hoạch, giá bán đều được công khai đầy đủ.</p>
                 </div>
-                <div style={{ backgroundColor: brandPrimary + '08', borderColor: brandPrimary + '20' }} className="p-4 border rounded-2xl">
-                  <h4 style={{ color: brandPrimary }} className="font-bold mb-1">Tận Tâm</h4>
+                <div className="p-4 border border-indigo-50 rounded-2xl bg-indigo-50/30">
+                  <h4 className="font-bold text-indigo-900 mb-1">Tận Tâm</h4>
                   <p className="text-xs text-gray-500">Sẵn sàng tư vấn và đồng hành cùng khách hàng trong mọi giai đoạn.</p>
                 </div>
-                <div style={{ backgroundColor: brandPrimary + '08', borderColor: brandPrimary + '20' }} className="p-4 border rounded-2xl">
-                  <h4 style={{ color: brandPrimary }} className="font-bold mb-1">Chuyên Nghiệp</h4>
+                <div className="p-4 border border-indigo-50 rounded-2xl bg-indigo-50/30">
+                  <h4 className="font-bold text-indigo-900 mb-1">Chuyên Nghiệp</h4>
                   <p className="text-xs text-gray-500">Quy trình làm việc rõ ràng, nhanh chóng và bảo mật thông tin.</p>
                 </div>
-                <div style={{ backgroundColor: brandPrimary + '08', borderColor: brandPrimary + '20' }} className="p-4 border rounded-2xl">
-                  <h4 style={{ color: brandPrimary }} className="font-bold mb-1">Uy Tín</h4>
+                <div className="p-4 border border-indigo-50 rounded-2xl bg-indigo-50/30">
+                  <h4 className="font-bold text-indigo-900 mb-1">Uy Tín</h4>
                   <p className="text-xs text-gray-500">Xây dựng mối quan hệ tin cậy bền vững cùng khách hàng.</p>
                 </div>
               </div>
@@ -1295,10 +1205,9 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 <button
                   key={tab.id}
                   onClick={() => setActiveAboutTab(tab.id)}
-                  style={activeAboutTab === tab.id ? { borderColor: brandPrimary, color: brandPrimary } : undefined}
                   className={`pb-4 px-6 font-bold text-lg border-b-2 transition-all whitespace-nowrap ${
                     activeAboutTab === tab.id
-                      ? ''
+                      ? 'border-indigo-600 text-indigo-600'
                       : 'border-transparent text-gray-400 hover:text-gray-600'
                   }`}
                 >
@@ -1314,7 +1223,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
           {/* Timeline Milestones */}
           <div className="mb-24">
             <h3 className="text-3xl font-bold text-gray-900 text-center mb-12">Hành Trình Phát Triển</h3>
-            <div className="relative border-l border-gray-200 ml-4 md:ml-32">
+            <div className="relative border-l border-indigo-200 ml-4 md:ml-32">
               {[
                 { year: '2013', title: 'Khởi đầu sự nghiệp', desc: 'Bắt đầu với vai trò chuyên viên môi giới căn hộ cao cấp khu vực Quận 7. Nhanh chóng nắm bắt xu hướng thị trường.' },
                 { year: '2016', title: 'Chuyên viên xuất sắc', desc: 'Gia nhập sàn giao dịch quốc tế lớn. Đạt danh hiệu Best Broker năm 2016 với doanh số giao dịch hơn 200 tỷ VND.' },
@@ -1323,17 +1232,14 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               ].map((milestone, idx) => (
                 <div key={idx} className="mb-12 ml-6 md:ml-12 relative">
                   {/* Dot */}
-                  <span 
-                    style={{ backgroundColor: brandPrimary }}
-                    className="absolute -left-[31px] md:-left-[55px] top-1.5 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center border-4 border-white shadow-md"
-                  >
+                  <span className="absolute -left-[31px] md:-left-[55px] top-1.5 bg-indigo-600 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center border-4 border-white shadow-md ring-2 ring-indigo-100">
                     ✓
                   </span>
                   {/* Year badge on the left for medium screens */}
-                  <span style={{ color: brandPrimary }} className="hidden md:block absolute -left-[140px] top-1 text-xl font-extrabold">{milestone.year}</span>
+                  <span className="hidden md:block absolute -left-[140px] top-1 text-xl font-extrabold text-indigo-600">{milestone.year}</span>
                   {/* Content card */}
                   <div className="bg-gray-50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-                    <span style={{ color: brandPrimary }} className="inline-block md:hidden font-extrabold text-lg mb-2">{milestone.year}</span>
+                    <span className="inline-block md:hidden text-indigo-600 font-extrabold text-lg mb-2">{milestone.year}</span>
                     <h4 className="text-xl font-bold text-gray-900 mb-2">{milestone.title}</h4>
                     <p className="text-gray-600 text-sm leading-relaxed">{milestone.desc}</p>
                   </div>
@@ -1352,11 +1258,11 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 { name: 'Nguyễn Hoàng Nam', role: 'Trưởng bộ phận Marketing', desc: 'Chuyên gia xây dựng hình ảnh và truyền thông dự án hạng sang.', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80' }
               ].map((member, i) => (
                 <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100 group text-center hover:shadow-xl transition-all p-6">
-                  <div className="w-32 h-32 rounded-full overflow-hidden mx-auto mb-6 border-4 border-gray-100 transition-colors">
+                  <div className="w-32 h-32 rounded-full overflow-hidden mx-auto mb-6 border-4 border-indigo-50 group-hover:border-indigo-600 transition-colors">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={member.img} alt={member.name} className="w-full h-full object-cover" />
                   </div>
                   <h4 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h4>
-                  <p style={{ color: brandPrimary }} className="text-xs font-semibold uppercase tracking-wider mb-3">{member.role}</p>
+                  <p className="text-indigo-600 text-xs font-semibold uppercase tracking-wider mb-3">{member.role}</p>
                   <p className="text-gray-500 text-sm leading-relaxed">{member.desc}</p>
                 </div>
               ))}
@@ -1388,10 +1294,9 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               <button
                 key={tab}
                 onClick={() => setSelectedGalleryTab(tab)}
-                style={selectedGalleryTab === tab ? { backgroundColor: brandPrimary } : undefined}
                 className={`px-6 py-2.5 rounded-full font-bold text-sm transition-all whitespace-nowrap shadow-sm ${
                   selectedGalleryTab === tab
-                    ? 'text-white'
+                    ? 'bg-indigo-600 text-white shadow-indigo-600/20'
                     : 'bg-white text-gray-600 hover:bg-gray-100'
                 }`}
               >
@@ -1414,7 +1319,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
-                  <span style={{ color: brandAccent }} className="text-xs font-semibold uppercase tracking-wider mb-1">{photo.category}</span>
+                  <span className="text-white text-xs font-semibold uppercase tracking-wider mb-1 text-indigo-300">{photo.category}</span>
                   <h4 className="text-white font-bold text-lg leading-tight">{photo.title}</h4>
                 </div>
               </div>
@@ -1450,7 +1355,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 placeholder="Tìm bài viết, chủ đề..."
                 value={searchNewsQuery}
                 onChange={(e) => setSearchNewsQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-white shadow-sm border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
+                className="w-full pl-12 pr-4 py-3 bg-white shadow-sm border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm"
               />
             </div>
           </div>
@@ -1461,8 +1366,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               <p className="text-gray-500 text-lg font-medium mb-4">Không tìm thấy bài viết nào phù hợp.</p>
               <button
                 onClick={() => setSearchNewsQuery('')}
-                style={{ backgroundColor: brandPrimary }}
-                className="px-6 py-2 text-white font-medium rounded-full hover:opacity-90 transition-opacity"
+                className="px-6 py-2 bg-indigo-600 text-white font-medium rounded-full hover:bg-indigo-700 transition-colors"
               >
                 Tất cả bài viết
               </button>
@@ -1484,13 +1388,13 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                   </div>
                   <div className="p-6 flex flex-col flex-1">
                     <div className="flex items-center gap-4 text-xs font-bold text-gray-500 mb-3 uppercase tracking-wider">
-                      <span style={{ color: brandPrimary }}>{article.cat}</span>
+                      <span className="text-indigo-600">{article.cat}</span>
                       <span>•</span>
                       <span>{article.date}</span>
                     </div>
-                    <h4 className="text-xl font-bold text-gray-900 group-hover:opacity-80 transition-colors mb-3 leading-snug">{article.title}</h4>
+                    <h4 className="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors mb-3 leading-snug">{article.title}</h4>
                     <p className="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed">{article.desc}</p>
-                    <span style={{ color: brandPrimary }} className="font-bold text-sm mt-auto inline-flex items-center gap-1.5 group-hover:underline">
+                    <span className="text-indigo-600 font-bold text-sm mt-auto inline-flex items-center gap-1.5 group-hover:underline">
                       Đọc tiếp <ChevronRight size={16} />
                     </span>
                   </div>
@@ -1576,14 +1480,13 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                       <CheckCircle2 size={32} />
                     </div>
                     <h4 className="text-2xl font-bold text-gray-900 mb-3">Gửi Yêu Cầu Thành Công!</h4>
-                    <p className="text-gray-600 mb-6 leading-relaxed">Cảm ơn {contactForm.name} đã tin tưởng. {company?.name || template?.name || 'Trần Anh Tuấn'} sẽ trực tiếp gọi điện tư vấn cho bạn qua số {contactForm.phone} trong vòng 24 giờ tới.</p>
+                    <p className="text-gray-600 mb-6 leading-relaxed">Cảm ơn {contactForm.name} đã tin tưởng. Trần Anh Tuấn sẽ trực tiếp gọi điện tư vấn cho bạn qua số {contactForm.phone} trong vòng 24 giờ tới.</p>
                     <button 
                       onClick={() => {
                         setContactForm({ name: '', phone: '', email: '', interest: 'Mua nhà/căn hộ để ở', message: '' });
                         setContactSubmitted(false);
                       }}
-                      style={{ backgroundColor: brandPrimary }}
-                      className="px-6 py-2.5 text-white font-semibold rounded-full hover:opacity-90 transition-opacity"
+                      className="px-6 py-2.5 bg-indigo-600 text-white font-semibold rounded-full hover:bg-indigo-700 transition-colors"
                     >
                       Gửi yêu cầu khác
                     </button>
@@ -1597,7 +1500,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                         required
                         value={contactForm.name}
                         onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500" 
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600" 
                         placeholder="Nguyễn Văn A" 
                       />
                     </div>
@@ -1610,7 +1513,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                           required
                           value={contactForm.phone}
                           onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500" 
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600" 
                           placeholder="090..." 
                         />
                       </div>
@@ -1620,7 +1523,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                           type="email" 
                           value={contactForm.email}
                           onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500" 
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600" 
                           placeholder="email@example.com" 
                         />
                       </div>
@@ -1631,7 +1534,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                       <select 
                         value={contactForm.interest}
                         onChange={(e) => setContactForm({ ...contactForm, interest: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600"
                       >
                         <option>Mua nhà/căn hộ để ở</option>
                         <option>Đầu tư dự án</option>
@@ -1646,16 +1549,12 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                         rows={4} 
                         value={contactForm.message}
                         onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500" 
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600" 
                         placeholder="Bạn cần tôi hỗ trợ thêm thông tin gì?"
                       ></textarea>
                     </div>
 
-                    <button 
-                      type="submit" 
-                      style={{ backgroundColor: brandPrimary }}
-                      className="w-full text-white font-bold py-4 rounded-xl hover:opacity-90 transition-opacity"
-                    >
+                    <button type="submit" className="w-full bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 transition-colors">
                       Gửi Yêu Cầu Tư Vấn
                     </button>
                   </form>
@@ -1667,20 +1566,44 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 <h4 className="text-xl font-bold mb-6">Thông Tin Văn Phòng</h4>
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
-                    <MapPin style={{ color: brandPrimary }} className="mt-1 flex-shrink-0" size={20} />
-                    <p className="text-gray-300 text-sm">{company?.address || 'Tầng 12, Tòa nhà Bitexco, Số 2 Hải Triều, Bến Nghé, Quận 1, TP.HCM'}</p>
+                    <MapPin className="text-indigo-400 mt-1 flex-shrink-0" size={20} />
+                    <p className="text-gray-300 text-sm">Tầng 12, Tòa nhà Bitexco, Số 2 Hải Triều, Bến Nghé, Quận 1, TP.HCM</p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <Phone style={{ color: brandPrimary }} className="flex-shrink-0" size={20} />
-                    <p className="text-gray-300 text-sm">{company?.phone || company?.hotline || '0983 312 219'}</p>
+                    <Phone className="text-indigo-400 flex-shrink-0" size={20} />
+                    <p className="text-gray-300 text-sm">090 123 4567 (Zalo, Viber, Whatsapp)</p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <Mail style={{ color: brandPrimary }} className="flex-shrink-0" size={20} />
-                    <p className="text-gray-300 text-sm">{company?.email || 'contact@platformbds.vn'}</p>
+                    <Mail className="text-indigo-400 flex-shrink-0" size={20} />
+                    <p className="text-gray-300 text-sm">tuan.tran@luxuryhomes.vn</p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <Clock style={{ color: brandPrimary }} className="flex-shrink-0" size={20} />
-                    <p className="text-gray-300 text-sm">{company?.workingHours || 'Thứ 2 - Chủ Nhật: 8:00 - 20:00'}</p>
+                    <Clock className="text-indigo-400 flex-shrink-0" size={20} />
+                    <p className="text-gray-300 text-sm">Thứ 2 - Chủ Nhật: 8:00 - 20:00</p>
+                  </div>
+                </div>
+
+                {/* Interactive Google Map */}
+                <div className="mt-6 rounded-2xl overflow-hidden border border-slate-700 shadow-md flex flex-col h-48 bg-slate-800">
+                  <div className="px-3.5 py-2 bg-slate-950 text-white flex items-center justify-between text-xs">
+                    <span className="font-bold truncate">Bitexco Tower, Quận 1, TP.HCM</span>
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Bitexco+Financial+Tower,+2+H%E1%BA%A3i+Tri%E1%BB%81u,+Qu%E1%BA%ADn+1,+TP.HCM"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-2 py-0.5 rounded bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[10px] shrink-0"
+                    >
+                      Mở Maps
+                    </a>
+                  </div>
+                  <div className="flex-1 w-full h-full">
+                    <iframe
+                      title="Bản đồ Bitexco Financial Tower"
+                      src="https://maps.google.com/maps?q=Bitexco+Financial+Tower,+Qu%E1%BA%ADn+1,+TP.HCM&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                      className="w-full h-full border-0"
+                      loading="lazy"
+                      allowFullScreen
+                    />
                   </div>
                 </div>
               </div>
@@ -1693,18 +1616,18 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
 
               {bookingSubmitted ? (
                 <div className="text-center py-12">
-                  <div style={{ backgroundColor: brandPrimary + '15', color: brandPrimary }} className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle2 size={32} />
                   </div>
                   <h4 className="text-2xl font-bold text-gray-900 mb-3">Lịch Hẹn Đã Được Ghi Nhận!</h4>
-                  <div style={{ backgroundColor: brandPrimary + '08', borderColor: brandPrimary + '20' }} className="rounded-2xl p-6 text-left mb-6 border">
+                  <div className="bg-indigo-50/50 rounded-2xl p-6 text-left mb-6 border border-indigo-50">
                     <p className="text-gray-700 mb-2 font-medium">Chi tiết lịch đặt của bạn:</p>
                     <p className="text-sm text-gray-600 mb-1"><span className="font-bold">Khách hàng:</span> {bookingName}</p>
                     <p className="text-sm text-gray-600 mb-1"><span className="font-bold">Số điện thoại:</span> {bookingPhone}</p>
                     <p className="text-sm text-gray-600 mb-1"><span className="font-bold">Thời gian:</span> {bookingTimeSlot}</p>
                     <p className="text-sm text-gray-600"><span className="font-bold">Ngày hẹn:</span> {bookingDate}</p>
                   </div>
-                  <p className="text-gray-600 mb-8">Một tin nhắn SMS và email xác nhận sẽ được gửi kèm liên kết phòng họp online. {company?.name || template?.name || 'Trần Anh Tuấn'} sẽ gọi điện nhắc bạn 15 phút trước khi buổi họp diễn ra.</p>
+                  <p className="text-gray-600 mb-8">Một tin nhắn SMS và email xác nhận sẽ được gửi kèm liên kết phòng họp online. Trần Anh Tuấn sẽ gọi điện nhắc bạn 15 phút trước khi buổi họp diễn ra.</p>
                   <button 
                     onClick={() => {
                       setBookingDate('');
@@ -1714,8 +1637,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                       setBookingNotes('');
                       setBookingSubmitted(false);
                     }}
-                    style={{ backgroundColor: brandPrimary }}
-                    className="px-6 py-2.5 text-white font-semibold rounded-full hover:opacity-90 transition-opacity"
+                    className="px-6 py-2.5 bg-indigo-600 text-white font-semibold rounded-full hover:bg-indigo-700 transition-colors"
                   >
                     Đặt lịch hẹn khác
                   </button>
@@ -1733,10 +1655,9 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                             key={day.value}
                             type="button"
                             onClick={() => setBookingDate(day.value)}
-                            style={isSelected ? { backgroundColor: brandPrimary, borderColor: brandPrimary } : undefined}
                             className={`flex flex-col items-center justify-center p-2.5 rounded-xl border text-center transition-all ${
                               isSelected
-                                ? 'text-white shadow-lg'
+                                ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-600/10'
                                 : 'bg-gray-50 border-gray-100 text-gray-700 hover:border-gray-300'
                             }`}
                           >
@@ -1759,10 +1680,9 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                             key={slot}
                             type="button"
                             onClick={() => setBookingTimeSlot(slot)}
-                            style={isSelected ? { backgroundColor: brandPrimary, borderColor: brandPrimary } : undefined}
                             className={`px-3 py-3 text-xs font-bold rounded-xl border text-center transition-all ${
                               isSelected
-                                ? 'text-white shadow-lg'
+                                ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-600/10'
                                 : 'bg-gray-50 border-gray-100 text-gray-700 hover:border-gray-300'
                             }`}
                           >
@@ -1781,7 +1701,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                         type="text" 
                         value={bookingName}
                         onChange={(e) => setBookingName(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm" 
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm" 
                         placeholder="Họ và tên của bạn *" 
                       />
                     </div>
@@ -1790,7 +1710,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                         type="tel" 
                         value={bookingPhone}
                         onChange={(e) => setBookingPhone(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm" 
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm" 
                         placeholder="Số điện thoại liên hệ *" 
                       />
                     </div>
@@ -1799,7 +1719,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                         rows={2}
                         value={bookingNotes}
                         onChange={(e) => setBookingNotes(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm" 
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm" 
                         placeholder="Ghi chú thêm về nhu cầu của bạn (dự án muốn xem, hình thức tư vấn...)"
                       ></textarea>
                     </div>
@@ -1809,11 +1729,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                     <p className="text-red-500 text-sm font-bold">{bookingError}</p>
                   )}
 
-                  <button 
-                    type="submit" 
-                    style={{ backgroundColor: brandPrimary }}
-                    className="w-full text-white font-bold py-4 rounded-xl hover:opacity-90 transition-opacity shadow-lg"
-                  >
+                  <button type="submit" className="w-full bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/15">
                     Xác Nhận Đặt Lịch
                   </button>
                 </form>
@@ -1828,39 +1744,34 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
   const renderOtherPages = () => {
     switch (currentPage) {
       case 'projects':
+      case 'du-an':
+      case 'san-pham':
+      case 'bat-dong-san':
         return renderProjectsPage();
       case 'about':
+      case 'gioi-thieu':
+      case 've-chung-toi':
         return renderAboutPage();
       case 'gallery':
+      case 'thu-vien':
+      case 'hinh-anh':
         return renderGalleryPage();
       case 'news':
+      case 'tin-tuc':
+      case 'bai-viet':
         return renderNewsPage();
       case 'contact':
+      case 'lien-he':
+      case 'tu-van':
+      case 'dat-lich':
         return renderContactPage();
       default:
-        return (
-          <div className="min-h-screen pt-32 pb-24 flex items-center justify-center bg-gray-50">
-            <div className="text-center px-4 max-w-xl">
-              <div style={{ backgroundColor: brandPrimary + '15', color: brandPrimary }} className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8">
-                <Clock size={40} />
-              </div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">Trang {currentPage}</h1>
-              <p className="text-gray-600 text-lg mb-8">Nội dung trang này đang được cập nhật trong bản demo. Vui lòng quay lại trang chủ để trải nghiệm đầy đủ các tính năng.</p>
-              <button 
-                onClick={() => navigateTo('home')} 
-                style={{ backgroundColor: brandPrimary }}
-                className="px-8 py-4 text-white rounded-full font-bold hover:opacity-90 transition-opacity shadow-lg"
-              >
-                Quay lại Trang Chủ
-              </button>
-            </div>
-          </div>
-        );
+        return renderHomePage();
     }
   };
 
   return (
-    <div className="font-sans bg-white min-h-screen">
+    <div className="font-sans bg-white min-h-screen selection:bg-indigo-200 selection:text-indigo-900">
       {renderHeader()}
       <main>
         {currentPage === 'home' ? renderHomePage() : renderOtherPages()}
@@ -1882,7 +1793,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedProject.img} alt={selectedProject.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               <div className="absolute bottom-6 left-6 right-6 text-white">
-                <span style={{ backgroundColor: brandPrimary }} className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">{selectedProject.type}</span>
+                <span className="bg-indigo-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">{selectedProject.type}</span>
                 <h3 className="text-2xl sm:text-3xl font-extrabold mt-2">{selectedProject.title}</h3>
               </div>
             </div>
@@ -1890,7 +1801,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               <div className="flex flex-wrap justify-between items-center gap-4 border-b border-gray-100 pb-6 mb-6">
                 <div>
                   <p className="text-sm text-gray-500 font-medium">Giá bán / cho thuê</p>
-                  <p style={{ color: brandPrimary }} className="text-3xl font-black">{selectedProject.priceStr}</p>
+                  <p className="text-3xl font-black text-indigo-600">{selectedProject.priceStr}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-500 font-medium">Vị trí</p>
@@ -1911,18 +1822,14 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               </div>
 
               {/* Inquiry form */}
-              <div style={{ backgroundColor: brandPrimary + '08', borderColor: brandPrimary + '20' }} className="rounded-2xl p-6 border">
-                <h4 style={{ color: brandPrimary }} className="font-bold mb-3">Yêu Cầu Tư Vấn Riêng</h4>
+              <div className="bg-indigo-50/50 rounded-2xl p-6 border border-indigo-50">
+                <h4 className="font-bold text-indigo-900 mb-3">Yêu Cầu Tư Vấn Riêng</h4>
                 <form onSubmit={(e) => { e.preventDefault(); alert('Cảm ơn bạn! Yêu cầu tư vấn đã được gửi đi. Tôi sẽ phản hồi ngay lập tức.'); setSelectedProject(null); }} className="space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input type="text" required placeholder="Họ và tên *" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm bg-white" />
-                    <input type="tel" required placeholder="Số điện thoại *" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm bg-white" />
+                    <input type="text" required placeholder="Họ và tên *" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm bg-white" />
+                    <input type="tel" required placeholder="Số điện thoại *" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-sm bg-white" />
                   </div>
-                  <button 
-                    type="submit" 
-                    style={{ backgroundColor: brandPrimary }}
-                    className="w-full hover:opacity-90 text-white font-bold py-3 rounded-xl text-sm transition-opacity shadow"
-                  >
+                  <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl text-sm transition-colors shadow">
                     Gửi yêu cầu
                   </button>
                 </form>
@@ -1962,12 +1869,12 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
             </div>
             <div className="p-6 sm:p-10">
               <div className="flex items-center gap-4 text-xs font-bold text-gray-500 mb-4 uppercase tracking-wider">
-                <span style={{ color: brandPrimary }}>{selectedArticle.cat}</span>
+                <span className="text-indigo-600">{selectedArticle.cat}</span>
                 <span>•</span>
                 <span>{selectedArticle.date}</span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-6 leading-tight">{selectedArticle.title}</h3>
-              <p style={{ borderLeftColor: brandPrimary }} className="text-gray-800 text-lg font-medium leading-relaxed mb-6 italic border-l-4 pl-4 bg-gray-50 py-3 pr-4 rounded-r-xl">
+              <p className="text-gray-800 text-lg font-medium leading-relaxed mb-6 italic border-l-4 border-indigo-600 pl-4 bg-gray-50 py-3 pr-4 rounded-r-xl">
                 {selectedArticle.desc}
               </p>
               <div className="text-gray-600 text-base leading-relaxed space-y-4 whitespace-pre-line">

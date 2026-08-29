@@ -34,6 +34,14 @@ const AuctionTemplate = dynamic(() => import('./templates/AuctionTemplate'), { l
 const LandPlotTemplate = dynamic(() => import('./templates/LandPlotTemplate'), { loading: () => <LoadingSkeleton /> });
 const VietnameseProjectTemplate = dynamic(() => import('./templates/VietnameseProjectTemplate'), { loading: () => <LoadingSkeleton /> });
 const VietnameseCollectionTemplate = dynamic(() => import('./templates/VietnameseCollectionTemplate'), { loading: () => <LoadingSkeleton /> });
+const PortalListingTemplate = dynamic(() => import('./templates/PortalListingTemplate'), { loading: () => <LoadingSkeleton /> });
+const Bds123PortalTemplate = dynamic(() => import('./templates/Bds123PortalTemplate'), { loading: () => <LoadingSkeleton /> });
+const NhadatsoDensityTemplate = dynamic(() => import('./templates/NhadatsoDensityTemplate'), { loading: () => <LoadingSkeleton /> });
+const MinhKhaiApartmentTemplate = dynamic(() => import('./templates/MinhKhaiApartmentTemplate'), { loading: () => <LoadingSkeleton /> });
+const HanoiRentalPortalTemplate = dynamic(() => import('./templates/HanoiRentalPortalTemplate'), { loading: () => <LoadingSkeleton /> });
+const HappyLandResortTemplate = dynamic(() => import('./templates/HappyLandResortTemplate'), { loading: () => <LoadingSkeleton /> });
+const HomeoMultiThumbnailTemplate = dynamic(() => import('./templates/HomeoMultiThumbnailTemplate'), { loading: () => <LoadingSkeleton /> });
+const RealtyBuildTechTemplate = dynamic(() => import('./templates/RealtyBuildTechTemplate'), { loading: () => <LoadingSkeleton /> });
 
 interface DemoRendererProps {
   template: Template;
@@ -1048,60 +1056,77 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
   const page = normalizePageSlug(initialPage);
 
   const renderContent = () => {
-    const numericId = Number(slug.replace('bds-', ''));
-    if (numericId >= 21 && numericId <= 32) {
-      return <VietnameseCollectionTemplate template={template} viewport={viewport} initialPage={page} />;
+    if (slug === 'bds-01' || sourceSlug === 'luxury-gold' || slug === 'luxury-gold') {
+      return <LuxuryTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (['bds-17', 'bds-18', 'bds-19', 'bds-20'].includes(slug) || ['bds-17', 'bds-18', 'bds-19', 'bds-20'].includes(sourceSlug)) {
-      return <VietnameseProjectTemplate template={template} viewport={viewport} initialPage={page} />;
+    if (slug === 'bds-02' || sourceSlug === 'minimal-white' || sourceSlug === 'minimal-zen' || slug === 'minimal-white') {
+      return <MinimalTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'bds-01' || sourceSlug === 'luxury-gold' || slug === 'luxury-gold' || colSlug === 'luxury') {
-      return <LuxuryTemplate template={template} viewport={viewport} initialPage={page} />;
+    if (slug === 'bds-03' || sourceSlug === 'modern-corporate' || slug === 'modern-corporate') {
+      return <CorporateTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'bds-02' || sourceSlug === 'minimal-white' || sourceSlug === 'minimal-zen' || slug === 'minimal-white' || colSlug === 'minimal') {
-      return <MinimalTemplate template={template} viewport={viewport} initialPage={page} />;
+    if (slug === 'bds-04' || sourceSlug === 'resort-paradise' || sourceSlug === 'ocean-view' || slug === 'resort-paradise') {
+      return <ResortTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'bds-03' || sourceSlug === 'modern-corporate' || slug === 'modern-corporate' || colSlug === 'corporate') {
-      return <CorporateTemplate template={template} viewport={viewport} initialPage={page} />;
+    if (slug === 'bds-05' || sourceSlug === 'urban-city' || sourceSlug === 'smart-urban' || sourceSlug === 'high-rise' || slug === 'urban-city') {
+      return <ApartmentTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'bds-04' || sourceSlug === 'resort-paradise' || sourceSlug === 'ocean-view' || slug === 'resort-paradise' || colSlug === 'resort') {
-      return <ResortTemplate template={template} viewport={viewport} initialPage={page} />;
+    if (slug === 'bds-06' || sourceSlug === 'industrial-estate' || sourceSlug === 'industrial-logistics' || slug === 'industrial-estate') {
+      return <IndustrialTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'bds-05' || sourceSlug === 'urban-city' || sourceSlug === 'smart-urban' || sourceSlug === 'high-rise' || slug === 'urban-city' || colSlug === 'apartment') {
-      return <ApartmentTemplate template={template} viewport={viewport} initialPage={page} />;
+    if (slug === 'bds-07' || sourceSlug === 'villa-premium' || sourceSlug === 'modern-villa' || sourceSlug === 'luxury-villa' || slug === 'villa-premium') {
+      return <VillaTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'bds-06' || sourceSlug === 'industrial-estate' || sourceSlug === 'industrial-logistics' || slug === 'industrial-estate' || colSlug === 'industrial') {
-      return <IndustrialTemplate template={template} viewport={viewport} initialPage={page} />;
+    if (slug === 'bds-08' || sourceSlug === 'eco-green' || sourceSlug === 'eco-living' || sourceSlug === 'green-eco' || slug === 'eco-green') {
+      return <EcoTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'bds-07' || sourceSlug === 'villa-premium' || sourceSlug === 'modern-villa' || sourceSlug === 'luxury-villa' || slug === 'villa-premium' || colSlug === 'villa') {
-      return <VillaTemplate template={template} viewport={viewport} initialPage={page} />;
+    if (slug === 'bds-09' || sourceSlug === 'classic-elegant' || sourceSlug === 'classic-heritage' || sourceSlug === 'heritage-classic' || slug === 'classic-elegant') {
+      return <ClassicTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'bds-08' || sourceSlug === 'eco-green' || sourceSlug === 'eco-living' || sourceSlug === 'green-eco' || slug === 'eco-green' || colSlug === 'eco') {
-      return <EcoTemplate template={template} viewport={viewport} initialPage={page} />;
+    if (slug === 'bds-10' || sourceSlug === 'investment-pro' || sourceSlug === 'tech-hub' || slug === 'investment-pro') {
+      return <InvestmentTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'bds-09' || sourceSlug === 'classic-elegant' || sourceSlug === 'classic-heritage' || sourceSlug === 'heritage-classic' || slug === 'classic-elegant' || colSlug === 'classic') {
-      return <ClassicTemplate template={template} viewport={viewport} initialPage={page} />;
+    if (slug === 'bds-11' || sourceSlug === 'agency-onepage' || sourceSlug === 'suburban-family' || slug === 'agency-onepage') {
+      return <AgencyTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'bds-10' || sourceSlug === 'investment-pro' || sourceSlug === 'tech-hub' || slug === 'investment-pro' || colSlug === 'investment') {
-      return <InvestmentTemplate template={template} viewport={viewport} initialPage={page} />;
-    }
-    if (slug === 'bds-11' || sourceSlug === 'agency-onepage' || sourceSlug === 'suburban-family' || slug === 'agency-onepage' || colSlug === 'agency') {
-      return <AgencyTemplate template={template} viewport={viewport} initialPage={page} />;
-    }
-    if (slug === 'bds-12' || sourceSlug === 'mega-developer' || sourceSlug === 'listing-portal' || sourceSlug === 'riverside-mansion' || slug === 'mega-developer' || colSlug === 'developer') {
-      return <ListingMarketplace template={template} viewport={viewport} initialPage={page} />;
+    if (slug === 'bds-12' || sourceSlug === 'mega-developer' || sourceSlug === 'listing-portal' || sourceSlug === 'riverside-mansion' || slug === 'mega-developer') {
+      return <ListingMarketplace template={template} viewport={viewport} initialPage={initialPage} />;
     }
     if (slug === 'bds-13' || sourceSlug === 'auction-template' || sourceSlug === 'auction-bds' || sourceSlug === 'lake-sanctuary' || slug === 'auction-template') {
-      return <AuctionTemplate template={template} viewport={viewport} initialPage={page} />;
+      return <AuctionTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'bds-14' || sourceSlug === 'landplot-template' || sourceSlug === 'land-plot' || sourceSlug === 'mountain-retreat' || slug === 'landplot-template' || colSlug === 'project') {
-      return <LandPlotTemplate template={template} viewport={viewport} initialPage={page} />;
+    if (slug === 'bds-14' || sourceSlug === 'landplot-template' || sourceSlug === 'land-plot' || sourceSlug === 'mountain-retreat' || slug === 'landplot-template') {
+      return <LandPlotTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'bds-15' || sourceSlug === 'retail-podium' || sourceSlug === 'retail-commercial' || sourceSlug === 'commercial-plaza' || slug === 'retail-podium' || colSlug === 'retail') {
-      return <RetailTemplate template={template} viewport={viewport} initialPage={page} />;
+    if (slug === 'bds-15' || sourceSlug === 'retail-podium' || sourceSlug === 'retail-commercial' || sourceSlug === 'commercial-plaza' || slug === 'retail-podium') {
+      return <RetailTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    if (slug === 'bds-16' || sourceSlug === 'personal-agent' || sourceSlug === 'golf-residences' || slug === 'personal-agent' || colSlug === 'agent') {
-      return <PersonalAgentTemplate template={template} viewport={viewport} initialPage={page} />;
+    if (slug === 'bds-16' || sourceSlug === 'personal-agent' || sourceSlug === 'golf-residences' || slug === 'personal-agent') {
+      return <PersonalAgentTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+    }
+    if (slug === 'bds-17' || sourceSlug === 'portal-listing' || sourceSlug === 'vietnam-portal' || slug === 'portal-listing') {
+      return <PortalListingTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+    }
+    if (slug === 'bds-18' || sourceSlug === 'bds123-portal' || sourceSlug === 'benthanh-portal' || slug === 'bds123-portal') {
+      return <Bds123PortalTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+    }
+    if (slug === 'bds-19' || sourceSlug === 'nhadatso-density' || sourceSlug === 'nhadatso-portal' || slug === 'nhadatso-density') {
+      return <NhadatsoDensityTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+    }
+    if (slug === 'bds-20' || sourceSlug === 'minhkhai-apartment' || sourceSlug === 'minhkhai-luxury' || slug === 'minhkhai-apartment') {
+      return <MinhKhaiApartmentTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+    }
+    if (slug === 'bds-21' || sourceSlug === 'hanoi-rental' || sourceSlug === 'chothue-hanoi' || slug === 'hanoi-rental') {
+      return <HanoiRentalPortalTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+    }
+    if (slug === 'bds-22' || sourceSlug === 'happyland-resort' || sourceSlug === 'zohotels-resort' || slug === 'happyland-resort') {
+      return <HappyLandResortTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+    }
+    if (slug === 'bds-23' || sourceSlug === 'homeo-multithumb' || sourceSlug === 'homeo-agency' || slug === 'homeo-multithumb') {
+      return <HomeoMultiThumbnailTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+    }
+    if (slug === 'bds-24' || sourceSlug === 'realtybuild-tech' || sourceSlug === 'realtybuild-portal' || slug === 'realtybuild-tech') {
+      return <RealtyBuildTechTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
     return <DefaultFallbackTemplate template={template} viewport={viewport} />;
   };

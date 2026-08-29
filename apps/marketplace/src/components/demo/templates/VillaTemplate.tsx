@@ -1086,7 +1086,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                   <div className="flex space-x-1 mb-6" style={{ contentVisibility: 'auto' }}>
                     {[1,2,3,4,5].map(i => <Star key={i} className="h-4 w-4 text-[#F59E0B] fill-current" />)}
                   </div>
-                  <p className="text-gray-600 mb-8 italic text-sm">"{testi.quote}"</p>
+                  <p className="text-gray-600 mb-8 italic text-sm">&ldquo;{testi.quote}&rdquo;</p>
                   <div className="flex items-center">
                     <div className="w-12 h-12 bg-[#92400E]/10 rounded-full flex items-center justify-center mr-4" style={{ contentVisibility: 'auto' }}>
                       <User className="h-6 w-6 text-[#92400E]" />
@@ -1346,7 +1346,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
               {(searchQuery || filterType !== 'Tất cả' || filterDirection !== 'Tất cả' || filterPrice !== 'Tất cả' || filterArea !== 'Tất cả') && (
                 <>
                   <span className="font-bold self-center text-gray-700">Đang lọc:</span>
-                  {searchQuery && <span className="bg-[#FFFBEB] text-[#92400E] border border-[#F59E0B]/20 px-2.5 py-0.5 rounded-full">"{searchQuery}"</span>}
+                  {searchQuery && <span className="bg-[#FFFBEB] text-[#92400E] border border-[#F59E0B]/20 px-2.5 py-0.5 rounded-full">&ldquo;{searchQuery}&rdquo;</span>}
                   {filterType !== 'Tất cả' && <span className="bg-[#FFFBEB] text-[#92400E] border border-[#F59E0B]/20 px-2.5 py-0.5 rounded-full">{filterType}</span>}
                   {filterDirection !== 'Tất cả' && <span className="bg-[#FFFBEB] text-[#92400E] border border-[#F59E0B]/20 px-2.5 py-0.5 rounded-full">Hướng: {filterDirection}</span>}
                   {filterPrice !== 'Tất cả' && <span className="bg-[#FFFBEB] text-[#92400E] border border-[#F59E0B]/20 px-2.5 py-0.5 rounded-full">{filterPrice}</span>}
@@ -1546,7 +1546,7 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={leader.avatar} alt={leader.name} className="w-24 h-24 rounded-full mx-auto mb-6 border-4 border-[#FFFBEB] shadow-inner" />
                   <h3 className="text-xl font-bold text-[#92400E] font-serif">{leader.name}</h3>
                   <p className="text-[#F59E0B] text-xs font-bold mb-4">{leader.role}</p>
-                  <p className="text-gray-600 text-xs leading-relaxed italic">\"{leader.bio}\"</p>
+                  <p className="text-gray-600 text-xs leading-relaxed italic">&ldquo;{leader.bio}&rdquo;</p>
                 </div>
               ))}
             </div>
@@ -1840,8 +1840,32 @@ export default function VillaTemplate({ template, viewport = 'desktop', initialP
                     </div>
                   </a>
                 </div>
+
+                {/* Interactive Google Map */}
+                <div className="mt-8 rounded-2xl overflow-hidden border border-white/20 shadow-md flex flex-col h-48 bg-black/40">
+                  <div className="px-3.5 py-2 bg-black/60 text-white flex items-center justify-between text-xs">
+                    <span className="font-bold truncate text-[#F59E0B]">Thảo Điền, Quận 2, TP.HCM</span>
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Th%E1%BA%A3o+%C4%90i%E1%BB%81n,+Qu%E1%BA%ADn+2,+TP.HCM"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-2 py-0.5 rounded bg-[#F59E0B] text-slate-950 font-bold text-[10px] shrink-0"
+                    >
+                      Mở Maps
+                    </a>
+                  </div>
+                  <div className="flex-1 w-full h-full">
+                    <iframe
+                      title="Bản đồ Thảo Điền Quận 2"
+                      src="https://maps.google.com/maps?q=Th%E1%BA%A3o+%C4%90i%E1%BB%81n,+Qu%E1%BA%ADn+2,+TP.HCM&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                      className="w-full h-full border-0"
+                      loading="lazy"
+                      allowFullScreen
+                    />
+                  </div>
+                </div>
                 
-                <div className="mt-12 pt-8 border-t border-white/10 text-center sm:text-left">
+                <div className="mt-8 pt-6 border-t border-white/10 text-center sm:text-left">
                   <p className="text-[10px] text-white/50 mb-3">Theo dõi chúng tôi trên mạng xã hội</p>
                   <div className="flex justify-center sm:justify-start items-center gap-3">
                     <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-blue-600 text-white transition-colors">

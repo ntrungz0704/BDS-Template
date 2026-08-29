@@ -1626,6 +1626,30 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
               )}
             </div>
           </div>
+
+          {/* Interactive Google Map Section */}
+          <div className="mt-12 bg-white rounded-2xl p-4 shadow-xl border border-red-50 overflow-hidden flex flex-col">
+            <div className="px-4 py-3 bg-gray-900 rounded-xl text-white flex items-center justify-between text-xs mb-4">
+              <span className="font-bold flex items-center gap-2 text-sm text-white"><MapPin size={16} className="text-red-500" /> Trụ sở Sàn Đấu Giá BĐS — Bình An, Quận 2, TP.HCM</span>
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=Ph%C6%B0%E1%BB%9Dng+B%C3%ACnh+An,+Qu%E1%BA%ADn+2,+TP.HCM"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-xs"
+              >
+                Mở Google Maps
+              </a>
+            </div>
+            <div className="w-full h-80 rounded-xl overflow-hidden">
+              <iframe
+                title="Bản đồ Sàn đấu giá Quận 2"
+                src="https://maps.google.com/maps?q=Ph%C6%B0%E1%BB%9Dng+B%C3%ACnh+An,+Qu%E1%BA%ADn+2,+TP.HCM&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                className="w-full h-full border-0"
+                loading="lazy"
+                allowFullScreen
+              />
+            </div>
+          </div>
         </div>
       </div>
     );

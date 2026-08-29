@@ -18,7 +18,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
 import axios from 'axios';
-import { ALL_TEMPLATES } from '../../data/templatesData';
+import { ALL_TEMPLATES, findTemplateBySlugOrId } from '../../data/templatesData';
 import DemoRenderer from '../../components/demo/DemoRenderer';
 import PreviewToolbar, { ViewportType } from '../../components/demo/PreviewToolbar';
 import { useAuth } from '../../context/AuthContext';
@@ -93,7 +93,7 @@ export default function TemplateLiveDemoPage() {
   const { slug } = router.query;
 
   const templateSlug = Array.isArray(slug) ? slug[0] : slug;
-  const pageSlug = Array.isArray(slug) && slug.length > 1 ? slug[1] : 'home';
+  const pageSlug = Array.isArray(slug) && slug.length > 1 ? slug.slice(1).join('/') : 'home';
   const isEmbed = router.query.embed === 'true';
   const embedViewport = (router.query.vp as ViewportType) || 'desktop';
 
@@ -132,7 +132,7 @@ export default function TemplateLiveDemoPage() {
 
   const template = React.useMemo(() => {
     if (!templateSlug) return null;
-    return ALL_TEMPLATES.find(
+    return findTemplateBySlugOrId(String(templateSlug)) || ALL_TEMPLATES.find(
       (t) =>
         t.slug === templateSlug ||
         t.id === templateSlug ||

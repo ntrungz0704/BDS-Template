@@ -10,13 +10,9 @@ import { MAX_W } from '../design-system';
 import { FacebookIcon, InstagramIcon, YoutubeIcon, ZaloIcon } from '../icons/SocialIcons';
 
 interface TemplateProps {
-  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, any> };
+  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
-  company?: any;
-  theme?: any;
-  projects?: any[];
-  posts?: any[];
 }
 
 const COLORS = {
@@ -245,83 +241,22 @@ const GALLERY_ITEMS: GalleryItem[] = [
   { id: 'g7', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80', cat: 'amenities', title: 'Công viên Zen tĩnh lặng' }
 ];
 
-export default function MinimalTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
-  const COLORS = {
-    primary: dynamicTheme?.primaryColor || '#1A1A2E',
-    secondary: dynamicTheme?.secondaryColor || '#E8E8E8',
-    gold: dynamicTheme?.accentColor || '#C8A96E',
-    bg: dynamicTheme?.backgroundColor || '#FFFFFF',
-    bgAlt: dynamicTheme?.surfaceColor || '#F9F9F9',
-    text: dynamicTheme?.textColor || '#111111',
-    textLight: dynamicTheme?.textMutedColor || '#666666',
-    border: dynamicTheme?.borderColor || '#EAEAEA'
-  };
+const normalizeMinimalPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
 
-  const FONTS = {
-    heading: dynamicTheme?.fontHeading ? `'${dynamicTheme.fontHeading}', Georgia, serif` : "'DM Serif Display', Georgia, serif",
-    body: dynamicTheme?.fontBody ? `'${dynamicTheme.fontBody}', system-ui, sans-serif` : "'DM Sans', system-ui, sans-serif"
-  };
-  // Dynamic Posts Override & Shadowing Variable via globalThis reference
-  const activePosts = posts && posts.length > 0
-    ? posts.map((p, index) => ({
-        id: p.id || String(index),
-        title: p.title,
-        category: p.category?.name || 'Bất Động Sản',
-        cat: p.category?.name || 'Bất Động Sản',
-        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : '12/07/2026',
-        author: p.author?.fullName || 'Chuyên viên BĐS',
-        excerpt: p.summary || p.description || 'Tóm tắt bài viết...',
-        summary: p.summary || p.description || 'Tóm tắt bài viết...',
-        description: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        content: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        readTime: '5 phút đọc'
-      }))
-    : ((globalThis as any).__news_articles_ref || []);
-
-  // Shadowing variables
-  const NEWS_ARTICLES: any = activePosts;
-
-  // Dynamic Projects Override & Shadowing Variable via globalThis reference
-  const activeProjects = projects && projects.length > 0
-    ? projects.map((p, index) => ({
-        id: p.id || String(index),
-        name: p.title,
-        title: p.title,
-        location: p.address || 'Hệ thống',
-        price: p.price,
-        priceLabel: p.price,
-        area: p.area || '—',
-        type: p.type || 'Dự Án',
-        status: p.status || 'SELLING',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        tag: index === 0 ? 'EXCLUSIVE' : 'HOT',
-        desc: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        description: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        shortDescription: p.shortDescription || '',
-        specs: p.shortDescription || `${p.area} · ${p.type}`,
-        priceVal: parseFloat(p.price) || 0,
-        loc: p.address || 'Hệ thống',
-        size: parseFloat(p.area) || 0,
-        bedrooms: 3,
-        bathrooms: 2,
-        features: [p.type],
-        style: 'Modern',
-        delivery: '2026',
-        scale: '1 block'
-      }))
-    : ((globalThis as any).__minimal_apartments_ref || []);
-
-  // Shadowing variables
-  const MINIMAL_APARTMENTS: any = activeProjects;
-
+export default function MinimalTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
   // Page state
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+  const [currentPage, setCurrentPageState] = useState(normalizeMinimalPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizeMinimalPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
@@ -330,7 +265,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
+      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
     }
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -410,15 +345,40 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
   });
 
   // Handle Contact Form Submit
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!contactName.trim() || !contactPhone.trim() || !contactEmail.trim()) {
-      setContactError('Vui lòng điền đầy đủ Họ tên, Số điện thoại và Email.');
+    if (!contactName.trim() || !contactPhone.trim()) {
+      setContactError('Vui lòng điền đầy đủ Họ tên và Số điện thoại.');
+      return;
+    }
+    const phoneClean = contactPhone.replace(/\s/g, '');
+    if (!/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
+      setContactError('Số điện thoại phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.');
+      return;
+    }
+    if (contactEmail.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail.trim())) {
+      setContactError('Email không hợp lệ (VD: ten@gmail.com).');
       return;
     }
     setContactError('');
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
+      await fetch(`${API_URL}/api/marketplace/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: contactName.trim(),
+          phone: phoneClean,
+          email: contactEmail.trim(),
+          selectedTemplate: 'minimal-white',
+          packageInterest: 'Mẫu Minimal White Style',
+          message: contactMessage?.trim() || 'Khách liên hệ từ Demo Minimal White',
+        }),
+      });
+    } catch (err) {}
     setContactSubmitted(true);
   };
+
 
   // Handle Newsletter Submit
   const handleNewsletterSubmit = (e: React.FormEvent) => {
@@ -434,22 +394,13 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
   const renderHeader = () => (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b transition-all duration-300" style={{ borderColor: COLORS.border }}>
       <div className={`mx-auto px-6 h-24 flex items-center justify-between ${MAX_W}`}>
-        <div className="flex items-center gap-2 cursor-pointer text-left" onClick={() => navigate('home')}>
-          <div className="w-8 h-8 flex items-center justify-center shrink-0" style={{ backgroundColor: COLORS.primary, color: COLORS.bg }}>
-            <span className="font-bold text-lg" style={{ fontFamily: FONTS.heading }}>
-              {(company?.name || 'M').charAt(0).toUpperCase()}
-            </span>
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('home')}>
+          <div className="w-8 h-8 flex items-center justify-center" style={{ backgroundColor: COLORS.primary, color: COLORS.bg }}>
+            <span className="font-bold text-lg" style={{ fontFamily: FONTS.heading }}>M</span>
           </div>
-          <div>
-            <span className="text-xl sm:text-2xl font-bold tracking-tight uppercase block leading-none" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>
-              {company?.name || template?.name || 'MINIMAL'}
-            </span>
-            {company?.slogan && (
-              <span className="text-[10px] tracking-wider uppercase font-semibold block mt-1" style={{ color: COLORS.gold }}>
-                {company.slogan}
-              </span>
-            )}
-          </div>
+          <span className="text-2xl font-bold tracking-tight" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>
+            MINIMAL<span style={{ color: COLORS.gold }}>.</span>
+          </span>
         </div>
         
         {!isMobile ? (
@@ -539,19 +490,19 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
               </span>
             </div>
             <p className="leading-relaxed mb-6 font-light text-sm" style={{ color: COLORS.textLight }}>
-              {company?.slogan || company?.description || 'Tái định nghĩa không gian sống đô thị qua lăng kính tối giản, tinh khiết và tiện nghi đẳng cấp.'}
+              Tái định nghĩa không gian sống đô thị qua lăng kính tối giản, tinh khiết và tiện tiện nghi đẳng cấp.
             </p>
             <div className="flex items-center gap-3">
-              <a href={company?.socialLinks?.facebook || "https://facebook.com"} target="_blank" rel="noopener noreferrer" title="Facebook" className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors" style={{ borderColor: COLORS.border }}>
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook" className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors" style={{ borderColor: COLORS.border }}>
                 <FacebookIcon className="w-4 h-4" />
               </a>
-              <a href={`https://zalo.me/${company?.phone || '0919006030'}`} target="_blank" rel="noopener noreferrer" title="Zalo" className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-[#0068FF] hover:text-white hover:border-[#0068FF] transition-colors p-2" style={{ borderColor: COLORS.border }}>
+              <a href="https://zalo.me/0919006030" target="_blank" rel="noopener noreferrer" title="Zalo" className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-[#0068FF] hover:text-white hover:border-[#0068FF] transition-colors p-2" style={{ borderColor: COLORS.border }}>
                 <ZaloIcon className="w-full h-full" />
               </a>
-              <a href={company?.socialLinks?.instagram || "https://instagram.com"} target="_blank" rel="noopener noreferrer" title="Instagram" className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-pink-600 hover:text-white hover:border-pink-600 transition-colors" style={{ borderColor: COLORS.border }}>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram" className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-pink-600 hover:text-white hover:border-pink-600 transition-colors" style={{ borderColor: COLORS.border }}>
                 <InstagramIcon className="w-4 h-4" />
               </a>
-              <a href={company?.socialLinks?.youtube || "https://youtube.com"} target="_blank" rel="noopener noreferrer" title="YouTube" className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-red-600 hover:text-white hover:border-red-600 transition-colors" style={{ borderColor: COLORS.border }}>
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" title="YouTube" className="w-10 h-10 rounded-full flex items-center justify-center border hover:bg-red-600 hover:text-white hover:border-red-600 transition-colors" style={{ borderColor: COLORS.border }}>
                 <YoutubeIcon className="w-4 h-4" />
               </a>
             </div>
@@ -581,21 +532,21 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
             <h4 className="text-sm uppercase tracking-widest font-semibold mb-6" style={{ color: COLORS.primary }}>Liên hệ</h4>
             <ul className="space-y-4 text-sm font-light">
               <li>
-                <a href={`https://maps.google.com/?q=${encodeURIComponent(company?.address || 'Tầng 15, Tòa nhà Minimal, 123 Đường Tôn Đức Thắng, Quận 1, TP.HCM')}`} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 hover:opacity-80 transition-opacity">
+                <a href="https://maps.google.com/?q=123+Ton+Duc+Thang+Quan+1+TPHCM" target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 hover:opacity-80 transition-opacity">
                   <MapPin size={18} className="mt-0.5 shrink-0" style={{ color: COLORS.gold }} />
-                  <span style={{ color: COLORS.textLight }}>{company?.address || 'Tầng 15, Tòa nhà Minimal, 123 Đường Tôn Đức Thắng, Quận 1, TP.HCM'}</span>
+                  <span style={{ color: COLORS.textLight }}>Tầng 15, Tòa nhà Minimal, 123 Đường Tôn Đức Thắng, Quận 1, TP.HCM</span>
                 </a>
               </li>
               <li>
-                <a href={`tel:${(company?.phone || '0919006030').replace(/\s/g, '')}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <a href="tel:0919006030" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                   <Phone size={18} className="shrink-0" style={{ color: COLORS.gold }} />
-                  <span className="whitespace-nowrap" style={{ color: COLORS.textLight }}>{company?.phone || '0919 006 030'}</span>
+                  <span className="whitespace-nowrap" style={{ color: COLORS.textLight }}>0919 006 030</span>
                 </a>
               </li>
               <li>
-                <a href={`mailto:${company?.email || 'contact@minimal.vn'}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <a href="mailto:contact@minimal.vn" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                   <Mail size={18} className="shrink-0" style={{ color: COLORS.gold }} />
-                  <span style={{ color: COLORS.textLight }}>{company?.email || 'contact@minimal.vn'}</span>
+                  <span style={{ color: COLORS.textLight }}>contact@minimal.vn</span>
                 </a>
               </li>
             </ul>
@@ -603,7 +554,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
         </div>
 
         <div className="pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light" style={{ borderColor: COLORS.border }}>
-          <p style={{ color: COLORS.textLight }}>&copy; 2026 {company?.name || 'Minimal BĐS'}. All rights reserved.</p>
+          <p style={{ color: COLORS.textLight }}>&copy; 2026 Minimal BĐS. All rights reserved.</p>
           <div className="flex gap-6">
             <span className="cursor-pointer hover:underline" style={{ color: COLORS.textLight }}>Điều khoản bảo mật</span>
             <span className="cursor-pointer hover:underline" style={{ color: COLORS.textLight }}>Chính sách sử dụng</span>
@@ -981,7 +932,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
                 <div className="flex gap-1 mb-6">
                   {[1,2,3,4,5].map(star => <Star key={star} size={16} className="fill-current text-black" />)}
                 </div>
-                <p className="text-lg italic mb-8 leading-relaxed font-light" style={{ color: COLORS.textLight }}>&ldquo;{testi.text}&rdquo;</p>
+                <p className="text-lg italic mb-8 leading-relaxed font-light" style={{ color: COLORS.textLight }}>"{testi.text}"</p>
                 <div>
                   <h4 className="font-semibold mb-1 font-serif text-gray-800" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>{testi.name}</h4>
                   <span className="text-xs uppercase tracking-wider text-gray-400 font-medium">{testi.role}</span>
@@ -1578,7 +1529,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
             <div>
               {searchNewsQuery && (
                 <h3 className="text-xl mb-8 font-light">
-                  Kết quả tìm kiếm cho &ldquo;{searchNewsQuery}&rdquo; ({filteredNews.length} bài viết):
+                  Kết quả tìm kiếm cho "{searchNewsQuery}" ({filteredNews.length} bài viết):
                 </h3>
               )}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -1662,19 +1613,43 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
               <div className="space-y-8">
                 <div>
                   <h4 className="text-xs uppercase tracking-widest text-gray-400 mb-2 font-semibold">Văn phòng chính</h4>
-                  <p className="text-gray-800 font-light">{company?.address || company?.address || 'Tầng 15, Tòa nhà Minimal, 123 Đường Tôn Đức Thắng, Quận 1, TP.HCM'}</p>
+                  <p className="text-gray-800 font-light">Tầng 15, Tòa nhà Minimal, 123 Đường Tôn Đức Thắng, Quận 1, TP.HCM</p>
                 </div>
                 <div>
                   <h4 className="text-xs uppercase tracking-widest text-gray-400 mb-2 font-semibold">Điện thoại</h4>
-                  <p className="text-gray-800 font-light">{company?.phone || company?.hotline || company?.phone || company?.hotline || '0909 123 456'}</p>
+                  <p className="text-gray-800 font-light">0909 123 456</p>
                 </div>
                 <div>
                   <h4 className="text-xs uppercase tracking-widest text-gray-400 mb-2 font-semibold">Email</h4>
-                  <p className="text-gray-800 font-light">{company?.email || company?.email || 'contact@minimal.vn'}</p>
+                  <p className="text-gray-800 font-light">contact@minimal.vn</p>
                 </div>
                 <div>
                   <h4 className="text-xs uppercase tracking-widest text-gray-400 mb-2 font-semibold">Giờ làm việc</h4>
                   <p className="text-gray-800 font-light">Thứ 2 - Thứ 7: 8:00 - 18:00<br/>Chủ nhật: Đặt lịch hẹn trước</p>
+                </div>
+              </div>
+
+              {/* Interactive Google Map */}
+              <div className="mt-8 overflow-hidden border border-gray-200 shadow-sm flex flex-col h-48 bg-gray-50">
+                <div className="px-3.5 py-2 bg-gray-900 text-white flex items-center justify-between text-xs">
+                  <span className="font-medium text-gray-300 truncate">123 Tôn Đức Thắng, Q.1</span>
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=123+T%C3%B4n+%C4%90%E1%BB%A9c+Th%E1%BA%AFng,+Qu%E1%BA%ADn+1,+TP.HCM"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-2 py-0.5 bg-white text-gray-900 font-semibold text-[10px] shrink-0 hover:bg-gray-200 transition-colors"
+                  >
+                    Mở Maps
+                  </a>
+                </div>
+                <div className="flex-1 w-full h-full">
+                  <iframe
+                    title="Bản đồ Minimal Tôn Đức Thắng"
+                    src="https://maps.google.com/maps?q=123+T%C3%B4n+%C4%90%E1%BB%A9c+Th%E1%BA%AFng,+Qu%E1%BA%ADn+1,+TP.HCM&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                    className="w-full h-full border-0"
+                    loading="lazy"
+                    allowFullScreen
+                  />
                 </div>
               </div>
             </div>
@@ -1915,12 +1890,13 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
     <div className="min-h-screen text-gray-900" style={{ backgroundColor: COLORS.bg, fontFamily: FONTS.body }}>
       {renderHeader()}
       <main>
-        {currentPage === 'home' && renderHome()}
-        {currentPage === 'projects' && renderProjects()}
-        {currentPage === 'about' && renderAbout()}
-        {currentPage === 'gallery' && renderGallery()}
-        {currentPage === 'news' && renderNews()}
-        {currentPage === 'contact' && renderContact()}
+        {['home'].includes(currentPage) && renderHome()}
+        {['projects', 'du-an', 'san-pham'].includes(currentPage) && renderProjects()}
+        {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAbout()}
+        {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGallery()}
+        {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNews()}
+        {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContact()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
       </main>
       {renderFooter()}
 

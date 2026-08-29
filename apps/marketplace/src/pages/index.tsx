@@ -52,7 +52,7 @@ export default function MarketplaceHome() {
   const statsData = statsRes?.data || {
     totalCustomers: 500,
     totalWebsitesCreated: 1200,
-    totalTemplates: 16,
+    totalTemplates: ALL_TEMPLATES.length,
     averageRating: 4.9,
   };
   const [activeDetailsTemplate, setActiveDetailsTemplate] = useState<any | null>(null);
@@ -205,6 +205,7 @@ export default function MarketplaceHome() {
     'modern-corporate': 'bds-03',
     'resort-paradise': 'bds-04',
     'ocean-view': 'bds-04',
+    'ocean-blue': 'bds-04',
     'urban-city': 'bds-05',
     'smart-urban': 'bds-05',
     'high-rise': 'bds-05',
@@ -234,13 +235,24 @@ export default function MarketplaceHome() {
     'land-plot': 'bds-14',
     'retail-podium': 'bds-15',
     'commercial-plaza': 'bds-15',
-    'retail-commercial': 'bds-15',
     'personal-agent': 'bds-16',
     'golf-residences': 'bds-16',
-    'vinhomes': 'bds-17',
-    'masterise': 'bds-18',
-    'novaland': 'bds-19',
-    'sungroup': 'bds-20',
+    'portal-listing': 'bds-17',
+    'vietnam-portal': 'bds-17',
+    'bds123-portal': 'bds-18',
+    'benthanh-portal': 'bds-18',
+    'nhadatso-density': 'bds-19',
+    'nhadatso-portal': 'bds-19',
+    'minhkhai-apartment': 'bds-20',
+    'minhkhai-luxury': 'bds-20',
+    'hanoi-rental': 'bds-21',
+    'chothue-hanoi': 'bds-21',
+    'happyland-resort': 'bds-22',
+    'zohotels-resort': 'bds-22',
+    'homeo-multithumb': 'bds-23',
+    'homeo-agency': 'bds-23',
+    'realtybuild-tech': 'bds-24',
+    'realtybuild-portal': 'bds-24',
   };
 
   const dbTemplates = templatesRes?.data || [];
@@ -250,6 +262,7 @@ export default function MarketplaceHome() {
       return {
         ...tpl,
         priceBuy: dbTpl.priceBuy || tpl.priceBuy,
+        priceBuySource: dbTpl.priceBuySource || tpl.priceBuySource,
         priceRentMonthly: dbTpl.priceRentMonthly || tpl.priceRentMonthly,
       };
     }
@@ -257,19 +270,26 @@ export default function MarketplaceHome() {
   });
 
   const filteredTemplates = mergedTemplates.filter((tpl: any) => {
-    if (searchQuery && !tpl.name.toLowerCase().includes(searchQuery.toLowerCase()) && !tpl.description.toLowerCase().includes(searchQuery.toLowerCase()) && !tpl.slug.toLowerCase().includes(searchQuery.toLowerCase())) {
-      return false;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase().trim();
+      const match =
+        tpl.name?.toLowerCase().includes(q) ||
+        tpl.description?.toLowerCase().includes(q) ||
+        tpl.shortDescription?.toLowerCase().includes(q) ||
+        tpl.slug?.toLowerCase().includes(q) ||
+        tpl.badge?.toLowerCase().includes(q) ||
+        tpl.features?.some((f: string) => f.toLowerCase().includes(q));
+      if (!match) return false;
     }
     if (selectedCategory !== 'ALL') {
       const slug = tpl.slug;
-      const col = tpl.collectionSlug;
-      if (selectedCategory === 'BIET_THU' && !['luxury', 'villa', 'classic'].includes(col) && !['bds-01', 'bds-07', 'bds-09', 'bds-21', 'bds-25', 'bds-27'].includes(slug)) return false;
-      if (selectedCategory === 'CHUNG_CU' && !['apartment', 'minimal'].includes(col) && !['bds-02', 'bds-05', 'bds-18', 'bds-22'].includes(slug)) return false;
-      if (selectedCategory === 'NGHI_DUONG' && !['resort', 'eco'].includes(col) && !['bds-04', 'bds-08', 'bds-20', 'bds-23', 'bds-26'].includes(slug)) return false;
-      if (selectedCategory === 'DAT_THUONG_MAI' && !['industrial', 'investment', 'retail', 'project'].includes(col) && !['bds-06', 'bds-10', 'bds-14', 'bds-15', 'bds-19', 'bds-24', 'bds-31', 'bds-32'].includes(slug)) return false;
-      if (selectedCategory === 'CA_NHAN' && !['minimal', 'agency', 'agent'].includes(col) && !['bds-11', 'bds-16', 'bds-28'].includes(slug)) return false;
-      if (selectedCategory === 'KCN_NHA_XUONG' && col !== 'industrial' && !['bds-06', 'bds-24'].includes(slug)) return false;
-      if (selectedCategory === 'CORPORATE' && !['corporate', 'developer'].includes(col) && !['bds-03', 'bds-12', 'bds-17', 'bds-30'].includes(slug)) return false;
+      if (selectedCategory === 'PORTAL_SAN' && !['bds-17', 'bds-18', 'bds-19', 'bds-21', 'bds-24', 'portal-listing', 'vietnam-portal', 'bds123-portal', 'benthanh-portal', 'nhadatso-density', 'nhadatso-portal', 'hanoi-rental', 'realtybuild-tech'].includes(slug)) return false;
+      if (selectedCategory === 'CHUNG_CU' && !['bds-02', 'bds-05', 'bds-20', 'minimal-white', 'urban-city', 'smart-urban', 'minhkhai-apartment'].includes(slug)) return false;
+      if (selectedCategory === 'BIET_THU' && !['bds-01', 'bds-07', 'bds-09', 'bds-12', 'luxury-gold', 'villa-premium', 'classic-elegant', 'mega-developer'].includes(slug)) return false;
+      if (selectedCategory === 'NGHI_DUONG' && !['bds-04', 'bds-08', 'bds-22', 'resort-paradise', 'eco-green', 'happyland-resort'].includes(slug)) return false;
+      if (selectedCategory === 'CA_NHAN' && !['bds-11', 'bds-13', 'bds-16', 'bds-23', 'agency-onepage', 'auction-template', 'personal-agent', 'homeo-multithumb'].includes(slug)) return false;
+      if (selectedCategory === 'DAT_THUONG_MAI' && !['bds-03', 'bds-10', 'bds-14', 'bds-15', 'modern-corporate', 'investment-pro', 'retail-podium', 'landplot-template'].includes(slug)) return false;
+      if (selectedCategory === 'KCN_NHA_XUONG' && !['bds-06', 'industrial-estate'].includes(slug)) return false;
     }
     return true;
   });
@@ -364,7 +384,7 @@ export default function MarketplaceHome() {
     <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] antialiased overflow-x-hidden">
       <Head>
         <title>Kho Mẫu Website Bất Động Sản Cao Cấp — TEMPLATES BDS</title>
-        <meta name="description" content="16 mẫu website BĐS chuyên nghiệp. Kích hoạt 30 giây. Chuẩn SEO Google. Hỗ trợ 24/7. Hơn 500+ môi giới & doanh nghiệp đã tin dùng." />
+        <meta name="description" content={`${ALL_TEMPLATES.length} mẫu website BĐS chuyên nghiệp. Kích hoạt 30 giây. Chuẩn SEO Google. Hỗ trợ 24/7. Hơn 500+ môi giới & doanh nghiệp đã tin dùng.`} />
         <meta property="og:title" content="TEMPLATES BDS — Sở Hữu Website BĐS Chuyên Nghiệp" />
       </Head>
 
@@ -427,7 +447,7 @@ export default function MarketplaceHome() {
             <div className="flex flex-wrap gap-4 pt-4">
               <a href="#templates" className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white h-12 px-8 rounded-[14px] flex items-center justify-center gap-2 text-[16px] font-semibold transition-all hover:scale-[1.02] shadow-md">
                 <Search className="w-4 h-4" />
-                Khám phá 16 mẫu website
+                Khám phá {ALL_TEMPLATES.length} mẫu website
               </a>
               <button
                 onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
@@ -531,26 +551,27 @@ export default function MarketplaceHome() {
           {/* Section header */}
           <div className="text-center mb-14 reveal flex flex-col items-center">
             <span className="text-[12px] uppercase tracking-[0.2em] font-bold text-[#2563EB] mb-3">
-              16 Mẫu Website Độc Quyền
+              {ALL_TEMPLATES.length} Mẫu Website Độc Quyền
             </span>
             <h2 className="text-[52px] font-bold text-text-primary leading-[1.1] tracking-tight mb-5 max-w-[800px]">
               Mỗi template là<br className="sm:hidden" /> <span className="text-[#2563EB]">một sản phẩm riêng</span>
             </h2>
             <p className="text-body-lg text-text-caption max-w-[600px] mx-auto">
-              Không phải &ldquo;16 template đổi màu&rdquo; &mdash; mỗi thiết kế phục vụ đúng một phân khúc BĐS khác nhau. Nhìn là biết ngay dành cho mình.
+              Không phải các template dập khuôn đổi màu &mdash; mỗi thiết kế trong kho {ALL_TEMPLATES.length} mẫu phục vụ đúng một phân khúc BĐS chuyên biệt. Nhìn là biết ngay dành cho mình.
             </p>
           </div>
 
           {/* Filter bar */}
           <div className="flex flex-wrap items-center gap-2 mb-10 reveal">
             {[
-              { key: 'ALL', label: 'Tất cả', count: 16 },
-              { key: 'BIET_THU', label: 'Biệt thự & Villa', count: 4 },
-              { key: 'CHUNG_CU', label: 'Chung cư', count: 3 },
-              { key: 'NGHI_DUONG', label: 'Nghỉ dưỡng', count: 2 },
-              { key: 'CA_NHAN', label: 'Cá nhân', count: 3 },
-              { key: 'KCN_NHA_XUONG', label: 'KCN & Nhà xưởng', count: 1 },
-              { key: 'DAT_THUONG_MAI', label: 'Thương mại & Bán lẻ', count: 3 },
+              { key: 'ALL', label: 'Tất cả', count: ALL_TEMPLATES.length },
+              { key: 'PORTAL_SAN', label: 'Cổng Tin & Sàn BĐS', count: 5 },
+              { key: 'CHUNG_CU', label: 'Căn Hộ & Chung Cư', count: 3 },
+              { key: 'BIET_THU', label: 'Biệt Thự & Villa', count: 4 },
+              { key: 'NGHI_DUONG', label: 'Nghỉ Dưỡng & Biển', count: 3 },
+              { key: 'CA_NHAN', label: 'Nhà Phố & Môi Giới', count: 4 },
+              { key: 'DAT_THUONG_MAI', label: 'Đất Nền & Đầu Tư', count: 4 },
+              { key: 'KCN_NHA_XUONG', label: 'KCN & Nhà Xưởng', count: 1 },
             ].map(tab => (
               <button
                 key={tab.key}

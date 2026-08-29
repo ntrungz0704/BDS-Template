@@ -166,13 +166,13 @@ export default function WhyChoosePage() {
         {/* Bottom CTA */}
         <div className="text-center max-w-xl mx-auto bg-white border border-slate-200 rounded-lg p-6 sm:p-8 shadow-sm">
           <h3 className="text-xl font-bold mb-2 text-slate-900">Sở hữu website BĐS chuyên nghiệp ngay hôm nay</h3>
-          <p className="text-slate-600 text-xs sm:text-sm mb-6">Trải nghiệm 16 mẫu website độc quyền, kích hoạt và bàn giao trong 30 giây.</p>
+          <p className="text-slate-600 text-xs sm:text-sm mb-6">Trải nghiệm kho mẫu website độc quyền, kích hoạt và bàn giao trong 30 giây.</p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/templates"
               className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm transition-colors shadow-sm"
             >
-              <span>Khám Phá 16 Mẫu Ngay</span>
+              <span>Khám Phá Toàn Bộ Mẫu Ngay</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link

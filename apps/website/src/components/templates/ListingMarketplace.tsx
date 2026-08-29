@@ -11,13 +11,9 @@ import {
 import { MAX_W } from '../design-system';
 
 interface TemplateProps {
-  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, any> };
+  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
-  company?: any;
-  theme?: any;
-  projects?: any[];
-  posts?: any[];
 }
 
 // 6+ realistic Projects/Listings
@@ -245,69 +241,21 @@ const GALLERY_IMAGES = [
   { url: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=800&q=80', tab: 'Tiện ích', title: 'Novaworld Water Park' }
 ];
 
-export default function ListingMarketplace({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
-  const brandPrimary = dynamicTheme?.primaryColor || '#2563EB';
-  const brandAccent = dynamicTheme?.accentColor || '#60A5FA';
-  // Dynamic Posts Override & Shadowing Variable via globalThis reference
-  const activePosts = posts && posts.length > 0
-    ? posts.map((p, index) => ({
-        id: p.id || String(index),
-        title: p.title,
-        category: p.category?.name || 'Bất Động Sản',
-        cat: p.category?.name || 'Bất Động Sản',
-        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : '12/07/2026',
-        author: p.author?.fullName || 'Chuyên viên BĐS',
-        excerpt: p.summary || p.description || 'Tóm tắt bài viết...',
-        summary: p.summary || p.description || 'Tóm tắt bài viết...',
-        description: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        content: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        readTime: '5 phút đọc'
-      }))
-    : ((globalThis as any).__news_articles_ref || []);
+const normalizeListingPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham', 'bat-dong-san'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
 
-  // Shadowing variables
-  const NEWS_ARTICLES: any = activePosts;
-
-  // Dynamic Projects Override & Shadowing Variable via globalThis reference
-  const activeProjects = projects && projects.length > 0
-    ? projects.map((p, index) => ({
-        id: p.id || String(index),
-        name: p.title,
-        title: p.title,
-        location: p.address || 'Hệ thống',
-        price: p.price,
-        priceLabel: p.price,
-        area: p.area || '—',
-        type: p.type || 'Dự Án',
-        status: p.status || 'SELLING',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        tag: index === 0 ? 'EXCLUSIVE' : 'HOT',
-        desc: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        description: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        shortDescription: p.shortDescription || '',
-        specs: p.shortDescription || `${p.area} · ${p.type}`,
-        priceVal: parseFloat(p.price) || 0,
-        loc: p.address || 'Hệ thống',
-        size: parseFloat(p.area) || 0,
-        bedrooms: 3,
-        bathrooms: 2,
-        features: [p.type],
-        style: 'Modern',
-        delivery: '2026',
-        scale: '1 block'
-      }))
-    : ((globalThis as any).__mock_properties_ref || []);
-
-  // Shadowing variables
-  const MOCK_PROPERTIES: any = activeProjects;
-
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+export default function ListingMarketplace({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
+  const [currentPage, setCurrentPageState] = useState(normalizeListingPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizeListingPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
@@ -316,7 +264,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
+      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
     }
   };
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -465,21 +413,14 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
     <header className="sticky top-0 w-full z-40 bg-[#020617]/90 backdrop-blur-md border-b border-white/10 transition-all duration-300">
       <div className={`${MAX_W} mx-auto px-4 h-20 flex items-center justify-between`}>
         {/* Logo */}
-        <div className="flex-shrink-0 cursor-pointer text-left" onClick={() => navigateTo('home')}>
+        <div className="flex-shrink-0 cursor-pointer" onClick={() => navigateTo('home')}>
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-tr from-[#38BDF8] to-[#818CF8] rounded-xl flex items-center justify-center shadow-lg shadow-sky-500/20 shrink-0">
+            <div className="w-10 h-10 bg-gradient-to-tr from-[#38BDF8] to-[#818CF8] rounded-xl flex items-center justify-center shadow-lg shadow-sky-500/20">
               <Building className="text-[#020617]" size={24} strokeWidth={2.5} />
             </div>
-            <div>
-              <span className="text-xl sm:text-2xl font-bold font-['Plus_Jakarta_Sans'] text-white tracking-tight uppercase block leading-none">
-                {company?.name || template?.name || 'PlatformBDS'}
-              </span>
-              {company?.slogan && (
-                <span className="text-[10px] text-[#38BDF8] font-semibold tracking-wider uppercase block mt-1">
-                  {company.slogan}
-                </span>
-              )}
-            </div>
+            <span className="text-2xl font-bold font-['Plus_Jakarta_Sans'] text-white tracking-tight">
+              Platform<span className="text-[#38BDF8]">BDS</span>
+            </span>
           </div>
         </div>
 
@@ -531,7 +472,10 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
               {link.name}
             </button>
           ))}
-          <button className="mt-4 bg-gradient-to-r from-[#38BDF8] to-[#818CF8] text-[#020617] px-4 py-3 rounded-lg font-bold text-center">
+          <button 
+            onClick={() => navigateTo('contact')}
+            className="mt-4 bg-gradient-to-r from-[#38BDF8] to-[#818CF8] text-[#020617] px-4 py-3 rounded-lg font-bold text-center cursor-pointer"
+          >
             Đăng nhập
           </button>
         </div>
@@ -1129,7 +1073,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                 {[...Array(5)].map((_, j) => <Star key={j} size={16} fill="#F59E0B" className="text-[#F59E0B]" />)}
               </div>
               <p className="text-slate-300 text-lg mb-8 relative z-10 italic">
-                &ldquo;Một trải nghiệm mua nhà tuyệt vời. Đội ngũ tư vấn chuyên nghiệp, thủ tục nhanh gọn và đặc biệt là chất lượng bàn giao vượt ngoài mong đợi của gia đình tôi.&rdquo;
+                "Một trải nghiệm mua nhà tuyệt vời. Đội ngũ tư vấn chuyên nghiệp, thủ tục nhanh gọn và đặc biệt là chất lượng bàn giao vượt ngoài mong đợi của gia đình tôi."
               </p>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-slate-800 border-2 border-[#38BDF8] overflow-hidden">
@@ -1302,10 +1246,10 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             </div>
             <p className="mb-6 leading-relaxed">Nền tảng giao dịch bất động sản cao cấp hàng đầu Việt Nam. Nơi hội tụ những dự án tinh hoa và cơ hội đầu tư sinh lời bền vững.</p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors"><Facebook size={18}/></a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors"><Twitter size={18}/></a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors"><Linkedin size={18}/></a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors"><Instagram size={18}/></a>
+              <button onClick={() => alert('Mở Facebook')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors cursor-pointer"><Facebook size={18}/></button>
+              <button onClick={() => alert('Mở Twitter')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors cursor-pointer"><Twitter size={18}/></button>
+              <button onClick={() => alert('Mở LinkedIn')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors cursor-pointer"><Linkedin size={18}/></button>
+              <button onClick={() => alert('Mở Instagram')} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#38BDF8] hover:text-[#020617] transition-colors cursor-pointer"><Instagram size={18}/></button>
             </div>
           </div>
           
@@ -1359,7 +1303,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
               </li>
               <li className="flex gap-3">
                 <Mail className="text-[#38BDF8] shrink-0" size={20}/>
-                <span>{company?.email || company?.email || 'contact@platformbds.vn'}</span>
+                <span>contact@platformbds.vn</span>
               </li>
             </ul>
           </div>
@@ -1368,8 +1312,8 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
           <p>&copy; 2026 PlatformBDS. All rights reserved.</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-white transition-colors">Điều khoản sử dụng</a>
-            <a href="#" className="hover:text-white transition-colors">Chính sách bảo mật</a>
+            <button onClick={() => navigateTo('about')} className="hover:text-white transition-colors cursor-pointer">Điều khoản sử dụng</button>
+            <button onClick={() => navigateTo('about')} className="hover:text-white transition-colors cursor-pointer">Chính sách bảo mật</button>
           </div>
         </div>
       </div>
@@ -1518,7 +1462,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                   <div className="p-6">
                     <h4 className="text-xl font-bold text-white mb-1">{leader.name}</h4>
                     <p className="text-[#38BDF8] text-sm mb-4 font-semibold">{leader.role}</p>
-                    <p className="text-slate-400 text-sm italic leading-relaxed border-t border-white/5 pt-4">&ldquo;{leader.quote}&rdquo;</p>
+                    <p className="text-slate-400 text-sm italic leading-relaxed border-t border-white/5 pt-4">"{leader.quote}"</p>
                   </div>
                 </div>
               ))}
@@ -1791,7 +1735,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#38BDF8] outline-none transition-colors"
                     ></textarea>
                   </div>
-                  <button className="w-full bg-[#38BDF8] text-[#020617] font-bold py-4 rounded-xl hover:bg-[#0EA5E9] transition-all hover:shadow-[0_0_15px_rgba(56,189,248,0.3)]">Gửi liên hệ</button>
+                    <button type="submit" className="w-full bg-[#38BDF8] text-[#020617] font-bold py-4 rounded-xl hover:bg-[#0EA5E9] transition-all hover:shadow-[0_0_15px_rgba(56,189,248,0.3)] cursor-pointer">Gửi liên hệ</button>
                 </form>
               </div>
             )}
@@ -1828,23 +1772,30 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                 </div>
               </div>
 
-              {/* Map Placeholder */}
-              <div className="w-full h-72 bg-[#060B20] rounded-3xl border border-white/10 overflow-hidden relative shadow-inner">
-                <div className="absolute inset-0 bg-[#020617] opacity-60"></div>
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10">
-                  <div className="w-12 h-12 bg-sky-500/20 text-[#38BDF8] rounded-full flex items-center justify-center mb-3 animate-bounce">
-                    <MapPin size={28} />
+              {/* Interactive Google Map */}
+              <div className="w-full h-80 bg-[#060B20] rounded-3xl border border-white/10 overflow-hidden relative shadow-2xl flex flex-col">
+                <div className="px-4 py-2.5 bg-slate-900/90 border-b border-white/10 flex items-center justify-between text-xs z-10">
+                  <div className="flex items-center gap-2 text-white font-bold truncate">
+                    <MapPin size={14} className="text-[#38BDF8] shrink-0" />
+                    <span className="truncate">Bitexco Financial Tower — Quận 1, TP.HCM</span>
                   </div>
-                  <h4 className="text-white font-bold mb-1">Bitexco Financial Tower</h4>
-                  <p className="text-slate-400 text-xs max-w-xs">2 Hải Triều, Bến Nghé, Quận 1, Hồ Chí Minh</p>
                   <a 
-                    href="https://maps.google.com" 
+                    href="https://www.google.com/maps/search/?api=1&query=Bitexco+Financial+Tower,+2+H%E1%BA%A3i+Tri%E1%BB%81u,+B%E1%BA%BFn+Ngh%C3%A9,+Qu%E1%BA%ADn+1,+H%E1%BB%93+Ch%C3%AD+Minh" 
                     target="_blank" 
                     rel="noreferrer"
-                    className="mt-4 text-[#38BDF8] text-xs font-bold uppercase tracking-wider flex items-center gap-1 hover:text-white transition-colors"
+                    className="px-2.5 py-1 rounded-lg bg-[#0284C7] hover:bg-[#0369A1] text-white text-[11px] font-bold flex items-center gap-1 transition-transform hover:scale-105 shrink-0"
                   >
-                    Xem trên Google Maps <ChevronRight size={14} />
+                    Mở Google Maps <ChevronRight size={12} />
                   </a>
+                </div>
+                <div className="flex-1 w-full h-full relative">
+                  <iframe
+                    title="Google Map Bitexco"
+                    src="https://maps.google.com/maps?q=Bitexco+Financial+Tower,+2+H%E1%BA%A3i+Tri%E1%BB%81u,+B%E1%BA%BFn+Ngh%C3%A9,+Qu%E1%BA%ADn+1,+H%E1%BB%93+Ch%C3%AD+Minh&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                    className="w-full h-full border-0"
+                    loading="lazy"
+                    allowFullScreen
+                  />
                 </div>
               </div>
             </div>
@@ -2037,11 +1988,12 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
             {renderCTA()}
           </>
         )}
-        {currentPage === 'projects' && renderProjectsPage()}
-        {currentPage === 'about' && renderAboutPage()}
-        {currentPage === 'gallery' && renderGalleryPage()}
-        {currentPage === 'news' && renderNewsPage()}
-        {currentPage === 'contact' && renderContactPage()}
+        {['projects', 'du-an', 'san-pham', 'bat-dong-san'].includes(currentPage) && renderProjectsPage()}
+        {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAboutPage()}
+        {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGalleryPage()}
+        {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNewsPage()}
+        {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContactPage()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'bat-dong-san', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHero()}
       </main>
 
       {renderFooter()}

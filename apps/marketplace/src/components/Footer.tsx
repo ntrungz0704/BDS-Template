@@ -8,7 +8,7 @@ const FOOTER_LINKS = {
   marketplace: {
     title: 'Marketplace',
     links: [
-      { label: '16 Mẫu Template BĐS', href: '/templates' },
+      { label: 'Kho Mẫu Template BĐS', href: '/templates' },
       { label: 'Xem Demo Trực Tiếp', href: '/templates' },
       { label: 'Bảng Giá & Gói Dịch Vụ', href: '/pricing' },
       { label: 'Tư Vấn Chọn Mẫu Nhanh', href: '/contact' },

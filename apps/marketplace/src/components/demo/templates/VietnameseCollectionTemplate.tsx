@@ -770,6 +770,14 @@ function FeatureSection({ cfg }: { cfg: StudioConfig }) {
 }
 
 function LocationSection({ cfg }: { cfg: StudioConfig }) {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [mapMode, setMapMode] = useState<'roadmap' | 'satellite'>('roadmap');
+  const activeArea = cfg.areas[activeIdx] || cfg.areas[0] || 'Bán đảo Thảo Điền, Quận 2, TP. Hồ Chí Minh';
+  
+  const mapTypeParam = mapMode === 'satellite' ? 'k' : 'm';
+  const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(activeArea + ', Việt Nam')}&t=${mapTypeParam}&z=15&ie=UTF8&iwloc=&output=embed`;
+  const searchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(activeArea + ', Việt Nam')}`;
+
   return (
     <section id="khu-vuc" className="py-20 text-white sm:py-28" style={{ background: cfg.primary }}>
       <div className="mx-auto grid max-w-7xl gap-12 px-5 lg:grid-cols-2 items-center">
@@ -781,33 +789,75 @@ function LocationSection({ cfg }: { cfg: StudioConfig }) {
             Tâm Điểm Kết Nối Các Trục Giao Thông Huyết Mạch
           </h2>
           <p className="mt-4 text-sm leading-7 opacity-80">
-            Sở hữu vị trí vàng đắc địa dễ dàng di chuyển tới các trung tâm hành chính, trường học quốc tế, bệnh viện và sân bay.
+            Sở hữu vị trí vàng đắc địa dễ dàng di chuyển tới các trung tâm hành chính, trường học quốc tế, bệnh viện và sân bay. Chọn từng khu vực bên dưới để xem bản đồ chỉ đường chi tiết.
           </p>
           <div className="mt-8 space-y-3">
-            {cfg.areas.map((x, i) => (
-              <div key={x} className="flex justify-between items-center border-b border-white/15 py-3.5 text-sm font-semibold">
-                <span className="flex items-center gap-2.5">
-                  <MapPin className="w-4 h-4" style={{ color: cfg.accent }} /> {x}
-                </span>
-                <span className="text-xs font-black opacity-60">Khu vực 0{i + 1}</span>
-              </div>
-            ))}
+            {cfg.areas.map((x, i) => {
+              const isActive = activeIdx === i;
+              return (
+                <button
+                  key={x}
+                  type="button"
+                  onClick={() => setActiveIdx(i)}
+                  className={`w-full flex justify-between items-center py-4 px-5 rounded-2xl border text-sm font-semibold transition-all duration-200 text-left cursor-pointer ${
+                    isActive
+                      ? 'bg-white/20 border-white shadow-xl backdrop-blur-md translate-x-2'
+                      : 'border-white/15 bg-white/5 hover:bg-white/10 hover:border-white/30'
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <span className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform ${isActive ? 'bg-amber-400 text-slate-900 scale-110 shadow-md' : 'bg-white/10 text-white'}`}>
+                      <MapPin className="w-4 h-4" />
+                    </span>
+                    <span className={isActive ? 'font-bold text-white text-base' : 'opacity-90'}>{x}</span>
+                  </span>
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-xs font-black opacity-75">Khu vực 0{i + 1}</span>
+                    {isActive && <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />}
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        <div className="grid min-h-[380px] place-items-center rounded-3xl border border-white/20 bg-white/10 p-8 backdrop-blur text-center">
-          <div>
-            <MapPin className="mx-auto h-12 w-12 animate-bounce" style={{ color: cfg.accent }} />
-            <h4 className="mt-4 text-xl font-black">Bản Đồ Chỉ Đường & Kết Nối Vệ Tinh</h4>
-            <p className="mt-2 text-xs text-white/70 max-w-sm">
-              Tích hợp sẵn bản đồ Google Maps tương tác chi tiết giúp khách hàng dễ dàng định vị dự án.
-            </p>
-            <button 
-              onClick={() => alert('Đang mở bản đồ Google Maps chỉ đường...')}
-              className="mt-6 px-6 py-3 text-xs font-black bg-white text-slate-900 rounded-xl shadow hover:scale-105 transition"
-            >
-              🗺️ Mở Bản Đồ Google Maps 4K
-            </button>
+        <div className="overflow-hidden rounded-3xl border border-white/20 bg-slate-950/90 shadow-2xl backdrop-blur flex flex-col h-[480px]">
+          {/* Header Map Toolbar */}
+          <div className="px-5 py-3.5 bg-white/10 border-b border-white/15 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2 font-bold truncate">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              <span className="truncate">Vị trí: <strong className="text-white font-black">{activeArea}</strong></span>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => setMapMode(m => m === 'roadmap' ? 'satellite' : 'roadmap')}
+                className="px-2.5 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 text-white font-semibold transition"
+              >
+                {mapMode === 'roadmap' ? '🛰️ Vệ tinh' : '🗺️ Bản đồ'}
+              </button>
+              <a
+                href={searchUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-black transition-transform hover:scale-105 shadow-md"
+              >
+                <span>Mở Google Maps</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
+          </div>
+
+          {/* Real Interactive Google Map Iframe */}
+          <div className="flex-1 w-full h-full relative bg-slate-900">
+            <iframe
+              key={`${activeArea}-${mapMode}`}
+              title={`Google Map - ${activeArea}`}
+              src={embedUrl}
+              className="w-full h-full border-0"
+              loading="lazy"
+              allowFullScreen
+            />
           </div>
         </div>
       </div>

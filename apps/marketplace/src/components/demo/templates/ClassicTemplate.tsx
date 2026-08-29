@@ -1375,6 +1375,30 @@ export default function ClassicTemplate({ template, viewport = 'desktop', initia
                 </div>
               </div>
             </div>
+
+            {/* Interactive Google Map */}
+            <div className="mt-8 rounded-2xl overflow-hidden border border-stone-200 shadow-md flex flex-col h-60 bg-white">
+              <div className="px-4 py-2 bg-stone-900 text-white flex items-center justify-between text-xs">
+                <span className="font-bold flex items-center gap-1.5 truncate"><MapPin size={14} className="text-amber-400" /> Tòa nhà Heritage — 123 Nguyễn Huệ, Quận 1, TP.HCM</span>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=123+Nguy%E1%BB%85n+Hu%E1%BB%87,+B%E1%BA%BFn+Ngh%C3%A9,+Qu%E1%BA%ADn+1,+TP.HCM"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1 rounded bg-[#9F1239] hover:bg-[#881337] text-white text-[10px] font-bold shrink-0"
+                >
+                  Mở Google Maps
+                </a>
+              </div>
+              <div className="flex-1 w-full h-full">
+                <iframe
+                  title="Bản đồ Heritage Nguyễn Huệ"
+                  src="https://maps.google.com/maps?q=123+Nguy%E1%BB%85n+Hu%E1%BB%87,+Qu%E1%BA%ADn+1,+TP.HCM&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                  className="w-full h-full border-0"
+                  loading="lazy"
+                  allowFullScreen
+                />
+              </div>
+            </div>
           </div>
           <div className="lg:w-1/2 bg-white p-8 md:p-12 border shadow-lg" style={{ borderColor: C.border }}>
             {contactSubmitted ? (

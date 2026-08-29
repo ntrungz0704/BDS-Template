@@ -1342,12 +1342,12 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Info cards */}
           <div className="space-y-6">
-            <h2 className="text-2xl font-black mb-6" style={{ color: t.heading }}>Hệ Thống Văn Phòng</h2>
+            <h2 className="text-2xl font-black mb-6" style={{ color: t.heading }}>Hệ Thống Văn Phòng & Bản Đồ</h2>
             {[
               { icon: Phone, label: 'Hotline Chăm sóc khách hàng', val: '1800 1234 (Miễn phí 24/7)' },
               { icon: Mail, label: 'Email Hỗ trợ pháp lý & thông tin', val: 'hello@ecoliving.vn' },
-              { icon: MapPin, label: 'Văn phòng giao dịch Hà Nội', val: 'Tầng 12, Vinhomes Center, 208 Giảng Võ, Ba Đình' },
-              { icon: MapPin, label: 'Văn phòng giao dịch TP. Hồ Chí Minh', val: 'Tầng 8, Saigon Center, 65 Lê Lợi, Quận 1' },
+              { icon: MapPin, label: 'Văn phòng giao dịch Hà Nội', val: '208 Giảng Võ, Ba Đình, Hà Nội' },
+              { icon: MapPin, label: 'Văn phòng giao dịch TP. Hồ Chí Minh', val: '65 Lê Lợi, Quận 1, TP.HCM' },
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4 p-5 rounded-2xl bg-white shadow-sm border border-slate-50">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${t.primary}15` }}>
@@ -1359,6 +1359,30 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
                 </div>
               </div>
             ))}
+
+            {/* Interactive Google Map */}
+            <div className="rounded-3xl overflow-hidden border border-emerald-100 shadow-md flex flex-col h-64 bg-white">
+              <div className="px-4 py-2.5 bg-emerald-950 text-white flex items-center justify-between text-xs">
+                <span className="font-bold flex items-center gap-1.5 truncate"><MapPin className="w-3.5 h-3.5 text-emerald-400" /> Trụ sở Eco Living — 208 Giảng Võ, Ba Đình, Hà Nội</span>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=208+Gi%E1%BA%A3ng+V%C3%B5,+Ba+%C4%90%C3%ACnh,+H%C3%A0+N%E1%BB%99i"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shrink-0"
+                >
+                  Mở Google Maps
+                </a>
+              </div>
+              <div className="flex-1 w-full h-full">
+                <iframe
+                  title="Bản đồ Eco Living Giảng Võ"
+                  src="https://maps.google.com/maps?q=208+Gi%E1%BA%A3ng+V%C3%B5,+Ba+%C4%90%C3%ACnh,+H%C3%A0+N%E1%BB%99i&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  className="w-full h-full border-0"
+                  loading="lazy"
+                  allowFullScreen
+                />
+              </div>
+            </div>
           </div>
 
           {/* Form and success box */}

@@ -76,7 +76,7 @@ export default function CMSGuidePage() {
                 href="/templates"
                 className="w-full py-2 px-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-md transition-colors flex items-center justify-center gap-1.5 shadow-sm"
               >
-                <span>Khám phá 16 Mẫu Website</span>
+                <span>Khám phá Kho Mẫu Website</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>

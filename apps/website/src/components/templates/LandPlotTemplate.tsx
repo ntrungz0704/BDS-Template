@@ -10,13 +10,9 @@ import {
 import { MAX_W } from '../design-system';
 
 interface TemplateProps {
-  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, any> };
+  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
-  company?: any;
-  theme?: any;
-  projects?: any[];
-  posts?: any[];
 }
 
 // 6+ realistic land plot items elevated to component file scope
@@ -225,67 +221,21 @@ const GALLERY_PHOTOS = [
   { id: 8, type: 'amenity', title: 'Công viên cây xanh trung tâm dự án', url: 'https://images.unsplash.com/photo-1502485019198-a625bd53ceb7?w=800&q=80' }
 ];
 
-export default function LandPlotTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
-  // Dynamic Posts Override & Shadowing Variable via globalThis reference
-  const activePosts = posts && posts.length > 0
-    ? posts.map((p, index) => ({
-        id: p.id || String(index),
-        title: p.title,
-        category: p.category?.name || 'Bất Động Sản',
-        cat: p.category?.name || 'Bất Động Sản',
-        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : '12/07/2026',
-        author: p.author?.fullName || 'Chuyên viên BĐS',
-        excerpt: p.summary || p.description || 'Tóm tắt bài viết...',
-        summary: p.summary || p.description || 'Tóm tắt bài viết...',
-        description: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        content: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        readTime: '5 phút đọc'
-      }))
-    : ((globalThis as any).__news_articles_ref || []);
+const normalizeLandPlotPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham', 'dat-nen'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
 
-  // Shadowing variables
-  const NEWS_ARTICLES: any = activePosts;
-
-  // Dynamic Projects Override & Shadowing Variable via globalThis reference
-  const activeProjects = projects && projects.length > 0
-    ? projects.map((p, index) => ({
-        id: p.id || String(index),
-        name: p.title,
-        title: p.title,
-        location: p.address || 'Hệ thống',
-        price: p.price,
-        priceLabel: p.price,
-        area: p.area || '—',
-        type: p.type || 'Dự Án',
-        status: p.status || 'SELLING',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        tag: index === 0 ? 'EXCLUSIVE' : 'HOT',
-        desc: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        description: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        shortDescription: p.shortDescription || '',
-        specs: p.shortDescription || `${p.area} · ${p.type}`,
-        priceVal: parseFloat(p.price) || 0,
-        loc: p.address || 'Hệ thống',
-        size: parseFloat(p.area) || 0,
-        bedrooms: 3,
-        bathrooms: 2,
-        features: [p.type],
-        style: 'Modern',
-        delivery: '2026',
-        scale: '1 block'
-      }))
-    : ((globalThis as any).__land_properties_ref || []);
-
-  // Shadowing variables
-  const LAND_PROPERTIES: any = activeProjects;
-
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+export default function LandPlotTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
+  const [currentPage, setCurrentPageState] = useState(normalizeLandPlotPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizeLandPlotPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedProject === "function") setSelectedProject(null);
@@ -294,7 +244,7 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
     setCurrentPageState(p);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
+      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
     }
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -324,16 +274,13 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
   
   // Theme configuration
   const theme = {
-    bg: dynamicTheme?.backgroundColor || '#FAFAF7',
-    primary: dynamicTheme?.primaryColor || '#2D6A4F',
-    accent: dynamicTheme?.accentColor || '#D4A373',
-    text: dynamicTheme?.textColor || '#1F2937',
-    textLight: dynamicTheme?.textMutedColor || '#4B5563',
-    textMuted: dynamicTheme?.textMutedColor || '#4B5563',
-    surface: dynamicTheme?.surfaceColor || '#FFFFFF',
-    border: dynamicTheme?.borderColor || '#E5E7EB',
-    headingFont: dynamicTheme?.fontHeading ? (dynamicTheme.fontHeading.includes(',') ? dynamicTheme.fontHeading : `'${dynamicTheme.fontHeading}', sans-serif`) : "'Raleway', sans-serif",
-    bodyFont: dynamicTheme?.fontBody ? (dynamicTheme.fontBody.includes(',') ? dynamicTheme.fontBody : `'${dynamicTheme.fontBody}', sans-serif`) : "'Nunito Sans', sans-serif",
+    bg: '#FAFAF7',
+    primary: '#2D6A4F',
+    accent: '#D4A373',
+    text: '#1F2937',
+    textLight: '#4B5563',
+    headingFont: "'Raleway', sans-serif",
+    bodyFont: "'Nunito Sans', sans-serif",
   };
 
   // Nav Links
@@ -392,18 +339,11 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
   const renderHeader = () => (
     <header style={{ backgroundColor: theme.bg, borderBottom: '1px solid #E5E7EB', position: 'sticky', top: 0, zIndex: 50, fontFamily: theme.bodyFont }}>
       <div className={`${MAX_W} mx-auto px-4 py-4 flex justify-between items-center`}>
-        <div className="flex items-center gap-2 cursor-pointer text-left" onClick={() => handleNavClick('home')}>
-          <TreePine size={32} style={{ color: theme.primary }} className="shrink-0" />
-          <div>
-            <span style={{ fontFamily: theme.headingFont, fontWeight: 800, fontSize: '1.4rem', color: theme.primary, letterSpacing: '-0.5px' }} className="uppercase block leading-none">
-              {company?.name || template?.name || 'Đất Nền Gia Phát'}
-            </span>
-            {company?.slogan && (
-              <span style={{ color: theme.accent, fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em' }} className="uppercase block mt-1">
-                {company.slogan}
-              </span>
-            )}
-          </div>
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => handleNavClick('home')}>
+          <TreePine size={32} style={{ color: theme.primary }} />
+          <span style={{ fontFamily: theme.headingFont, fontWeight: 800, fontSize: '1.5rem', color: theme.primary, letterSpacing: '-0.5px' }}>
+            ĐấtNền<span style={{ color: theme.accent }}>GiaPhát</span>
+          </span>
         </div>
         
         {!isMobile && !isTablet && (
@@ -430,13 +370,13 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
         )}
 
         {!isMobile && !isTablet && (
-          <a 
-            href={`tel:${company?.phone || '0983312219'}`}
+          <button 
+            onClick={() => handleNavClick('contact')}
             style={{ backgroundColor: theme.primary, color: 'white', padding: '0.6rem 1.5rem', borderRadius: '4px', fontWeight: 600, transition: 'background 0.3s' }} 
             className="hover:bg-green-800"
           >
-            {company?.phone || 'Tư vấn đầu tư'}
-          </a>
+            Tư vấn đầu tư
+          </button>
         )}
 
         {(isMobile || isTablet) && (
@@ -479,12 +419,12 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
           <div>
             <div className="flex items-center gap-2 mb-6">
               <TreePine size={32} style={{ color: theme.accent }} />
-              <span style={{ fontFamily: theme.headingFont, fontWeight: 800, fontSize: '1.5rem', color: 'white' }} className="uppercase">
-                {company?.name || 'Đất Nền Gia Phát'}
+              <span style={{ fontFamily: theme.headingFont, fontWeight: 800, fontSize: '1.5rem', color: 'white' }}>
+                ĐấtNền<span style={{ color: theme.accent }}>GiaPhát</span>
               </span>
             </div>
             <p style={{ color: '#9CA3AF', marginBottom: '1.5rem', lineHeight: 1.6 }}>
-              {company?.slogan || company?.description || 'Đơn vị tiên phong cung cấp giải pháp đầu tư đất nền vùng ven, mang lại giá trị sinh lời bền vững và an toàn pháp lý cho mọi khách hàng.'}
+              Đơn vị tiên phong cung cấp giải pháp đầu tư đất nền vùng ven, mang lại giá trị sinh lời bền vững và an toàn pháp lý cho mọi khách hàng.
             </p>
             <div className="flex gap-4">
               <div style={{ width: 40, height: 40, borderRadius: '50%', backgroundColor: '#374151', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -539,11 +479,11 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={20} style={{ color: theme.accent, flexShrink: 0 }} />
-                <span style={{ color: '#9CA3AF' }}>{company?.phone || company?.hotline || company?.phone || company?.hotline || '0909 123 456'}</span>
+                <span style={{ color: '#9CA3AF' }}>0909 123 456</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={20} style={{ color: theme.accent, flexShrink: 0 }} />
-                <span style={{ color: '#9CA3AF' }}>{company?.email || company?.email || 'info@datnengiaphat.com.vn'}</span>
+                <span style={{ color: '#9CA3AF' }}>info@datnengiaphat.com.vn</span>
               </li>
             </ul>
           </div>
@@ -829,7 +769,7 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
           </p>
           <div style={{ borderTop: `1px solid ${theme.accent}`, borderBottom: `1px solid ${theme.accent}`, padding: '2rem 0', display: 'inline-block', marginBottom: '2rem' }}>
             <h4 style={{ fontFamily: theme.headingFont, fontSize: '1.25rem', fontWeight: 700, color: theme.text, fontStyle: 'italic' }}>
-              &ldquo;Giá trị thực - Sinh lời thực - Pháp lý chuẩn&rdquo;
+              "Giá trị thực - Sinh lời thực - Pháp lý chuẩn"
             </h4>
           </div>
           <div>
@@ -992,7 +932,7 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
               <div className="flex text-yellow-400 mb-4">
                 {[1,2,3,4,5].map(i => <Star key={i} size={20} fill="currentColor" />)}
               </div>
-              <p style={{ color: theme.textLight, fontStyle: 'italic', marginBottom: '1.5rem', lineHeight: 1.7 }}>&ldquo;{item.text}&rdquo;</p>
+              <p style={{ color: theme.textLight, fontStyle: 'italic', marginBottom: '1.5rem', lineHeight: 1.7 }}>"{item.text}"</p>
               <div style={{ fontWeight: 700, color: theme.text }}>{item.name}</div>
               <div style={{ fontSize: '0.875rem', color: theme.textLight }}>{item.role}</div>
             </div>
@@ -1537,7 +1477,7 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
               )}
               {activeAboutTab === 'philosophy' && (
                 <div>
-                  <h3 style={{ fontFamily: theme.headingFont, fontSize: '1.75rem', fontWeight: 800, color: theme.primary, marginBottom: '1rem' }}>Triết Lý Kinh Doanh &ldquo;Ba Chân Kiềng&rdquo;</h3>
+                  <h3 style={{ fontFamily: theme.headingFont, fontSize: '1.75rem', fontWeight: 800, color: theme.primary, marginBottom: '1rem' }}>Triết Lý Kinh Doanh "Ba Chân Kiềng"</h3>
                   <p style={{ color: theme.textLight, lineHeight: 1.8, fontSize: '1.05rem', marginBottom: '1rem' }}>
                     Triết lý của chúng tôi xoay quanh ba giá trị cốt lõi làm nền tảng vững chắc cho mọi hoạt động kinh doanh:
                   </p>
@@ -1755,7 +1695,7 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
               {searchNewsQuery && (
                 <div style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '4px', border: '1px solid #E5E7EB', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ color: theme.textLight }}>
-                    Kết quả tìm kiếm cho: <strong>&ldquo;{searchNewsQuery}&rdquo;</strong> ({filtered.length} bài viết)
+                    Kết quả tìm kiếm cho: <strong>"{searchNewsQuery}"</strong> ({filtered.length} bài viết)
                   </span>
                   <button 
                     onClick={() => setSearchNewsQuery('')}
@@ -1949,6 +1889,30 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
                     </div>
                   </li>
                 </ul>
+
+                {/* Interactive Google Map */}
+                <div className="mt-8 rounded-2xl overflow-hidden border border-slate-200 shadow-md flex flex-col h-56">
+                  <div className="px-3.5 py-2 bg-slate-900 text-white flex items-center justify-between text-xs">
+                    <span className="font-bold flex items-center gap-1.5 truncate"><MapPin size={14} className="text-amber-400" /> KĐT Nam Sài Gòn, Quận 7, TP.HCM</span>
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Nam+S%C3%A0i+G%C3%B2n,+Qu%E1%BA%ADn+7,+TP.HCM"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-2 py-1 rounded bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-bold shrink-0"
+                    >
+                      Mở Google Maps
+                    </a>
+                  </div>
+                  <div className="flex-1 w-full h-full">
+                    <iframe
+                      title="Bản đồ KĐT Nam Sài Gòn"
+                      src="https://maps.google.com/maps?q=Qu%E1%BA%ADn+7,+TP.HCM&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                      className="w-full h-full border-0"
+                      loading="lazy"
+                      allowFullScreen
+                    />
+                  </div>
+                </div>
               </div>
 
               <div style={{ borderTop: '1px solid #E5E7EB', paddingTop: '1.5rem', marginTop: '2rem' }}>
@@ -2093,17 +2057,47 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
           </>
         );
       case 'projects':
+      case 'du-an':
+      case 'san-pham':
+      case 'dat-nen':
         return renderProjectsPage();
       case 'about':
+      case 'gioi-thieu':
+      case 've-chung-toi':
         return renderAboutPage();
       case 'gallery':
+      case 'thu-vien':
+      case 'hinh-anh':
         return renderGalleryPage();
       case 'news':
+      case 'tin-tuc':
+      case 'bai-viet':
         return renderNewsPage();
       case 'contact':
+      case 'lien-he':
+      case 'tu-van':
         return renderContactPage();
       default:
-        return null;
+        return (
+          <>
+            {renderHero()}
+            {renderQuickSearch()}
+            {renderFeaturedPlots()}
+            {renderCategories()}
+            {renderMasterPlan()}
+            {renderAbout()}
+            {renderWhyLand()}
+            {renderLocation()}
+            {renderStats()}
+            {renderGallery()}
+            {renderTestimonials()}
+            {renderProgress()}
+            {renderNews()}
+            {renderLegal()}
+            {renderFAQ()}
+            {renderContact()}
+          </>
+        );
     }
   };
 

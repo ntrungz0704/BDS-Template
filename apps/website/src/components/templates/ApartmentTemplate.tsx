@@ -10,13 +10,9 @@ import { MAX_W } from '../design-system';
 import { FacebookIcon, InstagramIcon, YoutubeIcon, ZaloIcon } from '../icons/SocialIcons';
 
 interface TemplateProps {
-  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, any> };
+  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
-  company?: any;
-  theme?: any;
-  projects?: any[];
-  posts?: any[];
 }
 
 // Elevated realistic listings - Expanded to 8 items with complete mock data
@@ -392,69 +388,21 @@ const LIST_TIMELINE = [
   }
 ];
 
-export default function ApartmentTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme: dynamicTheme, projects, posts }: TemplateProps) {
-  const brandPrimary = dynamicTheme?.primaryColor || '#7C3AED';
-  const brandAccent = dynamicTheme?.accentColor || '#A78BFA';
-  // Dynamic Posts Override & Shadowing Variable via globalThis reference
-  const activePosts = posts && posts.length > 0
-    ? posts.map((p, index) => ({
-        id: p.id || String(index),
-        title: p.title,
-        category: p.category?.name || 'Bất Động Sản',
-        cat: p.category?.name || 'Bất Động Sản',
-        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : '12/07/2026',
-        author: p.author?.fullName || 'Chuyên viên BĐS',
-        excerpt: p.summary || p.description || 'Tóm tắt bài viết...',
-        summary: p.summary || p.description || 'Tóm tắt bài viết...',
-        description: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        content: p.content || p.description || 'Nội dung chi tiết bài viết...',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
-        readTime: '5 phút đọc'
-      }))
-    : ((globalThis as any).__list_news_ref || []);
+const normalizeApartmentPage = (p: string) => {
+  const clean = (p || '').toLowerCase().trim();
+  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
+  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
+  if (['du-an', 'projects', 'san-pham', 'can-ho'].includes(clean)) return 'projects';
+  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
+  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
+  return clean || 'home';
+};
 
-  // Shadowing variables
-  const LIST_NEWS: any = activePosts;
-
-  // Dynamic Projects Override & Shadowing Variable via globalThis reference
-  const activeProjects = projects && projects.length > 0
-    ? projects.map((p, index) => ({
-        id: p.id || String(index),
-        name: p.title,
-        title: p.title,
-        location: p.address || 'Hệ thống',
-        price: p.price,
-        priceLabel: p.price,
-        area: p.area || '—',
-        type: p.type || 'Dự Án',
-        status: p.status || 'SELLING',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-        tag: index === 0 ? 'EXCLUSIVE' : 'HOT',
-        desc: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        description: p.description || p.shortDescription || 'Mô tả dự án đang cập nhật...',
-        shortDescription: p.shortDescription || '',
-        specs: p.shortDescription || `${p.area} · ${p.type}`,
-        priceVal: parseFloat(p.price) || 0,
-        loc: p.address || 'Hệ thống',
-        size: parseFloat(p.area) || 0,
-        bedrooms: 3,
-        bathrooms: 2,
-        features: [p.type],
-        style: 'Modern',
-        delivery: '2026',
-        scale: '1 block'
-      }))
-    : ((globalThis as any).__apartment_units_ref || []);
-
-  // Shadowing variables
-  const APARTMENT_UNITS: any = activeProjects;
-
-  const [currentPage, setCurrentPageState] = useState(initialPage);
+export default function ApartmentTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
+  const [currentPage, setCurrentPageState] = useState(normalizeApartmentPage(initialPage));
 
   useEffect(() => {
-    setCurrentPageState(initialPage);
+    setCurrentPageState(normalizeApartmentPage(initialPage));
   }, [initialPage]);
   const setCurrentPage = (p: string) => {
     if (typeof setSelectedArticle === "function") setSelectedArticle(null);
@@ -463,7 +411,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
     if (typeof setSelectedArticle === "function") setSelectedArticle(null);
     if (typeof window !== 'undefined') {
       const templateSlug = template?.slug || '';
-      window.history.pushState(null, '', p === 'home' ? window.location.pathname : '?page=' + p);
+      window.history.pushState(null, '', `/demo/${templateSlug}/${p}`);
     }
   };
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -518,15 +466,15 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
   };
 
   const renderHeader = () => (
-    <header className="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-slate-100 shadow-xs" style={fontBody}>
+    <header className="bg-white sticky top-0 z-50 shadow-sm" style={fontBody}>
       <div className={`${MAX_W} px-4 py-3.5 flex justify-between items-center`}>
         <div className="flex items-center gap-2.5 font-bold cursor-pointer text-left" onClick={() => navigateTo('home')}>
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
             <Building2 size={22} />
           </div>
           <div>
-            <span className="text-base sm:text-lg font-black uppercase block leading-tight text-slate-900 tracking-tight">{company?.name || template?.name || 'SmartUrban'}</span>
-            <span className="text-[10px] uppercase font-bold tracking-wider block text-violet-600">{company?.slogan || '★ IOT SMART HOME 4.0 METROPOLIS ★'}</span>
+            <span className="text-base sm:text-lg font-black uppercase block leading-tight text-slate-900 tracking-tight">SmartUrban</span>
+            <span className="text-[10px] uppercase font-bold tracking-wider block text-violet-600">★ IOT SMART HOME 4.0 METROPOLIS ★</span>
           </div>
         </div>
         {!isSmall ? (
@@ -670,8 +618,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           </div>
           <button 
             onClick={() => navigateTo('projects')}
-            className="w-full lg:w-auto text-white px-8 py-4 rounded-xl font-bold hover:opacity-90 transition flex items-center justify-center gap-2 mt-2 lg:mt-0 shadow-lg shrink-0"
-            style={{ backgroundColor: brandPrimary }}
+            className="w-full lg:w-auto bg-violet-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-violet-700 transition flex items-center justify-center gap-2 mt-2 lg:mt-0 shadow-lg shadow-violet-200 shrink-0"
           >
             <Search size={20} /> Tìm Kiếm
           </button>
@@ -686,7 +633,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
       <section className="py-20 bg-white" style={fontBody}>
         <div className={`${MAX_W} px-4`}>
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-extrabold text-violet-950 mb-4" style={fontHeading}>Căn Hộ <span style={{ color: brandPrimary }}>Nổi Bật</span></h2>
+            <h2 className="text-4xl font-extrabold text-violet-950 mb-4" style={fontHeading}>Căn Hộ <span className="text-violet-600">Nổi Bật</span></h2>
             <p className="text-slate-600 max-w-2xl mx-auto">Tuyển tập những căn hộ có vị trí đẹp nhất, thiết kế tối ưu và tầm nhìn ngoạn mục dành riêng cho bạn.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -698,18 +645,21 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               >
                 <div className="relative h-64 overflow-hidden">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.img} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
-                  <div className="absolute top-4 right-4 bg-white px-4 py-1.5 rounded-full font-bold text-sm shadow-md border border-violet-100" style={{ color: brandPrimary }}>
+                  <div className="absolute top-4 right-4 bg-white px-4 py-1.5 rounded-full text-violet-600 font-bold text-sm shadow-md border border-violet-100">
                     {item.price}
                   </div>
                 </div>
                 <div className="p-8">
                   <h3 className="text-xl font-bold text-violet-950 mb-4" style={fontHeading}>{item.name}</h3>
                   <div className="flex justify-between text-slate-500 text-sm mb-6 pb-6 border-b border-violet-50 font-medium">
-                    <span className="flex items-center gap-1"><Bed size={18} style={{ color: brandAccent }}/> {item.beds} PN</span>
-                    <span className="flex items-center gap-1"><Bath size={18} style={{ color: brandAccent }}/> {item.baths} WC</span>
-                    <span className="flex items-center gap-1"><Maximize size={18} style={{ color: brandAccent }}/> {item.area}</span>
+                    <span className="flex items-center gap-1"><Bed size={18} className="text-violet-400"/> {item.beds} PN</span>
+                    <span className="flex items-center gap-1"><Bath size={18} className="text-violet-400"/> {item.baths} WC</span>
+                    <span className="flex items-center gap-1"><Maximize size={18} className="text-violet-400"/> {item.area}</span>
                   </div>
-                  <button className="w-full font-bold flex items-center justify-center gap-2 group-hover:text-amber-500 transition" style={{ color: brandPrimary }}>
+                  <button 
+                    onClick={() => { setSelectedApartment(item); }}
+                    className="w-full text-violet-600 font-bold flex items-center justify-center gap-2 group-hover:text-amber-500 transition cursor-pointer"
+                  >
                     Xem chi tiết <ArrowRight size={18} />
                   </button>
                 </div>
@@ -732,11 +682,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 setFilterType(cat);
                 navigateTo('projects');
               }}
-              className={`bg-white border-2 px-6 py-3 rounded-full font-bold transition shadow-sm hover:shadow-md ${filterType === cat ? '' : 'border-violet-100 text-violet-950 hover:border-violet-600'}`}
-              style={{
-                borderColor: filterType === cat ? brandPrimary : undefined,
-                color: filterType === cat ? brandPrimary : undefined
-              }}
+              className={`bg-white border-2 px-6 py-3 rounded-full font-bold transition shadow-sm hover:shadow-md ${filterType === cat ? 'border-violet-600 text-violet-600' : 'border-violet-100 text-violet-950 hover:border-violet-600 hover:text-violet-600'}`}
             >
               {cat}
             </button>
@@ -754,7 +700,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80" alt="About 2" className="w-full h-48 lg:h-64 object-cover rounded-3xl mt-8 rounded-bl-none shadow-lg" />
         </div>
         <div className="flex-1 space-y-6 w-full">
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-violet-950 leading-tight" style={fontHeading}>Kiến Tạo Chuẩn Mực <br/><span style={{ color: brandPrimary }}>Sống Mới</span></h2>
+          <h2 className="text-4xl lg:text-5xl font-extrabold text-violet-950 leading-tight" style={fontHeading}>Kiến Tạo Chuẩn Mực <br/><span className="text-violet-600">Sống Mới</span></h2>
           <p className="text-slate-600 text-lg leading-relaxed">
             SmartUrban được phát triển bởi tập đoàn bất động sản hàng đầu, mang trong mình sứ mệnh kiến tạo nên một cộng đồng cư dân tinh hoa. Với thiết kế xanh, công nghệ thông minh và hệ sinh thái tiện ích hoàn hảo.
           </p>
@@ -765,7 +711,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               </li>
             ))}
           </ul>
-          <button onClick={() => navigateTo('about')} className="mt-8 bg-violet-50 font-bold px-8 py-4 rounded-full flex items-center gap-2 hover:bg-violet-100 transition" style={{ color: brandPrimary }}>
+          <button onClick={() => navigateTo('about')} className="mt-8 bg-violet-50 text-violet-600 font-bold px-8 py-4 rounded-full flex items-center gap-2 hover:bg-violet-100 transition">
             Tìm Hiểu Thêm <ArrowRight size={20} />
           </button>
         </div>
@@ -798,7 +744,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
     <section className="py-24 bg-violet-50" style={fontBody}>
       <div className={`${MAX_W} px-4`}>
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-extrabold text-violet-950 mb-4" style={fontHeading}>Tiện Ích <span style={{ color: brandPrimary }}>Đặc Quyền</span></h2>
+          <h2 className="text-4xl font-extrabold text-violet-950 mb-4" style={fontHeading}>Tiện Ích <span className="text-violet-600">Đặc Quyền</span></h2>
           <p className="text-slate-600 max-w-2xl mx-auto text-lg">Hệ sinh thái tiện ích chuẩn resort 5 sao mang đến cuộc sống nghỉ dưỡng mỗi ngày ngay tại nhà.</p>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -811,7 +757,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             { icon: <Users size={32}/>, name: 'Khu Vui Chơi Trẻ Em' },
           ].map((a, i) => (
             <div key={i} className="bg-white p-8 rounded-3xl shadow-sm border border-violet-100 text-center flex flex-col items-center gap-4 hover:shadow-xl hover:-translate-y-1 transition duration-300 group">
-              <div className="bg-violet-50 p-5 rounded-full group-hover:text-white transition duration-300" style={{ color: brandPrimary }}>
+              <div className="bg-violet-50 p-5 rounded-full text-violet-600 group-hover:bg-violet-600 group-hover:text-white transition duration-300">
                 {a.icon}
               </div>
               <h4 className="font-bold text-lg text-violet-950">{a.name}</h4>
@@ -832,7 +778,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
       <section className="py-24 bg-white" style={fontBody}>
         <div className={`${MAX_W} px-4`}>
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-extrabold text-violet-950 mb-4" style={fontHeading}>Mặt Bằng <span style={{ color: brandPrimary }}>Điển Hình</span></h2>
+            <h2 className="text-4xl font-extrabold text-violet-950 mb-4" style={fontHeading}>Mặt Bằng <span className="text-violet-600">Điển Hình</span></h2>
             <p className="text-slate-600 text-lg max-w-2xl mx-auto">Thiết kế tối ưu công năng, đón nắng gió tự nhiên kiến tạo không gian sống hoàn mỹ.</p>
           </div>
           <div className="flex flex-col lg:flex-row gap-12 items-center">
@@ -841,13 +787,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 <button 
                   key={i} 
                   onClick={() => setActiveFloorPlan(i)}
-                  className="w-full text-left p-6 rounded-2xl font-bold transition text-lg border hover:border-violet-300"
-                  style={{
-                    backgroundColor: activeFloorPlan === i ? brandPrimary : '#ffffff',
-                    color: activeFloorPlan === i ? '#ffffff' : undefined,
-                    borderColor: activeFloorPlan === i ? brandPrimary : undefined,
-                    boxShadow: activeFloorPlan === i ? '0 20px 25px -5px rgba(0, 0, 0, 0.1)' : undefined
-                  }}
+                  className={`w-full text-left p-6 rounded-2xl font-bold transition text-lg border ${activeFloorPlan === i ? 'bg-violet-600 text-white border-violet-600 shadow-xl' : 'bg-white text-violet-950 border-violet-100 hover:border-violet-300 hover:bg-violet-50'}`}
                 >
                   {p.name}
                   {activeFloorPlan === i && <span className="block text-sm font-normal opacity-90 mt-2 flex items-center gap-4">
@@ -867,8 +807,8 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
   };
 
   const renderStats = () => (
-    <section className="py-20 text-white relative overflow-hidden" style={{ ...fontBody, backgroundColor: brandPrimary }}>
-      <div className="absolute inset-0 bg-black/20"></div>
+    <section className="py-20 bg-violet-600 text-white relative overflow-hidden" style={fontBody}>
+      <div className="absolute inset-0 bg-violet-950/20"></div>
       <div className={`${MAX_W} px-4 relative z-10`}>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
@@ -895,10 +835,10 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
         <div className={`${MAX_W} px-4`}>
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
             <div>
-              <h2 className="text-4xl font-extrabold text-violet-950 mb-4" style={fontHeading}>Thư Viện <span style={{ color: brandPrimary }}>Hình Ảnh</span></h2>
+              <h2 className="text-4xl font-extrabold text-violet-950 mb-4" style={fontHeading}>Thư Viện <span className="text-violet-600">Hình Ảnh</span></h2>
               <p className="text-slate-600 text-lg">Khám phá vẻ đẹp kiến trúc và không gian sống đỉnh cao.</p>
             </div>
-            <button onClick={() => navigateTo('gallery')} className="font-bold flex items-center gap-2 hover:opacity-80 transition" style={{ color: brandPrimary }}>
+            <button onClick={() => navigateTo('gallery')} className="text-violet-600 font-bold flex items-center gap-2 hover:text-violet-800 transition">
               Xem tất cả <ArrowRight size={20} />
             </button>
           </div>
@@ -925,15 +865,15 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
     <section className="py-24 bg-violet-50" style={fontBody}>
       <div className={`${MAX_W} px-4`}>
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-extrabold text-violet-950 mb-4" style={fontHeading}>Tiến Độ <span style={{ color: brandPrimary }}>Dự Án</span></h2>
+          <h2 className="text-4xl font-extrabold text-violet-950 mb-4" style={fontHeading}>Tiến Độ <span className="text-violet-600">Dự Án</span></h2>
           <p className="text-slate-600 text-lg">Cập nhật liên tục tiến độ thi công, đảm bảo cam kết bàn giao đúng hạn.</p>
         </div>
         <div className="max-w-3xl mx-auto space-y-8">
           {LIST_TIMELINE.slice(0, 4).map((t, i) => (
             <div key={t.id} className="flex gap-6 items-start relative group">
-              {i !== 3 && <div className="absolute left-[1.35rem] top-12 bottom-[-2rem] w-1" style={{ backgroundColor: t.done ? brandPrimary : '#ddd6fe' }}></div>}
-              <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 z-10 shadow-md" style={{ backgroundColor: t.done ? brandPrimary : '#ffffff', color: t.done ? '#ffffff' : brandAccent, border: t.done ? undefined : `4px solid #ddd6fe` }}>
-                {t.done ? <Check size={20} /> : <div className="w-3 h-3 rounded-full" style={{ backgroundColor: brandAccent }}></div>}
+              {i !== 3 && <div className={`absolute left-[1.35rem] top-12 bottom-[-2rem] w-1 ${t.done ? 'bg-violet-600' : 'bg-violet-200'}`}></div>}
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 z-10 shadow-md ${t.done ? 'bg-violet-600 text-white' : 'bg-white border-4 border-violet-200 text-violet-300'}`}>
+                {t.done ? <Check size={20} /> : <div className="w-3 h-3 rounded-full bg-violet-200"></div>}
               </div>
               <div className="bg-white p-8 rounded-3xl shadow-sm border border-violet-100 flex-1 hover:shadow-xl transition group-hover:-translate-y-1">
                 <span className="text-amber-500 font-extrabold text-sm mb-3 block uppercase tracking-wider">{t.date}</span>
@@ -951,7 +891,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
     <section className="py-24 bg-white" style={fontBody}>
       <div className={`${MAX_W} px-4`}>
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-extrabold text-violet-950 mb-4" style={fontHeading}>Khách Hàng <span style={{ color: brandPrimary }}>Nói Gì</span></h2>
+          <h2 className="text-4xl font-extrabold text-violet-950 mb-4" style={fontHeading}>Khách Hàng <span className="text-violet-600">Nói Gì</span></h2>
           <p className="text-slate-600 text-lg max-w-2xl mx-auto">Lắng nghe chia sẻ từ những cư dân tương lai đã tin tưởng lựa chọn SmartUrban.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12">
@@ -966,9 +906,9 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               </div>
               <Quote className="text-amber-500 w-12 h-12 absolute right-8 top-8 opacity-20" />
               <div className="mt-6">
-                <p className="text-slate-700 italic mb-8 text-lg leading-relaxed font-medium">&ldquo;{t.text}&rdquo;</p>
+                <p className="text-slate-700 italic mb-8 text-lg leading-relaxed font-medium">"{t.text}"</p>
                 <h4 className="font-bold text-violet-950 text-lg">{t.name}</h4>
-                <p className="text-sm font-semibold" style={{ color: brandPrimary }}>{t.role}</p>
+                <p className="text-sm font-semibold text-violet-600">{t.role}</p>
               </div>
             </div>
           ))}
@@ -982,10 +922,10 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
       <div className={`${MAX_W} px-4`}>
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
           <div>
-            <h2 className="text-4xl font-extrabold text-violet-950 mb-4" style={fontHeading}>Tin Tức & <span style={{ color: brandPrimary }}>Sự Kiện</span></h2>
+            <h2 className="text-4xl font-extrabold text-violet-950 mb-4" style={fontHeading}>Tin Tức & <span className="text-violet-600">Sự Kiện</span></h2>
             <p className="text-slate-600 text-lg">Cập nhật thông tin mới nhất về dự án và thị trường bất động sản.</p>
           </div>
-          <button onClick={() => navigateTo('news')} className="font-bold flex items-center gap-2 hover:opacity-80 transition" style={{ color: brandPrimary }}>
+          <button onClick={() => navigateTo('news')} className="text-violet-600 font-bold flex items-center gap-2 hover:text-violet-800 transition">
             Xem tất cả <ArrowRight size={20} />
           </button>
         </div>
@@ -1003,8 +943,8 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 <div className="flex items-center gap-2 text-sm text-amber-500 mb-4 font-bold uppercase tracking-wider">
                   <Calendar size={16} /> {n.date}
                 </div>
-                <h4 className="text-xl font-bold text-violet-950 mb-4 line-clamp-2 hover:opacity-80 transition leading-snug" style={fontHeading}>{n.title}</h4>
-                <div className="text-slate-500 flex items-center gap-2 font-bold" style={{ color: brandPrimary }}>
+                <h4 className="text-xl font-bold text-violet-950 mb-4 line-clamp-2 group-hover:text-violet-600 transition leading-snug" style={fontHeading}>{n.title}</h4>
+                <div className="text-slate-500 flex items-center gap-2 group-hover:text-violet-600 font-bold">
                   Đọc tiếp <ChevronRight size={18} />
                 </div>
               </div>
@@ -1026,9 +966,9 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
       <section className="py-24 bg-white" style={fontBody}>
         <div className={`${MAX_W} px-4 flex flex-col lg:flex-row gap-16`}>
           <div className="lg:w-1/3">
-            <h2 className="text-4xl font-extrabold text-violet-950 mb-6 leading-tight" style={fontHeading}>Câu Hỏi <br/><span style={{ color: brandPrimary }}>Thường Gặp</span></h2>
+            <h2 className="text-4xl font-extrabold text-violet-950 mb-6 leading-tight" style={fontHeading}>Câu Hỏi <br/><span className="text-violet-600">Thường Gặp</span></h2>
             <p className="text-slate-600 mb-8 text-lg">Giải đáp nhanh những thắc mắc phổ biến của khách hàng về dự án SmartUrban.</p>
-            <button onClick={() => navigateTo('contact')} className="bg-violet-50 font-bold px-8 py-4 rounded-full flex items-center gap-2 hover:bg-violet-100 transition shadow-sm border border-violet-100" style={{ color: brandPrimary }}>
+            <button onClick={() => navigateTo('contact')} className="bg-violet-50 text-violet-600 font-bold px-8 py-4 rounded-full flex items-center gap-2 hover:bg-violet-100 transition shadow-sm border border-violet-100">
               Đặt câu hỏi khác <ArrowRight size={20} />
             </button>
           </div>
@@ -1041,7 +981,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                   style={fontHeading}
                 >
                   {f.q}
-                  {activeFaq === i ? <Minus style={{ color: brandPrimary }} className="shrink-0" size={24} /> : <Plus style={{ color: brandPrimary }} className="shrink-0" size={24} />}
+                  {activeFaq === i ? <Minus className="text-violet-600 shrink-0" size={24} /> : <Plus className="text-violet-600 shrink-0" size={24} />}
                 </button>
                 {activeFaq === i && (
                   <div className="p-8 pt-0 text-slate-600 text-lg leading-relaxed border-t border-violet-50 mt-2">
@@ -1057,7 +997,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
   };
 
   const renderCta = () => (
-    <section className="py-32 text-white relative overflow-hidden" style={{ ...fontBody, background: `linear-gradient(to bottom right, ${brandPrimary}, #2e1065)` }}>
+    <section className="py-32 bg-gradient-to-br from-violet-600 to-violet-950 text-white relative overflow-hidden" style={fontBody}>
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
       <div className={`${MAX_W} px-4 relative z-10 text-center`}>
@@ -1087,7 +1027,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             <p className="text-slate-600 text-lg">Đừng bỏ lỡ các thông tin cập nhật về tiến độ và bảng giá ưu đãi.</p>
           </div>
           <form onSubmit={handleNewsletterSubmit} className="flex w-full lg:w-auto flex-1 max-w-xl gap-3 relative z-10">
-            <input required type="email" placeholder="Nhập địa chỉ email của bạn..." className="w-full bg-violet-50 border-2 border-violet-100 px-8 py-5 rounded-full focus:outline-none text-lg shadow-inner text-slate-700" />
+            <input required type="email" placeholder="Nhập địa chỉ email của bạn..." className="w-full bg-violet-50 border-2 border-violet-100 px-8 py-5 rounded-full focus:outline-none focus:border-violet-600 text-lg shadow-inner text-slate-700" />
             <button type="submit" className="bg-violet-950 text-white px-10 py-5 rounded-full font-bold hover:bg-violet-800 transition text-lg shadow-lg">Gửi</button>
           </form>
         </div>
@@ -1100,21 +1040,21 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
       <div className={`${MAX_W} px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16`}>
         <div>
           <div className="flex items-center gap-2 text-white font-bold text-3xl mb-6" style={fontHeading}>
-            <Building2 size={36} style={{ color: brandAccent }} />
+            <Building2 size={36} className="text-violet-400" />
             <span>SmartUrban</span>
           </div>
           <p className="mb-8 opacity-80 leading-relaxed">Kiến tạo không gian sống đỉnh cao giữa lòng đô thị. Nơi hội tụ tinh hoa của thiết kế hiện đại và công nghệ thông minh.</p>
           <div className="flex items-center gap-3">
-             <a href={company?.socialLinks?.facebook || "https://facebook.com"} target="_blank" rel="noopener noreferrer" title="Facebook" className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-blue-600 text-white transition">
+             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook" className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-blue-600 text-white transition">
                <FacebookIcon className="w-4 h-4" />
              </a>
-             <a href={`https://zalo.me/${company?.phone || '0919006030'}`} target="_blank" rel="noopener noreferrer" title="Zalo" className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-[#0068FF] text-white transition p-2">
+             <a href="https://zalo.me/0919006030" target="_blank" rel="noopener noreferrer" title="Zalo" className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-[#0068FF] text-white transition p-2">
                <ZaloIcon className="w-full h-full" />
              </a>
-             <a href={company?.socialLinks?.instagram || "https://instagram.com"} target="_blank" rel="noopener noreferrer" title="Instagram" className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-pink-600 text-white transition">
+             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram" className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-pink-600 text-white transition">
                <InstagramIcon className="w-4 h-4" />
              </a>
-             <a href={company?.socialLinks?.youtube || "https://youtube.com"} target="_blank" rel="noopener noreferrer" title="Youtube" className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-red-600 text-white transition">
+             <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" title="Youtube" className="w-10 h-10 rounded-full bg-violet-900 flex items-center justify-center hover:bg-red-600 text-white transition">
                <YoutubeIcon className="w-4 h-4" />
              </a>
           </div>
@@ -1123,18 +1063,18 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
           <h4 className="text-white font-bold text-xl mb-8" style={fontHeading}>Thông Tin Liên Hệ</h4>
           <ul className="space-y-6 opacity-90">
             <li>
-              <a href={`https://maps.google.com/?q=${encodeURIComponent(company?.address || 'Số 1 Đại lộ Mới, Quận Trung Tâm, TP.HCM')}`} target="_blank" rel="noopener noreferrer" className="flex items-start gap-4 hover:text-white transition">
-                <MapPin size={24} className="shrink-0 text-amber-500" /> <span>{company?.address || 'Số 1 Đại lộ Mới, Quận Trung Tâm, TP.HCM'}</span>
+              <a href="https://maps.google.com/?q=So+1+Dai+lo+Moi+TPHCM" target="_blank" rel="noopener noreferrer" className="flex items-start gap-4 hover:text-white transition">
+                <MapPin size={24} className="shrink-0 text-amber-500" /> <span>Số 1 Đại lộ Mới, Quận Trung Tâm, TP.HCM</span>
               </a>
             </li>
             <li>
-              <a href={`tel:${(company?.phone || '0919006030').replace(/\s/g, '')}`} className="flex items-center gap-4 hover:text-white transition">
-                <Phone size={24} className="shrink-0 text-amber-500" /> <span className="font-bold text-white text-lg">{company?.phone || '0919 006 030'}</span>
+              <a href="tel:0919006030" className="flex items-center gap-4 hover:text-white transition">
+                <Phone size={24} className="shrink-0 text-amber-500" /> <span className="font-bold text-white text-lg">0919 006 030</span>
               </a>
             </li>
             <li>
-              <a href={`mailto:${company?.email || 'info@smarturban.vn'}`} className="flex items-center gap-4 hover:text-white transition">
-                <Mail size={24} className="shrink-0 text-amber-500" /> <span>{company?.email || 'info@smarturban.vn'}</span>
+              <a href="mailto:info@smarturban.vn" className="flex items-center gap-4 hover:text-white transition">
+                <Mail size={24} className="shrink-0 text-amber-500" /> <span>info@smarturban.vn</span>
               </a>
             </li>
           </ul>
@@ -1161,8 +1101,8 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
       <div className={`${MAX_W} px-4 border-t border-violet-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-sm opacity-60 font-medium`}>
         <p>&copy; 2026 SmartUrban. Phát triển bởi PlatformBDS.</p>
         <div className="flex gap-8">
-          <a href="#" className="hover:text-white transition">Điều khoản sử dụng</a>
-          <a href="#" className="hover:text-white transition">Chính sách bảo mật</a>
+          <button onClick={() => navigateTo('about')} className="hover:text-white transition cursor-pointer">Điều khoản sử dụng</button>
+          <button onClick={() => navigateTo('about')} className="hover:text-white transition cursor-pointer">Chính sách bảo mật</button>
         </div>
       </div>
     </footer>
@@ -1211,7 +1151,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
       <div className="bg-violet-50 min-h-screen pt-24 pb-24" style={fontBody}>
         <div className={`${MAX_W} px-4`}>
           <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-violet-950 mb-6" style={fontHeading}>Danh Sách <span style={{ color: brandPrimary }}>Căn Hộ</span></h1>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-violet-950 mb-6" style={fontHeading}>Danh Sách <span className="text-violet-600">Căn Hộ</span></h1>
             <p className="text-slate-600 max-w-2xl mx-auto text-lg">Lựa chọn tổ ấm lý tưởng của bạn từ quỹ căn hộ đa dạng của chúng tôi với thiết kế hiện đại và công năng tối ưu.</p>
           </div>
           
@@ -1249,7 +1189,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                             onChange={() => setFilterType(type)}
                             className="w-5 h-5 rounded-full border-violet-200 text-violet-600 focus:ring-violet-600" 
                           />
-                          <span className={`font-medium transition`} style={{ color: filterType === type ? brandPrimary : undefined, fontWeight: filterType === type ? 'bold' : 'normal' }}>{type}</span>
+                          <span className={`${filterType === type ? 'text-violet-600 font-bold' : 'text-slate-700'} font-medium group-hover:text-violet-600 transition`}>{type}</span>
                         </label>
                       ))}
                     </div>
@@ -1310,8 +1250,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                       setFilterTower('Tất cả');
                       setFilterArea('Tất cả');
                     }}
-                    className="w-full bg-violet-50 hover:bg-violet-100 font-bold py-4 rounded-xl transition border border-violet-100 mt-4"
-                    style={{ color: brandPrimary }}
+                    className="w-full bg-violet-50 hover:bg-violet-100 text-violet-600 font-bold py-4 rounded-xl transition border border-violet-100 mt-4"
                   >
                     Xóa Bộ Lọc
                   </button>
@@ -1334,8 +1273,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                       setFilterTower('Tất cả');
                       setFilterArea('Tất cả');
                     }}
-                    className="text-white font-bold px-8 py-3.5 rounded-xl hover:opacity-90 transition shadow-lg"
-                    style={{ backgroundColor: brandPrimary }}
+                    className="bg-violet-600 text-white font-bold px-8 py-3.5 rounded-xl hover:bg-violet-700 transition shadow-lg"
                   >
                     Đặt lại bộ lọc
                   </button>
@@ -1346,7 +1284,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                     <div key={item.id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition border border-violet-100 group">
                       <div className="relative h-64 overflow-hidden">
                         <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.img} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-                        <div className="absolute top-4 right-4 bg-white px-4 py-2 rounded-full font-extrabold text-sm shadow-lg" style={{ color: brandPrimary }}>
+                        <div className="absolute top-4 right-4 bg-white px-4 py-2 rounded-full text-violet-600 font-extrabold text-sm shadow-lg">
                           {item.price}
                         </div>
                       </div>
@@ -1354,14 +1292,13 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                         <h3 className="text-2xl font-bold text-violet-950 mb-2" style={fontHeading}>{item.name}</h3>
                         <p className="text-slate-500 mb-6 flex items-center gap-2 font-medium"><MapPin size={16} className="text-amber-500" /> {item.location}</p>
                         <div className="flex justify-between text-slate-600 text-sm mb-8 pt-6 border-t border-violet-50 font-semibold">
-                          <span className="flex items-center gap-2"><Bed size={20} style={{ color: brandAccent }}/> {item.beds} PN</span>
-                          <span className="flex items-center gap-2"><Bath size={20} style={{ color: brandAccent }}/> {item.baths} WC</span>
-                          <span className="flex items-center gap-2"><Maximize size={20} style={{ color: brandAccent }}/> {item.area}</span>
+                          <span className="flex items-center gap-2"><Bed size={20} className="text-violet-400"/> {item.beds} PN</span>
+                          <span className="flex items-center gap-2"><Bath size={20} className="text-violet-400"/> {item.baths} WC</span>
+                          <span className="flex items-center gap-2"><Maximize size={20} className="text-violet-400"/> {item.area}</span>
                         </div>
                         <button 
                           onClick={() => setSelectedApartment(item)}
-                          className="w-full bg-violet-50 font-bold py-4 rounded-xl hover:text-white transition flex justify-center items-center gap-2"
-                          style={{ color: brandPrimary }}
+                          className="w-full bg-violet-50 text-violet-600 font-bold py-4 rounded-xl hover:bg-violet-600 hover:text-white transition flex justify-center items-center gap-2"
                         >
                           Xem Chi Tiết <ArrowRight size={18} />
                         </button>
@@ -1382,7 +1319,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
       <div className="bg-white min-h-screen pt-24 pb-24" style={fontBody}>
         <div className={`${MAX_W} px-4`}>
           <div className="text-center mb-16 max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-extrabold text-violet-950 mb-8 leading-tight" style={fontHeading}>Về <span style={{ color: brandPrimary }}>SmartUrban</span></h1>
+            <h1 className="text-4xl md:text-6xl font-extrabold text-violet-950 mb-8 leading-tight" style={fontHeading}>Về <span className="text-violet-600">SmartUrban</span></h1>
             <p className="text-slate-600 text-xl leading-relaxed">Hành trình kiến tạo chuẩn mực sống mới, mang lại giá trị bền vững và môi trường sống lý tưởng cho cư dân đô thị hiện đại, nơi hội tụ của giới tinh hoa.</p>
           </div>
           
@@ -1399,11 +1336,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 <button
                   key={tab.id}
                   onClick={() => setAboutTab(tab.id)}
-                  className="pb-4 text-lg font-bold border-b-4 transition"
-                  style={{
-                    borderColor: aboutTab === tab.id ? brandPrimary : 'transparent',
-                    color: aboutTab === tab.id ? brandPrimary : undefined
-                  }}
+                  className={`pb-4 text-lg font-bold border-b-4 transition ${aboutTab === tab.id ? 'border-violet-600 text-violet-600' : 'border-transparent text-slate-500 hover:text-violet-600'}`}
                 >
                   {tab.label}
                 </button>
@@ -1422,8 +1355,8 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                   <h3 className="text-2xl font-bold text-violet-950 mb-4" style={fontHeading}>Tầm Nhìn</h3>
                   <p className="text-slate-600 text-lg leading-relaxed">Trở thành biểu tượng bất động sản của khu vực, tiên phong trong việc ứng dụng công nghệ xanh và thông minh vào không gian sống đẳng cấp.</p>
                 </div>
-                <div className="p-10 rounded-3xl text-white shadow-xl" style={{ backgroundColor: brandPrimary }}>
-                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-white mb-8">
+                <div className="bg-violet-600 p-10 rounded-3xl text-white shadow-xl shadow-violet-200">
+                  <div className="w-16 h-16 bg-violet-500 rounded-2xl flex items-center justify-center text-white mb-8">
                     <CheckCircle2 size={32} />
                   </div>
                   <h3 className="text-2xl font-bold mb-4" style={fontHeading}>Sứ Mệnh</h3>
@@ -1475,8 +1408,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                     <h4 className="font-bold text-violet-950 text-xl mb-4" style={fontHeading}>{leader.name}</h4>
                     <button 
                       onClick={() => setSelectedLeader(leader)}
-                      className="bg-white font-bold px-5 py-2.5 rounded-full border border-violet-100 shadow-sm hover:opacity-90 transition text-sm"
-                      style={{ color: brandPrimary }}
+                      className="bg-white text-violet-600 font-bold px-5 py-2.5 rounded-full border border-violet-100 shadow-sm hover:bg-violet-600 hover:text-white transition text-sm"
                     >
                       Xem Tiểu Sử
                     </button>
@@ -1495,9 +1427,9 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               <div className="space-y-8 relative">
                 {LIST_TIMELINE.map((t, i) => (
                   <div key={t.id} className="flex gap-6 items-start relative group">
-                    {i !== LIST_TIMELINE.length - 1 && <div className="absolute left-[1.35rem] top-12 bottom-[-2rem] w-1" style={{ backgroundColor: t.done ? brandPrimary : '#ddd6fe' }}></div>}
-                    <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 z-10 shadow-md" style={{ backgroundColor: t.done ? brandPrimary : '#ffffff', color: t.done ? '#ffffff' : brandAccent, border: t.done ? undefined : '4px solid #ddd6fe' }}>
-                      {t.done ? <Check size={20} /> : <div className="w-3 h-3 rounded-full" style={{ backgroundColor: brandAccent }}></div>}
+                    {i !== LIST_TIMELINE.length - 1 && <div className={`absolute left-[1.35rem] top-12 bottom-[-2rem] w-1 ${t.done ? 'bg-violet-600' : 'bg-violet-200'}`}></div>}
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 z-10 shadow-md ${t.done ? 'bg-violet-600 text-white' : 'bg-white border-4 border-violet-200 text-violet-300'}`}>
+                      {t.done ? <Check size={20} /> : <div className="w-3 h-3 rounded-full bg-violet-200"></div>}
                     </div>
                     <div className="bg-violet-50 p-8 rounded-3xl border border-violet-100 flex-1 hover:shadow-xl transition group-hover:-translate-y-1">
                       <span className="text-amber-500 font-extrabold text-sm mb-3 block uppercase tracking-wider">{t.date}</span>
@@ -1524,7 +1456,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
       <div className="bg-violet-50 min-h-screen pt-24 pb-24" style={fontBody}>
         <div className={`${MAX_W} px-4`}>
           <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-violet-950 mb-6" style={fontHeading}>Thư Viện <span style={{ color: brandPrimary }}>Hình Ảnh</span></h1>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-violet-950 mb-6" style={fontHeading}>Thư Viện <span className="text-violet-600">Hình Ảnh</span></h1>
             <p className="text-slate-600 max-w-2xl mx-auto text-lg">Trải nghiệm không gian sống thực tế qua góc nhìn chân thực nhất từ ngoại khu đến nội thất căn hộ.</p>
           </div>
 
@@ -1534,12 +1466,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               <button
                 key={tab}
                 onClick={() => setSelectedGalleryTab(tab)}
-                className="px-6 py-2.5 rounded-full font-bold transition shadow-sm"
-                style={{
-                  backgroundColor: selectedGalleryTab === tab ? brandPrimary : '#ffffff',
-                  color: selectedGalleryTab === tab ? '#ffffff' : undefined,
-                  border: selectedGalleryTab === tab ? undefined : '1px solid #ede9fe'
-                }}
+                className={`px-6 py-2.5 rounded-full font-bold transition shadow-sm ${selectedGalleryTab === tab ? 'bg-violet-600 text-white shadow-md' : 'bg-white text-violet-950 hover:bg-violet-50 border border-violet-100'}`}
               >
                 {tab}
               </button>
@@ -1584,7 +1511,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
       <div className="bg-white min-h-screen pt-24 pb-32" style={fontBody}>
         <div className={`${MAX_W} px-4`}>
           <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-violet-950 mb-6" style={fontHeading}>Tin Tức & <span style={{ color: brandPrimary }}>Sự Kiện</span></h1>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-violet-950 mb-6" style={fontHeading}>Tin Tức & <span className="text-violet-600">Sự Kiện</span></h1>
             <p className="text-slate-600 max-w-2xl mx-auto text-lg">Tin tức thị trường, tiến độ thi công và các sự kiện nổi bật nhất của SmartUrban.</p>
           </div>
           
@@ -1595,11 +1522,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 <button
                   key={cat}
                   onClick={() => setSelectedNewsCategory(cat)}
-                  className="px-5 py-2.5 rounded-full font-bold transition text-sm"
-                  style={{
-                    backgroundColor: selectedNewsCategory === cat ? brandPrimary : undefined,
-                    color: selectedNewsCategory === cat ? '#ffffff' : undefined
-                  }}
+                  className={`px-5 py-2.5 rounded-full font-bold transition text-sm ${selectedNewsCategory === cat ? 'bg-violet-600 text-white shadow-md' : 'bg-violet-50 text-slate-700 hover:bg-violet-100'}`}
                 >
                   {cat}
                 </button>
@@ -1644,7 +1567,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                       <div className="flex items-center gap-2 text-amber-500 text-sm font-bold mb-3 uppercase tracking-wider">
                         <Calendar size={16} /> {n.date}
                       </div>
-                      <h3 className="text-xl font-bold text-violet-950 hover:opacity-80 transition leading-snug" style={fontHeading}>{n.title}</h3>
+                      <h3 className="text-xl font-bold text-violet-950 group-hover:text-violet-600 transition leading-snug" style={fontHeading}>{n.title}</h3>
                     </div>
                   </div>
                 ))}
@@ -1678,8 +1601,8 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                     <div className="flex items-center gap-2 text-sm text-amber-500 mb-4 font-bold uppercase tracking-wider">
                       <Calendar size={16} /> {n.date}
                     </div>
-                    <h4 className="text-xl font-bold text-violet-950 mb-4 line-clamp-2 hover:opacity-80 transition leading-snug" style={fontHeading}>{n.title}</h4>
-                    <div className="text-slate-500 flex items-center gap-2 font-bold" style={{ color: brandPrimary }}>
+                    <h4 className="text-xl font-bold text-violet-950 mb-4 line-clamp-2 group-hover:text-violet-600 transition leading-snug" style={fontHeading}>{n.title}</h4>
+                    <div className="text-slate-500 flex items-center gap-2 group-hover:text-violet-600 font-bold">
                       Đọc tiếp <ChevronRight size={18} />
                     </div>
                   </div>
@@ -1715,30 +1638,54 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
     <div className="bg-violet-50 min-h-screen pt-24 pb-24" style={fontBody}>
       <div className={`${MAX_W} px-4`}>
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-violet-950 mb-6" style={fontHeading}>Liên Hệ <span style={{ color: brandPrimary }}>Với Chúng Tôi</span></h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-violet-950 mb-6" style={fontHeading}>Liên Hệ <span className="text-violet-600">Với Chúng Tôi</span></h1>
           <p className="text-slate-600 max-w-2xl mx-auto text-lg">Đội ngũ chuyên viên tư vấn cao cấp luôn sẵn sàng hỗ trợ bạn 24/7 để lựa chọn căn hộ ưng ý nhất.</p>
         </div>
         <div className="flex flex-col lg:flex-row gap-12">
           <div className="lg:w-1/3 space-y-6">
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-violet-100 flex items-start gap-5 hover:shadow-md transition">
-              <div className="bg-violet-100 p-4 rounded-2xl shrink-0" style={{ color: brandPrimary }}><MapPin size={28}/></div>
+              <div className="bg-violet-100 p-4 rounded-2xl text-violet-600 shrink-0"><MapPin size={28}/></div>
               <div>
                 <h4 className="font-bold text-violet-950 text-lg mb-2">Địa chỉ nhà mẫu</h4>
-                <p className="text-slate-600 leading-relaxed">{company?.address || company?.address || 'Số 1 Đại lộ Mới, Quận Trung Tâm, TP.HCM'}</p>
+                <p className="text-slate-600 leading-relaxed">Số 1 Đại lộ Mới, Quận Trung Tâm, TP.HCM</p>
               </div>
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-violet-100 flex items-start gap-5 hover:shadow-md transition">
-              <div className="bg-violet-100 p-4 rounded-2xl shrink-0" style={{ color: brandPrimary }}><Phone size={28}/></div>
+              <div className="bg-violet-100 p-4 rounded-2xl text-violet-600 shrink-0"><Phone size={28}/></div>
               <div>
                 <h4 className="font-bold text-violet-950 text-lg mb-2">Hotline tư vấn</h4>
-                <p className="text-slate-600 leading-relaxed font-bold" style={{ color: brandPrimary }}>1800 9999 <span className="font-normal text-slate-500">(Miễn phí)</span></p>
+                <p className="text-slate-600 leading-relaxed font-bold text-violet-600">1800 9999 <span className="font-normal text-slate-500">(Miễn phí)</span></p>
               </div>
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-violet-100 flex items-start gap-5 hover:shadow-md transition">
-              <div className="bg-violet-100 p-4 rounded-2xl shrink-0" style={{ color: brandPrimary }}><Mail size={28}/></div>
+              <div className="bg-violet-100 p-4 rounded-2xl text-violet-600 shrink-0"><Mail size={28}/></div>
               <div>
                 <h4 className="font-bold text-violet-950 text-lg mb-2">Email liên hệ</h4>
-                <p className="text-slate-600 leading-relaxed">{company?.email || company?.email || 'info@smarturban.vn'}</p>
+                <p className="text-slate-600 leading-relaxed">info@smarturban.vn</p>
+              </div>
+            </div>
+
+            {/* Interactive Google Map Box */}
+            <div className="bg-white rounded-3xl border border-violet-100 overflow-hidden shadow-md flex flex-col h-64">
+              <div className="px-4 py-2.5 bg-violet-950 text-white flex items-center justify-between text-xs">
+                <span className="font-bold flex items-center gap-1.5 truncate"><MapPin className="w-3.5 h-3.5 text-amber-400" /> Số 1 Đại lộ Mới, Quận Trung Tâm, TP.HCM</span>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=S%E1%BB%91+1+%C4%90%E1%BA%A1i+l%E1%BB%99+M%E1%BB%9Bi,+Qu%E1%BA%ADn+1,+TP.HCM"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1 rounded bg-violet-600 hover:bg-violet-500 text-white text-[11px] font-bold shrink-0"
+                >
+                  Mở Google Maps
+                </a>
+              </div>
+              <div className="flex-1 w-full h-full">
+                <iframe
+                  title="Bản đồ Nhà mẫu Smart Urban"
+                  src="https://maps.google.com/maps?q=Qu%E1%BA%ADn+1,+TP.HCM&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  className="w-full h-full border-0"
+                  loading="lazy"
+                  allowFullScreen
+                />
               </div>
             </div>
           </div>
@@ -1757,7 +1704,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                   <div><span className="text-slate-500">Mã yêu cầu:</span> <span className="font-bold text-violet-950">SU-{Math.floor(100000 + Math.random() * 900000)}</span></div>
                   <div><span className="text-slate-500">Số điện thoại:</span> <span className="font-bold text-violet-950">{contactPhone}</span></div>
                   {contactEmail && <div><span className="text-slate-500">Email:</span> <span className="font-bold text-violet-950">{contactEmail}</span></div>}
-                  {contactMessage && <div><span className="text-slate-500">Ghi chú:</span> <span className="text-slate-700 italic">&ldquo;{contactMessage}&rdquo;</span></div>}
+                  {contactMessage && <div><span className="text-slate-500">Ghi chú:</span> <span className="text-slate-700 italic">"{contactMessage}"</span></div>}
                 </div>
                 <p className="text-slate-500 text-sm">
                   Chuyên viên cao cấp sẽ chủ động liên hệ lại hỗ trợ Quý khách trong vòng 15 phút.
@@ -1771,8 +1718,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                       setContactEmail('');
                       setContactMessage('');
                     }}
-                    className="text-white font-bold px-8 py-4 rounded-xl transition shadow-md hover:opacity-90"
-                    style={{ backgroundColor: brandPrimary }}
+                    className="bg-violet-600 hover:bg-violet-700 text-white font-bold px-8 py-4 rounded-xl transition shadow-md"
                   >
                     Gửi yêu cầu khác
                   </button>
@@ -1790,7 +1736,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                         type="text" 
                         value={contactName}
                         onChange={(e) => setContactName(e.target.value)}
-                        className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-2xl focus:outline-none transition text-slate-700 font-medium" 
+                        className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-2xl focus:outline-none focus:border-violet-600 transition text-slate-700 font-medium" 
                         placeholder="Nguyễn Văn A" 
                       />
                     </div>
@@ -1801,7 +1747,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                         type="tel" 
                         value={contactPhone}
                         onChange={(e) => setContactPhone(e.target.value)}
-                        className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-2xl focus:outline-none transition text-slate-700 font-medium" 
+                        className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-2xl focus:outline-none focus:border-violet-600 transition text-slate-700 font-medium" 
                         placeholder="0909..." 
                       />
                     </div>
@@ -1813,7 +1759,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                       type="email" 
                       value={contactEmail}
                       onChange={(e) => setContactEmail(e.target.value)}
-                      className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-2xl focus:outline-none transition text-slate-700 font-medium" 
+                      className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-2xl focus:outline-none focus:border-violet-600 transition text-slate-700 font-medium" 
                       placeholder="email@domain.com" 
                     />
                   </div>
@@ -1823,7 +1769,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                     <select 
                       value={contactApartment}
                       onChange={(e) => setContactApartment(e.target.value)}
-                      className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-2xl focus:outline-none transition text-slate-700 font-medium cursor-pointer"
+                      className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-2xl focus:outline-none focus:border-violet-600 transition text-slate-700 font-medium cursor-pointer"
                     >
                       <option value="Studio">Studio</option>
                       <option value="1 Phòng Ngủ">1 Phòng Ngủ</option>
@@ -1839,12 +1785,12 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                       rows={5} 
                       value={contactMessage}
                       onChange={(e) => setContactMessage(e.target.value)}
-                      className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-2xl focus:outline-none transition text-slate-700 font-medium resize-none" 
+                      className="w-full bg-violet-50 border-2 border-violet-50 p-5 rounded-2xl focus:outline-none focus:border-violet-600 transition text-slate-700 font-medium resize-none" 
                       placeholder="Bạn cần tư vấn thêm về giá, chính sách hay đặt lịch tham quan..."
                     ></textarea>
                   </div>
                   
-                  <button type="submit" className="w-full text-white font-bold text-lg py-5 rounded-2xl hover:opacity-90 transition shadow-xl flex justify-center items-center gap-2" style={{ backgroundColor: brandPrimary }}>
+                  <button type="submit" className="w-full bg-violet-600 text-white font-bold text-lg py-5 rounded-2xl hover:bg-violet-700 transition shadow-xl shadow-violet-200 flex justify-center items-center gap-2">
                     Gửi Thông Tin Yêu Cầu <ArrowRight size={20} />
                   </button>
                 </form>
@@ -1882,12 +1828,13 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
       {renderHeader()}
       
       <main>
-        {currentPage === 'home' && renderHome()}
-        {currentPage === 'projects' && renderProjects()}
-        {currentPage === 'about' && renderAboutPage()}
-        {currentPage === 'gallery' && renderGalleryPage()}
-        {currentPage === 'news' && renderNewsPage()}
-        {currentPage === 'contact' && renderContactPage()}
+        {['home'].includes(currentPage) && renderHome()}
+        {['projects', 'du-an', 'san-pham', 'can-ho'].includes(currentPage) && renderProjects()}
+        {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAboutPage()}
+        {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGalleryPage()}
+        {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNewsPage()}
+        {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContactPage()}
+        {!['home', 'projects', 'du-an', 'san-pham', 'can-ho', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
       </main>
 
       {renderFooter()}
@@ -1909,7 +1856,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 alt={selectedApartment.name} 
                 className="w-full h-full object-cover" 
               />
-              <div className="absolute bottom-6 left-6 text-white font-extrabold px-6 py-2.5 rounded-full text-lg shadow-lg" style={{ backgroundColor: brandPrimary }}>
+              <div className="absolute bottom-6 left-6 bg-violet-600 text-white font-extrabold px-6 py-2.5 rounded-full text-lg shadow-lg">
                 {selectedApartment.price}
               </div>
             </div>
@@ -1929,15 +1876,15 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                 <div className="grid grid-cols-3 gap-4 p-4 bg-violet-50 rounded-2xl mb-6 text-center">
                   <div>
                     <div className="text-slate-500 text-xs font-semibold uppercase mb-1">Diện tích</div>
-                    <div className="text-violet-950 font-bold flex items-center justify-center gap-1"><Maximize size={16} style={{ color: brandPrimary }}/> {selectedApartment.area}</div>
+                    <div className="text-violet-950 font-bold flex items-center justify-center gap-1"><Maximize size={16} className="text-violet-500"/> {selectedApartment.area}</div>
                   </div>
                   <div>
                     <div className="text-slate-500 text-xs font-semibold uppercase mb-1">Phòng ngủ</div>
-                    <div className="text-violet-950 font-bold flex items-center justify-center gap-1"><Bed size={16} style={{ color: brandPrimary }}/> {selectedApartment.beds} PN</div>
+                    <div className="text-violet-950 font-bold flex items-center justify-center gap-1"><Bed size={16} className="text-violet-500"/> {selectedApartment.beds} PN</div>
                   </div>
                   <div>
                     <div className="text-slate-500 text-xs font-semibold uppercase mb-1">Phòng tắm</div>
-                    <div className="text-violet-950 font-bold flex items-center justify-center gap-1"><Bath size={16} style={{ color: brandPrimary }}/> {selectedApartment.baths} WC</div>
+                    <div className="text-violet-950 font-bold flex items-center justify-center gap-1"><Bath size={16} className="text-violet-500"/> {selectedApartment.baths} WC</div>
                   </div>
                 </div>
                 
@@ -1966,8 +1913,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                     setContactMessage(`Tôi muốn nhận báo giá và thông tin chi tiết cho căn hộ: ${selectedApartment.name}`);
                     navigateTo('contact');
                   }}
-                  className="flex-1 text-white font-bold py-4 rounded-xl hover:opacity-90 transition shadow-lg text-center"
-                  style={{ backgroundColor: brandPrimary }}
+                  className="flex-1 bg-violet-600 text-white font-bold py-4 rounded-xl hover:bg-violet-700 transition shadow-lg text-center"
                 >
                   Liên Hệ Tư Vấn
                 </button>
@@ -2020,8 +1966,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                   <span className="text-slate-500 text-sm">SmartUrban Ban biên tập</span>
                   <button 
                     onClick={() => setSelectedArticle(null)}
-                    className="bg-violet-50 hover:bg-violet-600 hover:text-white transition font-bold px-6 py-3 rounded-xl"
-                    style={{ color: brandPrimary }}
+                    className="bg-violet-50 text-violet-600 hover:bg-violet-600 hover:text-white transition font-bold px-6 py-3 rounded-xl"
                   >
                     Đóng Bài Viết
                   </button>
@@ -2050,8 +1995,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
             
             <button 
               onClick={() => setSelectedLeader(null)}
-              className="w-full text-white font-bold py-3.5 rounded-xl transition"
-              style={{ backgroundColor: brandPrimary }}
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3.5 rounded-xl transition"
             >
               Đóng Profile
             </button>
@@ -2063,7 +2007,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
       {selectedGalleryImg && (
         <div className="fixed inset-0 z-[100] bg-violet-950/95 flex items-center justify-center p-4 backdrop-blur-md" onClick={() => setSelectedGalleryImg(null)}>
           <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedGalleryImg} className="max-w-[95vw] max-h-[95vh] rounded-2xl shadow-2xl object-contain bg-white" alt="Lightbox View" />
-          <button className="absolute top-8 right-8 text-white hover:text-amber-500 bg-violet-900/50 p-4 rounded-full backdrop-blur-md transition"><X size={32}/></button>
+          <button onClick={() => setSelectedGalleryImg(null)} className="absolute top-8 right-8 text-white hover:text-amber-500 bg-violet-900/50 p-4 rounded-full backdrop-blur-md transition cursor-pointer"><X size={32}/></button>
         </div>
       )}
     </div>
