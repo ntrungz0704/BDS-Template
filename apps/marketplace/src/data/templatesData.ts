@@ -1891,6 +1891,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "SỞ HỮU BẤT ĐỘNG SẢN VEN BIỂN ĐẸP NHẤT VIỆT NAM",
       heroSubtitle: "Hơn 8.000 biệt thự mặt biển, shophouse phố biển và condotel 5 sao quản lý quốc tế."
     }
+  },
+  // ─── PORTAL 08. INDUSTRIAL & LOGISTICS HUB ─────────────────────────────────
+  {
+    id: "portal-08",
+    name: "Template #08 - Industrial & Logistics Hub",
+    slug: "portal-08",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #08",
+    badgeBg: "#0F172A",
+    badgeColor: "#EA580C",
+    accentColor: "#EA580C",
+    description: "Cổng thông tin xúc tiến đầu tư FDI và sàn giao dịch bất động sản công nghiệp. Chuyên đất KCN thuê 50 năm, nhà xưởng xây sẵn RBF và kho bãi logistics RBW, hiển thị đầy đủ thông số kỹ thuật (PCCC, trần cao, tải trọng sàn, trạm điện KVA).",
+    shortDescription: "Đất KCN · Nhà xưởng RBF · Kho bãi Logistics RBW · Tư vấn FDI",
+    thumbnail: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục B2B chuẩn công nghiệp với tông Xanh Than & Cam An Toàn Lao Động",
+      "Thẻ tin Technical Spec Card với thông số PCCC, tải trọng sàn, trần cao m",
+      "Bộ lọc BĐS công nghiệp theo cự ly cảng biển & trạm biến áp KVA",
+      "Trang chi tiết nhà xưởng kèm sơ đồ tải trọng và ngành nghề ưu đãi thuế",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án KCN, Báo cáo FDI, Giới thiệu, Liên hệ",
+      "Tích hợp form gửi yêu cầu RFP tìm đất KCN & nhà xưởng quy mô lớn"
+    ],
+    priceBuy: 799000,
+    priceBuySource: 2490000,
+    priceRentMonthly: 199000,
+    isActive: true,
+    sortOrder: 32,
+    targetAudience: ["Chủ đầu tư phát triển KCN (VSIP, Amata, BW Industrial, Deep C)", "Công ty tư vấn xúc tiến đầu tư FDI và chuỗi cung ứng", "Sàn môi giới kho bãi logistics & xưởng công nghiệp"],
+    highlights: ["Technical Spec Grid Cards", "FDI Advisory & RFP Forms", "Infrastructure Distance Filters", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["TechnicalSpecCardModule", "RfpFormModule", "IndustrialProjectModule", "FdiReportModule"],
+    benefits: ["Nâng tầm chuyển đổi B2B đối với các tập đoàn FDI đa quốc gia", "Trình bày thông số kỹ thuật chuẩn công nghiệp", "Dễ dàng quản lý hàng triệu m² kho bãi"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#0F172A",
+      secondaryColor: "#1E293B",
+      accentColor: "#EA580C",
+      bgColor: "#F8FAFC",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "0.5rem",
+      shadowToken: "0 4px 6px -1px rgba(15, 23, 42, 0.15)"
+    },
+    layoutConfig: {
+      heroStyle: "Industrial Slate Hero với Search Bar thông số kỹ thuật",
+      navigationStyle: "B2B Professional Dark Navbar",
+      cardStyle: "Technical Spec Card (Grid thông số m², trần cao, KVA)",
+      galleryStyle: "Industrial Warehouse Slider",
+      ctaStyle: "Safety Orange Action Button",
+      spacingScale: "Rigid Industrial Grid"
+    },
+    wireframe: ["HeaderIndustrialPro", "HeroIndustrialSearch", "IndustrialListingsGrid", "TopIndustrialParks", "FooterIndustrialPro"],
+    sectionConfig: {
+      sourceSlug: "portal-08",
+      heroTitle: "HẠ TẦNG NHÀ XƯỞNG & ĐẤT KHU CÔNG NGHIỆP CHUẨN QUỐC TẾ",
+      heroSubtitle: "Hơn 5.000.000 m² đất KCN, kho bãi logistics RBW và xưởng xây sẵn RBF sẵn sàng bàn giao."
+    }
   }
 ];
 
@@ -1936,6 +2000,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-07': 'portal-07',
   'portal-coastal': 'portal-07',
   'ocean-estate': 'portal-07',
+  'portal-08': 'portal-08',
+  'portal-industrial': 'portal-08',
+  'industrial-pro': 'portal-08',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
