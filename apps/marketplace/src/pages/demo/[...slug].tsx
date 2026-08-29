@@ -285,7 +285,7 @@ export default function TemplateLiveDemoPage() {
         >
           {/* Device frame */}
           <div
-            className="transition-all duration-300 ease-in-out bg-white overflow-hidden platformbds-template"
+            className="transition-all duration-300 ease-in-out bg-slate-50 overflow-hidden platformbds-template w-full min-h-full flex flex-col justify-between"
             style={getViewportStyle(viewport)}
           >
             {/* Desktop → direct render (no iframe needed, no responsive quirks) */}

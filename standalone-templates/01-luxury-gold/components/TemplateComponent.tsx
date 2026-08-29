@@ -596,17 +596,48 @@ const NEWS_ARTICLES: NewsItem[] = [
   },
 ];
 
+export const resolvePageAndDetail = (p?: string) => {
+  if (!p || p === 'home') return { page: 'home', propSlug: '', artSlug: '' };
+  const clean = p.replace(/^\//, '').trim();
+  if (clean.startsWith('tin-tuc/') || clean.startsWith('news/')) {
+    return { page: 'news-detail', propSlug: '', artSlug: clean.replace(/^(tin-tuc\/|news\/)/, '') };
+  }
+  if (clean === 'tin-tuc' || clean === 'news') return { page: 'news', propSlug: '', artSlug: '' };
+  if (clean.startsWith('chi-tiet/') || clean.startsWith('property/')) {
+    return { page: 'property-detail', propSlug: clean.replace(/^(chi-tiet\/|property\/)/, ''), artSlug: '' };
+  }
+  if (clean === 'gioi-thieu' || clean === 'about') return { page: 'about', propSlug: '', artSlug: '' };
+  if (clean === 'lien-he' || clean === 'contact') return { page: 'contact', propSlug: '', artSlug: '' };
+  if (clean === 'ky-gui') return { page: 'ky-gui', propSlug: '', artSlug: '' };
+  if (['can-ho', 'nha-pho', 'biet-thu', 'chung-cu', 'van-phong'].includes(clean)) {
+    return { page: clean, propSlug: '', artSlug: '' };
+  }
+  return { page: 'home', propSlug: '', artSlug: '' };
+};
+
 export default function LuxuryTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme, projects, posts }: TemplateProps) {
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const tSlug = template?.slug || 'bds-01';
 
-  const [currentPage, setCurrentPageState] = useState<string>(() => {
-    if (!initialPage || initialPage === 'home') return 'home';
-    return initialPage;
+  const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
+
+  const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
+
+  const [selectedProperty, setSelectedProperty] = useState<PropertyItem>(() => {
+    if (initialParsed.propSlug) {
+      const found = INITIAL_PROPERTIES.find(p => p.slug === initialParsed.propSlug) || RENT_PROPERTIES.find(p => p.slug === initialParsed.propSlug);
+      if (found) return found;
+    }
+    return INITIAL_PROPERTIES[0];
   });
 
-  const [selectedProperty, setSelectedProperty] = useState<PropertyItem>(INITIAL_PROPERTIES[0]);
-  const [selectedArticle, setSelectedArticle] = useState<NewsItem>(NEWS_ARTICLES[0]);
+  const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
+    if (initialParsed.artSlug) {
+      const found = NEWS_ARTICLES.find(a => a.slug === initialParsed.artSlug);
+      if (found) return found;
+    }
+    return NEWS_ARTICLES[0];
+  });
   
   const [searchCategory, setSearchCategory] = useState<string>('all');
   const [searchKeyword, setSearchKeyword] = useState<string>('');
@@ -623,6 +654,19 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
 
   const [contactForm, setContactForm] = useState({ name: '', phone: '', email: '', message: '' });
   const [consignmentForm, setConsignmentForm] = useState({ name: '', phone: '', propType: 'Căn hộ', address: '', expectedPrice: '', note: '' });
+
+  useEffect(() => {
+    const res = resolvePageAndDetail(initialPage);
+    setCurrentPageState(res.page);
+    if (res.propSlug) {
+      const found = INITIAL_PROPERTIES.find(p => p.slug === res.propSlug) || RENT_PROPERTIES.find(p => p.slug === res.propSlug);
+      if (found) setSelectedProperty(found);
+    }
+    if (res.artSlug) {
+      const found = NEWS_ARTICLES.find(a => a.slug === res.artSlug);
+      if (found) setSelectedArticle(found);
+    }
+  }, [initialPage]);
 
   const navigate = (page: string, slug?: string) => {
     setCurrentPageState(page);
@@ -1973,9 +2017,9 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
   );
 
   return (
-    <div className={`min-h-screen bg-slate-50 font-sans antialiased text-slate-800 relative ${isSmall ? 'text-xs' : ''}`}>
+    <div className={`min-h-screen flex flex-col justify-between bg-[#F8FAFC] font-sans antialiased text-slate-800 relative ${isSmall ? 'text-xs' : ''}`}>
       {renderHeader()}
-      <main>
+      <main className="flex-1 w-full">
         {currentPage === 'home' && renderHomePage()}
         {['can-ho', 'nha-pho', 'biet-thu', 'chung-cu', 'van-phong'].includes(currentPage) && renderListingCatalogPage()}
         {currentPage === 'news' && renderNewsPage()}
@@ -1984,6 +2028,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         {currentPage === 'ky-gui' && renderConsignmentPage()}
         {currentPage === 'about' && renderAboutPage()}
         {currentPage === 'contact' && renderContactPage()}
+        {!['home', 'can-ho', 'nha-pho', 'biet-thu', 'chung-cu', 'van-phong', 'news', 'property-detail', 'news-detail', 'ky-gui', 'about', 'contact'].includes(currentPage) && renderHomePage()}
       </main>
       <UniversalTemplateFooter
         company={company}

@@ -59,7 +59,10 @@ Quy trình này là tiêu chuẩn bắt buộc phải thực hiện sau khi tạ
 - [ ] **Mobile**:
   - Thanh menu thu gọn thành nút Menu Hamburger, bấm mở Drawer menu đẩy đủ tất cả các trang con.
   - Chữ hiển thị rõ ràng, không bị tràn màn hình ngang (`overflow-x-hidden`).
-- [ ] **Kiểm Tra Tràn Viền (Full-Width No White Gap)**:
+- [ ] **Kiểm Tra Tràn Viền & Triệt Tiêu Khoảng Trắng (Zero White Gap Rule)**:
+  - Tất cả các template phải dùng cấu trúc: `<div className="min-h-screen flex flex-col justify-between bg-[#F8FAFC]">` và `<main className="flex-1 w-full">`.
+  - Phải có hàm `resolvePageAndDetail` tự động phân giải slug trang con (ví dụ: `tin-tuc/slug-bai-viet`, `chi-tiet/slug-bat-dong-san`, `can-ho`, `nha-pho`, `ky-gui`, `about`, `contact`...).
+  - Luôn có **Default Fallback** (nếu slug không khớp thì tự render `home` hoặc catalog), tuyệt đối **không được để `<main>` rỗng** tạo ra khoảng trắng khổng lồ phía dưới footer.
   - Footer Newsletter, 4 Cột danh mục và Thanh Copyright phải phủ màu nền 100% chiều ngang màn hình lớn, không để lộ viền trắng 2 bên mép.
 
 ---
