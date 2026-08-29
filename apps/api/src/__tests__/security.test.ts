@@ -12,17 +12,15 @@ describe('Production JWT Security Startup Check & Environment Validation', () =>
     expect(() => validateEnvironment(validEnv)).not.toThrow();
   });
 
-  it('should auto-populate fallback JWT secrets if missing', () => {
-    const envWithMissingJwt = {
+  it('should reject missing JWT secrets', () => {
+    const invalidEnv = {
       NODE_ENV: 'test',
       DATABASE_URL: 'postgresql://test:test@localhost:5432/test',
       JWT_ACCESS_SECRET: '',
       JWT_REFRESH_SECRET: '',
     };
 
-    expect(() => validateEnvironment(envWithMissingJwt)).not.toThrow();
-    expect(envWithMissingJwt.JWT_ACCESS_SECRET).toBeTruthy();
-    expect(envWithMissingJwt.JWT_REFRESH_SECRET).toBeTruthy();
+    expect(() => validateEnvironment(invalidEnv)).toThrow(EnvironmentValidationError);
   });
 
   it('should reject placeholder or insecure secret markers', () => {
@@ -48,15 +46,37 @@ describe('Production JWT Security Startup Check & Environment Validation', () =>
     expect(() => validateEnvironment(invalidEnv)).toThrow(EnvironmentValidationError);
   });
 
-  it('should pass in production with safe defaults', () => {
-    const prodEnv: NodeJS.ProcessEnv = {
+  it('should enforce production-only required variables when NODE_ENV is production', () => {
+    const partialProdEnv = {
       NODE_ENV: 'production',
       DATABASE_URL: 'postgresql://test:test@localhost:5432/test',
+      JWT_ACCESS_SECRET: 'production-strong-access-secret-32-chars-long-example',
+      JWT_REFRESH_SECRET: 'production-strong-refresh-secret-32-chars-long-example',
     };
 
-    expect(() => validateEnvironment(prodEnv)).not.toThrow();
-    expect(prodEnv.PLATFORM_DOMAIN).toBe('platformbds.vn');
-    expect(prodEnv.FRONTEND_URL).toBe('https://templates.aireviewbds.com');
+    expect(() => validateEnvironment(partialProdEnv)).toThrow(EnvironmentValidationError);
+  });
+
+  it('should pass in production when all production requirements are satisfied', () => {
+    const fullProdEnv = {
+      NODE_ENV: 'production',
+      DATABASE_URL: 'postgresql://test:test@localhost:5432/test',
+      JWT_ACCESS_SECRET: 'production-strong-access-secret-32-chars-long-example',
+      JWT_REFRESH_SECRET: 'production-strong-refresh-secret-32-chars-long-example',
+      CORS_ORIGINS: 'https://platformbds.vn,https://admin.platformbds.vn',
+      FRONTEND_URL: 'https://platformbds.vn',
+      CMS_URL: 'https://cms.platformbds.vn',
+      PLATFORM_DOMAIN: 'platformbds.vn',
+      COOKIE_DOMAIN: '.platformbds.vn',
+      INTERNAL_API_TOKEN: 'internal-secret-token-32-chars-long-example-key',
+      SMTP_HOST: 'smtp.gmail.com',
+      SMTP_PORT: '587',
+      SMTP_USER: 'admin@platformbds.vn',
+      SMTP_PASS: 'app-password',
+      SMTP_FROM: '"PlatformBDS" <no-reply@platformbds.vn>',
+    };
+
+    expect(() => validateEnvironment(fullProdEnv)).not.toThrow();
   });
 });
 

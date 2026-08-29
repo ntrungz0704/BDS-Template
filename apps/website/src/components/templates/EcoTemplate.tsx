@@ -1322,7 +1322,7 @@ export default function EcoTemplate({ template, viewport = 'desktop', initialPag
           <div className="text-center py-20 bg-white rounded-3xl border border-slate-200">
             <BookOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-black text-slate-700 mb-2">Không Tìm Thấy Tin Tức Phù Hợp</h3>
-            <p className="text-slate-500 text-sm max-w-md mx-auto mb-4">Vui lòng thử gõ từ khoá khác hoặc click vào nút "Tất cả" danh mục ở trên.</p>
+            <p className="text-slate-500 text-sm max-w-md mx-auto mb-4">Vui lòng thử gõ từ khoá khác hoặc click vào nút “Tất cả” danh mục ở trên.</p>
             <button onClick={() => { setSearchNewsQuery(''); setNewsCategory('Tất cả'); }} className="px-6 py-2.5 rounded-full text-white font-bold text-sm" style={{ backgroundColor: t.primary }}>Tất cả bài viết</button>
           </div>
         )}

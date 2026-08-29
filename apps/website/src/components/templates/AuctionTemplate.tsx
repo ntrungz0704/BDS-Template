@@ -756,7 +756,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
               </h2>
               <div className="bg-gray-50 p-6 rounded-2xl border-l-4 border-amber-500 mb-8">
                 <p className="text-gray-700 font-medium italic">
-                  "Mọi phiên đấu giá trên hệ thống đều được giám sát chặt chẽ và tuân thủ đúng quy định của Luật Đấu giá tài sản 2016."
+                  “Mọi phiên đấu giá trên hệ thống đều được giám sát chặt chẽ và tuân thủ đúng quy định của Luật Đấu giá tài sản 2016.”
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -841,7 +841,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[1, 2, 3].map((item) => (
               <div key={item} className="bg-white p-8 rounded-2xl shadow-lg relative border-t-4 border-red-600">
-                <div className="text-red-200 text-6xl font-serif absolute top-4 right-4 opacity-50">"</div>
+                <div className="text-red-200 text-6xl font-serif absolute top-4 right-4 opacity-50">“</div>
                 <div className="flex gap-1 mb-4 text-amber-500">
                   <Star size={16} fill="currentColor" />
                   <Star size={16} fill="currentColor" />
@@ -850,7 +850,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                   <Star size={16} fill="currentColor" />
                 </div>
                 <p className="text-gray-600 italic font-medium mb-8 relative z-10">
-                  "Hệ thống đấu giá chạy rất mượt mà. Tôi đã trúng đấu giá lô đất với mức giá tốt hơn thị trường 15%. Quy trình pháp lý sau đó được đội ngũ hỗ trợ rất nhanh chóng."
+                  “Hệ thống đấu giá chạy rất mượt mà. Tôi đã trúng đấu giá lô đất với mức giá tốt hơn thị trường 15%. Quy trình pháp lý sau đó được đội ngũ hỗ trợ rất nhanh chóng.”
                 </p>
                 <div className="flex items-center gap-4">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={`https://i.pravatar.cc/100?img=${item + 10}`} alt="User" className="w-14 h-14 rounded-full object-cover border-2 border-red-100" />
@@ -1253,7 +1253,7 @@ export default function AuctionTemplate({ template, viewport = 'desktop', initia
                   </div>
                   <div className="bg-red-50 p-6 rounded-2xl border-l-4 border-red-600">
                     <p className="italic text-red-800 font-semibold">
-                      "Công khai - Công bằng - Minh bạch - Chuyên nghiệp là kim chỉ nam cho mọi hoạt động của sàn đấu giá."
+                      “Công khai - Công bằng - Minh bạch - Chuyên nghiệp là kim chỉ nam cho mọi hoạt động của sàn đấu giá.”
                     </p>
                   </div>
                 </div>

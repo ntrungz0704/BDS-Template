@@ -1073,7 +1073,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                 {[...Array(5)].map((_, j) => <Star key={j} size={16} fill="#F59E0B" className="text-[#F59E0B]" />)}
               </div>
               <p className="text-slate-300 text-lg mb-8 relative z-10 italic">
-                "Một trải nghiệm mua nhà tuyệt vời. Đội ngũ tư vấn chuyên nghiệp, thủ tục nhanh gọn và đặc biệt là chất lượng bàn giao vượt ngoài mong đợi của gia đình tôi."
+                “Một trải nghiệm mua nhà tuyệt vời. Đội ngũ tư vấn chuyên nghiệp, thủ tục nhanh gọn và đặc biệt là chất lượng bàn giao vượt ngoài mong đợi của gia đình tôi.”
               </p>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-slate-800 border-2 border-[#38BDF8] overflow-hidden">
@@ -1462,7 +1462,7 @@ export default function ListingMarketplace({ template, viewport = 'desktop', ini
                   <div className="p-6">
                     <h4 className="text-xl font-bold text-white mb-1">{leader.name}</h4>
                     <p className="text-[#38BDF8] text-sm mb-4 font-semibold">{leader.role}</p>
-                    <p className="text-slate-400 text-sm italic leading-relaxed border-t border-white/5 pt-4">"{leader.quote}"</p>
+                    <p className="text-slate-400 text-sm italic leading-relaxed border-t border-white/5 pt-4">“{leader.quote}”</p>
                   </div>
                 </div>
               ))}

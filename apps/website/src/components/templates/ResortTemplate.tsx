@@ -886,7 +886,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
                 <div className="flex mb-4 text-[#F59E0B]">
                   {[1,2,3,4,5].map(star => <Star key={star} size={16} fill="currentColor" />)}
                 </div>
-                <p className="text-gray-600 mb-8 italic text-sm leading-relaxed">"{item.text}"</p>
+                <p className="text-gray-600 mb-8 italic text-sm leading-relaxed">“{item.text}”</p>
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-gray-200 rounded-full mr-4 flex items-center justify-center font-bold text-[#0A2540]">{item.author[0]}</div>
                   <div>
@@ -1265,7 +1265,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
                 )}
                 {activeAboutTab === 'philosophy' && (
                   <p className="text-gray-600 font-light leading-relaxed">
-                    "Tôn trọng và Hòa quyện cùng Thiên nhiên". Chúng tôi tin rằng kiến trúc xuất sắc nhất là kiến trúc tôn vinh, bảo vệ và hòa mình làm một với cảnh quan tự nhiên hoang sơ của địa phương.
+                    “Tôn trọng và Hòa quyện cùng Thiên nhiên”. Chúng tôi tin rằng kiến trúc xuất sắc nhất là kiến trúc tôn vinh, bảo vệ và hòa mình làm một với cảnh quan tự nhiên hoang sơ của địa phương.
                   </p>
                 )}
               </div>
@@ -1338,7 +1338,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
                   <div className="h-96 overflow-hidden rounded-sm mb-6 relative">
                     <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={leader.img} alt={leader.name} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
                     <div className="absolute inset-0 bg-[#0A2540]/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-6 text-center">
-                      <p className="text-white italic text-sm">"{leader.quote}"</p>
+                      <p className="text-white italic text-sm">“{leader.quote}”</p>
                     </div>
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-1" style={fontHead}>{leader.name}</h3>

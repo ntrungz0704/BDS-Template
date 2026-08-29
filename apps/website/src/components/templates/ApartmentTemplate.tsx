@@ -906,7 +906,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
               </div>
               <Quote className="text-amber-500 w-12 h-12 absolute right-8 top-8 opacity-20" />
               <div className="mt-6">
-                <p className="text-slate-700 italic mb-8 text-lg leading-relaxed font-medium">"{t.text}"</p>
+                <p className="text-slate-700 italic mb-8 text-lg leading-relaxed font-medium">“{t.text}”</p>
                 <h4 className="font-bold text-violet-950 text-lg">{t.name}</h4>
                 <p className="text-sm font-semibold text-violet-600">{t.role}</p>
               </div>
@@ -1704,7 +1704,7 @@ export default function ApartmentTemplate({ template, viewport = 'desktop', init
                   <div><span className="text-slate-500">Mã yêu cầu:</span> <span className="font-bold text-violet-950">SU-{Math.floor(100000 + Math.random() * 900000)}</span></div>
                   <div><span className="text-slate-500">Số điện thoại:</span> <span className="font-bold text-violet-950">{contactPhone}</span></div>
                   {contactEmail && <div><span className="text-slate-500">Email:</span> <span className="font-bold text-violet-950">{contactEmail}</span></div>}
-                  {contactMessage && <div><span className="text-slate-500">Ghi chú:</span> <span className="text-slate-700 italic">"{contactMessage}"</span></div>}
+                  {contactMessage && <div><span className="text-slate-500">Ghi chú:</span> <span className="text-slate-700 italic">“{contactMessage}”</span></div>}
                 </div>
                 <p className="text-slate-500 text-sm">
                   Chuyên viên cao cấp sẽ chủ động liên hệ lại hỗ trợ Quý khách trong vòng 15 phút.

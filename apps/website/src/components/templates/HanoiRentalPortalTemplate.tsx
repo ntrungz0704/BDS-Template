@@ -525,7 +525,7 @@ export const HanoiRentalPortalTemplate: React.FC<HanoiRentalPortalTemplateProps>
                 <option value="Vinaconex 7">Vinaconex 7</option>
                 <option value="The Matrix One">The Matrix One</option>
                 <option value="Goldmark City">Goldmark City</option>
-                <option value="D'Capitale">D'Capitale</option>
+                <option value="D'Capitale">D&apos;Capitale</option>
                 <option value="Imperia Garden">Imperia Garden</option>
               </select>
 

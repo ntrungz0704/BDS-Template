@@ -932,7 +932,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
                 <div className="flex gap-1 mb-6">
                   {[1,2,3,4,5].map(star => <Star key={star} size={16} className="fill-current text-black" />)}
                 </div>
-                <p className="text-lg italic mb-8 leading-relaxed font-light" style={{ color: COLORS.textLight }}>"{testi.text}"</p>
+                <p className="text-lg italic mb-8 leading-relaxed font-light" style={{ color: COLORS.textLight }}>“{testi.text}”</p>
                 <div>
                   <h4 className="font-semibold mb-1 font-serif text-gray-800" style={{ fontFamily: FONTS.heading, color: COLORS.primary }}>{testi.name}</h4>
                   <span className="text-xs uppercase tracking-wider text-gray-400 font-medium">{testi.role}</span>
@@ -1529,7 +1529,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
             <div>
               {searchNewsQuery && (
                 <h3 className="text-xl mb-8 font-light">
-                  Kết quả tìm kiếm cho "{searchNewsQuery}" ({filteredNews.length} bài viết):
+                  Kết quả tìm kiếm cho “{searchNewsQuery}” ({filteredNews.length} bài viết):
                 </h3>
               )}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

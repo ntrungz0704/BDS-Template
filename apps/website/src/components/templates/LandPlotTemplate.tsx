@@ -769,7 +769,7 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
           </p>
           <div style={{ borderTop: `1px solid ${theme.accent}`, borderBottom: `1px solid ${theme.accent}`, padding: '2rem 0', display: 'inline-block', marginBottom: '2rem' }}>
             <h4 style={{ fontFamily: theme.headingFont, fontSize: '1.25rem', fontWeight: 700, color: theme.text, fontStyle: 'italic' }}>
-              "Giá trị thực - Sinh lời thực - Pháp lý chuẩn"
+              “Giá trị thực - Sinh lời thực - Pháp lý chuẩn”
             </h4>
           </div>
           <div>
@@ -932,7 +932,7 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
               <div className="flex text-yellow-400 mb-4">
                 {[1,2,3,4,5].map(i => <Star key={i} size={20} fill="currentColor" />)}
               </div>
-              <p style={{ color: theme.textLight, fontStyle: 'italic', marginBottom: '1.5rem', lineHeight: 1.7 }}>"{item.text}"</p>
+              <p style={{ color: theme.textLight, fontStyle: 'italic', marginBottom: '1.5rem', lineHeight: 1.7 }}>“{item.text}”</p>
               <div style={{ fontWeight: 700, color: theme.text }}>{item.name}</div>
               <div style={{ fontSize: '0.875rem', color: theme.textLight }}>{item.role}</div>
             </div>
@@ -1477,7 +1477,7 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
               )}
               {activeAboutTab === 'philosophy' && (
                 <div>
-                  <h3 style={{ fontFamily: theme.headingFont, fontSize: '1.75rem', fontWeight: 800, color: theme.primary, marginBottom: '1rem' }}>Triết Lý Kinh Doanh "Ba Chân Kiềng"</h3>
+                  <h3 style={{ fontFamily: theme.headingFont, fontSize: '1.75rem', fontWeight: 800, color: theme.primary, marginBottom: '1rem' }}>Triết Lý Kinh Doanh “Ba Chân Kiềng”</h3>
                   <p style={{ color: theme.textLight, lineHeight: 1.8, fontSize: '1.05rem', marginBottom: '1rem' }}>
                     Triết lý của chúng tôi xoay quanh ba giá trị cốt lõi làm nền tảng vững chắc cho mọi hoạt động kinh doanh:
                   </p>
@@ -1695,7 +1695,7 @@ export default function LandPlotTemplate({ template, viewport = 'desktop', initi
               {searchNewsQuery && (
                 <div style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '4px', border: '1px solid #E5E7EB', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ color: theme.textLight }}>
-                    Kết quả tìm kiếm cho: <strong>"{searchNewsQuery}"</strong> ({filtered.length} bài viết)
+                    Kết quả tìm kiếm cho: <strong>“{searchNewsQuery}”</strong> ({filtered.length} bài viết)
                   </span>
                   <button 
                     onClick={() => setSearchNewsQuery('')}

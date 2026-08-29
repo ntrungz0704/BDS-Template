@@ -23,18 +23,12 @@ function isPlaceholderSecret(value: string): boolean {
 
 export function validateEnvironment(env: NodeJS.ProcessEnv = process.env): void {
   const issues: string[] = [];
+  const required = ['DATABASE_URL', 'JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET'] as const;
 
-  // 1. Ensure DATABASE_URL
-  if (!env.DATABASE_URL?.trim() && env.NODE_ENV !== 'test') {
-    issues.push('DATABASE_URL is required');
-  }
-
-  // 2. Safe JWT Secret fallbacks if not explicitly provided
-  if (!env.JWT_ACCESS_SECRET?.trim()) {
-    env.JWT_ACCESS_SECRET = 'bds-platform-access-token-secret-fallback-production-32chars-min-key';
-  }
-  if (!env.JWT_REFRESH_SECRET?.trim()) {
-    env.JWT_REFRESH_SECRET = 'bds-platform-refresh-token-secret-fallback-production-32chars-min-key';
+  for (const name of required) {
+    if (!env[name]?.trim()) {
+      issues.push(`${name} is required`);
+    }
   }
 
   const accessSecret = env.JWT_ACCESS_SECRET?.trim() || '';
@@ -46,35 +40,51 @@ export function validateEnvironment(env: NodeJS.ProcessEnv = process.env): void 
   if (refreshSecret && refreshSecret.length < 32) {
     issues.push('JWT_REFRESH_SECRET must contain at least 32 characters');
   }
-  if (accessSecret && isPlaceholderSecret(accessSecret) && !accessSecret.includes('fallback')) {
+  if (accessSecret && isPlaceholderSecret(accessSecret)) {
     issues.push('JWT_ACCESS_SECRET must not use a documented or placeholder value');
   }
-  if (refreshSecret && isPlaceholderSecret(refreshSecret) && !refreshSecret.includes('fallback')) {
+  if (refreshSecret && isPlaceholderSecret(refreshSecret)) {
     issues.push('JWT_REFRESH_SECRET must not use a documented or placeholder value');
   }
   if (accessSecret && refreshSecret && accessSecret === refreshSecret) {
     issues.push('JWT_ACCESS_SECRET and JWT_REFRESH_SECRET must be different');
   }
 
-  // 3. Fallback defaults for production to ensure zero-downtime boots
-  if (!env.PLATFORM_DOMAIN?.trim()) {
-    env.PLATFORM_DOMAIN = 'platformbds.vn';
-  }
-  if (!env.FRONTEND_URL?.trim()) {
-    env.FRONTEND_URL = 'https://templates.aireviewbds.com';
-  }
-  if (!env.CMS_URL?.trim()) {
-    env.CMS_URL = 'https://cms.aireviewbds.com';
-  }
-  if (!env.INTERNAL_API_TOKEN?.trim()) {
-    env.INTERNAL_API_TOKEN = 'bds-internal-api-secret-key-production-fallback-32chars';
-  }
-  if (!env.CORS_ORIGINS?.trim()) {
-    env.CORS_ORIGINS = 'https://templates.aireviewbds.com,https://cms.aireviewbds.com,https://admin.aireviewbds.com,https://aireviewbds.com,https://platformbds.vn';
+  if (env.NODE_ENV === 'production') {
+    const productionRequired = [
+      'CORS_ORIGINS',
+      'FRONTEND_URL',
+      'CMS_URL',
+      'PLATFORM_DOMAIN',
+      'COOKIE_DOMAIN',
+      'INTERNAL_API_TOKEN',
+      'SMTP_HOST',
+      'SMTP_PORT',
+      'SMTP_USER',
+      'SMTP_PASS',
+      'SMTP_FROM',
+    ] as const;
+
+    for (const name of productionRequired) {
+      if (!env[name]?.trim()) {
+        issues.push(`${name} is required in production`);
+      }
+    }
+
+    const corsOrigins = env.CORS_ORIGINS?.split(',').map((origin) => origin.trim()).filter(Boolean) || [];
+    if (corsOrigins.some((origin) => origin === '*' || !origin.startsWith('https://'))) {
+      issues.push('CORS_ORIGINS must contain only explicit HTTPS origins in production');
+    }
+
+    for (const name of ['FRONTEND_URL', 'CMS_URL'] as const) {
+      const value = env[name]?.trim();
+      if (value && !value.startsWith('https://')) {
+        issues.push(`${name} must use HTTPS in production`);
+      }
+    }
   }
 
   if (issues.length > 0) {
     throw new EnvironmentValidationError(issues);
   }
 }
-

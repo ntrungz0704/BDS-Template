@@ -643,7 +643,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         <div className="max-w-4xl mx-auto px-4">
           <Crown className="w-10 h-10 mx-auto mb-10 opacity-40" style={{ color: GOLD }} />
           <blockquote className="text-2xl md:text-4xl font-light leading-relaxed mb-8 text-white" style={{ fontFamily: FONT_HEADING }}>
-            "Chúng tôi không xây những ngôi nhà. Chúng tôi kiến tạo những <span className="italic" style={{ color: GOLD }}>di sản trường tồn</span> theo năm tháng."
+            “Chúng tôi không xây những ngôi nhà. Chúng tôi kiến tạo những <span className="italic" style={{ color: GOLD }}>di sản trường tồn</span> theo năm tháng.”
           </blockquote>
           <p className="text-base font-light leading-loose max-w-2xl mx-auto" style={{ color: MUTED, fontFamily: FONT_BODY }}>
             Lumière Group — 18 năm kiến tạo những không gian sống đỉnh cao chỉ dành cho 2.800+ vị chủ nhân tinh hoa nhất Việt Nam và khu vực.
@@ -870,7 +870,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 <div className="flex gap-1 mb-6">
                   {Array.from({ length: t.rating }).map((_, j) => <Star key={j} className="w-4 h-4 fill-current" style={{ color: GOLD }} />)}
                 </div>
-                <p className="text-base font-light leading-relaxed mb-8 italic" style={{ color: '#D0D0E0', fontFamily: FONT_HEADING }}>"{t.text}"</p>
+                <p className="text-base font-light leading-relaxed mb-8 italic" style={{ color: '#D0D0E0', fontFamily: FONT_HEADING }}>“{t.text}”</p>
                 <div className="flex items-center gap-4">
                   <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={t.img} alt={t.name} className="w-12 h-12 rounded-full object-cover" style={{ border: `2px solid ${GOLD}` }} />
                   <div>

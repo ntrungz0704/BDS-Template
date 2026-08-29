@@ -1097,11 +1097,11 @@ export default function InvestmentTemplate({ template, viewport = 'desktop', ini
               { name: 'Mr. John Smith', role: 'Expat Investor', text: 'As a foreigner navigating the VN real estate market, InvestPro provided the transparent data and legal clarity I needed. Exceptional service.', rating: 5 }
             ].map((testimonial, i) => (
               <div key={i} className="bg-gray-50 p-8 rounded-2xl border border-gray-100 relative">
-                <div className="absolute -top-5 right-8 text-6xl text-blue-100 font-serif">"</div>
+                <div className="absolute -top-5 right-8 text-6xl text-blue-100 font-serif">“</div>
                 <div className="flex gap-1 mb-4">
                   {[...Array(testimonial.rating)].map((_, j) => <Star key={j} size={16} className="fill-yellow-400 text-yellow-400" />)}
                 </div>
-                <p className="text-gray-600 mb-6 relative z-10 italic">"{testimonial.text}"</p>
+                <p className="text-gray-600 mb-6 relative z-10 italic">“{testimonial.text}”</p>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center font-bold text-gray-500">
                     {testimonial.name.charAt(0)}

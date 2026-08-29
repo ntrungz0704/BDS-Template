@@ -646,7 +646,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
                 Chào bạn, tôi là Trần Anh Tuấn. Khởi nghiệp từ năm 2013 với niềm đam mê cháy bỏng dành cho kiến trúc và không gian sống, tôi đã có hơn một thập kỷ đắm mình trong phân khúc bất động sản hạng sang.
               </p>
               <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-                Triết lý của tôi rất đơn giản: <strong>"Bán nhà không chỉ là bán những bức tường, mà là bán phong cách sống và tầm nhìn tương lai."</strong> Tôi luôn đặt mình vào vị trí của khách hàng để tìm kiếm những tài sản phù hợp nhất với nhu cầu, sở thích và định hướng tài chính.
+                 Triết lý của tôi rất đơn giản: <strong>“Bán nhà không chỉ là bán những bức tường, mà là bán phong cách sống và tầm nhìn tương lai.”</strong> Tôi luôn đặt mình vào vị trí của khách hàng để tìm kiếm những tài sản phù hợp nhất với nhu cầu, sở thích và định hướng tài chính.
               </p>
               
               <div className="grid grid-cols-2 gap-6 mb-10">
@@ -715,7 +715,7 @@ export default function PersonalAgentTemplate({ template, viewport = 'desktop', 
               <div key={i} className="min-w-[320px] md:min-w-[400px] snap-center bg-gray-800 p-8 rounded-2xl border border-gray-700">
                 <Quote size={40} className="text-indigo-500 mb-6 opacity-50" />
                 <p className="text-gray-300 mb-8 italic leading-relaxed">
-                  "Tuấn không chỉ là một môi giới, mà là một cố vấn đích thực. Cậu ấy hiểu rõ gu của tôi và đã giúp gia đình tôi tìm được căn penthouse hoàn hảo tại Thủ Thiêm. Rất chuyên nghiệp và tận tâm!"
+                  “Tuấn không chỉ là một môi giới, mà là một cố vấn đích thực. Cậu ấy hiểu rõ gu của tôi và đã giúp gia đình tôi tìm được căn penthouse hoàn hảo tại Thủ Thiêm. Rất chuyên nghiệp và tận tâm!”
                 </p>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-gray-600 rounded-full overflow-hidden">

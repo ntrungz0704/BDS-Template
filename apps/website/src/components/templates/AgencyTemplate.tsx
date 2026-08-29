@@ -1035,7 +1035,7 @@ export default function AgencyTemplate({ template, viewport = 'desktop', initial
                  <div className="flex text-yellow-400 mb-4">
                    {[1,2,3,4,5].map(s => <Star key={s} className="w-5 h-5 fill-current" />)}
                  </div>
-                 <p className="text-gray-600 mb-6 italic">"{item.txt}"</p>
+                  <p className="text-gray-600 mb-6 italic">“{item.txt}”</p>
                </div>
                <div className="flex items-center gap-4 border-t border-gray-50 pt-4">
                  <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center font-bold text-pink-700">

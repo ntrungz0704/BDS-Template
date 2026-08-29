@@ -783,7 +783,7 @@ export default function RetailTemplate({ template, viewport = 'desktop', initial
                 </div>
                 <Quote className="text-amber-200 w-12 h-12 absolute top-8 right-8" />
                 <div className="pt-8">
-                  <p className="text-gray-600 mb-6 italic leading-relaxed relative z-10">"{testi.content}"</p>
+                  <p className="text-gray-600 mb-6 italic leading-relaxed relative z-10">“{testi.content}”</p>
                   <h5 className="font-bold text-gray-900">{testi.name}</h5>
                   <p className="text-sm text-amber-600">{testi.role}</p>
                 </div>
