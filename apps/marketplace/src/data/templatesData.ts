@@ -2915,6 +2915,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "TUYỆT TÁC PENTHOUSE & SKY VILLA TẦNG KHÔNG",
       heroSubtitle: "Bộ sưu tập độc quyền các căn dinh thự trên đỉnh những tòa tháp biểu tượng đắt giá nhất Việt Nam."
     }
+  },
+  // ─── PORTAL 24. SMART CITY & FUTURE LIVING PORTAL ──────────────────────────
+  {
+    id: "portal-24",
+    name: "Template #24 - Smart City & Future Living Portal",
+    slug: "portal-24",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #24",
+    badgeBg: "#0B0F19",
+    badgeColor: "#06B6D4",
+    accentColor: "#06B6D4",
+    description: "Cổng thông tin bất động sản đô thị thông minh, thành phố tương lai (Smart City, AI Home, IoT, xe điện EV Charging, năng lượng tái tạo mặt trời Solar Roof). Chuyên căn hộ thông minh điều khiển bằng giọng nói, biệt thự sinh thái tự cung tự cấp năng lượng Net-Zero.",
+    shortDescription: "Đô thị thông minh · AI Smart Home · Trạm sạc EV & Net-Zero",
+    thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục Cybernetic Futuristic với tông Xanh Điện Tử Cyber Blue & Đen Công Nghệ",
+      "Thẻ tin Future Smart Home Card hiển thị AI Smart Home, Trạm sạc EV & Chứng chỉ LEED",
+      "Bộ lọc chuẩn công nghệ tiên phong: Căn hộ AI Voice Control, Biệt thự Net-Zero, Smart Hub",
+      "Trang chi tiết BĐS kèm thông số hệ sinh thái IoT, mức tiết kiệm năng lượng 40% và bản đồ trạm sạc",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Đại đô thị Smart City, PropTech, Giới thiệu, Trải nghiệm",
+      "Cổng cư dân thông minh tích hợp điều khiển thiết bị mẫu trực tiếp trên website"
+    ],
+    priceBuy: 799000,
+    priceBuySource: 2490000,
+    priceRentMonthly: 199000,
+    isActive: true,
+    sortOrder: 48,
+    targetAudience: ["Chủ đầu tư các đại đô thị thông minh và công trình xanh Net-Zero", "Sàn phân phối tiên phong công nghệ PropTech và smart living", "Cư dân thế hệ mới (Gen Z, Millennials, chuyên gia công nghệ)"],
+    highlights: ["Future Smart Home Cards", "IoT Smart Living & EV Charging Specs", "LEED Gold & Net-Zero Certified", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["SmartCardModule", "PropTechModule", "SmartCityProjectModule", "NetZeroLivingModule"],
+    benefits: ["Đón đầu làn sóng chuyển đổi số và công nghệ xanh trong bất động sản", "Khác biệt hóa 100% so với các sàn môi giới truyền thống", "Tăng 450% lượng khách hàng trẻ tiềm năng"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#0B0F19",
+      secondaryColor: "#111827",
+      accentColor: "#06B6D4",
+      bgColor: "#0B0F19",
+      cardBgColor: "#111827",
+      textColor: "#F1F5F9",
+      radiusToken: "1rem",
+      shadowToken: "0 10px 15px -3px rgba(6, 182, 212, 0.15)"
+    },
+    layoutConfig: {
+      heroStyle: "Cybernetic Smart City Hero với Search Bar chuẩn công nghệ",
+      navigationStyle: "Deep Space Cyber Blue Navbar",
+      cardStyle: "Future Smart Home Card (Viền dạ quang Cyber Blue, badge AI Smart Home)",
+      galleryStyle: "Futuristic Hologram Slider",
+      ctaStyle: "Cyber Blue Glowing Button",
+      spacingScale: "Futuristic Matrix Spacing"
+    },
+    wireframe: ["HeaderSmartCityHub", "HeroSmartSearch", "SmartListingsGrid", "TopSmartCityProjects", "FooterSmartCityHub"],
+    sectionConfig: {
+      sourceSlug: "portal-24",
+      heroTitle: "CỔNG BẤT ĐỘNG SẢN ĐÔ THỊ THÔNG MINH AI & NET-ZERO",
+      heroSubtitle: "Tổng hợp hơn 4.200 căn hộ thông minh điều khiển giọng nói, biệt thự năng lượng mặt trời và shophouse công nghệ cao tại các đại đô thị thông minh tiên phong."
+    }
   }
 ];
 
@@ -3008,6 +3072,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-23': 'portal-23',
   'portal-penthouse': 'portal-23',
   'skyvilla-estate': 'portal-23',
+  'portal-24': 'portal-24',
+  'portal-smartcity': 'portal-24',
+  'smartcity-hub': 'portal-24',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
