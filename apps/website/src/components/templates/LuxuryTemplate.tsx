@@ -518,11 +518,12 @@ const RENT_PROPERTIES: PropertyItem[] = [
 ];
 
 const CITIES = [
-  { id: 1, name: 'HÀ NỘI', cityCode: 'Hà Nội', count: '18 dự án', image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=80', span: 'col-span-1 md:col-span-2' },
-  { id: 2, name: 'ĐÀ NẴNG', cityCode: 'Đà Nẵng', count: '15 dự án', image: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=800&q=80', span: 'col-span-1 md:col-span-2' },
-  { id: 3, name: 'TP. HỒ CHÍ MINH', cityCode: 'TP. Hồ Chí Minh', count: '32 dự án', image: 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=800&q=80', span: 'col-span-1 md:col-span-1 md:row-span-2' },
-  { id: 4, name: 'NGHỆ AN', cityCode: 'Nghệ An', count: '12 dự án', image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80', span: 'col-span-1 md:col-span-2' },
-  { id: 5, name: 'HẢI PHÒNG', cityCode: 'Hải Phòng', count: '10 dự án', image: 'https://images.unsplash.com/photo-1477959858617-67f30bc75b82?w=800&q=80', span: 'col-span-1 md:col-span-2' },
+  { id: 1, name: 'HÀ NỘI', cityCode: 'Hà Nội', count: '18 dự án', image: 'https://images.unsplash.com/photo-1508873696983-2df5703bc20d?w=800&q=80' },
+  { id: 2, name: 'ĐÀ NẴNG', cityCode: 'Đà Nẵng', count: '15 dự án', image: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=800&q=80' },
+  { id: 3, name: 'TP. HỒ CHÍ MINH', cityCode: 'TP. Hồ Chí Minh', count: '32 dự án', image: 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=800&q=80' },
+  { id: 4, name: 'HẢI PHÒNG', cityCode: 'Hải Phòng', count: '12 dự án', image: 'https://images.unsplash.com/photo-1519999482648-25049ddd37b1?w=800&q=80' },
+  { id: 5, name: 'NHA TRANG', cityCode: 'Nha Trang', count: '10 dự án', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80' },
+  { id: 6, name: 'CẦN THƠ', cityCode: 'Cần Thơ', count: '8 dự án', image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&q=80' },
 ];
 
 const NEWS_ARTICLES: NewsItem[] = [
@@ -1177,7 +1178,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           <div className="w-8 h-1 bg-blue-600 mx-auto mt-1 rounded-full" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           {CITIES.map(city => (
             <div
               key={city.id}
@@ -1185,16 +1186,26 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
                 setFilterCity(city.cityCode);
                 navigate('can-ho');
               }}
-              className={`${city.span} h-48 md:h-52 relative rounded-xl overflow-hidden shadow-sm group cursor-pointer`}
+              className="h-48 md:h-56 relative rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group cursor-pointer border border-slate-100"
             >
-              <img src={city.image} alt={city.name} className="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <div className="absolute bottom-3 left-4 right-4 flex justify-between items-end text-white">
+              <img
+                src={city.image}
+                alt={city.name}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80';
+                }}
+                className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-transparent group-hover:from-blue-950/80 transition" />
+              <div className="absolute bottom-4 left-5 right-5 flex justify-between items-end text-white">
                 <div>
-                  <h3 className="font-black text-sm md:text-base tracking-wider">{city.name}</h3>
-                  <p className="text-[11px] text-slate-300">{city.count}</p>
+                  <h3 className="font-black text-base md:text-lg tracking-wider group-hover:text-blue-300 transition">{city.name}</h3>
+                  <p className="text-xs text-slate-300 mt-0.5 font-medium">{city.count}</p>
                 </div>
-                <ChevronRight size={18} className="group-hover:translate-x-1 transition" />
+                <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center group-hover:bg-blue-600 transition">
+                  <ChevronRight size={16} className="group-hover:translate-x-0.5 transition" />
+                </div>
               </div>
             </div>
           ))}

@@ -64,6 +64,10 @@ Quy trình này là tiêu chuẩn bắt buộc phải thực hiện sau khi tạ
   - Phải có hàm `resolvePageAndDetail` tự động phân giải slug trang con (ví dụ: `tin-tuc/slug-bai-viet`, `chi-tiet/slug-bat-dong-san`, `can-ho`, `nha-pho`, `ky-gui`, `about`, `contact`...).
   - Luôn có **Default Fallback** (nếu slug không khớp thì tự render `home` hoặc catalog), tuyệt đối **không được để `<main>` rỗng** tạo ra khoảng trắng khổng lồ phía dưới footer.
   - Footer Newsletter, 4 Cột danh mục và Thanh Copyright phải phủ màu nền 100% chiều ngang màn hình lớn, không để lộ viền trắng 2 bên mép.
+- [ ] **Khả Năng Co Giãn Section Động Cho CMS (Dynamic CMS Grid Flexibility & Zero Broken Images)**:
+  - Tất cả danh sách nội dung (BĐS bán, BĐS thuê, Dự án nổi bật, Dự án theo tỉnh/thành phố, Tin tức, Tiện ích...) phải dùng bố cục lưới tự động co giãn (`grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-5`).
+  - Khi người dùng vào CMS thêm 1 ô (từ 3 ô thành 4 ô hoặc 5 ô) hoặc bớt ô, giao diện phải tự động rớt hàng đều đặn, cân đối lề, tuyệt đối không được dùng layout cố định cứng làm vỡ bố cục.
+  - 100% các thẻ `<img>` phải có thuộc tính `onError` tự động fallback sang ảnh dự phòng sắc nét, chống hoàn toàn hiện tượng icon vỡ ảnh.
 
 ---
 
