@@ -42,6 +42,7 @@ const HanoiRentalPortalTemplate = dynamic(() => import('./templates/HanoiRentalP
 const HappyLandResortTemplate = dynamic(() => import('./templates/HappyLandResortTemplate'), { loading: () => <LoadingSkeleton /> });
 const HomeoMultiThumbnailTemplate = dynamic(() => import('./templates/HomeoMultiThumbnailTemplate'), { loading: () => <LoadingSkeleton /> });
 const RealtyBuildTechTemplate = dynamic(() => import('./templates/RealtyBuildTechTemplate'), { loading: () => <LoadingSkeleton /> });
+const Portal01ClassicTemplate = dynamic(() => import('./portal-templates/Portal01ClassicTemplate'), { loading: () => <LoadingSkeleton /> });
 
 interface DemoRendererProps {
   template: Template;
@@ -1066,6 +1067,9 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
   const page = normalizePageSlug(initialPage);
 
   const renderContent = () => {
+    if (slug === 'portal-01' || slug === 'portal-classic' || slug === 'bds-01-portal' || sourceSlug === 'portal-01' || sourceSlug === 'portal-classic') {
+      return <Portal01ClassicTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+    }
     if (slug === 'bds-01' || sourceSlug === 'luxury-gold' || slug === 'luxury-gold') {
       return <LuxuryTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }

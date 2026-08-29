@@ -1443,6 +1443,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "TRANG TIN BẤT ĐỘNG SẢN SỐ 1 VIỆT NAM",
       heroSubtitle: "Tìm kiếm bất động sản, dự án đầu tư và căn hộ cho thuê hàng đầu Việt Nam."
     }
+  },
+  // ─── PORTAL 01. BATDONGSAN CLASSIC PORTAL ──────────────────────────────────
+  {
+    id: "portal-01",
+    name: "Template #01 - BatDongSan Classic Portal",
+    slug: "portal-01",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #01",
+    badgeBg: "#D8232A",
+    badgeColor: "#FFFFFF",
+    accentColor: "#D8232A",
+    description: "Cổng thông tin & sàn giao dịch BĐS kinh điển phong cách Batdongsan.com.vn. Bố cục 2 cột với sidebar phải dày đặc, bộ lọc đa tiêu chí thời gian thực, thẻ tin đăng dạng hàng ngang (Horizontal Dense Card), đầy đủ 9 trang con nghiệp vụ.",
+    shortDescription: "Sàn giao dịch BĐS · Rao vặt kinh điển · Sidebar dày đặc",
+    thumbnail: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Trang chủ 11 khối chuẩn phong cách Batdongsan",
+      "Bộ lọc tìm kiếm đa tiêu chí: Tỉnh/Huyện, Loại BĐS, Khoảng giá, Diện tích",
+      "Card tin đăng dạng hàng ngang Horizontal Dense kèm Badge HOT & Đã xác thực",
+      "Chi tiết tin đăng kèm Gallery Lightbox, Card môi giới gọi/Zalo, Bản đồ vị trí",
+      "Trang Dự án, Tin tức, Giới thiệu, Liên hệ & Ký gửi, Modal Đăng nhập/Đăng ký",
+      "Đồng bộ URL Slug mượt mà, hỗ trợ popstate trình duyệt 100%"
+    ],
+    priceBuy: 699000,
+    priceBuySource: 1990000,
+    priceRentMonthly: 149000,
+    isActive: true,
+    sortOrder: 25,
+    targetAudience: ["Sàn giao dịch BĐS tổng hợp", "Công ty môi giới nhà đất", "Đội nhóm sale phân phối nhiều dự án", "Cổng thông tin rao vặt địa phương"],
+    highlights: ["Horizontal Dense Listing", "Sidebar Phải Dày Đặc", "Bộ Lọc Đa Tiêu Chí Realtime", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["RealtimeFilterModule", "HorizontalDenseCardModule", "ProjectMiniLandingModule", "LeadCaptureModule", "BrokerCardModule", "InteractiveMapModule"],
+    benefits: ["Tăng 350% tỷ lệ chuyển đổi khách hàng", "Tiếp cận chuẩn giao diện quen thuộc của người dùng Việt Nam", "Dễ dàng quản lý hàng ngàn tin đăng và dự án"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#D8232A",
+      secondaryColor: "#002B49",
+      accentColor: "#EAB308",
+      bgColor: "#F4F5F7",
+      cardBgColor: "#FFFFFF",
+      textColor: "#1E293B",
+      radiusToken: "0.5rem",
+      shadowToken: "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+    },
+    layoutConfig: {
+      heroStyle: "Classic Red/Navy Hero với Search Bar nổi trung tâm",
+      navigationStyle: "White Navbar với Topbar tiện ích đỏ navy",
+      cardStyle: "Horizontal Dense Card (Ảnh trái 4:3, thông số phải)",
+      galleryStyle: "4-column Lightbox Grid",
+      ctaStyle: "Classic Red Button with Shadow",
+      spacingScale: "Classic Dense Layout"
+    },
+    wireframe: ["HeaderClassic", "HeroSearchBar", "CategoryIcons6Grid", "MainListingWithSidebar", "FeaturedProjects3Grid", "CityLocations6Grid", "NewsAndNewsletter", "FooterClassic"],
+    sectionConfig: {
+      sourceSlug: "portal-01",
+      heroTitle: "TÌM KIẾM NGÔI NHÀ MƠ ƯỚC CỦA BẠN",
+      heroSubtitle: "Hơn 100.000+ bất động sản chính chủ, giá tốt, pháp lý minh bạch."
+    }
   }
 ];
 
@@ -1467,6 +1531,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'homeo-agency': 'bds-23',
   'realtybuild-tech': 'bds-24',
   'realtybuild-portal': 'bds-24',
+  'portal-01': 'portal-01',
+  'portal-classic': 'portal-01',
+  'batdongsan-classic': 'portal-01',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
