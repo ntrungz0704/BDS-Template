@@ -2019,6 +2019,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "BẢO TỒN & CHUYỂN NHƯỢNG DINH THỰ PHÁP CỔ",
       heroSubtitle: "Tuyển chọn những bất động sản mang giá trị lịch sử, nhà rường Cố Đô và biệt thự Đông Dương."
     }
+  },
+  // ─── PORTAL 10. INVESTMENT & HIGH YIELD PORTAL ─────────────────────────────
+  {
+    id: "portal-10",
+    name: "Template #10 - Investment & High Yield Portal",
+    slug: "portal-10",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #10",
+    badgeBg: "#0D9488",
+    badgeColor: "#FFFFFF",
+    accentColor: "#0D9488",
+    description: "Cổng thông tin và sàn giao dịch bất động sản đầu tư dòng tiền, căn hộ dịch vụ (CHDV), tòa nhà văn phòng và shophouse cho thuê sẵn hợp đồng. Hiển thị tỷ suất sinh lời ROI %, dòng tiền ròng hàng tháng và tiềm năng tăng vốn.",
+    shortDescription: "BĐS dòng tiền · Tòa CHDV · Tỷ suất ROI 8% - 15%/năm · Lãi vốn cao",
+    thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục tài chính chuyên sâu với tông Xanh Ngọc Bích & Vàng Gold Kim Tiền",
+      "Thẻ tin Financial Metrics Card hiển thị ROI %, Dòng tiền ròng Tr/tháng, Tỷ lệ lấp đầy",
+      "Bộ lọc BĐS theo mức ROI mong muốn (8% - 15%/năm) và số vốn đầu tư",
+      "Trang chi tiết BĐS kèm bảng tính phân tích đòn bẩy ngân hàng và bài toán hoàn vốn",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án ROI cao, Báo cáo tài chính, Giới thiệu, Liên hệ",
+      "Tích hợp form đăng ký nhận danh sách BĐS ngộp thanh lý dưới giá thị trường"
+    ],
+    priceBuy: 749000,
+    priceBuySource: 2190000,
+    priceRentMonthly: 169000,
+    isActive: true,
+    sortOrder: 34,
+    targetAudience: ["Nhà đầu tư cá nhân tìm kiếm dòng tiền thụ động", "Sàn chuyên phân phối tòa căn hộ dịch vụ (CHDV) & văn phòng mini", "Quỹ đầu tư BĐS tư nhân"],
+    highlights: ["Financial Metrics Cards", "ROI & Cap Rate Calculator", "High Yield Filters", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["FinancialCardModule", "RoiCalculatorModule", "CashflowAnalysisModule", "LiquidationAlertModule"],
+    benefits: ["Thuyết phục 100% các nhà đầu tư sành sỏi dựa trên con số thực tế", "Gia tăng 350% tỷ lệ chốt deal các sản phẩm dòng tiền giá trị lớn", "Tối ưu hóa phễu khách hàng VIP"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#0D9488",
+      secondaryColor: "#0F766E",
+      accentColor: "#EAB308",
+      bgColor: "#F8FAFC",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "1rem",
+      shadowToken: "0 10px 15px -3px rgba(13, 148, 136, 0.1)"
+    },
+    layoutConfig: {
+      heroStyle: "Financial Analytics Hero với Search Bar khoảng ROI",
+      navigationStyle: "Modern Teal Rounded Navbar",
+      cardStyle: "Financial Metrics Card (Grid chỉ số dòng tiền & ROI %)",
+      galleryStyle: "Financial Investment Slider",
+      ctaStyle: "Teal Gradient Investment Button",
+      spacingScale: "Analytical Structured Spacing"
+    },
+    wireframe: ["HeaderInvestPro", "HeroFinancialSearch", "YieldListingsGrid", "HighRoiProjects", "FooterInvestPro"],
+    sectionConfig: {
+      sourceSlug: "portal-10",
+      heroTitle: "ĐẦU TƯ BẤT ĐỘNG SẢN DÒNG TIỀN THU NHẬP 8% - 15%/NĂM",
+      heroSubtitle: "Hơn 3.500 tòa nhà căn hộ dịch vụ (CHDV), shophouse khối đế và văn phòng cho thuê sẵn hợp đồng."
+    }
   }
 ];
 
@@ -2070,6 +2134,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-09': 'portal-09',
   'portal-heritage': 'portal-09',
   'heritage-estate': 'portal-09',
+  'portal-10': 'portal-10',
+  'portal-investment': 'portal-10',
+  'invest-pro': 'portal-10',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
