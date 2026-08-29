@@ -44,6 +44,7 @@ const HomeoMultiThumbnailTemplate = dynamic(() => import('./templates/HomeoMulti
 const RealtyBuildTechTemplate = dynamic(() => import('./templates/RealtyBuildTechTemplate'), { loading: () => <LoadingSkeleton /> });
 const Portal01ClassicTemplate = dynamic(() => import('./portal-templates/Portal01ClassicTemplate'), { loading: () => <LoadingSkeleton /> });
 const Portal02ModernMetroTemplate = dynamic(() => import('./portal-templates/Portal02ModernMetroTemplate'), { loading: () => <LoadingSkeleton /> });
+const Portal03LuxuryPrestigeTemplate = dynamic(() => import('./portal-templates/Portal03LuxuryPrestigeTemplate'), { loading: () => <LoadingSkeleton /> });
 
 interface DemoRendererProps {
   template: Template;
@@ -1073,6 +1074,9 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
     }
     if (slug === 'portal-02' || slug === 'portal-modern' || slug === 'metro-estate' || sourceSlug === 'portal-02' || sourceSlug === 'portal-modern') {
       return <Portal02ModernMetroTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+    }
+    if (slug === 'portal-03' || slug === 'portal-luxury' || slug === 'prestige-realty' || sourceSlug === 'portal-03' || sourceSlug === 'portal-luxury') {
+      return <Portal03LuxuryPrestigeTemplate template={template} viewport={viewport} initialPage={initialPage} />;
     }
     if (slug === 'bds-01' || sourceSlug === 'luxury-gold' || slug === 'luxury-gold') {
       return <LuxuryTemplate template={template} viewport={viewport} initialPage={initialPage} />;

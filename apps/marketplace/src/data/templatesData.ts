@@ -1571,6 +1571,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "KHÔNG GIAN SỐNG CHUẨN MỰC CHO GIA ĐÌNH HIỆN ĐẠI",
       heroSubtitle: "Hơn 25.000 căn hộ cao cấp, duplex, penthouse và nhà phố đô thị."
     }
+  },
+  // ─── PORTAL 03. LUXURY REALTY PRESTIGE ─────────────────────────────────────
+  {
+    id: "portal-03",
+    name: "Template #03 - Luxury Realty Prestige",
+    slug: "portal-03",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #03",
+    badgeBg: "#C9A84C",
+    badgeColor: "#000000",
+    accentColor: "#C9A84C",
+    description: "Sàn phân phối bất động sản cao cấp, dinh thự triệu đô, biệt thự ven sông và penthouse thượng lưu. Bố cục Editorial sang trọng với tông đen Midnight & vàng Gold hoàng gia, card listing 16:9 tinh tế.",
+    shortDescription: "Dinh thự triệu đô · Biệt thự đảo · Penthouse thượng lưu",
+    thumbnail: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục Editorial sang trọng với viền vàng Gold hoàng gia",
+      "Thanh tìm kiếm VIP Concierge tối giản",
+      "Thẻ listing Editorial 16:9 với font Serif cổ điển",
+      "Trang chi tiết dinh thự với Gallery Fullscreen và thông số bảo mật",
+      "Đầy đủ 9 trang con nghiệp vụ: Bán, Thuê, Dự án, Tạp chí VIP, Giới thiệu, Liên hệ",
+      "Tích hợp tính năng đặt lịch xem nhà riêng tư bằng xe Maybach & du thuyền"
+    ],
+    priceBuy: 799000,
+    priceBuySource: 2490000,
+    priceRentMonthly: 199000,
+    isActive: true,
+    sortOrder: 27,
+    targetAudience: ["Sàn phân phối BĐS cao cấp & siêu sang", "Đại lý F1 biệt thự Vinhomes / Masterise / Ecopark", "Văn phòng Family Office & Quản lý gia sản"],
+    highlights: ["Royal Gold & Midnight Luxury", "Editorial 16:9 Cards", "VIP Concierge Integration", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["VipConciergeModule", "EditorialCardModule", "MasterpieceProjectModule", "LuxuryLifestyleModule", "PrivateTourModule"],
+    benefits: ["Nâng tầm thương hiệu sàn môi giới lên phân khúc High-End", "Tăng 420% sự tin cậy đối với giới siêu giàu", "Đầy đủ 100% chức năng portal"],
+    themeConfig: {
+      fontHeading: "'Playfair Display', serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#C9A84C",
+      secondaryColor: "#0A0A0F",
+      accentColor: "#E8C97E",
+      bgColor: "#0A0A0F",
+      cardBgColor: "#12121A",
+      textColor: "#FFFFFF",
+      radiusToken: "0.25rem",
+      shadowToken: "0 20px 25px -5px rgba(0, 0, 0, 0.5)"
+    },
+    layoutConfig: {
+      heroStyle: "Luxury Midnight Hero với thanh tìm kiếm nổi viền Gold",
+      navigationStyle: "Midnight Gold Glass Navbar",
+      cardStyle: "Editorial 16:9 Card viền Gold mảnh",
+      galleryStyle: "Fullscreen Luxury Gallery",
+      ctaStyle: "Royal Gold Button with Glow",
+      spacingScale: "Generous Luxury Spacing"
+    },
+    wireframe: ["HeaderPrestige", "HeroLuxurySearch", "LimitedEditionEditorial", "MasterpieceProjects", "HighEndLocations", "LifestyleMagazine", "FooterPrestige"],
+    sectionConfig: {
+      sourceSlug: "portal-03",
+      heroTitle: "TUYỆT TÁC DINH THỰ DÀNH CHO GIỚI TINH HOA",
+      heroSubtitle: "Bộ sưu tập bất động sản triệu đô sở hữu vị thế độc tôn."
+    }
   }
 ];
 
@@ -1601,6 +1665,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-02': 'portal-02',
   'portal-modern': 'portal-02',
   'metro-estate': 'portal-02',
+  'portal-03': 'portal-03',
+  'portal-luxury': 'portal-03',
+  'prestige-realty': 'portal-03',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
