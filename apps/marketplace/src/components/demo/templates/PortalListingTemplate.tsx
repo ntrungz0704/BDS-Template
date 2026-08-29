@@ -295,6 +295,9 @@ const NEWS_LIST = [
 
 export default function PortalListingTemplate({ template, viewport = 'desktop', initialPage = 'home', company }: TemplateProps) {
   const [currentPage, setCurrentPage] = useState<string>(initialPage || 'home');
+  const isHome = useMemo(() => {
+    return currentPage === 'home' || !['sale', 'rent', 'projects', 'du-an', 'detail', 'chi-tiet', 'news', 'tin-tuc', 'about', 'gioi-thieu', 'contact', 'lien-he'].includes(currentPage);
+  }, [currentPage]);
   const [selectedProperty, setSelectedProperty] = useState<any>(SALE_PROPERTIES[0]);
   const [selectedArticle, setSelectedArticle] = useState<any>(null);
   const [leadModalProject, setLeadModalProject] = useState<any>(null);
@@ -493,7 +496,7 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
         {/* ─────────────────────────────────────────────────────────────
             PAGE 1: TRANG CHỦ (HOME PAGE EXACTLY LIKE THE SCREENSHOT)
         ───────────────────────────────────────────────────────────── */}
-        {currentPage === 'home' && (
+        {isHome && (
           <div>
             {/* 1. HERO SECTION WITH BLUE GRADIENT & SEARCH FILTER */}
             <section className="relative bg-gradient-to-r from-[#0F284E] via-[#0F3875] to-[#1E40AF] text-white py-16 sm:py-20 px-4 sm:px-8 overflow-hidden">
@@ -1394,6 +1397,54 @@ export default function PortalListingTemplate({ template, viewport = 'desktop', 
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            PAGE 6B: GIỚI THIỆU (ABOUT)
+        ───────────────────────────────────────────────────────────── */}
+        {(currentPage === 'about' || currentPage === 'gioi-thieu') && (
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-8 py-12 space-y-10">
+            <div className="bg-white rounded-3xl border border-slate-200 p-8 sm:p-12 shadow-xs space-y-8">
+              <div className="border-b border-slate-200 pb-6">
+                <span className="text-xs font-bold text-blue-600 uppercase tracking-widest block mb-1">VỀ CHÚNG TÔI</span>
+                <h1 className="text-3xl sm:text-4xl font-black text-slate-900">Cổng Thông Tin Giao Dịch BĐS Toàn Diện</h1>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div className="lg:col-span-7 space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  <p>
+                    Cổng thông tin cung cấp cơ sở dữ liệu bất động sản khổng lồ với hơn 50.000+ tin đăng mua bán và cho thuê được kiểm duyệt pháp lý nghiêm ngặt tại các thành phố lớn trên cả nước.
+                  </p>
+                  <p>
+                    Ứng dụng công nghệ bản đồ số, tra cứu phong thủy và thẩm định giá trực tuyến, chúng tôi giúp khách hàng đưa ra quyết định an cư và đầu tư chính xác, an toàn và tối ưu tài chính nhất.
+                  </p>
+                  <div className="grid grid-cols-3 gap-4 pt-4 text-center">
+                    <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl">
+                      <strong className="text-xl font-black text-blue-700 block">50.000+</strong>
+                      <span className="text-[11px] text-slate-500">Tin đăng xác thực</span>
+                    </div>
+                    <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl">
+                      <strong className="text-xl font-black text-emerald-700 block">99.2%</strong>
+                      <span className="text-[11px] text-slate-500">Pháp lý chuẩn</span>
+                    </div>
+                    <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-2xl">
+                      <strong className="text-xl font-black text-indigo-700 block">100+</strong>
+                      <span className="text-[11px] text-slate-500">Chuyên gia đồng hành</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="lg:col-span-5">
+                  <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80" alt="About portal" className="w-full h-64 object-cover rounded-2xl border border-slate-200 shadow-sm" />
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-200">
+                <button onClick={() => setCurrentPage('home')} className="text-xs font-bold text-blue-600 hover:underline">
+                  ← Quay lại trang chủ
+                </button>
+              </div>
             </div>
           </div>
         )}

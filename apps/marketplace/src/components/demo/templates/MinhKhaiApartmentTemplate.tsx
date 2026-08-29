@@ -279,6 +279,8 @@ export const MinhKhaiApartmentTemplate: React.FC<MinhKhaiApartmentTemplateProps>
     navigate('tin-tuc', art.slug || art.id);
   };
 
+  const isHome = currentPage === 'home' || (!['about', 'projects', 'news', 'gallery', 'knowledge', 'career', 'contact', 'project-detail', 'news-detail', 'du-an', 'tin-tuc'].includes(currentPage) && !currentPage.startsWith('du-an') && !currentPage.startsWith('tin-tuc'));
+
   return (
     <div className="min-h-screen bg-white font-sans text-slate-800 flex flex-col">
       {/* 1. HEADER WITH GOLDEN EAGLE LOGO */}
@@ -313,7 +315,7 @@ export const MinhKhaiApartmentTemplate: React.FC<MinhKhaiApartmentTemplateProps>
       </header>
 
       {/* 2. HERO (CHỈ Ở HOME) */}
-      {currentPage === 'home' && (
+      {isHome && (
         <section className="relative h-[520px] sm:h-[620px] bg-slate-950 overflow-hidden flex items-center justify-center text-center text-white">
           <img
             src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=1600&q=80"
@@ -333,7 +335,7 @@ export const MinhKhaiApartmentTemplate: React.FC<MinhKhaiApartmentTemplateProps>
       )}
 
       {/* 3. HOME VIEW */}
-      {currentPage === 'home' && (
+      {isHome && (
         <main className="max-w-[1360px] mx-auto px-4 py-12 space-y-16 flex-1">
           {/* SECTION 1: 8 DỰ ÁN CĂN HỘ */}
           <section>

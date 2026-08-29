@@ -79,6 +79,8 @@ export const RealtyBuildTechTemplate: React.FC<RealtyBuildTechTemplateProps> = (
     navigate('chi-tiet', prop.slug || prop.id);
   };
 
+  const isHome = currentPage === 'home' || (!['listings', 'cities', 'contact', 'prop-detail', 'chi-tiet', 'about', 'gioi-thieu', 'news', 'tin-tuc', 'projects', 'du-an'].includes(currentPage) && !currentPage.startsWith('chi-tiet'));
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-800 flex flex-col">
       {/* HEADER */}
@@ -110,7 +112,7 @@ export const RealtyBuildTechTemplate: React.FC<RealtyBuildTechTemplateProps> = (
       </header>
 
       {/* HERO */}
-      {currentPage === 'home' && (
+      {isHome && (
         <section className="relative h-[520px] bg-slate-950 overflow-hidden flex items-center justify-center text-center text-white">
           <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80" alt="Hero" className="w-full h-full object-cover opacity-40" />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
@@ -123,7 +125,7 @@ export const RealtyBuildTechTemplate: React.FC<RealtyBuildTechTemplateProps> = (
       )}
 
       {/* HOME VIEW */}
-      {currentPage === 'home' && (
+      {isHome && (
         <main className="max-w-[1360px] mx-auto px-4 py-12 space-y-16 flex-1">
           {/* CITIES */}
           <section>
@@ -276,6 +278,87 @@ export const RealtyBuildTechTemplate: React.FC<RealtyBuildTechTemplateProps> = (
                 <div className="absolute bottom-3 left-3 text-white">
                   <h3 className="text-sm font-bold group-hover:text-sky-300 transition-colors">{c.name}</h3>
                   <span className="text-[11px] text-slate-300">{c.count}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </main>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          PAGE: GIỚI THIỆU (ABOUT)
+      ───────────────────────────────────────────────────────────── */}
+      {(currentPage === 'about' || currentPage === 'gioi-thieu') && (
+        <main className="max-w-[1200px] mx-auto px-4 py-10 space-y-8 flex-1 w-full">
+          <div className="bg-white p-8 border border-slate-200 shadow-xs space-y-6">
+            <div className="border-b border-slate-200 pb-4">
+              <span className="text-xs font-bold text-[#0284C7] uppercase tracking-widest block mb-1">VỀ NỀN TẢNG</span>
+              <h1 className="text-2xl font-black text-slate-900 uppercase">RealtyBuild Tech Portal</h1>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-7 space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <p>
+                  <strong>RealtyBuild</strong> là nền tảng PropTech tiên phong kết hợp dữ liệu lớn và thuật toán định giá thông minh, cung cấp cho các nhà đầu tư cái nhìn toàn diện và chính xác nhất về tiềm năng tăng trưởng của từng khu vực.
+                </p>
+                <p>
+                  Chúng tôi xây dựng hệ thống bản đồ số hóa quy hoạch 1/500, theo dõi tiến độ thi công thực tế và chỉ số biến động giá đất tại các vùng kinh tế trọng điểm phía Bắc và phía Nam.
+                </p>
+                <div className="grid grid-cols-3 gap-4 pt-2 text-center">
+                  <div className="p-3 bg-sky-50 border border-sky-100 rounded">
+                    <strong className="text-lg font-black text-[#0284C7] block">10.000+</strong>
+                    <span className="text-[10px] text-slate-500">Dự án số hóa</span>
+                  </div>
+                  <div className="p-3 bg-sky-50 border border-sky-100 rounded">
+                    <strong className="text-lg font-black text-[#0284C7] block">100%</strong>
+                    <span className="text-[10px] text-slate-500">Quy hoạch chuẩn</span>
+                  </div>
+                  <div className="p-3 bg-sky-50 border border-sky-100 rounded">
+                    <strong className="text-lg font-black text-[#0284C7] block">AI Hub</strong>
+                    <span className="text-[10px] text-slate-500">Định giá thời gian thực</span>
+                  </div>
+                </div>
+              </div>
+              <div className="lg:col-span-5">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80" alt="RealtyBuild Portal" className="w-full h-56 object-cover border border-slate-200 shadow-sm" />
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-200">
+              <button onClick={() => navigate('home')} className="text-xs font-bold text-[#0284C7] hover:underline">
+                ← Quay lại trang chủ
+              </button>
+            </div>
+          </div>
+        </main>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          PAGE: TIN TỨC & PHÂN TÍCH (NEWS)
+      ───────────────────────────────────────────────────────────── */}
+      {(currentPage === 'news' || currentPage === 'tin-tuc' || currentPage.startsWith('tin-tuc')) && (
+        <main className="max-w-[1360px] mx-auto px-4 py-8 space-y-8 flex-1 w-full">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 uppercase">Tin Tức Thị Trường & Công Nghệ Bất Động Sản</h1>
+            <button onClick={() => navigate('home')} className="text-xs font-bold text-[#0284C7] hover:underline">← Về trang chủ</button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { title: 'Chỉ số giá đất đô thị quý mới nhất: Đà tăng mạnh tại khu Đông', cat: 'Phân tích dữ liệu', date: 'Hôm nay', img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80', desc: 'Báo cáo chi tiết về biến động giá đất ở và căn hộ tại 15 quận huyện trung tâm.' },
+              { title: 'Ứng dụng AI trong thẩm định giá bất động sản tự động', cat: 'Công nghệ BĐS', date: 'Hôm qua', img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80', desc: 'Mô hình học máy dự báo biên độ tăng giá dựa trên 200 tham số vị trí và hạ tầng.' },
+              { title: 'Tiến độ các tuyến cao tốc trọng điểm kết nối vùng năm 2026', cat: 'Quy hoạch hạ tầng', date: '2 ngày trước', img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80', desc: 'Cập nhật tiến độ giải phóng mặt bằng và thi công thực tế tại các dự án trọng điểm.' },
+            ].map((art, idx) => (
+              <div key={idx} className="bg-white border border-slate-200 overflow-hidden shadow-2xs hover:shadow-lg transition-all p-4 flex flex-col justify-between">
+                <div>
+                  <div className="aspect-[16/10] overflow-hidden mb-3">
+                    <img src={art.img} alt={art.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                  </div>
+                  <span className="text-[10px] font-bold text-[#0284C7] uppercase">{art.cat} · {art.date}</span>
+                  <h3 className="font-bold text-sm text-slate-900 mt-1 mb-2 leading-snug">{art.title}</h3>
+                  <p className="text-xs text-slate-500 line-clamp-2">{art.desc}</p>
+                </div>
+                <div className="pt-3 border-t border-slate-100 mt-3">
+                  <span className="text-xs font-bold text-[#0284C7]">Đọc tiếp →</span>
                 </div>
               </div>
             ))}

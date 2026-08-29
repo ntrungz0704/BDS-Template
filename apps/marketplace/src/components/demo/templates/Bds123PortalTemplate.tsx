@@ -86,6 +86,9 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
   company
 }) => {
   const [currentPage, setCurrentPage] = useState<string>(initialPage);
+  const isHome = useMemo(() => {
+    return currentPage === 'home' || !['sale', 'rent', 'projects', 'du-an', 'news', 'tin-tuc', 'about', 'gioi-thieu', 'contact'].includes(currentPage);
+  }, [currentPage]);
   const [searchTab, setSearchTab] = useState<'sale' | 'rent'>('sale');
   const [keyword, setKeyword] = useState<string>('');
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
@@ -229,7 +232,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
       {/* ─────────────────────────────────────────────────────────────
           2. HERO SEARCH BOX (Ảnh 4)
       ───────────────────────────────────────────────────────────── */}
-      {currentPage === 'home' && !selectedProperty && (
+      {isHome && !selectedProperty && (
         <section className="bg-white border-b border-slate-200 py-8 px-4">
           <div className="max-w-[1000px] mx-auto text-center">
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mb-2">
@@ -317,7 +320,7 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
       {/* ─────────────────────────────────────────────────────────────
           3. MAIN CONTENT (HOME)
       ───────────────────────────────────────────────────────────── */}
-      {currentPage === 'home' && !selectedProperty && (
+      {isHome && !selectedProperty && (
         <main className="max-w-[1240px] mx-auto px-4 py-8 space-y-10">
           {/* SECTION 1: BẤT ĐỘNG SẢN THEO KHU VỰC */}
           <section className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
@@ -614,6 +617,145 @@ export const Bds123PortalTemplate: React.FC<Bds123PortalTemplateProps> = ({
                 </div>
               </div>
             ))}
+          </div>
+        </main>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          PAGE: DỰ ÁN BẤT ĐỘNG SẢN (PROJECTS)
+      ───────────────────────────────────────────────────────────── */}
+      {(currentPage === 'projects' || currentPage === 'du-an') && !selectedProperty && (
+        <main className="max-w-[1240px] mx-auto px-4 py-8 space-y-8">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
+            <div>
+              <h1 className="text-2xl font-black text-slate-900">Dự Án Bất Động Sản Nổi Bật</h1>
+              <p className="text-xs text-slate-500">Các đại đô thị, chung cư cao cấp và dự án nghỉ dưỡng hàng đầu</p>
+            </div>
+            <button
+              onClick={() => setCurrentPage('home')}
+              className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1"
+            >
+              <ChevronLeft className="w-4 h-4" /> Quay lại trang chủ
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {FEATURED_PROJECTS.map((proj) => (
+              <div
+                key={proj.id}
+                onClick={() => setCurrentPage('contact')}
+                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between"
+              >
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <img src={proj.image} alt={proj.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <span className="absolute top-3 left-3 bg-[#0072bc] text-white text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-wider">
+                    {proj.tag}
+                  </span>
+                  <span className="absolute bottom-3 right-3 bg-slate-900/80 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-md font-mono">
+                    {proj.price}
+                  </span>
+                </div>
+                <div className="p-5 flex-1 flex flex-col justify-between">
+                  <div>
+                    <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wider block mb-1">Chủ đầu tư: {proj.developer}</span>
+                    <h3 className="font-bold text-sm text-slate-900 group-hover:text-blue-600 mb-2 leading-snug">{proj.title}</h3>
+                    <p className="text-xs text-slate-500 flex items-center gap-1"><MapPin className="w-3.5 h-3.5 text-slate-400" /> {proj.loc}</p>
+                  </div>
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs mt-3">
+                    <span className="text-slate-400 font-medium">Pháp lý: Sổ hồng lâu dài</span>
+                    <span className="font-bold text-blue-600 group-hover:underline">Nhận bảng giá →</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </main>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          PAGE: TIN TỨC BẤT ĐỘNG SẢN (NEWS)
+      ───────────────────────────────────────────────────────────── */}
+      {(currentPage === 'news' || currentPage === 'tin-tuc' || currentPage.startsWith('tin-tuc')) && !selectedProperty && (
+        <main className="max-w-[1240px] mx-auto px-4 py-8 space-y-8">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
+            <div>
+              <h1 className="text-2xl font-black text-slate-900">Tin Tức Thị Trường & Cẩm Nang Bất Động Sản</h1>
+              <p className="text-xs text-slate-500">Cập nhật xu hướng giá cả, biến động thị trường và tư vấn pháp lý</p>
+            </div>
+            <button
+              onClick={() => setCurrentPage('home')}
+              className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1"
+            >
+              <ChevronLeft className="w-4 h-4" /> Quay lại trang chủ
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { title: 'Thị trường bất động sản năm 2026: Cơ hội vàng cho nhà đầu tư dài hạn', date: 'Hôm nay', category: 'Phân tích thị trường', image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80', desc: 'Dòng tiền bắt đầu giải ngân mạnh vào các dự án có pháp lý hoàn chỉnh và vị trí kết nối giao thông đồng bộ.' },
+              { title: 'Bí quyết chọn căn hộ chung cư hợp phong thủy đón tài lộc', date: 'Hôm qua', category: 'Cẩm nang mua nhà', image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80', desc: 'Hướng ban công, vị trí bếp và phòng khách là những yếu tố then chốt tạo sinh khí cho gia chủ.' },
+              { title: 'Bảng giá đất mới: Tác động thế nào tới chi phí làm sổ đỏ và thuế chuyển nhượng?', date: '2 ngày trước', category: 'Tư vấn pháp lý', image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80', desc: 'Chi tiết hướng dẫn cách tính nghĩa vụ tài chính và các trường hợp được miễn giảm lệ phí theo luật mới.' },
+              { title: 'Top 5 khu đô thị xanh đáng sống nhất khu vực phía Đông', date: '3 ngày trước', category: 'Không gian sống', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80', desc: 'Không gian mặt nước, công viên cây xanh và hệ thống trường học quốc tế mang lại chuẩn sống tiện nghi.' },
+              { title: 'Kinh nghiệm đàm phán giá khi mua nhà phố thứ cấp', date: '4 ngày trước', category: 'Kinh nghiệm đầu tư', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80', desc: 'Cách định giá chính xác tài sản, kiểm tra quy hoạch lộ giới và kỹ năng thương lượng với chủ nhà.' },
+              { title: 'Lãi suất vay mua nhà các ngân hàng thương mại cập nhật mới nhất', date: '5 ngày trước', category: 'Tài chính ngân hàng', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80', desc: 'Gói vay ưu đãi cố định 2-3 năm đầu từ 5.5%/năm giúp giảm áp lực tài chính cho người mua nhà lần đầu.' }
+            ].map((art, idx) => (
+              <div key={idx} className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all p-4 flex flex-col justify-between group cursor-pointer">
+                <div>
+                  <div className="aspect-[16/10] overflow-hidden rounded-lg mb-3 bg-slate-100">
+                    <img src={art.image} alt={art.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                  </div>
+                  <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase mb-1.5 inline-block">{art.category}</span>
+                  <h3 className="font-bold text-xs text-slate-900 group-hover:text-blue-600 line-clamp-2 mb-1.5 leading-snug">{art.title}</h3>
+                  <p className="text-[11px] text-slate-500 line-clamp-3 leading-relaxed">{art.desc}</p>
+                </div>
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 mt-3">
+                  <span>🕒 {art.date}</span>
+                  <span className="text-blue-600 font-bold group-hover:underline">Chi tiết →</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </main>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          PAGE: GIỚI THIỆU (ABOUT)
+      ───────────────────────────────────────────────────────────── */}
+      {(currentPage === 'about' || currentPage === 'gioi-thieu') && !selectedProperty && (
+        <main className="max-w-[1240px] mx-auto px-4 py-10 space-y-8">
+          <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
+            <div className="border-b border-slate-200 pb-4">
+              <span className="text-xs font-bold text-blue-600 uppercase tracking-widest block mb-1">VỀ CHÚNG TÔI</span>
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Cổng Thông Tin Bất Động Sản BDS123</h1>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-7 space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <p>
+                  <strong>BDS123</strong> tự hào là cổng thông tin bất động sản chuyên nghiệp, cung cấp nền tảng tìm kiếm, đăng tin mua bán và cho thuê nhà đất tiện lợi, tin cậy cho hàng triệu người dùng tại Việt Nam.
+                </p>
+                <p>
+                  Chúng tôi ứng dụng các giải pháp công nghệ tiên tiến nhằm đảm bảo tính chính xác, minh bạch của dữ liệu, giúp việc tìm kiếm ngôi nhà mơ ước hay cơ hội đầu tư trở nên dễ dàng và hiệu quả hơn bao giờ hết.
+                </p>
+                <div className="grid grid-cols-3 gap-4 pt-2 text-center">
+                  <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl">
+                    <strong className="text-lg font-black text-blue-700 block">50.000+</strong>
+                    <span className="text-[11px] text-slate-500">Tin đăng hoạt động</span>
+                  </div>
+                  <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl">
+                    <strong className="text-lg font-black text-emerald-700 block">250.000+</strong>
+                    <span className="text-[11px] text-slate-500">Người tìm kiếm/tháng</span>
+                  </div>
+                  <div className="p-3 bg-amber-50 border border-amber-100 rounded-xl">
+                    <strong className="text-lg font-black text-amber-700 block">10.000+</strong>
+                    <span className="text-[11px] text-slate-500">Môi giới uy tín</span>
+                  </div>
+                </div>
+              </div>
+              <div className="lg:col-span-5">
+                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80" alt="Văn phòng BDS123" className="w-full h-64 object-cover rounded-2xl border border-slate-200 shadow-sm" />
+              </div>
+            </div>
           </div>
         </main>
       )}

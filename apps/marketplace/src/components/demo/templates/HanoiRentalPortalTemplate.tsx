@@ -408,6 +408,7 @@ export const HanoiRentalPortalTemplate: React.FC<HanoiRentalPortalTemplateProps>
 
   const isDetailPage = currentPage === 'detail' || currentPage === 'chi-tiet' || currentPage.startsWith('chi-tiet');
   const isNewsDetailPage = currentPage === 'news-detail' || currentPage === 'tin-tuc' || currentPage.startsWith('tin-tuc');
+  const isHome = currentPage === 'home' || (!['rent', 'sale', 'projects', 'requests', 'news', 'post', 'about', 'gioi-thieu', 'contact', 'lien-he'].includes(currentPage) && !isDetailPage && !isNewsDetailPage);
 
   return (
     <div className="min-h-screen bg-[#F4F6F9] font-sans text-slate-800 flex flex-col">
@@ -443,7 +444,7 @@ export const HanoiRentalPortalTemplate: React.FC<HanoiRentalPortalTemplateProps>
       </header>
 
       {/* 2. HERO SEARCH BAR VỚI TÍNH NĂNG LỌC & TÌM KIẾM ĐẦY ĐỦ */}
-      {currentPage === 'home' && (
+      {isHome && (
         <section className="relative bg-slate-900 py-16 px-4 sm:px-8 text-white overflow-hidden">
           <img
             src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80"
@@ -571,7 +572,7 @@ export const HanoiRentalPortalTemplate: React.FC<HanoiRentalPortalTemplateProps>
       )}
 
       {/* 3. HOME VIEW */}
-      {currentPage === 'home' && (
+      {isHome && (
         <main className="max-w-[1360px] mx-auto px-4 py-8 space-y-12 flex-1">
           {/* SECTION 1: 5 DISTRICT CARDS */}
           <section>
@@ -1041,6 +1042,101 @@ export const HanoiRentalPortalTemplate: React.FC<HanoiRentalPortalTemplateProps>
               </button>
             </form>
           )}
+        </main>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          PAGE: GIỚI THIỆU (ABOUT)
+      ───────────────────────────────────────────────────────────── */}
+      {(currentPage === 'about' || currentPage === 'gioi-thieu') && (
+        <main className="max-w-[1200px] mx-auto px-4 py-10 space-y-8 flex-1 w-full">
+          <div className="bg-white p-8 border border-slate-200 shadow-xs space-y-6">
+            <div className="border-b border-slate-200 pb-4">
+              <span className="text-xs font-bold text-[#0066B2] uppercase tracking-widest block mb-1">VỀ CHÚNG TÔI</span>
+              <h1 className="text-2xl font-black text-slate-900 uppercase">Cổng Thông Tin Cho Thuê & Mua Bán Chung Cư Hà Nội</h1>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-7 space-y-4 text-xs leading-relaxed text-slate-600">
+                <p>
+                  <strong>ChoThueChungCuHaNoi.com</strong> là kênh thông tin chuyên sâu hàng đầu tại thủ đô, kết nối trực tiếp chủ nhà cho thuê và khách hàng tìm thuê chung cư từ trung cấp đến cao cấp.
+                </p>
+                <p>
+                  Với dữ liệu cập nhật theo thời gian thực tại các quận trọng điểm như Nam Từ Liêm, Cầu Giấy, Thanh Xuân, Tây Hồ, Bắc Từ Liêm, chúng tôi giúp khách hàng nhanh chóng tìm được căn hộ phù hợp với mức giá tốt nhất.
+                </p>
+                <div className="grid grid-cols-3 gap-4 pt-2 text-center">
+                  <div className="p-3 bg-blue-50 border border-blue-100 rounded">
+                    <strong className="text-lg font-black text-[#0066B2] block">12.000+</strong>
+                    <span className="text-[10px] text-slate-500">Căn hộ cho thuê</span>
+                  </div>
+                  <div className="p-3 bg-emerald-50 border border-emerald-100 rounded">
+                    <strong className="text-lg font-black text-emerald-700 block">100%</strong>
+                    <span className="text-[10px] text-slate-500">Xác thực chính chủ</span>
+                  </div>
+                  <div className="p-3 bg-amber-50 border border-amber-100 rounded">
+                    <strong className="text-lg font-black text-amber-700 block">24/7</strong>
+                    <span className="text-[10px] text-slate-500">Hỗ trợ dẫn xem phòng</span>
+                  </div>
+                </div>
+              </div>
+              <div className="lg:col-span-5">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80" alt="Chung cư Hà Nội" className="w-full h-56 object-cover border border-slate-200 shadow-sm" />
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-200">
+              <button onClick={() => navigate('home')} className="text-xs font-bold text-[#0066B2] hover:underline">
+                ← Quay lại trang chủ
+              </button>
+            </div>
+          </div>
+        </main>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          PAGE: LIÊN HỆ & TƯ VẤN (CONTACT)
+      ───────────────────────────────────────────────────────────── */}
+      {(currentPage === 'contact' || currentPage === 'lien-he') && (
+        <main className="max-w-[1200px] mx-auto px-4 py-10 space-y-8 flex-1 w-full">
+          <div className="bg-white p-8 border border-slate-200 shadow-xs grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="lg:col-span-6 space-y-4">
+              <h2 className="text-xl font-black text-slate-900 uppercase">Liên Hệ & Ký Gửi Cho Thuê</h2>
+              <p className="text-xs text-slate-600">Bạn là chủ nhà cần gửi cho thuê hoặc người thuê cần tìm căn hộ gấp? Hãy để lại thông tin bên dưới:</p>
+              
+              <form onSubmit={(e) => { e.preventDefault(); alert('Cảm ơn bạn! Chúng tôi sẽ liên hệ trong ít phút.'); navigate('home'); }} className="space-y-3 text-xs">
+                <div>
+                  <label className="block font-bold mb-1">Họ tên của bạn</label>
+                  <input type="text" required placeholder="Họ tên..." className="w-full p-2.5 border border-slate-300" />
+                </div>
+                <div>
+                  <label className="block font-bold mb-1">Số điện thoại liên hệ (*)</label>
+                  <input type="tel" required placeholder="0919 006 030..." className="w-full p-2.5 border border-slate-300" />
+                </div>
+                <div>
+                  <label className="block font-bold mb-1">Nhu cầu cụ thể</label>
+                  <textarea rows={3} placeholder="Cần thuê chung cư 2PN Cầu Giấy, ngân sách 10 triệu..." className="w-full p-2.5 border border-slate-300" />
+                </div>
+                <button type="submit" className="w-full py-3 bg-[#0066B2] hover:bg-[#00528e] text-white font-black text-xs uppercase">
+                  GỬI YÊU CẦU NGAY
+                </button>
+              </form>
+            </div>
+
+            <div className="lg:col-span-6 space-y-4">
+              <h3 className="font-bold text-slate-900 text-sm">Văn Phòng Điều Hành Hà Nội</h3>
+              <p className="text-xs text-slate-600">📍 Địa chỉ: <strong>72 Lê Lợi, P. Lộc Thanh, TP. Bảo Lộc & Chi nhánh Hà Nội</strong></p>
+              <p className="text-xs text-slate-600">📞 Hotline 24/7: <strong>0919 006 030</strong></p>
+              <p className="text-xs text-slate-600">✉️ Email: <strong>hotro@chothuechungcuhanoi.com</strong></p>
+              <div className="h-52 border border-slate-200 overflow-hidden">
+                <iframe
+                  title="Bản đồ Hà Nội"
+                  src="https://maps.google.com/maps?q=Nam+T%E1%BB%AB+Li%C3%AAm,+H%C3%A0+N%E1%BB%99i&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                  className="w-full h-full border-0"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </div>
         </main>
       )}
 
