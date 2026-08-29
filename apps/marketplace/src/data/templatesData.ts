@@ -2787,6 +2787,70 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "KHÔNG GIAN SỐNG TỐI GIẢN ĐÓN NẮNG TỰ NHIÊN",
       heroSubtitle: "Tuyển chọn hơn 2.000 căn hộ studio, duplex và nhà phố phong cách Bắc Âu tinh tế, ngập tràn ánh sáng và gió trời."
     }
+  },
+  // ─── PORTAL 22. NIGHT LIFE & COMMERCIAL STRIP PORTAL ───────────────────────
+  {
+    id: "portal-22",
+    name: "Template #22 - Night Life & Commercial Strip Portal",
+    slug: "portal-22",
+    collectionSlug: "portal",
+    collectionName: "Listing Portal Collection",
+    badge: "DÒNG A #22",
+    badgeBg: "#090A0F",
+    badgeColor: "#EC4899",
+    accentColor: "#EC4899",
+    description: "Cổng thông tin bất động sản kinh tế đêm, phố đi bộ sầm uất và tuyến phố thương mại giải trí (Bùi Viện, Tạ Hiện, Grand World). Chuyên shophouse phố đêm 24/7, sang nhượng Pub & Lounge, nhà hàng F&B đêm với đầy đủ giấy phép PCCC và lưu lượng khách khủng.",
+    shortDescription: "Phố đi bộ 24/7 · Sang nhượng Bar & Lounge · BĐS kinh tế đêm",
+    thumbnail: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Bố cục phố đêm rực rỡ với tông Đen Neon & Hồng Tím Rực Rỡ",
+      "Thẻ tin Neon Night Strip Card hiển thị lưu lượng khách đêm 25.000 lượt & chuẩn PCCC",
+      "Bộ lọc 5 thủ phủ kinh tế đêm: Bùi Viện, Tạ Hiện, Grand World, Bạch Đằng, Phố Tây",
+      "Trang chi tiết BĐS kèm báo cáo doanh thu đêm, danh mục thiết bị âm thanh ánh sáng sang nhượng",
+      "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Đại lộ thương mại, Cẩm nang, Giới thiệu, Liên hệ",
+      "Tích hợp kết nối các chuỗi F&B và dịch vụ giải trí lớn tại Việt Nam"
+    ],
+    priceBuy: 749000,
+    priceBuySource: 2190000,
+    priceRentMonthly: 169000,
+    isActive: true,
+    sortOrder: 46,
+    targetAudience: ["Sàn giao dịch và môi giới chuyên sâu ngành F&B, Nightlife & Giải trí", "Chủ thương hiệu chuỗi Bar, Pub, Lounge, Club, Karaoke, Nhà hàng đêm", "Chủ sở hữu nhà phố ngã tư và shophouse trục phố đi bộ"],
+    highlights: ["Neon Night Strip Cards", "24/7 Night Life Footfall Specs", "Entertainment License & Fire Safety", "Đầy đủ 9 Trang Con"],
+    availablePages: ["Trang chủ", "Nhà đất bán", "Nhà đất cho thuê", "Sang nhượng", "Chi tiết tin đăng", "Danh sách dự án", "Chi tiết dự án", "Tin tức BĐS", "Chi tiết tin tức", "Giới thiệu", "Liên hệ & Ký gửi", "Đăng ký / Đăng nhập"],
+    modules: ["NeonStripCardModule", "NightFootfallNavigatorModule", "CommercialAvenueModule", "NightEconomyModule"],
+    benefits: ["Độc quyền khai thác phân khúc bất động sản kinh tế đêm siêu lợi nhuận", "Thu hút hàng nghìn nhà đầu tư F&B và giải trí", "Tăng 400% giao dịch sang nhượng mặt bằng"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#090A0F",
+      secondaryColor: "#151722",
+      accentColor: "#EC4899",
+      bgColor: "#090A0F",
+      cardBgColor: "#151722",
+      textColor: "#F1F5F9",
+      radiusToken: "1rem",
+      shadowToken: "0 10px 15px -3px rgba(236, 72, 153, 0.15)"
+    },
+    layoutConfig: {
+      heroStyle: "Neon Night Strip Hero với Search Bar dịch vụ giải trí",
+      navigationStyle: "Midnight Neon Pink Navbar",
+      cardStyle: "Neon Night Strip Card (Viền dạ quang neon, badge hoạt động 24/7)",
+      galleryStyle: "Nightlife Strip Panorama Slider",
+      ctaStyle: "Neon Gradient Glow Action Button",
+      spacingScale: "Electric Urban Spacing"
+    },
+    wireframe: ["HeaderNightStrip", "HeroNightSearch", "NeonStripListingsGrid", "TopCommercialAvenues", "FooterNightStrip"],
+    sectionConfig: {
+      sourceSlug: "portal-22",
+      heroTitle: "MẶT BẰNG PHỐ ĐI BỘ & SANG NHƯỢNG BAR LOUNGE 24/7",
+      heroSubtitle: "Tổng hợp hơn 1.800 shophouse phố đi bộ, mặt bằng F&B đêm và quán pub/lounge kinh doanh sầm uất tại Bùi Viện, Tạ Hiện, Grand World."
+    }
   }
 ];
 
@@ -2874,6 +2938,9 @@ const LEGACY_ALIASES: Record<string, string> = {
   'portal-21': 'portal-21',
   'portal-nordic': 'portal-21',
   'nordic-minimal': 'portal-21',
+  'portal-22': 'portal-22',
+  'portal-nightlife': 'portal-22',
+  'nightlife-strip': 'portal-22',
 
   'luxury-gold': 'bds-01',
   'minimal-white': 'bds-02',
