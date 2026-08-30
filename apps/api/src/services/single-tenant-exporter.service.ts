@@ -187,6 +187,10 @@ JWT_SECRET="bds_secret_key_${orderNumber.replace(/[^a-zA-Z0-9]/g, '_')}_secure_2
 
 # CỔNG CHẠY (Mặc định 3000)
 PORT=3000
+
+# GOOGLE GEMINI AI API KEY (Trợ lý AI tư vấn BĐS, phân tích tiềm năng & Viết bài tự động)
+# Lấy API Key miễn phí 100% tại: https://aistudio.google.com/app/apikey
+GEMINI_API_KEY=""
 `;
     zip.addFile('.env.example', Buffer.from(envExampleContent, 'utf-8'));
     zip.addFile('.env', Buffer.from(envExampleContent, 'utf-8'));
@@ -1211,7 +1215,12 @@ Xin chúc mừng Quý Khách đã sở hữu trọn bộ mã nguồn **Website &
      \`\`\`
    - Website: http://localhost:3000 | CMS: http://localhost:3000/admin (Tài khoản: \`${compEmail}\` - Pass: \`${defaultAdminPassword}\`).
 
-4. 📘 **File \`HUONG-DAN-UP-LEN-GITHUB.md\`**: Hướng dẫn từng lệnh đưa mã nguồn lên GitHub cá nhân.
+4. 🤖 **Tích Hợp Trí Tuệ Nhân Tạo Google Gemini AI**:
+   - Mở file \`.env\` và dán API Key vào: \`GEMINI_API_KEY="your_api_key_here"\`
+   - Lấy API Key miễn phí tại: https://aistudio.google.com/app/apikey
+   - Kích hoạt tính năng AI tư vấn khách hàng tự động và phân tích phong thủy / tiềm năng dự án BĐS!
+
+5. 📘 **File \`HUONG-DAN-UP-LEN-GITHUB.md\`**: Hướng dẫn từng lệnh đưa mã nguồn lên GitHub cá nhân (có sẵn CI/CD GitHub Pages).
 
 ---
 *Bản quyền mã nguồn thuộc về ${customerName} — Chúc Quý Khách kinh doanh hồng phát!*

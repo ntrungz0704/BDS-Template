@@ -200,28 +200,6 @@ export default function CheckoutSuccessPage() {
                     </button>
                   </div>
                 </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-slate-200/60 pt-3">
-                  <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Mật Khẩu Đăng Nhập CMS:</span>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono bg-amber-50 border border-amber-300 text-amber-950 font-black px-3 py-1 rounded-lg text-sm tracking-wider">
-                      {orderData.email ? orderData.email.split('@')[0] : '123456'}
-                    </span>
-                    <button
-                      onClick={() => handleCopy(orderData.email ? orderData.email.split('@')[0] : '123456', 'Mật khẩu')}
-                      className="p-1 hover:bg-slate-200 rounded text-slate-500 transition-all text-[11px] flex items-center gap-1 border border-slate-200 bg-white px-2 font-bold"
-                    >
-                      <Copy className="w-3 h-3" />
-                      <span>{copiedField === 'Mật khẩu' ? 'Đã chép!' : 'Copy'}</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 mt-2">
-                  <p className="text-xs text-emerald-800 leading-relaxed font-normal">
-                    <strong className="font-bold text-emerald-900">⚡ Mật khẩu CMS cấp tức thì:</strong> Mật khẩu mặc định của bạn là <strong className="font-mono font-bold text-emerald-950 bg-emerald-100 px-1.5 py-0.5 rounded">{orderData.email ? orderData.email.split('@')[0] : '123456'}</strong> (phần trước dấu @ trong email). Bạn có thể bấm nút <strong>"Vào Quản Trị CMS Ngay"</strong> bên dưới để đăng nhập và bắt đầu chỉnh sửa website!
-                  </p>
-                </div>
               </div>
 
               {/* Action Buttons */}

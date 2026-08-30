@@ -275,8 +275,8 @@ export default function AdminDashboard() {
           <div className="space-y-2 pt-2 border-t border-slate-100 text-xs">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-md bg-indigo-500 shrink-0"></span>
-                <span className="text-slate-700 font-medium">Mua Đứt Bản Quyền:</span>
+                <span className="w-3 h-3 rounded-md bg-indigo-600 shrink-0"></span>
+                <span className="text-slate-700 font-medium">Bản Quyền Website & Landing Page:</span>
               </div>
               <span className="font-black text-slate-900 font-mono">{buyPercent}% ({formatVND(buyRevenue)})</span>
             </div>
@@ -284,7 +284,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-md bg-sky-500 shrink-0"></span>
-                <span className="text-slate-700 font-medium">Thuê Cloud SaaS:</span>
+                <span className="text-slate-700 font-medium">Dịch Vụ Hosting & Domain Cloud:</span>
               </div>
               <span className="font-black text-slate-900 font-mono">{rentPercent}% ({formatVND(rentRevenue)})</span>
             </div>
@@ -292,7 +292,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-md bg-amber-500 shrink-0"></span>
-                <span className="text-slate-700 font-medium">Dịch Vụ & Setup Domain:</span>
+                <span className="text-slate-700 font-medium">Dịch Vụ Bảo Trì Website VIP:</span>
               </div>
               <span className="font-black text-slate-900 font-mono">{servicePercent}% ({formatVND(customServiceRevenue)})</span>
             </div>
@@ -307,7 +307,7 @@ export default function AdminDashboard() {
                 <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                   <span>Dự Báo Dòng Tiền & Kế Hoạch Doanh Thu</span>
                 </h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">So sánh thực thu và dòng tiền chờ thanh toán</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">Thực thu bản quyền và dòng tiền gia hạn dịch vụ</p>
               </div>
               <span className="text-xs font-bold text-slate-500">Mục tiêu: {formatVND(monthlyTarget)}/tháng</span>
             </div>
@@ -327,9 +327,9 @@ export default function AdminDashboard() {
               </div>
 
               <div className="bg-indigo-50/60 p-4 rounded-xl border border-indigo-100">
-                <span className="text-[10px] font-bold text-indigo-700 uppercase block">3. MRR Dự Kiến Tháng Tới</span>
+                <span className="text-[10px] font-bold text-indigo-700 uppercase block">3. Gia Hạn Dịch Vụ Năm Tới</span>
                 <p className="text-lg font-black text-indigo-800 mt-1">{formatVND(mrrSubscriptionExpected * 6)}</p>
-                <p className="text-[11px] text-indigo-700 mt-0.5 font-medium">Từ các gói gia hạn định kỳ</p>
+                <p className="text-[11px] text-indigo-700 mt-0.5 font-medium">Từ gói Hosting & Bảo trì VIP</p>
               </div>
             </div>
 
@@ -348,7 +348,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center gap-4 mt-2 text-[11px] text-slate-500">
                   <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Đã Thu</span>
                   <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span> Chờ Duyệt</span>
-                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-indigo-400"></span> MRR Dự Kiến</span>
+                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-indigo-400"></span> Gia Hạn Dịch Vụ</span>
                 </div>
               </div>
             </div>

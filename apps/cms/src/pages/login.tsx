@@ -179,13 +179,6 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-
-          {/* Helper tip */}
-          <div className="mt-6 pt-5 border-t border-white/10 text-center">
-            <p className="text-[11px] text-slate-400 leading-relaxed">
-              💡 Mật khẩu mặc định là <strong className="text-amber-300 font-mono">phần trước dấu @</strong> trong email của bạn (vd: <span className="font-mono">nguyenlongdz8</span>).
-            </p>
-          </div>
         </div>
       </div>
     </>
