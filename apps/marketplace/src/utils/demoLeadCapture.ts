@@ -40,6 +40,11 @@ function humanizeLabel(raw: string): string {
   return cleaned.length > 2 ? cleaned : 'Nhu cầu';
 }
 
+function canonicalTemplateSlug(slug: string): string {
+  if (!slug) return 'bds-01';
+  return slug.toLowerCase().trim();
+}
+
 export function captureDemoLead(form: HTMLFormElement, templateSlug: string): DemoCapturedLead | null {
   const fields = Array.from(
     form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>('input, textarea, select')
