@@ -168,24 +168,23 @@ export default function AdminTenants() {
 
       {/* Tenants Table */}
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="w-full">
+          <table className="w-full table-fixed text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50/50 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                <th className="px-6 py-3.5">Tên Website</th>
-                <th className="px-6 py-3.5">Subdomain</th>
-                <th className="px-6 py-3.5">Template</th>
-                <th className="px-6 py-3.5">Version</th>
-                <th className="px-6 py-3.5">Chủ sở hữu</th>
-                <th className="px-6 py-3.5">Dùng thử / Thời hạn</th>
-                <th className="px-6 py-3.5">Trạng thái</th>
-                <th className="px-6 py-3.5 text-right">Hành động</th>
+              <tr className="border-b border-slate-200 bg-slate-50/50 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                <th className="px-3 py-3 w-[18%]">Tên Website</th>
+                <th className="px-3 py-3 w-[18%]">Subdomain</th>
+                <th className="px-3 py-3 w-[15%]">Template</th>
+                <th className="px-3 py-3 w-[15%]">Chủ sở hữu</th>
+                <th className="px-3 py-3 w-[14%]">Thời hạn / Gói</th>
+                <th className="px-3 py-3 w-[10%]">Trạng thái</th>
+                <th className="px-3 py-3 w-[10%] text-right">Hành động</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-sm">
+            <tbody className="divide-y divide-slate-100 text-xs">
               {tenants.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-slate-400 font-medium">
+                  <td colSpan={7} className="px-4 py-12 text-center text-slate-400 font-medium">
                     Chưa có website nào được tạo. Nhấn &quot;Tạo Website Mới&quot; hoặc duyệt đơn hàng để bắt đầu.
                   </td>
                 </tr>
@@ -194,120 +193,82 @@ export default function AdminTenants() {
                   const owner = tenant.users?.[0] || tenant.memberships?.[0]?.user;
                   return (
                   <tr key={tenant.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="font-bold text-slate-900">{tenant.name}</div>
-                      <div className="text-[10px] text-slate-400 font-medium font-mono">ID: {tenant.id.slice(0, 8)}...</div>
+                    <td className="px-3 py-3">
+                      <div className="font-bold text-slate-900 truncate">{tenant.name}</div>
+                      <div className="text-[10px] text-slate-400 font-mono truncate">ID: {tenant.id.slice(0, 8)}...</div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 py-3">
                       <a
                         href={`https://${tenant.slug}.${PLATFORM_DOMAIN}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs font-mono font-bold text-indigo-600 hover:underline"
+                        className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-indigo-600 hover:underline truncate max-w-full"
                       >
-                        {tenant.slug}.{PLATFORM_DOMAIN}
-                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
+                        <span className="truncate">{tenant.slug}.{PLATFORM_DOMAIN}</span>
                       </a>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="bg-blue-50 border border-blue-200 text-blue-800 px-2.5 py-1 rounded-lg text-xs font-bold font-sans">
+                    <td className="px-3 py-3">
+                      <span className="bg-blue-50 border border-blue-200 text-blue-800 px-2 py-0.5 rounded text-[10px] font-bold font-sans truncate inline-block max-w-full">
                         {tenant.template?.name || tenant.template?.slug || 'Green Eco Living'}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="text-xs font-mono font-bold text-slate-500">
-                        v{tenant.version ? (tenant.version / 10).toFixed(1) : '1.0'}
-                      </span>
+                    <td className="px-3 py-3">
+                      <div className="text-[11px] font-bold text-slate-700 truncate">{owner?.fullName || 'Chưa cập nhật'}</div>
+                      <div className="text-[10px] text-slate-400 font-mono truncate">{owner?.email || ''}</div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="text-xs font-bold text-slate-700">{owner?.fullName || 'Chưa cập nhật'}</div>
-                      <div className="text-[10px] text-slate-400 font-medium">{owner?.email || ''}</div>
-                    </td>
-                    <td className="px-6 py-4 text-xs font-medium">
+                    <td className="px-3 py-3 text-[11px] font-medium">
                       {tenant.trialStatus === 'ACTIVE' || tenant.trialStatus === 'EXPIRED' ? (
                         <div>
-                          <span className="text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200 inline-block text-[11px]">
-                            Dùng thử ({tenant.trialSaveCount || 0}/{tenant.trialSaveLimit || 3} lưu)
-                          </span>
-                          <span className="text-slate-400 text-[10px] block mt-0.5">
-                            {tenant.trialEndAt ? `Hết hạn: ${new Date(tenant.trialEndAt).toLocaleDateString('vi-VN')}` : 'Đang dùng thử'}
-                          </span>
-                        </div>
-                      ) : tenant.subscription?.plan === 'LIFETIME' || !tenant.trialStatus ? (
-                        <div>
-                          <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 inline-block text-[11px]">
-                            Sở hữu trọn đời
-                          </span>
-                          <span className="text-slate-400 text-[10px] block mt-0.5">
-                            {tenant.activatedAt ? `Kích hoạt: ${new Date(tenant.activatedAt).toLocaleDateString('vi-VN')}` : 'Vĩnh viễn'}
+                          <span className="text-amber-700 font-bold bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 inline-block text-[10px]">
+                            Dùng thử ({tenant.trialSaveCount || 0}/{tenant.trialSaveLimit || 3})
                           </span>
                         </div>
                       ) : (
                         <div>
-                          <span className="text-blue-700 font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-200 inline-block text-[11px]">
-                            Gói Thuê Năm
-                          </span>
-                          <span className="text-slate-400 text-[10px] block mt-0.5">
-                            {tenant.subscription?.endDate ? `Hết hạn: ${new Date(tenant.subscription.endDate).toLocaleDateString('vi-VN')}` : 'Hoạt động'}
+                          <span className="text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 inline-block text-[10px]">
+                            Sở hữu trọn đời
                           </span>
                         </div>
                       )}
                     </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
+                    <td className="px-3 py-3">
+                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${
                         tenant.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-rose-50 text-rose-700 border border-rose-100'
                       }`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${tenant.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
-                        {tenant.status === 'ACTIVE' ? 'Hoạt động' : 'Tạm khóa'}
+                        {tenant.status === 'ACTIVE' ? 'Chạy' : 'Khóa'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
+                    <td className="px-3 py-3 text-right">
+                      <div className="flex items-center justify-end gap-1">
                         <a
                           href={`https://${tenant.slug}.${PLATFORM_DOMAIN}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-all"
-                          title="Xem Website công khai"
+                          className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold rounded transition-all"
+                          title="Xem Website"
                         >
-                          Xem Web
+                          Web
                         </a>
                         <a
                           href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg transition-all"
-                          title="Mở Customer CMS"
+                          className="px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10px] font-bold rounded transition-all"
+                          title="Mở CMS"
                         >
-                          Vào CMS
+                          CMS
                         </a>
-                        {tenant.status === 'ACTIVE' ? (
-                          <button
-                            onClick={() => updateStatusMutation.mutate({ id: tenant.id, status: 'SUSPENDED' })}
-                            className="text-xs font-bold text-amber-600 hover:text-amber-800 bg-amber-50 hover:bg-amber-100/70 px-2.5 py-1.5 rounded-lg transition-all"
-                          >
-                            Khóa
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => updateStatusMutation.mutate({ id: tenant.id, status: 'ACTIVE' })}
-                            className="text-xs font-bold text-emerald-600 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100/70 px-2.5 py-1.5 rounded-lg transition-all"
-                          >
-                            Mở
-                          </button>
-                        )}
                         <button
                           onClick={() => {
-                            if (confirm(`Bạn có chắc muốn XÓA VĨNH VIỄN website ${tenant.name} (${tenant.slug})? Mọi dữ liệu sẽ bị xóa sạch!`)) {
+                            if (confirm(`Bạn có chắc muốn XÓA VĨNH VIỄN website ${tenant.name}?`)) {
                               deleteTenantMutation.mutate(tenant.id);
                             }
                           }}
-                          className="text-xs font-bold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100/70 px-2.5 py-1.5 rounded-lg transition-all"
-                          title="Xóa vĩnh viễn website này"
+                          className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-all"
+                          title="Xóa"
                         >
-                          Xóa
+                          🗑️
                         </button>
                       </div>
                     </td>

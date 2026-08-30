@@ -201,17 +201,17 @@ export default function CustomersPage() {
 
         {/* Customers Table */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-600">
-              <thead className="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+          <div className="w-full">
+            <table className="w-full table-fixed text-left text-xs text-slate-600">
+              <thead className="bg-slate-50 border-b border-slate-200 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                 <tr>
-                  <th className="py-3.5 px-4">Khách hàng</th>
-                  <th className="py-3.5 px-4">Liên hệ</th>
-                  <th className="py-3.5 px-4">Website / Tenant</th>
-                  <th className="py-3.5 px-4">Vai trò</th>
-                  <th className="py-3.5 px-4">Trạng thái</th>
-                  <th className="py-3.5 px-4">Ngày tạo</th>
-                  <th className="py-3.5 px-4 text-right">Khôi phục & Thao tác</th>
+                  <th className="py-3 px-3 w-[22%]">Khách hàng</th>
+                  <th className="py-3 px-3 w-[15%]">Liên hệ</th>
+                  <th className="py-3 px-3 w-[22%]">Website / Tenant</th>
+                  <th className="py-3 px-2 w-[10%]">Vai trò</th>
+                  <th className="py-3 px-2 w-[10%]">Trạng thái</th>
+                  <th className="py-3 px-2 w-[8%]">Ngày tạo</th>
+                  <th className="py-3 px-3 w-[13%] text-right">Thao tác</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium">
@@ -232,19 +232,19 @@ export default function CustomersPage() {
                     const defaultPwd = u.email ? u.email.split('@')[0] : '123456';
                     return (
                       <tr key={u.id} className="hover:bg-slate-50/80 transition-colors">
-                        <td className="py-4 px-4">
-                          <div className="font-bold text-slate-900">{u.fullName || 'Chưa cập nhật'}</div>
-                          <div className="text-xs text-slate-400 font-mono">{u.email}</div>
+                        <td className="py-3 px-3">
+                          <div className="font-bold text-slate-900 truncate">{u.fullName || 'Chưa cập nhật'}</div>
+                          <div className="text-[11px] text-slate-400 font-mono truncate">{u.email}</div>
                         </td>
-                        <td className="py-4 px-4 font-mono text-xs">
-                          <div className="flex items-center gap-1.5">
-                            <span className="font-bold text-slate-700">{u.phone || '—'}</span>
+                        <td className="py-3 px-3 font-mono text-[11px]">
+                          <div className="flex items-center gap-1">
+                            <span className="font-bold text-slate-700 truncate">{u.phone || '—'}</span>
                             {u.phone && (
                               <a
                                 href={`https://zalo.me/${u.phone.replace(/[^0-9]/g, '')}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="px-1.5 py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold text-[10px] rounded border border-blue-200"
+                                className="px-1.5 py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold text-[9px] rounded border border-blue-200 shrink-0"
                                 title="Mở Zalo"
                               >
                                 Zalo
@@ -252,84 +252,72 @@ export default function CustomersPage() {
                             )}
                           </div>
                         </td>
-                        <td className="py-4 px-4">
+                        <td className="py-3 px-3">
                           {u.tenant ? (
-                            <div>
-                              <div className="font-bold text-slate-800">{u.tenant.name}</div>
-                              <div className="text-xs font-mono text-indigo-600">{u.tenant.slug}.{PLATFORM_DOMAIN}</div>
+                            <div className="min-w-0">
+                              <div className="font-bold text-slate-800 truncate">{u.tenant.name}</div>
+                              <div className="text-[10px] font-mono text-indigo-600 truncate">{u.tenant.slug}.{PLATFORM_DOMAIN}</div>
                             </div>
                           ) : (
-                            <span className="text-slate-400 italic text-xs">Chưa gắn website</span>
+                            <span className="text-slate-400 italic text-[11px]">Chưa gắn website</span>
                           )}
                         </td>
-                        <td className="py-4 px-4">
-                          <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-bold ${
+                        <td className="py-3 px-2">
+                          <span className={`inline-flex px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
                             u.role === 'SUPER_ADMIN'
                               ? 'bg-purple-100 text-purple-700'
                               : u.role === 'TENANT_OWNER'
                               ? 'bg-blue-100 text-blue-700'
                               : 'bg-slate-100 text-slate-600'
                           }`}>
-                            {u.role === 'TENANT_OWNER' ? 'CUSTOMER_OWNER' : u.role}
+                            {u.role === 'TENANT_OWNER' ? 'CUSTOMER' : u.role}
                           </span>
                         </td>
-                        <td className="py-4 px-4">
-                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                        <td className="py-3 px-2">
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
                             u.status === 'ACTIVE'
                               ? 'bg-emerald-100 text-emerald-700'
                               : 'bg-red-100 text-red-700'
                           }`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${u.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                            <span className={`w-1 h-1 rounded-full ${u.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-red-500'}`} />
                             {u.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'}
                           </span>
                         </td>
-                        <td className="py-4 px-4 text-xs text-slate-500">
+                        <td className="py-3 px-2 text-[10px] text-slate-500 font-mono">
                           {new Date(u.createdAt).toLocaleDateString('vi-VN')}
                         </td>
-                        <td className="py-4 px-4 text-right">
-                          <div className="flex items-center justify-end gap-1.5">
-                            {/* Nút Khôi Phục Mật Khẩu Siêu Cấp Cho Admin */}
+                        <td className="py-3 px-3 text-right">
+                          <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => {
                                 setRestoreUser(u);
                                 setCustomPassword(defaultPwd);
                                 setUseDefaultPassword(true);
                               }}
-                              title="Khôi phục mật khẩu Marketplace & CMS ngay lập tức"
-                              className="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold rounded-lg transition-all flex items-center gap-1 shadow-2xs"
+                              title="Khôi phục mật khẩu"
+                              className="p-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[10px] font-bold rounded-lg transition-all"
                             >
                               <KeyRound className="w-3.5 h-3.5 text-amber-600" />
-                              <span>Khôi Phục MK</span>
                             </button>
 
                             <Link
                               href={`/customers/${u.id}`}
-                              className="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-xs font-bold rounded-lg transition-colors"
+                              className="px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-[10px] font-bold rounded-lg transition-colors"
                             >
-                              Hồ sơ 360°
+                              Hồ sơ
                             </Link>
 
-                            {u.tenant?.trialStatus === 'ACTIVE' && (
-                              <button
-                                onClick={() => extendTrialMutation.mutate({ userId: u.id, days: 7 })}
-                                title="Gia hạn dùng thử +7 ngày"
-                                className="px-2 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-lg transition-colors"
-                              >
-                                +7 Ngày Trial
-                              </button>
-                            )}
-
-                            {u.email !== 'admin@aireviewbds.com' && (
+                            {u.role !== 'SUPER_ADMIN' && (
                               <button
                                 onClick={() => {
-                                  if (confirm(`Bạn có chắc chắn muốn XÓA vĩnh viễn tài khoản ${u.email}? Hành động này không thể hoàn tác!`)) {
+                                  if (confirm(`Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản ${u.fullName || u.email}?`)) {
                                     deleteUserMutation.mutate(u.id);
                                   }
                                 }}
-                                title="Xóa tài khoản"
-                                className="px-2 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold rounded-lg transition-colors"
+                                title="Xóa tài khoản khách hàng"
+                                className="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
                               >
-                                Xóa
+                                🗑️
                               </button>
                             )}
                           </div>

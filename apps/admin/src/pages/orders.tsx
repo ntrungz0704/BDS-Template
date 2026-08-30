@@ -350,29 +350,29 @@ export default function AdminOrders() {
 
       {/* Orders Table */}
       <div className="rounded-2xl bg-white shadow-sm border border-slate-100 overflow-hidden mb-10">
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-left text-sm text-slate-700">
-            <thead className="bg-slate-50/70 text-[11px] uppercase tracking-wider font-bold text-slate-400 border-b border-slate-100">
+        <div className="w-full">
+          <table className="w-full table-fixed border-collapse text-left text-xs text-slate-700">
+            <thead className="bg-slate-50/70 text-[10px] uppercase tracking-wider font-bold text-slate-400 border-b border-slate-100">
               <tr>
-                <th className="px-6 py-4">Mã đơn hàng</th>
-                <th className="px-6 py-4">Khách hàng</th>
-                <th className="px-6 py-4">Mẫu Website</th>
-                <th className="px-6 py-4">Subdomain / Loại</th>
-                <th className="px-6 py-4">Số tiền</th>
-                <th className="px-6 py-4">Trạng thái</th>
-                <th className="px-6 py-4 text-right">Hành động</th>
+                <th className="px-3 py-3 w-[15%]">Mã đơn hàng</th>
+                <th className="px-3 py-3 w-[20%]">Khách hàng</th>
+                <th className="px-3 py-3 w-[18%]">Mẫu Website</th>
+                <th className="px-3 py-3 w-[15%]">Gói / Loại</th>
+                <th className="px-3 py-3 w-[12%]">Số tiền</th>
+                <th className="px-3 py-3 w-[10%]">Trạng thái</th>
+                <th className="px-3 py-3 w-[10%] text-right">Hành động</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
               {isLoading ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-slate-400 font-semibold">
+                  <td colSpan={7} className="px-4 py-12 text-center text-slate-400 font-semibold">
                     Đang tải dữ liệu đơn hàng...
                   </td>
                 </tr>
               ) : filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-16 text-center text-slate-400 font-semibold">
+                  <td colSpan={7} className="px-4 py-16 text-center text-slate-400 font-semibold">
                     {searchTerm ? 'Không tìm thấy đơn hàng nào khớp với tìm kiếm.' : 'Không có đơn hàng nào trong mục này.'}
                   </td>
                 </tr>
@@ -382,143 +382,98 @@ export default function AdminOrders() {
                   return (
                     <tr key={order.id} className="hover:bg-slate-50/60 transition-colors">
                       {/* Mã đơn */}
-                      <td className="px-6 py-4">
-                        <span className="font-mono font-bold text-slate-900 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200/80">
+                      <td className="px-3 py-3">
+                        <span className="font-mono font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200 text-[11px] block truncate">
                           #{order.orderNumber}
                         </span>
-                        <div className="text-[10px] text-slate-400 mt-1 font-mono">
-                          {order.createdAt ? new Date(order.createdAt).toLocaleString('vi-VN') : ''}
+                        <div className="text-[10px] text-slate-400 mt-1 font-mono truncate">
+                          {order.createdAt ? new Date(order.createdAt).toLocaleDateString('vi-VN') : ''}
                         </div>
                       </td>
 
                       {/* Khách hàng */}
-                      <td className="px-6 py-4">
-                        <div className="font-bold text-slate-900">{order.fullName || 'Khách hàng'}</div>
-                        <div className="flex items-center gap-1.5 mt-0.5">
-                          <span className="text-slate-700 font-mono font-bold">{order.phone || '—'}</span>
+                      <td className="px-3 py-3">
+                        <div className="font-bold text-slate-900 truncate">{order.fullName || 'Khách hàng'}</div>
+                        <div className="flex items-center gap-1 mt-0.5">
+                          <span className="text-slate-700 font-mono font-bold text-[11px] truncate">{order.phone || '—'}</span>
                           {order.phone && (
                             <a
                               href={`https://zalo.me/${order.phone.replace(/[^0-9]/g, '')}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="px-1.5 py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold text-[10px] rounded border border-blue-200 transition-colors inline-flex items-center gap-0.5 shrink-0"
-                              title="Mở Zalo nhắn tin trực tiếp với khách hàng"
+                              className="px-1 py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold text-[9px] rounded border border-blue-200 transition-colors shrink-0"
+                              title="Zalo"
                             >
-                              <span>💬 Zalo</span>
+                              Zalo
                             </a>
                           )}
                         </div>
-                        <div className="text-[11px] text-slate-400 truncate max-w-[180px]">{order.email}</div>
+                        <div className="text-[10px] text-slate-400 truncate">{order.email}</div>
                       </td>
 
                       {/* Mẫu Website */}
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200/60">
+                      <td className="px-3 py-3">
+                        <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60 truncate max-w-full">
                           {order.template?.name || order.templateId || 'Mẫu Mặc Định'}
                         </span>
                       </td>
 
                       {/* Subdomain / Loại */}
-                      <td className="px-6 py-4">
-                        {order.subdomain ? (
-                          <div className="space-y-1">
-                            <span className="bg-indigo-50 text-indigo-700 border border-indigo-100 px-2.5 py-0.5 rounded-md text-xs font-mono font-bold">
-                              {order.subdomain}.{PLATFORM_DOMAIN}
-                            </span>
-                            <span className="text-[10px] text-slate-400 block font-semibold">
-                              {order.type === 'BUY' ? 'Mua Đứt' : 'Thuê SaaS'}
-                            </span>
+                      <td className="px-3 py-3">
+                        {order.type === 'BUY_SOURCE' ? (
+                          <div>
+                            <span className="font-bold text-slate-800 text-[11px] block">Mua Source</span>
+                            <span className="text-[9px] text-slate-400 italic">Mã nguồn ZIP</span>
+                          </div>
+                        ) : order.subdomain ? (
+                          <div>
+                            <span className="font-mono font-bold text-indigo-700 text-[11px] truncate block">{order.subdomain}</span>
+                            <span className="text-[9px] text-slate-400 italic">Auto cấp domain</span>
                           </div>
                         ) : (
-                          <div>
-                            <span className="text-slate-600 font-semibold bg-slate-100 px-2 py-0.5 rounded text-xs">
-                              {order.type === 'BUY' ? 'Mua Full Source' : 'Gói Tiêu Chuẩn'}
-                            </span>
-                            <span className="text-[10px] text-slate-400 block mt-0.5 italic">Auto cấp Subdomain</span>
-                          </div>
+                          <span className="text-slate-400 italic text-[11px]">Chưa đặt</span>
                         )}
                       </td>
 
                       {/* Số tiền */}
-                      <td className="px-6 py-4 font-black text-slate-900 text-sm">
+                      <td className="px-3 py-3 font-mono font-black text-slate-900 text-[11px]">
                         {formatVND(order.amount)}
                       </td>
 
                       {/* Trạng thái */}
-                      <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
-                            order.status === 'COMPLETED'
-                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                              : isPending
-                              ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                              : 'bg-rose-50 text-rose-700 border border-rose-200'
-                          }`}
-                        >
-                          <span
-                            className={`w-2 h-2 rounded-full ${
-                              order.status === 'COMPLETED'
-                                ? 'bg-emerald-500'
-                                : isPending
-                                ? 'bg-amber-500 animate-ping'
-                                : 'bg-rose-500'
-                            }`}
-                          ></span>
-                          {order.status === 'COMPLETED'
-                            ? 'Đã duyệt / Hoàn thành'
-                            : order.status === 'WAITING_CONFIRM'
-                            ? 'Chờ xác nhận Zalo'
-                            : order.status === 'PENDING'
-                            ? 'Đơn mới chờ duyệt'
-                            : order.status === 'PENDING_SUBDOMAIN_CONFLICT'
-                            ? 'Trùng Subdomain'
-                            : 'Đã từ chối'}
-                        </span>
+                      <td className="px-3 py-3">
+                        {isPending ? (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                            Chờ duyệt
+                          </span>
+                        ) : order.status === 'COMPLETED' ? (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            Đã duyệt
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-800 border border-rose-200">
+                            Từ chối
+                          </span>
+                        )}
                       </td>
 
                       {/* Hành động */}
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
+                      <td className="px-3 py-3 text-right">
+                        <div className="flex items-center justify-end gap-1">
                           {isPending && (
                             <button
                               onClick={() => setSelectedOrder(order)}
-                              className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition-all shadow-sm flex items-center gap-1"
+                              className="px-2 py-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded text-[10px] transition-colors"
                             >
-                              <span>Duyệt Đơn</span>
-                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                              </svg>
+                              Duyệt
                             </button>
-                          )}
-                          {order.status === 'COMPLETED' && (
-                            <a
-                              href={getTenantUrl(order.subdomain || order.tenantId || 'website')}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-xl text-xs transition-all border border-emerald-200 flex items-center gap-1"
-                            >
-                              <span>Xem Web</span>
-                            </a>
                           )}
                           <button
                             onClick={() => setSelectedOrder(order)}
-                            className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all"
+                            className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded text-[10px] transition-colors"
                           >
                             Chi tiết
                           </button>
-                          {order.status !== 'COMPLETED' && (
-                            <button
-                              onClick={() => {
-                                if (confirm(`Bạn có chắc chắn muốn hủy đơn hàng #${order.orderNumber} của ${order.fullName || order.email}?`)) {
-                                  deleteOrderMutation.mutate(order.id);
-                                }
-                              }}
-                              className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-xl text-xs transition-all border border-rose-200"
-                              title="Hủy đơn hàng"
-                            >
-                              Hủy Đơn
-                            </button>
-                          )}
                         </div>
                       </td>
                     </tr>

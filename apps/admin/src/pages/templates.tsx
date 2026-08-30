@@ -142,19 +142,20 @@ export default function AdminTemplates() {
 
       {/* Table */}
       <div className="rounded-2xl bg-white shadow-sm border border-slate-200 overflow-hidden mb-10">
-        <table className="w-full border-collapse text-left text-sm text-slate-700">
-          <thead className="bg-slate-50 text-xs font-bold text-slate-400 border-b border-slate-200">
-            <tr>
-              <th className="px-6 py-4">Ảnh mẫu</th>
-              <th className="px-6 py-4">Tên giao diện</th>
-              <th className="px-6 py-4">Giá gốc</th>
-              <th className="px-6 py-4">Giá ưu đãi / Năm</th>
-              <th className="px-6 py-4">Duy trì / Năm</th>
-              <th className="px-6 py-4">Marketplace</th>
-              <th className="px-6 py-4 text-right">Hành động</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
+        <div className="w-full">
+          <table className="w-full table-fixed border-collapse text-left text-xs text-slate-700">
+            <thead className="bg-slate-50 text-[10px] font-bold text-slate-400 border-b border-slate-200 uppercase tracking-wider">
+              <tr>
+                <th className="px-3 py-3 w-[8%]">Ảnh</th>
+                <th className="px-3 py-3 w-[24%]">Tên giao diện</th>
+                <th className="px-3 py-3 w-[12%]">Giá gốc</th>
+                <th className="px-3 py-3 w-[15%]">Giá bán</th>
+                <th className="px-3 py-3 w-[13%]">Thuê SaaS</th>
+                <th className="px-3 py-3 w-[12%]">Marketplace</th>
+                <th className="px-3 py-3 w-[16%] text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
             {filteredTemplates.length === 0 ? (
               <tr>
                 <td colSpan={7} className="px-6 py-12 text-center text-slate-400 font-semibold">
@@ -247,6 +248,7 @@ export default function AdminTemplates() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Price Edit Modal */}

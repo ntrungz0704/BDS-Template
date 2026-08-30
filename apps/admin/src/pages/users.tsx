@@ -133,18 +133,19 @@ export default function AdminUsers() {
     >
       {/* Table */}
       <div className="rounded-2xl bg-white shadow-sm border border-slate-100 overflow-hidden mb-10">
-        <table className="w-full border-collapse text-left text-sm text-slate-700">
-          <thead className="bg-slate-50/50 text-xs font-bold text-slate-400 border-b border-slate-100">
-            <tr>
-              <th className="px-8 py-4">Họ & Tên</th>
-              <th className="px-8 py-4">Địa chỉ Email</th>
-              <th className="px-8 py-4">Vai trò</th>
-              <th className="px-8 py-4">Website quản trị</th>
-              <th className="px-8 py-4">Trạng thái</th>
-              <th className="px-8 py-4 text-right">Khôi phục & Hành động</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
+        <div className="w-full">
+          <table className="w-full table-fixed border-collapse text-left text-xs text-slate-700">
+            <thead className="bg-slate-50/50 text-[10px] font-bold text-slate-400 border-b border-slate-100 uppercase tracking-wider">
+              <tr>
+                <th className="px-3 py-3 w-[22%]">Họ & Tên</th>
+                <th className="px-3 py-3 w-[22%]">Địa chỉ Email</th>
+                <th className="px-3 py-3 w-[14%]">Vai trò</th>
+                <th className="px-3 py-3 w-[15%]">Website</th>
+                <th className="px-3 py-3 w-[11%]">Trạng thái</th>
+                <th className="px-3 py-3 w-[16%] text-right">Khôi phục & Thao tác</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
             {users.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-8 py-12 text-center text-sm font-semibold text-slate-400">
@@ -286,6 +287,7 @@ export default function AdminUsers() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════════

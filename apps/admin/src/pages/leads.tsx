@@ -322,17 +322,17 @@ export default function AdminLeadsPage() {
               <p className="text-xs text-slate-400 max-w-sm">Khi người dùng điền form nhận bảng giá hoặc liên hệ trên các mẫu template & website, thông tin sẽ hiển thị tức thì tại đây.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
+            <div className="w-full">
+              <table className="w-full table-fixed text-left border-collapse text-xs">
                 <thead>
                   <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
-                    <th className="py-3.5 px-4">Khách Hàng</th>
-                    <th className="py-3.5 px-4">Số Điện Thoại / Zalo</th>
-                    <th className="py-3.5 px-4">Dự Án / Mẫu BĐS</th>
-                    <th className="py-3.5 px-4">Hồ Sơ Yêu Cầu & Nhu Cầu</th>
-                    <th className="py-3.5 px-4">Trạng Thái CRM</th>
-                    <th className="py-3.5 px-4">Thời Gian</th>
-                    <th className="py-3.5 px-4 text-right">Thao Tác</th>
+                    <th className="py-3 px-3 w-[17%]">Khách Hàng</th>
+                    <th className="py-3 px-3 w-[15%]">Số ĐT / Zalo</th>
+                    <th className="py-3 px-3 w-[18%]">Dự Án / Mẫu BĐS</th>
+                    <th className="py-3 px-3 w-[22%]">Hồ Sơ Yêu Cầu</th>
+                    <th className="py-3 px-3 w-[13%]">Trạng Thái</th>
+                    <th className="py-3 px-2 w-[8%]">Thời Gian</th>
+                    <th className="py-3 px-3 w-[7%] text-right">Thao Tác</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -344,9 +344,9 @@ export default function AdminLeadsPage() {
                     return (
                       <tr key={lead.id} className="hover:bg-slate-50/60 transition-colors group">
                         {/* Khách Hàng */}
-                        <td className="py-3.5 px-4">
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
+                        <td className="py-3 px-3">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-black text-[10px] flex items-center justify-center shrink-0 shadow-xs">
                               {lead.fullName ? lead.fullName.slice(0, 1).toUpperCase() : 'K'}
                             </div>
                             <div className="min-w-0">
@@ -357,91 +357,79 @@ export default function AdminLeadsPage() {
                         </td>
 
                         {/* Số Điện Thoại / Zalo */}
-                        <td className="py-3.5 px-4 whitespace-nowrap">
-                          <div className="flex items-center gap-1.5">
-                            <span className="font-mono font-bold text-slate-900">{lead.phone}</span>
+                        <td className="py-3 px-3">
+                          <div className="flex items-center gap-1">
+                            <span className="font-mono font-bold text-slate-900 truncate">{lead.phone}</span>
                             {cleanPhone && (
-                              <>
-                                <a
-                                  href={`tel:${cleanPhone}`}
-                                  title="Gọi điện trực tiếp"
-                                  className="p-1 rounded-md bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors font-bold text-[10px]"
-                                >
-                                  📞
-                                </a>
-                                <a
-                                  href={`https://zalo.me/${cleanPhone}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  title="Chat Zalo ngay"
-                                  className="p-1 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors font-bold text-[10px]"
-                                >
-                                  💬 Zalo
-                                </a>
-                              </>
+                              <a
+                                href={`https://zalo.me/${cleanPhone}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Chat Zalo ngay"
+                                className="px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors font-bold text-[9px] shrink-0"
+                              >
+                                Zalo
+                              </a>
                             )}
                           </div>
                         </td>
 
                         {/* Nguồn & Mẫu Quan Tâm */}
-                        <td className="py-3.5 px-4">
-                          <div className="space-y-0.5">
-                            <span className={`inline-block text-[9px] font-black px-2 py-0.5 rounded-full border ${lead.isMarketplace ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'}`}>
-                              {lead.isMarketplace ? 'Demo Marketplace' : `Website: ${lead.tenant?.name || 'Thành Viên'}`}
+                        <td className="py-3 px-3">
+                          <div className="space-y-0.5 min-w-0">
+                            <span className={`inline-block text-[9px] font-black px-1.5 py-0.5 rounded-full border ${lead.isMarketplace ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'}`}>
+                              {lead.isMarketplace ? 'Demo' : 'Website'}
                             </span>
-                            <p className="font-bold text-slate-800 truncate max-w-[160px]">{lead.projectTitle || 'Bất động sản'}</p>
+                            <p className="font-bold text-slate-800 truncate">{lead.projectTitle || 'Bất động sản'}</p>
                           </div>
                         </td>
 
                         {/* Hồ Sơ Yêu Cầu & Nhu Cầu */}
-                        <td className="py-3.5 px-4">
-                          <div className="space-y-1 max-w-[240px]">
+                        <td className="py-3 px-3">
+                          <div className="space-y-0.5 min-w-0">
                             {dossier.product && dossier.product !== 'Căn hộ tiêu chuẩn' && (
-                              <span className="inline-block bg-indigo-50 text-indigo-700 text-[10px] font-bold px-1.5 py-0.5 rounded-md border border-indigo-200 mr-1 truncate max-w-[220px]">
+                              <span className="inline-block bg-indigo-50 text-indigo-700 text-[9px] font-bold px-1.5 py-0.5 rounded border border-indigo-200 truncate max-w-full">
                                 🏠 {dossier.product}
                               </span>
                             )}
-                            <p className="text-[11px] font-medium text-slate-700 line-clamp-1" title={dossier.message}>
+                            <p className="text-[11px] font-medium text-slate-700 truncate" title={dossier.message}>
                               {dossier.message}
                             </p>
                           </div>
                         </td>
 
                         {/* Trạng Thái CRM */}
-                        <td className="py-3.5 px-4 whitespace-nowrap">
+                        <td className="py-3 px-3">
                           <select
                             value={lead.status}
                             onChange={(e) => updateStatusMutation.mutate({ id: lead.id, status: e.target.value as LeadStatus })}
-                            className={`text-[11px] font-extrabold px-2.5 py-1 rounded-lg border focus:outline-none cursor-pointer ${statusConf.badgeBg} ${statusConf.textCol} ${statusConf.borderCol}`}
+                            className={`w-full text-[10px] font-extrabold px-1.5 py-1 rounded-lg border focus:outline-none cursor-pointer ${statusConf.badgeBg} ${statusConf.textCol} ${statusConf.borderCol}`}
                           >
-                            <option value="NEW">🔴 Mới Nhận</option>
-                            <option value="CONTACTED">🟡 Đã Liên Hệ</option>
+                            <option value="NEW">🔴 Mới</option>
+                            <option value="CONTACTED">🟡 Đã LH</option>
                             <option value="QUALIFIED">🟣 Tiềm Năng</option>
                             <option value="WON">🟢 Đã Chốt</option>
-                            <option value="LOST">⚪ Không Mua</option>
+                            <option value="LOST">⚪ Hủy</option>
                             <option value="SPAM">⚫ Spam</option>
                           </select>
                         </td>
 
                         {/* Thời Gian Gửi */}
-                        <td className="py-3.5 px-4 whitespace-nowrap text-slate-400 font-mono text-[11px]">
+                        <td className="py-3 px-2 text-slate-400 font-mono text-[10px]">
                           {new Date(lead.createdAt).toLocaleDateString('vi-VN', {
                             day: '2-digit',
                             month: '2-digit',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
                           })}
                         </td>
 
                         {/* Thao Tác */}
-                        <td className="py-3.5 px-4 text-right whitespace-nowrap">
-                          <div className="flex items-center justify-end gap-1.5">
+                        <td className="py-3 px-3 text-right">
+                          <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => setSelectedLead(lead)}
-                              className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 font-bold text-[11px] transition-colors"
+                              className="px-2 py-1 rounded bg-indigo-50 text-indigo-600 hover:bg-indigo-100 font-bold text-[10px] transition-colors shrink-0"
                             >
-                              Xem & Ghi chú
+                              Xem
                             </button>
                             <button
                               onClick={() => {
@@ -449,7 +437,7 @@ export default function AdminLeadsPage() {
                                   deleteLeadMutation.mutate(lead.id);
                                 }
                               }}
-                              className="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                              className="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
                               title="Xóa Lead"
                             >
                               🗑️
