@@ -51,9 +51,9 @@ export default function CartPage() {
 
   // Pricing calculator helper
   const getItemPrice = (item: any) => {
-    if (!item) return 399000;
+    if (!item) return 499000;
     const tpl = item.template || item;
-    let price = Number(tpl.priceBuy) || Number(tpl.price) || 399000;
+    let price = Number(tpl.priceBuy) || Number(tpl.price) || 499000;
     const id = tpl.id || tpl.slug || 'default';
     if (includeMaintenance[id]) {
       price += 799000; // Bảo trì website 799k/năm
@@ -66,8 +66,8 @@ export default function CartPage() {
 
   const originalTotal = safeCart.reduce((sum: number, item: any) => {
     const tpl = item?.template || item;
-    const buyPrice = Number(tpl?.priceBuy) || Number(tpl?.price) || 399000;
-    const orig = Number(tpl?.originalPrice) || (buyPrice <= 399000 ? 799000 : Math.round(buyPrice * 1.5));
+    const buyPrice = Number(tpl?.priceBuy) || Number(tpl?.price) || 499000;
+    const orig = Number(tpl?.originalPrice) || (buyPrice <= 499000 ? 799000 : Math.round(buyPrice * 1.5));
     const id = tpl?.id || tpl?.slug || 'default';
     let total = orig;
     if (includeMaintenance[id]) total += 799000;

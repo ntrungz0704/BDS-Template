@@ -716,8 +716,8 @@ export default function MarketplaceHome() {
                   <span className="text-[11px] font-bold text-blue-400 uppercase tracking-wider">WEBSITE CHUYÊN NGHIỆP</span>
                 </div>
                 <div className="mb-4">
-                  <span className="text-3xl font-bold text-white">399.000đ</span>
-                  <span className="text-slate-400 text-xs"> / chỉ từ 399k - 499k</span>
+                  <span className="text-3xl font-bold text-white">499.000đ</span>
+                  <span className="text-slate-400 text-xs"> / chỉ từ 499k - 499k</span>
                 </div>
                 <p className="text-[12px] text-slate-300 border-b border-white/10 pb-3 mb-4">Thiết kế chuẩn mực, bàn giao nhanh chóng & hướng dẫn vận hành.</p>
                 <ul className="space-y-2.5 mb-6 text-xs text-slate-200 font-normal">

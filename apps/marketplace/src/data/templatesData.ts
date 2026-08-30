@@ -79,7 +79,7 @@ export const WEBSITE_TEMPLATES: Template[] = [
       "Trang Dự án, Tin tức, Giới thiệu, Liên hệ & Ký gửi, Modal Đăng nhập/Đăng ký",
       "Đồng bộ URL Slug mượt mà, hỗ trợ popstate trình duyệt 100%"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -143,7 +143,7 @@ export const WEBSITE_TEMPLATES: Template[] = [
       "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án, Tin tức, Giới thiệu, Liên hệ",
       "Tối ưu 100% trải nghiệm chạm lướt trên thiết bị di động"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -207,7 +207,7 @@ export const WEBSITE_TEMPLATES: Template[] = [
       "Đầy đủ 9 trang con nghiệp vụ: Bán, Thuê, Dự án, Tạp chí VIP, Giới thiệu, Liên hệ",
       "Tích hợp tính năng đặt lịch xem nhà riêng tư bằng xe Maybach & du thuyền"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -271,7 +271,7 @@ export const WEBSITE_TEMPLATES: Template[] = [
       "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án, Tin tức, Giới thiệu, Liên hệ",
       "Tối ưu tốc độ tải trang cực nhanh với mật độ thông tin cao"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -335,7 +335,7 @@ export const WEBSITE_TEMPLATES: Template[] = [
       "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án, Tin quy hoạch, Giới thiệu, Liên hệ",
       "Tương thích hoàn hảo cả trên giao diện màn hình cảm ứng di động"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -401,7 +401,7 @@ export const WEBSITE_TEMPLATES: Template[] = [
       "Chính sách bán hàng ưu đãi đợt 1 & Bảng tính lãi suất vay ngân hàng tương tác",
       "Đầy đủ 100% các trang con: Căn hộ, Shophouse, Biệt thự, Tiện ích, Chính sách, Thư viện, Tin tức, Ký gửi, Liên hệ"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -467,7 +467,7 @@ export const WEBSITE_TEMPLATES: Template[] = [
       "6 Giá trị cốt lõi & Tiềm năng tăng giá X2-X3 đón sóng cao tốc",
       "Đầy đủ 100% các trang con: Đất vườn, Bungalow, Biệt thự đồi, Farmstay, Tiện ích, Thư viện, Tin tức, Ký gửi, Liên hệ"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -531,7 +531,7 @@ export const WEBSITE_TEMPLATES: Template[] = [
       "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án KCN, Báo cáo FDI, Giới thiệu, Liên hệ",
       "Tích hợp form gửi yêu cầu RFP tìm đất KCN & nhà xưởng quy mô lớn"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -595,7 +595,7 @@ export const WEBSITE_TEMPLATES: Template[] = [
       "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án bảo tồn, Văn hóa, Giới thiệu, Liên hệ",
       "Kết nối mạng lưới chuyên gia phục dựng di sản kiến trúc hàng đầu"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -659,7 +659,7 @@ export const WEBSITE_TEMPLATES: Template[] = [
       "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án ROI cao, Báo cáo tài chính, Giới thiệu, Liên hệ",
       "Tích hợp form đăng ký nhận danh sách BĐS ngộp thanh lý dưới giá thị trường"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -723,7 +723,7 @@ export const WEBSITE_TEMPLATES: Template[] = [
       "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án ven sông, Tin tức, Giới thiệu, Liên hệ",
       "Tích hợp form đặt lịch cano & du thuyền riêng khảo sát vị trí mặt nước"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -787,7 +787,7 @@ export const WEBSITE_TEMPLATES: Template[] = [
       "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Đại đô thị, Tiến độ, Giới thiệu, Liên hệ",
       "Tích hợp nút tải trọn bộ hồ sơ pháp lý 1/500 và bảng giá gốc F1"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -851,7 +851,7 @@ export const WEBSITE_TEMPLATES: Template[] = [
       "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Gói thanh lý, Quy chế, Giới thiệu, Liên hệ",
       "Tích hợp hệ thống đăng ký nộp hồ sơ cọc và phòng đấu giá trực tuyến"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -915,7 +915,7 @@ export const WEBSITE_TEMPLATES: Template[] = [
       "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Làng sinh thái, Cẩm nang, Giới thiệu, Liên hệ",
       "Tích hợp form đăng ký tham gia tour xe đưa đón săn đất cuối tuần miễn phí"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -979,7 +979,7 @@ export const WEBSITE_TEMPLATES: Template[] = [
       "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án TTTM, Tin tức, Giới thiệu, Liên hệ",
       "Tích hợp form gửi yêu cầu tìm kiếm mặt bằng mở chuỗi trên toàn quốc"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -1043,7 +1043,7 @@ export const WEBSITE_TEMPLATES: Template[] = [
       "Đầy đủ 9 trang con: Bán, Thuê, Sang nhượng, Dự án đại sứ, Góc nhìn, Hồ sơ, Tư vấn",
       "Tích hợp form đặt lịch hẹn tư vấn riêng tư (Private Meeting) tại Lounge sang trọng"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -1623,7 +1623,7 @@ export const LANDING_TEMPLATES: Template[] = [
       "Thư viện ảnh thực tế tích hợp Lightbox phóng to và tự chuyển động 3s",
       "Nút Hotline rung lắc và Chat Zalo 1 chạm bám theo góc màn hình"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -1687,7 +1687,7 @@ export const LANDING_TEMPLATES: Template[] = [
       "Bảng quyền lợi hoa hồng tới 70%, lương cứng và thưởng nóng vàng/du lịch",
       "Gallery ảnh thực tế văn phòng hiện đại và video clip văn hóa doanh nghiệp"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -1751,7 +1751,7 @@ export const LANDING_TEMPLATES: Template[] = [
       "Mặt bằng tương tác 1PN, 2PN, 3PN có sơ đồ bản vẽ kỹ thuật 2D/3D & Lightbox Zoom",
       "Giỏ hàng mở bán 4 căn kèm quà tặng chiết khấu và Form đăng ký xe đón xem nhà cuối tuần"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -1815,7 +1815,7 @@ export const LANDING_TEMPLATES: Template[] = [
       "Form khảo sát nhu cầu tìm nhà theo ngân sách cá nhân hóa",
       "Nút kết nối Zalo & Hotline trực tiếp luôn hiện diện ở mọi góc nhìn"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -1880,7 +1880,7 @@ export const LANDING_TEMPLATES: Template[] = [
       "Sơ đồ mặt bằng tầng điển hình 16 căn/sàn & 6 cụm tiện ích nghỉ dưỡng tại gia 5 sao",
       "Form nhận báo giá trực tiếp từ Chủ đầu tư với cam kết bảo mật 100%"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -1945,7 +1945,7 @@ export const LANDING_TEMPLATES: Template[] = [
       "Bảng 5 lý do đầu tư & Phân tích tiềm năng tăng trưởng 25% - 35%/năm",
       "Form nhận báo giá F0 trực tiếp từ KITA Group kèm quà tặng 1 cây vàng 9999"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
@@ -2010,7 +2010,7 @@ export const LANDING_TEMPLATES: Template[] = [
       "Phân tích đột phá hạ tầng Cao tốc Dầu Giây - Phan Thiết 1h30 phút & Sân bay Quốc Tế",
       "Form tải trọn bộ Brochure & Bảng tính dòng tiền vay (.pdf & .xlsx) tự động"
     ],
-    priceBuy: 399000,
+    priceBuy: 499000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,

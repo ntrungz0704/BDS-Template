@@ -422,6 +422,7 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
                       ? 'text-blue-600 font-bold bg-blue-50/80 shadow-xs'
                       : 'hover:text-blue-600 hover:bg-slate-50 font-medium'
                   }`}
+
                 >
                   <span>{item.label}</span>
                   {(item as any).badge && (
@@ -556,6 +557,7 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
                 href={user.role === 'SUPER_ADMIN' ? (process.env.NEXT_PUBLIC_ADMIN_URL || 'https://admin.aireviewbds.com') : (process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com')}
                 target="_blank"
                 rel="noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-2 py-2 px-3 rounded-md text-xs font-bold text-indigo-700 bg-indigo-50"
               >
                 <LayoutDashboard className="w-4 h-4 text-indigo-600" />
@@ -589,7 +591,7 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
               setMobileMenuOpen(false);
               router.push('/contact');
             }}
-            className="w-full py-2.5 bg-slate-900 text-white rounded-md text-center font-bold text-xs shadow-sm mt-1"
+            className="w-full py-2.5 bg-slate-900 text-white rounded-md text-center font-bold text-xs shadow-sm mt-1 cursor-pointer"
           >
             Tư vấn miễn phí
           </button>
@@ -603,7 +605,7 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
             <Gift className="w-4 h-4 shrink-0 animate-bounce" />
             <div className="whitespace-nowrap overflow-hidden text-ellipsis">
               <span className="inline-block animate-pulse text-[11px] sm:text-xs">
-                Khuyến mãi đặc biệt: Giảm 50% chỉ từ 399.000đ/mẫu (Giá gốc 799.000đ) trong hôm nay.
+                Khuyến mãi đặc biệt: Giảm 50% chỉ từ 499.000đ/mẫu (Giá gốc 999.000đ) trong hôm nay.
               </span>
             </div>
           </div>
@@ -614,7 +616,7 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
             </span>
             <button
               onClick={() => router.push('/contact')}
-              className="bg-white text-[#0F172A] px-3 py-1 rounded-md hover:bg-slate-50 transition-colors text-[10px] font-extrabold uppercase tracking-wider"
+              className="bg-white text-[#0F172A] px-3 py-1 rounded-md hover:bg-slate-50 transition-colors text-[10px] font-extrabold uppercase tracking-wider cursor-pointer"
             >
               Nhận ưu đãi
             </button>
@@ -624,4 +626,3 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
     </header>
   );
 }
-

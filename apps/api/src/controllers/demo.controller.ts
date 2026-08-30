@@ -47,7 +47,7 @@ export const createDemoSession = async (req: Request, res: Response) => {
               description: `Giao diện mẫu ${templateId}`,
               shortDescription: `Mẫu template ${templateId}`,
               priceBuy: 499000,
-              priceRentMonthly: 399000,
+              priceRentMonthly: 499000,
               isActive: true,
               sortOrder: 99,
             },

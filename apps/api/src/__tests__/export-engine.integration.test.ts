@@ -29,7 +29,7 @@ describe('CloneCraft Export Engine Integration Tests', () => {
         status: 'COMPLETED',
         templateId: tpl?.id || 'bds-01',
         userId: testUser.id,
-        amount: 399000,
+        amount: 499000,
       },
       include: {
         template: true,

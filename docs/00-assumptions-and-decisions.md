@@ -26,7 +26,7 @@
 ### 3. Biểu giá dịch vụ (Q3)
 - **Công khai biểu giá trên Marketplace:**
   - **Mua Source Code:** 3.900.000 VNĐ (Thanh toán 1 lần).
-  - **Thuê Website:** 399.000 VNĐ / tháng.
+  - **Thuê Website:** 499.000 VNĐ / tháng.
   - **Yêu cầu chỉnh sửa riêng:** Hiển thị nút "Liên hệ báo giá".
 
 ### 4. Giao nhận Source Code (Q4)

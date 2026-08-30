@@ -17,7 +17,7 @@
 - **Then:** 
   - Hệ thống hiển thị Hero banner sang trọng phong cách Luxury Real Estate với dòng tiêu đề chính và nút kêu gọi hành động (CTA) "Khám phá các mẫu giao diện".
   - Hiển thị phần giới thiệu các tính năng nổi bật (Có web trong 5 phút, Không cần biết code, Tích hợp CMS quản trị).
-  - Hiển thị lưới danh sách 3 template đầu tiên với hình ảnh thumbnail sắc nét, tên template, loại phong cách (Luxury, Minimal, Dark), giá mua (3.900.000 VNĐ) và giá thuê (399.000 VNĐ/tháng).
+  - Hiển thị lưới danh sách 3 template đầu tiên với hình ảnh thumbnail sắc nét, tên template, loại phong cách (Luxury, Minimal, Dark), giá mua (3.900.000 VNĐ) và giá thuê (499.000 VNĐ/tháng).
   - Hiển thị bảng so sánh giá công khai rõ ràng giữa gói Mua và Thuê.
   - Chân trang (Footer) chứa đầy đủ thông tin công ty nền tảng, điều khoản và liên kết mạng xã hội.
 
@@ -38,11 +38,11 @@
 
 ##### Scenario 1: Đăng ký thành công và nhận thông tin chuyển khoản
 - **Given:** Khách hàng đang ở trang chi tiết Template 1 (Luxury Gold).
-- **When:** Khách hàng click nút "Thuê Website 399k/tháng", điền đầy đủ họ tên, email, số điện thoại, mong muốn tên subdomain là `hoanggialand`, và click "Gửi đăng ký".
+- **When:** Khách hàng click nút "Thuê Website 499k/tháng", điền đầy đủ họ tên, email, số điện thoại, mong muốn tên subdomain là `hoanggialand`, và click "Gửi đăng ký".
 - **Then:**
   - Hệ thống tạo một bản ghi đơn hàng ở trạng thái `PENDING`.
   - Màn hình chuyển hướng sang trang "Thông tin thanh toán".
-  - Hiển thị thông tin tài khoản ngân hàng nhận tiền, số tiền cần chuyển (399.000 VNĐ), và mã nội dung chuyển khoản bắt buộc dạng `THUE_HOANGGIALAND_OD123`.
+  - Hiển thị thông tin tài khoản ngân hàng nhận tiền, số tiền cần chuyển (499.000 VNĐ), và mã nội dung chuyển khoản bắt buộc dạng `THUE_HOANGGIALAND_OD123`.
   - Hiển thị form gồm 2 tùy chọn: "Upload ảnh biên lai (bill)" hoặc "Nhập mã giao dịch ngân hàng".
 
 ##### Scenario 2: Gửi bằng chứng chuyển khoản thành công
@@ -103,7 +103,7 @@
   - Hiển thị một Popup hộp thoại bắt mắt: 
     - Tiêu đề: **"Bạn đã dùng hết số lượt lưu thử nghiệm"**
     - Nội dung: *"Phiên bản dùng thử giới hạn tối đa 3 lần lưu để trải nghiệm. Toàn bộ thiết lập của bạn vẫn được lưu giữ. Vui lòng Mua hoặc Thuê website để kích hoạt sử dụng chính thức."*
-    - Nút CTA: "Đăng ký Thuê ngay (399k/tháng)" và "Mua Source Code (3.9M)".
+    - Nút CTA: "Đăng ký Thuê ngay (499k/tháng)" và "Mua Source Code (3.9M)".
   - Không có dữ liệu mới nào được ghi vào cơ sở dữ liệu.
 
 ##### Scenario 4: Chạm giới hạn thời gian dùng thử (Quá 3 ngày)

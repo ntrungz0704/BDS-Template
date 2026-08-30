@@ -858,8 +858,8 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Giá dịch vụ</p>
 
                 {(() => {
-                  const buyPrice = template.priceBuy || 399000;
-                  const originalPrice = buyPrice <= 399000 ? 799000 : 999000;
+                  const buyPrice = template.priceBuy || 499000;
+                  const originalPrice = buyPrice <= 499000 ? 799000 : 999000;
                   const discountPercent = Math.round(((originalPrice - buyPrice) / originalPrice) * 100);
                   return (
                     <div className="mb-3">

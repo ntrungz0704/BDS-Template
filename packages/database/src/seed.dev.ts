@@ -163,7 +163,7 @@ async function provisionTenant(opts: { userId: string; name: string; slug: strin
   const rootFolder = await prisma.mediaFolder.create({ data: { tenantId: tenant.id, name: 'Thu vien anh', slug: 'root', sortOrder: 0 } });
   await prisma.mediaFolder.create({ data: { tenantId: tenant.id, parentId: rootFolder.id, name: 'Du an', slug: 'projects', sortOrder: 1 } });
   const now = new Date(); const end = new Date(now); end.setFullYear(end.getFullYear() + 1);
-  await prisma.subscription.create({ data: { tenantId: tenant.id, plan: 'PRO', status: 'ACTIVE', amount: 399000, startDate: now, endDate: end } });
+  await prisma.subscription.create({ data: { tenantId: tenant.id, plan: 'PRO', status: 'ACTIVE', amount: 499000, startDate: now, endDate: end } });
   await prisma.tenantDomainSettings.create({ data: { tenantId: tenant.id, subdomain, platformDomain: 'platformbds.vn', customDomain: null, dnsVerified: true, sslStatus: 'ACTIVE' } });
   await prisma.banner.create({ data: { tenantId: tenant.id, title: companyData.slogan, imageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80', actionUrl: '/projects', actionText: 'Xem du an', sortOrder: 1, isActive: true } });
   await prisma.lead.create({ data: { tenantId: tenant.id, fullName: 'Nguyen Minh Tu', phone: '0901234567', source: 'FORM', status: 'NEW', note: 'Quan tam can ho 3PN' } });
