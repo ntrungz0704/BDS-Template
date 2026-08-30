@@ -889,44 +889,52 @@ export default function LP01Template({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
             
-            <div className="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl">
-              <div className="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-black text-lg">
-                12%
+            <div className="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl flex flex-col justify-between">
+              <div>
+                <div className="inline-flex min-w-[54px] h-10 px-3.5 rounded-xl bg-amber-500 text-slate-950 items-center justify-center font-black text-sm shadow-md whitespace-nowrap mb-3">
+                  12%
+                </div>
+                <h4 className="font-bold text-sm text-amber-300 uppercase">Chiết Khấu Thanh Toán Sớm</h4>
+                <p className="text-xs text-slate-300 leading-relaxed mt-2">
+                  Chiết khấu trực tiếp tới 12% giá trị căn hộ khi khách hàng thanh toán sớm 95% giá trị hợp đồng.
+                </p>
               </div>
-              <h4 className="font-bold text-sm text-amber-300 uppercase">Chiết Khấu Thanh Toán Sớm</h4>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Chiết khấu trực tiếp tới 12% giá trị căn hộ khi khách hàng thanh toán sớm 95% giá trị hợp đồng.
-              </p>
             </div>
 
-            <div className="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl">
-              <div className="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-black text-lg">
-                0%
+            <div className="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl flex flex-col justify-between">
+              <div>
+                <div className="inline-flex min-w-[54px] h-10 px-3.5 rounded-xl bg-amber-500 text-slate-950 items-center justify-center font-black text-sm shadow-md whitespace-nowrap mb-3">
+                  0% Lãi Suất
+                </div>
+                <h4 className="font-bold text-sm text-amber-300 uppercase">Lãi Suất 0% Trong 24 Tháng</h4>
+                <p className="text-xs text-slate-300 leading-relaxed mt-2">
+                  Ngân hàng Vietcombank, Techcombank hỗ trợ vay 70%, ân hạn nợ gốc và miễn lãi tới 24 tháng.
+                </p>
               </div>
-              <h4 className="font-bold text-sm text-amber-300 uppercase">Lãi Suất 0% Trong 24 Tháng</h4>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Ngân hàng Vietcombank, Techcombank hỗ trợ vay 70%, ân hạn nợ gốc và miễn lãi tới 24 tháng.
-              </p>
             </div>
 
-            <div className="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl">
-              <div className="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-black text-lg">
-                150Tr
+            <div className="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl flex flex-col justify-between">
+              <div>
+                <div className="inline-flex min-w-[54px] h-10 px-3.5 rounded-xl bg-amber-500 text-slate-950 items-center justify-center font-black text-sm shadow-md whitespace-nowrap mb-3">
+                  150 Triệu
+                </div>
+                <h4 className="font-bold text-sm text-amber-300 uppercase">Tặng Gói Nội Thất Cao Cấp</h4>
+                <p className="text-xs text-slate-300 leading-relaxed mt-2">
+                  Tặng ngay gói quà tặng hoàn thiện nội thất trị giá 150.000.000 đồng trừ thẳng vào giá bán.
+                </p>
               </div>
-              <h4 className="font-bold text-sm text-amber-300 uppercase">Tặng Gói Nội Thất Cao Cấp</h4>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Tặng ngay gói quà tặng hoàn thiện nội thất trị giá 150.000.000 đồng trừ thẳng vào giá bán.
-              </p>
             </div>
 
-            <div className="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl">
-              <div className="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-black text-lg">
-                2 Năm
+            <div className="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl flex flex-col justify-between">
+              <div>
+                <div className="inline-flex min-w-[54px] h-10 px-3.5 rounded-xl bg-amber-500 text-slate-950 items-center justify-center font-black text-sm shadow-md whitespace-nowrap mb-3">
+                  2 Năm
+                </div>
+                <h4 className="font-bold text-sm text-amber-300 uppercase">Miễn Phí Phí Quản Lý</h4>
+                <p className="text-xs text-slate-300 leading-relaxed mt-2">
+                  Miễn phí 24 tháng dịch vụ quản lý tòa nhà tiêu chuẩn quốc tế Savills / CBRE.
+                </p>
               </div>
-              <h4 className="font-bold text-sm text-amber-300 uppercase">Miễn Phí Phí Quản Lý</h4>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Miễn phí 24 tháng dịch vụ quản lý tòa nhà tiêu chuẩn quốc tế Savills / CBRE.
-              </p>
             </div>
 
           </div>
