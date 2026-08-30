@@ -1725,67 +1725,67 @@ export const LANDING_TEMPLATES: Template[] = [
     }
   },
 
-// ─── LP 03. LANDING PAGE ĐẤT NỀN PHÂN LÔ F0 SỔ ĐỎ TRAO TAY ──────────────────
+// ─── LP 03. LANDING PAGE TỔ HỢP CĂN HỘ CAO CẤP SIMPLE PAGE ──────────────────
   {
     id: "lp-03",
-    name: "LP #03 - Đất Nền Phân Lô F0 Sổ Đỏ Trao Tay",
+    name: "LP #03 - Tổ Hợp Căn Hộ Cao Cấp Simple Page",
     slug: "lp-03",
     collectionSlug: "landing-page",
     collectionName: "Kho Landing Page Sale BĐS",
     badge: "LANDING PAGE #03",
-    badgeBg: "#059669",
+    badgeBg: "#9B1C1C",
     badgeColor: "#FFFFFF",
-    accentColor: "#059669",
-    description: "Landing Page chuyên đánh hàng mở bán Đất Nền Phân Lô F0, Đô thị sinh thái ven đô. Tối ưu thu hút nhà đầu tư F0 với chính sách chiết khấu vàng, sổ hồng trao tay từng nền, form đặt lịch xe đón xem đất miễn phí cuối tuần.",
-    shortDescription: "Landing Page 1 trang · Đất Nền F0 · Bùng Nổ Doanh Số Mở Bán",
-    thumbnail: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&auto=format&fit=crop&q=80",
+    accentColor: "#9B1C1C",
+    description: "Landing Page phong cách Hiện Đại Sang Trọng chuẩn dự án Simple Page. Tối ưu phễu 2 tầng với Form nhận báo giá Hero, dải 4 icon quyền lợi đỏ đô, bảng tổng quan thông số, 3 cột chỉ số tiện ích xanh, bộ sưu tập căn hộ mẫu, giỏ hàng 4 sản phẩm mở bán đợt 1 và Form đặt lịch xe đưa đón xem nhà mẫu cuối tuần.",
+    shortDescription: "Landing Page 1 trang · Căn Hộ Nghỉ Dưỡng 5 Sao · Bùng Nổ Mở Bán Đợt 1",
+    thumbnail: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=80",
     screenshots: [
-      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&auto=format&fit=crop&q=80"
     ],
     features: [
-      "Cấu trúc bùng nổ chuyển đổi dành riêng cho sự kiện mở bán Đất Nền đợt 1",
-      "Tập trung nhấn mạnh Pháp lý 1/500 hoàn thiện & Sổ đỏ trao tay công chứng ngay",
-      "Form đăng ký xe ô tô đưa đón tận nhà xem dự án miễn phí sáng Thứ 7 & Chủ Nhật",
-      "Trình diễn bản đồ quy hoạch phân lô, vị trí vàng đón đầu hạ tầng cao tốc",
-      "Cam kết chiết khấu khủng và tặng vàng 9999 cho khách hàng cọc sớm"
+      "Tone màu Đỏ Đô (#9B1C1C) & Xám Đen kết hợp Xanh Biển Nhạt sang trọng chuẩn ảnh mẫu",
+      "Tính năng UX Auto-Select: Bấm nhận báo giá hoặc đặt chỗ căn nào sẽ tự động cuộn lên Form và chọn sẵn căn đó",
+      "Dải 4 Icon quyền lợi đỏ đô: Vị trí đắc địa, Tiện ích 5 sao, Pháp lý hoàn chỉnh, Full nội thất",
+      "Mặt bằng tương tác 1PN, 2PN, 3PN có sơ đồ bản vẽ kỹ thuật 2D/3D & Lightbox Zoom",
+      "Giỏ hàng mở bán 4 căn kèm quà tặng chiết khấu và Form đăng ký xe đón xem nhà cuối tuần"
     ],
     priceBuy: 399000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
     sortOrder: 27,
-    targetAudience: ["Đội nhóm sale chuyên đánh đất nền tỉnh & ven đô", "Công ty bất động sản phân lô bán nền", "Môi giới đất nền F0"],
-    highlights: ["F0 Launch Funnel", "Sổ Đỏ 100% Cam Kết", "Xe Đưa Đón Miễn Phí", "Chiết Khấu Vàng"],
+    targetAudience: ["Chủ đầu tư & Sàn phân phối căn hộ cao cấp", "Đội nhóm sale F1 đánh dự án trung tâm", "Môi giới căn hộ chung cư hạng A"],
+    highlights: ["Simple Page Layout", "Red Bar Benefits", "Interactive Floor Tabs", "Weekend Bus Booking"],
     availablePages: ["Trang chủ Single Page Landing"],
-    modules: ["F0UrgencyModule", "LandPlotLeadModule", "MasterPlanViewerModule", "BusBookingModule"],
-    benefits: ["Bùng nổ lượng đăng ký xe xem đất cuối tuần", "Thuyết phục nhà đầu tư bằng pháp lý minh bạch", "Chốt cọc nhanh chóng trong ngày mở bán"],
+    modules: ["SimpleHeroModule", "RedFeaturesModule", "ProjectOverviewModule", "FloorPlanUXModule", "ShowroomGalleryModule", "WeekendBookingModule"],
+    benefits: ["Tăng gấp 4 lần tỷ lệ khách để lại số điện thoại", "Tự động phân loại nhu cầu từng loại căn hộ", "Lấp đầy lịch hẹn xem nhà mẫu cuối tuần"],
     themeConfig: {
       fontHeading: "'Inter', sans-serif",
       fontBody: "'Inter', sans-serif",
-      primaryColor: "#059669",
-      secondaryColor: "#0F172A",
-      accentColor: "#10B981",
-      bgColor: "#F8FAFC",
+      primaryColor: "#9B1C1C",
+      secondaryColor: "#1E2530",
+      accentColor: "#D97706",
+      bgColor: "#FFFFFF",
       cardBgColor: "#FFFFFF",
-      textColor: "#0F172A",
+      textColor: "#1E2530",
       radiusToken: "16px",
-      shadowToken: "0 10px 25px -5px rgba(5,150,105,0.15)"
+      shadowToken: "0 10px 25px -5px rgba(155,28,28,0.15)"
     },
     layoutConfig: {
-      heroStyle: "High Energy Green Emerald Hero with Fast Lead Form",
-      navigationStyle: "Clean Trust Navbar",
-      cardStyle: "Eco Clean Solid Card",
-      galleryStyle: "Site Progress Autoplay Slider",
-      ctaStyle: "Emerald Action Button",
-      spacingScale: "Tight Conversion Spacing"
+      heroStyle: "Dark Box Hero with Red Bordered White Form",
+      navigationStyle: "Clean Navy Header with Slogan",
+      cardStyle: "Clean Bordered White Card with Red Badges",
+      galleryStyle: "Showroom 6-Photo Grid & 8-Photo Real Site Gallery",
+      ctaStyle: "Deep Red Action Button",
+      spacingScale: "Comfortable Conversion Spacing"
     },
-    wireframe: ["F0LaunchBar", "TrustNavbar", "HeroLeadForm", "MasterPlanGallery", "BusBookingCTA"],
+    wireframe: ["TopNav", "HeroForm", "RedBenefitBar", "ProjectOverview", "LocationMap", "BlueUtilityBar", "FloorPlanTabs", "ShowroomGallery", "RedProductShowcase", "SiteGallery", "PinkWeekendForm", "Footer"],
     sectionConfig: {
       sourceSlug: "lp-03",
-      heroTitle: "ĐẤT NỀN TRUNG TÂM GIÁ GỐC F0 CHỈ 890 TRIỆU",
-      heroSubtitle: "Hạ tầng hoàn thiện đường nhựa 12m - 24m, điện âm nước máy. Sổ đỏ trao tay công chứng ngay."
+      heroTitle: "DỰ ÁN CĂN HỘ CAO CẤP SIMPLE PAGE",
+      heroSubtitle: "Tổ hợp căn hộ cao cấp chuẩn resort trung tâm, chiết khấu 5% đợt 1, hỗ trợ vay 70% LS 0% 24 tháng."
     }
   },
 
