@@ -556,6 +556,52 @@ nextjs-portal {
   transform: scale(1.05);
 }
 
+/* ─── Ultra-Smooth Scroll-Reveal Engine for 24 Templates & 7 LPs ─── */
+.bds-reveal-init section,
+.bds-reveal-init .bds-animate,
+.bds-reveal-init [data-animate],
+.bds-reveal-init .template-section,
+.bds-reveal-init .bds-section {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.bds-reveal-init section.bds-revealed,
+.bds-reveal-init .bds-animate.bds-revealed,
+.bds-reveal-init [data-animate].bds-revealed,
+.bds-reveal-init .template-section.bds-revealed,
+.bds-reveal-init .bds-section.bds-revealed,
+.bds-reveal-init section:first-of-type,
+.bds-reveal-init .hero-section,
+.bds-reveal-init [data-hero] {
+  opacity: 1 !important;
+  transform: translateY(0) scale(1) !important;
+}
+
+/* Staggered card reveals inside sections */
+.bds-revealed .stagger-card:nth-child(1) { transition-delay: 0.05s; }
+.bds-revealed .stagger-card:nth-child(2) { transition-delay: 0.12s; }
+.bds-revealed .stagger-card:nth-child(3) { transition-delay: 0.20s; }
+.bds-revealed .stagger-card:nth-child(4) { transition-delay: 0.28s; }
+.bds-revealed .stagger-card:nth-child(5) { transition-delay: 0.36s; }
+.bds-revealed .stagger-card:nth-child(6) { transition-delay: 0.44s; }
+
+/* Subtle pulse animation for CTA buttons */
+@keyframes bdsPulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(37, 99, 235, 0);
+  }
+}
+
+.cta-pulse {
+  animation: bdsPulseGlow 2.5s infinite;
+}
+
 /* ─── Print ──────────────────────────────────────────── */
 @media print {
   .no-print { display: none !important; }

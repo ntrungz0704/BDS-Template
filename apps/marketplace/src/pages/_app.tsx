@@ -40,6 +40,49 @@ export default function App({ Component, pageProps, router }: AppProps) {
     return () => window.removeEventListener('error', handleError, true);
   }, []);
 
+  // Global High-Performance Scroll Reveal Animation Engine for all 24 Templates & 7 LPs
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+    document.body.classList.add('bds-reveal-init');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('bds-revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    const observeSections = () => {
+      const targets = document.querySelectorAll(
+        'section, [data-animate], .template-section, .bds-section'
+      );
+      targets.forEach((el, index) => {
+        // Initial top section or elements in viewport immediately activate
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.95 || index === 0) {
+          el.classList.add('bds-revealed');
+        } else {
+          observer.observe(el);
+        }
+      });
+    };
+
+    observeSections();
+    const timer = setTimeout(observeSections, 600);
+    router.events.on('routeChangeComplete', observeSections);
+
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+      router.events.off('routeChangeComplete', observeSections);
+    };
+  }, [router]);
+
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {

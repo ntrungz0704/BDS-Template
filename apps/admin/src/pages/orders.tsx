@@ -55,7 +55,9 @@ export default function AdminOrders() {
     refetchInterval: 5000,
   });
 
-  const orders: any[] = ordersRes?.data || [];
+  const orders: any[] = (ordersRes?.data || []).filter(
+    (o: any) => o.amount > 0 && !o.note?.includes('[LIÊN HỆ TƯ VẤN]')
+  );
 
   // Tính số lượng theo trạng thái
   const pendingOrders = orders.filter(

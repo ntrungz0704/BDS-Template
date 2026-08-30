@@ -61,6 +61,46 @@ export default function App({ Component, pageProps }: AppProps) {
     return () => window.removeEventListener('error', handleError, true);
   }, []);
 
+  // Global High-Performance Scroll Reveal Animation Engine
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+    document.body.classList.add('bds-reveal-init');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('bds-revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    const observeSections = () => {
+      const targets = document.querySelectorAll(
+        'section, [data-animate], .template-section, .bds-section'
+      );
+      targets.forEach((el, index) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.95 || index === 0) {
+          el.classList.add('bds-revealed');
+        } else {
+          observer.observe(el);
+        }
+      });
+    };
+
+    observeSections();
+    const timer = setTimeout(observeSections, 600);
+
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Head>
