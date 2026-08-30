@@ -829,6 +829,27 @@ exports.Prisma.EmailVerificationTokenScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.AiChatSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tenantId: 'tenantId',
+  guestSessionId: 'guestSessionId',
+  title: 'title',
+  ipAddress: 'ipAddress',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AiChatMessageScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  role: 'role',
+  content: 'content',
+  timeStr: 'timeStr',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -965,7 +986,9 @@ exports.Prisma.ModelName = {
   WebhookDelivery: 'WebhookDelivery',
   TenantMembership: 'TenantMembership',
   PasswordResetToken: 'PasswordResetToken',
-  EmailVerificationToken: 'EmailVerificationToken'
+  EmailVerificationToken: 'EmailVerificationToken',
+  AiChatSession: 'AiChatSession',
+  AiChatMessage: 'AiChatMessage'
 };
 
 /**

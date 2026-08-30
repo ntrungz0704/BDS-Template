@@ -270,6 +270,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(loggedUser);
         localStorage.setItem('platformbds_user_v3', JSON.stringify(loggedUser));
 
+        // Tự động đồng bộ lịch sử chat của khách vãng lai nếu có
+        try {
+          const guestSid = typeof window !== 'undefined' ? localStorage.getItem('AI_GUEST_SESSION_ID') : null;
+          if (guestSid && loggedUser?.id) {
+            axios.post(`${API_URL}/api/ai/sync-guest-history`, {
+              guestSessionId: guestSid,
+              userId: loggedUser.id,
+            }, { withCredentials: true }).catch(() => {});
+          }
+        } catch (e) {}
+
         // Fetch fresh user profile & orders for this exact user
         try {
           const meRes = await axios.get(`${API_URL}/api/auth/me`, {
@@ -312,6 +323,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         withCredentials: true,
         headers: csrfToken ? { 'x-csrf-token': decodeURIComponent(csrfToken) } : {},
       });
+
+      // Tự động đồng bộ lịch sử chat của khách vãng lai sau khi đăng ký
+      if (res.data?.success && res.data?.data?.user?.id) {
+        try {
+          const guestSid = typeof window !== 'undefined' ? localStorage.getItem('AI_GUEST_SESSION_ID') : null;
+          if (guestSid) {
+            axios.post(`${API_URL}/api/ai/sync-guest-history`, {
+              guestSessionId: guestSid,
+              userId: res.data.data.user.id,
+            }, { withCredentials: true }).catch(() => {});
+          }
+        } catch (e) {}
+      }
+
       return res.data?.success ?? true;
     } catch (err: any) {
       const serverMessage = err?.response?.data?.error?.message || err?.message;

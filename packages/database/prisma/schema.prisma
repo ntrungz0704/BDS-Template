@@ -67,6 +67,7 @@ model User {
   memberships     TenantMembership[]
   passwordResetTokens     PasswordResetToken[]
   emailVerificationTokens EmailVerificationToken[]
+  aiChatSessions          AiChatSession[]
   createdAt       DateTime         @default(now()) @map("created_at")
   updatedAt       DateTime         @updatedAt @map("updated_at")
   deletedAt       DateTime?        @map("deleted_at")
@@ -131,6 +132,7 @@ model Tenant {
   apiKeys                TenantApiKey[]
   webhooks               TenantWebhook[]
   memberships            TenantMembership[]
+  aiChatSessions         AiChatSession[]
 
   @@index([slug])
   @@index([status])
@@ -1099,4 +1101,38 @@ model EmailVerificationToken {
   @@index([token])
   @@index([userId])
   @@map("email_verification_tokens")
+}
+
+// ── AI: Real Estate Chat Sessions & Messages ───────────────────────────────
+model AiChatSession {
+  id             String          @id @default(cuid())
+  userId         String?         @map("user_id")
+  user           User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenantId       String?         @map("tenant_id")
+  tenant         Tenant?         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  guestSessionId String?         @map("guest_session_id")
+  title          String          @default("Cuộc trò chuyện tư vấn BĐS")
+  ipAddress      String?         @map("ip_address")
+  messages       AiChatMessage[]
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([tenantId])
+  @@index([guestSessionId])
+  @@map("ai_chat_sessions")
+}
+
+model AiChatMessage {
+  id        String        @id @default(cuid())
+  sessionId String        @map("session_id")
+  session   AiChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role      String        // 'user' | 'assistant' | 'system'
+  content   String        @db.Text
+  timeStr   String?       @map("time_str") // Formatted "HH:mm:ss DD/MM/YYYY" (Asia/Ho_Chi_Minh)
+  metadata  Json?
+  createdAt DateTime      @default(now()) @map("created_at")
+
+  @@index([sessionId])
+  @@map("ai_chat_messages")
 }
