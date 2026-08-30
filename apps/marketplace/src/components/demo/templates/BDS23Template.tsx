@@ -498,21 +498,21 @@ export default function BDS23Template({
   // ─────────────────────────────────────────────────────────────────────────
   const renderHeader = () => (
     <header className="sticky top-0 z-40 bg-[#0B132B] text-white shadow-xl border-b border-amber-500/30">
-      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between gap-4`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
         
         {/* Left Brand */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-3 cursor-pointer group shrink-0"
+          className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none"
         >
-          <div className="w-10 h-10 bg-gradient-to-br from-[#E5B869] to-[#9A7B4F] flex items-center justify-center text-slate-950 font-serif font-black text-xl shadow border border-amber-200">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#E5B869] to-[#9A7B4F] flex items-center justify-center text-slate-950 font-serif font-black text-base sm:text-xl shadow border border-amber-200 shrink-0">
             🦅
           </div>
-          <div>
-            <span className="text-xl sm:text-2xl font-serif font-black tracking-wider text-amber-300 block leading-none">
+          <div className="min-w-0 truncate">
+            <span className="text-base sm:text-2xl font-serif font-black tracking-wider text-amber-300 block leading-none truncate">
               MINH KHAI <span className="text-white">APARTMENTS</span>
             </span>
-            <span className="text-[8.5px] font-bold text-amber-200/80 uppercase tracking-widest block mt-0.5">
+            <span className="text-[7.5px] sm:text-[8.5px] font-bold text-amber-200/80 uppercase tracking-widest block mt-0.5 truncate">
               CỔNG THÔNG TIN CHUNG CƯ CAO CẤP VÀNH ĐAI 2
             </span>
           </div>
@@ -531,21 +531,22 @@ export default function BDS23Template({
         </nav>
 
         {/* Right CTA */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
           <button
             onClick={() => {
               const el = document.getElementById('form-tu-van');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="hidden sm:inline-block px-4 py-2 bg-gradient-to-r from-[#E5B869] to-[#D4AF37] hover:from-[#D4AF37] text-slate-950 font-black text-xs uppercase tracking-wider shadow cursor-pointer"
+            className="hidden md:inline-block px-4 py-2 bg-gradient-to-r from-[#E5B869] to-[#D4AF37] hover:from-[#D4AF37] text-slate-950 font-black text-xs uppercase tracking-wider shadow cursor-pointer"
           >
             Đăng Ký Tư Vấn
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-white xl:hidden hover:bg-white/10"
+            className="p-1.5 sm:p-2 text-white xl:hidden hover:bg-white/10 rounded-md shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 
@@ -553,7 +554,7 @@ export default function BDS23Template({
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="xl:hidden bg-[#0A1128] border-t border-amber-500/30 px-6 py-4 space-y-2 animate-in slide-in-from-top duration-200">
+        <div className="xl:hidden bg-[#0A1128] border-t border-amber-500/30 px-4 sm:px-6 py-4 space-y-2 animate-in slide-in-from-top duration-200">
           <div className="grid grid-cols-2 gap-2 text-xs font-bold uppercase">
             <button onClick={() => navigate('home')} className="p-2.5 text-left bg-[#1C2541] hover:text-amber-300">Trang Chủ</button>
             <button onClick={() => navigate('about')} className="p-2.5 text-left bg-[#1C2541] hover:text-amber-300">Giới Thiệu</button>
@@ -618,8 +619,8 @@ export default function BDS23Template({
   // 3. SECTION 1: LƯỚI 8 DỰ ÁN TRỤC MINH KHAI (2 ROWS X 4 COLS)
   // ─────────────────────────────────────────────────────────────────────────
   const renderProjectsGridSection = () => (
-    <section id="danh-sach-du-an" className="py-16 bg-[#F8FAFC] text-slate-900 border-b border-slate-200">
-      <div className={`${MAX_W} mx-auto px-4 space-y-8`}>
+    <section id="danh-sach-du-an" className="py-12 sm:py-16 bg-[#F8FAFC] text-slate-900 border-b border-slate-200">
+      <div className={`${MAX_W} mx-auto px-4 space-y-6 sm:space-y-8`}>
         
         <div className="text-center space-y-2 max-w-2xl mx-auto">
           <h2 className="text-2xl sm:text-4xl font-serif font-black uppercase text-[#0B132B]">
@@ -632,23 +633,23 @@ export default function BDS23Template({
         </div>
 
         {/* Filter Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3 border border-slate-300 text-xs">
-          <div className="flex items-center gap-2">
-            <Search size={16} className="text-slate-400" />
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-3 sm:p-4 border border-slate-300 shadow-sm text-xs">
+          <div className="flex items-center gap-2 flex-1 min-w-0 border sm:border-0 border-slate-200 px-2.5 py-1.5 sm:p-0">
+            <Search size={16} className="text-slate-400 shrink-0" />
             <input
               type="text"
               value={searchKeyword}
               onChange={e => setSearchKeyword(e.target.value)}
               placeholder="Tìm theo tên dự án hoặc địa chỉ..."
-              className="py-1 px-2 focus:outline-none text-slate-800"
+              className="w-full py-1 px-1 focus:outline-none text-slate-800 text-xs"
             />
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
             <select
               value={filterDeveloper}
               onChange={e => setFilterDeveloper(e.target.value)}
-              className="bg-slate-50 border border-slate-300 px-3 py-1.5 focus:outline-none"
+              className="w-full sm:w-auto bg-slate-50 border border-slate-300 px-3 py-2 text-xs focus:outline-none"
             >
               <option value="all">Chủ Đầu Tư (Tất cả)</option>
               {availableDevelopers.filter(d => d !== 'all').map(d => (
@@ -658,7 +659,7 @@ export default function BDS23Template({
 
             <button
               onClick={handleSearchSubmit}
-              className="px-4 py-1.5 bg-[#0B132B] hover:bg-[#1C2541] text-white font-bold uppercase shadow cursor-pointer"
+              className="w-full sm:w-auto px-6 py-2 bg-[#0B132B] hover:bg-[#1C2541] text-white font-bold uppercase shadow text-center cursor-pointer transition text-xs"
             >
               Lọc
             </button>
@@ -689,11 +690,14 @@ export default function BDS23Template({
                 </div>
               </div>
 
-              <div className="p-3 text-xs space-y-1.5 bg-white">
-                <p className="text-[11px] text-slate-500 truncate">📍 {proj.address}</p>
-                <div className="flex justify-between items-center text-[11px] font-bold border-t pt-1.5">
-                  <span className="text-[#E11D48]">{proj.priceRange}</span>
-                  <span className="text-slate-600">{proj.areaRange}</span>
+              <div className="p-3 text-xs space-y-1.5 bg-white flex-1 flex flex-col justify-between">
+                <p className="text-[11px] text-slate-500 truncate flex items-center gap-1">
+                  <span>📍</span>
+                  <span className="truncate">{proj.address}</span>
+                </p>
+                <div className="flex justify-between items-center text-[11px] font-bold border-t border-slate-100 pt-2 mt-auto">
+                  <span className="text-[#E11D48] font-bold">{proj.priceRange}</span>
+                  <span className="text-slate-600 bg-slate-100 px-2 py-0.5 rounded text-[10px]">{proj.areaRange}</span>
                 </div>
               </div>
             </div>

@@ -345,21 +345,21 @@ export default function BDS12Template({
   // ─────────────────────────────────────────────────────────────────────────
   const renderHeader = () => (
     <header className="sticky top-0 z-40 bg-white text-slate-800 shadow-md border-b border-slate-200">
-      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between gap-4`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
         
         {/* Brand Logo Sonasea CEO Group */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-3 cursor-pointer group shrink-0"
+          className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="w-10 h-10 bg-gradient-to-br from-[#0284C7] via-[#0369A1] to-[#0C4A6E] rounded-sm flex items-center justify-center text-[#FDE047] font-black text-xl shadow-md">
-            <Anchor size={22} className="animate-pulse" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#0284C7] via-[#0369A1] to-[#0C4A6E] rounded-sm flex items-center justify-center text-[#FDE047] font-black text-base sm:text-xl shadow-md shrink-0">
+            <Anchor size={18} className="animate-pulse" />
           </div>
-          <div>
-            <span className="text-lg sm:text-xl font-serif font-black text-[#0369A1] tracking-wider block leading-none">
+          <div className="min-w-0 truncate">
+            <span className="text-base sm:text-xl font-serif font-black text-[#0369A1] tracking-wider block leading-none truncate">
               SONASEA <span className="text-slate-900">VÂN ĐỒN</span>
             </span>
-            <span className="text-[9px] font-bold text-amber-600 uppercase tracking-widest block mt-0.5">
+            <span className="text-[7.5px] sm:text-[9px] font-bold text-amber-600 uppercase tracking-widest block mt-0.5 truncate">
               HARBOR CITY — CEO GROUP
             </span>
           </div>
@@ -418,7 +418,7 @@ export default function BDS12Template({
         </nav>
 
         {/* Hotline & CTA */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
           <a
             href="tel:0919006030"
             className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-sm bg-blue-50 border border-blue-200 text-[#0284C7] text-xs font-black whitespace-nowrap shrink-0 hover:bg-blue-100 transition"
@@ -428,13 +428,14 @@ export default function BDS12Template({
           </a>
           <button
             onClick={() => navigate('price-list')}
-            className="px-4 py-2 bg-gradient-to-r from-[#D4AF37] via-[#F59E0B] to-[#D97706] hover:from-[#F59E0B] text-slate-950 text-xs font-black rounded-sm shadow-md uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 transition cursor-pointer"
+            className="hidden md:inline-block px-4 py-2 bg-gradient-to-r from-[#D4AF37] via-[#F59E0B] to-[#D97706] hover:from-[#F59E0B] text-slate-950 text-xs font-black rounded-sm shadow-md uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 transition cursor-pointer"
           >
             Nhận Báo Giá ›
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-sm bg-slate-100 text-slate-800 xl:hidden hover:bg-slate-200 shrink-0"
+            className="p-1.5 sm:p-2 rounded-sm bg-slate-100 text-slate-800 xl:hidden hover:bg-slate-200 shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

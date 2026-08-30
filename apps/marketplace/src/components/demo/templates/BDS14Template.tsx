@@ -463,21 +463,21 @@ export default function BDS14Template({
       </div>
 
       {/* Main Nav Bar */}
-      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between gap-4`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
         
         {/* Brand Logo WintLand */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-3 cursor-pointer group shrink-0"
+          className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="w-10 h-10 bg-gradient-to-br from-[#84CC16] via-[#65A30D] to-[#4D7C0F] rounded-sm flex items-center justify-center text-white font-black text-xl shadow-md">
-            <Home size={22} className="text-white" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#84CC16] via-[#65A30D] to-[#4D7C0F] rounded-sm flex items-center justify-center text-white font-black text-base sm:text-xl shadow-md shrink-0">
+            <Home size={18} className="text-white" />
           </div>
-          <div>
-            <span className="text-xl sm:text-2xl font-black text-[#4D7C0F] tracking-tight block leading-none">
+          <div className="min-w-0 truncate">
+            <span className="text-base sm:text-2xl font-black text-[#4D7C0F] tracking-tight block leading-none truncate">
               WINT<span className="text-slate-900">LAND</span>
             </span>
-            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mt-0.5">
+            <span className="text-[7.5px] sm:text-[9px] font-bold text-slate-500 uppercase tracking-widest block mt-0.5 truncate">
               REAL ESTATE PLATFORM
             </span>
           </div>
@@ -530,17 +530,18 @@ export default function BDS14Template({
         </nav>
 
         {/* CTA Button Đăng Tin */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
           <button
             onClick={() => navigate('post-listing')}
-            className="px-4 py-2 bg-gradient-to-r from-[#84CC16] to-[#65A30D] hover:from-[#65A30D] text-white text-xs font-black rounded-sm shadow-md uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 transition cursor-pointer flex items-center gap-1.5"
+            className="hidden sm:flex px-4 py-2 bg-gradient-to-r from-[#84CC16] to-[#65A30D] hover:from-[#65A30D] text-white text-xs font-black rounded-sm shadow-md uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 transition cursor-pointer items-center gap-1.5"
           >
             <PlusCircle size={14} />
             <span>ĐĂNG TIN</span>
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-sm bg-slate-100 text-slate-800 xl:hidden hover:bg-slate-200 shrink-0"
+            className="p-1.5 sm:p-2 rounded-sm bg-slate-100 text-slate-800 xl:hidden hover:bg-slate-200 shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

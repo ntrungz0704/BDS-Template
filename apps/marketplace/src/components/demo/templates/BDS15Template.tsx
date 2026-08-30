@@ -508,8 +508,26 @@ export default function BDS15Template({
 
       {/* Primary Teal Navbar */}
       <div className="bg-[#0D9488] text-white">
-        <div className={`${MAX_W} mx-auto px-4 py-0 flex items-center justify-between gap-4`}>
+        <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2 sm:py-0 flex items-center justify-between gap-4`}>
           
+          {/* Mobile Brand Logo */}
+          <div 
+            onClick={() => navigate('home')}
+            className="flex xl:hidden items-center gap-2 cursor-pointer shrink-0 min-w-0 max-w-[calc(100%-50px)]"
+          >
+            <div className="w-8 h-8 bg-white/20 flex items-center justify-center text-white font-black shrink-0">
+              <Building2 size={18} />
+            </div>
+            <div className="min-w-0 truncate">
+              <span className="text-base font-black text-white tracking-tight leading-none block truncate">
+                LUPUL GROUP
+              </span>
+              <span className="text-[7.5px] font-bold text-teal-100 uppercase tracking-widest block mt-0.5 truncate">
+                REAL ESTATE PLATFORM
+              </span>
+            </div>
+          </div>
+
           <nav className="hidden xl:flex items-center gap-0 text-xs font-bold uppercase tracking-wider whitespace-nowrap">
             <button 
               onClick={() => navigate('home')} 
@@ -564,7 +582,8 @@ export default function BDS15Template({
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-white xl:hidden hover:bg-black/20 shrink-0"
+            className="p-1.5 sm:p-2 text-white xl:hidden hover:bg-black/20 rounded-md shrink-0 flex items-center justify-center ml-auto"
+            aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

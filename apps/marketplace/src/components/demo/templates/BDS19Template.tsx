@@ -452,21 +452,21 @@ export default function BDS19Template({
     <header className="sticky top-0 z-40 bg-[#0F1E36] text-white shadow-xl border-b border-amber-500/30">
       
       {/* Top Banner Center Gold Logo */}
-      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between gap-4`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
         
         {/* Left Brand */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-3 cursor-pointer group shrink-0"
+          className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="w-10 h-10 bg-gradient-to-br from-[#E5B869] via-[#D4AF37] to-[#9A7B4F] flex items-center justify-center text-slate-950 font-serif font-black text-xl shadow-md border border-amber-200">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#E5B869] via-[#D4AF37] to-[#9A7B4F] flex items-center justify-center text-slate-950 font-serif font-black text-base sm:text-xl shadow-md border border-amber-200 shrink-0">
             ☀️
           </div>
-          <div>
-            <span className="text-xl sm:text-2xl font-serif font-black tracking-wider text-amber-300 block leading-none">
+          <div className="min-w-0 truncate">
+            <span className="text-base sm:text-2xl font-serif font-black tracking-wider text-amber-300 block leading-none truncate">
               SUNSHINE CITY <span className="text-white">SAIGON</span>
             </span>
-            <span className="text-[8.5px] font-bold text-amber-200/80 uppercase tracking-widest block mt-0.5">
+            <span className="text-[7.5px] sm:text-[8.5px] font-bold text-amber-200/80 uppercase tracking-widest block mt-0.5 truncate">
               CĂN HỘ NGHỈ DƯỠNG THÔNG MINH 4.0 — QUẬN 7
             </span>
           </div>
@@ -487,21 +487,22 @@ export default function BDS19Template({
         </nav>
 
         {/* Right CTA */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
           <button
             onClick={() => {
               const el = document.getElementById('dang-ky-bang-gia');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="hidden sm:inline-block px-4 py-2 bg-gradient-to-r from-[#E5B869] to-[#D4AF37] hover:from-[#D4AF37] text-slate-950 font-black text-xs uppercase tracking-wider shadow cursor-pointer"
+            className="hidden md:inline-block px-4 py-2 bg-gradient-to-r from-[#E5B869] to-[#D4AF37] hover:from-[#D4AF37] text-slate-950 font-black text-xs uppercase tracking-wider shadow cursor-pointer"
           >
             Nhận Bảng Giá 4.0
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-white xl:hidden hover:bg-white/10"
+            className="p-1.5 sm:p-2 text-white xl:hidden hover:bg-white/10 rounded-md shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 

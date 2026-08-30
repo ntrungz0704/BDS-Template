@@ -432,17 +432,17 @@ export default function BDS18Template({
   // ─────────────────────────────────────────────────────────────────────────
   const renderHeader = () => (
     <header className="sticky top-0 z-40 bg-[#0A0A0A] text-white shadow-xl border-b border-white/10 backdrop-blur-md">
-      <div className={`${MAX_W} mx-auto px-4 py-3.5 flex items-center justify-between gap-4`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4`}>
         
         {/* Brand Logo Vixyo */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-2.5 cursor-pointer group shrink-0"
+          className="flex items-center gap-2 sm:gap-2.5 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="w-8 h-8 bg-gradient-to-tr from-amber-500 to-amber-200 rounded-sm flex items-center justify-center text-slate-950 font-black text-lg shadow-md">
+          <div className="w-8 h-8 bg-gradient-to-tr from-amber-500 to-amber-200 rounded-sm flex items-center justify-center text-slate-950 font-black text-base sm:text-lg shadow-md shrink-0">
             V
           </div>
-          <span className="text-2xl font-serif font-black tracking-tight text-white group-hover:text-amber-400 transition">
+          <span className="text-xl sm:text-2xl font-serif font-black tracking-tight text-white group-hover:text-amber-400 transition truncate">
             Vixyo
           </span>
         </div>
@@ -500,21 +500,22 @@ export default function BDS18Template({
         </nav>
 
         {/* CTA Right Button */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
           <button
             onClick={() => {
               const el = document.getElementById('form-lien-he');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 text-slate-950 font-black text-xs uppercase tracking-wider rounded-sm shadow-md transition cursor-pointer"
+            className="hidden sm:inline-block px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 text-slate-950 font-black text-xs uppercase tracking-wider rounded-sm shadow-md transition cursor-pointer"
           >
             Nhận Báo Giá BĐS
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-white xl:hidden hover:bg-white/10"
+            className="p-1.5 sm:p-2 text-white xl:hidden hover:bg-white/10 shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 

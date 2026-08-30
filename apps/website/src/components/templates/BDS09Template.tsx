@@ -455,28 +455,28 @@ export default function BDS09Template({
   // ─────────────────────────────────────────────────────────────────────────
   const renderHeader = () => (
     <header className="sticky top-0 z-40 bg-[#0B132B]/95 backdrop-blur-md text-white border-b border-amber-500/30 shadow-2xl transition-all">
-      <div className={`${MAX_W} mx-auto px-4 py-3.5 flex items-center justify-between gap-4`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4`}>
         
         {/* Brand Logo & Luxury Crest */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-3 cursor-pointer group shrink-0"
+          className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="w-10 h-10 rounded-sm bg-gradient-to-br from-[#D4AF37] via-[#C5A059] to-[#92400E] p-0.5 shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform flex items-center justify-center shrink-0">
-            <div className="w-full h-full bg-[#0B132B] rounded-[10px] flex items-center justify-center">
-              <Anchor size={20} className="text-[#D4AF37] animate-pulse" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-sm bg-gradient-to-br from-[#D4AF37] via-[#C5A059] to-[#92400E] p-0.5 shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform flex items-center justify-center shrink-0">
+            <div className="w-full h-full bg-[#0B132B] rounded-[6px] sm:rounded-[10px] flex items-center justify-center">
+              <Anchor size={18} className="text-[#D4AF37] animate-pulse" />
             </div>
           </div>
-          <div className="whitespace-nowrap">
-            <div className="flex items-center gap-1.5">
-              <span className="text-lg sm:text-xl font-serif font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#FDE047] via-[#D4AF37] to-[#F59E0B]">
+          <div className="min-w-0 truncate">
+            <div className="flex items-center gap-1.5 truncate">
+              <span className="text-base sm:text-xl font-serif font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#FDE047] via-[#D4AF37] to-[#F59E0B] truncate">
                 AN VIÊN
               </span>
-              <span className="text-xs font-bold uppercase tracking-widest text-slate-300">
+              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-300">
                 RESIDENCE
               </span>
             </div>
-            <span className="text-[9px] tracking-widest text-[#D4AF37] block uppercase font-extrabold">
+            <span className="text-[7.5px] sm:text-[9px] tracking-widest text-[#D4AF37] block uppercase font-extrabold truncate">
               BIỂU TƯỢNG NHA TRANG HIỆN ĐẠI
             </span>
           </div>
@@ -541,7 +541,7 @@ export default function BDS09Template({
         </nav>
 
         {/* CTA & Mobile Hamburger */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
           <a
             href="tel:0919006030"
             className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-sm bg-amber-500/10 border border-amber-500/40 text-[#FDE047] text-xs font-black whitespace-nowrap shrink-0 hover:bg-amber-500/20 transition"
@@ -551,13 +551,14 @@ export default function BDS09Template({
           </a>
           <button
             onClick={() => setLeadModalOpen(true)}
-            className="px-4 py-2 bg-gradient-to-r from-[#D4AF37] via-[#F59E0B] to-[#D97706] hover:from-[#F59E0B] hover:to-[#B45309] text-slate-950 text-xs font-black rounded-sm shadow-lg shadow-amber-500/20 transition uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 active:scale-95 cursor-pointer"
+            className="hidden md:inline-block px-4 py-2 bg-gradient-to-r from-[#D4AF37] via-[#F59E0B] to-[#D97706] hover:from-[#F59E0B] hover:to-[#B45309] text-slate-950 text-xs font-black rounded-sm shadow-lg shadow-amber-500/20 transition uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 active:scale-95 cursor-pointer"
           >
             Tải Bảng Giá VIP
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-sm bg-slate-800 text-white xl:hidden hover:bg-slate-700 shrink-0"
+            className="p-1.5 sm:p-2 rounded-sm bg-slate-800 text-white xl:hidden hover:bg-slate-700 shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

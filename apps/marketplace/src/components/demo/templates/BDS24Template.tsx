@@ -429,21 +429,21 @@ export default function BDS24Template({
   // ─────────────────────────────────────────────────────────────────────────
   const renderHeader = () => (
     <header className="sticky top-0 z-40 bg-[#0F172A] text-white shadow-xl border-b border-cyan-500/30">
-      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between gap-4`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
         
         {/* Left Brand */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-3 cursor-pointer group shrink-0"
+          className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="w-10 h-10 bg-gradient-to-br from-[#06B6D4] to-[#2563EB] flex items-center justify-center text-white font-black text-xl shadow">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#06B6D4] to-[#2563EB] flex items-center justify-center text-white font-black text-base sm:text-xl shadow shrink-0">
             ⚡
           </div>
-          <div>
-            <span className="text-xl sm:text-2xl font-black tracking-wider text-cyan-400 block leading-none">
+          <div className="min-w-0 truncate">
+            <span className="text-base sm:text-2xl font-black tracking-wider text-cyan-400 block leading-none truncate">
               REALTYBUILD <span className="text-white">TECH</span>
             </span>
-            <span className="text-[8.5px] font-bold text-slate-400 uppercase tracking-widest block mt-0.5">
+            <span className="text-[7.5px] sm:text-[8.5px] font-bold text-slate-400 uppercase tracking-widest block mt-0.5 truncate">
               TRANG TIN CÔNG NGHỆ BĐS & ĐÔ THỊ THÔNG MINH SỐ 1
             </span>
           </div>
@@ -462,21 +462,22 @@ export default function BDS24Template({
         </nav>
 
         {/* Right CTA */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
           <button
             onClick={() => {
               const el = document.getElementById('form-tu-van-tech');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="hidden sm:inline-block px-4 py-2 bg-[#06B6D4] hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase tracking-wider shadow cursor-pointer"
+            className="hidden md:inline-block px-4 py-2 bg-[#06B6D4] hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase tracking-wider shadow cursor-pointer"
           >
             Tư Vấn Smart City
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-white xl:hidden hover:bg-white/10"
+            className="p-1.5 sm:p-2 text-white xl:hidden hover:bg-white/10 rounded-md shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 

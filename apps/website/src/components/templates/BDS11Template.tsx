@@ -497,21 +497,21 @@ export default function BDS11Template({
       </div>
 
       {/* Main Logo & Sponsor Banner Row */}
-      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between gap-4`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
         
         {/* Brand Logo MT NHÀ ĐẤT MIỀN TRUNG */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-3 cursor-pointer group shrink-0"
+          className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="w-11 h-11 bg-gradient-to-br from-[#16A34A] to-[#047857] rounded-sm flex items-center justify-center text-white font-black text-xl shadow-md">
+          <div className="w-8 h-8 sm:w-11 sm:h-11 bg-gradient-to-br from-[#16A34A] to-[#047857] rounded-sm flex items-center justify-center text-white font-black text-base sm:text-xl shadow-md shrink-0">
             MT
           </div>
-          <div>
-            <span className="text-xl sm:text-2xl font-black text-[#15803D] tracking-tight block leading-none">
+          <div className="min-w-0 truncate">
+            <span className="text-base sm:text-2xl font-black text-[#15803D] tracking-tight block leading-none truncate">
               NHÀ ĐẤT <span className="text-slate-800">MIỀN TRUNG.VN</span>
             </span>
-            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mt-0.5">
+            <span className="text-[7.5px] sm:text-[9px] font-bold text-slate-500 uppercase tracking-widest block mt-0.5 truncate">
               CÔNG TY BĐS LINKHOUSE MIỀN TRUNG
             </span>
           </div>
@@ -531,7 +531,8 @@ export default function BDS11Template({
         {/* Mobile Hamburger */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-2 rounded-sm bg-slate-100 text-slate-800 lg:hidden hover:bg-slate-200 shrink-0"
+          className="p-1.5 sm:p-2 rounded-sm bg-slate-100 text-slate-800 lg:hidden hover:bg-slate-200 shrink-0 flex items-center justify-center ml-auto"
+          aria-label="Toggle navigation menu"
         >
           {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>

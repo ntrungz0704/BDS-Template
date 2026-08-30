@@ -447,21 +447,21 @@ export default function BDS13Template({
       </div>
 
       {/* Main Header Bar */}
-      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between gap-4`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
         
         {/* Brand Logo Đại Phát Land */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-3 cursor-pointer group shrink-0"
+          className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="w-10 h-10 bg-gradient-to-br from-[#0284C7] via-[#0F4C81] to-[#0B3056] rounded-sm flex items-center justify-center text-white font-black text-xl shadow-md">
-            <Building2 size={22} className="text-[#F97316]" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#0284C7] via-[#0F4C81] to-[#0B3056] rounded-sm flex items-center justify-center text-white font-black text-base sm:text-xl shadow-md shrink-0">
+            <Building2 size={20} className="text-[#F97316]" />
           </div>
-          <div>
-            <span className="text-xl sm:text-2xl font-black text-[#0F4C81] tracking-tight block leading-none">
+          <div className="min-w-0 truncate">
+            <span className="text-base sm:text-2xl font-black text-[#0F4C81] tracking-tight block leading-none truncate">
               ĐẠI PHÁT <span className="text-[#F97316]">LAND</span>
             </span>
-            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mt-0.5">
+            <span className="text-[7.5px] sm:text-[9px] font-bold text-slate-500 uppercase tracking-widest block mt-0.5 truncate">
               BẤT ĐỘNG SẢN THỦY NGUYÊN HẢI PHÒNG
             </span>
           </div>
@@ -520,7 +520,7 @@ export default function BDS13Template({
         </nav>
 
         {/* CTA */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
           <a
             href="tel:0917858885"
             className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-sm bg-orange-50 border border-orange-200 text-[#EA580C] text-xs font-black whitespace-nowrap shrink-0 hover:bg-orange-100 transition"
@@ -530,13 +530,14 @@ export default function BDS13Template({
           </a>
           <button
             onClick={() => navigate('consignment')}
-            className="px-4 py-2 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] text-white text-xs font-black rounded-sm shadow-md uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 transition cursor-pointer"
+            className="hidden md:inline-block px-4 py-2 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] text-white text-xs font-black rounded-sm shadow-md uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 transition cursor-pointer"
           >
             Ký Gửi Nhà Đất ›
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-sm bg-slate-100 text-slate-800 xl:hidden hover:bg-slate-200 shrink-0"
+            className="p-1.5 sm:p-2 rounded-sm bg-slate-100 text-slate-800 xl:hidden hover:bg-slate-200 shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

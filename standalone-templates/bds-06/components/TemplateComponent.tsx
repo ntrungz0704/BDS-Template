@@ -644,20 +644,20 @@ export default function IndustrialTemplate({
       </div>
 
       {/* Main Navbar */}
-      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between gap-3`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-3`}>
         {/* Brand Logo */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-2.5 cursor-pointer group shrink-0"
+          className="flex items-center gap-2 sm:gap-2.5 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="w-10 h-10 rounded-sm bg-gradient-to-br from-[#D8232A] to-[#B91C1C] flex items-center justify-center text-white font-black shadow-lg shadow-red-900/40 group-hover:scale-105 transition-transform shrink-0">
-            <Building2 size={22} />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-sm bg-gradient-to-br from-[#D8232A] to-[#B91C1C] flex items-center justify-center text-white font-black shadow-lg shadow-red-900/40 group-hover:scale-105 transition-transform shrink-0">
+            <Building2 size={20} />
           </div>
-          <div className="whitespace-nowrap">
-            <span className="text-sm sm:text-base font-black tracking-tight block leading-tight text-white group-hover:text-red-400 transition-colors">
+          <div className="min-w-0 truncate">
+            <span className="text-sm sm:text-base font-black tracking-tight block leading-tight text-white group-hover:text-red-400 transition-colors truncate">
               GRAND RIVERSIDE PARK
             </span>
-            <span className="text-[9px] sm:text-[10px] tracking-widest text-amber-400 block uppercase font-bold">
+            <span className="text-[7.5px] sm:text-[10px] tracking-widest text-amber-400 block uppercase font-bold truncate">
               ĐẠI ĐÔ THỊ SINH THÁI 120HA
             </span>
           </div>
@@ -728,7 +728,7 @@ export default function IndustrialTemplate({
         </nav>
 
         {/* CTA & Mobile Toggle */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0 ml-auto">
           <a
             href="tel:0919006030"
             className="hidden xl:flex items-center gap-1.5 px-3 py-2 rounded-sm bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-slate-700 transition-colors whitespace-nowrap shrink-0"
@@ -742,13 +742,14 @@ export default function IndustrialTemplate({
               if (el) el.scrollIntoView({ behavior: 'smooth' });
               else navigate('lien-he');
             }}
-            className="px-3.5 py-2 bg-gradient-to-r from-[#D8232A] to-[#B91C1C] hover:from-red-700 hover:to-red-800 text-white text-xs font-black rounded-sm shadow-lg transition-all uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 active:scale-95"
+            className="hidden md:inline-block px-3.5 py-2 bg-gradient-to-r from-[#D8232A] to-[#B91C1C] hover:from-red-700 hover:to-red-800 text-white text-xs font-black rounded-sm shadow-lg transition-all uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 active:scale-95"
           >
             Tải Bảng Giá F1
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-sm bg-slate-800 text-white lg:hidden hover:bg-slate-700 shrink-0"
+            className="p-1.5 sm:p-2 rounded-sm bg-slate-800 text-white lg:hidden hover:bg-slate-700 shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

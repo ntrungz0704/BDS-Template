@@ -453,21 +453,21 @@ export default function BDS22Template({
   // ─────────────────────────────────────────────────────────────────────────
   const renderHeader = () => (
     <header className="sticky top-0 z-40 bg-[#0E7490] text-white shadow-xl border-b border-cyan-300/30">
-      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between gap-4`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
         
         {/* Brand Logo */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-3 cursor-pointer group shrink-0"
+          className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="w-10 h-10 bg-gradient-to-br from-[#F97316] to-[#EA580C] flex items-center justify-center text-white font-black text-xl shadow">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#F97316] to-[#EA580C] flex items-center justify-center text-white font-black text-base sm:text-xl shadow shrink-0">
             🌴
           </div>
-          <div>
-            <span className="text-xl sm:text-2xl font-serif font-black tracking-wider text-white block leading-none">
+          <div className="min-w-0 truncate">
+            <span className="text-base sm:text-2xl font-serif font-black tracking-wider text-white block leading-none truncate">
               HAPPYLAND <span className="text-amber-300">NHA TRANG</span>
             </span>
-            <span className="text-[8.5px] font-bold text-cyan-200 uppercase tracking-widest block mt-0.5">
+            <span className="text-[7.5px] sm:text-[8.5px] font-bold text-cyan-200 uppercase tracking-widest block mt-0.5 truncate">
               TỔ HỢP RESORT & CONDOTEL QUỐC TẾ ZOHOTELS
             </span>
           </div>
@@ -487,21 +487,22 @@ export default function BDS22Template({
         </nav>
 
         {/* Right CTA */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
           <button
             onClick={() => {
               const el = document.getElementById('form-dat-cho');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="hidden sm:inline-block px-4 py-2 bg-[#F97316] hover:bg-orange-600 text-white font-black text-xs uppercase tracking-wider shadow cursor-pointer"
+            className="hidden md:inline-block px-4 py-2 bg-[#F97316] hover:bg-orange-600 text-white font-black text-xs uppercase tracking-wider shadow cursor-pointer"
           >
             Nhận Bảng Giá Gốc
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-white xl:hidden hover:bg-white/10"
+            className="p-1.5 sm:p-2 text-white xl:hidden hover:bg-white/10 rounded-md shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 

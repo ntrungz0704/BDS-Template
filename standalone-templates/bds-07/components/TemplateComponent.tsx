@@ -609,20 +609,20 @@ export default function VillaTemplate({
       </div>
 
       {/* Main Navbar */}
-      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between gap-3`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-3`}>
         {/* Brand Logo */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-2.5 cursor-pointer group shrink-0"
+          className="flex items-center gap-2 sm:gap-2.5 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="w-10 h-10 rounded-sm bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white font-black shadow-lg shadow-emerald-950/40 group-hover:scale-105 transition-transform border border-emerald-400/40 shrink-0">
-            <Mountain size={22} className="text-amber-300" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-sm bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white font-black shadow-lg shadow-emerald-950/40 group-hover:scale-105 transition-transform border border-emerald-400/40 shrink-0">
+            <Mountain size={20} className="text-amber-300" />
           </div>
-          <div className="whitespace-nowrap">
-            <span className="text-sm sm:text-base font-black tracking-tight block leading-tight text-white group-hover:text-emerald-300 transition-colors">
+          <div className="min-w-0 truncate">
+            <span className="text-sm sm:text-base font-black tracking-tight block leading-tight text-white group-hover:text-emerald-300 transition-colors truncate">
               PANNAMERA BẢO LỘC
             </span>
-            <span className="text-[9px] sm:text-[10px] tracking-widest text-emerald-300 block uppercase font-bold">
+            <span className="text-[7.5px] sm:text-[10px] tracking-widest text-emerald-300 block uppercase font-bold truncate">
               LÀNG SINH THÁI NGHỈ DƯỠNG
             </span>
           </div>
@@ -687,7 +687,7 @@ export default function VillaTemplate({
         </nav>
 
         {/* CTA & Mobile Toggle */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0 ml-auto">
           <a
             href="tel:0919006030"
             className="hidden xl:flex items-center gap-1.5 px-3 py-2 rounded-sm bg-emerald-900/80 hover:bg-emerald-800 text-xs font-bold text-emerald-200 border border-emerald-700/60 transition-colors whitespace-nowrap shrink-0"
@@ -701,13 +701,14 @@ export default function VillaTemplate({
               if (el) el.scrollIntoView({ behavior: 'smooth' });
               else navigate('lien-he');
             }}
-            className="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-xs font-black rounded-sm shadow-lg transition-all uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 active:scale-95"
+            className="hidden md:inline-block px-3.5 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-xs font-black rounded-sm shadow-lg transition-all uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 active:scale-95"
           >
             Tải Báo Giá VIP
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-sm bg-emerald-900 text-white lg:hidden hover:bg-emerald-800 shrink-0"
+            className="p-1.5 sm:p-2 rounded-sm bg-emerald-900 text-white lg:hidden hover:bg-emerald-800 shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

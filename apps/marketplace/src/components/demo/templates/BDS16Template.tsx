@@ -662,21 +662,21 @@ export default function BDS16Template({
       </div>
 
       {/* Main Header with Logo & Navigation */}
-      <div className={`${MAX_W} mx-auto px-4 py-2.5 flex items-center justify-between gap-4`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between gap-2 sm:gap-4`}>
         
         {/* Logo EGA LAND */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-3 cursor-pointer group shrink-0"
+          className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="bg-white p-2 border border-slate-300 shadow-sm flex flex-col items-center">
+          <div className="bg-white p-1.5 sm:p-2 border border-slate-300 shadow-sm flex flex-col items-center shrink-0">
             <div className="flex items-center gap-1">
-              <div className="w-5 h-5 border-t-2 border-l-2 border-[#E11D48] rotate-45 transform -translate-y-0.5" />
-              <span className="text-xl font-black text-slate-900 tracking-tight leading-none">
+              <div className="w-4 h-4 sm:w-5 sm:h-5 border-t-2 border-l-2 border-[#E11D48] rotate-45 transform -translate-y-0.5" />
+              <span className="text-base sm:text-xl font-black text-slate-900 tracking-tight leading-none">
                 EGA <span className="text-[#D97706]">LAND</span>
               </span>
             </div>
-            <span className="text-[7.5px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">
+            <span className="text-[6.5px] sm:text-[7.5px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">
               TRAO BẠN CUỘC SỐNG MƠ ƯỚC
             </span>
           </div>
@@ -731,9 +731,10 @@ export default function BDS16Template({
         {/* Mobile Menu Toggle */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-2 text-white xl:hidden hover:bg-white/10 shrink-0"
+          className="p-1.5 sm:p-2 text-white xl:hidden hover:bg-white/10 shrink-0 flex items-center justify-center ml-auto"
+          aria-label="Toggle navigation menu"
         >
-          {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
 
       </div>

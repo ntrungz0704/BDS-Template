@@ -450,21 +450,21 @@ export default function BDS20Template({
   // ─────────────────────────────────────────────────────────────────────────
   const renderHeader = () => (
     <header className="sticky top-0 z-40 bg-[#0B4635] text-white shadow-xl border-b border-amber-400/30">
-      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between gap-4`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
         
         {/* Brand Logo */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-3 cursor-pointer group shrink-0"
+          className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none"
         >
-          <div className="w-10 h-10 bg-gradient-to-br from-[#E5B869] to-[#9A7B4F] flex items-center justify-center text-slate-950 font-serif font-black text-xl shadow border border-amber-200">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#E5B869] to-[#9A7B4F] flex items-center justify-center text-slate-950 font-serif font-black text-base sm:text-xl shadow border border-amber-200 shrink-0">
             🌿
           </div>
-          <div>
-            <span className="text-xl sm:text-2xl font-serif font-black tracking-wider text-amber-300 block leading-none">
+          <div className="min-w-0 truncate">
+            <span className="text-base sm:text-2xl font-serif font-black tracking-wider text-amber-300 block leading-none truncate">
               MONA PARK VIEW
             </span>
-            <span className="text-[8.5px] font-bold text-amber-200/80 uppercase tracking-widest block mt-0.5">
+            <span className="text-[7.5px] sm:text-[8.5px] font-bold text-amber-200/80 uppercase tracking-widest block mt-0.5 truncate">
               KHU ĐÔ THỊ CÔNG VIÊN & HỒ ĐIỀU HÒA SINH THÁI
             </span>
           </div>
@@ -485,21 +485,22 @@ export default function BDS20Template({
         </nav>
 
         {/* CTA Right */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
           <button
             onClick={() => {
               const el = document.getElementById('form-dang-ky');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="hidden sm:inline-block px-4 py-2 bg-gradient-to-r from-[#E5B869] to-[#D4AF37] hover:from-[#D4AF37] text-slate-950 font-black text-xs uppercase tracking-wider shadow cursor-pointer"
+            className="hidden md:inline-block px-4 py-2 bg-gradient-to-r from-[#E5B869] to-[#D4AF37] hover:from-[#D4AF37] text-slate-950 font-black text-xs uppercase tracking-wider shadow cursor-pointer"
           >
             Nhận Bảng Giá Gốc
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-white xl:hidden hover:bg-white/10"
+            className="p-1.5 sm:p-2 text-white xl:hidden hover:bg-white/10 rounded-md shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 
@@ -743,11 +744,11 @@ export default function BDS20Template({
             </h2>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 text-xs">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 text-xs w-full lg:w-auto">
             <select
               value={filterBlock}
               onChange={e => setFilterBlock(e.target.value)}
-              className="bg-slate-50 border border-slate-300 px-3 py-2 focus:outline-none"
+              className="w-full sm:w-auto bg-slate-50 border border-slate-300 px-3 py-2 focus:outline-none"
             >
               <option value="all">Tòa Block (Tất cả)</option>
               {availableBlocks.filter(b => b !== 'all').map(b => (
@@ -758,7 +759,7 @@ export default function BDS20Template({
             <select
               value={filterType}
               onChange={e => setFilterType(e.target.value)}
-              className="bg-slate-50 border border-slate-300 px-3 py-2 focus:outline-none"
+              className="w-full sm:w-auto bg-slate-50 border border-slate-300 px-3 py-2 focus:outline-none"
             >
               <option value="all">Loại Căn Hộ (Tất cả)</option>
               {availableTypes.filter(t => t !== 'all').map(t => (
@@ -768,7 +769,7 @@ export default function BDS20Template({
 
             <button
               onClick={handleSearchSubmit}
-              className="px-4 py-2 bg-[#0B4635] hover:bg-[#072C21] text-white font-bold uppercase shadow cursor-pointer"
+              className="w-full sm:w-auto px-6 py-2 bg-[#0B4635] hover:bg-[#072C21] text-white font-bold uppercase shadow text-center cursor-pointer transition text-xs"
             >
               Lọc
             </button>

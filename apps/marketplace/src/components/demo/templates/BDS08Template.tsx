@@ -605,25 +605,25 @@ export default function BDS08Template({
       </div>
 
       {/* Main Navbar */}
-      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between gap-3`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-3`}>
         {/* Brand Logo with 3D Blocks */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-3 cursor-pointer group shrink-0"
+          className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="w-11 h-11 rounded-sm bg-gradient-to-br from-[#0284C7] via-[#16A34A] to-[#EAB308] flex items-center justify-center text-white font-black shadow-md group-hover:scale-105 transition-transform p-2 shrink-0">
-            <Building2 size={24} className="text-white" />
+          <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-sm bg-gradient-to-br from-[#0284C7] via-[#16A34A] to-[#EAB308] flex items-center justify-center text-white font-black shadow-md group-hover:scale-105 transition-transform p-1.5 sm:p-2 shrink-0">
+            <Building2 size={20} className="text-white" />
           </div>
-          <div className="whitespace-nowrap">
+          <div className="min-w-0 truncate">
             <div className="flex items-center gap-1">
-              <span className="text-lg sm:text-xl font-black tracking-tight text-[#0284C7] group-hover:text-[#0369A1] transition">
+              <span className="text-base sm:text-xl font-black tracking-tight text-[#0284C7] group-hover:text-[#0369A1] transition truncate">
                 THEME
               </span>
-              <span className="text-lg sm:text-xl font-black tracking-tight text-[#E11D48]">
+              <span className="text-base sm:text-xl font-black tracking-tight text-[#E11D48] truncate">
                 WP
               </span>
             </div>
-            <span className="text-[9px] sm:text-[10px] tracking-widest text-[#15803D] block uppercase font-extrabold">
+            <span className="text-[7.5px] sm:text-[10px] tracking-widest text-[#15803D] block uppercase font-extrabold truncate">
               SÀN PHÂN PHỐI BẤT ĐỘNG SẢN CAO CẤP
             </span>
           </div>
@@ -676,7 +676,7 @@ export default function BDS08Template({
         </nav>
 
         {/* CTA & Mobile Toggle */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0 ml-auto">
           <a
             href="tel:0919006030"
             className="hidden xl:flex items-center gap-1.5 px-3.5 py-2 rounded-sm bg-emerald-50 text-[#15803D] border border-emerald-200 text-xs font-black whitespace-nowrap shrink-0 hover:bg-emerald-100 transition"
@@ -686,13 +686,14 @@ export default function BDS08Template({
           </a>
           <button
             onClick={() => setLeadModalOpen(true)}
-            className="px-3.5 py-2 bg-gradient-to-r from-[#16A34A] to-[#15803D] hover:from-[#15803D] hover:to-[#166534] text-white text-xs font-black rounded-sm shadow-md transition uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 active:scale-95"
+            className="hidden md:inline-block px-3.5 py-2 bg-gradient-to-r from-[#16A34A] to-[#15803D] hover:from-[#15803D] hover:to-[#166534] text-white text-xs font-black rounded-sm shadow-md transition uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 active:scale-95"
           >
             Tải Báo Giá VIP
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-sm bg-slate-100 text-slate-800 lg:hidden hover:bg-slate-200 shrink-0"
+            className="p-1.5 sm:p-2 rounded-sm bg-slate-100 text-slate-800 lg:hidden hover:bg-slate-200 shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

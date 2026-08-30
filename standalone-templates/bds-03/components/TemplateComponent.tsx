@@ -607,17 +607,17 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
       </div>
 
       {/* Main Nav Strip */}
-      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
         {/* Brand Logo */}
-        <div onClick={() => navigate('home')} className="flex items-center gap-3 cursor-pointer group">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-[#4A2810] font-black text-xl shadow-md group-hover:scale-105 transition">
+        <div onClick={() => navigate('home')} className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-[#4A2810] font-black text-base sm:text-xl shadow-md group-hover:scale-105 transition shrink-0">
             TB
           </div>
-          <div>
-            <div className="text-base sm:text-lg font-black tracking-wider text-amber-300 uppercase leading-none group-hover:text-white transition">
+          <div className="min-w-0 truncate">
+            <div className="text-base sm:text-lg font-black tracking-wider text-amber-300 uppercase leading-none group-hover:text-white transition truncate">
               {company?.name || 'TEMPLATESBDS'}
             </div>
-            <div className="text-[10px] text-amber-100/70 font-semibold tracking-wider mt-0.5">
+            <div className="text-[7.5px] sm:text-[10px] text-amber-100/70 font-semibold tracking-wider mt-0.5 truncate">
               {company?.slogan || 'Kho Mẫu Website Bất Động Sản Cao Cấp Số 1 Việt Nam'}
             </div>
           </div>
@@ -652,10 +652,10 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
         </nav>
 
         {/* Right CTA Button */}
-        <div className="hidden sm:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-3 shrink-0">
           <a
             href={`tel:${hotlineTel}`}
-            className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs rounded-sm shadow-md transition flex items-center gap-1.5 cursor-pointer active:scale-95"
+            className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs rounded-sm shadow-md transition flex items-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap shrink-0"
           >
             <Phone size={13} /> {activeHotline}
           </a>
@@ -664,9 +664,10 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden p-2 text-amber-300 hover:bg-white/10 rounded-md cursor-pointer ml-auto"
+          className="lg:hidden p-1.5 sm:p-2 text-amber-300 hover:bg-white/10 rounded-md cursor-pointer ml-auto shrink-0 flex items-center justify-center"
+          aria-label="Toggle navigation menu"
         >
-          {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
 

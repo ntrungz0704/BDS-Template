@@ -10,7 +10,8 @@ import { fontVariables } from '../utils/fonts';
 import Head from 'next/head';
 import axios from 'axios';
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps, router }: AppProps) {
+  const isDemoPage = router.pathname.startsWith('/demo');
   React.useEffect(() => {
     axios.defaults.withCredentials = true;
     const interceptor = axios.interceptors.request.use((config) => {
@@ -62,10 +63,9 @@ export default function App({ Component, pageProps }: AppProps) {
         <main className={`${fontVariables} font-sans antialiased text-[#475569]`}>
           <Component {...pageProps} />
           <Toast />
-          <FloatingButtons />
+          {!isDemoPage && <FloatingButtons />}
         </main>
       </AuthProvider>
     </QueryClientProvider>
   );
 }
-

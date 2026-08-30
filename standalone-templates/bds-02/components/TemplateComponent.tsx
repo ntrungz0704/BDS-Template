@@ -541,17 +541,17 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
   const renderHeader = () => (
     <header className="w-full bg-white text-slate-800 sticky top-0 z-40 shadow-sm border-b border-slate-200">
       {/* Top Banner Row */}
-      <div className={`${MAX_W} mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex flex-col md:flex-row justify-between items-center gap-3`}>
         {/* Left: Brand Logo */}
-        <div onClick={() => navigate('home')} className="flex items-center gap-3 cursor-pointer group">
-          <div className="w-11 h-11 rounded-sm bg-gradient-to-tr from-blue-700 to-blue-600 flex items-center justify-center text-white font-black text-xl shadow-md group-hover:scale-105 transition">
+        <div onClick={() => navigate('home')} className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-full">
+          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-sm bg-gradient-to-tr from-blue-700 to-blue-600 flex items-center justify-center text-white font-black text-lg sm:text-xl shadow-md group-hover:scale-105 transition shrink-0">
             TB
           </div>
-          <div>
-            <div className="text-xl font-black tracking-tight text-[#0D3F8D] flex items-center gap-1 group-hover:text-blue-700 transition">
+          <div className="min-w-0 truncate">
+            <div className="text-lg sm:text-xl font-black tracking-tight text-[#0D3F8D] flex items-center gap-1 group-hover:text-blue-700 transition truncate">
               {company?.name || 'TEMPLATESBDS'}
             </div>
-            <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+            <div className="text-[9px] sm:text-[10px] text-slate-500 font-bold uppercase tracking-wider truncate">
               {company?.slogan || 'Kho Mẫu Website Bất Động Sản Cao Cấp Số 1 Việt Nam'}
             </div>
           </div>
@@ -579,7 +579,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
 
       {/* Main Nav Bar (Dark Blue #0D3F8D + Red Active #D8232A) */}
       <div className="w-full bg-[#0D3F8D] text-white">
-        <div className={`${MAX_W} mx-auto px-4 flex items-center justify-between`}>
+        <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-1.5 lg:py-0 flex items-center justify-between`}>
           <nav className="hidden lg:flex items-center text-xs font-bold uppercase tracking-wider whitespace-nowrap">
             {[
               { id: 'home', label: 'TRANG CHỦ' },
@@ -628,7 +628,8 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2.5 text-white hover:bg-blue-900 rounded-md cursor-pointer ml-auto"
+            className="lg:hidden p-1.5 sm:p-2 text-white hover:bg-blue-900 rounded-md cursor-pointer ml-auto shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

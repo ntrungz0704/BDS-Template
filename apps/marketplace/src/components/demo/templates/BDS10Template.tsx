@@ -454,7 +454,7 @@ export default function BDS10Template({
 
           <a
             href="tel:0919006030"
-            className="px-3.5 py-2 rounded-sm bg-gradient-to-r from-[#0284C7] to-[#0369A1] hover:from-[#0369A1] text-white text-xs font-black whitespace-nowrap shrink-0 shadow-md transition flex items-center gap-1.5"
+            className="hidden sm:flex px-3.5 py-2 rounded-sm bg-gradient-to-r from-[#0284C7] to-[#0369A1] hover:from-[#0369A1] text-white text-xs font-black whitespace-nowrap shrink-0 shadow-md transition items-center gap-1.5"
           >
             <Phone size={13} className="animate-pulse" />
             <span>0919 006 030</span>
@@ -462,7 +462,8 @@ export default function BDS10Template({
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-sm bg-slate-100 text-slate-800 lg:hidden hover:bg-slate-200 shrink-0"
+            className="p-1.5 sm:p-2 rounded-sm bg-slate-100 text-slate-800 lg:hidden hover:bg-slate-200 shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

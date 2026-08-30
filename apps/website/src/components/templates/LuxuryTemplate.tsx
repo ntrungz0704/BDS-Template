@@ -871,16 +871,16 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
         </div>
       </div>
 
-      <div className={`${MAX_W} mx-auto px-4 py-3.5 flex items-center justify-between`}>
-        <div onClick={() => navigate('home')} className="flex items-center gap-3 cursor-pointer group">
-          <div className="w-10 h-10 rounded-sm bg-blue-700 flex items-center justify-center text-white shadow-md group-hover:bg-blue-800 transition font-black text-sm">
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4`}>
+        <div onClick={() => navigate('home')} className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-sm bg-blue-700 flex items-center justify-center text-white shadow-md group-hover:bg-blue-800 transition font-black text-xs sm:text-sm shrink-0">
             TB
           </div>
-          <div>
-            <div className="text-lg font-black tracking-tight text-slate-900 group-hover:text-blue-600 transition leading-tight">
+          <div className="min-w-0 truncate">
+            <div className="text-base sm:text-lg font-black tracking-tight text-slate-900 group-hover:text-blue-600 transition leading-tight truncate">
               {company?.name || 'TEMPLATESBDS'}
             </div>
-            <div className="text-[9px] tracking-widest text-slate-400 font-extrabold uppercase">Kho Mẫu Website Bất Động Sản</div>
+            <div className="text-[7.5px] sm:text-[9px] tracking-widest text-slate-400 font-extrabold uppercase truncate">Kho Mẫu Website Bất Động Sản</div>
           </div>
         </div>
 
@@ -913,10 +913,10 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           })}
         </nav>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0 ml-auto">
           <button
             onClick={() => navigate('ky-gui')}
-            className={`hidden sm:flex px-4 py-2 text-white font-bold text-xs rounded-lg shadow-sm transition items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+            className={`hidden md:flex px-4 py-2 text-white font-bold text-xs rounded-lg shadow-sm transition items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
               currentPage === 'ky-gui'
                 ? 'bg-amber-500 hover:bg-amber-600 ring-2 ring-amber-400 font-black'
                 : 'bg-blue-600 hover:bg-blue-700 active:scale-95'
@@ -926,7 +926,8 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-lg cursor-pointer"
+            className="p-1.5 sm:p-2 text-slate-700 hover:bg-slate-100 rounded-lg cursor-pointer lg:hidden shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

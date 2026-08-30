@@ -463,28 +463,28 @@ export default function BDS17Template({
     <header className="sticky top-0 z-40 bg-white shadow-md border-b border-[#C5A880]/30">
       
       {/* Top Banner with Gold Crown Logo */}
-      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between gap-4`}>
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
         
         {/* Brand Logo Beverly Hills */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-3 cursor-pointer group shrink-0"
+          className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="w-10 h-10 bg-gradient-to-br from-[#C5A880] via-[#9A7B4F] to-[#855828] flex items-center justify-center text-white font-serif font-black text-xl shadow-md border border-amber-200">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#C5A880] via-[#9A7B4F] to-[#855828] flex items-center justify-center text-white font-serif font-black text-base sm:text-xl shadow-md border border-amber-200 shrink-0">
             👑
           </div>
-          <div>
-            <span className="text-xl sm:text-2xl font-serif font-black text-[#855828] tracking-wider block leading-none">
+          <div className="min-w-0 truncate">
+            <span className="text-base sm:text-2xl font-serif font-black text-[#855828] tracking-wider block leading-none truncate">
               BEVERLY HILLS <span className="text-slate-900">HẠ LONG</span>
             </span>
-            <span className="text-[8.5px] font-bold text-amber-700 uppercase tracking-widest block mt-0.5">
+            <span className="text-[7px] sm:text-[8.5px] font-bold text-amber-700 uppercase tracking-widest block mt-0.5 truncate">
               ĐỈNH CAO NGHỈ DƯỠNG THƯỢNG LƯU — BÃI CHÁY
             </span>
           </div>
         </div>
 
         {/* Hotline CTA Right */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-4 shrink-0">
           <div className="text-right">
             <span className="text-[10px] uppercase font-bold text-slate-500 block">Hotline Phòng Kinh Doanh</span>
             <a href="tel:0919006030" className="text-sm font-black text-[#E11D48] tracking-wider block">
@@ -505,9 +505,10 @@ export default function BDS17Template({
         {/* Mobile Toggle */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-2 text-slate-800 xl:hidden hover:bg-slate-100 shrink-0"
+          className="p-1.5 sm:p-2 text-slate-800 xl:hidden hover:bg-slate-100 shrink-0 flex items-center justify-center ml-auto"
+          aria-label="Toggle navigation menu"
         >
-          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
 
       </div>
