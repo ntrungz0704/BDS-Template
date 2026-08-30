@@ -40,6 +40,8 @@ interface TemplateProps {
 }
 
 export interface UnitItem {
+  gallery?: string[];
+  images?: string[];
   id: number;
   title: string;
   slug: string;
@@ -55,7 +57,6 @@ export interface UnitItem {
   view: string;
   badge: string;
   image: string;
-  gallery: string[];
   specs: string[];
   desc: string;
 }

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import AdmZip from 'adm-zip';
+import { prisma } from '@repo/database';
 import { logger } from '../index';
 
 export interface PackageOptions {
@@ -9,6 +10,7 @@ export interface PackageOptions {
   customerName?: string;
   customerPhone?: string;
   customerEmail?: string;
+  tenantId?: string;
 }
 
 export const TEMPLATE_SLUG_MAP: Record<string, { componentName: string; fileName: string; templateName: string }> = {
@@ -165,20 +167,14 @@ export const TEMPLATE_SLUG_MAP: Record<string, { componentName: string; fileName
 
 export class TemplatePackagingService {
   /**
-   * Tạo gói ZIP mã nguồn Next.js độc lập riêng biệt cho đúng template mà khách hàng đã mua
+   * Tạo gói ZIP mã nguồn độc lập riêng biệt cho đúng template mà khách hàng đã mua
    */
   public static async generateStandalonePackage(options: PackageOptions): Promise<{ buffer: Buffer; fileName: string }> {
-    const { slug, orderNumber = 'ORD', customerName = 'Khách Hàng', customerPhone = '', customerEmail = '' } = options;
-
-    const tplInfo = TEMPLATE_SLUG_MAP[slug] || {
-      componentName: 'LuxuryTemplate',
-      fileName: 'LuxuryTemplate.tsx',
-      templateName: slug.toUpperCase(),
-    };
+    const { slug, orderNumber = 'ORD', customerName = 'Khách Hàng', customerPhone = '', customerEmail = '', tenantId } = options;
 
     const zip = new AdmZip();
 
-    // 0. Kiểm tra nếu đã có sẵn thư mục standalone-templates (3-in-1: HTML5 + PHP + Next.js)
+    // 0. Kiểm tra nếu đã có sẵn thư mục standalone-templates (HTML5 + PHP)
     let folderCode = 'bds-01';
     const SLUG_TO_FOLDER: Record<string, string> = {
       'luxury-gold': 'bds-01', 'minimal-white': 'bds-02', 'minimal-zen': 'bds-02',
@@ -229,6 +225,73 @@ export class TemplatePackagingService {
 
     if (standaloneDir) {
       zip.addLocalFolder(standaloneDir);
+
+      // Nếu khách đã tùy chỉnh dữ liệu trên CMS (có tenantId), lấy toàn bộ dự án & gallery mới nhất chèn vào
+      if (tenantId) {
+        try {
+          const tenantProjects = await prisma.project.findMany({
+            where: { tenantId, deletedAt: null },
+            orderBy: { sortOrder: 'asc' },
+          });
+
+          const companyInfo = await prisma.companyInfo.findUnique({
+            where: { tenantId },
+          });
+
+          if (tenantProjects.length > 0 || companyInfo) {
+            logger.info(`[PackageService] Đồng bộ ${tenantProjects.length} dự án & thông tin CMS mới nhất vào source ZIP của đơn ${orderNumber}`);
+            
+            // 1. Tạo file database.sql mới với dữ liệu CMS thực tế của khách
+            let sqlContent = `-- CƠ SỞ DỮ LIỆU BẤT ĐỘNG SẢN CẬP NHẬT TỪ CMS
+-- Đơn hàng: #${orderNumber} | Khách hàng: ${customerName}
+-- Ngày xuất bản: ${new Date().toLocaleString('vi-VN')}
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+CREATE TABLE IF NOT EXISTS \`company_info\` (
+  \`id\` int(11) NOT NULL AUTO_INCREMENT,
+  \`name\` varchar(255) NOT NULL,
+  \`phone\` varchar(50) DEFAULT NULL,
+  \`email\` varchar(100) DEFAULT NULL,
+  \`address\` varchar(255) DEFAULT NULL,
+  \`slogan\` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (\`id\`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS \`projects\` (
+  \`id\` int(11) NOT NULL AUTO_INCREMENT,
+  \`title\` varchar(255) NOT NULL,
+  \`price\` varchar(100) DEFAULT NULL,
+  \`area\` varchar(100) DEFAULT NULL,
+  \`type\` varchar(100) DEFAULT NULL,
+  \`address\` varchar(255) DEFAULT NULL,
+  \`image\` varchar(500) DEFAULT NULL,
+  \`gallery\` text DEFAULT NULL,
+  \`description\` text DEFAULT NULL,
+  PRIMARY KEY (\`id\`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO \`company_info\` (\`name\`, \`phone\`, \`email\`, \`address\`, \`slogan\`) VALUES
+(${JSON.stringify(companyInfo?.companyName || customerName + ' Real Estate')}, ${JSON.stringify(companyInfo?.hotline || customerPhone || '0919 006 030')}, ${JSON.stringify(companyInfo?.email || customerEmail || 'contact@platformbds.vn')}, ${JSON.stringify(companyInfo?.address || 'TP. Hồ Chí Minh')}, ${JSON.stringify(companyInfo?.slogan || 'Chuyên Phân Phối Bất Động Sản Uy Tín')});
+
+`;
+            if (tenantProjects.length > 0) {
+              const projectValues = tenantProjects.map((p: any) => {
+                const galleryArr = Array.isArray(p.images) ? p.images : (p.images ? [p.images] : []);
+                return `(${JSON.stringify(p.title)}, ${JSON.stringify(p.price || 'Liên hệ')}, ${JSON.stringify(p.area || '100 m²')}, ${JSON.stringify(p.type)}, ${JSON.stringify(p.address || '')}, ${JSON.stringify(p.thumbnail || (galleryArr[0] as string) || '')}, ${JSON.stringify(JSON.stringify(galleryArr))}, ${JSON.stringify(p.description || p.shortDescription || '')})`;
+              }).join(',\n');
+
+              sqlContent += `INSERT INTO \`projects\` (\`title\`, \`price\`, \`area\`, \`type\`, \`address\`, \`image\`, \`gallery\`, \`description\`) VALUES\n${projectValues};\n`;
+            }
+
+            zip.addFile('php/database.sql', Buffer.from(sqlContent, 'utf-8'));
+          }
+        } catch (dbErr) {
+          logger.warn(`[PackageService] Không thể tải dữ liệu CMS động, xuất dữ liệu mặc định: ${dbErr}`);
+        }
+      }
+
       const zipBuffer = zip.toBuffer();
       const downloadFileName = `PLATFORMBDS-${slug}-${orderNumber}.zip`;
       logger.info(`[PackageService] Đã đóng gói từ standalone package ${folderCode} cho đơn ${orderNumber}`);

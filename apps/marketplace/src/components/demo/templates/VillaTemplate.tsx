@@ -42,6 +42,8 @@ interface TemplateProps {
 }
 
 export interface PropertyItem {
+  gallery?: string[];
+  images?: string[];
   id: number;
   title: string;
   slug: string;
@@ -56,7 +58,6 @@ export interface PropertyItem {
   zone: string;
   badge: string;
   image: string;
-  gallery: string[];
   specs: string[];
   amenities: string[];
   desc: string;
@@ -458,6 +459,7 @@ export default function VillaTemplate({
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
+  const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedProperty, setSelectedProperty] = useState<PropertyItem>(() => {
     if (initialParsed.propSlug) {
       const found = BDS07_PROPERTIES.find(p => p.slug === initialParsed.propSlug);
@@ -1632,29 +1634,45 @@ export default function VillaTemplate({
 
               {/* Gallery Switcher */}
               <div className="space-y-3">
-                <div className="relative aspect-[16/9] rounded-sm overflow-hidden bg-slate-900">
-                  <img
-                    src={selectedProperty.gallery[0] || selectedProperty.image}
-                    alt={selectedProperty.title}
-                    onError={handleImgError}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute bottom-4 left-4 px-4 py-2 rounded-sm bg-[#022C22]/90 text-amber-300 font-black text-lg backdrop-blur">
-                    {selectedProperty.price}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-3">
-                  {selectedProperty.gallery.map((img, idx) => (
-                    <div
-                      key={idx}
-                      onClick={() => setLightboxImg(img)}
-                      className="aspect-video rounded-sm overflow-hidden border border-slate-200 cursor-pointer hover:opacity-80"
-                    >
-                      <img src={img} alt="Thumbnail" onError={handleImgError} className="w-full h-full object-cover" />
-                    </div>
-                  ))}
-                </div>
+                {(() => {
+                  const galleryList = ((selectedProperty as any)?.gallery && (selectedProperty as any)?.gallery.length >= 3)
+                    ? (selectedProperty as any)?.gallery
+                    : [
+                        selectedProperty.image || 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80',
+                        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+                        'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
+                        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80'
+                      ];
+                  const currentImg = galleryList[activeImageIdx] || galleryList[0];
+                  return (
+                    <>
+                      <div className="relative aspect-[16/9] rounded-sm overflow-hidden bg-slate-900">
+                        <img
+                          src={currentImg}
+                          alt={selectedProperty.title}
+                          onError={handleImgError}
+                          className="w-full h-full object-cover transition-all duration-300"
+                        />
+                        <div className="absolute bottom-4 left-4 px-4 py-2 rounded-sm bg-[#022C22]/90 text-amber-300 font-black text-lg backdrop-blur">
+                          {selectedProperty.price}
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-4 gap-2.5">
+                        {galleryList.map((img: string, idx: number) => (
+                          <div
+                            key={idx}
+                            onClick={() => setActiveImageIdx(idx)}
+                            className={`aspect-video rounded-sm overflow-hidden border-2 cursor-pointer transition ${
+                              activeImageIdx === idx ? 'border-emerald-600 ring-2 ring-emerald-300 scale-95 shadow' : 'border-slate-200 opacity-70 hover:opacity-100'
+                            }`}
+                          >
+                            <img src={img} alt="Thumbnail" onError={handleImgError} className="w-full h-full object-cover" />
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
 
               {/* Key Specs */}

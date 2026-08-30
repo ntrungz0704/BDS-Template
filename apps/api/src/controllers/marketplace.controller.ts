@@ -435,6 +435,7 @@ export async function downloadTemplateSource(req: Request, res: Response, next: 
       customerName: paidOrder?.fullName || (req.user as any)?.fullName || 'Khách Hàng',
       customerPhone: paidOrder?.phone || (req.user as any)?.phone || '',
       customerEmail: paidOrder?.email || userEmail || '',
+      tenantId: paidOrder?.tenantId || (req.user as any)?.tenantId,
     });
 
     res.setHeader('Content-Type', 'application/zip');

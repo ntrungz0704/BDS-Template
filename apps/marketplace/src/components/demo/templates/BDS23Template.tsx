@@ -341,6 +341,7 @@ export default function BDS23Template({
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
+  const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedProject, setSelectedProject] = useState<ProjectItem>(() => {
     if (initialParsed.propSlug) {
       const found = BDS23_PROJECTS.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
@@ -1045,7 +1046,45 @@ export default function BDS23Template({
                 Khoảng giá: {selectedProject.priceRange} — Diện tích: {selectedProject.areaRange} — Chủ đầu tư: {selectedProject.developer}
               </p>
               <p className="text-xs text-slate-500">📍 {selectedProject.address}</p>
-              <img src={selectedProject.image} alt="" className="w-full h-96 object-cover shadow-lg border" />
+              <div className="space-y-3">
+                {(() => {
+                  const targetItem = selectedProject;
+                  const rawGallery = (targetItem as any)?.gallery || (targetItem as any)?.images || [];
+                  const galleryList = (Array.isArray(rawGallery) && rawGallery.length >= 3)
+                    ? rawGallery
+                    : [
+                        (targetItem as any)?.image || (targetItem as any)?.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80',
+                        'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80',
+                        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80',
+                        'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80'
+                      ];
+                  const currentImg = galleryList[activeImageIdx] || galleryList[0];
+                  return (
+                    <>
+                      <div className="w-full h-80 sm:h-96 rounded-xl overflow-hidden shadow-lg border relative bg-slate-100">
+                        <img
+                          src={currentImg}
+                          alt=""
+                          className="w-full h-full object-cover transition-all duration-300"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 gap-2.5">
+                        {galleryList.map((img: string, i: number) => (
+                          <div
+                            key={i}
+                            onClick={() => setActiveImageIdx(i)}
+                            className={`h-20 rounded-lg overflow-hidden border-2 cursor-pointer transition ${
+                              activeImageIdx === i ? 'border-blue-600 ring-2 ring-blue-300 scale-95 shadow-md' : 'border-slate-200 opacity-70 hover:opacity-100'
+                            }`}
+                          >
+                            <img src={img} alt="" className="w-full h-full object-cover" />
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{selectedProject.description}</p>
               <div className="p-4 bg-[#0B132B] text-white space-y-2 border border-amber-500/30">
                 <h4 className="font-bold text-xs uppercase text-amber-300">Điểm nổi bật của dự án:</h4>

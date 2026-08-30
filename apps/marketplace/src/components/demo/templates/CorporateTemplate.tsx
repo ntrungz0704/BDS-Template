@@ -39,6 +39,8 @@ interface TemplateProps {
 }
 
 export interface PropertyItem {
+  gallery?: string[];
+  images?: string[];
   id: number;
   title: string;
   slug: string;
@@ -54,7 +56,6 @@ export interface PropertyItem {
   legal: string;
   badge: string;
   image: string;
-  gallery: string[];
   date: string;
   featured?: boolean;
   desc: string;
@@ -1293,27 +1294,41 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
 
             {/* Gallery */}
             <div className="bg-white rounded-sm border border-slate-200 p-4 shadow-xs space-y-3">
-              <div className="h-80 sm:h-96 rounded-sm overflow-hidden bg-slate-100">
-                <img
-                  src={selectedProperty.gallery[activeGalleryIdx] || selectedProperty.image}
-                  alt=""
-                  onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="grid grid-cols-3 gap-3">
-                {selectedProperty.gallery.map((img, i) => (
-                  <div
-                    key={i}
-                    onClick={() => setActiveGalleryIdx(i)}
-                    className={`h-24 rounded-sm overflow-hidden cursor-pointer border-2 transition ${
-                      activeGalleryIdx === i ? 'border-amber-600' : 'border-transparent opacity-70 hover:opacity-100'
-                    }`}
-                  >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
-                  </div>
-                ))}
-              </div>
+              {(() => {
+                const galleryList = ((selectedProperty as any)?.gallery && (selectedProperty as any)?.gallery.length >= 3)
+                  ? (selectedProperty as any)?.gallery
+                  : [
+                      selectedProperty.image || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+                      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
+                      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+                      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80'
+                    ];
+                return (
+                  <>
+                    <div className="h-80 sm:h-96 rounded-sm overflow-hidden bg-slate-100">
+                      <img
+                        src={galleryList[activeGalleryIdx] || galleryList[0]}
+                        alt=""
+                        onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
+                        className="w-full h-full object-cover transition-all duration-300"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 gap-2.5">
+                      {galleryList.map((img: string, i: number) => (
+                        <div
+                          key={i}
+                          onClick={() => setActiveGalleryIdx(i)}
+                          className={`h-20 rounded-sm overflow-hidden cursor-pointer border-2 transition ${
+                            activeGalleryIdx === i ? 'border-amber-600 ring-2 ring-amber-300 scale-95 shadow-md' : 'border-slate-200 opacity-70 hover:opacity-100'
+                          }`}
+                        >
+                          <img src={img} alt="" className="w-full h-full object-cover" />
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                );
+              })()}
             </div>
 
             {/* Description */}

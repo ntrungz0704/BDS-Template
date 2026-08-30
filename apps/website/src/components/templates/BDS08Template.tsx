@@ -42,6 +42,8 @@ interface TemplateProps {
 }
 
 export interface ProjectCardItem {
+  gallery?: string[];
+  images?: string[];
   id: number;
   title: string;
   slug: string;
@@ -57,7 +59,6 @@ export interface ProjectCardItem {
   bedrooms: number;
   bathrooms: number;
   image: string;
-  gallery: string[];
   featured: boolean;
   desc: string;
   details: string[];
@@ -489,6 +490,7 @@ export default function BDS08Template({
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
+  const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedProperty, setSelectedProperty] = useState<ProjectCardItem>(() => {
     if (initialParsed.propSlug) {
       const found = BDS08_PROJECTS.find(p => p.slug === initialParsed.propSlug);
@@ -1209,9 +1211,47 @@ export default function BDS08Template({
 
         {/* Gallery */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <img src={selectedProperty.image} alt={selectedProperty.title} className="w-full h-80 sm:h-96 object-cover rounded-sm shadow" />
+          <div className="space-y-3">
+                {(() => {
+                  const targetItem = selectedProperty;
+                  const rawGallery = (targetItem as any)?.gallery || (targetItem as any)?.images || [];
+                  const galleryList = (Array.isArray(rawGallery) && rawGallery.length >= 3)
+                    ? rawGallery
+                    : [
+                        (targetItem as any)?.image || (targetItem as any)?.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80',
+                        'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80',
+                        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80',
+                        'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80'
+                      ];
+                  const currentImg = galleryList[activeImageIdx] || galleryList[0];
+                  return (
+                    <>
+                      <div className="w-full h-80 sm:h-96 rounded-xl overflow-hidden shadow-lg border relative bg-slate-100">
+                        <img
+                          src={currentImg}
+                          alt=""
+                          className="w-full h-full object-cover transition-all duration-300"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 gap-2.5">
+                        {galleryList.map((img: string, i: number) => (
+                          <div
+                            key={i}
+                            onClick={() => setActiveImageIdx(i)}
+                            className={`h-20 rounded-lg overflow-hidden border-2 cursor-pointer transition ${
+                              activeImageIdx === i ? 'border-blue-600 ring-2 ring-blue-300 scale-95 shadow-md' : 'border-slate-200 opacity-70 hover:opacity-100'
+                            }`}
+                          >
+                            <img src={img} alt="" className="w-full h-full object-cover" />
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
           <div className="grid grid-cols-2 gap-4">
-            {selectedProperty.gallery.map((g, idx) => (
+            {(selectedProperty as any)?.gallery.map((g, idx) => (
               <img key={idx} src={g} alt="Gallery" className="w-full h-36 sm:h-44 object-cover rounded-sm shadow" />
             ))}
           </div>

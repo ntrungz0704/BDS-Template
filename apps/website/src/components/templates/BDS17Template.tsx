@@ -44,6 +44,8 @@ interface TemplateProps {
 }
 
 export interface UnitItem {
+  gallery?: string[];
+  images?: string[];
   id: string;
   title: string;
   code: string;
@@ -298,6 +300,7 @@ export default function BDS17Template({
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
+  const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [selectedUnit, setSelectedUnit] = useState<UnitItem>(() => {
     if (initialParsed.propSlug) {
@@ -1318,7 +1321,45 @@ export default function BDS17Template({
               <p className="text-sm font-black text-[#E11D48]">
                 Giá bán: {selectedUnit.price} — Diện tích: {selectedUnit.area} — Tầng: {selectedUnit.floor}
               </p>
-              <img src={selectedUnit.image} alt="" className="w-full h-96 object-cover shadow-lg border" />
+              <div className="space-y-3">
+                {(() => {
+                  const targetItem = selectedUnit;
+                  const rawGallery = (targetItem as any)?.gallery || (targetItem as any)?.images || [];
+                  const galleryList = (Array.isArray(rawGallery) && rawGallery.length >= 3)
+                    ? rawGallery
+                    : [
+                        (targetItem as any)?.image || (targetItem as any)?.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80',
+                        'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80',
+                        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80',
+                        'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80'
+                      ];
+                  const currentImg = galleryList[activeImageIdx] || galleryList[0];
+                  return (
+                    <>
+                      <div className="w-full h-80 sm:h-96 rounded-xl overflow-hidden shadow-lg border relative bg-slate-100">
+                        <img
+                          src={currentImg}
+                          alt=""
+                          className="w-full h-full object-cover transition-all duration-300"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 gap-2.5">
+                        {galleryList.map((img: string, i: number) => (
+                          <div
+                            key={i}
+                            onClick={() => setActiveImageIdx(i)}
+                            className={`h-20 rounded-lg overflow-hidden border-2 cursor-pointer transition ${
+                              activeImageIdx === i ? 'border-blue-600 ring-2 ring-blue-300 scale-95 shadow-md' : 'border-slate-200 opacity-70 hover:opacity-100'
+                            }`}
+                          >
+                            <img src={img} alt="" className="w-full h-full object-cover" />
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{selectedUnit.description}</p>
             </div>
           </div>
