@@ -31,13 +31,13 @@ const LoadingSkeleton = () => (
 );
 
 // Dynamic imports with lazy code-splitting for 100+ templates capability
-const LuxuryTemplate = dynamic(() => import('../components/templates/LuxuryTemplate'), { loading: () => <LoadingSkeleton /> });
-const MinimalTemplate = dynamic(() => import('../components/templates/MinimalTemplate'), { loading: () => <LoadingSkeleton /> });
-const CorporateTemplate = dynamic(() => import('../components/templates/CorporateTemplate'), { loading: () => <LoadingSkeleton /> });
-const ResortTemplate = dynamic(() => import('../components/templates/ResortTemplate'), { loading: () => <LoadingSkeleton /> });
-const UrbanTemplate = dynamic(() => import('../components/templates/UrbanTemplate'), { loading: () => <LoadingSkeleton /> });
-const IndustrialTemplate = dynamic(() => import('../components/templates/IndustrialTemplate'), { loading: () => <LoadingSkeleton /> });
-const VillaTemplate = dynamic(() => import('../components/templates/VillaTemplate'), { loading: () => <LoadingSkeleton /> });
+const BDS01Template = dynamic(() => import('../components/templates/BDS01Template'), { loading: () => <LoadingSkeleton /> });
+const BDS02Template = dynamic(() => import('../components/templates/BDS02Template'), { loading: () => <LoadingSkeleton /> });
+const BDS03Template = dynamic(() => import('../components/templates/BDS03Template'), { loading: () => <LoadingSkeleton /> });
+const BDS04Template = dynamic(() => import('../components/templates/BDS04Template'), { loading: () => <LoadingSkeleton /> });
+const BDS05Template = dynamic(() => import('../components/templates/BDS05Template'), { loading: () => <LoadingSkeleton /> });
+const BDS06Template = dynamic(() => import('../components/templates/BDS06Template'), { loading: () => <LoadingSkeleton /> });
+const BDS07Template = dynamic(() => import('../components/templates/BDS07Template'), { loading: () => <LoadingSkeleton /> });
 const BDS08Template = dynamic(() => import('../components/templates/BDS08Template'), { loading: () => <LoadingSkeleton /> });
 const BDS09Template = dynamic(() => import('../components/templates/BDS09Template'), { loading: () => <LoadingSkeleton /> });
 const BDS10Template = dynamic(() => import('../components/templates/BDS10Template'), { loading: () => <LoadingSkeleton /> });
@@ -80,48 +80,48 @@ class WebsiteTemplateRegistry {
 
 const INITIAL_TEMPLATES: TemplateDefinition[] = [
   // 1. Luxury Gold
-  { id: 'bds-01', slug: 'bds-01', name: 'BĐS 01 — Biệt Thự Hoàng Gia', category: 'luxury', version: '1.0.0', component: LuxuryTemplate },
-  { id: 'template-luxury-gold', slug: 'luxury-gold', name: 'Luxury Gold', category: 'luxury', version: '1.0.0', component: LuxuryTemplate },
-  { id: 'template-1', slug: 'template-1', name: 'Luxury Gold', category: 'luxury', version: '1.0.0', component: LuxuryTemplate },
+  { id: 'bds-01', slug: 'bds-01', name: 'BĐS 01 — Biệt Thự Hoàng Gia', category: 'luxury', version: '1.0.0', component: BDS01Template },
+  { id: 'template-luxury-gold', slug: 'luxury-gold', name: 'Luxury Gold', category: 'luxury', version: '1.0.0', component: BDS01Template },
+  { id: 'template-1', slug: 'template-1', name: 'Luxury Gold', category: 'luxury', version: '1.0.0', component: BDS01Template },
 
   // 2. Minimal White
-  { id: 'bds-02', slug: 'bds-02', name: 'BĐS 02 — Căn Hộ Tối Giản', category: 'minimal', version: '1.0.0', component: MinimalTemplate },
-  { id: 'template-minimal-white', slug: 'minimal-white', name: 'Minimal White', category: 'minimal', version: '1.0.0', component: MinimalTemplate },
-  { id: 'template-minimal-zen', slug: 'minimal-zen', name: 'Minimal Zen', category: 'minimal', version: '1.0.0', component: MinimalTemplate },
-  { id: 'template-dark-prestige', slug: 'dark-prestige', name: 'Dark Prestige', category: 'minimal', version: '1.0.0', component: MinimalTemplate },
-  { id: 'template-2', slug: 'template-2', name: 'Minimal White', category: 'minimal', version: '1.0.0', component: MinimalTemplate },
+  { id: 'bds-02', slug: 'bds-02', name: 'BĐS 02 — Căn Hộ Tối Giản', category: 'minimal', version: '1.0.0', component: BDS02Template },
+  { id: 'template-minimal-white', slug: 'minimal-white', name: 'Minimal White', category: 'minimal', version: '1.0.0', component: BDS02Template },
+  { id: 'template-minimal-zen', slug: 'minimal-zen', name: 'Minimal Zen', category: 'minimal', version: '1.0.0', component: BDS02Template },
+  { id: 'template-dark-prestige', slug: 'dark-prestige', name: 'Dark Prestige', category: 'minimal', version: '1.0.0', component: BDS02Template },
+  { id: 'template-2', slug: 'template-2', name: 'Minimal White', category: 'minimal', version: '1.0.0', component: BDS02Template },
 
   // 3. Modern Corporate
-  { id: 'bds-03', slug: 'bds-03', name: 'BĐS 03 — Sàn Giao Dịch Chuyên Nghiệp', category: 'corporate', version: '1.0.0', component: CorporateTemplate },
-  { id: 'template-modern-corporate', slug: 'modern-corporate', name: 'Modern Corporate', category: 'corporate', version: '1.0.0', component: CorporateTemplate },
-  { id: 'template-3', slug: 'template-3', name: 'Modern Corporate', category: 'corporate', version: '1.0.0', component: CorporateTemplate },
+  { id: 'bds-03', slug: 'bds-03', name: 'BĐS 03 — Sàn Giao Dịch Chuyên Nghiệp', category: 'corporate', version: '1.0.0', component: BDS03Template },
+  { id: 'template-modern-corporate', slug: 'modern-corporate', name: 'Modern Corporate', category: 'corporate', version: '1.0.0', component: BDS03Template },
+  { id: 'template-3', slug: 'template-3', name: 'Modern Corporate', category: 'corporate', version: '1.0.0', component: BDS03Template },
 
   // 4. Resort Paradise
-  { id: 'bds-04', slug: 'bds-04', name: 'BĐS 04 — Nghỉ Dưỡng Ven Biển', category: 'resort', version: '1.0.0', component: ResortTemplate },
-  { id: 'template-resort-paradise', slug: 'resort-paradise', name: 'Resort Paradise', category: 'resort', version: '1.0.0', component: ResortTemplate },
-  { id: 'template-ocean-view', slug: 'ocean-view', name: 'Ocean View Panorama', category: 'resort', version: '1.0.0', component: ResortTemplate },
-  { id: 'template-ocean-blue', slug: 'ocean-blue', name: 'Ocean Blue Style', category: 'resort', version: '1.0.0', component: ResortTemplate },
-  { id: 'template-4', slug: 'template-4', name: 'Resort Paradise', category: 'resort', version: '1.0.0', component: ResortTemplate },
+  { id: 'bds-04', slug: 'bds-04', name: 'BĐS 04 — Nghỉ Dưỡng Ven Biển', category: 'resort', version: '1.0.0', component: BDS04Template },
+  { id: 'template-resort-paradise', slug: 'resort-paradise', name: 'Resort Paradise', category: 'resort', version: '1.0.0', component: BDS04Template },
+  { id: 'template-ocean-view', slug: 'ocean-view', name: 'Ocean View Panorama', category: 'resort', version: '1.0.0', component: BDS04Template },
+  { id: 'template-ocean-blue', slug: 'ocean-blue', name: 'Ocean Blue Style', category: 'resort', version: '1.0.0', component: BDS04Template },
+  { id: 'template-4', slug: 'template-4', name: 'Resort Paradise', category: 'resort', version: '1.0.0', component: BDS04Template },
 
   // 5. Urban City (An Viên Nha Trang)
-  { id: 'bds-05', slug: 'bds-05', name: 'BĐS 05 — Đại Đô Thị Thông Minh', category: 'apartment', version: '1.0.0', component: UrbanTemplate },
-  { id: 'template-urban-city', slug: 'urban-city', name: 'Urban City', category: 'apartment', version: '1.0.0', component: UrbanTemplate },
-  { id: 'template-smart-urban', slug: 'smart-urban', name: 'Smart Urban City', category: 'apartment', version: '1.0.0', component: UrbanTemplate },
-  { id: 'template-high-rise', slug: 'high-rise', name: 'High-Rise Skyscraper', category: 'apartment', version: '1.0.0', component: UrbanTemplate },
-  { id: 'template-5', slug: 'template-5', name: 'Smart Urban', category: 'apartment', version: '1.0.0', component: UrbanTemplate },
+  { id: 'bds-05', slug: 'bds-05', name: 'BĐS 05 — Đại Đô Thị Thông Minh', category: 'apartment', version: '1.0.0', component: BDS05Template },
+  { id: 'template-urban-city', slug: 'urban-city', name: 'Urban City', category: 'apartment', version: '1.0.0', component: BDS05Template },
+  { id: 'template-smart-urban', slug: 'smart-urban', name: 'Smart Urban City', category: 'apartment', version: '1.0.0', component: BDS05Template },
+  { id: 'template-high-rise', slug: 'high-rise', name: 'High-Rise Skyscraper', category: 'apartment', version: '1.0.0', component: BDS05Template },
+  { id: 'template-5', slug: 'template-5', name: 'Smart Urban', category: 'apartment', version: '1.0.0', component: BDS05Template },
 
   // 6. Industrial Estate
-  { id: 'bds-06', slug: 'bds-06', name: 'BĐS 06 — Khu Công Nghiệp Hiện Đại', category: 'industrial', version: '1.0.0', component: IndustrialTemplate },
-  { id: 'template-industrial-estate', slug: 'industrial-estate', name: 'Industrial Estate', category: 'industrial', version: '1.0.0', component: IndustrialTemplate },
-  { id: 'template-industrial-logistics', slug: 'industrial-logistics', name: 'Industrial & Logistics', category: 'industrial', version: '1.0.0', component: IndustrialTemplate },
-  { id: 'template-6', slug: 'template-6', name: 'Industrial Estate', category: 'industrial', version: '1.0.0', component: IndustrialTemplate },
+  { id: 'bds-06', slug: 'bds-06', name: 'BĐS 06 — Khu Công Nghiệp Hiện Đại', category: 'industrial', version: '1.0.0', component: BDS06Template },
+  { id: 'template-industrial-estate', slug: 'industrial-estate', name: 'Industrial Estate', category: 'industrial', version: '1.0.0', component: BDS06Template },
+  { id: 'template-industrial-logistics', slug: 'industrial-logistics', name: 'Industrial & Logistics', category: 'industrial', version: '1.0.0', component: BDS06Template },
+  { id: 'template-6', slug: 'template-6', name: 'Industrial Estate', category: 'industrial', version: '1.0.0', component: BDS06Template },
 
   // 7. Villa Premium
-  { id: 'bds-07', slug: 'bds-07', name: 'BĐS 07 — Biệt Thự Compound 3D', category: 'villa', version: '1.0.0', component: VillaTemplate },
-  { id: 'template-villa-premium', slug: 'villa-premium', name: 'Villa Premium', category: 'villa', version: '1.0.0', component: VillaTemplate },
-  { id: 'template-modern-villa', slug: 'modern-villa', name: 'Modern Villa & Resort', category: 'villa', version: '1.0.0', component: VillaTemplate },
-  { id: 'template-luxury-villa', slug: 'luxury-villa', name: 'Luxury Villa', category: 'villa', version: '1.0.0', component: VillaTemplate },
-  { id: 'template-7', slug: 'template-7', name: 'Villa Premium', category: 'villa', version: '1.0.0', component: VillaTemplate },
+  { id: 'bds-07', slug: 'bds-07', name: 'BĐS 07 — Biệt Thự Compound 3D', category: 'villa', version: '1.0.0', component: BDS07Template },
+  { id: 'template-villa-premium', slug: 'villa-premium', name: 'Villa Premium', category: 'villa', version: '1.0.0', component: BDS07Template },
+  { id: 'template-modern-villa', slug: 'modern-villa', name: 'Modern Villa & Resort', category: 'villa', version: '1.0.0', component: BDS07Template },
+  { id: 'template-luxury-villa', slug: 'luxury-villa', name: 'Luxury Villa', category: 'villa', version: '1.0.0', component: BDS07Template },
+  { id: 'template-7', slug: 'template-7', name: 'Villa Premium', category: 'villa', version: '1.0.0', component: BDS07Template },
 
   // 8. Eco Green
   { id: 'bds-08', slug: 'bds-08', name: 'BĐS 08 — Đô Thị Sinh Thái', category: 'eco', version: '1.0.0', component: BDS08Template },

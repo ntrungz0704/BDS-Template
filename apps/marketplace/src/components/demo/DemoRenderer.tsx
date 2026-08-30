@@ -16,13 +16,13 @@ const LoadingSkeleton = () => (
   </div>
 );
 
-const LuxuryTemplate = dynamic(() => import('./templates/LuxuryTemplate'), { loading: () => <LoadingSkeleton /> });
-const MinimalTemplate = dynamic(() => import('./templates/MinimalTemplate'), { loading: () => <LoadingSkeleton /> });
-const CorporateTemplate = dynamic(() => import('./templates/CorporateTemplate'), { loading: () => <LoadingSkeleton /> });
-const ResortTemplate = dynamic(() => import('./templates/ResortTemplate'), { loading: () => <LoadingSkeleton /> });
-const UrbanTemplate = dynamic(() => import('./templates/UrbanTemplate'), { loading: () => <LoadingSkeleton /> });
-const IndustrialTemplate = dynamic(() => import('./templates/IndustrialTemplate'), { loading: () => <LoadingSkeleton /> });
-const VillaTemplate = dynamic(() => import('./templates/VillaTemplate'), { loading: () => <LoadingSkeleton /> });
+const BDS01Template = dynamic(() => import('./templates/BDS01Template'), { loading: () => <LoadingSkeleton /> });
+const BDS02Template = dynamic(() => import('./templates/BDS02Template'), { loading: () => <LoadingSkeleton /> });
+const BDS03Template = dynamic(() => import('./templates/BDS03Template'), { loading: () => <LoadingSkeleton /> });
+const BDS04Template = dynamic(() => import('./templates/BDS04Template'), { loading: () => <LoadingSkeleton /> });
+const BDS05Template = dynamic(() => import('./templates/BDS05Template'), { loading: () => <LoadingSkeleton /> });
+const BDS06Template = dynamic(() => import('./templates/BDS06Template'), { loading: () => <LoadingSkeleton /> });
+const BDS07Template = dynamic(() => import('./templates/BDS07Template'), { loading: () => <LoadingSkeleton /> });
 const BDS08Template = dynamic(() => import('./templates/BDS08Template'), { loading: () => <LoadingSkeleton /> });
 const BDS09Template = dynamic(() => import('./templates/BDS09Template'), { loading: () => <LoadingSkeleton /> });
 const BDS10Template = dynamic(() => import('./templates/BDS10Template'), { loading: () => <LoadingSkeleton /> });
@@ -1066,31 +1066,31 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
   const renderContent = () => {
     // 01. Luxury Gold
     if (['01', 'bds-01', 'portal-01', 'luxury-gold', 'portal-classic'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <LuxuryTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS01Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 02. Minimal White
     if (['02', 'bds-02', 'portal-02', 'minimal-white', 'minimal-zen', 'portal-modern'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <MinimalTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS02Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 03. Modern Corporate
     if (['03', 'bds-03', 'portal-03', 'modern-corporate', 'portal-luxury'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <CorporateTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS03Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 04. Resort Paradise
     if (['04', 'bds-04', 'portal-04', 'resort-paradise', 'ocean-view'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <ResortTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS04Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 05. Smart Urban City (An Viên Nha Trang)
     if (['05', 'bds-05', 'portal-05', 'urban-city', 'smart-urban', 'smartcity'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <UrbanTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS05Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 06. Industrial Estate
     if (['06', 'bds-06', 'portal-06', 'industrial-estate', 'industrial-logistics'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <IndustrialTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS06Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 07. Villa Royal Garden
     if (['07', 'bds-07', 'portal-07', 'villa-royal', 'villa-premium', 'luxury-villa'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <VillaTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS07Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 08. Green Eco Living
     if (['08', 'bds-08', 'portal-08', 'eco-green', 'eco-living', 'green-eco'].some(k => slug.includes(k) || sourceSlug.includes(k))) {

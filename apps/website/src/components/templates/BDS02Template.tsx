@@ -355,7 +355,7 @@ export const resolvePageAndDetail = (p?: string) => {
   return { page: 'home', propSlug: '', artSlug: '' };
 };
 
-export default function MinimalTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme, projects, posts }: TemplateProps) {
+export default function BDS02Template({ template, viewport = 'desktop', initialPage = 'home', company, theme, projects, posts }: TemplateProps) {
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 

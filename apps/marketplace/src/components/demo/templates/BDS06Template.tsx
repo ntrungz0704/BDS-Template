@@ -476,7 +476,7 @@ export const resolvePageAndDetail = (p?: string) => {
   return { page: 'home', propSlug: '', artSlug: '' };
 };
 
-export default function IndustrialTemplate({ 
+export default function BDS06Template({ 
   template, 
   viewport = 'desktop', 
   initialPage = 'home', 

@@ -446,7 +446,7 @@ export const resolvePageAndDetail = (p?: string) => {
   return { page: 'home', propSlug: '', artSlug: '' };
 };
 
-export default function VillaTemplate({ 
+export default function BDS07Template({ 
   template, 
   viewport = 'desktop', 
   initialPage = 'home', 

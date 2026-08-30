@@ -15,46 +15,46 @@ export interface PackageOptions {
 
 export const TEMPLATE_SLUG_MAP: Record<string, { componentName: string; fileName: string; templateName: string }> = {
   // 1. Luxury Gold
-  'bds-01': { componentName: 'LuxuryTemplate', fileName: 'LuxuryTemplate.tsx', templateName: 'Biệt Thự Hoàng Gia Dát Vàng' },
-  'portal-01': { componentName: 'LuxuryTemplate', fileName: 'LuxuryTemplate.tsx', templateName: 'Biệt Thự Hoàng Gia Dát Vàng' },
-  'luxury-gold': { componentName: 'LuxuryTemplate', fileName: 'LuxuryTemplate.tsx', templateName: 'Luxury Gold Style' },
+  'bds-01': { componentName: 'BDS01Template', fileName: 'BDS01Template.tsx', templateName: 'Biệt Thự Hoàng Gia Dát Vàng' },
+  'portal-01': { componentName: 'BDS01Template', fileName: 'BDS01Template.tsx', templateName: 'Biệt Thự Hoàng Gia Dát Vàng' },
+  'luxury-gold': { componentName: 'BDS01Template', fileName: 'BDS01Template.tsx', templateName: 'Luxury Gold Style' },
 
   // 2. Minimal White
-  'bds-02': { componentName: 'MinimalTemplate', fileName: 'MinimalTemplate.tsx', templateName: 'Căn Hộ Tối Giản Bắc Âu' },
-  'portal-02': { componentName: 'MinimalTemplate', fileName: 'MinimalTemplate.tsx', templateName: 'Căn Hộ Tối Giản Bắc Âu' },
-  'minimal-white': { componentName: 'MinimalTemplate', fileName: 'MinimalTemplate.tsx', templateName: 'Minimal White Style' },
-  'minimal-zen': { componentName: 'MinimalTemplate', fileName: 'MinimalTemplate.tsx', templateName: 'Minimalist Zen Style' },
+  'bds-02': { componentName: 'BDS02Template', fileName: 'BDS02Template.tsx', templateName: 'Căn Hộ Tối Giản Bắc Âu' },
+  'portal-02': { componentName: 'BDS02Template', fileName: 'BDS02Template.tsx', templateName: 'Căn Hộ Tối Giản Bắc Âu' },
+  'minimal-white': { componentName: 'BDS02Template', fileName: 'BDS02Template.tsx', templateName: 'Minimal White Style' },
+  'minimal-zen': { componentName: 'BDS02Template', fileName: 'BDS02Template.tsx', templateName: 'Minimalist Zen Style' },
 
   // 3. Modern Corporate
-  'bds-03': { componentName: 'CorporateTemplate', fileName: 'CorporateTemplate.tsx', templateName: 'Tập Đoàn BĐS & Sàn Lớn' },
-  'portal-03': { componentName: 'CorporateTemplate', fileName: 'CorporateTemplate.tsx', templateName: 'Tập Đoàn BĐS & Sàn Lớn' },
-  'modern-corporate': { componentName: 'CorporateTemplate', fileName: 'CorporateTemplate.tsx', templateName: 'Modern Corporate' },
+  'bds-03': { componentName: 'BDS03Template', fileName: 'BDS03Template.tsx', templateName: 'Tập Đoàn BĐS & Sàn Lớn' },
+  'portal-03': { componentName: 'BDS03Template', fileName: 'BDS03Template.tsx', templateName: 'Tập Đoàn BĐS & Sàn Lớn' },
+  'modern-corporate': { componentName: 'BDS03Template', fileName: 'BDS03Template.tsx', templateName: 'Modern Corporate' },
 
   // 4. Resort Paradise
-  'bds-04': { componentName: 'ResortTemplate', fileName: 'ResortTemplate.tsx', templateName: 'Nghỉ Dưỡng & Biển Đảo' },
-  'portal-04': { componentName: 'ResortTemplate', fileName: 'ResortTemplate.tsx', templateName: 'Nghỉ Dưỡng & Biển Đảo' },
-  'resort-paradise': { componentName: 'ResortTemplate', fileName: 'ResortTemplate.tsx', templateName: 'Resort Paradise' },
-  'ocean-view': { componentName: 'ResortTemplate', fileName: 'ResortTemplate.tsx', templateName: 'Ocean View Panorama' },
+  'bds-04': { componentName: 'BDS04Template', fileName: 'BDS04Template.tsx', templateName: 'Nghỉ Dưỡng & Biển Đảo' },
+  'portal-04': { componentName: 'BDS04Template', fileName: 'BDS04Template.tsx', templateName: 'Nghỉ Dưỡng & Biển Đảo' },
+  'resort-paradise': { componentName: 'BDS04Template', fileName: 'BDS04Template.tsx', templateName: 'Resort Paradise' },
+  'ocean-view': { componentName: 'BDS04Template', fileName: 'BDS04Template.tsx', templateName: 'Ocean View Panorama' },
 
   // 5. Urban City
-  'bds-05': { componentName: 'UrbanTemplate', fileName: 'UrbanTemplate.tsx', templateName: 'Căn Hộ Cao Tầng Smart City' },
-  'portal-05': { componentName: 'UrbanTemplate', fileName: 'UrbanTemplate.tsx', templateName: 'Căn Hộ Cao Tầng Smart City' },
-  'urban-city': { componentName: 'UrbanTemplate', fileName: 'UrbanTemplate.tsx', templateName: 'Urban City Style' },
-  'smart-urban': { componentName: 'UrbanTemplate', fileName: 'UrbanTemplate.tsx', templateName: 'Smart Urban City' },
-  'high-rise': { componentName: 'UrbanTemplate', fileName: 'UrbanTemplate.tsx', templateName: 'High-Rise Skyscraper' },
+  'bds-05': { componentName: 'BDS05Template', fileName: 'BDS05Template.tsx', templateName: 'Căn Hộ Cao Tầng Smart City' },
+  'portal-05': { componentName: 'BDS05Template', fileName: 'BDS05Template.tsx', templateName: 'Căn Hộ Cao Tầng Smart City' },
+  'urban-city': { componentName: 'BDS05Template', fileName: 'BDS05Template.tsx', templateName: 'Urban City Style' },
+  'smart-urban': { componentName: 'BDS05Template', fileName: 'BDS05Template.tsx', templateName: 'Smart Urban City' },
+  'high-rise': { componentName: 'BDS05Template', fileName: 'BDS05Template.tsx', templateName: 'High-Rise Skyscraper' },
 
   // 6. Industrial Estate
-  'bds-06': { componentName: 'IndustrialTemplate', fileName: 'IndustrialTemplate.tsx', templateName: 'Khu Công Nghiệp & Kho Vận' },
-  'portal-06': { componentName: 'IndustrialTemplate', fileName: 'IndustrialTemplate.tsx', templateName: 'Khu Công Nghiệp & Kho Vận' },
-  'industrial-estate': { componentName: 'IndustrialTemplate', fileName: 'IndustrialTemplate.tsx', templateName: 'Industrial Estate' },
-  'industrial-logistics': { componentName: 'IndustrialTemplate', fileName: 'IndustrialTemplate.tsx', templateName: 'Industrial & Logistics' },
+  'bds-06': { componentName: 'BDS06Template', fileName: 'BDS06Template.tsx', templateName: 'Khu Công Nghiệp & Kho Vận' },
+  'portal-06': { componentName: 'BDS06Template', fileName: 'BDS06Template.tsx', templateName: 'Khu Công Nghiệp & Kho Vận' },
+  'industrial-estate': { componentName: 'BDS06Template', fileName: 'BDS06Template.tsx', templateName: 'Industrial Estate' },
+  'industrial-logistics': { componentName: 'BDS06Template', fileName: 'BDS06Template.tsx', templateName: 'Industrial & Logistics' },
 
   // 7. Villa Premium
-  'bds-07': { componentName: 'VillaTemplate', fileName: 'VillaTemplate.tsx', templateName: 'Biệt Thự Đơn Lập 3D Tour' },
-  'portal-07': { componentName: 'VillaTemplate', fileName: 'VillaTemplate.tsx', templateName: 'Biệt Thự Đơn Lập 3D Tour' },
-  'villa-premium': { componentName: 'VillaTemplate', fileName: 'VillaTemplate.tsx', templateName: 'Villa Premium Style' },
-  'luxury-villa': { componentName: 'VillaTemplate', fileName: 'VillaTemplate.tsx', templateName: 'Luxury Villa Compound' },
-  'modern-villa': { componentName: 'VillaTemplate', fileName: 'VillaTemplate.tsx', templateName: 'Modern Villa & Resort' },
+  'bds-07': { componentName: 'BDS07Template', fileName: 'BDS07Template.tsx', templateName: 'Biệt Thự Đơn Lập 3D Tour' },
+  'portal-07': { componentName: 'BDS07Template', fileName: 'BDS07Template.tsx', templateName: 'Biệt Thự Đơn Lập 3D Tour' },
+  'villa-premium': { componentName: 'BDS07Template', fileName: 'BDS07Template.tsx', templateName: 'Villa Premium Style' },
+  'luxury-villa': { componentName: 'BDS07Template', fileName: 'BDS07Template.tsx', templateName: 'Luxury Villa Compound' },
+  'modern-villa': { componentName: 'BDS07Template', fileName: 'BDS07Template.tsx', templateName: 'Modern Villa & Resort' },
 
   // 8. Eco Green
   'bds-08': { componentName: 'BDS08Template', fileName: 'BDS08Template.tsx', templateName: 'Đô Thị Sinh Thái Xanh ESG' },

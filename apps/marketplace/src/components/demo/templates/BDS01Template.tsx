@@ -617,7 +617,7 @@ export const resolvePageAndDetail = (p?: string) => {
   return { page: 'home', propSlug: '', artSlug: '' };
 };
 
-export default function LuxuryTemplate({ template, viewport = 'desktop', initialPage = 'home', company, theme, projects, posts }: TemplateProps) {
+export default function BDS01Template({ template, viewport = 'desktop', initialPage = 'home', company, theme, projects, posts }: TemplateProps) {
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const tSlug = template?.slug || 'bds-01';
 

@@ -2,13 +2,13 @@ import fs from 'fs';
 import path from 'path';
 
 const TEMPLATES = [
-  { num: '01', slug: 'luxury-gold', name: 'Luxury Gold Style (Dinh Thự Hoàng Gia)', compFile: 'LuxuryTemplate.tsx', desc: 'Biệt thự · Penthouse · Dinh thự dát vàng hoàng gia' },
-  { num: '02', slug: 'minimal-white', name: 'Minimal White Style (Sàn Novihome)', compFile: 'MinimalTemplate.tsx', desc: 'Apple Minimalist · Căn hộ cao cấp Bắc Âu · Tinh tế' },
-  { num: '03', slug: 'modern-corporate', name: 'Modern Corporate Pro (Tuấn Nhân Land)', compFile: 'CorporateTemplate.tsx', desc: 'Tập đoàn BĐS · Tổng công ty · Sàn lớn 100+ nhân sự' },
-  { num: '04', slug: 'resort-paradise', name: 'Resort Paradise Style (Sunshine City)', compFile: 'ResortTemplate.tsx', desc: 'BĐS biển · Biệt thự đảo · Condotel · Second Home' },
-  { num: '05', slug: 'smart-urban-city', name: 'Smart Urban City (An Viên Nha Trang)', compFile: 'UrbanTemplate.tsx', desc: 'Căn hộ chung cư · Đại đô thị thông minh · Metro' },
-  { num: '06', slug: 'industrial-estate', name: 'Grand Riverside Eco-Township', compFile: 'IndustrialTemplate.tsx', desc: 'Đại đô thị sinh thái 120ha · Căn hộ & Shophouse · Hồ cảnh quan 12ha' },
-  { num: '07', slug: 'villa-royal-garden', name: 'Pannamera Eco-Village Bảo Lộc', compFile: 'VillaTemplate.tsx', desc: 'Làng sinh thái 900m biển · Đất vườn săn mây · Sổ đỏ thổ cư có sẵn' },
+  { num: '01', slug: 'luxury-gold', name: 'Luxury Gold Style (Dinh Thự Hoàng Gia)', compFile: 'BDS01Template.tsx', desc: 'Biệt thự · Penthouse · Dinh thự dát vàng hoàng gia' },
+  { num: '02', slug: 'minimal-white', name: 'Minimal White Style (Sàn Novihome)', compFile: 'BDS02Template.tsx', desc: 'Apple Minimalist · Căn hộ cao cấp Bắc Âu · Tinh tế' },
+  { num: '03', slug: 'modern-corporate', name: 'Modern Corporate Pro (Tuấn Nhân Land)', compFile: 'BDS03Template.tsx', desc: 'Tập đoàn BĐS · Tổng công ty · Sàn lớn 100+ nhân sự' },
+  { num: '04', slug: 'resort-paradise', name: 'Resort Paradise Style (Sunshine City)', compFile: 'BDS04Template.tsx', desc: 'BĐS biển · Biệt thự đảo · Condotel · Second Home' },
+  { num: '05', slug: 'smart-urban-city', name: 'Smart Urban City (An Viên Nha Trang)', compFile: 'BDS05Template.tsx', desc: 'Căn hộ chung cư · Đại đô thị thông minh · Metro' },
+  { num: '06', slug: 'industrial-estate', name: 'Grand Riverside Eco-Township', compFile: 'BDS06Template.tsx', desc: 'Đại đô thị sinh thái 120ha · Căn hộ & Shophouse · Hồ cảnh quan 12ha' },
+  { num: '07', slug: 'villa-royal-garden', name: 'Pannamera Eco-Village Bảo Lộc', compFile: 'BDS07Template.tsx', desc: 'Làng sinh thái 900m biển · Đất vườn săn mây · Sổ đỏ thổ cư có sẵn' },
   { num: '08', slug: 'green-eco-living', name: 'Green Eco Living', compFile: 'BDS08Template.tsx', desc: 'Đô thị sinh thái xanh · Ecopark · Chuẩn Xanh ESG' },
   { num: '09', slug: 'classic-heritage', name: 'Classic Heritage Architecture', compFile: 'BDS09Template.tsx', desc: 'Tân cổ điển Châu Âu · Lâu đài quý phái · Indochine' },
   { num: '10', slug: 'investment-pro-hub', name: 'Investment Pro Hub', compFile: 'BDS10Template.tsx', desc: 'Phân tích tài chính BĐS · Biểu đồ giá · Máy tính ROI' },
