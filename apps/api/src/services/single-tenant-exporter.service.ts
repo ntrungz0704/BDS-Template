@@ -998,86 +998,148 @@ export const getServerSideProps: GetServerSideProps = async () => {
 `;
     zip.addFile('src/pages/index.tsx', Buffer.from(publicIndexContent, 'utf-8'));
 
-    // 15. README.md — HƯỚNG DẪN TIẾNG VIỆT CHI TIẾT TỪNG BƯỚC
-    const readmeContent = `# HƯỚNG DẪN CÀI ĐẶT & TRIỂN KHAI SOURCE CODE SINGLE-TENANT
+    // 15. Tích hợp sẵn bản Standalone HTML5/CSS3/JS và PHP & MySQL (nếu có)
+    let folderCode = 'bds-01';
+    for (let i = 1; i <= 24; i++) {
+      const numStr = i < 10 ? `0${i}` : `${i}`;
+      if (templateSlug.includes(`bds-${numStr}`) || templateSlug.includes(`portal-${numStr}`) || templateSlug === `bds-${i}`) {
+        folderCode = `bds-${numStr}`;
+        break;
+      }
+    }
+    const possibleStandaloneDirs = [
+      path.resolve(__dirname, '../../../standalone-templates', folderCode),
+      path.resolve(__dirname, '../../../../standalone-templates', folderCode),
+      path.resolve(__dirname, '../../standalone-templates', folderCode),
+      path.resolve(process.cwd(), 'standalone-templates', folderCode),
+      path.resolve(process.cwd(), '../standalone-templates', folderCode),
+      path.resolve(process.cwd(), '../../standalone-templates', folderCode),
+    ];
+    const standaloneDir = possibleStandaloneDirs.find((d) => fs.existsSync(d));
+    if (standaloneDir) {
+      if (fs.existsSync(path.join(standaloneDir, 'html'))) {
+        zip.addLocalFolder(path.join(standaloneDir, 'html'), 'ban-tinh-html-css-js');
+      }
+      if (fs.existsSync(path.join(standaloneDir, 'php'))) {
+        zip.addLocalFolder(path.join(standaloneDir, 'php'), 'ban-hosting-php-mysql');
+      }
+    }
 
-Xin chúc mừng Quý Khách đã sở hữu trọn bộ mã nguồn **Website & Hệ Thống CMS Quản Trị Bất Động Sản Độc Lập** (Đơn hàng: **#${orderNumber}**).
+    // 16. HƯỚNG DẪN UP LÊN GITHUB
+    const githubGuideContent = `# HƯỚNG DẪN ĐẨY MÃ NGUỒN LÊN GITHUB & DEPLOY TỰ ĐỘNG
+
+Tài liệu này hướng dẫn Quý Khách đưa mã nguồn website lên kho lưu trữ **GitHub cá nhân** và thiết lập triển khai tự động.
 
 ---
 
-## 🌟 CẤU TRÚC BỘ MÃ NGUỒN
-- **Mã nguồn**: Next.js 15 (React 19, TypeScript, Tailwind CSS).
-- **Cơ sở dữ liệu**: Prisma ORM + PostgreSQL.
-- **Hệ thống CMS**: Đã tích hợp sẵn tại đường dẫn \`/admin\`.
-- **Toàn vẹn dữ liệu**: File \`prisma/seed.ts\` chứa **100% nội dung, dự án, bài viết, thông tin liên hệ** Quý Khách đã cấu hình trên CloneCraft.
+## BƯỚC 1: TẠO REPOSITORY MỚI TRÊN GITHUB
+1. Truy cập https://github.com và đăng nhập vào tài khoản của Quý Khách.
+2. Nhấn nút **"New"** (hoặc dấu \`+\` ở góc trên bên phải màn hình).
+3. Đặt tên kho lưu trữ (Ví dụ: \`my-bds-website\`).
+4. Chọn chế độ **Private** (Riêng tư) để bảo vệ bản quyền mã nguồn.
+5. **Lưu ý**: KHÔNG tích chọn *"Add a README file"* hay *.gitignore* (vì mã nguồn đã có sẵn đầy đủ).
+6. Nhấn nút xanh **"Create repository"**.
 
 ---
 
-## PHẦN 1: CHẠY TRÊN MÁY TÍNH CÁ NHÂN (LOCALHOST)
+## BƯỚC 2: ĐẨY MÃ NGUỒN TỪ MÁY LÊN GITHUB
+Mở cửa sổ Terminal (hoặc Git Bash / Command Prompt) ngay tại thư mục giải nén này và gõ lần lượt các lệnh sau:
 
-### Bước 1: Yêu cầu môi trường
-1. Cài đặt **Node.js** (Khuyên dùng bản LTS v20.x hoặc v22.x): [https://nodejs.org](https://nodejs.org)
-2. Cài đặt **PostgreSQL** trên máy (hoặc dùng Database miễn phí từ [Supabase](https://supabase.com) / [Neon](https://neon.tech)).
-
-### Bước 2: Cài đặt thư viện
-Mở Terminal / Command Prompt tại thư mục dự án và chạy:
 \`\`\`bash
-npm install
-\`\`\`
+# 1. Khởi tạo Git
+git init
 
-### Bước 3: Cấu hình cơ sở dữ liệu
-1. Mở file \`.env\` (hoặc sao chép từ \`.env.example\`).
-2. Điền chuỗi kết nối PostgreSQL của bạn vào biến \`DATABASE_URL\`:
-\`\`\`env
-DATABASE_URL="postgresql://postgres:MatKhauCuaBan@localhost:5432/my_bds_db?schema=public"
-\`\`\`
+# 2. Thêm toàn bộ file vào bộ nhớ đệm
+git add .
 
-### Bước 4: Tạo bảng và nạp dữ liệu (1-Click)
-\`\`\`bash
-# 1. Tạo các bảng cơ sở dữ liệu
-npx prisma db push
+# 3. Ghi nhận commit đầu tiên
+git commit -m "Khởi tạo mã nguồn Website & CMS BĐS"
 
-# 2. Nạp toàn bộ dữ liệu mẫu & tài khoản Admin
-npm run prisma:seed
-\`\`\`
+# 4. Đặt nhánh chính là main
+git branch -M main
 
-### Bước 5: Khởi động Website & CMS
-\`\`\`bash
-npm run dev
-\`\`\`
-- 🌐 **Xem Website công khai**: [http://localhost:3000](http://localhost:3000)
-- ⚙️ **Vào CMS Quản Trị**: [http://localhost:3000/admin](http://localhost:3000/admin)
-  - **Tài khoản Admin**: \`${compEmail}\`
-  - **Mật khẩu khởi tạo**: \`${defaultAdminPassword}\` *(Quý khách có thể đổi mật khẩu sau khi đăng nhập)*.
+# 5. Liên kết với kho GitHub vừa tạo (Thay URL bằng link repo GitHub của bạn)
+git remote add origin https://github.com/TEN-TAI-KHOAN-CUA-BAN/my-bds-website.git
 
----
-
-## PHẦN 2: TRIỂN KHAI LÊN VERCEL (1-CLICK DEPLOY MIỄN PHÍ)
-
-1. Đẩy toàn bộ mã nguồn lên kho lưu trữ **GitHub** riêng tư của Quý Khách.
-2. Truy cập [Vercel.com](https://vercel.com) $\rightarrow$ Chọn **Add New Project** $\rightarrow$ Chọn Repo GitHub vừa tạo.
-3. Tạo 1 Database PostgreSQL miễn phí trên [Neon.tech](https://neon.tech) hoặc [Supabase.com](https://supabase.com).
-4. Thêm biến môi trường trong Vercel Settings:
-   - \`DATABASE_URL\`: Chuỗi kết nối Postgres của Quý Khách.
-   - \`JWT_SECRET\`: Khóa bảo mật ngẫu nhiên bất kỳ.
-5. Nhấn **Deploy** $\rightarrow$ Website sẽ chạy online với tên miền miễn phí \`.vercel.app\` hoặc gắn Tên Miền Riêng tùy thích!
-
----
-
-## PHẦN 3: TRIỂN KHAI LÊN VPS LINUX VỚI DOCKER
-
-Tạo file \`Dockerfile\` và \`docker-compose.yml\` có sẵn trong dự án:
-\`\`\`bash
-docker compose up -d --build
+# 6. Đẩy mã nguồn lên
+git push -u origin main
 \`\`\`
 
 ---
-*Tài liệu được xuất bản tự động từ Export Engine — Bản quyền thuộc về ${customerName}.*
+
+## BƯỚC 3: KẾT NỐI VERCEL ĐỂ TỰ ĐỘNG TRIỂN KHAI (CI/CD)
+1. Truy cập https://vercel.com và đăng nhập bằng tài khoản GitHub.
+2. Chọn **"Add New Project"** $\\rightarrow$ Nhấn **"Import"** cạnh repo \`my-bds-website\`.
+3. Trong phần **Environment Variables**, điền biến \`DATABASE_URL\` từ Neon.tech hoặc Supabase.
+4. Nhấn **Deploy** $\\rightarrow$ Mỗi khi bạn sửa code và push lên GitHub, Vercel sẽ tự động cập nhật website chỉ trong 30 giây!
+`;
+    zip.addFile('HUONG-DAN-UP-LEN-GITHUB.md', Buffer.from(githubGuideContent, 'utf-8'));
+
+    // 17. HƯỚNG DẪN CHẠY XAMPP / CPANEL CHO BẢN PHP
+    const phpGuideContent = `# HƯỚNG DẪN CÀI ĐẶT BẢN PHP & MYSQL TRÊN HOSTING CPANEL / XAMPP
+
+Nếu Quý Khách muốn sử dụng phiên bản PHP truyền thống, vui lòng mở thư mục **\`ban-hosting-php-mysql\`** có sẵn trong gói tải về:
+
+---
+
+## CÁCH 1: CHẠY TRÊN MÁY TÍNH BẰNG XAMPP
+1. Cài đặt phần mềm XAMPP từ https://www.apachefriends.org.
+2. Sao chép toàn bộ file trong thư mục \`ban-hosting-php-mysql\` vào đường dẫn: \`C:\\xampp\\htdocs\\bds\`.
+3. Mở phần mềm XAMPP Control Panel, bấm **Start** cả 2 mục **Apache** và **MySQL**.
+4. Mở trình duyệt truy cập: \`http://localhost/phpmyadmin\`.
+5. Tạo một cơ sở dữ liệu mới có tên: \`bds_db\` (chọn bảng mã \`utf8mb4_unicode_ci\`).
+6. Nhấp vào Database vừa tạo $\\rightarrow$ Chọn tab **Import (Nhập)** $\\rightarrow$ Chọn file \`database.sql\` trong thư mục và bấm **Import**.
+7. Truy cập \`http://localhost/bds\` trên trình duyệt để trải nghiệm website!
+
+---
+
+## CÁCH 2: TRIỂN KHAI LÊN HOSTING CPANEL
+1. Đăng nhập vào trang quản trị cPanel của Hosting.
+2. Vào mục **File Manager** $\\rightarrow$ Mở thư mục \`public_html\`.
+3. Nén thư mục \`ban-hosting-php-mysql\` thành file .zip và tải lên (Upload) $\\rightarrow$ Giải nén (Extract) ra thư mục gốc.
+4. Vào mục **MySQL Databases** trên cPanel:
+   - Tạo Database mới.
+   - Tạo User mới và gán Mật khẩu.
+   - Gán User vào Database và cấp quyền **ALL PRIVILEGES**.
+5. Vào **phpMyAdmin** trên cPanel $\\rightarrow$ Chọn Database vừa tạo $\\rightarrow$ Import file \`database.sql\`.
+6. Mở file \`config/db.php\` trong File Manager và cập nhật thông tin: DB Name, DB User, DB Password vừa tạo.
+7. Truy cập Tên miền của Quý Khách để hoàn tất!
+`;
+    zip.addFile('HUONG-DAN-CAI-DAT-XAMPP-CPANEL.md', Buffer.from(phpGuideContent, 'utf-8'));
+
+    // 18. README.md — HƯỚNG DẪN TỔNG THỂ TIẾNG VIỆT
+    const readmeContent = `# HƯỚNG DẪN SỬ DỤNG TRỌN BỘ MÃ NGUỒN BẤT ĐỘNG SẢN
+
+Xin chúc mừng Quý Khách đã sở hữu trọn bộ mã nguồn **Website & Hệ Thống Quản Trị Bất Động Sản** (Đơn hàng: **#${orderNumber}**).
+
+---
+
+## 🎁 GÓI MÃ NGUỒN CỦA QUÝ KHÁCH BAO GỒM TRỌN BỘ 3 ĐỊNH DẠNG:
+
+1. 📂 **Bản Tĩnh HTML5/CSS3/JavaScript (\`ban-tinh-html-css-js\`)**:
+   - Dành cho Quý Khách muốn xem nhanh trên máy: **Chỉ cần click đúp chuột vào file \`index.html\` là mở ngay**, không cần cài đặt bất kỳ phần mềm nào!
+
+2. 📂 **Bản Hosting PHP & MySQL (\`ban-hosting-php-mysql\`)**:
+   - Dành cho Quý Khách muốn đưa lên Hosting cPanel / XAMPP truyền thống (xem chi tiết tại file \`HUONG-DAN-CAI-DAT-XAMPP-CPANEL.md\`).
+
+3. 📂 **Bản Độc Lập Cao Cấp Next.js 15 + CMS Quản Trị (Thư mục gốc)**:
+   - Dành cho doanh nghiệp / IT cần hệ thống quản trị chuyên nghiệp với PostgreSQL và Next.js 15:
+     \`\`\`bash
+     npm install
+     npx prisma db push && npm run prisma:seed
+     npm run dev
+     \`\`\`
+   - Website: http://localhost:3000 | CMS: http://localhost:3000/admin (Tài khoản: \`${compEmail}\` - Pass: \`${defaultAdminPassword}\`).
+
+4. 📘 **File \`HUONG-DAN-UP-LEN-GITHUB.md\`**: Hướng dẫn từng lệnh đưa mã nguồn lên GitHub cá nhân.
+
+---
+*Bản quyền mã nguồn thuộc về ${customerName} — Chúc Quý Khách kinh doanh hồng phát!*
 `;
     zip.addFile('README.md', Buffer.from(readmeContent, 'utf-8'));
 
     const zipBuffer = zip.toBuffer();
-    const downloadFileName = `BDS-SINGLE-TENANT-${templateSlug.toUpperCase()}-${orderNumber}.zip`;
+    const downloadFileName = `BDS-PACKAGE-${templateSlug.toUpperCase()}-${orderNumber}.zip`;
     const fileSizeBytes = BigInt(zipBuffer.length);
 
     logger.info(`[SingleTenantExporter] Đóng gói thành công ZIP ${downloadFileName} (Dung lượng: ${fileSizeBytes} bytes)`);
