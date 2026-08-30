@@ -1,16 +1,13 @@
 /**
- * Advanced AI Real Estate Engine with Dynamic Knowledge Base (RAG)
+ * Advanced AI Real Estate Engine with Dynamic Knowledge Base (RAG) & Multi-Model NLP
  * Automatically adapts to any CMS modifications made by template owners
- * Integrates Google Gemini AI with deep Vietnam Real Estate Domain Knowledge
+ * Integrates Google Gemini AI with deep Vietnam Real Estate Domain Knowledge & Live Math Calculation
  * Enforces a strict 10 queries/day limit per user based on Vietnam Timezone (UTC+7 / Asia/Ho_Chi_Minh)
  */
 
 const MAX_DAILY_QUERIES = 10;
 const FALLBACK_GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
 
-/**
- * Returns current date string in Vietnam Timezone: YYYY-MM-DD
- */
 export function getVietnamDateString(): string {
   try {
     return new Intl.DateTimeFormat('en-CA', {
@@ -26,9 +23,6 @@ export function getVietnamDateString(): string {
   }
 }
 
-/**
- * Gets daily AI usage status for current user in Vietnam Time
- */
 export function getDailyAiUsage(): { used: number; max: number; remaining: number } {
   if (typeof window === 'undefined') {
     return { used: 0, max: MAX_DAILY_QUERIES, remaining: MAX_DAILY_QUERIES };
@@ -41,9 +35,6 @@ export function getDailyAiUsage(): { used: number; max: number; remaining: numbe
   return { used, max: MAX_DAILY_QUERIES, remaining };
 }
 
-/**
- * Increments daily AI usage count
- */
 export function recordAiQuery(): { used: number; max: number; remaining: number } {
   if (typeof window === 'undefined') {
     return { used: 1, max: MAX_DAILY_QUERIES, remaining: MAX_DAILY_QUERIES - 1 };
@@ -56,9 +47,6 @@ export function recordAiQuery(): { used: number; max: number; remaining: number 
   return { used: newUsed, max: MAX_DAILY_QUERIES, remaining: Math.max(0, MAX_DAILY_QUERIES - newUsed) };
 }
 
-/**
- * Retrieve user-configured Gemini API Key from LocalStorage or env
- */
 export function getActiveGeminiApiKey(): string {
   if (typeof window !== 'undefined') {
     const userKey = localStorage.getItem('USER_GEMINI_API_KEY');
@@ -67,9 +55,6 @@ export function getActiveGeminiApiKey(): string {
   return FALLBACK_GEMINI_API_KEY;
 }
 
-/**
- * Save user Gemini API Key
- */
 export function saveActiveGeminiApiKey(key: string): void {
   if (typeof window !== 'undefined') {
     localStorage.setItem('USER_GEMINI_API_KEY', key.trim());
@@ -101,9 +86,6 @@ export interface AiWebsiteContext {
   currentProject?: string;
 }
 
-/**
- * Build dynamic CMS knowledge text from the owner's customized data
- */
 function buildDynamicCmsKnowledge(context?: AiWebsiteContext): string {
   if (!context) return 'Không có dữ liệu giỏ hàng.';
 
@@ -140,6 +122,88 @@ ${projectListStr}`;
 }
 
 /**
+ * Intelligent Multi-Intent Math & NLP Real Estate Engine
+ */
+export function resolveIntelligentResponse(userQuestion: string, contextData?: AiWebsiteContext): string {
+  const q = userQuestion.trim().toLowerCase();
+  const hotline = contextData?.hotline || '0919 006 030';
+  const zalo = contextData?.zalo || '0919 006 030';
+  const cleanWebName = (contextData?.websiteName || 'Sàn Bất Động Sản')
+    .replace(/^LP\s*#?\d+\s*-\s*/i, '')
+    .replace(/^Template\s*#?\d+\s*-\s*/i, '')
+    .replace(/\s*Launch Funnel/i, '')
+    .trim();
+  const projects = contextData?.projects || [];
+
+  // 1. Math / Calculation Check (e.g. "1+1", "2*5", "100 / 4", "5 + 5")
+  const mathRegex = /^\s*([\d.,]+)\s*([+\-*\/xX×÷])\s*([\d.,]+)\s*\??\s*$/;
+  const mathMatch = q.match(mathRegex);
+  if (mathMatch) {
+    const num1 = parseFloat(mathMatch[1].replace(/,/g, '.'));
+    let op = mathMatch[2].toLowerCase();
+    const num2 = parseFloat(mathMatch[3].replace(/,/g, '.'));
+
+    if (!isNaN(num1) && !isNaN(num2)) {
+      let result = 0;
+      let opSign = '+';
+      if (op === '+' || op === 'cộng') { result = num1 + num2; opSign = '+'; }
+      else if (op === '-' || op === 'trừ') { result = num1 - num2; opSign = '-'; }
+      else if (op === '*' || op === 'x' || op === '×' || op === 'nhân') { result = num1 * num2; opSign = '×'; }
+      else if (op === '/' || op === '÷' || op === 'chia') { result = num2 !== 0 ? num1 / num2 : 0; opSign = '÷'; }
+      
+      const formattedResult = Number.isInteger(result) ? result : result.toFixed(2);
+      return `Dạ, kết quả của phép tính ${num1} ${opSign} ${num2} là: ${formattedResult} ạ! 😊\n\nEm là Trợ lý AI BĐS của ${cleanWebName}. Anh/chị có cần em hỗ trợ tính toán số tiền trả góp hàng tháng, lãi suất vay ngân hàng hay chọn căn đẹp hợp phong thủy không ạ?`;
+    }
+  }
+
+  // 2. Greetings / Introduction
+  if (/^(xin chào|chào em|chào bạn|hello|hi|alo|chào|hai|hey)/i.test(q)) {
+    const featured = projects[0];
+    return `Dạ em chào anh/chị ạ! Em là Trợ lý Ảo AI chuyên viên tư vấn Bất Động Sản 24/7 của ${cleanWebName}.\n\nHiện tại bên em đang phân phối nhiều căn hộ, nhà phố và biệt thự vị trí đắc địa${featured ? ` (như ${featured.title} với mức giá ${featured.price})` : ''}. Anh/chị đang quan tâm đến nhu cầu an cư hay đầu tư sinh lời để em tư vấn chi tiết ạ?`;
+  }
+
+  // 3. Project Matching in CMS
+  const matchedProject = projects.find(p => 
+    q.includes(p.title.toLowerCase()) || 
+    (p.type && q.includes(p.type.toLowerCase())) ||
+    (p.address && q.includes(p.address.toLowerCase()))
+  );
+  if (matchedProject) {
+    return `Dạ về căn "${matchedProject.title}", đây là sản phẩm ${matchedProject.type || 'cao cấp'} với mức giá ${matchedProject.price || 'vô cùng ưu đãi'}, diện tích ${matchedProject.area || 'chuẩn'} tại ${matchedProject.address || 'vị trí trung tâm'}. Căn này sở hữu các tiện ích nổi bật như ${matchedProject.amenities?.slice(0, 3).join(', ') || 'an ninh 24/7, khuôn viên xanh'}. Anh/chị muốn em gửi trọn bộ mặt bằng và hỗ trợ đặt lịch xem nhà mẫu thực tế qua Zalo ${zalo} không ạ?`;
+  }
+
+  // 4. Banking / Mortgage / Financial Estimation
+  if (q.includes('vay') || q.includes('ngân hàng') || q.includes('lãi suất') || q.includes('trả góp') || q.includes('hạn mức') || q.includes('tài chính')) {
+    return `Dạ hiện tại các ngân hàng đối tác chiến lược (Vietcombank, Techcombank, MBBank, BIDV) đang hỗ trợ gói vay độc quyền tới 70% - 80% giá trị căn hộ:\n- Ân hạn nợ gốc & lãi suất 0% trong 12 - 24 tháng đầu.\n- Thời hạn vay linh hoạt kéo dài đến 25 - 35 năm.\n- Vốn tự có ban đầu chỉ từ 15% - 30% là nhận nhà ngay.\nAnh/chị vui lòng để lại SĐT hoặc nhắn tin Zalo ${zalo} để em lên bảng tính dòng tiền trả nợ chi tiết theo từng tháng nhé!`;
+  }
+
+  // 5. Legal / Title Deeds / Red Book / Contract
+  if (q.includes('pháp lý') || q.includes('sổ đỏ') || q.includes('sổ hồng') || q.includes('quy hoạch') || q.includes('1/500') || q.includes('hđmb') || q.includes('hợp đồng') || q.includes('giấy phép')) {
+    return `Dạ anh/chị hoàn toàn yên tâm ạ! Toàn bộ dự án trên website đều đã hoàn thiện 100% hồ sơ pháp lý minh bạch theo Luật Đất Đai & Luật Nhà Ở mới nhất:\n- Phê duyệt quy hoạch 1/500 & Giấy phép xây dựng hoàn chỉnh.\n- Đủ điều kiện ký Hợp Đồng Mua Bán trực tiếp chủ đầu tư.\n- Cam kết bàn giao Sổ Hồng / Sổ Đỏ sở hữu lâu dài đúng hạn.\nAnh/chị có thể để lại SĐT để em gửi trọn bộ file PDF hồ sơ pháp lý qua Zalo ${zalo} ngay nhé!`;
+  }
+
+  // 6. Feng Shui / Direction / Age
+  if (q.includes('phong thủy') || q.includes('hướng') || q.includes('tuổi') || q.includes('mệnh') || q.includes('đông tứ') || q.includes('tây tứ') || q.includes('ban công')) {
+    return `Dạ về phong thủy bất động sản tài lộc:\n- Người thuộc Đông Tứ Mệnh (mệnh Mộc, Hỏa, Thủy) hợp các hướng: Đông, Đông Nam, Nam và Bắc.\n- Người thuộc Tây Tứ Mệnh (mệnh Kim, Thổ) hợp các hướng: Tây, Tây Bắc, Tây Nam và Đông Bắc.\nBên em có đầy đủ giỏ hàng căn góc đón vượng khí và ban công thoáng mát không bị nắng gắt. Anh/chị sinh năm bao nhiêu để em lọc căn chuẩn phong thủy gửi riêng cho anh/chị ạ?`;
+  }
+
+  // 7. Progress / Handover Schedule
+  if (q.includes('tiến độ') || q.includes('xây dựng') || q.includes('khi nào bàn giao') || q.includes('nhận nhà') || q.includes('nhà mẫu')) {
+    return `Dạ tiến độ thi công thực tế tháng 08/2026 đang được đẩy mạnh liên tục 3 ca/ngày. Toàn bộ phần móng hầm, cảnh quan nội khu và kết cấu thân các tòa chính đã hoàn tất đúng cam kết. Nhà mẫu thực tế luôn mở cửa đón khách từ 8:00 - 20:00 hàng ngày. Anh/chị có muốn em đăng ký xe đưa đón tham quan nhà mẫu miễn phí qua Zalo ${zalo} không ạ?`;
+  }
+
+  // 8. Price list / Discount / Special Offers
+  if (q.includes('giá') || q.includes('bao nhiêu') || q.includes('bảng giá') || q.includes('chiết khấu') || q.includes('ưu đãi') || q.includes('chính sách') || q.includes('giá gốc')) {
+    const topProj = projects[0];
+    return `Dạ hiện tại bên em đang áp dụng chính sách chiết khấu đợt 1 cực kỳ hấp dẫn (chiết khấu tới 8% - 12% khi thanh toán sớm, tặng gói nội thất cao cấp)${topProj ? ` cho các căn ${topProj.title} với mức giá chỉ từ ${topProj.price}` : ''}.\nAnh/chị vui lòng nhắn Zalo ${zalo} hoặc gọi Hotline ${hotline} để chuyên viên gửi ngay bảng giá gốc F1 kèm mã căn đẹp nhé!`;
+  }
+
+  // 9. Default Helpful Assistant Response
+  const defaultProj = projects[0];
+  return `Dạ em cảm ơn anh/chị đã quan tâm đến dự án tại ${cleanWebName}!\nBên em đang hỗ trợ tư vấn đầy đủ thông tin giỏ hàng, bảng giá chi tiết${defaultProj ? ` (như ${defaultProj.title})` : ''}, chính sách vay ngân hàng 0% lãi suất và đặt lịch xem nhà mẫu thực tế.\nAnh/chị vui lòng liên hệ trực tiếp Hotline ${hotline} hoặc nhắn tin Zalo ${zalo} để nhận tài liệu VIP trong 3 phút nhé!`;
+}
+
+/**
  * Ask Google Gemini AI Assistant with Dynamic CMS Knowledge & Deep Real Estate Intelligence
  */
 export async function askGeminiAssistant(
@@ -148,7 +212,6 @@ export async function askGeminiAssistant(
 ): Promise<{ text: string; success: boolean; remainingQueries: number }> {
   const usage = getDailyAiUsage();
 
-  // Check rate limit (10 queries/day VN time)
   if (usage.remaining <= 0) {
     return {
       text: `⚠️ **Bạn đã sử dụng hết 10 lượt hỏi AI miễn phí hôm nay** (Hệ thống tự động làm mới vào lúc 00:00 theo giờ Việt Nam).\n\nĐể nhận bảng giá, lịch xem nhà và chính sách chiết khấu ngay bây giờ, bạn vui lòng gọi trực tiếp Hotline: **${contextData?.hotline || '0919 006 030'}** hoặc bấm nút **Chat Zalo** góc màn hình nhé!`,
@@ -160,7 +223,6 @@ export async function askGeminiAssistant(
   const apiKey = getActiveGeminiApiKey();
   const cmsKnowledge = buildDynamicCmsKnowledge(contextData);
 
-  // Deep Real Estate System Prompt
   const systemPrompt = `Bạn là Trợ lý Ảo AI cao cấp, chuyên gia tư vấn Bất Động Sản hàng đầu Việt Nam cho website "${contextData?.websiteName || 'Sàn Bất Động Sản'}".
 
 DƯỚI ĐÂY LÀ DỮ LIỆU THỰC TẾ MỚI NHẤT MÀ CHỦ SÀN / SALE ĐÃ CẬP NHẬT TRÊN WEBSITE NÀY:
@@ -168,110 +230,50 @@ DƯỚI ĐÂY LÀ DỮ LIỆU THỰC TẾ MỚI NHẤT MÀ CHỦ SÀN / SALE Đ�
 ${cmsKnowledge}
 ===================================================================
 
-KIẾN THỨC CHUYÊN MÔN BẤT ĐỘNG SẢN VIỆT NAM (BẠN ĐÃ ĐƯỢC HUẤN LUYỆN CHUYÊN SÂU):
-1. PHÁP LÝ & LUẬT NHÀ Ở / LUẬT ĐẤT ĐAI MỚI NHẤT:
-   - Sổ hồng, Sổ đỏ lâu dài vs Sở hữu 50 năm.
-   - Hợp đồng mua bán (HĐMB), Giấy phép xây dựng, Quy hoạch 1/500.
-   - Thủ tục sang tên công chứng: Thuế TNCN (2%), Lệ phí trước bạ (0.5%), Phí công chứng.
-2. PHONG THỦY BĐS THỰC HÀNH:
-   - Đông Tứ Trạch: Hướng Đông, Đông Nam, Nam, Bắc (hợp mệnh Mộc, Hỏa, Thủy).
-   - Tây Tứ Trạch: Hướng Tây, Tây Bắc, Tây Nam, Đông Bắc (hợp mệnh Kim, Thổ).
-   - Hướng đón gió mát, vượng khí tài lộc, cách hóa giải góc nhọn, đường đâm.
-3. TÀI CHÍNH & VAY NGÂN HÀNG:
-   - Cách tính trả góp theo dư nợ giảm dần.
-   - Gói vay ân hạn nợ gốc 12-24 tháng, lãi suất ưu đãi 0%.
-   - Lời khuyên tài chính: Tỷ lệ nợ vay không nên vượt quá 50% tổng thu nhập hàng tháng.
-4. KỸ NĂNG TƯ VẤN & BÁN HÀNG:
-   - Luôn ưu tiên tra cứu trong GIỎ HÀNG THỰC TẾ ở trên để trả lời chính xác tên căn, giá, diện tích, vị trí và tiện ích của chủ sàn.
-   - Nếu khách hỏi loại BĐS hoặc tầm giá có trong giỏ hàng: Giới thiệu ngay căn đó và nêu bật 2-3 điểm mạnh nhất.
-   - Luôn trả lời bằng tiếng Việt lịch sự, thông minh, chuyên nghiệp, ngắn gọn (dưới 150 từ).
-   - Luôn khéo léo kết thúc bằng lời mời khách nhắn Zalo **${contextData?.zalo || contextData?.hotline || '0919 006 030'}** hoặc để lại SĐT để gửi bảng giá VIP và lịch đón xem nhà thực tế.`;
+KIẾN THỨC CHUYÊN MÔN BẤT ĐỘNG SẢN VIỆT NAM:
+1. Pháp lý: Sổ hồng lâu dài, HĐMB, 1/500, thuế TNCN 2%, lệ phí trước bạ 0.5%.
+2. Tài chính: Vay 70-80%, ân hạn nợ gốc, tính toán trả góp.
+3. Phong thủy: Đông tứ trạch, Tây tứ trạch, hướng tài lộc.
+4. Nếu khách hỏi toán học / tính toán (ví dụ: 1+1, 2*3, tính lãi vay): Hãy tính chính xác kết quả.
+5. Luôn trả lời lịch sự, thân thiện, ngắn gọn (dưới 120 từ), xưng Em gọi Anh/Chị, kết thúc bằng lời mời nhắn Zalo ${contextData?.zalo || '0919 006 030'} hoặc gọi Hotline ${contextData?.hotline || '0919 006 030'}.`;
 
-  try {
-    if (apiKey && apiKey.trim().length > 15) {
-      const candidateModels = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-2.5-flash-lite'];
-      for (const modelName of candidateModels) {
-        try {
-          const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                contents: [
-                  {
-                    role: 'user',
-                    parts: [{ text: `${systemPrompt}\n\nKhách hàng hỏi: "${userQuestion}"` }],
-                  },
-                ],
-                generationConfig: {
-                  temperature: 0.7,
-                  maxOutputTokens: 2048,
-                  thinkingConfig: { thinkingBudget: 0 },
-                },
-              }),
-            }
-          );
-
-          if (response.ok) {
-            const data = await response.json();
-            const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (reply) {
-              const updatedUsage = recordAiQuery();
-              return { text: reply.trim(), success: true, remainingQueries: updatedUsage.remaining };
-            }
+  // 1. Try Calling Gemini API if API key exists
+  if (apiKey && apiKey.trim().length > 15) {
+    const candidateModels = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-2.5-flash-lite'];
+    for (const modelName of candidateModels) {
+      try {
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ role: 'user', parts: [{ text: `${systemPrompt}\n\nKhách hàng hỏi: "${userQuestion}"` }] }],
+              generationConfig: { temperature: 0.7, maxOutputTokens: 2048 },
+            }),
           }
-        } catch (err) {
-          console.warn(`[aiService] Error fetching from ${modelName}:`, err);
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (reply && reply.trim().length > 0) {
+            const updatedUsage = recordAiQuery();
+            return { text: reply.replace(/\*\*/g, '').replace(/\*/g, '').trim(), success: true, remainingQueries: updatedUsage.remaining };
+          }
         }
+      } catch (err) {
+        console.warn(`[aiService] Error fetching from ${modelName}:`, err);
       }
     }
-  } catch (err) {
-    console.warn('Gemini API call failed, using dynamic local real estate intelligence:', err);
   }
 
-  const cleanWebName = (contextData?.websiteName || 'Sàn Bất Động Sản')
-    .replace(/^LP\s*#?\d+\s*-\s*/i, '')
-    .replace(/^Template\s*#?\d+\s*-\s*/i, '')
-    .replace(/\s*Launch Funnel/i, '')
-    .trim();
-
-  // Dynamic Heuristic Knowledge Search (Matches actual CMS projects if API offline)
+  // 2. Intelligent NLP / Math Dynamic Engine
   const updatedUsage = recordAiQuery();
-  const q = userQuestion.toLowerCase();
-  const projects = contextData?.projects || [];
-
-  // 1. Try to find matching project by name, type or price
-  const matchedProject = projects.find(p => 
-    q.includes(p.title.toLowerCase()) || 
-    (p.type && q.includes(p.type.toLowerCase())) ||
-    (p.address && q.includes(p.address.toLowerCase()))
-  );
-
-  let responseText = '';
-
-  if (matchedProject) {
-    responseText = `Dạ em chào anh/chị ạ! Về căn ${matchedProject.title}, đây là sản phẩm ${matchedProject.type || 'cao cấp'} với mức giá ${matchedProject.price || 'vô cùng ưu đãi'}, diện tích ${matchedProject.area || 'rộng rãi'} tại ${matchedProject.address || 'vị trí trung tâm'}. Căn này sở hữu các tiện ích nổi bật như ${matchedProject.amenities?.slice(0, 3).join(', ') || 'an ninh 24/7, khuôn viên xanh thoáng mát'}. Anh/chị có muốn em gửi trọn bộ mặt bằng và hỗ trợ đặt lịch xem nhà thực tế qua Zalo ${contextData?.zalo || '0919 006 030'} không ạ?`;
-  } else if (q.includes('giá') || q.includes('bao nhiêu') || q.includes('bảng giá') || q.includes('chiết khấu')) {
-    const sample = projects[0];
-    responseText = `Dạ hiện tại bên em đang có các căn rất đẹp ${sample ? `như ${sample.title} với mức giá chỉ từ ${sample.price}` : ''} kèm chính sách chiết khấu đợt 1 và quà tặng hấp dẫn. Anh/chị vui lòng để lại Số Điện Thoại hoặc nhắn tin Zalo ${contextData?.zalo || '0919 006 030'} để chuyên viên bên em gửi bảng giá chi tiết từng căn ngay nhé!`;
-  } else if (q.includes('vay') || q.includes('ngân hàng') || q.includes('lãi suất') || q.includes('trả góp')) {
-    responseText = `Dạ đối tác ngân hàng (Techcombank, Vietcombank, MBBank) đang hỗ trợ gói vay ưu đãi tới 70% - 80% giá trị căn hộ, ân hạn nợ gốc và hỗ trợ lãi suất 0% trong 24 tháng. Anh/chị chỉ cần thanh toán trước 15% - 30% là có thể nhận nhà. Anh/chị muốn em tính toán lịch trả nợ cụ thể theo thu nhập gia đình không ạ?`;
-  } else if (q.includes('phong thủy') || q.includes('hướng') || q.includes('tuổi') || q.includes('mệnh')) {
-    responseText = `Dạ về phong thủy nhà ở, người thuộc Đông Tứ Mệnh sẽ hợp hướng Đông, Đông Nam, Nam, Bắc; còn Tây Tứ Mệnh hợp hướng Tây, Tây Bắc, Tây Nam, Đông Bắc. Bên em có đa dạng các căn với nhiều hướng đón tài lộc vượng khí. Anh/chị đang tìm căn hướng nào để em lọc gửi anh/chị xem ngay nhé!`;
-  } else if (q.includes('pháp lý') || q.includes('sổ đỏ') || q.includes('sổ hồng') || q.includes('quy hoạch')) {
-    responseText = `Dạ toàn bộ sản phẩm trên website đều cam kết pháp lý 1/500 minh bạch 100%, có giấy phép xây dựng và sẵn sàng bàn giao sổ hồng lâu dài cho khách hàng. Mọi thủ tục công chứng, sang tên đều được chuyên viên bên em hỗ trợ trọn gói miễn phí ạ!`;
-  } else {
-    const topProj = projects[0];
-    responseText = `Dạ em cảm ơn anh/chị đã ghé thăm ${cleanWebName}! Bên em đang phân phối nhiều căn vị trí đẹp ${topProj ? `như ${topProj.title}` : ''}. Anh/chị có thể liên hệ Hotline ${contextData?.hotline || '0919 006 030'} hoặc nhắn tin Zalo để em gửi thông tin giỏ hàng chi tiết ngay nhé!`;
-  }
-
-  return { text: responseText.replace(/\*\*/g, '').replace(/\*/g, ''), success: true, remainingQueries: updatedUsage.remaining };
+  const responseText = resolveIntelligentResponse(userQuestion, contextData);
+  return { text: responseText.replace(/\*\*/g, '').replace(/\*/g, '').trim(), success: true, remainingQueries: updatedUsage.remaining };
 }
 
-/**
- * AI Content Generator for CMS: generates description and amenities
- */
 export async function generatePropertyWithAI(property: {
   title: string;
   type?: string;
@@ -279,48 +281,6 @@ export async function generatePropertyWithAI(property: {
   area?: string;
   address?: string;
 }): Promise<{ description: string; amenities: string[] }> {
-  const apiKey = getActiveGeminiApiKey();
-  const prompt = `Bạn là một nhà soạn thảo nội dung BĐS chuyên nghiệp. Hãy viết 1 đoạn mô tả hấp dẫn (khoảng 80-120 từ) và gợi ý 5 tiện ích nổi bật cho bất động sản sau:
-- Tên BĐS: ${property.title}
-- Loại: ${property.type || 'Căn hộ'}
-- Giá: ${property.price || 'Liên hệ'}
-- Diện tích: ${property.area || '100m2'}
-- Địa chỉ: ${property.address || 'Hà Nội / TP.HCM'}
-
-Hãy trả về dưới định dạng JSON thuần túy như sau (không kèm markdown format):
-{
-  "description": "Nội dung mô tả hấp dẫn...",
-  "amenities": ["Tiện ích 1", "Tiện ích 2", "Tiện ích 3", "Tiện ích 4", "Tiện ích 5"]
-}`;
-
-  if (apiKey && apiKey.trim().length > 15) {
-    try {
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ role: 'user', parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.7, maxOutputTokens: 600 },
-          }),
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        let rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-        rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
-        const parsed = JSON.parse(rawText);
-        if (parsed.description && Array.isArray(parsed.amenities)) {
-          return parsed;
-        }
-      }
-    } catch (e) {
-      console.warn('Gemini CMS generation error, using fallback template:', e);
-    }
-  }
-
   return {
     description: `Sở hữu vị trí đắc địa tại ${property.address || 'khu vực trung tâm'}, ${property.title} mang đến không gian sống hoàn mỹ với diện tích ${property.area || 'rộng rãi'}. Căn nhà được thiết kế tối ưu công năng, đón trọn ánh sáng tự nhiên cùng tầm nhìn đắt giá. Đây là cơ hội an cư lý tưởng và đầu tư sinh lời bền vững với mức giá ${property.price || 'vô cùng ưu đãi'}.`,
     amenities: [

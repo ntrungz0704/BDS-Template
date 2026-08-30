@@ -258,7 +258,31 @@ QUY TẮC TRẢ LỜI BẮT BUỘC (PHONG CÁCH NHẮN TIN TỰ NHIÊN NHƯ NGƯ
       }
 
       if (!aiReply) {
-        aiReply = `Dạ em chào anh/chị ạ! Cảm ơn anh/chị đã quan tâm đến bất động sản tại ${cleanWebName}. Để nhận thông tin chi tiết và bảng giá dự án mới nhất, anh/chị vui lòng gọi Hotline ${hotline} hoặc nhắn tin Zalo ${zalo} để chuyên viên bên em gửi bảng hàng VIP ngay nhé!`;
+        const q = question.trim().toLowerCase();
+        const mathMatch = q.match(/^\s*([\d.,]+)\s*([+\-*\/xX×÷])\s*([\d.,]+)\s*\??\s*$/);
+        if (mathMatch) {
+          const n1 = parseFloat(mathMatch[1].replace(/,/g, '.'));
+          const n2 = parseFloat(mathMatch[3].replace(/,/g, '.'));
+          const op = mathMatch[2].toLowerCase();
+          let res = 0;
+          let sign = '+';
+          if (op === '+' || op === 'cộng') { res = n1 + n2; sign = '+'; }
+          else if (op === '-' || op === 'trừ') { res = n1 - n2; sign = '-'; }
+          else if (op === '*' || op === 'x' || op === '×' || op === 'nhân') { res = n1 * n2; sign = '×'; }
+          else if (op === '/' || op === '÷' || op === 'chia') { res = n2 !== 0 ? n1 / n2 : 0; sign = '÷'; }
+          const formatted = Number.isInteger(res) ? res : res.toFixed(2);
+          aiReply = `Dạ, kết quả của phép tính ${n1} ${sign} ${n2} là: ${formatted} ạ! 😊 Em là Trợ lý AI của ${cleanWebName}. Anh/chị cần em hỗ trợ tính toán tài chính, bảng giá hay chính sách vay mua nhà không ạ?`;
+        } else if (/^(xin chào|chào em|chào bạn|hello|hi|alo|chào)/i.test(q)) {
+          aiReply = `Dạ em chào anh/chị ạ! Em là Trợ lý Ảo AI chuyên viên tư vấn Bất Động Sản 24/7 của ${cleanWebName}. Anh/chị đang cần tìm kiếm căn hộ, biệt thự hay đất nền ở khu vực nào để em hỗ trợ gửi giỏ hàng đẹp ngay ạ?`;
+        } else if (q.includes('vay') || q.includes('ngân hàng') || q.includes('lãi suất') || q.includes('trả góp')) {
+          aiReply = `Dạ đối tác ngân hàng đang hỗ trợ gói vay ưu đãi tới 70% - 80% giá trị bất động sản, ân hạn nợ gốc và hỗ trợ lãi suất 0% trong 12-24 tháng. Anh/chị có thể để lại SĐT hoặc nhắn tin Zalo ${zalo} để em tính lịch trả nợ chi tiết nhé!`;
+        } else if (q.includes('pháp lý') || q.includes('sổ đỏ') || q.includes('sổ hồng') || q.includes('quy hoạch')) {
+          aiReply = `Dạ toàn bộ sản phẩm trên hệ thống ${cleanWebName} đều cam kết pháp lý 1/500 minh bạch, sổ hồng lâu dài và đầy đủ giấy phép xây dựng. Anh/chị nhắn Zalo ${zalo} để em gửi trọn bộ file PDF hồ sơ pháp lý nhé!`;
+        } else if (q.includes('phong thủy') || q.includes('hướng') || q.includes('mệnh')) {
+          aiReply = `Dạ về phong thủy, người Đông Tứ Mệnh hợp hướng Đông, Đông Nam, Nam, Bắc; người Tây Tứ Mệnh hợp hướng Tây, Tây Bắc, Tây Nam, Đông Bắc. Anh/chị sinh năm bao nhiêu để em lọc căn hướng vượng khí gửi anh/chị nhé!`;
+        } else {
+          aiReply = `Dạ em cảm ơn anh/chị đã quan tâm đến bất động sản tại ${cleanWebName}! Để nhận thông tin chi tiết và bảng giá dự án mới nhất, anh/chị vui lòng gọi Hotline ${hotline} hoặc nhắn tin Zalo ${zalo} để chuyên viên bên em gửi bảng hàng VIP ngay nhé!`;
+        }
       }
 
       aiReply = cleanHumanText(aiReply);
