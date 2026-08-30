@@ -154,82 +154,131 @@ export default function AdminUsers() {
             ) : (
               users.map((user: any) => {
                 const defaultPwd = user.email ? user.email.split('@')[0] : '123456';
+                const isSuperAdmin = user.role === 'SUPER_ADMIN' || user.email === 'admin@aireviewbds.com';
+
                 return (
-                  <tr key={user.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-8 py-4 font-bold text-slate-800">{user.fullName}</td>
-                    <td className="px-8 py-4 font-mono text-xs font-semibold text-slate-500">{user.email}</td>
-                    <td className="px-8 py-4">
-                      <span className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-bold ${
-                        user.role === 'SUPER_ADMIN' ? 'bg-purple-50 text-purple-700 border border-purple-100' : 'bg-blue-50 text-blue-700 border border-blue-100'
-                      }`}>
-                        {user.role}
+                  <tr key={user.id} className="hover:bg-slate-50/80 transition-colors">
+                    {/* User Profile info */}
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-white font-black text-sm shadow-sm shrink-0 ${
+                          isSuperAdmin 
+                            ? 'bg-gradient-to-br from-purple-600 to-indigo-700 shadow-purple-500/20' 
+                            : 'bg-gradient-to-br from-blue-600 to-indigo-600 shadow-blue-500/20'
+                        }`}>
+                          {user.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
+                        </div>
+                        <div>
+                          <div className="font-extrabold text-slate-900 text-sm flex items-center gap-1.5">
+                            <span>{user.fullName || 'Người dùng'}</span>
+                            {isSuperAdmin && <span className="text-amber-500 text-xs" title="Super Admin">⭐</span>}
+                          </div>
+                          <div className="text-[11px] text-slate-400 font-medium">
+                            {user.createdAt ? `Đăng ký: ${new Date(user.createdAt).toLocaleDateString('vi-VN')}` : 'Tài khoản hệ thống'}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Email */}
+                    <td className="px-6 py-4">
+                      <span className="font-mono text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200/60 px-2.5 py-1 rounded-lg">
+                        {user.email}
                       </span>
                     </td>
-                    <td className="px-8 py-4 text-xs font-bold text-slate-600">
-                      {user.tenant ? (
-                        <span className="bg-slate-100 px-2 py-1 rounded text-slate-600 font-mono">{user.tenant.slug || user.tenant.name}</span>
+
+                    {/* Role */}
+                    <td className="px-6 py-4">
+                      {isSuperAdmin ? (
+                        <span className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-black bg-purple-50 text-purple-700 border border-purple-200">
+                          👑 SUPER_ADMIN
+                        </span>
+                      ) : user.role === 'TENANT_OWNER' ? (
+                        <span className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                          🏢 CHỦ WEB (TENANT)
+                        </span>
                       ) : (
-                        <span className="text-slate-400 italic font-normal">Không có</span>
+                        <span className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                          🛍️ KHÁCH HÀNG
+                        </span>
                       )}
                     </td>
-                    <td className="px-8 py-4">
+
+                    {/* Website */}
+                    <td className="px-6 py-4">
+                      {user.tenant ? (
+                        <span className="inline-flex items-center gap-1 bg-blue-50 border border-blue-200/80 px-2.5 py-1 rounded-lg text-blue-700 font-mono text-xs font-bold">
+                          🌐 {user.tenant.slug || user.tenant.name}
+                        </span>
+                      ) : (
+                        <span className="text-slate-400 italic text-xs font-normal">Chưa có website con</span>
+                      )}
+                    </td>
+
+                    {/* Status */}
+                    <td className="px-6 py-4">
                       <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
-                        user.isActive && user.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-rose-50 text-rose-700 border border-rose-100'
+                        user.isActive && user.status === 'ACTIVE' 
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                          : 'bg-rose-50 text-rose-700 border border-rose-200'
                       }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${user.isActive && user.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
+                        <span className={`w-1.5 h-1.5 rounded-full ${user.isActive && user.status === 'ACTIVE' ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`}></span>
                         {user.isActive && user.status === 'ACTIVE' ? 'Hoạt động' : 'Đã Khóa'}
                       </span>
                     </td>
-                    <td className="px-8 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        {/* Nút Khôi Phục Mật Khẩu */}
-                        <button
-                          onClick={() => {
-                            setRestoreUser(user);
-                            setCustomPassword(defaultPwd);
-                            setUseDefaultPassword(true);
-                          }}
-                          title="Khôi phục mật khẩu Marketplace & CMS ngay lập tức"
-                          className="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold rounded-lg transition-all flex items-center gap-1 shadow-2xs"
-                        >
-                          <KeyRound className="w-3.5 h-3.5 text-amber-600" />
-                          <span>Khôi Phục MK</span>
-                        </button>
 
-                        {user.email === 'admin@aireviewbds.com' ? (
-                          <span className="text-xs text-purple-600 font-bold bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200">
-                            👑 Super Admin
+                    {/* Actions */}
+                    <td className="px-6 py-4 text-right">
+                      {isSuperAdmin ? (
+                        <div className="flex items-center justify-end">
+                          <span className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-black text-purple-700 bg-purple-50 border border-purple-200 rounded-xl shadow-2xs">
+                            👑 Tài Khoản Tối Cao
                           </span>
-                        ) : (
-                          <>
-                            {user.isActive && user.status === 'ACTIVE' ? (
-                              <button
-                                onClick={() => updateStatusMutation.mutate({ id: user.id, status: 'BANNED', isActive: false })}
-                                className="text-xs font-bold text-amber-700 hover:text-amber-800 bg-amber-50 hover:bg-amber-100/70 px-3 py-1.5 rounded-xl transition-all shadow-sm"
-                              >
-                                Khóa
-                              </button>
-                            ) : (
-                              <button
-                                onClick={() => updateStatusMutation.mutate({ id: user.id, status: 'ACTIVE', isActive: true })}
-                                className="text-xs font-bold text-emerald-600 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100/70 px-3 py-1.5 rounded-xl transition-all shadow-sm"
-                              >
-                                Mở Khóa
-                              </button>
-                            )}
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-end gap-2">
+                          {/* Nút Khôi Phục Mật Khẩu Dành Cho Khách Hàng */}
+                          <button
+                            onClick={() => {
+                              setRestoreUser(user);
+                              setCustomPassword(defaultPwd);
+                              setUseDefaultPassword(true);
+                            }}
+                            title="Khôi phục mật khẩu Marketplace & CMS cho thành viên này"
+                            className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 shadow-2xs active:scale-95"
+                          >
+                            <KeyRound className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                            <span>Khôi Phục MK</span>
+                          </button>
+
+                          {user.isActive && user.status === 'ACTIVE' ? (
                             <button
-                              onClick={() => {
-                                if (confirm(`Bạn có chắc chắn muốn XÓA vĩnh viễn tài khoản ${user.email}? Hành động này không thể khôi phục!`)) {
-                                  deleteUserMutation.mutate(user.id);
-                                }
-                              }}
-                              className="text-xs font-bold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100/70 px-3 py-1.5 rounded-xl transition-all shadow-sm"
+                              onClick={() => updateStatusMutation.mutate({ id: user.id, status: 'BANNED', isActive: false })}
+                              className="text-xs font-bold text-amber-700 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-3 py-1.5 rounded-xl transition-all shadow-2xs"
                             >
-                              Xóa
+                              Khóa
                             </button>
-                          </>
-                        )}
-                      </div>
+                          ) : (
+                            <button
+                              onClick={() => updateStatusMutation.mutate({ id: user.id, status: 'ACTIVE', isActive: true })}
+                              className="text-xs font-bold text-emerald-600 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-xl transition-all shadow-2xs"
+                            >
+                              Mở Khóa
+                            </button>
+                          )}
+
+                          <button
+                            onClick={() => {
+                              if (confirm(`Bạn có chắc chắn muốn XÓA vĩnh viễn tài khoản ${user.email}? Hành động này không thể khôi phục!`)) {
+                                deleteUserMutation.mutate(user.id);
+                              }
+                            }}
+                            className="text-xs font-bold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-3 py-1.5 rounded-xl transition-all shadow-2xs"
+                          >
+                            Xóa
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 );

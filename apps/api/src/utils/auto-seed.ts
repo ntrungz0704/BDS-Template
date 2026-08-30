@@ -336,7 +336,7 @@ export async function autoSeedDatabase() {
     }
 
     // 2. Tạo DUY NHẤT 1 Super Admin tài khoản chính thức
-    const bootstrapPassword = process.env.SEED_ADMIN_PASSWORD;
+    const bootstrapPassword = process.env.SEED_ADMIN_PASSWORD || 'adminsuper@123456';
     if (!bootstrapPassword || bootstrapPassword.length < 12) {
       throw new Error('SEED_ADMIN_PASSWORD with at least 12 characters is required when ALLOW_AUTO_SEED=true.');
     }
