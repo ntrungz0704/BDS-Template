@@ -5,8 +5,8 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import { 
   CheckCircle2, Copy, ExternalLink, ShieldCheck, 
-  MessageSquare, PhoneCall, ArrowLeft, Loader2, Sparkles, 
-  Globe, AlertCircle, ShoppingBag, Clock, User, Mail, Phone
+  MessageSquare, ArrowLeft, Loader2, Sparkles, 
+  Globe, AlertCircle, Clock
 } from 'lucide-react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
@@ -18,8 +18,6 @@ export default function CheckoutSuccessPage() {
   const router = useRouter();
   const { orderNumber } = router.query;
   const { showToast } = useAuth();
-
-
 
   const [loading, setLoading] = useState(true);
   const [orderData, setOrderData] = useState<any>(null);
@@ -164,6 +162,19 @@ export default function CheckoutSuccessPage() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-slate-200/60 pt-3">
+                  <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Link Xem Demo Trực Tiếp:</span>
+                  <a
+                    href={`https://website.aireviewbds.com/?subdomain=${tenantSlug || orderData.subdomain || 'site'}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-emerald-600 hover:underline font-mono font-bold flex items-center gap-1 text-sm"
+                  >
+                    https://website.aireviewbds.com/?subdomain={tenantSlug || orderData.subdomain || 'site'}
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-slate-200/60 pt-3">
                   <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Trang Quản Trị Website (CMS):</span>
                   <a
                     href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
@@ -178,21 +189,37 @@ export default function CheckoutSuccessPage() {
 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-slate-200/60 pt-3">
                   <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Tài Khoản Đăng Nhập CMS:</span>
-                  <span className="font-mono text-slate-900 text-sm">{orderData.email}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-slate-900 text-sm font-bold">{orderData.email}</span>
+                    <button
+                      onClick={() => handleCopy(orderData.email, 'Email')}
+                      className="p-1 hover:bg-slate-200 rounded text-slate-500 transition-all text-[11px] flex items-center gap-1 border border-slate-200 bg-white px-2"
+                    >
+                      <Copy className="w-3 h-3" />
+                      <span>{copiedField === 'Email' ? 'Đã chép!' : 'Copy'}</span>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-slate-200/60 pt-3">
-                  <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Mật Khẩu Đăng Nhập:</span>
-                  <span className="text-slate-900 text-sm">
-                    📧 Đã gửi qua Email đăng ký
-                  </span>
+                  <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Mật Khẩu Đăng Nhập CMS:</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono bg-amber-50 border border-amber-300 text-amber-950 font-black px-3 py-1 rounded-lg text-sm tracking-wider">
+                      {orderData.email ? orderData.email.split('@')[0] : '123456'}
+                    </span>
+                    <button
+                      onClick={() => handleCopy(orderData.email ? orderData.email.split('@')[0] : '123456', 'Mật khẩu')}
+                      className="p-1 hover:bg-slate-200 rounded text-slate-500 transition-all text-[11px] flex items-center gap-1 border border-slate-200 bg-white px-2 font-bold"
+                    >
+                      <Copy className="w-3 h-3" />
+                      <span>{copiedField === 'Mật khẩu' ? 'Đã chép!' : 'Copy'}</span>
+                    </button>
+                  </div>
                 </div>
 
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mt-2">
-                  <p className="text-[11px] text-amber-700 leading-relaxed">
-                    <strong>💡 Lưu ý quan trọng:</strong> Mật khẩu CMS đã được gửi vào email <strong>{orderData.email}</strong>. 
-                    Nếu không nhận được email, hãy liên hệ Admin qua Zalo để được cấp lại mật khẩu. 
-                    Sau khi đăng nhập, bạn có thể đổi mật khẩu trong phần Cài đặt tài khoản.
+                <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 mt-2">
+                  <p className="text-xs text-emerald-800 leading-relaxed font-normal">
+                    <strong className="font-bold text-emerald-900">⚡ Mật khẩu CMS cấp tức thì:</strong> Mật khẩu mặc định của bạn là <strong className="font-mono font-bold text-emerald-950 bg-emerald-100 px-1.5 py-0.5 rounded">{orderData.email ? orderData.email.split('@')[0] : '123456'}</strong> (phần trước dấu @ trong email). Bạn có thể bấm nút <strong>"Vào Quản Trị CMS Ngay"</strong> bên dưới để đăng nhập và bắt đầu chỉnh sửa website!
                   </p>
                 </div>
               </div>
@@ -437,4 +464,3 @@ export default function CheckoutSuccessPage() {
     </>
   );
 }
-
