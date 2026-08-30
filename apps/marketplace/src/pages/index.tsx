@@ -12,7 +12,7 @@ import Footer from '../components/Footer';
 import FloatingButtons from '../components/FloatingButtons';
 import DetailsModal from '../components/DetailsModal';
 import ProductCard from '../components/ProductCard';
-import { ALL_TEMPLATES } from '../data/templatesData';
+import { ALL_TEMPLATES, WEBSITE_TEMPLATES } from '../data/templatesData';
 
 // Icons
 import { 
@@ -52,7 +52,7 @@ export default function MarketplaceHome() {
   const statsData = statsRes?.data || {
     totalCustomers: 500,
     totalWebsitesCreated: 1200,
-    totalTemplates: ALL_TEMPLATES.length,
+    totalTemplates: WEBSITE_TEMPLATES.length,
     averageRating: 4.9,
   };
   const [activeDetailsTemplate, setActiveDetailsTemplate] = useState<any | null>(null);
@@ -268,7 +268,7 @@ export default function MarketplaceHome() {
   };
 
   const dbTemplates = templatesRes?.data || [];
-  const mergedTemplates = ALL_TEMPLATES.map((tpl) => {
+  const mergedTemplates = WEBSITE_TEMPLATES.map((tpl) => {
     const dbTpl = dbTemplates.find((d: any) => d.slug === tpl.slug || LEGACY_TO_BDS_MAP[d.slug] === tpl.slug);
     if (dbTpl) {
       return {
@@ -579,7 +579,7 @@ export default function MarketplaceHome() {
           {/* Filter bar */}
           <div className="flex flex-wrap items-center gap-2 mb-10 reveal">
             {[
-              { key: 'ALL', label: 'Tất cả', count: ALL_TEMPLATES.length },
+              { key: 'ALL', label: 'Tất cả', count: WEBSITE_TEMPLATES.length },
               { key: 'PORTAL_SAN', label: 'Cổng Tin & Sàn BĐS', count: 5 },
               { key: 'CHUNG_CU', label: 'Căn Hộ & Chung Cư', count: 3 },
               { key: 'BIET_THU', label: 'Biệt Thự & Villa', count: 4 },

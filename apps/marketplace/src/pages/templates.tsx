@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 import DetailsModal from '../components/DetailsModal';
-import { ALL_TEMPLATES, Template } from '../data/templatesData';
+import { WEBSITE_TEMPLATES, Template } from '../data/templatesData';
 import { DESIGN_COLLECTIONS } from '../data/collectionsData';
 import { Search, Sparkles, CheckCircle2, SlidersHorizontal, Grid } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -29,7 +29,7 @@ export default function TemplatesPage() {
   }, [router.isReady, router.query]);
 
   const categories = [
-    { id: 'all', label: 'Tất cả', count: ALL_TEMPLATES.length },
+    { id: 'all', label: 'Tất cả', count: WEBSITE_TEMPLATES.length },
     { id: 'PORTAL_SAN', label: 'Cổng Tin & Sàn BĐS', count: 5 },
     { id: 'CHUNG_CU', label: 'Căn Hộ & Chung Cư', count: 3 },
     { id: 'BIET_THU', label: 'Biệt Thự & Villa', count: 4 },
@@ -39,7 +39,7 @@ export default function TemplatesPage() {
     { id: 'KCN_NHA_XUONG', label: 'KCN & Nhà Xưởng', count: 1 },
   ];
 
-  const filteredTemplates = ALL_TEMPLATES.filter((tpl) => {
+  const filteredTemplates = WEBSITE_TEMPLATES.filter((tpl) => {
     const matchSearch = tpl.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                         tpl.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
                         tpl.shortDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -79,8 +79,8 @@ export default function TemplatesPage() {
   return (
     <>
       <Head>
-        <title>Bộ Sưu Tập {ALL_TEMPLATES.length} Mẫu Website Bất Động Sản Việt Nam | TEMPLATES BDS</title>
-        <meta name="description" content={`${ALL_TEMPLATES.length} mẫu website BĐS Việt Nam: sàn giao dịch, căn hộ, đất nền, villa, nghỉ dưỡng, công nghiệp và môi giới cá nhân.`} />
+        <title>Bộ Sưu Tập {WEBSITE_TEMPLATES.length} Mẫu Website Bất Động Sản Việt Nam | TEMPLATES BDS</title>
+        <meta name="description" content={`${WEBSITE_TEMPLATES.length} mẫu website BĐS Việt Nam: sàn giao dịch, căn hộ, đất nền, villa, nghỉ dưỡng, công nghiệp và môi giới cá nhân.`} />
       </Head>
 
       <Header 
@@ -97,7 +97,7 @@ export default function TemplatesPage() {
               <Sparkles className="w-3.5 h-3.5 text-blue-600" /> Kho Giao Diện BĐS Độc Quyền
             </span>
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-slate-900 mb-3">
-              {ALL_TEMPLATES.length} Mẫu Website <span className="text-[#2563EB]">Bất Động Sản Việt Nam</span>
+              {WEBSITE_TEMPLATES.length} Mẫu Website <span className="text-[#2563EB]">Bất Động Sản Việt Nam</span>
             </h1>
             <p className="text-slate-600 max-w-2xl mx-auto text-xs sm:text-sm leading-relaxed font-medium">
               Mỗi mẫu được thiết kế riêng biệt cho từng phân khúc BĐS, tích hợp sẵn CMS quản trị tin đăng, form thu thập khách hàng (Leads) và tối ưu chuyển đổi cao.
@@ -182,7 +182,7 @@ export default function TemplatesPage() {
                 onClick={() => { setSearchQuery(''); setActiveCategory('all'); }}
                 className="px-5 py-2 bg-[#2563EB] text-white rounded-xl text-xs font-bold hover:bg-blue-600 transition-colors shadow-sm"
               >
-                Xem toàn bộ {ALL_TEMPLATES.length} mẫu
+                Xem toàn bộ {WEBSITE_TEMPLATES.length} mẫu
               </button>
             </div>
           ) : (
@@ -207,7 +207,7 @@ export default function TemplatesPage() {
                 Được tích hợp sẵn công nghệ bán hàng BĐS hàng đầu
               </h2>
               <p className="text-blue-100 text-sm mb-8 leading-relaxed font-medium">
-                Tất cả {ALL_TEMPLATES.length} mẫu website của PlatformBDS đều đi kèm bộ CMS quản lý tin đăng độc quyền, hỗ trợ cập nhật giá, giỏ hàng, thông báo Zalo OA tự động khi có khách đăng ký.
+                Tất cả {WEBSITE_TEMPLATES.length} mẫu website của PlatformBDS đều đi kèm bộ CMS quản lý tin đăng độc quyền, hỗ trợ cập nhật giá, giỏ hàng, thông báo Zalo OA tự động khi có khách đăng ký.
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-left">
                 {[

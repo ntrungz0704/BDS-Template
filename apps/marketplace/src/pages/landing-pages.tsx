@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { ALL_TEMPLATES } from '../data/templatesData';
+import { LANDING_TEMPLATES } from '../data/templatesData';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/router';
 
@@ -17,7 +17,7 @@ export default function LandingPagesPage() {
   const { addToCart, showToast } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  const landingTemplates = ALL_TEMPLATES.filter(t => t.id.startsWith('lp-') || t.slug.startsWith('lp-'));
+  const landingTemplates = LANDING_TEMPLATES;
 
   const categories = [
     { id: 'all', label: 'Tất Cả 4 Mẫu' },

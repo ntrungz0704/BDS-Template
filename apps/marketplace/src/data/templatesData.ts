@@ -51,7 +51,7 @@ export interface Template {
   sectionConfig: Record<string, any>;
 }
 
-export const ALL_TEMPLATES: Template[] = [
+export const WEBSITE_TEMPLATES: Template[] = [
 // ─── PORTAL 01. BATDONGSAN CLASSIC PORTAL ──────────────────────────────────
   {
     id: "portal-01",
@@ -1591,8 +1591,10 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "CỔNG BẤT ĐỘNG SẢN ĐÔ THỊ THÔNG MINH AI & NET-ZERO",
       heroSubtitle: "Tổng hợp hơn 4.200 căn hộ thông minh điều khiển giọng nói, biệt thự năng lượng mặt trời và shophouse công nghệ cao tại các đại đô thị thông minh tiên phong."
     }
-  },
+  }
+];
 
+export const LANDING_TEMPLATES: Template[] = [
 // ─── LP 01. LANDING PAGE CĂN HỘ CAO CẤP LAUNCH FUNNEL ──────────────────────
   {
     id: "lp-01",
@@ -1851,6 +1853,8 @@ export const ALL_TEMPLATES: Template[] = [
     }
   }
 ];
+
+export const ALL_TEMPLATES: Template[] = [...WEBSITE_TEMPLATES, ...LANDING_TEMPLATES];
 
 export const TEMPLATE_LOOKUP_MAP: Record<string, Template> = ALL_TEMPLATES.reduce((acc, tpl) => {
   acc[tpl.slug] = tpl;
