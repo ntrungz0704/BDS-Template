@@ -1,5 +1,5 @@
 'use client';
-import { PropertyImageGallery } from './PropertyImageGallery';
+import { PropertyImageGallery } from '../PropertyImageGallery';
 import React, { useState, useMemo, useEffect } from 'react';
 import { syncDemoUrl } from '../../../utils/demo';
 import {

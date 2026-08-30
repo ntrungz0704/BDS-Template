@@ -50,6 +50,9 @@ export default function LP02Template({
   // Lightbox Zoom Modal State
   const [zoomImage, setZoomImage] = useState<string | null>(null);
 
+  // Video State
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+
   const handleHeroSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!heroPhone.trim()) return;

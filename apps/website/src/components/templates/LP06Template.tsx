@@ -99,6 +99,7 @@ export default function LP06Template({
       <header className="bg-[#030B17]/95 border-b border-amber-500/20 px-4 sm:px-8 py-2.5 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs">
           
+          {/* Brand Logo */}
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 bg-gradient-to-tr from-amber-500 to-yellow-300 text-slate-950 flex items-center justify-center font-black text-xs">
               ★
@@ -108,6 +109,7 @@ export default function LP06Template({
             </span>
           </div>
 
+          {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-slate-200">
             <a href="#tong-quan" className="hover:text-amber-400 transition">Tổng Quan</a>
             <a href="#anh-du-an" className="hover:text-amber-400 transition">Ảnh Dự Án</a>
@@ -117,6 +119,7 @@ export default function LP06Template({
             <a href="#vi-tri" className="hover:text-amber-400 transition">Vị Trí</a>
           </nav>
 
+          {/* Contact Fast */}
           <div className="flex items-center gap-3">
             <a href={`tel:${hotline}`} className="flex items-center gap-1 font-bold text-amber-400 hover:text-white transition">
               <Phone className="w-3.5 h-3.5" />
@@ -136,6 +139,7 @@ export default function LP06Template({
       {/* ════════════════ 2. HERO SECTION & FLOATING RED LEAD BANNER ════════════════ */}
       <section className="relative pt-8 pb-16 px-4 sm:px-6 lg:px-8 border-b-2 border-amber-500/30 overflow-hidden bg-gradient-to-b from-[#030B17] via-[#061426] to-[#081B33]">
         
+        {/* Background Urban Aerial Image */}
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1800&q=80"
@@ -147,6 +151,7 @@ export default function LP06Template({
 
         <div className="relative z-10 max-w-5xl mx-auto space-y-6 text-center">
           
+          {/* Main Title */}
           <div className="space-y-1">
             <p className="text-amber-400 font-bold text-xs uppercase tracking-widest">
               ĐẠI ĐÔ THỊ TRUNG TÂM THỦ PHỦ MIỀN TÂY
@@ -156,9 +161,11 @@ export default function LP06Template({
             </h1>
           </div>
 
+          {/* Floating Red Lead Gift Box (Lưới Lọc Phễu Chuyển Đổi Số 1) */}
           <div id="hero-lead-form-box" className="bg-[#D92D20] border-2 border-amber-300 shadow-2xl p-6 sm:p-8 max-w-3xl mx-auto text-left">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
               
+              {/* Left Column: Gift Visual & Special Promo */}
               <div className="md:col-span-5 text-center md:text-left space-y-2 border-b md:border-b-0 md:border-r border-red-400/50 pb-4 md:pb-0 md:pr-4">
                 <div className="w-16 h-16 bg-white/10 border border-white/30 flex items-center justify-center mx-auto md:mx-0">
                   <Gift className="w-8 h-8 text-amber-300 animate-bounce" />
@@ -173,6 +180,7 @@ export default function LP06Template({
                 </p>
               </div>
 
+              {/* Right Column: Lead Form Input */}
               <div className="md:col-span-7">
                 <div className="text-center mb-3">
                   <h4 className="text-sm font-black text-amber-300 uppercase">
@@ -259,6 +267,7 @@ export default function LP06Template({
       <section id="tong-quan" className="py-14 px-4 sm:px-6 lg:px-8 bg-[#040D1A] border-b border-amber-500/20">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
           
+          {/* Card 1: White Card */}
           <div className="bg-white text-slate-900 border-2 border-slate-300 p-6 space-y-3 shadow-md text-left">
             <div className="w-10 h-10 bg-[#061426] text-amber-400 flex items-center justify-center font-bold">
               <Building className="w-5 h-5" />
@@ -274,6 +283,7 @@ export default function LP06Template({
             </ul>
           </div>
 
+          {/* Card 2: Highlight Yellow/Gold Card */}
           <div className="bg-[#FFF8E6] text-slate-900 border-2 border-[#E5A824] p-6 space-y-3 shadow-lg text-left relative">
             <div className="absolute -top-3 right-3 px-2 py-0.5 bg-[#D92D20] text-white text-[10px] font-black uppercase">
               TIÊU CHUẨN A+
@@ -292,6 +302,7 @@ export default function LP06Template({
             </ul>
           </div>
 
+          {/* Card 3: White Card */}
           <div className="bg-white text-slate-900 border-2 border-slate-300 p-6 space-y-3 shadow-md text-left">
             <div className="w-10 h-10 bg-[#061426] text-amber-400 flex items-center justify-center font-bold">
               <ShieldCheck className="w-5 h-5" />
@@ -323,6 +334,7 @@ export default function LP06Template({
             </p>
           </div>
 
+          {/* Central Circular Infographic Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 text-left">
             {satelliteList.map((item, idx) => (
               <div
@@ -365,6 +377,7 @@ export default function LP06Template({
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
             
+            {/* Box 1: White */}
             <div className="bg-white text-slate-900 border border-slate-300 p-4 flex gap-4 items-center">
               <div 
                 className="w-28 h-20 bg-slate-900 shrink-0 overflow-hidden cursor-pointer border border-slate-200"
@@ -378,6 +391,7 @@ export default function LP06Template({
               </div>
             </div>
 
+            {/* Box 2: Yellow Highlight */}
             <div className="bg-[#FFF8E6] text-slate-900 border-2 border-[#E5A824] p-4 flex gap-4 items-center">
               <div 
                 className="w-28 h-20 bg-slate-900 shrink-0 overflow-hidden cursor-pointer border border-amber-300"
@@ -391,6 +405,7 @@ export default function LP06Template({
               </div>
             </div>
 
+            {/* Box 3: White */}
             <div className="bg-white text-slate-900 border border-slate-300 p-4 flex gap-4 items-center">
               <div 
                 className="w-28 h-20 bg-slate-900 shrink-0 overflow-hidden cursor-pointer border border-slate-200"
@@ -404,6 +419,7 @@ export default function LP06Template({
               </div>
             </div>
 
+            {/* Box 4: White */}
             <div className="bg-white text-slate-900 border border-slate-300 p-4 flex gap-4 items-center">
               <div 
                 className="w-28 h-20 bg-slate-900 shrink-0 overflow-hidden cursor-pointer border border-slate-200"
@@ -419,6 +435,7 @@ export default function LP06Template({
 
           </div>
 
+          {/* Yellow Action Pill Button */}
           <div>
             <a
               href="#hero-lead-form-box"
@@ -469,6 +486,7 @@ export default function LP06Template({
       <section id="quy-mo" className="py-16 px-4 sm:px-6 lg:px-8 bg-[#040D1A] border-b border-amber-500/20">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
+          {/* Left Column: Specs Box */}
           <div className="lg:col-span-5 bg-[#061426] border-2 border-amber-400/40 p-6 space-y-3 text-left">
             <h2 className="text-xl font-black text-amber-400 uppercase border-b border-amber-500/30 pb-2">
               QUY MÔ DỰ ÁN
@@ -485,6 +503,7 @@ export default function LP06Template({
             </div>
           </div>
 
+          {/* Right Column: Boulevard Photo */}
           <div className="lg:col-span-7">
             <div 
               className="border-2 border-slate-600 aspect-[16/10] bg-slate-900 group cursor-pointer overflow-hidden shadow-md"
@@ -588,6 +607,7 @@ export default function LP06Template({
       <section id="vi-tri" className="py-16 px-4 sm:px-6 lg:px-8 bg-[#040D1A] border-b border-amber-500/20">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
+          {/* Left: Map Graphic */}
           <div className="lg:col-span-7">
             <div 
               className="border-2 border-slate-600 aspect-[16/10] bg-slate-900 group cursor-pointer overflow-hidden shadow-md"
@@ -601,6 +621,7 @@ export default function LP06Template({
             </div>
           </div>
 
+          {/* Right: Location Bullet Points */}
           <div className="lg:col-span-5 space-y-4 text-left">
             <h2 className="text-2xl font-black text-amber-400 uppercase">
               VỊ TRÍ DỰ ÁN
@@ -622,6 +643,7 @@ export default function LP06Template({
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#061426] border-t-2 border-amber-400">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
+          {/* Left Column: Photo */}
           <div className="lg:col-span-6">
             <div 
               className="border-2 border-slate-600 aspect-[16/11] bg-slate-900 group cursor-pointer overflow-hidden shadow-md"
@@ -635,6 +657,7 @@ export default function LP06Template({
             </div>
           </div>
 
+          {/* Right Column: White Lead Form */}
           <div className="lg:col-span-6 bg-white text-slate-900 border-2 border-amber-400 p-6 sm:p-8 text-left shadow-2xl">
             <div className="text-center mb-4 pb-2 border-b border-slate-200">
               <span className="text-[11px] font-black text-[#D92D20] uppercase tracking-widest block mb-0.5">

@@ -182,6 +182,7 @@ export default function LP04Template({
 
       {/* ════════════════ 2. HERO BANNER & CENTER LEAD BOX ════════════════ */}
       <section className="relative min-h-[560px] py-14 px-4 sm:px-6 lg:px-8 flex items-center justify-center overflow-hidden">
+        {/* Background Full Width Luxury Panoramic Photo */}
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1800&q=80"
@@ -191,6 +192,7 @@ export default function LP04Template({
           <div className="absolute inset-0 bg-gradient-to-b from-[#42040C]/80 via-[#5C0612]/70 to-[#5C0612]" />
         </div>
 
+        {/* Center Floating Red Luxury Lead Box */}
         <div id="hero-lead-box" className="relative z-10 max-w-4xl w-full mx-auto bg-gradient-to-b from-[#8C0E1F] to-[#630914] border-2 border-amber-400/80 rounded-3xl p-6 sm:p-10 shadow-2xl shadow-black/80 text-center space-y-6">
           
           <div className="space-y-2">
@@ -205,6 +207,7 @@ export default function LP04Template({
             </p>
           </div>
 
+          {/* Form Lead Box inside Hero */}
           {isHeroSubmitted ? (
             <div className="bg-emerald-950/80 border border-emerald-400 p-6 rounded-2xl text-center space-y-2 max-w-lg mx-auto animate-fadeIn">
               <div className="w-10 h-10 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center mx-auto shadow-md">
@@ -294,6 +297,7 @@ export default function LP04Template({
             </h2>
           </div>
 
+          {/* Gold Framed Card */}
           <div className="bg-[#FFFDF9] text-slate-900 border-4 border-[#D4AF37] rounded-3xl p-8 sm:p-12 shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center text-left">
             <div className="lg:col-span-6 space-y-4">
               <span className="px-3 py-1 bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-black rounded-lg uppercase">
@@ -481,6 +485,7 @@ export default function LP04Template({
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center text-left">
             
+            {/* Map Image with Red Border */}
             <div className="lg:col-span-7">
               <div 
                 className="relative rounded-3xl overflow-hidden border-4 border-amber-400/80 shadow-2xl bg-slate-900 aspect-[16/10] group cursor-pointer"
@@ -502,6 +507,7 @@ export default function LP04Template({
               </div>
             </div>
 
+            {/* Linkage Badges */}
             <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div className="p-4 rounded-2xl bg-[#5C0612] border border-amber-400/40 space-y-1">
                 <span className="font-black text-amber-300 block">5 PHÚT DI CHUYỂN</span>
@@ -583,6 +589,7 @@ export default function LP04Template({
               </div>
 
               <div className="pt-2">
+                {/* UX Auto-Select */}
                 <button
                   type="button"
                   onClick={() => handleSelectProduct(masterPlanData[activeZoneTab].title)}
@@ -729,6 +736,7 @@ export default function LP04Template({
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#5C0612] border-t border-amber-500/20">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
+          {/* Left: Golden Arch Form */}
           <div className="lg:col-span-5 bg-gradient-to-b from-[#8C0E1F] to-[#5C0612] border-4 border-amber-400 rounded-t-[100px] rounded-b-3xl p-8 sm:p-10 shadow-2xl text-center space-y-5">
             <div className="w-12 h-12 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center mx-auto shadow-lg">
               <Crown className="w-6 h-6" />
@@ -799,6 +807,7 @@ export default function LP04Template({
             )}
           </div>
 
+          {/* Right: Royal Arch Landmark Photo */}
           <div className="lg:col-span-7">
             <div 
               className="relative rounded-3xl overflow-hidden border-4 border-amber-400/80 shadow-2xl bg-slate-900 aspect-[4/3] group cursor-pointer"

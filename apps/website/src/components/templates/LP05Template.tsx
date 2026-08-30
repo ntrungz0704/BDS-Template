@@ -122,6 +122,7 @@ export default function LP05Template({
       <header className="sticky top-0 z-50 bg-[#0A2E28] text-white border-b border-[#C59B27]/40 px-4 sm:px-8 py-3">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs">
           
+          {/* Logo Brand */}
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-gradient-to-tr from-[#C59B27] to-amber-300 text-[#0A2E28] flex items-center justify-center font-black">
               GP
@@ -136,6 +137,7 @@ export default function LP05Template({
             </div>
           </div>
 
+          {/* Nav Links */}
           <nav className="hidden lg:flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-slate-200">
             <a href="#tong-quan" className="hover:text-amber-400 transition-colors">Tổng Quan</a>
             <a href="#chinh-sach" className="hover:text-amber-400 transition-colors">Chính Sách</a>
@@ -146,6 +148,7 @@ export default function LP05Template({
             <a href="#tien-ich" className="hover:text-amber-400 transition-colors">Tiện Ích</a>
           </nav>
 
+          {/* Contact Fast */}
           <div className="flex items-center gap-4">
             <a href={`tel:${hotline}`} className="flex items-center gap-1.5 font-black text-amber-400 hover:text-white transition-colors">
               <Phone className="w-3.5 h-3.5" />
@@ -164,8 +167,10 @@ export default function LP05Template({
 
       {/* ════════════════ 2. HERO SECTION & RED LEAD BOX ════════════════ */}
       <section className="relative bg-[#0C3832] text-white py-12 sm:py-16 px-4 sm:px-6 lg:px-8 border-b-4 border-[#C59B27] overflow-hidden">
+        {/* Geometric Luxury Pattern Overlay */}
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
           
+          {/* Left: Golden Park Headline & Box Info */}
           <div className="lg:col-span-7 space-y-6 text-left">
             <div className="space-y-2">
               <span className="inline-block px-3 py-1 bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[11px] font-black uppercase tracking-widest">
@@ -179,6 +184,7 @@ export default function LP05Template({
               </p>
             </div>
 
+            {/* Sharp Architectural Specs Table */}
             <div className="bg-[#0A2E28]/90 border border-amber-400/40 p-5 text-xs text-slate-200 space-y-2">
               <div className="flex justify-between border-b border-white/10 pb-1.5">
                 <span className="text-slate-400">• Vị trí:</span>
@@ -199,6 +205,7 @@ export default function LP05Template({
             </div>
           </div>
 
+          {/* Right: Red Box Direct Lead Form (Lưới Lọc Phễu Chuyển Đổi Số 1) */}
           <div id="hero-lead-form" className="lg:col-span-5">
             <div className="bg-[#C53030] border-2 border-amber-300 p-6 sm:p-8 shadow-2xl text-left relative">
               <div className="text-center mb-4 pb-3 border-b border-red-400/60">
@@ -295,6 +302,7 @@ export default function LP05Template({
       <section id="tong-quan" className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
+          {/* Left Column: Structured Specs Table */}
           <div className="lg:col-span-7 space-y-4 text-left">
             <h2 className="text-2xl sm:text-3xl font-black text-[#0A2E28] uppercase border-l-4 border-[#C59B27] pl-3">
               TỔNG QUAN DỰ ÁN
@@ -338,6 +346,7 @@ export default function LP05Template({
             </table>
           </div>
 
+          {/* Right Column: Tower Photo & Policy Box */}
           <div id="chinh-sach" className="lg:col-span-5 space-y-4">
             <div 
               className="relative border-2 border-slate-300 aspect-[4/3] bg-slate-900 group cursor-pointer"
@@ -353,6 +362,7 @@ export default function LP05Template({
               </div>
             </div>
 
+            {/* Sharp Policy Box */}
             <div className="bg-[#FFFDF9] border-2 border-[#C59B27] p-5 text-left space-y-3">
               <h4 className="font-black text-sm text-[#0A2E28] uppercase border-b border-[#C59B27]/40 pb-2">
                 CHÍNH SÁCH BÁN HÀNG THÁNG MỚI NHẤT
@@ -478,6 +488,7 @@ export default function LP05Template({
             </h2>
           </div>
 
+          {/* Master Floor Layout Graphic */}
           <div 
             className="border-4 border-[#0C3832] bg-white p-4 group cursor-pointer shadow-md"
             onClick={() => setZoomImage('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80')}
@@ -514,6 +525,7 @@ export default function LP05Template({
             </p>
           </div>
 
+          {/* 9 Units Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {unitList.map((u, idx) => (
               <div
@@ -550,6 +562,7 @@ export default function LP05Template({
                     </p>
                   </div>
 
+                  {/* UX Auto-Select Button */}
                   <button
                     type="button"
                     onClick={() => handleSelectUnit(u.fullName)}

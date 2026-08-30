@@ -213,6 +213,7 @@ export default function LP03Template({
 
       {/* ════════════════ 2. HERO BANNER & HERO LEAD FORM ════════════════ */}
       <section className="relative bg-slate-900 py-12 sm:py-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Background Image with Dark Overlay */}
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1800&q=80"
@@ -429,6 +430,7 @@ export default function LP03Template({
             </p>
           </div>
 
+          {/* Banner Phối Cảnh kèm Box Đỏ Đô Đè Nổi Bật */}
           <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-slate-900 aspect-[16/9] max-h-[480px]">
             <img
               src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80"
@@ -436,6 +438,7 @@ export default function LP03Template({
               className="w-full h-full object-cover"
             />
             
+            {/* Red Box floating on right side */}
             <div className="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 bg-[#9B1C1C]/95 backdrop-blur-md text-white p-5 sm:p-6 rounded-2xl max-w-xs sm:max-w-sm text-left shadow-2xl border border-red-400/40">
               <h4 className="font-black text-xs sm:text-sm uppercase tracking-wider text-amber-300 mb-3 border-b border-white/20 pb-2">
                 HỒ SƠ TỔNG QUAN DỰ ÁN
@@ -458,6 +461,7 @@ export default function LP03Template({
       <section className="py-16 bg-[#FDFBF7] px-4 sm:px-6 lg:px-8 border-b border-amber-900/10">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           
+          {/* Left: Position Description */}
           <div className="lg:col-span-5 space-y-5 text-left">
             <div>
               <span className="text-xs font-bold text-[#9B1C1C] uppercase tracking-widest block mb-1">
@@ -492,6 +496,7 @@ export default function LP03Template({
             </div>
           </div>
 
+          {/* Right: Map Graphic preview */}
           <div className="lg:col-span-7">
             <div 
               className="relative rounded-3xl overflow-hidden border-2 border-slate-300 shadow-xl bg-slate-900 aspect-[16/10] group cursor-pointer"
@@ -615,6 +620,7 @@ export default function LP03Template({
               </div>
 
               <div className="pt-2">
+                {/* Seamless UX: Automatically selects this unit and scrolls to Hero Form */}
                 <button
                   type="button"
                   onClick={() => handleSelectUnit(floorPlanData[activeFloorTab].title)}

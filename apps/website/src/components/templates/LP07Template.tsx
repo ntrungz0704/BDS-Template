@@ -203,6 +203,7 @@ export default function LP07Template({
 
       {/* ════════════════ 2. HERO SECTION & 3 GOLDEN ROUND BADGES ════════════════ */}
       <section id="trang-chu" className="relative min-h-[580px] sm:min-h-[640px] flex items-center justify-center p-4 sm:p-8 overflow-hidden bg-slate-900 border-b-4 border-[#0D9488]">
+        {/* Background Sun Wheel & Resort Panoramic */}
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1800&q=80"
@@ -212,6 +213,7 @@ export default function LP07Template({
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent" />
         </div>
 
+        {/* Center Glassmorphism Hero Box with White Border */}
         <div className="relative z-10 max-w-3xl w-full mx-auto bg-[#071F38]/85 border-4 border-white p-6 sm:p-10 text-center text-white shadow-2xl space-y-6">
           
           <div className="space-y-1">
@@ -226,8 +228,10 @@ export default function LP07Template({
             </p>
           </div>
 
+          {/* 3 Golden Circular Glowing Badges */}
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 pt-2">
             
+            {/* Circle 1 */}
             <div className="flex flex-col items-center space-y-1.5">
               <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white border-4 border-amber-400 flex flex-col items-center justify-center text-slate-950 shadow-lg">
                 <span className="text-lg sm:text-2xl font-black text-amber-600 leading-none">30%</span>
@@ -237,6 +241,7 @@ export default function LP07Template({
               </span>
             </div>
 
+            {/* Circle 2 (Center Highlight) */}
             <div className="flex flex-col items-center space-y-1.5 -translate-y-2">
               <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-white border-4 border-amber-400 flex flex-col items-center justify-center text-slate-950 shadow-2xl">
                 <span className="text-2xl sm:text-3xl font-black text-amber-600 leading-none">3%</span>
@@ -246,6 +251,7 @@ export default function LP07Template({
               </span>
             </div>
 
+            {/* Circle 3 */}
             <div className="flex flex-col items-center space-y-1.5">
               <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white border-4 border-amber-400 flex flex-col items-center justify-center text-slate-950 shadow-lg">
                 <span className="text-base sm:text-xl font-black text-amber-600 leading-none">200</span>
@@ -275,6 +281,7 @@ export default function LP07Template({
       <section id="tong-quan" className="py-16 px-4 sm:px-6 lg:px-8 bg-[#14B8A6] text-white">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
+          {/* Left Column: Specs & Description */}
           <div className="lg:col-span-6 space-y-4 text-left">
             <div className="space-y-1">
               <h2 className="text-2xl sm:text-4xl font-black text-[#0B2545] uppercase leading-tight">
@@ -313,7 +320,10 @@ export default function LP07Template({
             </div>
           </div>
 
+          {/* Right Column: Novotel Slider & Ocean Residence Launch Box */}
           <div className="lg:col-span-6 space-y-6">
+            
+            {/* Interactive Image Carousel */}
             <div className="space-y-2">
               <div 
                 className="border-4 border-white aspect-[16/10] bg-slate-900 overflow-hidden cursor-pointer shadow-lg"
@@ -326,6 +336,7 @@ export default function LP07Template({
                 />
               </div>
 
+              {/* 5 Thumbnails */}
               <div className="grid grid-cols-5 gap-2">
                 {overviewSlides.map((slide, idx) => (
                   <button
@@ -341,6 +352,7 @@ export default function LP07Template({
               </div>
             </div>
 
+            {/* Ra Mắt Phân Khu Ocean Residence Mới Box */}
             <div className="bg-[#E6FFFA] text-slate-900 border-2 border-white p-6 shadow-md text-left space-y-3">
               <h4 className="font-black text-base text-[#0D9488] uppercase border-b border-teal-300 pb-1.5">
                 RA MẮT PHÂN KHU OCEAN RESIDENCE MỚI
@@ -360,6 +372,7 @@ export default function LP07Template({
                 </p>
               </div>
             </div>
+
           </div>
 
         </div>
@@ -380,6 +393,7 @@ export default function LP07Template({
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
             
+            {/* Left: 10 Policy Points */}
             <div className="lg:col-span-6 bg-[#CCFBF1]/60 border-2 border-[#14B8A6] p-6 space-y-3">
               <h4 className="font-black text-sm text-[#0B2545] uppercase border-b border-teal-300 pb-2">
                 CHÍNH SÁCH ƯU ĐÃI CẬP NHẬT MỚI NHẤT
@@ -398,6 +412,7 @@ export default function LP07Template({
               </div>
             </div>
 
+            {/* Right: 3 Special Investor Advantages */}
             <div className="lg:col-span-6 space-y-4">
               <h4 className="font-black text-sm text-[#0B2545] uppercase border-b border-slate-300 pb-2">
                 LỢI THẾ ĐẶC QUYỀN DÀNH CHO NHÀ ĐẦU TƯ
@@ -558,6 +573,7 @@ export default function LP07Template({
                     </div>
                   </div>
 
+                  {/* UX Auto-Select Button */}
                   <button
                     type="button"
                     onClick={() => handleSelectProduct(p.fullName)}
@@ -674,6 +690,7 @@ export default function LP07Template({
       <section id="vi-tri" className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
+          {/* Map Image */}
           <div className="lg:col-span-6">
             <div 
               className="border-4 border-[#0D9488] aspect-[4/3] bg-slate-900 group cursor-pointer overflow-hidden shadow-md"
@@ -690,6 +707,7 @@ export default function LP07Template({
             </div>
           </div>
 
+          {/* Location Bullets */}
           <div className="lg:col-span-6 space-y-4 text-left">
             <h2 className="text-2xl sm:text-3xl font-black text-[#0B2545] uppercase leading-tight">
               VỊ TRÍ KIM CƯƠNG<br />
@@ -738,6 +756,7 @@ export default function LP07Template({
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 text-left">
             
+            {/* Col 1: Sân bay */}
             <div className="bg-white text-slate-900 p-5 space-y-3 shadow-md border-2 border-white">
               <div className="relative aspect-video bg-slate-900 overflow-hidden">
                 <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80" alt="Sân bay Phan Thiết" className="w-full h-full object-cover" />
@@ -752,6 +771,7 @@ export default function LP07Template({
               </div>
             </div>
 
+            {/* Col 2: Cao tốc & Tàu lửa */}
             <div className="bg-white text-slate-900 p-5 space-y-3 shadow-md border-2 border-white">
               <div className="relative aspect-video bg-slate-900 overflow-hidden">
                 <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" alt="Cao tốc Phan Thiết" className="w-full h-full object-cover" />
@@ -764,6 +784,7 @@ export default function LP07Template({
               </div>
             </div>
 
+            {/* Col 3: Báo chí chính thống */}
             <div className="bg-[#0B2545] text-white p-5 space-y-3 shadow-md border-2 border-white">
               <h4 className="font-black text-sm text-amber-300 uppercase border-b border-white/20 pb-2">
                 BÁO CHÍ CHÍNH THỐNG ĐƯA TIN
@@ -858,6 +879,7 @@ export default function LP07Template({
 
       {/* ════════════════ 13. NHẬN TƯ VẤN CHUYÊN SÂU SECTION ════════════════ */}
       <section id="consultation-form-section" className="relative py-16 px-4 sm:px-6 lg:px-8 bg-slate-900 text-white text-center overflow-hidden">
+        {/* Background Villa Shot */}
         <div className="absolute inset-0 z-0 opacity-30">
           <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80" alt="Villa Night" className="w-full h-full object-cover" />
         </div>
@@ -875,6 +897,7 @@ export default function LP07Template({
             </p>
           </div>
 
+          {/* Social Proof Live Ticker */}
           <div className="inline-block px-3 py-1 bg-black/60 border border-white/20 text-[11px] text-amber-300">
             • Đinh Văn Long, 0835983xxx đã đăng ký 33 phút trước
           </div>
@@ -945,6 +968,7 @@ export default function LP07Template({
       <footer id="lien-he" className="bg-[#07172B] text-white py-12 px-4 sm:px-6 lg:px-8 text-xs border-t border-slate-800">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
           
+          {/* Col 1: Brand */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <div className="text-xl font-black tracking-tight text-white uppercase flex items-center">
@@ -962,6 +986,7 @@ export default function LP07Template({
             </p>
           </div>
 
+          {/* Col 2: Info */}
           <div className="space-y-2 text-[11px] text-slate-300">
             <h4 className="font-black text-amber-300 text-xs uppercase mb-1">NOVAWORLD PHAN THIẾT</h4>
             <p className="flex items-start gap-2">
@@ -982,6 +1007,7 @@ export default function LP07Template({
             </p>
           </div>
 
+          {/* Col 3: Mini Fast Form */}
           <div className="space-y-2 text-[11px]">
             <h4 className="font-black text-amber-300 text-xs uppercase mb-1">ĐĂNG KÝ TƯ VẤN MIỄN PHÍ</h4>
             

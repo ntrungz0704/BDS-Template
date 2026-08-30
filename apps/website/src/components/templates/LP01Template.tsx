@@ -7,6 +7,7 @@ import {
   TrendingUp, Calendar, ArrowRight, MessageCircle, Play, 
   Check, Layers, Star, ExternalLink, X, ZoomIn
 } from 'lucide-react';
+import { PropertyImageGallery } from '../PropertyImageGallery';
 
 export interface LP01TemplateProps {
   template?: any;
@@ -34,7 +35,7 @@ export default function LP01Template({
   const [heroName, setHeroName] = useState('');
   const [heroEmail, setHeroEmail] = useState('');
   const [heroPhone, setHeroPhone] = useState('');
-  const [heroUnitType, setHeroUnitType] = useState('Căn Hộ 2 Phòng Ngủ (74.2 m² - 86.5 m²)');
+  const [heroUnitType, setHeroUnitType] = useState('Căn Hộ 2 Phòng Ngủ (74m² - 86m²)');
   const [isHeroSubmitted, setIsHeroSubmitted] = useState(false);
 
   const [midName, setMidName] = useState('');
@@ -47,7 +48,10 @@ export default function LP01Template({
   // Lightbox Zoom Modal State
   const [zoomImage, setZoomImage] = useState<string | null>(null);
 
-  // Countdown timer state
+  // Video modal / playing state
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+
+  // Countdown timer state: 5 ngày 14 giờ 36 phút 20 giây
   const [countdown, setCountdown] = useState({
     days: 5,
     hours: 14,
@@ -213,6 +217,7 @@ export default function LP01Template({
 
       {/* ════════════════ 2. HERO SECTION & HERO LEAD FORM ════════════════ */}
       <section id="tong-quan" className="relative bg-gradient-to-b from-[#082B27] via-[#0F3B38] to-[#0A2E2A] text-white py-14 sm:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Subtle background glow */}
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-10 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -236,6 +241,7 @@ export default function LP01Template({
               Tổ hợp căn hộ cao cấp chuẩn quốc tế sở hữu vị trí kim cương đắt giá, tầm nhìn panorama ôm trọn công viên hồ điều hòa 14ha và hệ thống tiện ích 5 sao đặc quyền dành riêng cho cộng đồng cư dân tinh hoa.
             </p>
 
+            {/* Quick Benefits Bullet List */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs text-slate-200">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
@@ -266,9 +272,11 @@ export default function LP01Template({
             </div>
           </div>
 
-          {/* Right Column: Hero Lead Capture Form */}
+          {/* Right Column: Hero Lead Capture Form (Lưới lọc phễu số 1) */}
           <div id="dang-ky" className="lg:col-span-5">
             <div className="bg-[#05211E]/95 border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/50 text-left relative overflow-hidden backdrop-blur-xl">
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+              
               <div className="text-center mb-6">
                 <span className="text-[11px] font-extrabold text-amber-400 uppercase tracking-widest block mb-1">
                   ƯU ĐÃI ĐỢT 1 TỪ CHỦ ĐẦU TƯ
@@ -453,6 +461,7 @@ export default function LP01Template({
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           
+          {/* Left: Spec Table */}
           <div className="lg:col-span-5 space-y-6 text-left">
             <div>
               <span className="text-xs font-bold text-amber-700 uppercase tracking-widest block mb-1">
@@ -507,6 +516,7 @@ export default function LP01Template({
             </a>
           </div>
 
+          {/* Right: Master Plan Layout Image (with zoom) */}
           <div className="lg:col-span-7">
             <div className="relative rounded-3xl overflow-hidden border-2 border-amber-200 bg-slate-100 shadow-xl group cursor-pointer"
               onClick={() => setZoomImage('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80')}
@@ -546,6 +556,7 @@ export default function LP01Template({
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
+            {/* Left: Map Graphic preview */}
             <div className="lg:col-span-7">
               <div 
                 className="relative rounded-3xl overflow-hidden border-2 border-emerald-700/60 shadow-2xl bg-slate-900 aspect-[16/10] group cursor-pointer"
@@ -570,6 +581,7 @@ export default function LP01Template({
               </div>
             </div>
 
+            {/* Right: Distance & Linkages */}
             <div className="lg:col-span-5 space-y-4 text-left">
               <div className="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-700/40 space-y-1">
                 <div className="flex items-center justify-between">
@@ -680,6 +692,7 @@ export default function LP01Template({
             </p>
           </div>
 
+          {/* Grid 6 Amenities Cards with Lightbox Zoom & 3s auto animation */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {amenitiesList.map((item, idx) => (
               <div
@@ -734,6 +747,7 @@ export default function LP01Template({
             </p>
           </div>
 
+          {/* Interactive Floor Tabs */}
           <div className="flex justify-center flex-wrap gap-2 sm:gap-3">
             {[
               { id: '1pn', label: 'Căn 1 Phòng Ngủ (52.8 m²)' },
@@ -848,7 +862,7 @@ export default function LP01Template({
               />
               <button
                 type="submit"
-                className="px-6 py-3 rounded-xl bg-slate-950 hover:bg-slate-900 text-amber-300 font-black text-xs uppercase tracking-wider transition-all shadow-lg shrink-0 w-full sm:w-auto cursor-pointer"
+                className="px-6 py-3 rounded-xl bg-slate-950 hover:bg-slate-900 text-amber-300 font-black text-xs uppercase tracking-wider transition-all shadow-lg shrink-0 w-full sm:w-auto"
               >
                 GỬI CHO TÔI
               </button>
@@ -954,6 +968,7 @@ export default function LP01Template({
             </p>
           </div>
 
+          {/* Countdown Clock Tiles */}
           <div className="flex items-center justify-center gap-3 sm:gap-4 font-mono">
             <div className="bg-slate-900/90 border border-slate-600 p-3 sm:p-4 rounded-2xl min-w-[64px] sm:min-w-[80px]">
               <span className="text-2xl sm:text-4xl font-black text-amber-400 block">{String(countdown.days).padStart(2, '0')}</span>
