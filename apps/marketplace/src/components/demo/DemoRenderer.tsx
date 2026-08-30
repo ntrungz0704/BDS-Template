@@ -1069,20 +1069,39 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
   const page = normalizePageSlug(initialPage);
 
   const renderContent = () => {
+    // ─── SPECIALIZED HIGH-CONVERTING SALES LANDING PAGES (CHECK FIRST) ───
+    // LP-01: Landing Page Căn Hộ Chung Cư Cao Cấp
+    if (['lp-01', 'landing-01', 'luxury-condo-lp', 'condos-sales'].some(k => slug === k || slug.startsWith(k) || sourceSlug.includes(k))) {
+      return <LP01Template template={template} viewport={viewport} initialPage={initialPage} />;
+    }
+    // LP-02: Landing Page Biệt Thự & Nghỉ Dưỡng Hoàng Gia
+    if (['lp-02', 'landing-02', 'villa-resort-lp', 'resort-sales'].some(k => slug === k || slug.startsWith(k) || sourceSlug.includes(k))) {
+      return <LP02Template template={template} viewport={viewport} initialPage={initialPage} />;
+    }
+    // LP-03: Landing Page Đất Nền Phân Lô F0
+    if (['lp-03', 'landing-03', 'landplot-lp', 'land-sales'].some(k => slug === k || slug.startsWith(k) || sourceSlug.includes(k))) {
+      return <LP03Template template={template} viewport={viewport} initialPage={initialPage} />;
+    }
+    // LP-04: Landing Page Sale BĐS Cá Nhân / Broker Uy Tín
+    if (['lp-04', 'landing-04', 'broker-authority-lp', 'personal-broker-sales'].some(k => slug === k || slug.startsWith(k) || sourceSlug.includes(k))) {
+      return <LP04Template template={template} viewport={viewport} initialPage={initialPage} />;
+    }
+
+    // ─── 24 MULTI-PAGE WEBSITE TEMPLATES ───
     // 01. Luxury Gold
-    if (['01', 'bds-01', 'portal-01', 'luxury-gold', 'portal-classic'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
+    if (['bds-01', 'portal-01', 'luxury-gold', 'portal-classic'].some(k => slug === k || slug.includes(k) || sourceSlug.includes(k))) {
       return <BDS01Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 02. Minimal White
-    if (['02', 'bds-02', 'portal-02', 'minimal-white', 'minimal-zen', 'portal-modern'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
+    if (['bds-02', 'portal-02', 'minimal-white', 'minimal-zen', 'portal-modern'].some(k => slug === k || slug.includes(k) || sourceSlug.includes(k))) {
       return <BDS02Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 03. Modern Corporate
-    if (['03', 'bds-03', 'portal-03', 'modern-corporate', 'portal-luxury'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
+    if (['bds-03', 'portal-03', 'modern-corporate', 'portal-luxury'].some(k => slug === k || slug.includes(k) || sourceSlug.includes(k))) {
       return <BDS03Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 04. Resort Paradise
-    if (['04', 'bds-04', 'portal-04', 'resort-paradise', 'ocean-view'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
+    if (['bds-04', 'portal-04', 'resort-paradise', 'ocean-view'].some(k => slug === k || slug.includes(k) || sourceSlug.includes(k))) {
       return <BDS04Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 05. Smart Urban City (An Viên Nha Trang)
@@ -1164,24 +1183,6 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
     // 24. RealtyBuild Trang Tin BĐS Số 1 Việt Nam
     if (['24', 'bds-24', 'portal-24', 'realtybuild-tech', 'realtybuild-portal'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
       return <BDS24Template template={template} viewport={viewport} initialPage={initialPage} />;
-    }
-
-    // ─── SPECIALIZED HIGH-CONVERTING SALES LANDING PAGES ───
-    // LP-01: Landing Page Căn Hộ Chung Cư Cao Cấp
-    if (['lp-01', 'landing-01', 'luxury-condo-lp', 'condos-sales'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <LP01Template template={template} viewport={viewport} initialPage={initialPage} />;
-    }
-    // LP-02: Landing Page Biệt Thự & Nghỉ Dưỡng Hoàng Gia
-    if (['lp-02', 'landing-02', 'villa-resort-lp', 'resort-sales'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <LP02Template template={template} viewport={viewport} initialPage={initialPage} />;
-    }
-    // LP-03: Landing Page Đất Nền Phân Lô F0
-    if (['lp-03', 'landing-03', 'landplot-lp', 'land-sales'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <LP03Template template={template} viewport={viewport} initialPage={initialPage} />;
-    }
-    // LP-04: Landing Page Sale BĐS Cá Nhân / Broker Uy Tín
-    if (['lp-04', 'landing-04', 'broker-authority-lp', 'personal-broker-sales'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <LP04Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
 
     return <BDS17Template template={template} viewport={viewport} initialPage={initialPage} />;
