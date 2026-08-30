@@ -742,28 +742,28 @@ export default function BDS09Template({
           <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-slate-900/90 p-5 rounded-sm border border-amber-500/30 space-y-2 shadow-lg hover:border-amber-400 transition">
               <span className="text-xs font-black text-[#FDE047]">01. CẢNG CÁP TREO VINPEARL</span>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-slate-300 leading-relaxed break-words">
                 Chỉ 2 phút di chuyển sang quần thể vui chơi giải trí hàng đầu Đông Nam Á VinWonders & Sân Golf 18 hố.
               </p>
             </div>
 
             <div className="bg-slate-900/90 p-5 rounded-sm border border-amber-500/30 space-y-2 shadow-lg hover:border-amber-400 transition">
               <span className="text-xs font-black text-[#FDE047]">02. TRUNG TÂM NHA TRANG</span>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-slate-300 leading-relaxed break-words">
                 5 phút lái xe dọc cung đường Trần Phú đến Quảng trường 2/4, Tháp Trầm Hương và các TTTM sầm uất.
               </p>
             </div>
 
             <div className="bg-slate-900/90 p-5 rounded-sm border border-amber-500/30 space-y-2 shadow-lg hover:border-amber-400 transition">
               <span className="text-xs font-black text-[#FDE047]">03. SÂN BAY QUỐC TẾ CAM RANH</span>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-slate-300 leading-relaxed break-words">
                 30 phút di chuyển êm ái trên đại lộ ven biển Nguyễn Tất Thành kết nối thẳng tới sân bay quốc tế.
               </p>
             </div>
 
             <div className="bg-slate-900/90 p-5 rounded-sm border border-amber-500/30 space-y-2 shadow-lg hover:border-amber-400 transition">
               <span className="text-xs font-black text-[#FDE047]">04. BẾN DU THUYỀN AN VIÊN</span>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-slate-300 leading-relaxed break-words">
                 Liền kề ngay dưới chân tòa tháp, thuận tiện đón tiếp du thuyền quốc tế và trải nghiệm lặn biển ngắm san hô.
               </p>
             </div>
@@ -974,7 +974,7 @@ export default function BDS09Template({
                 <div className="p-5 space-y-2">
                   <span className="text-[10px] font-black text-[#B45309] uppercase tracking-wider block">{item.subtitle}</span>
                   <h3 className="text-sm font-black text-slate-900 leading-snug">{item.title}</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">{item.desc}</p>
+                  <p className="text-xs text-slate-600 leading-relaxed break-words">{item.desc}</p>
                 </div>
               </div>
             </div>

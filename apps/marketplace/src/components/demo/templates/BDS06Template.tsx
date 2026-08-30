@@ -1369,7 +1369,7 @@ export default function BDS06Template({
                 <h4 className="font-extrabold text-base text-slate-100 group-hover:text-red-400 transition-colors">
                   {amenity.title}
                 </h4>
-                <p className="text-xs text-slate-300 leading-relaxed">
+                <p className="text-xs text-slate-300 leading-relaxed break-words">
                   {amenity.desc}
                 </p>
               </div>

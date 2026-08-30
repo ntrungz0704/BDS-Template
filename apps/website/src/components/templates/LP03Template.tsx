@@ -291,7 +291,7 @@ export default function LP03Template({
                     <Check className="w-6 h-6 stroke-[3]" />
                   </div>
                   <h4 className="font-bold text-base text-emerald-800">ĐÃ GỬI YÊU CẦU THÀNH CÔNG!</h4>
-                  <p className="text-xs text-slate-700 leading-relaxed">
+                  <p className="text-xs text-slate-700 leading-relaxed break-words">
                     Chuyên viên sẽ liên hệ lại qua số <strong>{heroPhone}</strong> và gửi file PDF báo giá căn <strong>{heroUnitType}</strong> qua Zalo cho bạn trong 3 phút.
                   </p>
                 </div>
@@ -818,7 +818,7 @@ export default function LP03Template({
                 <Check className="w-6 h-6 stroke-[3]" />
               </div>
               <h4 className="font-bold text-base text-emerald-800">ĐÃ ĐẶT LỊCH THÀNH CÔNG!</h4>
-              <p className="text-xs text-slate-700 leading-relaxed">
+              <p className="text-xs text-slate-700 leading-relaxed break-words">
                 Phòng kinh doanh đã xác nhận lịch hẹn của <strong>{viewName || 'bạn'}</strong> vào <strong>{viewDate}</strong>. Chuyên viên sẽ gọi qua số <strong>{viewPhone}</strong> để sắp xếp xe đón.
               </p>
             </div>

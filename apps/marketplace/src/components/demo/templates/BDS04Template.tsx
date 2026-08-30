@@ -616,7 +616,7 @@ export default function BDS04Template({ template, viewport = 'desktop', initialP
                     <Icon size={24} />
                   </div>
                   <h3 className="font-black text-base text-[#E6CA65] font-serif">{item.title}</h3>
-                  <p className="text-xs text-slate-300 leading-relaxed">{item.desc}</p>
+                  <p className="text-xs text-slate-300 leading-relaxed break-words">{item.desc}</p>
                 </div>
               );
             })}

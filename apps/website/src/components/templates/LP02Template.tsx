@@ -293,7 +293,7 @@ export default function LP02Template({
                     <Check className="w-6 h-6 stroke-[3]" />
                   </div>
                   <h4 className="font-bold text-base text-emerald-800">ĐÃ GỬI HỒ SƠ THÀNH CÔNG!</h4>
-                  <p className="text-xs text-slate-700 leading-relaxed">
+                  <p className="text-xs text-slate-700 leading-relaxed break-words">
                     Phòng Nhân Sự <strong>{brandName}</strong> đã tiếp nhận hồ sơ của <strong>{heroFullName || 'bạn'}</strong>. Chúng tôi sẽ gọi lại qua số điện thoại <strong>{heroPhone}</strong> trong vòng 24 giờ làm việc.
                   </p>
                 </div>
@@ -508,7 +508,7 @@ export default function LP02Template({
                     <h4 className="font-black text-base text-slate-900 group-hover:text-[#C1121F] transition-colors">
                       {b.title}
                     </h4>
-                    <p className="text-xs text-slate-600 leading-relaxed">
+                    <p className="text-xs text-slate-600 leading-relaxed break-words">
                       {b.desc}
                     </p>
                   </div>

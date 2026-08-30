@@ -432,7 +432,7 @@ export default function LP04Template({
                   <h4 className="font-black text-base text-[#5C0612] group-hover:text-red-700 transition-colors">
                     {item.title}
                   </h4>
-                  <p className="text-xs text-slate-600 leading-relaxed">
+                  <p className="text-xs text-slate-600 leading-relaxed break-words">
                     {item.desc}
                   </p>
                 </div>

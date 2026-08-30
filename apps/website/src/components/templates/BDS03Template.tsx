@@ -1016,7 +1016,7 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
                 <Award size={28} />
               </div>
               <h3 className="font-black text-base text-[#4A2810] font-serif">Uy tín chất lượng</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed break-words">
                 Đội ngũ chuyên viên am hiểu sâu sắc thị trường địa phương, chọn lọc quỹ đất vị trí đẹp và tiềm năng nhất.
               </p>
             </div>
@@ -1026,7 +1026,7 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
                 <Shield size={28} />
               </div>
               <h3 className="font-black text-base text-[#4A2810] font-serif">Thông tin minh bạch</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed break-words">
                 100% sản phẩm có sổ đỏ sẵn sàng công chứng ngay trong ngày, hỗ trợ pháp lý và đo đạc cắm mốc chuẩn xác.
               </p>
             </div>
@@ -1036,7 +1036,7 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
                 <ThumbsUp size={28} />
               </div>
               <h3 className="font-black text-base text-[#4A2810] font-serif">Giá tốt nhất F0</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed break-words">
                 Nguồn sản phẩm trực tiếp từ chính chủ và chủ đầu tư, giá gốc cạnh tranh mang lại lợi nhuận cao cho nhà đầu tư.
               </p>
             </div>

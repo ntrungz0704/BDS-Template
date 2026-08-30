@@ -422,7 +422,7 @@ export default function LP07Template({
                 <h5 className="font-bold text-xs text-[#0D9488] uppercase">
                   1. SỞ HỮU DỄ DÀNG CHỈ TỪ 15%
                 </h5>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed break-words">
                   Chỉ từ <strong>1,2 tỷ (15%)</strong> sở hữu biệt thự mặt biển đẳng cấp tại Phan Thiết. Cam kết mua lại, lợi nhuận tối thiểu <strong>6.5%/năm</strong>. Tiến độ thanh toán linh hoạt trong 3 năm. Miễn lãi suất lên tới 3 năm.
                 </p>
               </div>
@@ -431,7 +431,7 @@ export default function LP07Template({
                 <h5 className="font-bold text-xs text-[#0D9488] uppercase">
                   2. LỢI NHUẬN KHAI THÁC 10 - 12%/NĂM
                 </h5>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed break-words">
                   Không chỉ là một tài sản, một của để dành, mà NovaWorld Phan Thiết còn đem đến cho quý nhà đầu tư một khoản lợi nhuận luôn ổn định từ <strong>10-12%/năm</strong> từ việc khai thác vận hành, kinh doanh, cho thuê.
                 </p>
               </div>
@@ -440,7 +440,7 @@ export default function LP07Template({
                 <h5 className="font-bold text-xs text-[#0D9488] uppercase">
                   3. ĐÓN SÓNG HẠ TẦNG X2 GIÁ TRỊ
                 </h5>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed break-words">
                   Đón sóng hạ tầng với Cao tốc Phan Thiết – Dầu Giây – TP.HCM, Sân bay Phan Thiết, Sân bay quốc tế Long Thành... đem tới tiềm năng đột phá <strong>tăng giá X2</strong> trong những năm tới.
                 </p>
               </div>

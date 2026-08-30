@@ -897,7 +897,7 @@ export default function BDS13Template({
                 {idx + 1}
               </span>
               <h3 className="text-sm font-black text-white uppercase">{item.title}</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">{item.desc}</p>
+              <p className="text-xs text-slate-300 leading-relaxed break-words">{item.desc}</p>
             </div>
           ))}
         </div>

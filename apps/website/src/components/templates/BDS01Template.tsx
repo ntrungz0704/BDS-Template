@@ -1601,7 +1601,7 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
                   <div>Nội thất: <strong>{selectedProperty.furniture}</strong></div>
                 </div>
 
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed break-words">
                   {selectedProperty.desc}
                 </p>
               </div>

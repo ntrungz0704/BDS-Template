@@ -777,7 +777,7 @@ export default function BDS17Template({
               🏊
             </div>
             <h3 className="font-bold text-sm text-slate-900 uppercase">Bể Bơi Vô Cực View Vịnh</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
+            <p className="text-xs text-slate-600 leading-relaxed break-words">
               Bể bơi tràn bờ trên lưng chừng đồi nước mặn bốn mùa, mang lại cảm giác bơi lội giữa không trung ngắm trọn kỳ quan.
             </p>
           </div>
@@ -787,7 +787,7 @@ export default function BDS17Template({
               🍸
             </div>
             <h3 className="font-bold text-sm text-slate-900 uppercase">Sky Bar & Lounge Tầng 19</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
+            <p className="text-xs text-slate-600 leading-relaxed break-words">
               Điểm hẹn thượng lưu ngắm hoàng hôn buông xuống Vịnh Hạ Long, thưởng thức cocktail tinh tế và âm nhạc acoustic lãng mạn.
             </p>
           </div>
@@ -797,7 +797,7 @@ export default function BDS17Template({
               ⛳
             </div>
             <h3 className="font-bold text-sm text-slate-900 uppercase">Sân Tập Golf & Casino Quốc Tế</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
+            <p className="text-xs text-slate-600 leading-relaxed break-words">
               Trải nghiệm các bộ môn thể thao quý tộc và câu lạc bộ giải trí có thưởng chuẩn quốc tế ngay trong khuôn viên dự án.
             </p>
           </div>

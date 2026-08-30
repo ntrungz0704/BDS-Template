@@ -822,7 +822,7 @@ export default function BDS12Template({
                 <div className="p-5 space-y-2">
                   <span className="text-[10px] font-black text-[#0369A1] uppercase tracking-wider block">{item.subtitle}</span>
                   <h3 className="text-sm font-black text-slate-900">{item.title}</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">{item.desc}</p>
+                  <p className="text-xs text-slate-600 leading-relaxed break-words">{item.desc}</p>
                 </div>
               </div>
             </div>
@@ -884,7 +884,7 @@ export default function BDS12Template({
               {currentTabUnit.type}
             </span>
             <h3 className="text-lg font-black text-slate-900 uppercase">{currentTabUnit.name}</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">{currentTabUnit.description}</p>
+            <p className="text-xs text-slate-600 leading-relaxed break-words">{currentTabUnit.description}</p>
             
             <div className="space-y-2 text-xs text-slate-700 pt-2 border-t">
               <p>📐 <strong>Diện tích đất:</strong> {currentTabUnit.landArea}</p>
