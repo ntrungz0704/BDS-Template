@@ -20,7 +20,7 @@ export default function LandingPagesPage() {
   const landingTemplates = LANDING_TEMPLATES;
 
   const categories = [
-    { id: 'all', label: 'Tất Cả 4 Mẫu' },
+    { id: 'all', label: 'Tất Cả Mẫu' },
     { id: 'lp-01', label: 'Bán Căn Hộ Chung Cư' },
     { id: 'lp-02', label: 'Biệt Thự & Nghỉ Dưỡng VIP' },
     { id: 'lp-03', label: 'Đất Nền Phân Lô F0' },
@@ -40,8 +40,8 @@ export default function LandingPagesPage() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
       <Head>
-        <title>Kho 4 Mẫu Landing Page Chuyên Sale BĐS Chuyển Đổi Cao | PlatformBDS</title>
-        <meta name="description" content="Kho 4 mẫu landing page 1 trang chuyên biệt cho môi giới và sale bất động sản chạy ads Google, Facebook, TikTok đạt tỷ lệ chuyển đổi cao nhất." />
+        <title>Kho Mẫu Landing Page Chuyên Sale BĐS Chuyển Đổi Cao | PlatformBDS</title>
+        <meta name="description" content="Kho mẫu landing page 1 trang chuyên biệt cho môi giới và sale bất động sản chạy ads Google, Facebook, TikTok đạt tỷ lệ chuyển đổi cao nhất." />
       </Head>
 
       <Header />
@@ -59,7 +59,7 @@ export default function LandingPagesPage() {
             </div>
 
             <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
-              KHO 4 MẪU LANDING PAGE <br />
+              KHO MẪU LANDING PAGE <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-amber-300 to-teal-300">
                 CHUYÊN DỤNG CHO SALE BẤT ĐỘNG SẢN
               </span>
