@@ -26,8 +26,18 @@ function labelOf(control: FormControl): string {
     .toLocaleLowerCase('vi-VN');
 }
 
-function canonicalTemplateSlug(slug: string): string {
-  return slug.replace(/^portal-(\d{2})$/, 'bds-$1');
+function humanizeLabel(raw: string): string {
+  const s = raw.toLowerCase();
+  if (/unit|apartment|căn|sản phẩm|mẫu nhà|phân khu/.test(s)) return 'Sản phẩm / Căn';
+  if (/purpose|nhu cầu|mục đích|dự kiến/.test(s)) return 'Mục đích mua';
+  if (/budget|tài chính|giá|khoảng giá|ngân sách/.test(s)) return 'Khoảng tài chính';
+  if (/document|tài liệu|pháp lý|bảng giá|brochure|hồ sơ/.test(s)) return 'Tài liệu yêu cầu';
+  if (/time|date|thời gian|lịch|ngày/.test(s)) return 'Thời gian hẹn';
+  if (/area|diện tích/.test(s)) return 'Diện tích';
+  if (/floor|tầng/.test(s)) return 'Tầng mong muốn';
+  if (/note|message|lời nhắn|ghi chú|yêu cầu/.test(s)) return 'Lời nhắn';
+  const cleaned = raw.replace(/[-_]/g, ' ').replace(/select|input|floating|hero|form/gi, '').trim();
+  return cleaned.length > 2 ? cleaned : 'Nhu cầu';
 }
 
 export function captureDemoLead(form: HTMLFormElement, templateSlug: string): DemoCapturedLead | null {
@@ -57,7 +67,7 @@ export function captureDemoLead(form: HTMLFormElement, templateSlug: string): De
   );
   const details = fields
     .filter(({ control }) => control !== phoneField.control && control !== emailField?.control && control !== nameField?.control)
-    .map(({ label, value }) => `${label.replace(/\s+/g, ' ').trim().slice(0, 80) || 'Nhu cầu'}: ${value}`)
+    .map(({ label, value }) => `${humanizeLabel(label)}: ${value}`)
     .slice(0, 8);
 
   const selectedTemplate = canonicalTemplateSlug(templateSlug);
@@ -66,7 +76,7 @@ export function captureDemoLead(form: HTMLFormElement, templateSlug: string): De
     phone,
     email: emailField?.value || '',
     selectedTemplate,
-    packageInterest: 'Tư vấn template',
-    message: details.join(' | ') || `Yêu cầu tư vấn từ demo ${selectedTemplate.toUpperCase()}`,
+    packageInterest: 'Tư vấn BĐS & Bảng giá',
+    message: details.join(' | ') || `Yêu cầu nhận bảng giá & tài liệu dự án ${selectedTemplate.toUpperCase()}`,
   };
 }

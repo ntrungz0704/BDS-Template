@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -34,6 +34,43 @@ const STATUS_CONFIG: Record<LeadStatus, { label: string; badgeBg: string; textCo
   LOST: { label: 'Hủy/Không mua', badgeBg: 'bg-slate-100', textCol: 'text-slate-600', borderCol: 'border-slate-300' },
   SPAM: { label: 'Spam', badgeBg: 'bg-slate-100', textCol: 'text-slate-500', borderCol: 'border-slate-200' },
 };
+
+function parseDossier(rawMessage: string) {
+  const parts = (rawMessage || '')
+    .replace(/\[LIÊN HỆ TƯ VẤN\]/g, '')
+    .replace(/\[MẪU DEMO:[^\]]*\]/g, '')
+    .split('|')
+    .map(p => p.trim())
+    .filter(Boolean);
+
+  let product = '';
+  let document = '';
+  let budget = '';
+  let purpose = '';
+  let message = '';
+
+  for (const p of parts) {
+    if (/sản phẩm|căn|unit|apartment|mẫu nhà/i.test(p)) {
+      product = p.replace(/^[^:]*:\s*/, '').trim();
+    } else if (/tài liệu|pháp lý|bảng giá|brochure|gói/i.test(p)) {
+      document = p.replace(/^[^:]*:\s*/, '').trim();
+    } else if (/tài chính|budget|giá|ngân sách/i.test(p)) {
+      budget = p.replace(/^[^:]*:\s*/, '').trim();
+    } else if (/mục đích|nhu cầu|purpose/i.test(p)) {
+      purpose = p.replace(/^[^:]*:\s*/, '').trim();
+    } else {
+      message = (message ? message + ' | ' : '') + p.replace(/^[^:]*:\s*/, '').trim();
+    }
+  }
+
+  return {
+    product: product || 'Căn hộ tiêu chuẩn',
+    document: document || 'Bảng giá & Pháp lý 1/500',
+    budget: budget || 'Theo bảng giá CĐT',
+    purpose: purpose || 'Tư vấn mua BĐS',
+    message: message || rawMessage || 'Khách đăng ký nhận thông tin dự án qua Zalo',
+  };
+}
 
 export default function AdminLeadsPage() {
   const queryClient = useQueryClient();
@@ -291,10 +328,10 @@ export default function AdminLeadsPage() {
                   <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
                     <th className="py-3.5 px-4">Khách Hàng</th>
                     <th className="py-3.5 px-4">Số Điện Thoại / Zalo</th>
-                    <th className="py-3.5 px-4">Nguồn & Mẫu Quan Tâm</th>
-                    <th className="py-3.5 px-4">Nội Dung / Yêu Cầu</th>
-                    <th className="py-3.5 px-4">Trạng Thái</th>
-                    <th className="py-3.5 px-4">Thời Gian Gửi</th>
+                    <th className="py-3.5 px-4">Dự Án / Mẫu BĐS</th>
+                    <th className="py-3.5 px-4">Hồ Sơ Yêu Cầu & Nhu Cầu</th>
+                    <th className="py-3.5 px-4">Trạng Thái CRM</th>
+                    <th className="py-3.5 px-4">Thời Gian</th>
                     <th className="py-3.5 px-4 text-right">Thao Tác</th>
                   </tr>
                 </thead>
@@ -302,6 +339,8 @@ export default function AdminLeadsPage() {
                   {leads.map((lead) => {
                     const statusConf = STATUS_CONFIG[lead.status] || STATUS_CONFIG.NEW;
                     const cleanPhone = lead.phone.replace(/\D/g, '');
+                    const dossier = parseDossier(lead.message);
+
                     return (
                       <tr key={lead.id} className="hover:bg-slate-50/60 transition-colors group">
                         {/* Khách Hàng */}
@@ -347,21 +386,28 @@ export default function AdminLeadsPage() {
                         {/* Nguồn & Mẫu Quan Tâm */}
                         <td className="py-3.5 px-4">
                           <div className="space-y-0.5">
-                            <span className={`inline-block text-[10px] font-black px-2 py-0.5 rounded-full border ${lead.isMarketplace ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'}`}>
-                              {lead.isMarketplace ? 'Mẫu Demo Marketplace' : `Website: ${lead.tenant?.name || 'Thành Viên'}`}
+                            <span className={`inline-block text-[9px] font-black px-2 py-0.5 rounded-full border ${lead.isMarketplace ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'}`}>
+                              {lead.isMarketplace ? 'Demo Marketplace' : `Website: ${lead.tenant?.name || 'Thành Viên'}`}
                             </span>
-                            <p className="font-bold text-slate-700 truncate max-w-[180px]">{lead.projectTitle || lead.templateSlug || 'Tư vấn BĐS'}</p>
+                            <p className="font-bold text-slate-800 truncate max-w-[160px]">{lead.projectTitle || 'Bất động sản'}</p>
                           </div>
                         </td>
 
-                        {/* Nội Dung / Yêu Cầu */}
+                        {/* Hồ Sơ Yêu Cầu & Nhu Cầu */}
                         <td className="py-3.5 px-4">
-                          <p className="text-slate-600 line-clamp-2 max-w-[220px]" title={lead.message}>
-                            {lead.message || <span className="italic text-slate-400">Yêu cầu nhận bảng giá & tài liệu</span>}
-                          </p>
+                          <div className="space-y-1 max-w-[240px]">
+                            {dossier.product && dossier.product !== 'Căn hộ tiêu chuẩn' && (
+                              <span className="inline-block bg-indigo-50 text-indigo-700 text-[10px] font-bold px-1.5 py-0.5 rounded-md border border-indigo-200 mr-1 truncate max-w-[220px]">
+                                🏠 {dossier.product}
+                              </span>
+                            )}
+                            <p className="text-[11px] font-medium text-slate-700 line-clamp-1" title={dossier.message}>
+                              {dossier.message}
+                            </p>
+                          </div>
                         </td>
 
-                        {/* Trạng Thái */}
+                        {/* Trạng Thái CRM */}
                         <td className="py-3.5 px-4 whitespace-nowrap">
                           <select
                             value={lead.status}
@@ -443,118 +489,151 @@ export default function AdminLeadsPage() {
         </div>
       </div>
 
-      {/* Lead Details & Notes Modal */}
-      {selectedLead && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 space-y-5 border border-slate-200 animate-in zoom-in-95 duration-200 text-slate-900">
-            <div className="flex items-start justify-between border-b border-slate-100 pb-3">
-              <div>
-                <span className="text-[10px] font-black text-indigo-600 uppercase tracking-wider">HỒ SƠ KHÁCH HÀNG CRM</span>
-                <h3 className="text-lg font-black text-slate-900 mt-0.5">{selectedLead.fullName || 'Khách Vãng Lai'}</h3>
+      {/* Structured Consultation Dossier & Report Modal */}
+      {selectedLead && (() => {
+        const dossier = parseDossier(selectedLead.message);
+        return (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 space-y-5 border border-slate-200 animate-in zoom-in-95 duration-200 text-slate-900">
+              {/* Header */}
+              <div className="flex items-start justify-between border-b border-slate-100 pb-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black text-indigo-600 uppercase tracking-wider bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
+                      HỒ SƠ BÁO CÁO NHU CẦU TƯ VẤN BĐS
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400">#{selectedLead.id.slice(-6)}</span>
+                  </div>
+                  <h3 className="text-xl font-black text-slate-900 mt-1">{selectedLead.fullName || 'Khách Vãng Lai'}</h3>
+                </div>
+                <button
+                  onClick={() => setSelectedLead(null)}
+                  className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600"
+                >
+                  ✕
+                </button>
               </div>
-              <button
-                onClick={() => setSelectedLead(null)}
-                className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600"
-              >
-                ✕
-              </button>
-            </div>
 
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="p-3 bg-slate-50 rounded-xl">
-                <span className="text-slate-400 font-semibold block text-[10px]">Số điện thoại</span>
-                <div className="flex items-center gap-1.5 mt-1">
-                  <span className="font-mono font-bold text-slate-900 text-sm">{selectedLead.phone}</span>
+              {/* Quick Contact Box */}
+              <div className="p-3.5 bg-slate-900 text-white rounded-xl flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] text-slate-400 block font-semibold">Hotline Khách Hàng</span>
+                  <span className="text-base font-mono font-black text-amber-400 mt-0.5 block">{selectedLead.phone}</span>
+                </div>
+                <div className="flex items-center gap-2">
                   <a
                     href={`tel:${selectedLead.phone.replace(/\D/g, '')}`}
-                    className="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 font-bold rounded-sm text-[10px]"
+                    className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-lg text-xs transition flex items-center gap-1 shadow-xs"
                   >
-                    Gọi
+                    📞 Gọi Điện
                   </a>
                   <a
                     href={`https://zalo.me/${selectedLead.phone.replace(/\D/g, '')}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-1.5 py-0.5 bg-blue-100 text-blue-700 font-bold rounded-sm text-[10px]"
+                    className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-xs transition flex items-center gap-1 shadow-xs"
                   >
-                    Zalo
+                    💬 Chat Zalo
                   </a>
                 </div>
               </div>
 
-              <div className="p-3 bg-slate-50 rounded-xl">
-                <span className="text-slate-400 font-semibold block text-[10px]">Email</span>
-                <span className="font-bold text-slate-900 mt-1 block truncate">{selectedLead.email || 'Chưa cung cấp'}</span>
+              {/* Structured Dossier Grid */}
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <span className="text-slate-400 font-semibold block text-[10px]">Dự án / Mẫu BĐS</span>
+                  <span className="font-bold text-slate-900 mt-1 block truncate">{selectedLead.projectTitle || 'Bất động sản'}</span>
+                </div>
+
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <span className="text-slate-400 font-semibold block text-[10px]">Sản phẩm / Căn quan tâm</span>
+                  <span className="font-bold text-indigo-700 mt-1 block truncate">{dossier.product}</span>
+                </div>
+
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <span className="text-slate-400 font-semibold block text-[10px]">Tài liệu đăng ký nhận</span>
+                  <span className="font-bold text-emerald-700 mt-1 block truncate">{dossier.document}</span>
+                </div>
+
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <span className="text-slate-400 font-semibold block text-[10px]">Khoảng tài chính dự kiến</span>
+                  <span className="font-bold text-slate-900 mt-1 block truncate">{dossier.budget}</span>
+                </div>
+
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <span className="text-slate-400 font-semibold block text-[10px]">Mục đích mua</span>
+                  <span className="font-bold text-slate-900 mt-1 block truncate">{dossier.purpose}</span>
+                </div>
+
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <span className="text-slate-400 font-semibold block text-[10px]">Nguồn gửi yêu cầu</span>
+                  <span className="font-bold text-amber-700 mt-1 block truncate">
+                    {selectedLead.isMarketplace ? 'Mẫu Demo Marketplace' : `Website: ${selectedLead.tenant?.name || 'Thành Viên'}`}
+                  </span>
+                </div>
               </div>
 
-              <div className="p-3 bg-slate-50 rounded-xl">
-                <span className="text-slate-400 font-semibold block text-[10px]">Nguồn khách</span>
-                <span className="font-bold text-indigo-600 mt-1 block">
-                  {selectedLead.isMarketplace ? 'Mẫu Demo Marketplace' : `Website: ${selectedLead.tenant?.name || 'Thành viên'}`}
+              {/* Full Message */}
+              <div className="p-3 bg-slate-50 rounded-xl text-xs border border-slate-100">
+                <span className="text-slate-400 font-semibold block text-[10px]">Chi tiết yêu cầu & Lời nhắn</span>
+                <p className="font-medium text-slate-800 mt-1 whitespace-pre-wrap leading-relaxed">{dossier.message}</p>
+              </div>
+
+              {/* Notes History */}
+              <div className="space-y-2 text-xs">
+                <span className="font-bold text-slate-700 block">Lịch sử chăm sóc & Ghi chú tư vấn</span>
+                <div className="max-h-28 overflow-y-auto space-y-1.5 pr-1">
+                  {(selectedLead.notes || []).length === 0 ? (
+                    <p className="text-slate-400 text-[11px] italic">Chưa có ghi chú nào.</p>
+                  ) : (
+                    (selectedLead.notes || []).map((n: any, idx: number) => (
+                      <div key={idx} className="p-2 bg-indigo-50/60 rounded-lg text-[11px] text-slate-700 border border-indigo-100">
+                        <p>{n.content}</p>
+                        <span className="text-[9px] text-slate-400 block mt-0.5 font-mono">{new Date(n.createdAt).toLocaleString('vi-VN')}</span>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                <div className="flex gap-2 pt-1">
+                  <input
+                    type="text"
+                    placeholder="Thêm ghi chú chăm sóc (VD: Đã gửi bảng giá Zalo, hẹn xem dự án CN này)..."
+                    value={newNoteContent}
+                    onChange={e => setNewNoteContent(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' && newNoteContent.trim()) {
+                        addNoteMutation.mutate({ id: selectedLead.id, content: newNoteContent });
+                      }
+                    }}
+                    className="flex-1 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 text-xs"
+                  />
+                  <button
+                    disabled={!newNoteContent.trim() || addNoteMutation.isPending}
+                    onClick={() => addNoteMutation.mutate({ id: selectedLead.id, content: newNoteContent })}
+                    className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition disabled:opacity-40"
+                  >
+                    Lưu
+                  </button>
+                </div>
+              </div>
+
+              {/* Footer Modal */}
+              <div className="pt-2 flex items-center justify-between border-t border-slate-100">
+                <span className="text-[10px] text-slate-400 font-mono">
+                  Gửi lúc: {new Date(selectedLead.createdAt).toLocaleString('vi-VN')}
                 </span>
-              </div>
-
-              <div className="p-3 bg-slate-50 rounded-xl">
-                <span className="text-slate-400 font-semibold block text-[10px]">Mẫu / Dự án</span>
-                <span className="font-bold text-slate-900 mt-1 block truncate">{selectedLead.projectTitle || selectedLead.templateSlug || 'Tư vấn BĐS'}</span>
-              </div>
-            </div>
-
-            <div className="p-3 bg-slate-50 rounded-xl text-xs">
-              <span className="text-slate-400 font-semibold block text-[10px]">Nội dung yêu cầu / Lời nhắn</span>
-              <p className="font-semibold text-slate-800 mt-1 whitespace-pre-wrap">{selectedLead.message || 'Khách hàng đăng ký nhận bảng giá & thông tin dự án qua Zalo.'}</p>
-            </div>
-
-            {/* Notes Section */}
-            <div className="space-y-2 text-xs">
-              <span className="font-bold text-slate-700 block">Lịch sử ghi chú chăm sóc</span>
-              <div className="max-h-32 overflow-y-auto space-y-1.5 pr-1">
-                {(selectedLead.notes || []).length === 0 ? (
-                  <p className="text-slate-400 text-[11px] italic">Chưa có ghi chú nào.</p>
-                ) : (
-                  (selectedLead.notes || []).map((n: any, idx: number) => (
-                    <div key={idx} className="p-2 bg-indigo-50/60 rounded-lg text-[11px] text-slate-700 border border-indigo-100">
-                      <p>{n.content}</p>
-                      <span className="text-[9px] text-slate-400 block mt-0.5 font-mono">{new Date(n.createdAt).toLocaleString('vi-VN')}</span>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              <div className="flex gap-2 pt-1">
-                <input
-                  type="text"
-                  placeholder="Thêm ghi chú mới (VD: Đã gọi lúc 10h hẹn gửi bảng giá)..."
-                  value={newNoteContent}
-                  onChange={e => setNewNoteContent(e.target.value)}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter' && newNoteContent.trim()) {
-                      addNoteMutation.mutate({ id: selectedLead.id, content: newNoteContent });
-                    }
-                  }}
-                  className="flex-1 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 text-xs"
-                />
                 <button
-                  disabled={!newNoteContent.trim() || addNoteMutation.isPending}
-                  onClick={() => addNoteMutation.mutate({ id: selectedLead.id, content: newNoteContent })}
-                  className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition disabled:opacity-40"
+                  onClick={() => setSelectedLead(null)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition"
                 >
-                  Lưu
+                  Đóng
                 </button>
               </div>
             </div>
-
-            <div className="pt-2 flex justify-end">
-              <button
-                onClick={() => setSelectedLead(null)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition"
-              >
-                Đóng
-              </button>
-            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </AdminLayout>
   );
 }

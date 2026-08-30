@@ -803,63 +803,66 @@ export async function createContactSubmission(req: Request, res: Response, next:
   try {
     const data = contactSubmissionSchema.parse(req.body);
 
-    const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const randomHex = crypto.randomBytes(2).toString('hex').toUpperCase();
-    const orderNumber = `CTT-${dateStr}-${randomHex}`;
-
-    let templateId: string | null = null;
-    let templateName = data.selectedTemplate || 'Chưa chọn';
+    let templateName = data.selectedTemplate || 'Mẫu BĐS Demo';
     if (data.selectedTemplate) {
       const tpl = await prisma.template.findFirst({
         where: { OR: [{ slug: data.selectedTemplate }, { name: data.selectedTemplate }] },
       });
       if (tpl) {
-        templateId = tpl.id;
         templateName = tpl.name;
       }
     }
 
-    const order = await prisma.order.create({
-      data: {
-        orderNumber,
-        fullName: data.fullName,
-        email: data.email || '',
-        phone: data.phone,
-        type: 'BUY',
-        status: 'PENDING',
-        templateId: templateId || (await prisma.template.findFirst({ where: { isActive: true } }))?.id || '',
-        amount: 0,
-        note: `[LIÊN HỆ TƯ VẤN] Gói: ${data.packageInterest || 'Chưa chọn'}. ${data.message || ''}`.trim(),
-      },
-    });
+    // Build structured consultation summary note
+    const summaryLines = [
+      data.packageInterest ? `📦 Yêu cầu: ${data.packageInterest}` : '',
+      data.message ? `💬 Lời nhắn: ${data.message}` : '',
+    ].filter(Boolean).join(' | ') || (data.message || 'Khách đăng ký nhận tư vấn và bảng giá chi tiết');
 
-    try {
-      const firstTenant = await prisma.tenant.findFirst();
-      if (firstTenant) {
-        await prisma.contactFormSubmission.create({
-          data: {
-            tenantId: firstTenant.id,
-            fullName: data.fullName,
-            email: data.email || '',
-            phone: data.phone,
-            message: `[MẪU DEMO: ${templateName}] ${data.packageInterest ? `Gói: ${data.packageInterest}. ` : ''}${data.message || ''}`.trim(),
-            source: 'MARKETPLACE_DEMO',
-            sourcePage: templateName,
-          }
-        });
-      }
-    } catch (subErr) {
-      logger.warn(`Không thể tạo contactFormSubmission: ${(subErr as Error).message}`);
+    // Find default tenant or first tenant for record keeping
+    const firstTenant = await prisma.tenant.findFirst();
+    const tenantId = firstTenant?.id;
+
+    if (tenantId) {
+      // 1. Create in ContactFormSubmission
+      await prisma.contactFormSubmission.create({
+        data: {
+          tenantId,
+          fullName: data.fullName,
+          email: data.email || '',
+          phone: data.phone,
+          message: summaryLines,
+          source: 'MARKETPLACE_DEMO',
+          sourcePage: templateName,
+          isRead: false,
+        }
+      });
+
+      // 2. Create in Lead CRM table
+      await prisma.lead.create({
+        data: {
+          tenantId,
+          fullName: data.fullName,
+          email: data.email || null,
+          phone: data.phone,
+          status: 'NEW',
+          source: 'MARKETPLACE_DEMO',
+          projectTitle: templateName,
+          note: summaryLines,
+          tags: ['Tư vấn BĐS', 'Bảng giá', templateName],
+        }
+      });
     }
 
+    // 3. Notify Admins
     try {
       const admins = await prisma.user.findMany({ where: { role: 'SUPER_ADMIN', isActive: true } });
       if (admins.length > 0) {
         await prisma.notification.createMany({
           data: admins.map((admin: any) => ({
             userId: admin.id,
-            title: '📩 Yêu cầu tư vấn mới',
-            content: `${data.fullName} (${data.phone}) quan tâm template "${templateName}"${data.packageInterest ? `, gói: ${data.packageInterest}` : ''}. Liên hệ ngay!`,
+            title: '📩 Khách hàng tư vấn mới (CRM)',
+            content: `${data.fullName} (${data.phone}) quan tâm "${templateName}". Yêu cầu: ${summaryLines}`,
           })),
         });
       }
@@ -867,11 +870,23 @@ export async function createContactSubmission(req: Request, res: Response, next:
       logger.warn(`Không thể tạo notification: ${(notifErr as Error).message}`);
     }
 
-    logger.info(`Liên hệ tư vấn ${orderNumber} - ${data.fullName} (${data.phone})`);
+    logger.info(`Đã lưu khách tư vấn CRM: ${data.fullName} (${data.phone}) - ${templateName}`);
 
+    // Return structured consultation dossier & summary report
     res.status(201).json({
       success: true,
-      data: { orderNumber: order.orderNumber, message: 'Yêu cầu tư vấn đã được ghi nhận. Đội ngũ sẽ liên hệ bạn sớm nhất.' },
+      message: 'Yêu cầu tư vấn đã được tiếp nhận thành công. Chuyên viên sẽ liên hệ gửi bảng giá & tài liệu qua Zalo trong ít phút.',
+      data: {
+        dossier: {
+          fullName: data.fullName,
+          phone: data.phone,
+          email: data.email || '',
+          project: templateName,
+          packageInterest: data.packageInterest || 'Bảng giá & Pháp lý',
+          status: 'ĐÃ TIẾP NHẬN - CHUYỂN BỘ PHẬN KINH DOANH',
+          timestamp: new Date().toISOString(),
+        }
+      }
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -879,8 +894,7 @@ export async function createContactSubmission(req: Request, res: Response, next:
         success: false,
         error: {
           code: 'VALIDATION_ERROR',
-          message: 'Dữ liệu không hợp lệ.',
-          details: error.errors,
+          message: error.errors[0]?.message || 'Dữ liệu không hợp lệ.',
         },
       });
     }

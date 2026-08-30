@@ -3,12 +3,11 @@ import { z } from 'zod';
 import { prisma, TemplateRegistry } from '@repo/database';
 import { TEMPLATE_CONFIGS } from '@repo/utils';
 import { logger } from '../index';
-import { sendWelcomeEmail } from '../utils/mailer';
+import { sendWelcomeEmail, sendPasswordResetEmail } from '../utils/mailer';
 import { BUSINESS_CONFIG } from '@repo/config';
 import { websiteProvisioningService } from '../services/website-provisioning.service';
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
-import { sendPasswordResetEmail } from '../utils/mailer';
 
 async function writeAdminAudit(
   req: Request,
@@ -51,7 +50,12 @@ export async function getDashboardStats(req: Request, res: Response, next: NextF
     const expiredTrials = await prisma.tenant.count({ where: { trialStatus: 'EXPIRED', deletedAt: null } });
     const activeSubscriptions = await prisma.subscription.count({ where: { status: 'ACTIVE', tenant: { deletedAt: null } } });
     const totalUsers = await prisma.user.count({ where: { deletedAt: null, role: { not: 'SUPER_ADMIN' } } });
-    const totalOrders = await prisma.order.count();
+    const totalOrders = await prisma.order.count({
+      where: {
+        amount: { gt: 0 },
+        NOT: { note: { contains: '[LIÊN HỆ TƯ VẤN]' } }
+      }
+    });
     
     // Tính tổng doanh thu từ các đơn hàng đã thành công (COMPLETED)
     const revenueSum = await prisma.order.aggregate({
@@ -60,8 +64,17 @@ export async function getDashboardStats(req: Request, res: Response, next: NextF
     });
 
     const recentOrders = await prisma.order.findMany({
+      where: {
+        amount: { gt: 0 },
+        NOT: { note: { contains: '[LIÊN HỆ TƯ VẤN]' } }
+      },
       take: 5,
       orderBy: { createdAt: 'desc' },
+      include: {
+        template: {
+          select: { name: true, slug: true, thumbnail: true }
+        }
+      }
     });
 
     res.status(200).json({
@@ -93,6 +106,10 @@ export async function getOrders(req: Request, res: Response, next: NextFunction)
 
     const where: any = {
       ...(status && { status }),
+      amount: { gt: 0 },
+      NOT: {
+        note: { contains: '[LIÊN HỆ TƯ VẤN]' }
+      }
     };
 
     const [orders, total] = await prisma.$transaction([
