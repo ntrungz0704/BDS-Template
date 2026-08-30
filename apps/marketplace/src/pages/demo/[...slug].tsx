@@ -201,9 +201,8 @@ export default function TemplateLiveDemoPage() {
         <Head>
           <title>{template.name} — Preview</title>
           <meta name="robots" content="noindex,nofollow" />
-          {/* All fonts are now loaded via next/font/google in _app.tsx */}
         </Head>
-        <div className="platformbds-template w-full min-h-screen bg-slate-950">
+        <div className="platformbds-template w-full min-h-screen bg-slate-950 overflow-x-hidden">
           <DemoRenderer template={template} viewport={embedViewport} initialPage={pageSlug} />
         </div>
       </>
@@ -285,7 +284,7 @@ export default function TemplateLiveDemoPage() {
         >
           {/* Device frame */}
           <div
-            className="transition-all duration-300 ease-in-out bg-slate-50 overflow-hidden platformbds-template w-full min-h-full flex flex-col justify-between"
+            className="transition-all duration-300 ease-in-out bg-slate-950 overflow-hidden platformbds-template w-full min-h-full flex flex-col justify-between"
             style={getViewportStyle(viewport)}
           >
             {/* Desktop → direct render (no iframe needed, no responsive quirks) */}

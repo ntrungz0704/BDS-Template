@@ -1661,67 +1661,67 @@ export const LANDING_TEMPLATES: Template[] = [
     }
   },
 
-// ─── LP 02. LANDING PAGE BIỆT THỰ & NGHỈ DƯỠNG HOÀNG GIA VIP ────────────────
+// ─── LP 02. LANDING PAGE TUYỂN DỤNG CHUYÊN VIÊN KINH DOANH BĐS ───────────────
   {
     id: "lp-02",
-    name: "LP #02 - Biệt Thự & Nghỉ Dưỡng Hoàng Gia VIP",
+    name: "LP #02 - Tuyển Dụng 300 Chuyên Viên Kinh Doanh BĐS",
     slug: "lp-02",
     collectionSlug: "landing-page",
     collectionName: "Kho Landing Page Sale BĐS",
     badge: "LANDING PAGE #02",
-    badgeBg: "#D97706",
+    badgeBg: "#C1121F",
     badgeColor: "#FFFFFF",
-    accentColor: "#D97706",
-    description: "Landing Page phong cách Hoàng Gia Thượng Lưu chuyên phân phối Biệt thự đơn lập, Dinh thự ven sông, Penthouse và BĐS nghỉ dưỡng triệu đô. Form đăng ký nhận hồ sơ pháp lý bảo mật & đặt lịch xe VIP/trực thăng đưa đón.",
-    shortDescription: "Landing Page 1 trang · Biệt Thự & Dinh Thự · Sang Trọng Đẳng Cấp",
-    thumbnail: "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&auto=format&fit=crop&q=80",
+    accentColor: "#C1121F",
+    description: "Landing Page chuyên biệt cho Sàn giao dịch & Doanh nghiệp BĐS tuyển dụng chuyên viên kinh doanh, CTV và trưởng phòng. Form nộp hồ sơ ứng tuyển 24h, trình bày 12 buổi đào tạo thực chiến BĐS Thiên Khôi, bảng quyền lợi hoa hồng tới 70% và video văn hóa doanh nghiệp Cát Tường Land.",
+    shortDescription: "Landing Page 1 trang · Tuyển Dụng Sale BĐS · Đột Phá Thu Nhập Trăm Triệu",
+    thumbnail: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&auto=format&fit=crop&q=80",
     screenshots: [
-      "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1200&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+      "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&auto=format&fit=crop&q=80"
     ],
     features: [
-      "Tone màu Đen Hoàng Gia (Dark Luxury) & Vàng Kim (Royal Gold) sang trọng bậc nhất",
-      "Form đăng ký bảo mật dành riêng cho giới thượng lưu và nhà đầu tư VIP",
-      "Trình diễn bộ sưu tập dinh thự ven sông giới hạn với Video & Gallery sắc nét",
-      "Tích hợp nút đặt lịch đưa đón bằng xe Limousine / Trực thăng xem thực tế",
-      "Bảng phân tích cam kết sinh lời và tiềm năng tăng giá bền vững"
+      "Tone màu Đỏ & Vàng Kim tràn đầy năng lượng & nhiệt huyết chiến binh BĐS",
+      "Form đăng ký ứng tuyển nhanh chóng phân loại độ tuổi, kinh nghiệm và vị trí",
+      "Trình diễn 12 buổi đào tạo thực chiến giáo trình BĐS Thiên Khôi từ A-Z",
+      "Bảng quyền lợi hoa hồng tới 70%, lương cứng và thưởng nóng vàng/du lịch",
+      "Gallery ảnh thực tế văn phòng hiện đại và video clip văn hóa doanh nghiệp"
     ],
     priceBuy: 399000,
     priceBuySource: 1290000,
     priceRentMonthly: 129000,
     isActive: true,
     sortOrder: 26,
-    targetAudience: ["Chuyên viên môi giới BĐS triệu đô", "Đơn vị phân phối Biệt thự & Dinh thự VIP", "Chủ đầu tư BĐS Nghỉ dưỡng 5 sao"],
-    highlights: ["Royal Dark Luxury Theme", "VIP Limousine Booking", "High Net Worth Funnel", "Exclusive Collection"],
+    targetAudience: ["Sàn giao dịch BĐS đang tuyển quân quy mô lớn", "Đơn vị phân phối BĐS độc quyền", "Trưởng phòng / Giám đốc khối cần tuyển dụng F0"],
+    highlights: ["Recruitment Lead Funnel", "12 Training Modules", "70% Commission Proof", "Fast Application Form"],
     availablePages: ["Trang chủ Single Page Landing"],
-    modules: ["DarkLuxuryHeroModule", "PrivateAuditLeadModule", "ExclusiveGalleryModule", "VIPBookingModule"],
-    benefits: ["Nâng tầm đẳng cấp giỏ hàng BĐS triệu đô", "Thu hút đúng tệp khách hàng thượng lưu nhiều tiền", "Gia tăng tỷ lệ chốt cọc bất động sản cao cấp"],
+    modules: ["RecruitHeroLeadModule", "CorporateAboutModule", "BenefitsGridModule", "TrainingCurriculumModule", "CultureVideoModule"],
+    benefits: ["Thu hút hàng trăm hồ sơ ứng viên mỗi tuần", "Tự động phân loại ứng viên theo nhu cầu & kinh nghiệm", "Tăng tỷ lệ ứng viên đến phỏng vấn trên 80%"],
     themeConfig: {
-      fontHeading: "'Cinzel', 'Playfair Display', serif",
-      fontBody: "'Inter', sans-serif",
-      primaryColor: "#D97706",
-      secondaryColor: "#0B0F19",
-      accentColor: "#F59E0B",
-      bgColor: "#0B0F19",
-      cardBgColor: "#141A29",
-      textColor: "#F1F5F9",
+      fontHeading: "'Plus Jakarta Sans', sans-serif",
+      fontBody: "'Plus Jakarta Sans', sans-serif",
+      primaryColor: "#C1121F",
+      secondaryColor: "#181C26",
+      accentColor: "#C59B27",
+      bgColor: "#FDFBF7",
+      cardBgColor: "#FFFFFF",
+      textColor: "#181C26",
       radiusToken: "20px",
-      shadowToken: "0 20px 40px -15px rgba(217,119,6,0.2)"
+      shadowToken: "0 20px 40px -15px rgba(193,18,31,0.15)"
     },
     layoutConfig: {
-      heroStyle: "Cinematic Dark Hero with Golden Highlights",
-      navigationStyle: "Dark Frosted Glass Navbar",
-      cardStyle: "Royal Gold Bordered Card",
-      galleryStyle: "Fullwidth Luxury Lightbox Carousel",
-      ctaStyle: "Gold Gradient Metallic Button",
-      spacingScale: "Spacious Luxury Spacing"
+      heroStyle: "High Energy Red & Gold Recruitment Hero with Fast Application Form",
+      navigationStyle: "Corporate Red Brand Subnav",
+      cardStyle: "Clean Bordered White Card with Round Badges",
+      galleryStyle: "Office Culture 4-Image Grid",
+      ctaStyle: "Gold Gradient Metallic Action Button",
+      spacingScale: "Tight Conversion Spacing"
     },
-    wireframe: ["RoyalAnnouncementBar", "DarkNavbar", "CinematicHeroLeadForm", "LuxuryGallery", "PrivateBookingCTA"],
+    wireframe: ["TopContactBar", "BrandSubnav", "HeroRecruitForm", "CompanyLeadership", "BenefitsGrid", "TrainingSessions", "CultureVideo", "CultureGallery", "FastApplyCTA"],
     sectionConfig: {
       sourceSlug: "lp-02",
-      heroTitle: "DINH THỰ VEN SÔNG CHUẨN RESORT 6 SAO",
-      heroSubtitle: "Không gian sống riêng tư biệt lập, diện tích 450m² - 1200m², hầm rượu riêng, bến đỗ du thuyền cá nhân."
+      heroTitle: "TUYỂN DỤNG 300 CHUYÊN VIÊN KINH DOANH BẤT ĐỘNG SẢN",
+      heroSubtitle: "Đột phá thu nhập từ 30 - 100 triệu/tháng. Đào tạo thực chiến 1 kèm 1, giỏ hàng độc quyền hoa hồng cao nhất thị trường."
     }
   },
 
