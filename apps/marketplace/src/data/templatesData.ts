@@ -1981,6 +1981,71 @@ export const LANDING_TEMPLATES: Template[] = [
       heroTitle: "STELLA MEGA CITY CẦN THƠ",
       heroSubtitle: "Đại đô thị sân bay 150ha trung tâm Cần Thơ, sổ đỏ trao tay từng nền, chiết khấu 10% đợt 1, tặng 1 cây vàng 9999."
     }
+  },
+
+// ─── LP 07. LANDING PAGE NOVAWORLD PHAN THIẾT ───────────────────────────────
+  {
+    id: "lp-07",
+    name: "LP #07 - Siêu Thành Phố Biển Du Lịch Sức Khỏe NovaWorld Phan Thiết 1.000ha",
+    slug: "lp-07",
+    collectionSlug: "landing-page",
+    collectionName: "Kho Landing Page Sale BĐS",
+    badge: "LANDING PAGE #07",
+    badgeBg: "#0C4A6E",
+    badgeColor: "#FDE047",
+    accentColor: "#EA580C",
+    description: "Landing Page Siêu Thành Phố Biển 1.000ha NovaWorld Phan Thiết (Bóc tách chuẩn xác từ w.tuybutky.com). Tối ưu chuyển đổi đỉnh cao với Hero Lead Box màu cam nhiệt đới, 3 Cột Đòn Bẩy Đầu Tư, Bảng thông số 1.000ha chuẩn doanh nghiệp, 4 Phân khu trọng điểm (PGA Golf Villas, The Florida, Festival Street 4B, Ocean Residence) tích hợp UX Auto-Select, Đột phá hạ tầng cao tốc 1h30m, 6 Cụm tiện ích quốc tế, Video phóng sự official và Form tải trọn bộ Brochure (.pdf) & Bảng giá (.xlsx).",
+    shortDescription: "Landing Page 1 trang · Siêu Thành Phố Biển 1.000ha · Chiết Khấu 1.6 Tỷ",
+    thumbnail: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Tone màu Xanh Biển Nhiệt Đới (#0C4A6E / #0284C7) phối Vàng Nắng (#F59E0B) & Đỏ Cam CTA (#EA580C)",
+      "Thiết kế góc cạnh vuông vắn sắc nét, chuẩn phong cách bản vẽ kiến trúc cao cấp, không bo tròn generic AI",
+      "Tính năng UX Auto-Select: Bấm vào 1 trong 4 phân khu (Golf Villas / The Florida / Festival / Ocean Residence) sẽ tự động cuộn lên Form và chọn sẵn đúng phân khu",
+      "Bảng phân tích 3 đòn bẩy: Nhân đôi giá trị đầu tư, không áp lực tài chính thanh toán 15%, tỷ suất sinh lời 30%/năm",
+      "Phân tích đột phá hạ tầng Cao tốc Dầu Giây - Phan Thiết 1h30 phút & Sân bay Quốc Tế",
+      "Form tải trọn bộ Brochure & Bảng tính dòng tiền vay (.pdf & .xlsx) tự động"
+    ],
+    priceBuy: 399000,
+    priceBuySource: 1290000,
+    priceRentMonthly: 129000,
+    isActive: true,
+    sortOrder: 31,
+    targetAudience: ["Chủ đầu tư & Sàn F1 phân phối BĐS nghỉ dưỡng biển", "Đội ngũ chuyên viên tư vấn Novaland toàn quốc", "Nhà đầu tư biệt thự biển và shophouse du lịch"],
+    highlights: ["1.000ha Megacity Funnel", "PGA Golf Villas 36 Holes", "Direct Novaland Lead Form", "Full Download Brochure Pack"],
+    availablePages: ["Trang chủ Single Page Landing"],
+    modules: ["TropicalHeroLeadModule", "ThreeLeverageModule", "SpecsTableModule", "FourDivisionsModule", "HighwayInfrastructureModule", "SixAmenitiesModule", "VideoModule", "DownloadDocModule", "Footer"],
+    benefits: ["Tăng gấp đôi tỷ lệ khách hàng để lại thông tin nhận bảng giá đợt 1", "Tối ưu hiển thị sắc nét trên cả mobile, tablet và desktop", "Dễ dàng tùy biến hình ảnh và chính sách bán hàng theo từng đợt mở bán"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#0C4A6E",
+      secondaryColor: "#0284C7",
+      accentColor: "#EA580C",
+      bgColor: "#FFFFFF",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0C4A6E",
+      radiusToken: "0px",
+      shadowToken: "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+    },
+    layoutConfig: {
+      heroStyle: "Tropical Ocean Blue Hero with Red-Orange Funnel Box",
+      navigationStyle: "Navy Ocean Blue Header with Golden Brand",
+      cardStyle: "Crisp Bordered Architectural Card",
+      galleryStyle: "4-Subdivision Key Showcase Grid",
+      ctaStyle: "Golden Gradient Action Button",
+      spacingScale: "Engineered Architectural Spacing"
+    },
+    wireframe: ["TopNav", "HeroForm", "ThreeLeverages", "SpecsTable", "FourSubdivisions", "InfrastructureMap", "SixAmenities", "VideoSection", "DownloadDocForm", "Footer"],
+    sectionConfig: {
+      sourceSlug: "lp-07",
+      heroTitle: "NOVAWORLD PHAN THIET 1.000HA",
+      heroSubtitle: "Siêu thành phố Biển - Du lịch - Sức khỏe, chiết khấu 1.6 Tỷ, thanh toán chỉ 15% đến khi nhận nhà."
+    }
   }
 ];
 
