@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Head from 'next/head';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { Mail, Lock, Eye, EyeOff, ShieldCheck, ArrowRight, Loader2 } from 'lucide-react';
 
 const loginSchema = z.object({
   email: z.string().email('Định dạng email không hợp lệ.'),
@@ -19,7 +21,11 @@ export default function LoginPage() {
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const {
     register,
@@ -36,7 +42,7 @@ export default function LoginPage() {
       const res = await axios.post(
         `${API_URL}/api/auth/login`,
         {
-          email: data.email,
+          email: data.email.trim(),
           password: data.password,
         },
         { withCredentials: true }
@@ -44,13 +50,13 @@ export default function LoginPage() {
 
       if (res.data.success) {
         const user = res.data.data.user;
-        const allowedRoles = ['TENANT_OWNER', 'EDITOR', 'STAFF'];
+        const allowedRoles = ['TENANT_OWNER', 'EDITOR', 'STAFF', 'CUSTOMER', 'SUPER_ADMIN'];
         if (!allowedRoles.includes(user.role)) {
           await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true }).catch(() => undefined);
-          setErrorMsg('Tài khoản không hợp lệ.');
+          setErrorMsg('Tài khoản không có quyền truy cập CMS.');
           return;
         }
-        // Redirect về trang mà user muốn vào, hoặc trang chủ CMS
+
         const requestedRedirect = router.query.redirect;
         const fallbackRedirect = user.role === 'STAFF' ? '/leads' : '/';
         const redirectTo = typeof requestedRedirect === 'string'
@@ -58,6 +64,7 @@ export default function LoginPage() {
           && !requestedRedirect.startsWith('//')
           ? requestedRedirect
           : fallbackRedirect;
+        
         router.push(redirectTo);
       }
     } catch (error: any) {
@@ -69,71 +76,118 @@ export default function LoginPage() {
     }
   };
 
+  if (!mounted) return null;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F8F6F3] px-4">
-      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-md border border-[#E5E0D8]">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-[#1A1A2E]">WEBSITE CMS</h1>
-          <p className="mt-2 text-[#7F7F8F]">Quản lý tin đăng Bất động sản & Blog</p>
-        </div>
+    <>
+      <Head>
+        <title>Đăng Nhập CMS Quản Trị Website | TEMPLATES BDS</title>
+      </Head>
 
-        {errorMsg && (
-          <div className="mb-6 rounded-lg bg-red-50 p-4 text-sm text-red-600 border border-red-200">
-            {errorMsg}
-          </div>
-        )}
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 px-4 font-sans selection:bg-indigo-500 selection:text-white">
+        {/* Glow Effects */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl -z-10 animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl -z-10 animate-pulse" />
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div>
-            <label className="block text-sm font-semibold text-[#1A1A2E] mb-2">Email Tài Khoản</label>
-            <input
-              type="email"
-              {...register('email')}
-              className="w-full rounded-lg border border-[#E5E0D8] px-4 py-3 text-sm focus:border-[#C5A572] focus:outline-none transition-colors"
-              placeholder="moi-gioi@gmail.com"
-            />
-            {errors.email && (
-              <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
-            )}
-          </div>
+        <div className="w-full max-w-md rounded-3xl bg-white/[0.04] backdrop-blur-2xl p-8 sm:p-10 shadow-2xl border border-white/10 relative overflow-hidden">
+          {/* Top Line */}
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-indigo-500 via-purple-500 to-amber-500" />
 
-          <div>
-            <label className="block text-sm font-semibold text-[#1A1A2E] mb-2">Mật Khẩu</label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                {...register('password')}
-                className="w-full rounded-lg border border-[#E5E0D8] pl-4 pr-10 py-3 text-sm focus:border-[#C5A572] focus:outline-none transition-colors font-mono"
-                placeholder="Nhập mật khẩu..."
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
-              >
-                {showPassword ? (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" /></svg>
-                ) : (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                )}
-              </button>
+          {/* Header */}
+          <div className="mb-8 text-center">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 mb-4 ring-1 ring-white/20">
+              <ShieldCheck className="w-7 h-7" />
             </div>
-            {errors.password && (
-              <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>
-            )}
+            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+              WEBSITE CMS BUILDER
+            </h1>
+            <p className="mt-2 text-xs font-bold text-indigo-300 uppercase tracking-widest">
+              Quản Trị Giao Diện, Dự Án & Tin Tức
+            </p>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-[#C5A572] py-3 text-sm font-semibold text-white hover:bg-[#B8941F] focus:outline-none disabled:opacity-50 transition-colors shadow-sm"
-          >
-            {loading ? 'Đang xác thực...' : 'ĐĂNG NHẬP QUẢN TRỊ'}
-          </button>
-        </form>
+          {errorMsg && (
+            <div className="mb-6 rounded-2xl bg-rose-500/10 border border-rose-500/30 p-4 text-xs font-bold text-rose-300 flex items-start gap-2.5">
+              <span className="text-rose-400 mt-0.5 text-sm font-bold">⚠️</span>
+              <span className="leading-relaxed">{errorMsg}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            <div>
+              <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">
+                Email Tài Khoản CMS
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Mail className="w-4 h-4" />
+                </span>
+                <input
+                  type="email"
+                  {...register('email')}
+                  className="w-full rounded-2xl border border-white/10 bg-white/[0.04] pl-10 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:border-indigo-400 focus:bg-white/[0.08] focus:outline-none transition-all shadow-inner"
+                  placeholder="moi-gioi@gmail.com"
+                />
+              </div>
+              {errors.email && (
+                <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.email.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">
+                Mật Khẩu CMS
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Lock className="w-4 h-4" />
+                </span>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  {...register('password')}
+                  className="w-full rounded-2xl border border-white/10 bg-white/[0.04] pl-10 pr-10 py-3 text-sm text-white placeholder-slate-500 focus:border-indigo-400 focus:bg-white/[0.08] focus:outline-none transition-all shadow-inner font-mono"
+                  placeholder="Nhập mật khẩu..."
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="mt-1.5 text-xs text-rose-400 font-medium">{errors.password.message}</p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full mt-6 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-xs uppercase tracking-widest font-black rounded-2xl hover:scale-[1.01] active:scale-[0.99] focus:outline-none disabled:opacity-50 transition-all shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                  <span>Đang xác thực...</span>
+                </span>
+              ) : (
+                <>
+                  <span>Đăng Nhập CMS</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Helper tip */}
+          <div className="mt-6 pt-5 border-t border-white/10 text-center">
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              💡 Mật khẩu mặc định là <strong className="text-amber-300 font-mono">phần trước dấu @</strong> trong email của bạn (vd: <span className="font-mono">nguyenlongdz8</span>).
+            </p>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
-
-

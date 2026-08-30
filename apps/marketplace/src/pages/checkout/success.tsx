@@ -177,12 +177,12 @@ export default function CheckoutSuccessPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-slate-200/60 pt-3">
                   <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Trang Quản Trị Website (CMS):</span>
                   <a
-                    href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
+                    href={process.env.NEXT_PUBLIC_CMS_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://cms.aireviewbds.com')}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-indigo-600 hover:underline font-mono font-bold flex items-center gap-1 text-sm"
                   >
-                    {process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
+                    {process.env.NEXT_PUBLIC_CMS_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://cms.aireviewbds.com')}
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -227,7 +227,7 @@ export default function CheckoutSuccessPage() {
               {/* Action Buttons */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mt-8">
                 <a
-                  href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
+                  href={process.env.NEXT_PUBLIC_CMS_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://cms.aireviewbds.com')}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl text-sm flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all"
@@ -236,7 +236,7 @@ export default function CheckoutSuccessPage() {
                   <span>Vào Quản Trị CMS Ngay</span>
                 </a>
                 <a
-                  href={`https://${tenantSlug || orderData.subdomain || 'site'}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`}
+                  href={typeof window !== 'undefined' && window.location.hostname === 'localhost' ? `http://localhost:3000/demo/${orderData.template?.slug || 'luxury-gold'}` : `https://${tenantSlug || orderData.subdomain || 'site'}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="py-4 px-6 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl text-sm flex items-center justify-center gap-2 shadow-lg transition-all"
