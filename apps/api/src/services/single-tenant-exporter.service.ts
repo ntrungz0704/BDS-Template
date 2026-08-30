@@ -1025,53 +1025,133 @@ export const getServerSideProps: GetServerSideProps = async () => {
       }
     }
 
-    // 16. HƯỚNG DẪN UP LÊN GITHUB
-    const githubGuideContent = `# HƯỚNG DẪN ĐẨY MÃ NGUỒN LÊN GITHUB & DEPLOY TỰ ĐỘNG
+    // 16. .gitignore chuẩn cho GitHub
+    const gitignoreContent = `# Dependencies
+/node_modules
+/.pnp
+.pnp.js
 
-Tài liệu này hướng dẫn Quý Khách đưa mã nguồn website lên kho lưu trữ **GitHub cá nhân** và thiết lập triển khai tự động.
+# Testing
+/coverage
+
+# Next.js build output
+/.next/
+/out/
+
+# Production
+/build
+/dist
+
+# Misc
+.DS_Store
+*.pem
+
+# Local env files
+.env*.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+`;
+    zip.addFile('.gitignore', Buffer.from(gitignoreContent, 'utf-8'));
+
+    // 17. GitHub Actions: Tự động chạy LIVE trên GitHub Pages khi push code lên GitHub
+    const githubPagesWorkflow = `name: Deploy Live Website to GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: \${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout mã nguồn
+        uses: actions/checkout@v4
+
+      - name: Cấu hình GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Đóng gói Website tĩnh HTML5
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'ban-tinh-html-css-js'
+
+      - name: Triển khai Website LIVE lên GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+`;
+    zip.addFile('.github/workflows/deploy-pages.yml', Buffer.from(githubPagesWorkflow, 'utf-8'));
+
+    // 18. SỔ TAY HƯỚNG DẪN UP LÊN GITHUB & CHẠY LIVE THẬT 100% TRÊN INTERNET
+    const githubGuideContent = `# HƯỚNG DẪN ĐẨY LÊN GITHUB & CHẠY LIVE THẬT 100% MIỄN PHÍ TRÊN INTERNET
+
+Tài liệu này hướng dẫn Quý Khách đưa mã nguồn lên **GitHub** và kích hoạt để website **CHẠY TRỰC TIẾP ONLINE 100% THẬT TRÊN INTERNET** (có link gửi cho sếp, đối tác, khách hàng xem ngay mà KHÔNG CẦN MUA HOSTING).
 
 ---
 
-## BƯỚC 1: TẠO REPOSITORY MỚI TRÊN GITHUB
-1. Truy cập https://github.com và đăng nhập vào tài khoản của Quý Khách.
-2. Nhấn nút **"New"** (hoặc dấu \`+\` ở góc trên bên phải màn hình).
-3. Đặt tên kho lưu trữ (Ví dụ: \`my-bds-website\`).
-4. Chọn chế độ **Private** (Riêng tư) để bảo vệ bản quyền mã nguồn.
-5. **Lưu ý**: KHÔNG tích chọn *"Add a README file"* hay *.gitignore* (vì mã nguồn đã có sẵn đầy đủ).
-6. Nhấn nút xanh **"Create repository"**.
+## 🌟 PHẦN 1: ĐẨY TOÀN BỘ MÃ NGUỒN LÊN GITHUB
 
----
+### Bước 1: Tạo Repository mới trên GitHub
+1. Truy cập [https://github.com](https://github.com) và đăng nhập.
+2. Bấm nút **"New"** (hoặc dấu \`+\` ở góc trên bên phải).
+3. Đặt tên kho (Ví dụ: \`website-bds-vip\`).
+4. Chọn **Public** (hoặc Private tùy nhu cầu).
+5. **Lưu ý quan trọng**: Không tích chọn bất kỳ ô *"Add a README"*, *.gitignore* nào (vì trong gói này đã có sẵn file \`.gitignore\` và cấu hình tự động).
+6. Bấm nút xanh **"Create repository"**.
 
-## BƯỚC 2: ĐẨY MÃ NGUỒN TỪ MÁY LÊN GITHUB
-Mở cửa sổ Terminal (hoặc Git Bash / Command Prompt) ngay tại thư mục giải nén này và gõ lần lượt các lệnh sau:
+### Bước 2: Chạy 5 lệnh đẩy code từ máy tính lên GitHub
+Mở Terminal / Command Prompt ngay tại thư mục giải nén này và copy-paste lần lượt:
 
 \`\`\`bash
-# 1. Khởi tạo Git
 git init
-
-# 2. Thêm toàn bộ file vào bộ nhớ đệm
 git add .
-
-# 3. Ghi nhận commit đầu tiên
-git commit -m "Khởi tạo mã nguồn Website & CMS BĐS"
-
-# 4. Đặt nhánh chính là main
+git commit -m "Khoi tao website Bat Dong San"
 git branch -M main
-
-# 5. Liên kết với kho GitHub vừa tạo (Thay URL bằng link repo GitHub của bạn)
-git remote add origin https://github.com/TEN-TAI-KHOAN-CUA-BAN/my-bds-website.git
-
-# 6. Đẩy mã nguồn lên
+git remote add origin https://github.com/TEN-TAI-KHOAN-CUA-BAN/website-bds-vip.git
 git push -u origin main
 \`\`\`
+*(Thay \`TEN-TAI-KHOAN-CUA-BAN\` và \`website-bds-vip\` bằng link repo GitHub của bạn)*.
 
 ---
 
-## BƯỚC 3: KẾT NỐI VERCEL ĐỂ TỰ ĐỘNG TRIỂN KHAI (CI/CD)
-1. Truy cập https://vercel.com và đăng nhập bằng tài khoản GitHub.
-2. Chọn **"Add New Project"** $\\rightarrow$ Nhấn **"Import"** cạnh repo \`my-bds-website\`.
-3. Trong phần **Environment Variables**, điền biến \`DATABASE_URL\` từ Neon.tech hoặc Supabase.
-4. Nhấn **Deploy** $\\rightarrow$ Mỗi khi bạn sửa code và push lên GitHub, Vercel sẽ tự động cập nhật website chỉ trong 30 giây!
+## 🚀 PHẦN 2: KÍCH HOẠT CHẠY LIVE TRÊN INTERNET (CÓ 2 CÁCH MIỄN PHÍ)
+
+### CÁCH 1: CHẠY LIVE TRÊN GITHUB PAGES (0đ Hosting — 1 Click là chạy)
+Hệ thống đã tích hợp sẵn file cấu hình tự động \`.github/workflows/deploy-pages.yml\` trong mã nguồn của bạn:
+
+1. Trên trang Repository GitHub của bạn, bấm vào mục **Settings** (Cài đặt) $\\rightarrow$ Chọn **Pages** ở cột menu bên trái.
+2. Tại mục **Build and deployment** $\\rightarrow$ **Source**: Chọn **"GitHub Actions"**.
+3. Chờ khoảng **45 giây**, GitHub sẽ tự động build và cấp cho bạn một đường link website online thật 100% dạng:
+   👉 \`https://TEN-TAI-KHOAN-CUA-BAN.github.io/website-bds-vip/\`
+4. Quý khách có thể copy link này gửi ngay cho khách hàng xem trên điện thoại và máy tính!
+
+---
+
+### CÁCH 2: CHẠY TOÀN DIỆN WEBSITE + CMS QUẢN TRỊ TRÊN VERCEL (Miễn Phí)
+1. Truy cập [https://vercel.com](https://vercel.com) $\\rightarrow$ Đăng nhập bằng tài khoản GitHub.
+2. Bấm **"Add New Project"** $\\rightarrow$ Bấm nút **"Import"** cạnh repo \`website-bds-vip\`.
+3. Nhập biến kết nối CSDL PostgreSQL \`DATABASE_URL\` (tạo miễn phí 1-Click trên [Neon.tech](https://neon.tech) hoặc [Supabase.com](https://supabase.com)).
+4. Bấm **"Deploy"** $\\rightarrow$ Website sẽ chạy online toàn cầu với tốc độ siêu tốc và có sẵn trang quản trị \`/admin\`!
+
+---
+*Mọi thắc mắc kỹ thuật, Quý khách luôn có thể liên hệ đội ngũ hỗ trợ 24/7!*
 `;
     zip.addFile('HUONG-DAN-UP-LEN-GITHUB.md', Buffer.from(githubGuideContent, 'utf-8'));
 
