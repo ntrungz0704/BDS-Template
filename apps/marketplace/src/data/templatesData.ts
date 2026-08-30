@@ -1848,8 +1848,73 @@ export const LANDING_TEMPLATES: Template[] = [
     wireframe: ["BrokerHeader", "HeroProfileForm", "ExclusiveInventory", "ClientTestimonials", "FloatingContact"],
     sectionConfig: {
       sourceSlug: "lp-04",
-      heroTitle: "TƯ VẤN ĐẦU TƯ BĐS AN TOÀN & SINH LỜI CAO",
-      heroSubtitle: "Nắm giữ 150+ căn hộ & nhà phố độc quyền giá cắt lỗ 15% - 25% so với thị trường. Hỗ trợ pháp lý & xem nhà 24/7."
+      heroTitle: "ĐẠI ĐÔ THỊ NGHỈ DƯỠNG HOÀNG GIA ĐẸP NHẤT VIỆT NAM",
+      heroSubtitle: "Quy mô 198ha, 3 mặt sông Sài Gòn, chiết khấu 15% đợt 1, ân hạn nợ gốc 36 tháng, tặng kim cương 1 carat."
+    }
+  },
+
+// ─── LP 05. LANDING PAGE GOLDEN PARK TOWER CẦU GIẤY ─────────────────────────
+  {
+    id: "lp-05",
+    name: "LP #05 - Tổ Hợp Căn Hộ Khách Sạn 5 Sao Golden Park Tower",
+    slug: "lp-05",
+    collectionSlug: "landing-page",
+    collectionName: "Kho Landing Page Sale BĐS",
+    badge: "LANDING PAGE #05",
+    badgeBg: "#0C3832",
+    badgeColor: "#FDE047",
+    accentColor: "#C59B27",
+    description: "Landing Page phong cách Kiến Trúc Kỷ Hà Chuẩn Mực Cầu Giấy (Không bo tròn AI bong bóng). Tối ưu chuyển đổi với Hero Lead Box màu đỏ trực diện từ CĐT, bảng tổng quan chỉ số kẻ sọc chuyên nghiệp, bảng 7 đợt tiến độ thanh toán chi tiết, sơ đồ mặt bằng tầng điển hình, lưới 9 mẫu căn hộ 3D kèm tính năng UX Auto-Select thông minh và Form nhận bảng giá cuối trang.",
+    shortDescription: "Landing Page 1 trang · Căn Hộ Khách Sạn 5 Sao · Tâm Điểm Cầu Giấy",
+    thumbnail: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Thiết kế góc cạnh vuông vắn sắc nét chuẩn kiến trúc cao cấp, loại bỏ hoàn toàn cảm giác bo tròn AI",
+      "Tone màu Xanh Ngọc Lục Bảo (#0C3832) phối Vàng Hoàng Kim (#C59B27) & Đỏ Phễu Chuyển Đổi (#C53030)",
+      "Tính năng UX Auto-Select: Bấm vào 1 trong 9 mẫu căn hộ sẽ tự động cuộn lên Form và chọn sẵn đúng căn đó",
+      "Bảng kẻ ô 7 đợt tiến độ thanh toán chuẩn doanh nghiệp",
+      "Sơ đồ mặt bằng tầng điển hình 16 căn/sàn & 6 cụm tiện ích nghỉ dưỡng tại gia 5 sao",
+      "Form nhận báo giá trực tiếp từ Chủ đầu tư với cam kết bảo mật 100%"
+    ],
+    priceBuy: 399000,
+    priceBuySource: 1290000,
+    priceRentMonthly: 129000,
+    isActive: true,
+    sortOrder: 29,
+    targetAudience: ["Chủ đầu tư & Sàn F1 phân phối chung cư cao cấp Hà Nội / TP.HCM", "Đội nhóm sale dự án trung tâm hành chính", "Môi giới căn hộ khách sạn 5 sao"],
+    highlights: ["Sharp Luxury Corners", "Structured Payment Table", "9-Unit 3D Floor Grid", "Direct Developer Lead Form"],
+    availablePages: ["Trang chủ Single Page Landing"],
+    modules: ["EmeraldHeroLeadModule", "SpecsTableModule", "PaymentScheduleModule", "LocationMapModule", "FloorPlanLayoutModule", "UnitGridUXModule", "AmenitiesModule", "VideoModule", "BottomLeadModule"],
+    benefits: ["Thu hút khách hàng tìm mua căn hộ trung tâm tài chính", "Bảng tiến độ và chính sách rõ ràng tạo niềm tin tuyệt đối", "Tự động phân loại chính xác diện tích khách quan tâm"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#0C3832",
+      secondaryColor: "#0A2E28",
+      accentColor: "#C59B27",
+      bgColor: "#FFFFFF",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0A2E28",
+      radiusToken: "0px",
+      shadowToken: "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+    },
+    layoutConfig: {
+      heroStyle: "Emerald Deep Teal Hero with Red Direct Lead Box",
+      navigationStyle: "Sharp Dark Green Header with Gold Accents",
+      cardStyle: "Crisp Bordered Architectural Card",
+      galleryStyle: "Grid 9-Photo 3D Unit Showcase",
+      ctaStyle: "Gold Brass Action Button",
+      spacingScale: "Engineered Architectural Spacing"
+    },
+    wireframe: ["TopNav", "HeroForm", "SpecsTable", "PaymentTable", "LocationMap", "FloorPlan", "UnitGrid9", "AmenitiesGrid", "VideoSection", "BottomLeadForm", "Footer"],
+    sectionConfig: {
+      sourceSlug: "lp-05",
+      heroTitle: "GOLDEN PARK TOWER CẦU GIẤY",
+      heroSubtitle: "Tổ hợp căn hộ cao cấp & khách sạn 5 sao 4 mặt tiền Cầu Giấy, chiết khấu 8.5%, hỗ trợ vay 70% 0% LS 18 tháng."
     }
   }
 ];

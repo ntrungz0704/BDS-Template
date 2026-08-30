@@ -44,6 +44,7 @@ const LP01Template = dynamic(() => import('./templates/LP01Template'), { loading
 const LP02Template = dynamic(() => import('./templates/LP02Template'), { loading: () => <LoadingSkeleton /> });
 const LP03Template = dynamic(() => import('./templates/LP03Template'), { loading: () => <LoadingSkeleton /> });
 const LP04Template = dynamic(() => import('./templates/LP04Template'), { loading: () => <LoadingSkeleton /> });
+const LP05Template = dynamic(() => import('./templates/LP05Template'), { loading: () => <LoadingSkeleton /> });
 import { AIChatWidget } from '../ai/AIChatWidget';
 
 interface DemoRendererProps {
@@ -1082,9 +1083,13 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
     if (['lp-03', 'landing-03', 'landplot-lp', 'land-sales'].some(k => slug === k || slug.startsWith(k) || sourceSlug.includes(k))) {
       return <LP03Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
-    // LP-04: Landing Page Sale BĐS Cá Nhân / Broker Uy Tín
-    if (['lp-04', 'landing-04', 'broker-authority-lp', 'personal-broker-sales'].some(k => slug === k || slug.startsWith(k) || sourceSlug.includes(k))) {
+    // LP-04: Landing Page Đại Đô Thị Hoàng Gia
+    if (['lp-04', 'landing-04', 'broker-authority-lp', 'royal-palace-lp', 'royal-eco-lp'].some(k => slug === k || slug.startsWith(k) || sourceSlug.includes(k))) {
       return <LP04Template template={template} viewport={viewport} initialPage={initialPage} />;
+    }
+    // LP-05: Landing Page Golden Park Tower Cầu Giấy
+    if (['lp-05', 'landing-05', 'golden-park-lp', 'golden-park'].some(k => slug === k || slug.startsWith(k) || sourceSlug.includes(k))) {
+      return <LP05Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
 
     // ─── 24 MULTI-PAGE WEBSITE TEMPLATES ───
