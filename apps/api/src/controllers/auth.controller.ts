@@ -14,13 +14,14 @@ const registerSchema = z.object({
   phone: z.string().regex(/^(0|\+84)[0-9]{9,10}$/, 'SĐT phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.').optional(),
 });
 
+
 const loginSchema = z.object({
   email: z.string().email('Định dạng email không hợp lệ.'),
   password: z.string().min(1, 'Mật khẩu không được để trống.'),
 });
 
-const ACCESS_TOKEN_EXPIRY = process.env.NODE_ENV === 'production' ? '15m' : '4h';
-const REFRESH_TOKEN_EXPIRY_DAYS = 7;
+const ACCESS_TOKEN_EXPIRY = '7d';
+const REFRESH_TOKEN_EXPIRY_DAYS = 30;
 
 // Helper sinh Access Token
 function generateAccessToken(payload: { userId: string; email: string; role: string; tenantId: string | null }): string {
@@ -281,7 +282,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       secure: isProd,
       sameSite: sameSiteMode,
       domain: cookieDomain,
-      maxAge: 15 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.cookie('refresh_token', refreshTokenString, {
@@ -306,7 +307,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       secure: isProd,
       sameSite: sameSiteMode,
       domain: cookieDomain,
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     await Promise.all([
@@ -447,7 +448,7 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
       secure: isProdRefresh,
       sameSite: sameSiteModeRefresh,
       domain: cookieDomainRefresh,
-      maxAge: 15 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.cookie('refresh_token', newRefreshTokenString, {

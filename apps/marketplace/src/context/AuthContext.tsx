@@ -176,20 +176,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         try {
-          const res = await axios.get(`${API_URL}/api/auth/me`, {
+          let meRes = await axios.get(`${API_URL}/api/auth/me`, {
             withCredentials: true,
-            timeout: 3000,
+            timeout: 6000,
+          }).catch(async (meErr) => {
+            if (meErr?.response?.status === 401) {
+              // Try silent refresh using refresh_token cookie
+              try {
+                const refreshRes = await axios.post(`${API_URL}/api/auth/refresh`, {}, {
+                  withCredentials: true,
+                  timeout: 6000,
+                });
+                if (refreshRes?.data?.success) {
+                  // Retry /me after refresh
+                  return await axios.get(`${API_URL}/api/auth/me`, {
+                    withCredentials: true,
+                    timeout: 6000,
+                  });
+                }
+              } catch (_) {
+                // Refresh token also invalid or expired
+                throw meErr;
+              }
+            }
+            throw meErr;
           });
-          if (res?.data?.data?.user) {
-            const apiUser = res.data.data.user;
+
+          if (meRes?.data?.data?.user) {
+            const apiUser = meRes.data.data.user;
             if (apiUser.role === 'SUPER_ADMIN') {
               setUser(null);
               localStorage.removeItem('platformbds_user_v3');
               localStorage.removeItem('platformbds_orders_v3');
               return;
             }
-            const apiOrders = res.data.data.orders || [];
-            const apiWishlists = res.data.data.user?.wishlists || [];
+            const apiOrders = meRes.data.data.orders || [];
+            const apiWishlists = meRes.data.data.user?.wishlists || [];
 
             setUser(apiUser);
             setOrders(apiOrders);
@@ -198,18 +220,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             localStorage.setItem('platformbds_user_v3', JSON.stringify(apiUser));
             localStorage.setItem('platformbds_orders_v3', JSON.stringify(apiOrders));
             localStorage.setItem('platformbds_wishlist_v3', JSON.stringify(apiWishlists));
-          } else {
+          }
+        } catch (err: any) {
+          // If explicitly unauthorized by backend (401), session is genuinely dead
+          if (err?.response?.status === 401) {
             setUser(null);
             setOrders([]);
             localStorage.removeItem('platformbds_user_v3');
             localStorage.removeItem('platformbds_orders_v3');
           }
-        } catch (err) {
-          // Backend API offline or session expired
-          setUser(null);
-          setOrders([]);
-          localStorage.removeItem('platformbds_user_v3');
-          localStorage.removeItem('platformbds_orders_v3');
+          // On network errors or timeouts, preserve localStorage cached user state
         }
       }
       setIsLoading(false);

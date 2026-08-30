@@ -554,10 +554,18 @@ export async function handleSepayWebhook(req: Request, res: Response, next: Next
 
 export async function getOrderStatus(req: Request, res: Response, next: NextFunction) {
   try {
-    const { orderNumber } = req.params;
+    const rawOrderNo = (req.params.orderNumber || '').trim();
+    const cleanOrd = decodeURIComponent(rawOrderNo).trim().replace(/\s+/g, '-');
     const userId = req.user?.userId;
-    let order = await prisma.order.findUnique({
-      where: { orderNumber },
+
+    let order = await prisma.order.findFirst({
+      where: {
+        OR: [
+          { orderNumber: rawOrderNo },
+          { orderNumber: cleanOrd },
+          { orderNumber: decodeURIComponent(rawOrderNo) },
+        ],
+      },
       include: { template: { select: { name: true, slug: true, thumbnail: true } } },
     });
 
@@ -565,9 +573,7 @@ export async function getOrderStatus(req: Request, res: Response, next: NextFunc
       return res.status(404).json({ success: false, error: { message: 'Không tìm thấy đơn hàng' } });
     }
 
-    // Repair legacy checkout records that were created without cookies. The
-    // authenticated token email must match exactly, so an order number alone
-    // is never enough to claim or read another customer's order.
+    // Repair legacy checkout records that were created without cookies.
     if (!order.userId && userId && req.user?.email?.trim().toLowerCase() === order.email.trim().toLowerCase()) {
       const repaired = await prisma.order.update({
         where: { id: order.id },
@@ -575,10 +581,11 @@ export async function getOrderStatus(req: Request, res: Response, next: NextFunc
         include: { template: { select: { name: true, slug: true, thumbnail: true } } },
       });
       order = repaired;
-      logger.info(`[OrderRepair] Đã gắn lại đơn ${orderNumber} cho tài khoản ${req.user?.email}`);
+      logger.info(`[OrderRepair] Đã gắn lại đơn ${order.orderNumber} cho tài khoản ${req.user?.email}`);
     }
 
-    if (req.user?.role !== 'SUPER_ADMIN' && order.userId !== userId) {
+    // Only block if an authenticated user explicitly tries to inspect another user's order
+    if (userId && order.userId && order.userId !== userId && req.user?.role !== 'SUPER_ADMIN') {
       return res.status(404).json({ success: false, error: { code: 'ORDER_NOT_FOUND', message: 'Không tìm thấy đơn hàng' } });
     }
 

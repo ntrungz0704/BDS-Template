@@ -19,11 +19,16 @@ export default function CheckoutSuccessPage() {
   const { orderNumber } = router.query;
   const { showToast } = useAuth();
 
+
+
   const [loading, setLoading] = useState(true);
   const [orderData, setOrderData] = useState<any>(null);
   const [orderPaid, setOrderPaid] = useState(false);
   const [tenantSlug, setTenantSlug] = useState('');
   const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  const rawOrderNumber = typeof orderNumber === 'string' ? orderNumber : Array.isArray(orderNumber) ? orderNumber[0] : '';
+  const cleanOrderNumber = rawOrderNumber ? rawOrderNumber.trim().replace(/\s+/g, '-') : '';
 
   // 1. Fetch initial order status
   const fetchOrderStatus = async (ordNo: string) => {
@@ -46,20 +51,20 @@ export default function CheckoutSuccessPage() {
   };
 
   useEffect(() => {
-    if (orderNumber && typeof orderNumber === 'string') {
-      fetchOrderStatus(orderNumber);
-    } else if (router.isReady && !orderNumber) {
+    if (cleanOrderNumber) {
+      fetchOrderStatus(cleanOrderNumber);
+    } else if (router.isReady && !cleanOrderNumber) {
       setLoading(false);
     }
-  }, [orderNumber, router.isReady]);
+  }, [cleanOrderNumber, router.isReady]);
 
   // 2. Real-time Live Polling check for Admin Approval
   useEffect(() => {
-    if (!orderNumber || typeof orderNumber !== 'string' || orderPaid) return;
+    if (!cleanOrderNumber || orderPaid) return;
 
     const interval = setInterval(async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/marketplace/orders/${encodeURIComponent(orderNumber)}/status`, {
+        const res = await axios.get(`${API_URL}/api/marketplace/orders/${encodeURIComponent(cleanOrderNumber)}/status`, {
           withCredentials: true,
         });
         if (res.data?.success && res.data?.data?.isCompleted) {
@@ -74,7 +79,7 @@ export default function CheckoutSuccessPage() {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [orderNumber, orderPaid, showToast]);
+  }, [cleanOrderNumber, orderPaid, showToast]);
 
   const handleCopy = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
