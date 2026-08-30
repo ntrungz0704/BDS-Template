@@ -69,8 +69,12 @@ export default function App({ Component, pageProps }: AppProps) {
       <Component {...pageProps} />
       <AIChatWidget
         websiteName={(pageProps as any)?.company?.name || 'Sàn Giao Dịch Bất Động Sản'}
+        slogan={(pageProps as any)?.company?.slogan}
         hotline={(pageProps as any)?.company?.phone || '0905.568.888'}
         zalo={(pageProps as any)?.company?.zalo || '0905.568.888'}
+        email={(pageProps as any)?.company?.email}
+        address={(pageProps as any)?.company?.address}
+        projects={(pageProps as any)?.projects}
       />
     </QueryClientProvider>
   );

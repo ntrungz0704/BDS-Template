@@ -1192,8 +1192,20 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
       <div className="demo-core-content">{renderContent()}</div>
       <AIChatWidget
         websiteName={template.name}
+        slogan={template.shortDescription || 'Nâng Tầm Không Gian Sống'}
         hotline="0905.568.888"
         zalo="0905.568.888"
+        projects={[
+          {
+            title: template.sectionConfig?.heroTitle || template.name,
+            type: template.collectionName || 'Bất Động Sản Cao Cấp',
+            price: template.priceBuy ? `${(template.priceBuy / 1000).toFixed(0)} Tỷ / Căn` : 'Liên hệ',
+            area: '85m² - 250m²',
+            address: 'Vị trí đắc địa trung tâm',
+            amenities: template.features || ['Hồ bơi tràn viền', 'An ninh 24/7', 'Pháp lý 1/500 hoàn thiện', 'Ngân hàng hỗ trợ 70%'],
+            description: template.description,
+          }
+        ]}
       />
     </div>
   );

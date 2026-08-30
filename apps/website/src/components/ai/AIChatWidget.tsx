@@ -4,12 +4,16 @@ import {
   Bot, Sparkles, Send, X, MessageSquare, Phone, 
   MessageCircle, RefreshCw, AlertCircle, CheckCircle2, ChevronDown, User
 } from 'lucide-react';
-import { askGeminiAssistant, getDailyAiUsage } from '../../services/aiService';
+import { askGeminiAssistant, getDailyAiUsage, AiProjectItem } from '../../services/aiService';
 
 export interface AIChatWidgetProps {
   websiteName?: string;
+  slogan?: string;
   hotline?: string;
   zalo?: string;
+  email?: string;
+  address?: string;
+  projects?: AiProjectItem[];
   currentProject?: string;
   themeColor?: 'blue' | 'gold' | 'emerald' | 'dark';
 }
@@ -22,9 +26,13 @@ interface ChatMessage {
 }
 
 export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
-  websiteName = 'Sàn Giao Dịch BĐS',
+  websiteName = 'Sàn Giao Dịch BĐS Uy Tín',
+  slogan = 'Nâng Tầm Không Gian Sống',
   hotline = '0905.568.888',
   zalo = '0905.568.888',
+  email = 'contact@bds-realestate.vn',
+  address = 'TP. Hồ Chí Minh / Hà Nội',
+  projects = [],
   currentProject,
   themeColor = 'blue',
 }) => {
@@ -36,7 +44,7 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
     {
       id: 'welcome',
       sender: 'ai',
-      text: `👋 Chào bạn! Tôi là **Trợ Lý Ảo AI Bất Động Sản**. Tôi có thể giúp bạn giải đáp về giá bán, mặt bằng, chính sách vay ngân hàng hoặc tiến độ bàn giao. Bạn đang quan tâm căn hộ hay dự án nào ạ?`,
+      text: `👋 Chào bạn! Tôi là **Trợ Lý Ảo AI Bất Động Sản** của **${websiteName}**.\n\nTôi có thể hỗ trợ bạn tra cứu chi tiết giá bán, diện tích, tiện ích các căn đang mở bán, chính sách vay ngân hàng 0% hay tư vấn phong thủy hợp tuổi. Bạn đang quan tâm bất động sản nào ạ?`,
       time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -57,7 +65,7 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
     '💰 Mức giá & chiết khấu đợt 1',
     '🏦 Chính sách vay ngân hàng 0% lãi',
     '📜 Pháp lý & thời gian nhận sổ hồng',
-    '📸 Xem hình ảnh thực tế nhà mẫu',
+    '🧭 Hướng nhà & phong thủy hợp tuổi',
   ];
 
   const handleSendMessage = async (textToSend?: string) => {
@@ -78,8 +86,12 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
     try {
       const response = await askGeminiAssistant(query, {
         websiteName,
+        slogan,
         hotline,
         zalo,
+        email,
+        address,
+        projects,
         currentProject,
       });
 
@@ -126,7 +138,7 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
 
       {/* 2. CHATBOT WINDOW */}
       {isOpen && (
-        <div className="fixed bottom-4 right-4 z-[99999] w-[92vw] sm:w-[400px] h-[560px] max-h-[85vh] bg-white rounded-3xl shadow-2xl border border-slate-200/90 flex flex-col overflow-hidden animate-slideUp text-left select-none">
+        <div className="fixed bottom-4 right-4 z-[99999] w-[92vw] sm:w-[420px] h-[580px] max-h-[85vh] bg-white rounded-3xl shadow-2xl border border-slate-200/90 flex flex-col overflow-hidden animate-slideUp text-left select-none">
           
           {/* Header */}
           <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-4 flex items-center justify-between border-b border-slate-800 shrink-0">
@@ -140,9 +152,9 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
 
               <div>
                 <div className="flex items-center gap-1.5">
-                  <h3 className="font-black text-sm text-white">Trợ Lý AI Tư Vấn BĐS</h3>
+                  <h3 className="font-black text-sm text-white truncate max-w-[190px]">{websiteName}</h3>
                   <span className="px-1.5 py-0.2 bg-amber-500/20 text-amber-300 border border-amber-400/30 text-[9px] font-black rounded uppercase">
-                    Gemini AI
+                    AI Agent
                   </span>
                 </div>
                 <div className="text-[11px] text-slate-300 flex items-center gap-1 mt-0.5">
@@ -178,7 +190,7 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
                 )}
 
                 <div
-                  className={`max-w-[82%] p-3.5 rounded-2xl leading-relaxed shadow-xs ${
+                  className={`max-w-[84%] p-3.5 rounded-2xl leading-relaxed shadow-xs ${
                     msg.sender === 'user'
                       ? 'bg-blue-600 text-white rounded-tr-none font-medium'
                       : 'bg-white text-slate-800 rounded-tl-none border border-slate-200'
@@ -205,7 +217,7 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
                 </div>
                 <div className="bg-white border border-slate-200 px-4 py-2.5 rounded-2xl rounded-tl-none flex items-center gap-1.5 shadow-xs">
                   <Sparkles className="w-3.5 h-3.5 text-indigo-600 animate-spin" />
-                  <span className="text-[11px] text-slate-500 font-medium">AI đang phân tích giỏ hàng...</span>
+                  <span className="text-[11px] text-slate-500 font-medium">AI đang tra cứu giỏ hàng & pháp lý...</span>
                 </div>
               </div>
             )}
@@ -242,7 +254,7 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
                     className="py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm"
                   >
                     <Phone className="w-3.5 h-3.5" />
-                    <span>Gọi Hotline</span>
+                    <span>Gọi Hotline: {hotline}</span>
                   </a>
                   <a
                     href={`https://zalo.me/${zalo}`}
@@ -267,7 +279,7 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
                   type="text"
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
-                  placeholder="Hỏi AI về giá, vay ngân hàng, pháp lý..."
+                  placeholder="Hỏi về giá, hướng, vay 70%, tiện ích căn..."
                   disabled={isTyping}
                   className="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-xs font-medium text-slate-800"
                 />
