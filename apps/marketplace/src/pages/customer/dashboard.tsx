@@ -9,10 +9,11 @@ import {
   User as UserIcon, ShoppingBag, Download, Heart, Settings, 
   Bell, FileText, LogOut, LayoutDashboard, CreditCard,
   Lock, Eye, AlertCircle, CheckCircle2, ChevronRight, ArrowLeft, Sparkles,
-  Info, Loader2, Check, X, ShieldAlert, MapPin
+  Info, Loader2, Check, X, ShieldAlert, MapPin, Edit3
 } from 'lucide-react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import ZeroCodeCmsEditor from '../../components/cms/ZeroCodeCmsEditor';
 import { getProvinces, getDistricts, getWards, parseAddress, formatAddress } from '@repo/utils';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
@@ -83,6 +84,7 @@ export default function CustomerDashboard() {
   const [transactionCode, setTransactionCode] = useState('');
   const [billImageUrl, setBillImageUrl] = useState('');
   const [submittingPayment, setSubmittingPayment] = useState(false);
+  const [editingOrderForCms, setEditingOrderForCms] = useState<any | null>(null);
 
   const [passwordForm, setPasswordForm] = useState({
     oldPassword: '',
@@ -482,15 +484,13 @@ export default function CustomerDashboard() {
                             </div>
 
                             <div className="flex items-center gap-2 flex-wrap w-full md:w-auto justify-end border-t md:border-t-0 pt-3 md:pt-0 border-slate-100">
-                              <a
-                                href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm"
+                              <button
+                                onClick={() => setEditingOrderForCms(ord)}
+                                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm shadow-amber-500/20 hover:scale-105 active:scale-95"
                               >
-                                <LayoutDashboard className="w-4 h-4" />
-                                <span>Vào CMS Quản Trị</span>
-                              </a>
+                                <Edit3 className="w-4 h-4" />
+                                <span>Sửa Nội Dung Website (CMS)</span>
+                              </button>
 
                               <a
                                 href={siteUrl}
@@ -1049,6 +1049,16 @@ export default function CustomerDashboard() {
             </form>
           </div>
         </div>
+      )}
+
+      {/* ZERO-CODE CMS EDITOR MODAL */}
+      {editingOrderForCms && (
+        <ZeroCodeCmsEditor
+          order={editingOrderForCms}
+          isOpen={!!editingOrderForCms}
+          onClose={() => setEditingOrderForCms(null)}
+          showToast={showToast}
+        />
       )}
 
       <Footer />
