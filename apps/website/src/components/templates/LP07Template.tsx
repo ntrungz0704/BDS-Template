@@ -7,7 +7,8 @@ import {
   TrendingUp, Calendar, ArrowRight, MessageCircle, Play, 
   Check, Layers, Star, ExternalLink, X, ZoomIn, Users,
   Briefcase, DollarSign, Gift, Target, Home, Key, Flame,
-  Compass, Plane, Sun, Waves, FileText, CheckSquare
+  Compass, Plane, Sun, Waves, FileText, ChevronDown, CheckSquare,
+  Globe
 } from 'lucide-react';
 
 export interface LP07TemplateProps {
@@ -26,39 +27,43 @@ export default function LP07Template({
   projects,
 }: LP07TemplateProps) {
   // Brand & Company Info Fallback from CMS
-  const brandName = company?.name || 'NOVAWORLD PHAN THIẾT';
-  const companyGroup = 'TẬP ĐOÀN NOVALAND VIỆT NAM';
-  const hotline = company?.phone || '0964.246.888';
+  const brandName = company?.name || 'NOVAWORLD PHAN THIET';
+  const companyGroup = 'TẬP ĐOÀN NOVALAND';
+  const hotline = company?.phone || '0933.868.888';
   const zalo = company?.zalo || hotline;
   const email = company?.email || 'sales@novaworldphanthiet.vn';
-  const address = company?.address || 'Đường Lạc Long Quân, Xã Tiến Thành, TP. Phan Thiết, Tỉnh Bình Thuận';
+  const address = company?.address || 'Tiến Thành, TP. Phan Thiết, Tỉnh Bình Thuận';
 
-  // Hero Lead Form State
-  const [heroName, setHeroName] = useState('');
-  const [heroPhone, setHeroPhone] = useState('');
-  const [heroEmail, setHeroEmail] = useState('');
-  const [heroProductType, setHeroProductType] = useState('Phân khu PGA Golf Villas (Sân Golf 36 Hố)');
-  const [isHeroSubmitted, setIsHeroSubmitted] = useState(false);
+  // State for all Lead Forms
+  const [formName, setFormName] = useState('');
+  const [formPhone, setFormPhone] = useState('');
+  const [formEmail, setFormEmail] = useState('');
+  const [formTime, setFormTime] = useState('');
+  const [formDoc, setFormDoc] = useState('chinh-sach-uu-dai-moi-nhat.pdf');
+  const [formProduct, setFormProduct] = useState('PGA GOLF VILLAS (Sân Golf 36 Hố)');
+  const [submittedFormId, setSubmittedFormId] = useState<string | null>(null);
 
-  // Bottom Lead Form State
-  const [bottomName, setBottomName] = useState('');
-  const [bottomPhone, setBottomPhone] = useState('');
-  const [bottomEmail, setBottomEmail] = useState('');
-  const [bottomProduct, setBottomProduct] = useState('Phân khu PGA Golf Villas (Sân Golf 36 Hố)');
-  const [isBottomSubmitted, setIsBottomSubmitted] = useState(false);
+  // Gallery active slide state for Novotel overview
+  const [activeSlide, setActiveSlide] = useState(0);
+  const overviewSlides = [
+    { title: 'Khách Sạn Novotel & Hồ Bơi Resort 5 Sao', img: 'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=1000&q=80' },
+    { title: 'Tuyến Phố Thương Mại Shophouse Biển Sầm Uất', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000&q=80' },
+    { title: 'Quảng Trường Nhạc Nước & Pháo Hoa Về Đêm', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&q=80' },
+    { title: 'Công Viên Nghỉ Dưỡng Xanh Giữa Lòng Đô Thị', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1000&q=80' },
+    { title: 'Bãi Biển Bikini Beach 16ha Nước Xanh Trong Vắt', img: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1000&q=80' },
+  ];
 
   // Lightbox Zoom Modal State
   const [zoomImage, setZoomImage] = useState<string | null>(null);
 
   // Seamless UX Auto-Select Function
   const handleSelectProduct = (productTitle: string) => {
-    setHeroProductType(productTitle);
-    setBottomProduct(productTitle);
-    const element = document.getElementById('hero-lead-form-box');
+    setFormProduct(productTitle);
+    const element = document.getElementById('consultation-form-section');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
       setTimeout(() => {
-        const selectEl = document.getElementById('hero-product-select') as HTMLSelectElement | null;
+        const selectEl = document.getElementById('consultation-product-select') as HTMLSelectElement | null;
         if (selectEl) {
           selectEl.focus();
           selectEl.classList.add('ring-2', 'ring-amber-400', 'border-amber-400');
@@ -68,444 +73,497 @@ export default function LP07Template({
     }
   };
 
-  const handleHeroSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = (e: React.FormEvent, formId: string) => {
     e.preventDefault();
-    if (!heroPhone.trim()) return;
-    setIsHeroSubmitted(true);
-    setTimeout(() => setIsHeroSubmitted(false), 6000);
+    if (!formPhone.trim()) return;
+    setSubmittedFormId(formId);
+    setTimeout(() => setSubmittedFormId(null), 6000);
   };
 
-  const handleBottomSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!bottomPhone.trim()) return;
-    setIsBottomSubmitted(true);
-    setTimeout(() => setIsBottomSubmitted(false), 6000);
-  };
-
-  // 4 Main Key Sub-divisions (Phân Khu Độc Quyền)
-  const subDivisions = [
+  // 6 Main Product Cards
+  const productCards = [
     {
-      code: 'PHÂN KHU 01',
-      title: 'PGA GOLF VILLAS',
-      highlight: 'Biệt Thự Độc Quyền Trong Lòng Sân Golf 36 Hố',
-      size: '150m² – 300m²',
-      price: 'Từ 8.5 Tỷ',
-      image: 'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=800&q=80',
-      fullName: 'Phân khu PGA Golf Villas (Sân Golf 36 Hố)',
-      desc: 'Thiết kế bởi huyền thoại Greg Norman, 100% căn biệt thự có tầm view panorama toàn cảnh đồi cát và biển xanh.'
-    },
-    {
-      code: 'PHÂN KHU 02',
-      title: 'THE FLORIDA (PHASE 1 & 2)',
-      highlight: 'Nhà Phố Biển Phong Cách Mỹ Rực Rỡ',
-      size: '100m² – 140m²',
-      price: 'Từ 5.8 Tỷ',
-      image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
-      fullName: 'Phân khu The Florida (Nhà Phố Phong Cách Mỹ)',
-      desc: 'Tái hiện sắc màu sống động miền duyên hải Florida, liền kề công viên biển Bikini Beach 16ha sôi động.'
-    },
-    {
-      code: 'PHÂN KHU 03',
-      title: 'FESTIVAL STREET 4B',
-      highlight: 'Tuyến Phố Thương Mại Lễ Hội Không Ngủ',
-      size: '120m² – 160m²',
-      price: 'Từ 6.2 Tỷ',
+      title: 'BIỆT THỰ BIỂN',
+      type: 'Kiến trúc Địa Trung Hải',
+      size: '300m² - 500m²',
+      floors: '3 - 5 tầng',
+      handover: 'T1/2023',
+      status: 'Liên hệ',
+      price: 'Từ 15 - 28 Tỷ',
       image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-      fullName: 'Phân khu Festival Street 4B (Phố Thương Mại Lễ Hội)',
-      desc: 'Trục đường thương mại sầm uất quy tụ hàng trăm thương hiệu ẩm thực, thời trang và quán bar giải trí ven biển.'
+      fullName: 'Biệt Thự Biển Đơn Lập (300m² - 500m²)',
     },
     {
-      code: 'PHÂN KHU 04',
-      title: 'OCEAN RESIDENCE',
-      highlight: 'Khu Đô Thị Sinh Thái San Diego Mission',
-      size: '100m² – 120m²',
-      price: 'Từ 6.0 Tỷ',
+      title: 'WAIKIKI',
+      type: 'Kiến trúc Italia',
+      size: '200m² - 275m²',
+      floors: '2 tầng 1 sân thượng',
+      handover: 'Cam kết thuê lại 5% lên đến 1 tỷ đồng',
+      status: 'Còn hàng',
+      price: 'Từ 18 - 25 Tỷ',
       image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-      fullName: 'Phân khu Ocean Residence (Kiến Trúc San Diego)',
-      desc: 'Tọa lạc trên cao độ 60m so với mặt biển, view trọn vịnh Phan Thiết với hệ thống công viên và trường học riêng biệt.'
+      fullName: 'Waikiki View Biển (200m² - 275m²)',
     },
-  ];
-
-  // 6 World-class Amenities
-  const amenities = [
-    { title: 'Sân Golf PGA 36 Hố Độc Quyền', desc: 'Đạt chuẩn giải đấu PGA Quốc tế thiết kế bởi Greg Norman.', image: 'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=800&q=80' },
-    { title: 'Công Viên Nước Ocean Kingdom 25ha', desc: 'Tổ hợp công viên giải trí biển quy mô hàng đầu Đông Nam Á.', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80' },
-    { title: 'Quảng Trường Bikini Beach 16ha', desc: 'Quảng trường bãi biển sầm uất với chuỗi Beach Club, Lounge sang trọng.', image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80' },
-    { title: 'Công Viên Giải Trí Circus Land', desc: 'Hành trình lễ hội xiếc đa sắc màu phong cách Mỹ thu hút hàng triệu du khách.', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&q=80' },
-    { title: 'Trung Tâm Thể Thao Sport Complex', desc: 'Hệ thống sân tennis, bóng đá, học viện thể thao quy chuẩn Olympic.', image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80' },
-    { title: 'Trung Tâm Chăm Sóc Sức Khỏe Quốc Tế', desc: 'Bệnh viện & thẩm mỹ viện hợp tác với các tập đoàn y tế hàng đầu.', image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80' },
+    {
+      title: 'SANTA MONICA',
+      type: 'Kiến trúc Địa Trung Hải',
+      size: '120m²',
+      floors: '2 tầng 1 tum',
+      handover: 'T9/2023',
+      status: 'Còn hàng',
+      price: 'Từ 16 - 22 Tỷ',
+      image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+      fullName: 'Santa Monica Shophouse (120m²)',
+    },
+    {
+      title: 'GOLF VILLAS',
+      type: 'Kiến trúc Hiện đại',
+      size: '175m² - 360m²',
+      floors: '2 tầng + 1 sân thượng',
+      handover: 'View trọn sân Golf PGA 36 Hố',
+      status: 'Booking',
+      price: '13 Tỷ - 23 Tỷ',
+      image: 'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=800&q=80',
+      fullName: 'Golf Villas (175m² - 360m²)',
+      desc: 'Biệt thự Golf Villas phong cách hiện đại, cảnh quan xanh, dịch vụ cao cấp mang lại sự đẳng cấp vượt trội cho giới thượng lưu và Golfer chuyên nghiệp.'
+    },
+    {
+      title: 'BIỆT THỰ OCEAN RESIDENCE (HOT)',
+      type: 'Kiến trúc San Diego Mission',
+      size: '100m² - 120m²',
+      floors: '2 tầng',
+      handover: 'Bàn giao hoàn thiện T5/2024',
+      status: 'Đang mở bán',
+      price: 'Chỉ từ 6 Tỷ',
+      image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80',
+      fullName: 'Ocean Residence (100m² - 120m²)',
+      desc: 'Ocean Residence sở hữu tiện ích nội khu tiện nghi, hài hoà cùng thiên nhiên như công viên trung tâm vành đai xanh, clubhouse, quảng trường văn hoá, trường học.'
+    },
+    {
+      title: 'BOUTIQUE HOTEL',
+      type: 'Kiến trúc Địa Trung Hải view biển',
+      size: '161m² - 207m²',
+      floors: 'Mặt tiền KHỦNG lên tới 7 - 9m',
+      handover: 'Mini Hotel từ 10 - 100 phòng',
+      status: 'Giới hạn',
+      price: '17 Tỷ - 30 Tỷ',
+      image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80',
+      fullName: 'Boutique Hotel (161m² - 207m²)',
+      desc: 'Boutique Hotel là loại hình khách sạn mini lưu trú nghỉ dưỡng, vị trí đẹp liền kề các tiện ích trung tâm giải trí sầm uất.'
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-white text-slate-800 font-sans selection:bg-[#0369A1] selection:text-amber-200">
+    <div className="min-h-screen bg-white text-slate-800 font-sans selection:bg-[#14B8A6] selection:text-white">
       
-      {/* ════════════════ 1. TOP HEADER (BLUE TROPICAL & GOLD SHARP) ════════════════ */}
-      <header className="sticky top-0 z-50 bg-[#0C4A6E] text-white border-b-2 border-amber-400 px-4 sm:px-8 py-3">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs">
+      {/* ════════════════ 1. TOP NAVBAR (WHITE BG + CLEAN BRAND LOGO) ════════════════ */}
+      <header className="sticky top-0 z-50 bg-white shadow-sm border-b border-slate-200 px-4 sm:px-8 py-2.5">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 text-xs font-bold">
           
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-tr from-amber-400 to-yellow-200 text-[#0C4A6E] flex items-center justify-center font-black">
-              NW
+          {/* Logo Brand */}
+          <div className="flex items-center gap-2">
+            <div className="text-xl font-black tracking-tight text-[#0F2942] uppercase flex items-center">
+              <span>Nova</span>
+              <span className="text-[#0D9488]">W</span>
+              <span className="inline-block w-3.5 h-3.5 mx-0.5 rounded-full bg-gradient-to-tr from-amber-400 to-orange-500 border border-white" />
+              <span>RLD</span>
             </div>
-            <div>
-              <span className="font-black text-sm tracking-wide text-amber-300 uppercase block leading-none">
-                {brandName}
-              </span>
-              <span className="text-[9px] text-slate-200 uppercase tracking-wider block mt-0.5">
-                SIÊU THÀNH PHỐ BIỂN — DU LỊCH — SỨC KHỎE 1.000HA
-              </span>
-            </div>
+            <span className="text-[10px] text-slate-500 uppercase tracking-widest block font-medium pl-1 border-l border-slate-300">
+              PHAN THIET
+            </span>
           </div>
 
-          <nav className="hidden lg:flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-slate-100">
-            <a href="#tong-quan" className="hover:text-amber-300 transition">Tổng Quan</a>
-            <a href="#phan-khu" className="hover:text-amber-300 transition">Phân Khu</a>
-            <a href="#ha-tang" className="hover:text-amber-300 transition">Hạ Tầng Cao Tốc</a>
-            <a href="#tien-ich" className="hover:text-amber-300 transition">Tiện Ích 5 Sao</a>
-            <a href="#video-du-an" className="hover:text-amber-300 transition">Video</a>
-            <a href="#tai-tai-lieu" className="hover:text-amber-300 transition">Tải Bảng Giá</a>
+          {/* Navigation Links */}
+          <nav className="hidden lg:flex items-center gap-6 uppercase tracking-wider text-slate-700">
+            <a href="#trang-chu" className="text-[#0D9488] hover:text-[#0F2942] transition">TRANG CHỦ</a>
+            <a href="#tong-quan" className="hover:text-[#0D9488] transition">TỔNG QUAN</a>
+            <a href="#vi-tri" className="hover:text-[#0D9488] transition">VỊ TRÍ</a>
+            <a href="#mat-bang" className="hover:text-[#0D9488] transition">MẶT BẰNG</a>
+            <a href="#tien-ich" className="hover:text-[#0D9488] transition">TIỆN ÍCH</a>
+            <a href="#thu-vien" className="hover:text-[#0D9488] transition">THƯ VIỆN</a>
+            <a href="#lien-he" className="hover:text-[#0D9488] transition">LIÊN HỆ</a>
           </nav>
 
+          {/* Fast Hotline Contact */}
           <div className="flex items-center gap-3">
-            <a href={`tel:${hotline}`} className="flex items-center gap-1 font-bold text-amber-300 hover:text-white transition">
-              <Phone className="w-3.5 h-3.5" />
-              <span>Hotline: {hotline}</span>
+            <a href={`tel:${hotline}`} className="hidden sm:flex items-center gap-1 text-[#D92D20] font-black text-xs">
+              <Phone className="w-3.5 h-3.5 fill-current" />
+              <span>{hotline}</span>
             </a>
             <a
-              href="#hero-lead-form-box"
-              className="px-4 py-1.5 bg-[#EA580C] hover:bg-orange-700 text-white font-black text-xs uppercase tracking-wider transition"
+              href="#consultation-form-section"
+              className="px-3 py-1.5 bg-[#D92D20] hover:bg-red-700 text-white font-bold text-[11px] uppercase tracking-wider transition"
             >
-              Nhận Báo Giá
+              Đăng Ký
             </a>
           </div>
 
         </div>
       </header>
 
-      {/* ════════════════ 2. HERO SECTION & ORANGE DIRECT LEAD FUNNEL BOX ════════════════ */}
-      <section className="relative bg-gradient-to-b from-[#0C4A6E] via-[#0284C7] to-[#0369A1] text-white py-12 sm:py-16 px-4 sm:px-6 lg:px-8 border-b-4 border-amber-400 overflow-hidden">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
-          
-          <div className="lg:col-span-7 space-y-6 text-left">
-            <div className="space-y-2">
-              <span className="inline-block px-3 py-1 bg-amber-400 text-slate-950 text-[11px] font-black uppercase tracking-widest">
-                ☀ CÒN DUY NHẤT 10 SUẤT ĐỘC QUYỀN GIÁ GỐC NOVALAND ☀
-              </span>
-              <h1 className="text-3xl sm:text-5xl font-black text-amber-300 tracking-tight uppercase leading-tight">
-                THỜI CƠ VÀNG ĐẦU TƯ BĐS BIỂN PHAN THIẾT
-              </h1>
-              <p className="text-sm sm:text-base text-slate-100 font-medium leading-relaxed max-w-xl">
-                Quy mô 1.000 ha với 7km bờ biển riêng tuyệt mỹ. Đón đầu làn sóng Cao tốc Dầu Giây - Phan Thiết & Sân bay Quốc Tế hoàn thành.
-              </p>
-            </div>
-
-            <div className="bg-[#082F49]/90 border border-amber-300/50 p-5 text-xs text-slate-200 space-y-2">
-              <div className="flex justify-between border-b border-white/10 pb-1.5">
-                <span className="text-slate-300">• Vị trí:</span>
-                <span className="font-bold text-amber-300">{address}</span>
-              </div>
-              <div className="flex justify-between border-b border-white/10 pb-1.5">
-                <span className="text-slate-300">• Quy mô dự án:</span>
-                <span className="font-bold">1.000 Hécta (Tổng vốn 5 Tỷ USD)</span>
-              </div>
-              <div className="flex justify-between border-b border-white/10 pb-1.5">
-                <span className="text-slate-300">• Chính sách thanh toán:</span>
-                <span className="font-bold text-emerald-300">Chỉ 15% đến khi nhận nhà (Ân hạn gốc lãi)</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-300">• Quà tặng mở bán:</span>
-                <span className="font-bold text-amber-300">Chiết khấu trực tiếp đến 1.6 Tỷ đồng</span>
-              </div>
-            </div>
-          </div>
-
-          <div id="hero-lead-form-box" className="lg:col-span-5">
-            <div className="bg-[#EA580C] border-2 border-amber-300 p-6 sm:p-8 shadow-2xl text-left relative">
-              <div className="text-center mb-4 pb-3 border-b border-orange-400/60">
-                <span className="text-[11px] font-black text-amber-200 uppercase tracking-widest block mb-1">
-                  ƯU ĐÃI TRỰC TIẾP TỪ NOVALAND
-                </span>
-                <h3 className="text-xl font-black text-white uppercase">
-                  ĐĂNG KÝ NHẬN BÁO GIÁ ĐỢT 1
-                </h3>
-              </div>
-
-              {isHeroSubmitted ? (
-                <div className="bg-white text-slate-900 p-5 text-center space-y-2 animate-fadeIn border-2 border-amber-400">
-                  <Check className="w-8 h-8 text-emerald-600 mx-auto stroke-[3]" />
-                  <h4 className="font-bold text-sm text-[#0C4A6E]">ĐÃ TIẾP NHẬN YÊU CẦU!</h4>
-                  <p className="text-xs text-slate-600">
-                    Phòng kinh doanh Novaland sẽ liên hệ lại qua số <strong>{heroPhone}</strong> và gửi file PDF bảng giá qua Zalo trong 3 phút.
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={handleHeroSubmit} className="space-y-3 text-xs">
-                  <div>
-                    <input
-                      type="text"
-                      required
-                      value={heroName}
-                      onChange={(e) => setHeroName(e.target.value)}
-                      placeholder="Họ và tên Quý Khách *"
-                      className="w-full px-3.5 py-2.5 bg-white text-slate-900 font-bold placeholder:text-slate-500 border border-slate-300 outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <input
-                      type="tel"
-                      required
-                      value={heroPhone}
-                      onChange={(e) => setHeroPhone(e.target.value)}
-                      placeholder="Số điện thoại nhận bảng giá (Zalo) *"
-                      className="w-full px-3.5 py-2.5 bg-white text-slate-900 font-black placeholder:text-slate-500 border border-slate-300 outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <input
-                      type="email"
-                      value={heroEmail}
-                      onChange={(e) => setHeroEmail(e.target.value)}
-                      placeholder="Email nhận mặt bằng chi tiết"
-                      className="w-full px-3.5 py-2.5 bg-white text-slate-900 font-medium placeholder:text-slate-500 border border-slate-300 outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <select
-                      id="hero-product-select"
-                      value={heroProductType}
-                      onChange={(e) => setHeroProductType(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-white text-slate-900 font-black border border-slate-300 outline-none transition-all duration-300"
-                    >
-                      {subDivisions.map((s, idx) => (
-                        <option key={idx} value={s.fullName}>
-                          {s.code}: {s.fullName}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full py-3 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider transition shadow-md cursor-pointer mt-1"
-                  >
-                    GỬI YÊU CẦU CHO TÔI NGAY
-                  </button>
-
-                  <div className="flex items-center justify-center gap-3 pt-2 text-white text-xs">
-                    <a href={`https://zalo.me/${zalo}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-amber-300">
-                      <MessageCircle className="w-3.5 h-3.5" /> Zalo
-                    </a>
-                    <span>•</span>
-                    <a href={`tel:${hotline}`} className="flex items-center gap-1 hover:text-amber-300">
-                      <Phone className="w-3.5 h-3.5" /> Hotline: {hotline}
-                    </a>
-                  </div>
-                </form>
-              )}
-            </div>
-          </div>
-
+      {/* ════════════════ 2. HERO SECTION & 3 GOLDEN ROUND BADGES ════════════════ */}
+      <section id="trang-chu" className="relative min-h-[580px] sm:min-h-[640px] flex items-center justify-center p-4 sm:p-8 overflow-hidden bg-slate-900 border-b-4 border-[#0D9488]">
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1800&q=80"
+            alt="NovaWorld Phan Thiết Panoramic"
+            className="w-full h-full object-cover opacity-50"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent" />
         </div>
-      </section>
 
-      {/* ════════════════ 3. 3 CỘT ĐIỂM ĐẦU TƯ HẤP DẪN ════════════════ */}
-      <section id="tong-quan" className="py-16 px-4 sm:px-6 lg:px-8 bg-slate-50 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto space-y-10 text-center">
+        <div className="relative z-10 max-w-3xl w-full mx-auto bg-[#071F38]/85 border-4 border-white p-6 sm:p-10 text-center text-white shadow-2xl space-y-6">
           
           <div className="space-y-1">
-            <span className="text-xs font-bold text-[#EA580C] uppercase tracking-widest">
-              ĐÒN BẨY SINH LỜI ĐỘT PHÁ
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-[#0C4A6E] uppercase">
-              3 LỢI THẾ VÀNG KHÔNG THỂ BỎ LỠ TẠI NOVAWORLD
+            <h1 className="text-2xl sm:text-4xl font-black tracking-wide text-white uppercase">
+              NOVAWORLD PHAN THIẾT
+            </h1>
+            <h2 className="text-sm sm:text-lg font-bold text-sky-300 uppercase tracking-wider">
+              THỜI CƠ VÀNG ĐẦU TƯ BĐS PHAN THIẾT
             </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-            
-            <div className="bg-white border-2 border-slate-300 p-6 space-y-3 shadow-sm hover:border-[#EA580C] transition">
-              <div className="w-12 h-12 bg-[#0C4A6E] text-amber-300 flex items-center justify-center font-black">
-                <TrendingUp className="w-6 h-6" />
-              </div>
-              <h3 className="text-base font-black text-[#0C4A6E] uppercase">
-                Nhân Đôi Giá Trị Đầu Tư
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                Cú hích hạ tầng kép: Cao tốc Dầu Giây - Phan Thiết rút ngắn thời gian di chuyển từ TP.HCM chỉ còn 1h30 phút và Sân bay Quốc tế Phan Thiết đi vào vận hành.
-              </p>
-            </div>
-
-            <div className="bg-[#FFFBEB] border-2 border-amber-400 p-6 space-y-3 shadow-md">
-              <div className="w-12 h-12 bg-amber-400 text-slate-950 flex items-center justify-center font-black">
-                <DollarSign className="w-6 h-6" />
-              </div>
-              <h3 className="text-base font-black text-[#EA580C] uppercase">
-                Không Áp Lực Tài Chính
-              </h3>
-              <p className="text-xs text-slate-700 leading-relaxed font-medium">
-                Khách hàng chỉ cần thanh toán <strong>15% đợt 1</strong>. Ngân hàng hỗ trợ vay 70% với lãi suất 0%, ân hạn nợ gốc và miễn phí trả nợ trước hạn đến khi nhận nhà.
-              </p>
-            </div>
-
-            <div className="bg-white border-2 border-slate-300 p-6 space-y-3 shadow-sm hover:border-[#EA580C] transition">
-              <div className="w-12 h-12 bg-[#0C4A6E] text-amber-300 flex items-center justify-center font-black">
-                <Award className="w-6 h-6" />
-              </div>
-              <h3 className="text-base font-black text-[#0C4A6E] uppercase">
-                Tỷ Suất Sinh Lời 30%/Năm
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                Hệ sinh thái tiện ích đẳng cấp quốc tế biến Phan Thiết thành tâm điểm du lịch toàn cầu, đảm bảo công suất khai thác phòng cho thuê quanh năm từ 75% – 90%.
-              </p>
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-      {/* ════════════════ 4. TỔNG QUAN DỰ ÁN (BẢNG THÔNG SỐ CHUẨN DOANH NGHIỆP) ════════════════ */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          <div className="lg:col-span-7 space-y-4 text-left">
-            <h2 className="text-2xl sm:text-3xl font-black text-[#0C4A6E] uppercase border-l-4 border-[#EA580C] pl-3">
-              TỔNG QUAN DỰ ÁN NOVAWORLD PHAN THIẾT
-            </h2>
-
-            <table className="w-full border-collapse border border-slate-300 text-xs">
-              <tbody>
-                <tr className="border-b border-slate-200 bg-slate-50">
-                  <td className="p-3 font-bold text-slate-600 w-1/3 border-r border-slate-200">• Tên dự án:</td>
-                  <td className="p-3 font-black text-[#0C4A6E]">NOVAWORLD PHAN THIET</td>
-                </tr>
-                <tr className="border-b border-slate-200">
-                  <td className="p-3 font-bold text-slate-600 border-r border-slate-200">• Phát triển dự án:</td>
-                  <td className="p-3 font-medium">{companyGroup}</td>
-                </tr>
-                <tr className="border-b border-slate-200 bg-slate-50">
-                  <td className="p-3 font-bold text-slate-600 border-r border-slate-200">• Vị trí tọa lạc:</td>
-                  <td className="p-3 font-medium">{address}</td>
-                </tr>
-                <tr className="border-b border-slate-200">
-                  <td className="p-3 font-bold text-slate-600 border-r border-slate-200">• Tổng diện tích:</td>
-                  <td className="p-3 font-medium">1.000 Hécta với 7km bờ biển riêng</td>
-                </tr>
-                <tr className="border-b border-slate-200 bg-slate-50">
-                  <td className="p-3 font-bold text-slate-600 border-r border-slate-200">• Tổng vốn đầu tư:</td>
-                  <td className="p-3 font-medium">5 Tỷ USD</td>
-                </tr>
-                <tr className="border-b border-slate-200">
-                  <td className="p-3 font-bold text-slate-600 border-r border-slate-200">• Loại hình sản phẩm:</td>
-                  <td className="p-3 font-medium">Golf Villas, Florida Townhouse, Shophouse, Boutique Hotel</td>
-                </tr>
-                <tr className="border-b border-slate-200 bg-slate-50">
-                  <td className="p-3 font-bold text-slate-600 border-r border-slate-200">• Pháp lý:</td>
-                  <td className="p-3 font-bold text-emerald-700">Sổ hồng minh bạch, bàn giao đầy đủ nội thất cao cấp</td>
-                </tr>
-                <tr>
-                  <td className="p-3 font-bold text-slate-600 border-r border-slate-200">• Tiến độ bàn giao:</td>
-                  <td className="p-3 font-medium">Đang tiến hành bàn giao từng phân kỳ</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div className="lg:col-span-5 space-y-4">
-            <div 
-              className="relative border-2 border-slate-300 aspect-[4/3] bg-slate-900 group cursor-pointer overflow-hidden shadow-md"
-              onClick={() => setZoomImage('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80')}
-            >
-              <img
-                src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1000&q=80"
-                alt="Phối cảnh NovaWorld Phan Thiết"
-                className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-              />
-              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-left">
-                <span className="text-xs font-bold text-amber-300">Thực tế đại công viên biển NovaWorld Phan Thiết</span>
-              </div>
-            </div>
-
-            <div className="bg-[#FFFBEB] border-2 border-amber-400 p-5 text-left space-y-2.5">
-              <h4 className="font-black text-sm text-[#0C4A6E] uppercase border-b border-amber-300 pb-2">
-                CHÍNH SÁCH ƯU ĐÃI THÁNG MỚI NHẤT
-              </h4>
-              <div className="space-y-1.5 text-xs text-slate-700 font-medium">
-                <p>✓ <strong>Chiết khấu ngay 10%</strong> cho khách hàng thanh toán sớm.</p>
-                <p>✓ <strong>Tặng thẻ hội viên Golf PGA</strong> trị giá 1.15 Tỷ đồng.</p>
-                <p>✓ <strong>Tặng gói nghỉ dưỡng</strong> 24 đêm/năm trong chuỗi resort Novaland.</p>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ════════════════ 5. 4 PHÂN KHU TRỌNG ĐIỂM + UX AUTO-SELECT ════════════════ */}
-      <section id="phan-khu" className="py-16 px-4 sm:px-6 lg:px-8 bg-slate-50 border-b border-slate-200 text-center">
-        <div className="max-w-7xl mx-auto space-y-10">
-          
-          <div className="space-y-2">
-            <span className="text-xs font-bold text-[#EA580C] uppercase tracking-widest">
-              BỘ SƯU TẬP TUYỆT TÁC NGHỈ DƯỠNG
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-[#0C4A6E] uppercase">
-              CÁC PHÂN KHU ĐANG MỞ BÁN
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600">
-              Bấm vào từng phân khu dưới đây để nhận báo giá chi tiết và quỹ căn ngoại giao từ CĐT
+            <p className="text-xs sm:text-sm font-bold text-white uppercase tracking-widest pt-1">
+              CÒN DUY NHẤT <span className="text-amber-400 font-black">10 SUẤT ĐỘC QUYỀN</span> KHÔNG Ở ĐÂU CÓ
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-            {subDivisions.map((sub, idx) => (
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 pt-2">
+            
+            <div className="flex flex-col items-center space-y-1.5">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white border-4 border-amber-400 flex flex-col items-center justify-center text-slate-950 shadow-lg">
+                <span className="text-lg sm:text-2xl font-black text-amber-600 leading-none">30%</span>
+              </div>
+              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-200">
+                TỶ SUẤT SINH LỜI/ NĂM
+              </span>
+            </div>
+
+            <div className="flex flex-col items-center space-y-1.5 -translate-y-2">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-white border-4 border-amber-400 flex flex-col items-center justify-center text-slate-950 shadow-2xl">
+                <span className="text-2xl sm:text-3xl font-black text-amber-600 leading-none">3%</span>
+              </div>
+              <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-amber-300">
+                ƯU ĐÃI NỘI BỘ
+              </span>
+            </div>
+
+            <div className="flex flex-col items-center space-y-1.5">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white border-4 border-amber-400 flex flex-col items-center justify-center text-slate-950 shadow-lg">
+                <span className="text-base sm:text-xl font-black text-amber-600 leading-none">200</span>
+                <span className="text-[10px] font-black text-slate-800">Triệu</span>
+              </div>
+              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-200">
+                VOUCHER
+              </span>
+            </div>
+
+          </div>
+
+          <div className="pt-2 flex flex-col items-center space-y-3">
+            <ChevronDown className="w-6 h-6 text-white animate-bounce" />
+            <a
+              href="#consultation-form-section"
+              className="inline-block px-8 py-3 bg-[#D92D20] hover:bg-red-700 text-white font-black text-xs uppercase tracking-wider transition shadow-xl"
+            >
+              Đăng ký nhận ngay ưu đãi T11/2026
+            </a>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ════════════════ 3. TỔNG QUAN DỰ ÁN (TEAL BG #14B8A6 + NOVOTEL SLIDER) ════════════════ */}
+      <section id="tong-quan" className="py-16 px-4 sm:px-6 lg:px-8 bg-[#14B8A6] text-white">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          <div className="lg:col-span-6 space-y-4 text-left">
+            <div className="space-y-1">
+              <h2 className="text-2xl sm:text-4xl font-black text-[#0B2545] uppercase leading-tight">
+                TỔNG QUAN DỰ ÁN
+              </h2>
+              <h3 className="text-xl sm:text-2xl font-black text-white uppercase">
+                NOVAWORLD PHAN THIẾT
+              </h3>
+            </div>
+
+            <p className="text-xs sm:text-sm text-slate-900 leading-relaxed font-medium">
+              NovaWorld Phan Thiết có quy mô 1000 ha với đa dạng các sản phẩm như nhà phố, biệt thự nghỉ dưỡng (second-home), nhà phố thương mại với tầm nhìn hướng ra biển. Novaworld là dự án đầu tiên sở hữu tổ hợp hơn 1000 tiện ích nghỉ dưỡng đẳng cấp tại Phan Thiết. Sau khi hoàn thành NovaWorld sẽ là điểm đến hấp dẫn hàng đầu khu vực.
+            </p>
+
+            <div className="space-y-1.5 text-xs text-slate-950 font-medium">
+              <p>✦ <strong>Đơn vị phát triển:</strong> Tập đoàn Novaland</p>
+              <p>✦ <strong>Vị trí:</strong> Tiến Thành, Phan Thiết, Bình Thuận</p>
+              <p>✦ <strong>Tổng diện tích dự án:</strong> 1000ha</p>
+              <p>✦ <strong>Tổng sản phẩm giai đoạn 1:</strong> 2800 căn phát triển: Shophouse, Nhà phố liền kề, biệt thự, khách sạn 5 sao</p>
+              <p>✦ <strong>Shophouse:</strong> Diện tích từ 72m2 đến 200m2</p>
+              <p>✦ <strong>Nhà phố liền kề:</strong> Diện tích từ 100m2 đến 210m2</p>
+              <p>✦ <strong>Biệt thự:</strong> Diện tích từ 150m2 đến 300m2</p>
+              <p>✦ <strong>Điều kiện bàn giao:</strong> Thô hoàn thiện mặt ngoài</p>
+              <p>✦ <strong>Thời gian dự kiến bàn giao:</strong> Đang bàn giao từng phân kỳ</p>
+              <p>✦ <strong>Đường bờ biển dài:</strong> 7km bãi biển riêng</p>
+              <p>✦ <strong>Kết nối thuận tiện, đa dạng tiện ích:</strong> Trường học, bệnh viện cao cấp, TTTM....</p>
+            </div>
+
+            <div className="pt-2">
+              <a
+                href="#download-brochure-banner"
+                className="inline-block px-6 py-2.5 bg-[#D92D20] hover:bg-red-700 text-white font-black text-xs uppercase tracking-wider transition shadow-md"
+              >
+                DOWNLOAD BROCHURE +
+              </a>
+            </div>
+          </div>
+
+          <div className="lg:col-span-6 space-y-6">
+            <div className="space-y-2">
+              <div 
+                className="border-4 border-white aspect-[16/10] bg-slate-900 overflow-hidden cursor-pointer shadow-lg"
+                onClick={() => setZoomImage(overviewSlides[activeSlide].img)}
+              >
+                <img
+                  src={overviewSlides[activeSlide].img}
+                  alt={overviewSlides[activeSlide].title}
+                  className="w-full h-full object-cover transition-all duration-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-5 gap-2">
+                {overviewSlides.map((slide, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveSlide(idx)}
+                    className={`border-2 aspect-video overflow-hidden transition ${
+                      activeSlide === idx ? 'border-white scale-105 shadow-md' : 'border-white/50 opacity-70 hover:opacity-100'
+                    }`}
+                  >
+                    <img src={slide.img} alt={slide.title} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-[#E6FFFA] text-slate-900 border-2 border-white p-6 shadow-md text-left space-y-3">
+              <h4 className="font-black text-base text-[#0D9488] uppercase border-b border-teal-300 pb-1.5">
+                RA MẮT PHÂN KHU OCEAN RESIDENCE MỚI
+              </h4>
+              <div className="space-y-2 text-xs text-slate-800 font-medium">
+                <p className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                  <span><strong>DỄ DÀNG ĐẦU TƯ:</strong> Vốn ban đầu chỉ từ 785 triệu (15%), chỉ từ 5 tỷ/căn biệt thự view biển, xung quanh rất nhiều tiện ích dành cho nghỉ dưỡng, sức khỏe.</span>
+                </p>
+                <p className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                  <span><strong>KHÔNG ÁP LỰC TÀI CHÍNH:</strong> Hỗ trợ lãi suất 0% trong 24-48 tháng.</span>
+                </p>
+                <p className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                  <span><strong>TIỀM NĂNG X2 GIÁ TRỊ ĐẦU TƯ:</strong> Khi cao tốc & sân bay hoàn thiện, giá trị Bất động sản chắc chắn sẽ tăng phi mã.</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ════════════════ 4. ĐIỂM ĐẦU TƯ HẤP DẪN — NHÂN ĐÔI GIÁ TRỊ ĐẦU TƯ ════════════════ */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#E6FFFA] to-white border-b border-slate-200 text-center">
+        <div className="max-w-7xl mx-auto space-y-10">
+          
+          <div className="space-y-1">
+            <span className="text-xs font-bold text-[#0D9488] uppercase tracking-widest">
+              ĐIỂM ĐẦU TƯ HẤP DẪN
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-black text-[#0B2545] uppercase">
+              NHÂN ĐÔI GIÁ TRỊ ĐẦU TƯ
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
+            
+            <div className="lg:col-span-6 bg-[#CCFBF1]/60 border-2 border-[#14B8A6] p-6 space-y-3">
+              <h4 className="font-black text-sm text-[#0B2545] uppercase border-b border-teal-300 pb-2">
+                CHÍNH SÁCH ƯU ĐÃI CẬP NHẬT MỚI NHẤT
+              </h4>
+              <div className="space-y-2 text-xs text-slate-800 font-medium">
+                <p>✦ Cam kết mua lại <strong className="text-red-600">11%</strong> nếu khách hàng muốn bán.</p>
+                <p>✦ Cam kết thuê lên tới <strong className="text-red-600">480 triệu/năm</strong>.</p>
+                <p>✦ Ưu đãi cổ đông Novaland <strong className="text-red-600">220 triệu</strong>.</p>
+                <p>✦ Ưu đãi Nova Collection: <strong className="text-red-600">2 - 5%</strong>.</p>
+                <p>✦ Ưu đãi Novaloyalty: <strong className="text-red-600">1 - 5%</strong>.</p>
+                <p>✦ Chiết khấu nếu KH không vay: <strong className="text-red-600">4 - 9%</strong>.</p>
+                <p>✦ Chiết khấu với KH miền bắc: <strong className="text-red-600">2%</strong>.</p>
+                <p>✦ Quà tặng Combo Gift Voucher lên tới <strong className="text-red-600">1 tỷ đồng</strong>.</p>
+                <p>✦ Tặng gói member Golf trị giá <strong className="text-red-600">1,15 tỷ</strong>.</p>
+                <p>✦ Hỗ trợ lãi suất 0% lên tới <strong className="text-red-600">36 tháng</strong>.</p>
+              </div>
+            </div>
+
+            <div className="lg:col-span-6 space-y-4">
+              <h4 className="font-black text-sm text-[#0B2545] uppercase border-b border-slate-300 pb-2">
+                LỢI THẾ ĐẶC QUYỀN DÀNH CHO NHÀ ĐẦU TƯ
+              </h4>
+
+              <div className="p-4 bg-white border-2 border-slate-200 space-y-1.5 shadow-xs">
+                <h5 className="font-bold text-xs text-[#0D9488] uppercase">
+                  1. SỞ HỮU DỄ DÀNG CHỈ TỪ 15%
+                </h5>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Chỉ từ <strong>1,2 tỷ (15%)</strong> sở hữu biệt thự mặt biển đẳng cấp tại Phan Thiết. Cam kết mua lại, lợi nhuận tối thiểu <strong>6.5%/năm</strong>. Tiến độ thanh toán linh hoạt trong 3 năm. Miễn lãi suất lên tới 3 năm.
+                </p>
+              </div>
+
+              <div className="p-4 bg-white border-2 border-slate-200 space-y-1.5 shadow-xs">
+                <h5 className="font-bold text-xs text-[#0D9488] uppercase">
+                  2. LỢI NHUẬN KHAI THÁC 10 - 12%/NĂM
+                </h5>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Không chỉ là một tài sản, một của để dành, mà NovaWorld Phan Thiết còn đem đến cho quý nhà đầu tư một khoản lợi nhuận luôn ổn định từ <strong>10-12%/năm</strong> từ việc khai thác vận hành, kinh doanh, cho thuê.
+                </p>
+              </div>
+
+              <div className="p-4 bg-white border-2 border-slate-200 space-y-1.5 shadow-xs">
+                <h5 className="font-bold text-xs text-[#0D9488] uppercase">
+                  3. ĐÓN SÓNG HẠ TẦNG X2 GIÁ TRỊ
+                </h5>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Đón sóng hạ tầng với Cao tốc Phan Thiết – Dầu Giây – TP.HCM, Sân bay Phan Thiết, Sân bay quốc tế Long Thành... đem tới tiềm năng đột phá <strong>tăng giá X2</strong> trong những năm tới.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* ════════════════ 5. LEAD CAPTURE FORM BANNER 1 (DARK NAVY) ════════════════ */}
+      <section id="download-brochure-banner" className="py-10 px-4 sm:px-6 lg:px-8 bg-[#0B2545] text-white text-center">
+        <div className="max-w-6xl mx-auto space-y-4">
+          <div className="space-y-1">
+            <h3 className="text-base sm:text-xl font-black uppercase text-white">
+              TẢI XUỐNG BẢNG GIÁ, CHÍNH SÁCH ƯU ĐÃI SIÊU HOT TỪ CHỦ ĐẦU TƯ
+            </h3>
+            <p className="text-xs text-slate-300">
+              Hoặc liên hệ HOTLINE: <strong className="text-amber-400">{hotline}</strong> để cập nhật đầy đủ và chính xác chính sách bán hàng mới nhất.
+            </p>
+          </div>
+
+          {submittedFormId === 'banner-1' ? (
+            <div className="bg-white text-slate-900 p-4 max-w-xl mx-auto border-2 border-amber-400 animate-fadeIn">
+              <p className="text-xs font-bold text-[#0D9488]">✓ ĐÃ TIẾP NHẬN YÊU CẦU! File bảng giá sẽ gửi qua Zalo trong 2 phút.</p>
+            </div>
+          ) : (
+            <form onSubmit={(e) => handleFormSubmit(e, 'banner-1')} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 max-w-5xl mx-auto text-xs">
+              <input
+                type="text"
+                required
+                value={formName}
+                onChange={(e) => setFormName(e.target.value)}
+                placeholder="Họ và tên *"
+                className="px-3 py-2.5 bg-white text-slate-900 font-bold border border-slate-300 outline-none"
+              />
+              <select
+                value={formDoc}
+                onChange={(e) => setFormDoc(e.target.value)}
+                className="px-3 py-2.5 bg-white text-slate-900 font-medium border border-slate-300 outline-none"
+              >
+                <option value="chinh-sach-uu-dai-moi-nhat.pdf">chinh-sach-uu-dai-moi-nhat.pdf</option>
+                <option value="bang-gia-tong-the-novaworld.xlsx">bang-gia-tong-the-novaworld.xlsx</option>
+                <option value="mat-bang-phan-khu-golf.pdf">mat-bang-phan-khu-golf.pdf</option>
+              </select>
+              <input
+                type="tel"
+                required
+                value={formPhone}
+                onChange={(e) => setFormPhone(e.target.value)}
+                placeholder="Số điện thoại (Zalo) *"
+                className="px-3 py-2.5 bg-white text-slate-900 font-black border border-slate-300 outline-none"
+              />
+              <input
+                type="email"
+                value={formEmail}
+                onChange={(e) => setFormEmail(e.target.value)}
+                placeholder="Email (nếu có)"
+                className="px-3 py-2.5 bg-white text-slate-900 font-medium border border-slate-300 outline-none"
+              />
+              <button
+                type="submit"
+                className="py-2.5 bg-[#D92D20] hover:bg-red-700 text-white font-black uppercase tracking-wider transition cursor-pointer shadow-md"
+              >
+                GỬI CHO TÔI NGAY
+              </button>
+            </form>
+          )}
+
+          <p className="text-[10px] text-slate-400">
+            (*) Thông Tin Của Quý Khách Được Bảo Mật Tuyệt Đối Không Ảnh Hưởng Công Việc !
+          </p>
+        </div>
+      </section>
+
+      {/* ════════════════ 6. CÁC PHÂN KHU ĐANG MỞ BÁN (6 CARDS GRID + UX AUTO-SELECT) ════════════════ */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#14B8A6] text-center">
+        <div className="max-w-7xl mx-auto space-y-10">
+          
+          <div className="space-y-1">
+            <span className="text-xs font-bold text-slate-900 uppercase tracking-widest">
+              BỘ SƯU TẬP TUYỆT TÁC NGHỈ DƯỠNG
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-black text-[#0B2545] uppercase">
+              CÁC PHÂN KHU ĐANG MỞ BÁN
+            </h2>
+            <h3 className="text-xl font-black text-white uppercase">
+              NOVAWORLD PHAN THIẾT
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+            {productCards.map((p, idx) => (
               <div
                 key={idx}
-                className="bg-white border-2 border-slate-200 hover:border-amber-400 transition-all flex flex-col justify-between group shadow-sm hover:shadow-lg"
+                className="bg-white text-slate-900 border-2 border-white flex flex-col justify-between group shadow-md"
               >
                 <div 
                   className="relative aspect-[16/10] overflow-hidden bg-slate-900 cursor-pointer"
-                  onClick={() => setZoomImage(sub.image)}
+                  onClick={() => setZoomImage(p.image)}
                 >
                   <img
-                    src={sub.image}
-                    alt={sub.title}
+                    src={p.image}
+                    alt={p.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                   />
-                  <div className="absolute top-2 left-2 px-3 py-1 bg-[#0C4A6E] text-amber-300 font-bold text-[11px]">
-                    {sub.code}
+                  <div className="absolute top-2 left-2 px-2 py-0.5 bg-[#0B2545] text-white font-bold text-[10px]">
+                    {p.status}
                   </div>
-                  <div className="absolute top-2 right-2 px-3 py-1 bg-[#EA580C] text-white font-bold text-[11px]">
-                    {sub.size}
+                  <div className="absolute top-2 right-2 px-2 py-0.5 bg-[#D92D20] text-white font-bold text-[10px]">
+                    {p.price}
                   </div>
                 </div>
 
-                <div className="p-5 space-y-3 flex-1 flex flex-col justify-between bg-white">
+                <div className="p-5 space-y-3 flex-1 flex flex-col justify-between">
                   <div className="space-y-1.5">
-                    <h4 className="font-black text-base text-[#0C4A6E]">
-                      {sub.title}
+                    <h4 className="font-black text-sm text-[#0B2545] uppercase border-b border-slate-200 pb-1">
+                      {p.title}
                     </h4>
-                    <p className="text-xs font-bold text-[#EA580C]">
-                      {sub.highlight}
-                    </p>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {sub.desc}
-                    </p>
-                    <p className="text-sm font-black text-[#0C4A6E] pt-1">
-                      Giá tham chiếu: <span className="text-[#EA580C]">{sub.price}</span>
-                    </p>
+                    {p.desc && (
+                      <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                        {p.desc}
+                      </p>
+                    )}
+                    <div className="space-y-1 text-xs text-slate-700 pt-1 font-medium">
+                      <p>✦ <strong>Kiến trúc:</strong> {p.type}</p>
+                      <p>✦ <strong>Diện tích:</strong> {p.size}</p>
+                      <p>✦ <strong>Thiết kế:</strong> {p.floors}</p>
+                      <p>✦ <strong>Bàn giao:</strong> {p.handover}</p>
+                    </div>
                   </div>
 
                   <button
                     type="button"
-                    onClick={() => handleSelectProduct(sub.fullName)}
-                    className="w-full py-2.5 bg-[#0C4A6E] hover:bg-[#EA580C] text-amber-300 hover:text-white font-black text-xs uppercase tracking-wider transition cursor-pointer flex items-center justify-center gap-1.5"
+                    onClick={() => handleSelectProduct(p.fullName)}
+                    className="w-full py-2 bg-[#D92D20] hover:bg-red-700 text-white font-black text-xs uppercase tracking-wider transition cursor-pointer"
                   >
-                    <span>NHẬN BÁO GIÁ PHÂN KHU NÀY</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    XEM BẢNG GIÁ
                   </button>
                 </div>
               </div>
@@ -515,273 +573,461 @@ export default function LP07Template({
         </div>
       </section>
 
-      {/* ════════════════ 6. ĐỘT PHÁ HẠ TẦNG GIAO THÔNG ════════════════ */}
-      <section id="ha-tang" className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
+      {/* ════════════════ 7. LEAD CAPTURE FORM BANNER 2 (DARK NAVY) ════════════════ */}
+      <section className="py-10 px-4 sm:px-6 lg:px-8 bg-[#0B2545] text-white text-center">
+        <div className="max-w-6xl mx-auto space-y-4">
+          <div className="space-y-1">
+            <h3 className="text-base sm:text-xl font-black uppercase text-white">
+              NHẬN BÁO GIÁ 10 CĂN SINH LỜI TỐT NHẤT DỰ ÁN
+            </h3>
+            <p className="text-xs text-slate-300">
+              Hoặc liên hệ HOTLINE: <strong className="text-amber-400">{hotline}</strong> để cập nhật quỹ căn ngoại giao chiết khấu sâu.
+            </p>
+          </div>
+
+          {submittedFormId === 'banner-2' ? (
+            <div className="bg-white text-slate-900 p-4 max-w-xl mx-auto border-2 border-amber-400 animate-fadeIn">
+              <p className="text-xs font-bold text-[#0D9488]">✓ ĐÃ GỬI YÊU CẦU! Chuyên viên sẽ gọi điện tư vấn giỏ hàng 10 căn VIP.</p>
+            </div>
+          ) : (
+            <form onSubmit={(e) => handleFormSubmit(e, 'banner-2')} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 max-w-5xl mx-auto text-xs">
+              <input
+                type="text"
+                required
+                value={formName}
+                onChange={(e) => setFormName(e.target.value)}
+                placeholder="Họ và tên *"
+                className="px-3 py-2.5 bg-white text-slate-900 font-bold border border-slate-300 outline-none"
+              />
+              <select
+                value={formDoc}
+                onChange={(e) => setFormDoc(e.target.value)}
+                className="px-3 py-2.5 bg-white text-slate-900 font-medium border border-slate-300 outline-none"
+              >
+                <option value="chinh-sach-uu-dai-moi-nhat.pdf">chinh-sach-uu-dai-moi-nhat.pdf</option>
+                <option value="bang-gia-tong-the-novaworld.xlsx">bang-gia-tong-the-novaworld.xlsx</option>
+              </select>
+              <input
+                type="tel"
+                required
+                value={formPhone}
+                onChange={(e) => setFormPhone(e.target.value)}
+                placeholder="Số điện thoại (Zalo) *"
+                className="px-3 py-2.5 bg-white text-slate-900 font-black border border-slate-300 outline-none"
+              />
+              <input
+                type="email"
+                value={formEmail}
+                onChange={(e) => setFormEmail(e.target.value)}
+                placeholder="Email (nếu có)"
+                className="px-3 py-2.5 bg-white text-slate-900 font-medium border border-slate-300 outline-none"
+              />
+              <button
+                type="submit"
+                className="py-2.5 bg-[#D92D20] hover:bg-red-700 text-white font-black uppercase tracking-wider transition cursor-pointer shadow-md"
+              >
+                GỬI CHO TÔI NGAY
+              </button>
+            </form>
+          )}
+
+          <p className="text-[10px] text-slate-400">
+            (*) Thông Tin Của Quý Khách Được Bảo Mật Tuyệt Đối Không Ảnh Hưởng Công Việc !
+          </p>
+        </div>
+      </section>
+
+      {/* ════════════════ 8. HÌNH ẢNH THỰC TẾ ĐÓN HÀNG NGÀN KHÁCH HÀNG ════════════════ */}
+      <section id="thu-vien" className="py-16 px-4 sm:px-6 lg:px-8 bg-slate-50 border-b border-slate-200 text-center">
+        <div className="max-w-7xl mx-auto space-y-8">
+          
+          <div className="space-y-1">
+            <h2 className="text-xl sm:text-3xl font-black text-[#0B2545] uppercase">
+              NOVAWORLD PHAN THIẾT ĐÓN HÀNG NGÀN KHÁCH HÀNG
+            </h2>
+            <p className="text-sm font-bold text-[#0D9488] uppercase tracking-wider">
+              ĐẦU TIÊN THAM QUAN DỰ ÁN
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { title: 'Khách hàng tham quan sa bàn 1.000ha', img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80' },
+              { title: 'Sự kiện mở bán rộn ràng tại Novaland Gallery', img: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80' },
+              { title: 'Đông đảo nhà đầu tư trải nghiệm thực tế', img: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80' },
+              { title: 'Tư vấn chuyên sâu từng phân khu biệt thự', img: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80' }
+            ].map((pic, idx) => (
+              <div 
+                key={idx} 
+                className="border-2 border-slate-300 aspect-[4/3] bg-slate-900 group cursor-pointer overflow-hidden shadow-sm"
+                onClick={() => setZoomImage(pic.img)}
+              >
+                <img src={pic.img} alt={pic.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* ════════════════ 9. VỊ TRÍ KIM CƯƠNG THỦ PHỦ RESORT PHAN THIẾT ════════════════ */}
+      <section id="vi-tri" className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <div className="lg:col-span-6">
+            <div 
+              className="border-4 border-[#0D9488] aspect-[4/3] bg-slate-900 group cursor-pointer overflow-hidden shadow-md"
+              onClick={() => setZoomImage('https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1600&q=80')}
+            >
+              <img
+                src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1400&q=80"
+                alt="Bản đồ vị trí NovaWorld Phan Thiết"
+                className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+              />
+              <div className="absolute bottom-2 right-2 bg-[#0D9488] text-white px-3 py-1 text-xs font-bold flex items-center gap-1">
+                <ZoomIn className="w-3.5 h-3.5" /> Bấm xem phóng to bản đồ
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-6 space-y-4 text-left">
+            <h2 className="text-2xl sm:text-3xl font-black text-[#0B2545] uppercase leading-tight">
+              VỊ TRÍ KIM CƯƠNG<br />
+              <span className="text-[#0D9488]">THỦ PHỦ RESORT PHAN THIẾT</span>
+            </h2>
+
+            <div className="space-y-2.5 text-xs text-slate-700 font-medium">
+              <p className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                <span><strong>20 phút</strong> từ Novaworld đến sân bay quốc tế Phan Thiết.</span>
+              </p>
+              <p className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                <span><strong>10 – 12 phút</strong> Novaworld kết nối trực tiếp đến Cao tốc Dầu Giây – Phan Thiết.</span>
+              </p>
+              <p className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                <span><strong>1h 30 phút</strong> kết nối tới thành phố HCM qua cao tốc.</span>
+              </p>
+              <p className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                <span>NovaWorld Phan Thiết sở hữu vị trí phong thủy <strong>“Tựa Sơn Hướng Hải”</strong>, dựa lưng vào đồi cát có độ dốc thoai dần, 100% các Biệt thự có tầm nhìn thoáng, hướng đón gió biển.</span>
+              </p>
+              <p className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                <span>Với sự bứt phá các dự án hạ tầng: Sân Bay Quốc Tế Phan Thiết, Cao Tốc Phan Thiết – Dầu Giây, Cao Tốc Phan Thiết Vĩnh Hảo, Cao Tốc Phan Thiết – Nha Trang.</span>
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ════════════════ 10. ĐỘT PHÁ HẠ TẦNG GIAO THÔNG (TEAL BG #14B8A6 3 COLUMNS) ════════════════ */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#14B8A6] text-white text-center">
+        <div className="max-w-7xl mx-auto space-y-10">
+          
+          <div className="space-y-1">
+            <span className="text-xs font-bold text-slate-900 uppercase tracking-widest">
+              ĐÒN BẨY HẠ TẦNG KÉP
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-black text-[#0B2545] uppercase">
+              ĐỘT PHÁ HẠ TẦNG GIAO THÔNG NOVAWORLD PHAN THIẾT
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 text-left">
+            
+            <div className="bg-white text-slate-900 p-5 space-y-3 shadow-md border-2 border-white">
+              <div className="relative aspect-video bg-slate-900 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80" alt="Sân bay Phan Thiết" className="w-full h-full object-cover" />
+              </div>
+              <h4 className="font-black text-sm text-[#0B2545] uppercase">SÂN BAY QUỐC TẾ PHAN THIẾT</h4>
+              <div className="space-y-1 text-xs text-slate-700 font-medium">
+                <p>• Khởi công xây dựng từ 2015, dự kiến đi vào hoạt động <strong>năm 2025</strong>.</p>
+                <p>• Tổng vốn đầu tư đến năm 2030 lên đến hơn <strong>10.000 tỷ đồng</strong>.</p>
+                <p>• Nâng cấp điều chỉnh quy hoạch từ cấp 4C lên đến <strong>4E</strong>.</p>
+                <p>• Đường bay tiêu biểu: Nội Bài - Phan Thiết, TP.HCM - Phan Thiết, Vân Đồn - Phan Thiết.</p>
+                <p>• Nhà ga hành khách mở rộng đạt công suất <strong>2 triệu khách/năm</strong>.</p>
+              </div>
+            </div>
+
+            <div className="bg-white text-slate-900 p-5 space-y-3 shadow-md border-2 border-white">
+              <div className="relative aspect-video bg-slate-900 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" alt="Cao tốc Phan Thiết" className="w-full h-full object-cover" />
+              </div>
+              <h4 className="font-black text-sm text-[#0B2545] uppercase">CAO TỐC DẦU GIÂY - PHAN THIẾT</h4>
+              <div className="space-y-1 text-xs text-slate-700 font-medium">
+                <p>• Cao tốc Dầu Giây – Phan Thiết được đầu tư trị giá <strong>18,000 tỷ đồng</strong>, hoàn thành trong 36 tháng theo tiêu chuẩn quốc tế.</p>
+                <p>• Tuyến tàu lửa 5 sao Sài Gòn – Phan Thiết vận hành phục vụ khách du lịch cao cấp.</p>
+                <p>• Dự án cải tạo nâng cấp quốc lộ 1A thông suốt toàn tuyến.</p>
+              </div>
+            </div>
+
+            <div className="bg-[#0B2545] text-white p-5 space-y-3 shadow-md border-2 border-white">
+              <h4 className="font-black text-sm text-amber-300 uppercase border-b border-white/20 pb-2">
+                BÁO CHÍ CHÍNH THỐNG ĐƯA TIN
+              </h4>
+              <div className="space-y-3 text-xs text-slate-200">
+                <div className="p-3 bg-white/10 border border-white/20">
+                  <p className="font-bold text-amber-300">Báo Thanh Niên:</p>
+                  <p className="text-[11px] text-slate-300">"Cao tốc Dầu Giây - Phan Thiết đúng tiến độ, khu vực nào hưởng lợi lớn nhất từ thị trường BĐS biển?"</p>
+                </div>
+                <div className="p-3 bg-white/10 border border-white/20">
+                  <p className="font-bold text-amber-300">Báo Người Lao Động:</p>
+                  <p className="text-[11px] text-slate-300">"Thiếu tướng Nguyễn Văn Đức khẳng định tiến độ giải ngân xây dựng Cảng Hàng Không Phan Thiết."</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* ════════════════ 11. MẶT BẰNG TỔNG THỂ 1.000HA ════════════════ */}
+      <section id="mat-bang" className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200 text-center">
+        <div className="max-w-6xl mx-auto space-y-8">
+          
+          <div className="space-y-1">
+            <span className="text-xs font-bold text-[#0D9488] uppercase tracking-widest">
+              QUY HOẠCH ĐẠI ĐÔ THỊ NGHỈ DƯỠNG
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-black text-[#0B2545] uppercase">
+              MẶT BẰNG TỔNG THỂ NOVAWORLD PHAN THIẾT
+            </h2>
+          </div>
+
+          <div 
+            className="border-4 border-[#0B2545] bg-white p-4 shadow-lg cursor-pointer group"
+            onClick={() => setZoomImage('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80')}
+          >
+            <img
+              src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1400&q=80"
+              alt="Mặt bằng quy hoạch tổng thể NovaWorld"
+              className="w-full object-cover max-h-[500px]"
+            />
+            <div className="pt-3 flex justify-between items-center text-xs text-slate-600 border-t border-slate-200 mt-2">
+              <span>Sơ đồ bố trí các phân kỳ chức năng thuộc Integrated Resort 1.000ha</span>
+              <span className="text-[#D92D20] font-bold flex items-center gap-1">
+                <ZoomIn className="w-3.5 h-3.5" /> Bấm xem phóng to mặt bằng nét
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ════════════════ 12. TIỆN ÍCH ĐẲNG CẤP NOVAWORLD PHAN THIẾT ════════════════ */}
+      <section id="tien-ich" className="py-16 px-4 sm:px-6 lg:px-8 bg-[#071F38] text-white">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
           <div className="lg:col-span-6 space-y-4 text-left">
-            <h2 className="text-2xl sm:text-3xl font-black text-[#0C4A6E] uppercase border-l-4 border-[#EA580C] pl-3">
-              ĐỘT PHÁ HẠ TẦNG GIAO THÔNG
+            <h2 className="text-2xl sm:text-3xl font-black text-amber-300 uppercase">
+              TIỆN ÍCH ĐẲNG CẤP NOVAWORLD PHAN THIẾT
             </h2>
-            <p className="text-xs text-slate-700 leading-relaxed font-medium">
-              NovaWorld Phan Thiết sở hữu vị trí phong thủy <strong>"Tựa Sơn Hướng Hải"</strong>, lưng dựa vào đồi cát thoải dần, 100% biệt thự có tầm nhìn thoáng hướng đón gió biển.
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
+              Novaworld Phan Thiết có quy mô lên đến 1000 ha, cung cấp 1200 sản phẩm biệt thự. Dự án là một quần thể nghỉ dưỡng đa phức hợp hay còn được gọi là mô hình <strong>Integrated Resort</strong>. Đây là dạng khu đô thị nghỉ dưỡng mới, thông minh và đa dạng loại hình lưu trú, vui chơi giải trí.
             </p>
 
-            <div className="space-y-2 text-xs text-slate-700">
-              <div className="p-3 bg-slate-50 border border-slate-200">
-                <strong>• 1h30 Phút:</strong> Kết nối trực thông TP. Hồ Chí Minh qua Cao tốc Dầu Giây - Phan Thiết.
-              </div>
-              <div className="p-3 bg-slate-50 border border-slate-200">
-                <strong>• 15 – 20 Phút:</strong> Di chuyển đến Sân bay Quốc Tế Phan Thiết.
-              </div>
-              <div className="p-3 bg-slate-50 border border-slate-200">
-                <strong>• Kết nối liên vùng:</strong> Tuyến cao tốc Phan Thiết - Vĩnh Hảo và Phan Thiết - Nha Trang.
-              </div>
+            <div className="grid grid-cols-2 gap-2 text-xs text-slate-200 font-medium">
+              <p>✦ Sân Golf PGA 36 Hố</p>
+              <p>✦ Công viên nước Ocean Kingdom</p>
+              <p>✦ Quảng trường Bikini Beach 16ha</p>
+              <p>✦ Công viên chủ đề Circus Land</p>
+              <p>✦ Phức hợp thể thao Sport Complex</p>
+              <p>✦ Chuỗi nhà hàng & Beach Club</p>
             </div>
           </div>
 
           <div className="lg:col-span-6">
             <div 
-              className="border-4 border-[#0C4A6E] aspect-[16/10] bg-slate-900 group cursor-pointer overflow-hidden shadow-md"
-              onClick={() => setZoomImage('https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1600&q=80')}
+              className="border-4 border-amber-400 aspect-[16/10] bg-slate-900 group cursor-pointer overflow-hidden shadow-2xl"
+              onClick={() => setZoomImage('https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=1600&q=80')}
             >
               <img
-                src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1400&q=80"
-                alt="Sơ đồ kết nối giao thông NovaWorld"
+                src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=1200&q=80"
+                alt="Tiện ích Novotel NovaWorld"
                 className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
               />
-              <div className="absolute bottom-2 right-2 bg-[#0C4A6E] text-amber-300 px-3 py-1 text-xs font-bold flex items-center gap-1 border border-amber-300">
-                <ZoomIn className="w-3.5 h-3.5" /> Bấm xem phóng to sơ đồ
-              </div>
             </div>
           </div>
 
         </div>
       </section>
 
-      {/* ════════════════ 7. TIỆN ÍCH ĐẲNG CẤP QUỐC TẾ ════════════════ */}
-      <section id="tien-ich" className="py-16 px-4 sm:px-6 lg:px-8 bg-slate-50 border-b border-slate-200 text-center">
-        <div className="max-w-7xl mx-auto space-y-10">
-          
-          <div className="space-y-2">
-            <span className="text-xs font-bold text-[#EA580C] uppercase tracking-widest">
-              HỆ SINH THÁI NGHỈ DƯỠNG KHÉP KÍN
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-[#0C4A6E] uppercase">
-              TIỆN ÍCH ĐẲNG CẤP QUỐC TẾ
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
-            {amenities.map((item, idx) => (
-              <div
-                key={idx}
-                onClick={() => setZoomImage(item.image)}
-                className="bg-white border-2 border-slate-200 hover:border-amber-400 transition-all cursor-pointer group flex flex-col justify-between shadow-xs"
-              >
-                <div className="relative aspect-[16/10] overflow-hidden bg-slate-900">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                  />
-                  <div className="absolute bottom-2 right-2 bg-black/80 text-amber-300 px-2 py-0.5 text-[10px] font-bold flex items-center gap-1 border border-amber-400">
-                    <ZoomIn className="w-3 h-3" /> Phóng to
-                  </div>
-                </div>
-
-                <div className="p-4 space-y-1">
-                  <h4 className="font-black text-sm text-[#0C4A6E] group-hover:text-[#EA580C] transition-colors">
-                    {item.title}
-                  </h4>
-                  <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                    {item.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
+      {/* ════════════════ 13. NHẬN TƯ VẤN CHUYÊN SÂU SECTION ════════════════ */}
+      <section id="consultation-form-section" className="relative py-16 px-4 sm:px-6 lg:px-8 bg-slate-900 text-white text-center overflow-hidden">
+        <div className="absolute inset-0 z-0 opacity-30">
+          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80" alt="Villa Night" className="w-full h-full object-cover" />
         </div>
-      </section>
 
-      {/* ════════════════ 8. VIDEO GIỚI THIỆU DỰ ÁN ════════════════ */}
-      <section id="video-du-an" className="py-16 px-4 sm:px-6 lg:px-8 bg-[#0C4A6E] text-white text-center">
-        <div className="max-w-4xl mx-auto space-y-6">
-          
+        <div className="relative z-10 max-w-xl mx-auto space-y-6">
           <div className="space-y-1">
-            <span className="text-xs font-bold text-amber-300 uppercase tracking-widest">
-              TRẢI NGHIỆM THỰC TẾ
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black uppercase">
-              VIDEO PHÓNG SỰ DỰ ÁN NOVAWORLD PHAN THIẾT
-            </h2>
-          </div>
-
-          <div className="relative border-4 border-amber-400 bg-slate-950 aspect-video group overflow-hidden shadow-2xl">
-            <img
-              src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1400&q=80"
-              alt="Video Poster NovaWorld"
-              className="w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-700"
-            />
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
-              <button
-                onClick={() => setZoomImage('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1400&q=80')}
-                className="w-16 h-16 bg-[#EA580C] text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition cursor-pointer"
-              >
-                <Play className="w-8 h-8 fill-current ml-1" />
-              </button>
-              <span className="mt-3 text-xs font-bold uppercase tracking-wider bg-black/80 px-3 py-1 border border-white/20">
-                Xem Video Giới Thiệu Dự Án Official
-              </span>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ════════════════ 9. TẢI FILE BROCHURE & BẢNG GIÁ CUỐI TRANG (Lưới Lọc Phễu Số 2) ════════════════ */}
-      <section id="tai-tai-lieu" className="py-16 px-4 sm:px-6 lg:px-8 bg-slate-100 border-t-4 border-amber-400">
-        <div className="max-w-4xl mx-auto bg-white border-2 border-[#0C4A6E] p-8 sm:p-10 text-center space-y-6 shadow-xl">
-          
-          <div className="space-y-1">
-            <span className="text-xs font-bold text-[#EA580C] uppercase tracking-widest">
-              TẢI XUỐNG BỘ TÀI LIỆU GỐC TỪ CHỦ ĐẦU TƯ
-            </span>
-            <h3 className="text-2xl sm:text-3xl font-black text-[#0C4A6E] uppercase">
-              ĐĂNG KÝ NHẬN BROCHURE & BẢNG GIÁ (.PDF & .XLSX)
+            <h3 className="text-xl sm:text-3xl font-black text-amber-300 uppercase">
+              NHẬN TƯ VẤN CHUYÊN SÂU
             </h3>
-            <p className="text-xs text-slate-600">
-              Hệ thống sẽ tự động gửi file qua Zalo & Email của Quý Khách sau 2 phút làm việc
+            <p className="text-sm font-bold text-white uppercase tracking-wider">
+              "Chiết Khấu Đến 1.6 Tỷ" GTCH trong Tháng 11/2026
+            </p>
+            <p className="text-xs text-slate-300">
+              NovaWorld Phan Thiết chỉ liên hệ và tư vấn theo thời gian đã đăng ký để đảm bảo quý khách sẽ không bị làm phiền.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto text-left text-xs">
-            <div className="p-3 bg-slate-50 border border-slate-300 flex items-center gap-3">
-              <FileText className="w-8 h-8 text-red-600 shrink-0" />
-              <div>
-                <p className="font-bold text-[#0C4A6E]">Brochure NovaWorld 1.000ha</p>
-                <p className="text-[10px] text-slate-500">File: brochure-novaworld.pdf (18.4 MB)</p>
-              </div>
-            </div>
-
-            <div className="p-3 bg-slate-50 border border-slate-300 flex items-center gap-3">
-              <FileText className="w-8 h-8 text-emerald-600 shrink-0" />
-              <div>
-                <p className="font-bold text-[#0C4A6E]">Bảng Giá & Dòng Tiền Vay</p>
-                <p className="text-[10px] text-slate-500">File: bang-gia-chiet-khau.xlsx (3.2 MB)</p>
-              </div>
-            </div>
+          <div className="inline-block px-3 py-1 bg-black/60 border border-white/20 text-[11px] text-amber-300">
+            • Đinh Văn Long, 0835983xxx đã đăng ký 33 phút trước
           </div>
 
-          {isBottomSubmitted ? (
-            <div className="bg-[#FFFBEB] text-slate-900 p-6 text-center space-y-2 border-2 border-amber-400">
-              <Check className="w-8 h-8 text-emerald-600 mx-auto stroke-[3]" />
-              <h4 className="font-bold text-sm text-[#0C4A6E]">ĐÃ GỬI TÀI LIỆU THÀNH CÔNG!</h4>
-              <p className="text-xs text-slate-600">
-                Chuyên viên Novaland sẽ liên hệ lại qua số <strong>{bottomPhone}</strong> và gửi file qua Zalo trong ít phút.
-              </p>
+          {submittedFormId === 'consultation-form' ? (
+            <div className="bg-white text-slate-900 p-6 border-2 border-amber-400 animate-fadeIn">
+              <Check className="w-8 h-8 text-emerald-600 mx-auto" />
+              <h4 className="font-bold text-sm text-[#0B2545]">ĐĂNG KÝ THÀNH CÔNG!</h4>
+              <p className="text-xs text-slate-600">Ban tổ chức sẽ liên hệ đón Quý khách theo thời gian đã hẹn.</p>
             </div>
           ) : (
-            <form onSubmit={handleBottomSubmit} className="max-w-xl mx-auto space-y-3.5 text-xs text-left">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <input
-                  type="text"
-                  required
-                  value={bottomName}
-                  onChange={(e) => setBottomName(e.target.value)}
-                  placeholder="Họ và tên Quý Khách *"
-                  className="px-4 py-3 bg-slate-50 text-slate-900 font-bold border border-slate-300 outline-none"
-                />
-                <input
-                  type="tel"
-                  required
-                  value={bottomPhone}
-                  onChange={(e) => setBottomPhone(e.target.value)}
-                  placeholder="Số điện thoại (Zalo) *"
-                  className="px-4 py-3 bg-slate-50 text-slate-900 font-black border border-slate-300 outline-none"
-                />
-              </div>
+            <form onSubmit={(e) => handleFormSubmit(e, 'consultation-form')} className="space-y-3 text-xs text-left bg-black/70 p-6 border border-white/30">
+              <input
+                type="text"
+                required
+                value={formName}
+                onChange={(e) => setFormName(e.target.value)}
+                placeholder="Họ và tên *"
+                className="w-full px-3.5 py-2.5 bg-white text-slate-900 font-bold border border-slate-300 outline-none"
+              />
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <input
-                  type="email"
-                  value={bottomEmail}
-                  onChange={(e) => setBottomEmail(e.target.value)}
-                  placeholder="Email nhận tài liệu"
-                  className="px-4 py-3 bg-slate-50 text-slate-900 font-medium border border-slate-300 outline-none"
-                />
-                <select
-                  value={bottomProduct}
-                  onChange={(e) => setBottomProduct(e.target.value)}
-                  className="px-4 py-3 bg-slate-50 text-slate-900 font-bold border border-slate-300 outline-none"
-                >
-                  {subDivisions.map((s, idx) => (
-                    <option key={idx} value={s.fullName}>
-                      {s.code}: {s.fullName}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <input
+                type="tel"
+                required
+                value={formPhone}
+                onChange={(e) => setFormPhone(e.target.value)}
+                placeholder="Số điện thoại (Zalo) *"
+                className="w-full px-3.5 py-2.5 bg-white text-slate-900 font-black border border-slate-300 outline-none"
+              />
+
+              <input
+                type="text"
+                value={formTime}
+                onChange={(e) => setFormTime(e.target.value)}
+                placeholder="Đăng ký lịch tham quan và tư vấn (VD: 9h sáng thứ 7)"
+                className="w-full px-3.5 py-2.5 bg-white text-slate-900 font-medium border border-slate-300 outline-none"
+              />
+
+              <select
+                id="consultation-product-select"
+                value={formProduct}
+                onChange={(e) => setFormProduct(e.target.value)}
+                className="w-full px-3.5 py-2.5 bg-white text-slate-900 font-black border border-slate-300 outline-none"
+              >
+                {productCards.map((p, idx) => (
+                  <option key={idx} value={p.fullName}>
+                    {p.fullName} - {p.price}
+                  </option>
+                ))}
+              </select>
 
               <button
                 type="submit"
-                className="w-full py-3.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider transition shadow-md cursor-pointer"
+                className="w-full py-3 bg-[#D92D20] hover:bg-red-700 text-white font-black text-xs uppercase tracking-wider transition cursor-pointer"
               >
-                GỬI CHO TÔI TRỌN BỘ TÀI LIỆU NGAY
+                ĐĂNG KÝ NGAY
               </button>
             </form>
           )}
 
+          <p className="text-[10px] text-slate-400">
+            * Quý khách vui lòng điền chính xác thông tin. Ban tổ chức sẽ gọi điện xác nhận thời gian & địa điểm đón KH sau ít phút.
+          </p>
         </div>
       </section>
 
-      {/* ════════════════ 10. FOOTER ════════════════ */}
-      <footer className="bg-[#082F49] text-white py-12 px-4 sm:px-6 lg:px-8 text-xs border-t border-slate-700">
+      {/* ════════════════ 14. FOOTER 3 COLUMNS (DEEP NAVY) ════════════════ */}
+      <footer id="lien-he" className="bg-[#07172B] text-white py-12 px-4 sm:px-6 lg:px-8 text-xs border-t border-slate-800">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
           
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-amber-400 text-slate-950 flex items-center justify-center font-black">
-                NW
+              <div className="text-xl font-black tracking-tight text-white uppercase flex items-center">
+                <span>Nova</span>
+                <span className="text-[#14B8A6]">W</span>
+                <span className="inline-block w-3.5 h-3.5 mx-0.5 rounded-full bg-gradient-to-tr from-amber-400 to-orange-500" />
+                <span>RLD</span>
               </div>
-              <span className="font-black text-sm text-amber-300 uppercase">
-                {brandName}
-              </span>
             </div>
-            <p className="text-slate-300 text-[11px] leading-relaxed">
-              Trực thuộc {companyGroup}. Siêu thành phố Biển - Du lịch - Sức khỏe quy mô 1.000ha tại thủ phủ Phan Thiết, Bình Thuận.
+            <p className="text-slate-300 text-[11px] uppercase tracking-wider font-bold">
+              SIÊU THÀNH PHỐ BIỂN - DU LỊCH - SỨC KHỎE
             </p>
-          </div>
-
-          <div className="space-y-2 text-[11px] text-slate-200">
-            <h4 className="font-bold text-amber-300 text-xs uppercase mb-1">VĂN PHÒNG BÁN HÀNG DỰ ÁN</h4>
-            <p className="flex items-start gap-2">
-              <MapPin className="w-4 h-4 text-amber-300 shrink-0 mt-0.5" />
-              <span>{address}</span>
-            </p>
-            <p className="flex items-center gap-2">
-              <Phone className="w-4 h-4 text-amber-300 shrink-0" />
-              <span>Hotline 24/7: <strong>{hotline}</strong></span>
-            </p>
-            <p className="flex items-center gap-2">
-              <Mail className="w-4 h-4 text-amber-300 shrink-0" />
-              <span>Email: {email}</span>
+            <p className="text-slate-400 text-[11px] leading-relaxed">
+              Trực thuộc {companyGroup}. Quần thể nghỉ dưỡng 1.000ha tiêu chuẩn quốc tế tại vịnh biển Tiến Thành, Phan Thiết.
             </p>
           </div>
 
           <div className="space-y-2 text-[11px] text-slate-300">
-            <h4 className="font-bold text-amber-300 text-xs uppercase mb-1">QUY CHUẨN PHÁP LÝ</h4>
-            <p>✓ Đầy đủ phê duyệt quy hoạch 1/500 cấp bởi UBND Tỉnh Bình Thuận.</p>
-            <p>✓ Ngân hàng MB Bank, VPBank bảo lãnh và tài trợ 70% hạn mức.</p>
-            <p>✓ Giấy phép xây dựng hoàn chỉnh cho toàn bộ phân kỳ.</p>
-            <p className="text-[10px] text-slate-400 pt-2">© 2026 {brandName}. All rights reserved.</p>
+            <h4 className="font-black text-amber-300 text-xs uppercase mb-1">NOVAWORLD PHAN THIẾT</h4>
+            <p className="flex items-start gap-2">
+              <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+              <span>{address}</span>
+            </p>
+            <p className="flex items-center gap-2">
+              <Phone className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>Hotline (24/7): <strong>{hotline}</strong></span>
+            </p>
+            <p className="flex items-center gap-2">
+              <Mail className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>Email: {email}</span>
+            </p>
+            <p className="flex items-center gap-2">
+              <Globe className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>Website: https://www.novaworldphanthiet.vn</span>
+            </p>
+          </div>
+
+          <div className="space-y-2 text-[11px]">
+            <h4 className="font-black text-amber-300 text-xs uppercase mb-1">ĐĂNG KÝ TƯ VẤN MIỄN PHÍ</h4>
+            
+            {submittedFormId === 'footer-form' ? (
+              <div className="bg-white text-slate-900 p-3 text-center border border-amber-400">
+                <p className="font-bold text-xs text-emerald-600">✓ Đã nhận thông tin!</p>
+              </div>
+            ) : (
+              <form onSubmit={(e) => handleFormSubmit(e, 'footer-form')} className="space-y-2">
+                <input
+                  type="text"
+                  required
+                  value={formName}
+                  onChange={(e) => setFormName(e.target.value)}
+                  placeholder="Họ và tên *"
+                  className="w-full px-3 py-2 bg-white text-slate-900 font-bold border border-slate-300 outline-none"
+                />
+                <input
+                  type="tel"
+                  required
+                  value={formPhone}
+                  onChange={(e) => setFormPhone(e.target.value)}
+                  placeholder="Số điện thoại (Zalo) *"
+                  className="w-full px-3 py-2 bg-white text-slate-900 font-black border border-slate-300 outline-none"
+                />
+                <input
+                  type="text"
+                  value={formTime}
+                  onChange={(e) => setFormTime(e.target.value)}
+                  placeholder="Thời gian muốn nhận tư vấn? (VD: 19h)"
+                  className="w-full px-3 py-2 bg-white text-slate-900 font-medium border border-slate-300 outline-none"
+                />
+                <button
+                  type="submit"
+                  className="w-full py-2 bg-[#D92D20] hover:bg-red-700 text-white font-black uppercase tracking-wider transition cursor-pointer"
+                >
+                  ĐĂNG KÝ NGAY
+                </button>
+              </form>
+            )}
           </div>
 
         </div>
       </footer>
 
-      {/* ════════════════ 11. LIGHTBOX ZOOM MODAL ════════════════ */}
+      {/* ════════════════ 15. LIGHTBOX ZOOM MODAL ════════════════ */}
       {zoomImage && (
         <div 
           className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn"
@@ -805,11 +1051,11 @@ export default function LP07Template({
         </div>
       )}
 
-      {/* ════════════════ 12. FLOATING CONTACT BUTTONS ════════════════ */}
+      {/* ════════════════ 16. FLOATING CONTACT BUTTONS ════════════════ */}
       <div className="fixed bottom-4 left-4 z-40 flex items-center gap-2">
         <a
           href={`tel:${hotline}`}
-          className="px-4 py-2.5 bg-[#EA580C] hover:bg-orange-700 text-white font-bold text-xs flex items-center gap-2 shadow-2xl transition"
+          className="px-4 py-2.5 bg-[#D92D20] hover:bg-red-700 text-white font-bold text-xs flex items-center gap-2 shadow-2xl rounded-full transition"
         >
           <Phone className="w-4 h-4 animate-bounce text-amber-300" />
           <span className="hidden sm:inline">Hotline: {hotline}</span>
@@ -820,7 +1066,7 @@ export default function LP07Template({
           href={`https://zalo.me/${zalo}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-2 shadow-2xl transition"
+          className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-2 shadow-2xl rounded-full transition"
         >
           <MessageCircle className="w-4 h-4" />
           <span>Chat Zalo</span>
