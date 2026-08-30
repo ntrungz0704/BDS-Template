@@ -1,4 +1,5 @@
 'use client';
+import { PropertyImageGallery } from './PropertyImageGallery';
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Menu, X, Search, ChevronRight, ChevronLeft, MapPin, Phone, Mail, 
@@ -1157,45 +1158,7 @@ export default function BDS14Template({
               <button onClick={() => navigate('home')} className="text-xs font-bold text-lime-700">‹ Quay lại danh sách</button>
               <h1 className="text-2xl font-black text-slate-900 uppercase">{selectedProperty.title}</h1>
               <p className="text-sm font-black text-[#65A30D]">{selectedProperty.price} — Diện tích: {selectedProperty.area}</p>
-              <div className="space-y-3">
-                {(() => {
-                  const targetItem = selectedProperty;
-                  const rawGallery = (targetItem as any)?.gallery || (targetItem as any)?.images || [];
-                  const galleryList = (Array.isArray(rawGallery) && rawGallery.length >= 3)
-                    ? rawGallery
-                    : [
-                        (targetItem as any)?.image || (targetItem as any)?.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80',
-                        'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80',
-                        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80',
-                        'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80'
-                      ];
-                  const currentImg = galleryList[activeImageIdx] || galleryList[0];
-                  return (
-                    <>
-                      <div className="w-full h-80 sm:h-96 rounded-xl overflow-hidden shadow-lg border relative bg-slate-100">
-                        <img
-                          src={currentImg}
-                          alt=""
-                          className="w-full h-full object-cover transition-all duration-300"
-                        />
-                      </div>
-                      <div className="grid grid-cols-4 gap-2.5">
-                        {galleryList.map((img: string, i: number) => (
-                          <div
-                            key={i}
-                            onClick={() => setActiveImageIdx(i)}
-                            className={`h-20 rounded-lg overflow-hidden border-2 cursor-pointer transition ${
-                              activeImageIdx === i ? 'border-blue-600 ring-2 ring-blue-300 scale-95 shadow-md' : 'border-slate-200 opacity-70 hover:opacity-100'
-                            }`}
-                          >
-                            <img src={img} alt="" className="w-full h-full object-cover" />
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  );
-                })()}
-              </div>
+              <PropertyImageGallery images={(selectedProperty as any)?.gallery || (selectedProperty as any)?.images} image={(selectedProperty as any)?.image || (selectedProperty as any)?.thumbnail} badge1={(selectedProperty as any)?.type || (selectedProperty as any)?.badge} badge2={(selectedProperty as any)?.direction || (selectedProperty as any)?.zone} themeColor="blue" />
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{selectedProperty.description}</p>
             </div>
           </div>

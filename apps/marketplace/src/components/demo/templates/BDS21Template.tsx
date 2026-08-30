@@ -1,4 +1,5 @@
 'use client';
+import { PropertyImageGallery } from '../PropertyImageGallery';
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Menu, X, Search, ChevronRight, ChevronLeft, MapPin, Phone, Mail, 
@@ -1155,43 +1156,7 @@ export default function BDS21Template({
                 <span className="text-slate-500">📍 {selectedProperty.location}</span>
                 <span className="px-2.5 py-0.5 bg-blue-100 text-blue-800 uppercase">{selectedProperty.type}</span>
               </div>
-              <div className="space-y-3">
-                {(() => {
-                  const galleryList = ((selectedProperty as any)?.gallery && (selectedProperty as any)?.gallery.length >= 3)
-                    ? (selectedProperty as any)?.gallery
-                    : [
-                        selectedProperty.image || 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80',
-                        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-                        'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-                        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80'
-                      ];
-                  const currentImg = galleryList[activeImageIdx] || galleryList[0];
-                  return (
-                    <>
-                      <div className="w-full h-80 sm:h-96 rounded-xl overflow-hidden shadow-lg border relative bg-slate-100">
-                        <img
-                          src={currentImg}
-                          alt={selectedProperty.title}
-                          className="w-full h-full object-cover transition-all duration-300"
-                        />
-                      </div>
-                      <div className="grid grid-cols-4 gap-2.5">
-                        {galleryList.map((img: string, i: number) => (
-                          <div
-                            key={i}
-                            onClick={() => setActiveImageIdx(i)}
-                            className={`h-20 rounded-lg overflow-hidden border-2 cursor-pointer transition ${
-                              activeImageIdx === i ? 'border-blue-600 ring-2 ring-blue-300 scale-95 shadow-md' : 'border-slate-200 opacity-70 hover:opacity-100'
-                            }`}
-                          >
-                            <img src={img} alt="" className="w-full h-full object-cover" />
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  );
-                })()}
-              </div>
+              <PropertyImageGallery images={(selectedProperty as any)?.gallery || (selectedProperty as any)?.images} image={(selectedProperty as any)?.image || (selectedProperty as any)?.thumbnail} badge1={(selectedProperty as any)?.type || (selectedProperty as any)?.badge} badge2={(selectedProperty as any)?.direction || (selectedProperty as any)?.zone} themeColor="blue" />
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{selectedProperty.description}</p>
               <div className="p-4 bg-slate-50 border border-slate-300 space-y-2">
                 <h4 className="font-bold text-xs uppercase text-[#1E40AF]">Đặc điểm & tiện ích nổi bật:</h4>

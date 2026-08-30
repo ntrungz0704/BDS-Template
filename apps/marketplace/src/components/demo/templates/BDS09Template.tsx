@@ -1,4 +1,5 @@
 'use client';
+import { PropertyImageGallery } from '../PropertyImageGallery';
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Menu, X, Search, ChevronRight, ChevronLeft, MapPin, Phone, Mail, 
@@ -1220,45 +1221,7 @@ export default function BDS09Template({
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8 space-y-6">
-            <div className="space-y-3">
-                {(() => {
-                  const targetItem = selectedUnit;
-                  const rawGallery = (targetItem as any)?.gallery || (targetItem as any)?.images || [];
-                  const galleryList = (Array.isArray(rawGallery) && rawGallery.length >= 3)
-                    ? rawGallery
-                    : [
-                        (targetItem as any)?.image || (targetItem as any)?.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80',
-                        'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80',
-                        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80',
-                        'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80'
-                      ];
-                  const currentImg = galleryList[activeImageIdx] || galleryList[0];
-                  return (
-                    <>
-                      <div className="w-full h-80 sm:h-96 rounded-xl overflow-hidden shadow-lg border relative bg-slate-100">
-                        <img
-                          src={currentImg}
-                          alt=""
-                          className="w-full h-full object-cover transition-all duration-300"
-                        />
-                      </div>
-                      <div className="grid grid-cols-4 gap-2.5">
-                        {galleryList.map((img: string, i: number) => (
-                          <div
-                            key={i}
-                            onClick={() => setActiveImageIdx(i)}
-                            className={`h-20 rounded-lg overflow-hidden border-2 cursor-pointer transition ${
-                              activeImageIdx === i ? 'border-blue-600 ring-2 ring-blue-300 scale-95 shadow-md' : 'border-slate-200 opacity-70 hover:opacity-100'
-                            }`}
-                          >
-                            <img src={img} alt="" className="w-full h-full object-cover" />
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  );
-                })()}
-              </div>
+            <PropertyImageGallery images={(selectedUnit as any)?.gallery || (selectedUnit as any)?.images} image={(selectedUnit as any)?.image || (selectedUnit as any)?.thumbnail} badge1={(selectedUnit as any)?.type || (selectedUnit as any)?.badge} badge2={(selectedUnit as any)?.direction || (selectedUnit as any)?.zone} themeColor="blue" />
             <div className="bg-slate-50 p-6 rounded-md border space-y-4">
               <h3 className="text-base font-black text-[#B45309] uppercase">Đặc Điểm & Thông Số Kỹ Thuật</h3>
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{selectedUnit.description}</p>

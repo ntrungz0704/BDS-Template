@@ -1,3 +1,4 @@
+import { PropertyImageGallery } from '../PropertyImageGallery';
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Menu, X, Search, ChevronRight, ChevronLeft, MapPin, Phone, Mail, 
@@ -966,41 +967,7 @@ export default function BDS05Template({ template, viewport = 'desktop', initialP
 
             {/* Gallery */}
             <div className="bg-white rounded-sm border border-slate-200 p-4 shadow-xs space-y-3">
-              {(() => {
-                const galleryList = ((selectedProperty as any)?.gallery && (selectedProperty as any)?.gallery.length >= 3)
-                  ? (selectedProperty as any)?.gallery
-                  : [
-                      selectedProperty.image || 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80',
-                      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-                      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-                      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80'
-                    ];
-                return (
-                  <>
-                    <div className="h-80 sm:h-96 rounded-lg overflow-hidden bg-slate-100">
-                      <img
-                        src={galleryList[activeGalleryIdx] || galleryList[0]}
-                        alt=""
-                        onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
-                        className="w-full h-full object-cover transition-all duration-300"
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 gap-2.5">
-                      {galleryList.map((img: string, i: number) => (
-                        <div
-                          key={i}
-                          onClick={() => setActiveGalleryIdx(i)}
-                          className={`h-20 rounded-lg overflow-hidden cursor-pointer border-2 transition ${
-                            activeGalleryIdx === i ? 'border-[#0084FF] ring-2 ring-blue-300 scale-95 shadow-md' : 'border-slate-200 opacity-70 hover:opacity-100'
-                          }`}
-                        >
-                          <img src={img} alt="" className="w-full h-full object-cover" />
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                );
-              })()}
+              <PropertyImageGallery images={(selectedProperty as any)?.gallery || (selectedProperty as any)?.images} image={(selectedProperty as any)?.image || (selectedProperty as any)?.thumbnail} badge1={(selectedProperty as any)?.type || (selectedProperty as any)?.badge} badge2={(selectedProperty as any)?.direction || (selectedProperty as any)?.zone} themeColor="blue" />
             </div>
 
             {/* Specs & Desc */}

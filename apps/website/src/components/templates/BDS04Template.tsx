@@ -1,3 +1,4 @@
+import { PropertyImageGallery } from './PropertyImageGallery';
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Menu, X, Search, ChevronRight, ChevronLeft, MapPin, Phone, Mail, 
