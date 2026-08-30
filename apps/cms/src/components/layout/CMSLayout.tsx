@@ -668,17 +668,17 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
               <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
                 {userInfo?.role === 'SUPER_ADMIN' && (
                   <a
-                    href="https://admin.aireviewbds.com"
+                    href={process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3002'}
                     className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md shadow-indigo-600/20 transition-all"
                   >
                     ⚙️ Vào Trang Quản Trị Admin
                   </a>
                 )}
                 <a
-                  href="https://templates.aireviewbds.com"
-                  className="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-md shadow-amber-500/20 transition-all"
+                  href={process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'http://localhost:3000/templates'}
+                  className="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-md shadow-amber-500/20 transition-all flex items-center gap-1.5"
                 >
-                  🛍️ Xem Kho 16+ Giao Diện
+                  <span>🛍️ Xem Kho 24+ Giao Diện & 7 Landing Pages</span>
                 </a>
               </div>
             </div>
