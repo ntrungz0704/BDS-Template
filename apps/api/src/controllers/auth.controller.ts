@@ -115,15 +115,15 @@ export async function register(req: Request, res: Response, next: NextFunction) 
           userAgent: req.headers['user-agent'],
         },
       });
-
     } catch (_) {}
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       data: {
         userId: newUser.id,
         email: newUser.email,
         fullName: newUser.fullName,
+        phone: newUser.phone,
         isMock: false,
       },
     });
@@ -325,6 +325,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
           id: user.id,
           email: user.email,
           fullName: user.fullName,
+          phone: user.phone,
           role: user.role,
           tenantId: activeTenantId,
           tenant: tenantInfo,
