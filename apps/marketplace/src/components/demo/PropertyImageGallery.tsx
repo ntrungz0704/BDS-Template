@@ -20,7 +20,7 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({
   badge1,
   badge2,
   badge1Color = 'bg-blue-600',
-  aspectRatio = 'h-80 sm:h-96 md:h-[400px]',
+  aspectRatio = 'h-80 sm:h-96 md:h-[420px]',
   themeColor = 'blue',
 }) => {
   const [activeIdx, setActiveIdx] = useState(0);
@@ -69,10 +69,10 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({
 
   const activeBorderClass = ringBorderClasses[themeColor] || ringBorderClasses.blue;
 
-  // Cấu hình linh hoạt cho số lượng ảnh (4, 6, 7, 8, 10+ ảnh)
+  // Tự động co giãn bố cục: Khi thêm 6, 8, 10+ ảnh, thumbnails tự động xuống hàng ngay ngắn, đẩy chiều cao trang dài xuống chuẩn chỉ
   const gridColsClass = total <= 4 
     ? 'grid grid-cols-4 gap-2.5' 
-    : 'grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 max-h-44 overflow-y-auto p-1 border border-slate-100 rounded-lg bg-slate-50/50';
+    : 'grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2.5';
 
   return (
     <div 
@@ -80,7 +80,7 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Khung ảnh chính với mũi tên trái/phải & zoom */}
+      {/* Khung ảnh chính với tỉ lệ chuẩn, mũi tên trái/phải & zoom */}
       <div 
         onClick={() => setIsZoomed(true)}
         className={`${aspectRatio} w-full rounded-xl overflow-hidden bg-slate-950 relative shadow-lg cursor-zoom-in group`}
@@ -142,7 +142,7 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({
         </button>
       </div>
 
-      {/* Thumbnails nhỏ bên dưới (Linh hoạt tự co giãn từ 4 đến 6, 7, 8, 10+ ảnh) */}
+      {/* Thumbnails nhỏ bên dưới (Tự động xuống hàng ngay ngắn, co giãn theo chiều dọc) */}
       <div className={gridColsClass}>
         {galleryList.map((img, i) => (
           <div
