@@ -671,7 +671,7 @@ export default function CustomerDashboard() {
                                 {ord.template?.name || 'Mẫu Landing Page BĐS'} — Gói Source Code Độc Lập
                               </h4>
                               <p className="text-xs text-slate-500 font-medium">
-                                Định dạng: <span className="font-mono font-bold text-slate-700">ZIP</span> | Trọn bộ: <span className="font-bold text-slate-700">HTML5/CSS3/JS + PHP & MySQL + Next.js React</span>
+                                Định dạng: <span className="font-mono font-bold text-slate-700">ZIP</span> | Trọn bộ: <span className="font-bold text-slate-700">HTML5, CSS3, JavaScript Thuần & PHP/MySQL</span>
                               </p>
                               <p className="text-[11px] text-blue-600 font-semibold">
                                 ✨ Mở file <code className="bg-blue-50 px-1 py-0.5 rounded text-blue-700">html/index.html</code> xem ngay hoặc upload hosting PHP có sẵn <code className="bg-blue-50 px-1 py-0.5 rounded text-blue-700">database.sql</code>.
