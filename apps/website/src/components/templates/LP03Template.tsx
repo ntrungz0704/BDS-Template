@@ -430,22 +430,23 @@ export default function LP03Template({
             </p>
           </div>
 
-          {/* Banner Phối Cảnh kèm Box Đỏ Đô Đè Nổi Bật */}
-          <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-slate-900 aspect-[16/9] max-h-[480px]">
+          {/* Banner Phối Cảnh & Thông Số Tổng Quan */}
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-slate-900 min-h-[420px] sm:min-h-[460px] flex flex-col justify-end p-4 sm:p-8">
             <img
               src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80"
               alt="Phối Cảnh Tổng Quan"
-              className="w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent sm:bg-none" />
             
-            {/* Red Box floating on right side */}
-            <div className="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 bg-[#9B1C1C]/95 backdrop-blur-md text-white p-5 sm:p-6 rounded-2xl max-w-xs sm:max-w-sm text-left shadow-2xl border border-red-400/40">
+            {/* Red Box on bottom-right on desktop, full-width responsive on mobile */}
+            <div className="relative z-10 sm:absolute sm:bottom-6 sm:right-6 lg:bottom-8 lg:right-8 bg-[#9B1C1C]/95 backdrop-blur-md text-white p-5 sm:p-6 rounded-2xl w-full sm:max-w-sm text-left shadow-2xl border border-red-400/40">
               <h4 className="font-black text-xs sm:text-sm uppercase tracking-wider text-amber-300 mb-3 border-b border-white/20 pb-2">
                 HỒ SƠ TỔNG QUAN DỰ ÁN
               </h4>
-              <div className="space-y-2 text-[11px] text-slate-100 font-medium">
+              <div className="space-y-2 text-xs text-slate-100 font-medium leading-relaxed">
                 <p>• <strong>Chủ đầu tư:</strong> {companyGroup}</p>
-                <p>• <strong>Vị trí:</strong> {address}</p>
+                <p className="break-words">• <strong>Vị trí:</strong> {address}</p>
                 <p>• <strong>Tổng diện tích:</strong> 25.000 m² (Mật độ 32%)</p>
                 <p>• <strong>Quy mô:</strong> 2 Tòa tháp cao 35 tầng (850 căn hộ)</p>
                 <p>• <strong>Diện tích căn:</strong> 48.5m² – 145m² (1PN - 3PN)</p>
