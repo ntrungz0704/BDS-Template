@@ -224,6 +224,24 @@ exports.Prisma.OrderScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ExportJobScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  orderNumber: 'orderNumber',
+  tenantId: 'tenantId',
+  userId: 'userId',
+  status: 'status',
+  downloadToken: 'downloadToken',
+  downloadUrl: 'downloadUrl',
+  filePath: 'filePath',
+  fileName: 'fileName',
+  fileSizeBytes: 'fileSizeBytes',
+  expiresAt: 'expiresAt',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SubscriptionScalarFieldEnum = {
   id: 'id',
   tenantId: 'tenantId',
@@ -859,6 +877,14 @@ exports.OrderStatus = exports.$Enums.OrderStatus = {
   REJECTED: 'REJECTED'
 };
 
+exports.ExportJobStatus = exports.$Enums.ExportJobStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  READY: 'READY',
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED'
+};
+
 exports.ProjectType = exports.$Enums.ProjectType = {
   APARTMENT: 'APARTMENT',
   VILLA: 'VILLA',
@@ -898,6 +924,7 @@ exports.Prisma.ModelName = {
   Template: 'Template',
   TemplateConfig: 'TemplateConfig',
   Order: 'Order',
+  ExportJob: 'ExportJob',
   Subscription: 'Subscription',
   Project: 'Project',
   Post: 'Post',

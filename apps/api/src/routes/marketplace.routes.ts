@@ -13,6 +13,9 @@ import {
   simulatePayment,
   getMyOrders,
   downloadTemplateSource,
+  requestExportPackage,
+  getExportPackageStatus,
+  downloadExportByToken,
 } from '../controllers/marketplace.controller';
 import { authMiddleware, optionalAuthMiddleware } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/role.middleware';
@@ -54,5 +57,10 @@ router.post(
   csrfMiddleware,
   quickApproveOrder
 );
+
+// Single-Tenant Export Engine (Dành riêng cho đơn hàng Mua Đứt)
+router.post('/orders/:orderNumber/request-export', authMiddleware, requestExportPackage);
+router.get('/orders/:orderNumber/export-status', authMiddleware, getExportPackageStatus);
+router.get('/exports/download/:token', downloadExportByToken);
 
 export default router;

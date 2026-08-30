@@ -39,6 +39,11 @@ export type TemplateConfig = $Result.DefaultSelection<Prisma.$TemplateConfigPayl
  */
 export type Order = $Result.DefaultSelection<Prisma.$OrderPayload>
 /**
+ * Model ExportJob
+ * 
+ */
+export type ExportJob = $Result.DefaultSelection<Prisma.$ExportJobPayload>
+/**
  * Model Subscription
  * 
  */
@@ -273,6 +278,17 @@ export const OrderStatus: {
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
 
 
+export const ExportJobStatus: {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  READY: 'READY',
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED'
+};
+
+export type ExportJobStatus = (typeof ExportJobStatus)[keyof typeof ExportJobStatus]
+
+
 export const ProjectType: {
   APARTMENT: 'APARTMENT',
   VILLA: 'VILLA',
@@ -326,6 +342,10 @@ export const UserRole: typeof $Enums.UserRole
 export type OrderStatus = $Enums.OrderStatus
 
 export const OrderStatus: typeof $Enums.OrderStatus
+
+export type ExportJobStatus = $Enums.ExportJobStatus
+
+export const ExportJobStatus: typeof $Enums.ExportJobStatus
 
 export type ProjectType = $Enums.ProjectType
 
@@ -515,6 +535,16 @@ export class PrismaClient<
     * ```
     */
   get order(): Prisma.OrderDelegate<ExtArgs>;
+
+  /**
+   * `prisma.exportJob`: Exposes CRUD operations for the **ExportJob** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ExportJobs
+    * const exportJobs = await prisma.exportJob.findMany()
+    * ```
+    */
+  get exportJob(): Prisma.ExportJobDelegate<ExtArgs>;
 
   /**
    * `prisma.subscription`: Exposes CRUD operations for the **Subscription** model.
@@ -1371,6 +1401,7 @@ export namespace Prisma {
     Template: 'Template',
     TemplateConfig: 'TemplateConfig',
     Order: 'Order',
+    ExportJob: 'ExportJob',
     Subscription: 'Subscription',
     Project: 'Project',
     Post: 'Post',
@@ -1427,7 +1458,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "user" | "tenant" | "template" | "templateConfig" | "order" | "subscription" | "project" | "post" | "category" | "tag" | "banner" | "menu" | "menuItem" | "companyInfo" | "seoConfig" | "media" | "contactFormSubmission" | "demoSession" | "refreshToken" | "auditLog" | "customerProfile" | "wishlist" | "cart" | "cartItem" | "review" | "notification" | "templateDraft" | "templateVersion" | "tenantThemeSettings" | "tenantPage" | "tenantSection" | "contentVersion" | "tenantDomainSettings" | "mediaFolder" | "mediaAsset" | "mediaUsage" | "mediaRecycleBin" | "lead" | "leadNote" | "leadActivity" | "tenantApiKey" | "tenantWebhook" | "webhookDelivery" | "tenantMembership" | "passwordResetToken" | "emailVerificationToken"
+      modelProps: "user" | "tenant" | "template" | "templateConfig" | "order" | "exportJob" | "subscription" | "project" | "post" | "category" | "tag" | "banner" | "menu" | "menuItem" | "companyInfo" | "seoConfig" | "media" | "contactFormSubmission" | "demoSession" | "refreshToken" | "auditLog" | "customerProfile" | "wishlist" | "cart" | "cartItem" | "review" | "notification" | "templateDraft" | "templateVersion" | "tenantThemeSettings" | "tenantPage" | "tenantSection" | "contentVersion" | "tenantDomainSettings" | "mediaFolder" | "mediaAsset" | "mediaUsage" | "mediaRecycleBin" | "lead" | "leadNote" | "leadActivity" | "tenantApiKey" | "tenantWebhook" | "webhookDelivery" | "tenantMembership" | "passwordResetToken" | "emailVerificationToken"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1778,6 +1809,76 @@ export namespace Prisma {
           count: {
             args: Prisma.OrderCountArgs<ExtArgs>
             result: $Utils.Optional<OrderCountAggregateOutputType> | number
+          }
+        }
+      }
+      ExportJob: {
+        payload: Prisma.$ExportJobPayload<ExtArgs>
+        fields: Prisma.ExportJobFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ExportJobFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExportJobPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ExportJobFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExportJobPayload>
+          }
+          findFirst: {
+            args: Prisma.ExportJobFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExportJobPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ExportJobFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExportJobPayload>
+          }
+          findMany: {
+            args: Prisma.ExportJobFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExportJobPayload>[]
+          }
+          create: {
+            args: Prisma.ExportJobCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExportJobPayload>
+          }
+          createMany: {
+            args: Prisma.ExportJobCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ExportJobCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExportJobPayload>[]
+          }
+          delete: {
+            args: Prisma.ExportJobDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExportJobPayload>
+          }
+          update: {
+            args: Prisma.ExportJobUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExportJobPayload>
+          }
+          deleteMany: {
+            args: Prisma.ExportJobDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ExportJobUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ExportJobUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExportJobPayload>
+          }
+          aggregate: {
+            args: Prisma.ExportJobAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateExportJob>
+          }
+          groupBy: {
+            args: Prisma.ExportJobGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ExportJobGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ExportJobCountArgs<ExtArgs>
+            result: $Utils.Optional<ExportJobCountAggregateOutputType> | number
           }
         }
       }
@@ -5167,6 +5268,37 @@ export namespace Prisma {
    */
   export type TemplateCountOutputTypeCountVersionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TemplateVersionWhereInput
+  }
+
+
+  /**
+   * Count Type OrderCountOutputType
+   */
+
+  export type OrderCountOutputType = {
+    exportJobs: number
+  }
+
+  export type OrderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    exportJobs?: boolean | OrderCountOutputTypeCountExportJobsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * OrderCountOutputType without action
+   */
+  export type OrderCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderCountOutputType
+     */
+    select?: OrderCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * OrderCountOutputType without action
+   */
+  export type OrderCountOutputTypeCountExportJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExportJobWhereInput
   }
 
 
@@ -11300,6 +11432,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     template?: boolean | TemplateDefaultArgs<ExtArgs>
+    exportJobs?: boolean | Order$exportJobsArgs<ExtArgs>
+    _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
 
   export type OrderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11353,6 +11487,8 @@ export namespace Prisma {
 
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     template?: boolean | TemplateDefaultArgs<ExtArgs>
+    exportJobs?: boolean | Order$exportJobsArgs<ExtArgs>
+    _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     template?: boolean | TemplateDefaultArgs<ExtArgs>
@@ -11362,6 +11498,7 @@ export namespace Prisma {
     name: "Order"
     objects: {
       template: Prisma.$TemplatePayload<ExtArgs>
+      exportJobs: Prisma.$ExportJobPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11750,6 +11887,7 @@ export namespace Prisma {
   export interface Prisma__OrderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     template<T extends TemplateDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TemplateDefaultArgs<ExtArgs>>): Prisma__TemplateClient<$Result.GetResult<Prisma.$TemplatePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    exportJobs<T extends Order$exportJobsArgs<ExtArgs> = {}>(args?: Subset<T, Order$exportJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExportJobPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12118,6 +12256,26 @@ export namespace Prisma {
   }
 
   /**
+   * Order.exportJobs
+   */
+  export type Order$exportJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExportJob
+     */
+    select?: ExportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExportJobInclude<ExtArgs> | null
+    where?: ExportJobWhereInput
+    orderBy?: ExportJobOrderByWithRelationInput | ExportJobOrderByWithRelationInput[]
+    cursor?: ExportJobWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ExportJobScalarFieldEnum | ExportJobScalarFieldEnum[]
+  }
+
+  /**
    * Order without action
    */
   export type OrderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12129,6 +12287,1093 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: OrderInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ExportJob
+   */
+
+  export type AggregateExportJob = {
+    _count: ExportJobCountAggregateOutputType | null
+    _avg: ExportJobAvgAggregateOutputType | null
+    _sum: ExportJobSumAggregateOutputType | null
+    _min: ExportJobMinAggregateOutputType | null
+    _max: ExportJobMaxAggregateOutputType | null
+  }
+
+  export type ExportJobAvgAggregateOutputType = {
+    fileSizeBytes: number | null
+  }
+
+  export type ExportJobSumAggregateOutputType = {
+    fileSizeBytes: bigint | null
+  }
+
+  export type ExportJobMinAggregateOutputType = {
+    id: string | null
+    orderId: string | null
+    orderNumber: string | null
+    tenantId: string | null
+    userId: string | null
+    status: $Enums.ExportJobStatus | null
+    downloadToken: string | null
+    downloadUrl: string | null
+    filePath: string | null
+    fileName: string | null
+    fileSizeBytes: bigint | null
+    expiresAt: Date | null
+    errorMessage: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ExportJobMaxAggregateOutputType = {
+    id: string | null
+    orderId: string | null
+    orderNumber: string | null
+    tenantId: string | null
+    userId: string | null
+    status: $Enums.ExportJobStatus | null
+    downloadToken: string | null
+    downloadUrl: string | null
+    filePath: string | null
+    fileName: string | null
+    fileSizeBytes: bigint | null
+    expiresAt: Date | null
+    errorMessage: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ExportJobCountAggregateOutputType = {
+    id: number
+    orderId: number
+    orderNumber: number
+    tenantId: number
+    userId: number
+    status: number
+    downloadToken: number
+    downloadUrl: number
+    filePath: number
+    fileName: number
+    fileSizeBytes: number
+    expiresAt: number
+    errorMessage: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ExportJobAvgAggregateInputType = {
+    fileSizeBytes?: true
+  }
+
+  export type ExportJobSumAggregateInputType = {
+    fileSizeBytes?: true
+  }
+
+  export type ExportJobMinAggregateInputType = {
+    id?: true
+    orderId?: true
+    orderNumber?: true
+    tenantId?: true
+    userId?: true
+    status?: true
+    downloadToken?: true
+    downloadUrl?: true
+    filePath?: true
+    fileName?: true
+    fileSizeBytes?: true
+    expiresAt?: true
+    errorMessage?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ExportJobMaxAggregateInputType = {
+    id?: true
+    orderId?: true
+    orderNumber?: true
+    tenantId?: true
+    userId?: true
+    status?: true
+    downloadToken?: true
+    downloadUrl?: true
+    filePath?: true
+    fileName?: true
+    fileSizeBytes?: true
+    expiresAt?: true
+    errorMessage?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ExportJobCountAggregateInputType = {
+    id?: true
+    orderId?: true
+    orderNumber?: true
+    tenantId?: true
+    userId?: true
+    status?: true
+    downloadToken?: true
+    downloadUrl?: true
+    filePath?: true
+    fileName?: true
+    fileSizeBytes?: true
+    expiresAt?: true
+    errorMessage?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ExportJobAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ExportJob to aggregate.
+     */
+    where?: ExportJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExportJobs to fetch.
+     */
+    orderBy?: ExportJobOrderByWithRelationInput | ExportJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ExportJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExportJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExportJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ExportJobs
+    **/
+    _count?: true | ExportJobCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ExportJobAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ExportJobSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ExportJobMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ExportJobMaxAggregateInputType
+  }
+
+  export type GetExportJobAggregateType<T extends ExportJobAggregateArgs> = {
+        [P in keyof T & keyof AggregateExportJob]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateExportJob[P]>
+      : GetScalarType<T[P], AggregateExportJob[P]>
+  }
+
+
+
+
+  export type ExportJobGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExportJobWhereInput
+    orderBy?: ExportJobOrderByWithAggregationInput | ExportJobOrderByWithAggregationInput[]
+    by: ExportJobScalarFieldEnum[] | ExportJobScalarFieldEnum
+    having?: ExportJobScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ExportJobCountAggregateInputType | true
+    _avg?: ExportJobAvgAggregateInputType
+    _sum?: ExportJobSumAggregateInputType
+    _min?: ExportJobMinAggregateInputType
+    _max?: ExportJobMaxAggregateInputType
+  }
+
+  export type ExportJobGroupByOutputType = {
+    id: string
+    orderId: string
+    orderNumber: string
+    tenantId: string | null
+    userId: string | null
+    status: $Enums.ExportJobStatus
+    downloadToken: string | null
+    downloadUrl: string | null
+    filePath: string | null
+    fileName: string | null
+    fileSizeBytes: bigint | null
+    expiresAt: Date | null
+    errorMessage: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ExportJobCountAggregateOutputType | null
+    _avg: ExportJobAvgAggregateOutputType | null
+    _sum: ExportJobSumAggregateOutputType | null
+    _min: ExportJobMinAggregateOutputType | null
+    _max: ExportJobMaxAggregateOutputType | null
+  }
+
+  type GetExportJobGroupByPayload<T extends ExportJobGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ExportJobGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ExportJobGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ExportJobGroupByOutputType[P]>
+            : GetScalarType<T[P], ExportJobGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ExportJobSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderId?: boolean
+    orderNumber?: boolean
+    tenantId?: boolean
+    userId?: boolean
+    status?: boolean
+    downloadToken?: boolean
+    downloadUrl?: boolean
+    filePath?: boolean
+    fileName?: boolean
+    fileSizeBytes?: boolean
+    expiresAt?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["exportJob"]>
+
+  export type ExportJobSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderId?: boolean
+    orderNumber?: boolean
+    tenantId?: boolean
+    userId?: boolean
+    status?: boolean
+    downloadToken?: boolean
+    downloadUrl?: boolean
+    filePath?: boolean
+    fileName?: boolean
+    fileSizeBytes?: boolean
+    expiresAt?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["exportJob"]>
+
+  export type ExportJobSelectScalar = {
+    id?: boolean
+    orderId?: boolean
+    orderNumber?: boolean
+    tenantId?: boolean
+    userId?: boolean
+    status?: boolean
+    downloadToken?: boolean
+    downloadUrl?: boolean
+    filePath?: boolean
+    fileName?: boolean
+    fileSizeBytes?: boolean
+    expiresAt?: boolean
+    errorMessage?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ExportJobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }
+  export type ExportJobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }
+
+  export type $ExportJobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ExportJob"
+    objects: {
+      order: Prisma.$OrderPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      orderId: string
+      orderNumber: string
+      tenantId: string | null
+      userId: string | null
+      status: $Enums.ExportJobStatus
+      downloadToken: string | null
+      downloadUrl: string | null
+      filePath: string | null
+      fileName: string | null
+      fileSizeBytes: bigint | null
+      expiresAt: Date | null
+      errorMessage: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["exportJob"]>
+    composites: {}
+  }
+
+  type ExportJobGetPayload<S extends boolean | null | undefined | ExportJobDefaultArgs> = $Result.GetResult<Prisma.$ExportJobPayload, S>
+
+  type ExportJobCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ExportJobFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ExportJobCountAggregateInputType | true
+    }
+
+  export interface ExportJobDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ExportJob'], meta: { name: 'ExportJob' } }
+    /**
+     * Find zero or one ExportJob that matches the filter.
+     * @param {ExportJobFindUniqueArgs} args - Arguments to find a ExportJob
+     * @example
+     * // Get one ExportJob
+     * const exportJob = await prisma.exportJob.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ExportJobFindUniqueArgs>(args: SelectSubset<T, ExportJobFindUniqueArgs<ExtArgs>>): Prisma__ExportJobClient<$Result.GetResult<Prisma.$ExportJobPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one ExportJob that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ExportJobFindUniqueOrThrowArgs} args - Arguments to find a ExportJob
+     * @example
+     * // Get one ExportJob
+     * const exportJob = await prisma.exportJob.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ExportJobFindUniqueOrThrowArgs>(args: SelectSubset<T, ExportJobFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ExportJobClient<$Result.GetResult<Prisma.$ExportJobPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first ExportJob that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExportJobFindFirstArgs} args - Arguments to find a ExportJob
+     * @example
+     * // Get one ExportJob
+     * const exportJob = await prisma.exportJob.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ExportJobFindFirstArgs>(args?: SelectSubset<T, ExportJobFindFirstArgs<ExtArgs>>): Prisma__ExportJobClient<$Result.GetResult<Prisma.$ExportJobPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first ExportJob that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExportJobFindFirstOrThrowArgs} args - Arguments to find a ExportJob
+     * @example
+     * // Get one ExportJob
+     * const exportJob = await prisma.exportJob.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ExportJobFindFirstOrThrowArgs>(args?: SelectSubset<T, ExportJobFindFirstOrThrowArgs<ExtArgs>>): Prisma__ExportJobClient<$Result.GetResult<Prisma.$ExportJobPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more ExportJobs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExportJobFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ExportJobs
+     * const exportJobs = await prisma.exportJob.findMany()
+     * 
+     * // Get first 10 ExportJobs
+     * const exportJobs = await prisma.exportJob.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const exportJobWithIdOnly = await prisma.exportJob.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ExportJobFindManyArgs>(args?: SelectSubset<T, ExportJobFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExportJobPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a ExportJob.
+     * @param {ExportJobCreateArgs} args - Arguments to create a ExportJob.
+     * @example
+     * // Create one ExportJob
+     * const ExportJob = await prisma.exportJob.create({
+     *   data: {
+     *     // ... data to create a ExportJob
+     *   }
+     * })
+     * 
+     */
+    create<T extends ExportJobCreateArgs>(args: SelectSubset<T, ExportJobCreateArgs<ExtArgs>>): Prisma__ExportJobClient<$Result.GetResult<Prisma.$ExportJobPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many ExportJobs.
+     * @param {ExportJobCreateManyArgs} args - Arguments to create many ExportJobs.
+     * @example
+     * // Create many ExportJobs
+     * const exportJob = await prisma.exportJob.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ExportJobCreateManyArgs>(args?: SelectSubset<T, ExportJobCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ExportJobs and returns the data saved in the database.
+     * @param {ExportJobCreateManyAndReturnArgs} args - Arguments to create many ExportJobs.
+     * @example
+     * // Create many ExportJobs
+     * const exportJob = await prisma.exportJob.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ExportJobs and only return the `id`
+     * const exportJobWithIdOnly = await prisma.exportJob.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ExportJobCreateManyAndReturnArgs>(args?: SelectSubset<T, ExportJobCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExportJobPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a ExportJob.
+     * @param {ExportJobDeleteArgs} args - Arguments to delete one ExportJob.
+     * @example
+     * // Delete one ExportJob
+     * const ExportJob = await prisma.exportJob.delete({
+     *   where: {
+     *     // ... filter to delete one ExportJob
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ExportJobDeleteArgs>(args: SelectSubset<T, ExportJobDeleteArgs<ExtArgs>>): Prisma__ExportJobClient<$Result.GetResult<Prisma.$ExportJobPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one ExportJob.
+     * @param {ExportJobUpdateArgs} args - Arguments to update one ExportJob.
+     * @example
+     * // Update one ExportJob
+     * const exportJob = await prisma.exportJob.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ExportJobUpdateArgs>(args: SelectSubset<T, ExportJobUpdateArgs<ExtArgs>>): Prisma__ExportJobClient<$Result.GetResult<Prisma.$ExportJobPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more ExportJobs.
+     * @param {ExportJobDeleteManyArgs} args - Arguments to filter ExportJobs to delete.
+     * @example
+     * // Delete a few ExportJobs
+     * const { count } = await prisma.exportJob.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ExportJobDeleteManyArgs>(args?: SelectSubset<T, ExportJobDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ExportJobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExportJobUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ExportJobs
+     * const exportJob = await prisma.exportJob.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ExportJobUpdateManyArgs>(args: SelectSubset<T, ExportJobUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ExportJob.
+     * @param {ExportJobUpsertArgs} args - Arguments to update or create a ExportJob.
+     * @example
+     * // Update or create a ExportJob
+     * const exportJob = await prisma.exportJob.upsert({
+     *   create: {
+     *     // ... data to create a ExportJob
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ExportJob we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ExportJobUpsertArgs>(args: SelectSubset<T, ExportJobUpsertArgs<ExtArgs>>): Prisma__ExportJobClient<$Result.GetResult<Prisma.$ExportJobPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of ExportJobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExportJobCountArgs} args - Arguments to filter ExportJobs to count.
+     * @example
+     * // Count the number of ExportJobs
+     * const count = await prisma.exportJob.count({
+     *   where: {
+     *     // ... the filter for the ExportJobs we want to count
+     *   }
+     * })
+    **/
+    count<T extends ExportJobCountArgs>(
+      args?: Subset<T, ExportJobCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ExportJobCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ExportJob.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExportJobAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ExportJobAggregateArgs>(args: Subset<T, ExportJobAggregateArgs>): Prisma.PrismaPromise<GetExportJobAggregateType<T>>
+
+    /**
+     * Group by ExportJob.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExportJobGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ExportJobGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ExportJobGroupByArgs['orderBy'] }
+        : { orderBy?: ExportJobGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ExportJobGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetExportJobGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ExportJob model
+   */
+  readonly fields: ExportJobFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ExportJob.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ExportJobClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    order<T extends OrderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrderDefaultArgs<ExtArgs>>): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ExportJob model
+   */ 
+  interface ExportJobFieldRefs {
+    readonly id: FieldRef<"ExportJob", 'String'>
+    readonly orderId: FieldRef<"ExportJob", 'String'>
+    readonly orderNumber: FieldRef<"ExportJob", 'String'>
+    readonly tenantId: FieldRef<"ExportJob", 'String'>
+    readonly userId: FieldRef<"ExportJob", 'String'>
+    readonly status: FieldRef<"ExportJob", 'ExportJobStatus'>
+    readonly downloadToken: FieldRef<"ExportJob", 'String'>
+    readonly downloadUrl: FieldRef<"ExportJob", 'String'>
+    readonly filePath: FieldRef<"ExportJob", 'String'>
+    readonly fileName: FieldRef<"ExportJob", 'String'>
+    readonly fileSizeBytes: FieldRef<"ExportJob", 'BigInt'>
+    readonly expiresAt: FieldRef<"ExportJob", 'DateTime'>
+    readonly errorMessage: FieldRef<"ExportJob", 'String'>
+    readonly createdAt: FieldRef<"ExportJob", 'DateTime'>
+    readonly updatedAt: FieldRef<"ExportJob", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ExportJob findUnique
+   */
+  export type ExportJobFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExportJob
+     */
+    select?: ExportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExportJobInclude<ExtArgs> | null
+    /**
+     * Filter, which ExportJob to fetch.
+     */
+    where: ExportJobWhereUniqueInput
+  }
+
+  /**
+   * ExportJob findUniqueOrThrow
+   */
+  export type ExportJobFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExportJob
+     */
+    select?: ExportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExportJobInclude<ExtArgs> | null
+    /**
+     * Filter, which ExportJob to fetch.
+     */
+    where: ExportJobWhereUniqueInput
+  }
+
+  /**
+   * ExportJob findFirst
+   */
+  export type ExportJobFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExportJob
+     */
+    select?: ExportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExportJobInclude<ExtArgs> | null
+    /**
+     * Filter, which ExportJob to fetch.
+     */
+    where?: ExportJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExportJobs to fetch.
+     */
+    orderBy?: ExportJobOrderByWithRelationInput | ExportJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ExportJobs.
+     */
+    cursor?: ExportJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExportJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExportJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ExportJobs.
+     */
+    distinct?: ExportJobScalarFieldEnum | ExportJobScalarFieldEnum[]
+  }
+
+  /**
+   * ExportJob findFirstOrThrow
+   */
+  export type ExportJobFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExportJob
+     */
+    select?: ExportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExportJobInclude<ExtArgs> | null
+    /**
+     * Filter, which ExportJob to fetch.
+     */
+    where?: ExportJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExportJobs to fetch.
+     */
+    orderBy?: ExportJobOrderByWithRelationInput | ExportJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ExportJobs.
+     */
+    cursor?: ExportJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExportJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExportJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ExportJobs.
+     */
+    distinct?: ExportJobScalarFieldEnum | ExportJobScalarFieldEnum[]
+  }
+
+  /**
+   * ExportJob findMany
+   */
+  export type ExportJobFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExportJob
+     */
+    select?: ExportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExportJobInclude<ExtArgs> | null
+    /**
+     * Filter, which ExportJobs to fetch.
+     */
+    where?: ExportJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExportJobs to fetch.
+     */
+    orderBy?: ExportJobOrderByWithRelationInput | ExportJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ExportJobs.
+     */
+    cursor?: ExportJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExportJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExportJobs.
+     */
+    skip?: number
+    distinct?: ExportJobScalarFieldEnum | ExportJobScalarFieldEnum[]
+  }
+
+  /**
+   * ExportJob create
+   */
+  export type ExportJobCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExportJob
+     */
+    select?: ExportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExportJobInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ExportJob.
+     */
+    data: XOR<ExportJobCreateInput, ExportJobUncheckedCreateInput>
+  }
+
+  /**
+   * ExportJob createMany
+   */
+  export type ExportJobCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ExportJobs.
+     */
+    data: ExportJobCreateManyInput | ExportJobCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ExportJob createManyAndReturn
+   */
+  export type ExportJobCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExportJob
+     */
+    select?: ExportJobSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many ExportJobs.
+     */
+    data: ExportJobCreateManyInput | ExportJobCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExportJobIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ExportJob update
+   */
+  export type ExportJobUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExportJob
+     */
+    select?: ExportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExportJobInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ExportJob.
+     */
+    data: XOR<ExportJobUpdateInput, ExportJobUncheckedUpdateInput>
+    /**
+     * Choose, which ExportJob to update.
+     */
+    where: ExportJobWhereUniqueInput
+  }
+
+  /**
+   * ExportJob updateMany
+   */
+  export type ExportJobUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ExportJobs.
+     */
+    data: XOR<ExportJobUpdateManyMutationInput, ExportJobUncheckedUpdateManyInput>
+    /**
+     * Filter which ExportJobs to update
+     */
+    where?: ExportJobWhereInput
+  }
+
+  /**
+   * ExportJob upsert
+   */
+  export type ExportJobUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExportJob
+     */
+    select?: ExportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExportJobInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ExportJob to update in case it exists.
+     */
+    where: ExportJobWhereUniqueInput
+    /**
+     * In case the ExportJob found by the `where` argument doesn't exist, create a new ExportJob with this data.
+     */
+    create: XOR<ExportJobCreateInput, ExportJobUncheckedCreateInput>
+    /**
+     * In case the ExportJob was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ExportJobUpdateInput, ExportJobUncheckedUpdateInput>
+  }
+
+  /**
+   * ExportJob delete
+   */
+  export type ExportJobDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExportJob
+     */
+    select?: ExportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExportJobInclude<ExtArgs> | null
+    /**
+     * Filter which ExportJob to delete.
+     */
+    where: ExportJobWhereUniqueInput
+  }
+
+  /**
+   * ExportJob deleteMany
+   */
+  export type ExportJobDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ExportJobs to delete
+     */
+    where?: ExportJobWhereInput
+  }
+
+  /**
+   * ExportJob without action
+   */
+  export type ExportJobDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExportJob
+     */
+    select?: ExportJobSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExportJobInclude<ExtArgs> | null
   }
 
 
@@ -54800,6 +56045,27 @@ export namespace Prisma {
   export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
 
 
+  export const ExportJobScalarFieldEnum: {
+    id: 'id',
+    orderId: 'orderId',
+    orderNumber: 'orderNumber',
+    tenantId: 'tenantId',
+    userId: 'userId',
+    status: 'status',
+    downloadToken: 'downloadToken',
+    downloadUrl: 'downloadUrl',
+    filePath: 'filePath',
+    fileName: 'fileName',
+    fileSizeBytes: 'fileSizeBytes',
+    expiresAt: 'expiresAt',
+    errorMessage: 'errorMessage',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ExportJobScalarFieldEnum = (typeof ExportJobScalarFieldEnum)[keyof typeof ExportJobScalarFieldEnum]
+
+
   export const SubscriptionScalarFieldEnum: {
     id: 'id',
     tenantId: 'tenantId',
@@ -55662,6 +56928,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ExportJobStatus'
+   */
+  export type EnumExportJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExportJobStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ExportJobStatus[]'
+   */
+  export type ListEnumExportJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExportJobStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'ProjectType'
    */
   export type EnumProjectTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectType'>
@@ -56340,6 +57620,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
     template?: XOR<TemplateRelationFilter, TemplateWhereInput>
+    exportJobs?: ExportJobListRelationFilter
   }
 
   export type OrderOrderByWithRelationInput = {
@@ -56365,6 +57646,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     template?: TemplateOrderByWithRelationInput
+    exportJobs?: ExportJobOrderByRelationAggregateInput
   }
 
   export type OrderWhereUniqueInput = Prisma.AtLeast<{
@@ -56393,6 +57675,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
     template?: XOR<TemplateRelationFilter, TemplateWhereInput>
+    exportJobs?: ExportJobListRelationFilter
   }, "id" | "orderNumber" | "transactionCode">
 
   export type OrderOrderByWithAggregationInput = {
@@ -56449,6 +57732,113 @@ export namespace Prisma {
     version?: IntWithAggregatesFilter<"Order"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
+  }
+
+  export type ExportJobWhereInput = {
+    AND?: ExportJobWhereInput | ExportJobWhereInput[]
+    OR?: ExportJobWhereInput[]
+    NOT?: ExportJobWhereInput | ExportJobWhereInput[]
+    id?: StringFilter<"ExportJob"> | string
+    orderId?: StringFilter<"ExportJob"> | string
+    orderNumber?: StringFilter<"ExportJob"> | string
+    tenantId?: StringNullableFilter<"ExportJob"> | string | null
+    userId?: StringNullableFilter<"ExportJob"> | string | null
+    status?: EnumExportJobStatusFilter<"ExportJob"> | $Enums.ExportJobStatus
+    downloadToken?: StringNullableFilter<"ExportJob"> | string | null
+    downloadUrl?: StringNullableFilter<"ExportJob"> | string | null
+    filePath?: StringNullableFilter<"ExportJob"> | string | null
+    fileName?: StringNullableFilter<"ExportJob"> | string | null
+    fileSizeBytes?: BigIntNullableFilter<"ExportJob"> | bigint | number | null
+    expiresAt?: DateTimeNullableFilter<"ExportJob"> | Date | string | null
+    errorMessage?: StringNullableFilter<"ExportJob"> | string | null
+    createdAt?: DateTimeFilter<"ExportJob"> | Date | string
+    updatedAt?: DateTimeFilter<"ExportJob"> | Date | string
+    order?: XOR<OrderRelationFilter, OrderWhereInput>
+  }
+
+  export type ExportJobOrderByWithRelationInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    orderNumber?: SortOrder
+    tenantId?: SortOrderInput | SortOrder
+    userId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    downloadToken?: SortOrderInput | SortOrder
+    downloadUrl?: SortOrderInput | SortOrder
+    filePath?: SortOrderInput | SortOrder
+    fileName?: SortOrderInput | SortOrder
+    fileSizeBytes?: SortOrderInput | SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    order?: OrderOrderByWithRelationInput
+  }
+
+  export type ExportJobWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    downloadToken?: string
+    AND?: ExportJobWhereInput | ExportJobWhereInput[]
+    OR?: ExportJobWhereInput[]
+    NOT?: ExportJobWhereInput | ExportJobWhereInput[]
+    orderId?: StringFilter<"ExportJob"> | string
+    orderNumber?: StringFilter<"ExportJob"> | string
+    tenantId?: StringNullableFilter<"ExportJob"> | string | null
+    userId?: StringNullableFilter<"ExportJob"> | string | null
+    status?: EnumExportJobStatusFilter<"ExportJob"> | $Enums.ExportJobStatus
+    downloadUrl?: StringNullableFilter<"ExportJob"> | string | null
+    filePath?: StringNullableFilter<"ExportJob"> | string | null
+    fileName?: StringNullableFilter<"ExportJob"> | string | null
+    fileSizeBytes?: BigIntNullableFilter<"ExportJob"> | bigint | number | null
+    expiresAt?: DateTimeNullableFilter<"ExportJob"> | Date | string | null
+    errorMessage?: StringNullableFilter<"ExportJob"> | string | null
+    createdAt?: DateTimeFilter<"ExportJob"> | Date | string
+    updatedAt?: DateTimeFilter<"ExportJob"> | Date | string
+    order?: XOR<OrderRelationFilter, OrderWhereInput>
+  }, "id" | "downloadToken">
+
+  export type ExportJobOrderByWithAggregationInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    orderNumber?: SortOrder
+    tenantId?: SortOrderInput | SortOrder
+    userId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    downloadToken?: SortOrderInput | SortOrder
+    downloadUrl?: SortOrderInput | SortOrder
+    filePath?: SortOrderInput | SortOrder
+    fileName?: SortOrderInput | SortOrder
+    fileSizeBytes?: SortOrderInput | SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ExportJobCountOrderByAggregateInput
+    _avg?: ExportJobAvgOrderByAggregateInput
+    _max?: ExportJobMaxOrderByAggregateInput
+    _min?: ExportJobMinOrderByAggregateInput
+    _sum?: ExportJobSumOrderByAggregateInput
+  }
+
+  export type ExportJobScalarWhereWithAggregatesInput = {
+    AND?: ExportJobScalarWhereWithAggregatesInput | ExportJobScalarWhereWithAggregatesInput[]
+    OR?: ExportJobScalarWhereWithAggregatesInput[]
+    NOT?: ExportJobScalarWhereWithAggregatesInput | ExportJobScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ExportJob"> | string
+    orderId?: StringWithAggregatesFilter<"ExportJob"> | string
+    orderNumber?: StringWithAggregatesFilter<"ExportJob"> | string
+    tenantId?: StringNullableWithAggregatesFilter<"ExportJob"> | string | null
+    userId?: StringNullableWithAggregatesFilter<"ExportJob"> | string | null
+    status?: EnumExportJobStatusWithAggregatesFilter<"ExportJob"> | $Enums.ExportJobStatus
+    downloadToken?: StringNullableWithAggregatesFilter<"ExportJob"> | string | null
+    downloadUrl?: StringNullableWithAggregatesFilter<"ExportJob"> | string | null
+    filePath?: StringNullableWithAggregatesFilter<"ExportJob"> | string | null
+    fileName?: StringNullableWithAggregatesFilter<"ExportJob"> | string | null
+    fileSizeBytes?: BigIntNullableWithAggregatesFilter<"ExportJob"> | bigint | number | null
+    expiresAt?: DateTimeNullableWithAggregatesFilter<"ExportJob"> | Date | string | null
+    errorMessage?: StringNullableWithAggregatesFilter<"ExportJob"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ExportJob"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ExportJob"> | Date | string
   }
 
   export type SubscriptionWhereInput = {
@@ -60863,6 +62253,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     template: TemplateCreateNestedOneWithoutOrdersInput
+    exportJobs?: ExportJobCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateInput = {
@@ -60887,6 +62278,7 @@ export namespace Prisma {
     version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    exportJobs?: ExportJobUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUpdateInput = {
@@ -60911,6 +62303,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     template?: TemplateUpdateOneRequiredWithoutOrdersNestedInput
+    exportJobs?: ExportJobUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateInput = {
@@ -60935,6 +62328,7 @@ export namespace Prisma {
     version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportJobs?: ExportJobUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderCreateManyInput = {
@@ -61004,6 +62398,131 @@ export namespace Prisma {
     transactionCode?: NullableStringFieldUpdateOperationsInput | string | null
     adminNotes?: NullableStringFieldUpdateOperationsInput | string | null
     version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExportJobCreateInput = {
+    id?: string
+    orderNumber: string
+    tenantId?: string | null
+    userId?: string | null
+    status?: $Enums.ExportJobStatus
+    downloadToken?: string | null
+    downloadUrl?: string | null
+    filePath?: string | null
+    fileName?: string | null
+    fileSizeBytes?: bigint | number | null
+    expiresAt?: Date | string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    order: OrderCreateNestedOneWithoutExportJobsInput
+  }
+
+  export type ExportJobUncheckedCreateInput = {
+    id?: string
+    orderId: string
+    orderNumber: string
+    tenantId?: string | null
+    userId?: string | null
+    status?: $Enums.ExportJobStatus
+    downloadToken?: string | null
+    downloadUrl?: string | null
+    filePath?: string | null
+    fileName?: string | null
+    fileSizeBytes?: bigint | number | null
+    expiresAt?: Date | string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExportJobUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumExportJobStatusFieldUpdateOperationsInput | $Enums.ExportJobStatus
+    downloadToken?: NullableStringFieldUpdateOperationsInput | string | null
+    downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSizeBytes?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateOneRequiredWithoutExportJobsNestedInput
+  }
+
+  export type ExportJobUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumExportJobStatusFieldUpdateOperationsInput | $Enums.ExportJobStatus
+    downloadToken?: NullableStringFieldUpdateOperationsInput | string | null
+    downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSizeBytes?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExportJobCreateManyInput = {
+    id?: string
+    orderId: string
+    orderNumber: string
+    tenantId?: string | null
+    userId?: string | null
+    status?: $Enums.ExportJobStatus
+    downloadToken?: string | null
+    downloadUrl?: string | null
+    filePath?: string | null
+    fileName?: string | null
+    fileSizeBytes?: bigint | number | null
+    expiresAt?: Date | string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExportJobUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumExportJobStatusFieldUpdateOperationsInput | $Enums.ExportJobStatus
+    downloadToken?: NullableStringFieldUpdateOperationsInput | string | null
+    downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSizeBytes?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExportJobUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumExportJobStatusFieldUpdateOperationsInput | $Enums.ExportJobStatus
+    downloadToken?: NullableStringFieldUpdateOperationsInput | string | null
+    downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSizeBytes?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -66085,6 +67604,16 @@ export namespace Prisma {
     not?: NestedEnumOrderStatusFilter<$PrismaModel> | $Enums.OrderStatus
   }
 
+  export type ExportJobListRelationFilter = {
+    every?: ExportJobWhereInput
+    some?: ExportJobWhereInput
+    none?: ExportJobWhereInput
+  }
+
+  export type ExportJobOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type OrderCountOrderByAggregateInput = {
     id?: SortOrder
     orderNumber?: SortOrder
@@ -66177,6 +67706,117 @@ export namespace Prisma {
     _max?: NestedEnumOrderStatusFilter<$PrismaModel>
   }
 
+  export type EnumExportJobStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExportJobStatus | EnumExportJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ExportJobStatus[] | ListEnumExportJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExportJobStatus[] | ListEnumExportJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumExportJobStatusFilter<$PrismaModel> | $Enums.ExportJobStatus
+  }
+
+  export type BigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
+  }
+
+  export type OrderRelationFilter = {
+    is?: OrderWhereInput
+    isNot?: OrderWhereInput
+  }
+
+  export type ExportJobCountOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    orderNumber?: SortOrder
+    tenantId?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    downloadToken?: SortOrder
+    downloadUrl?: SortOrder
+    filePath?: SortOrder
+    fileName?: SortOrder
+    fileSizeBytes?: SortOrder
+    expiresAt?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ExportJobAvgOrderByAggregateInput = {
+    fileSizeBytes?: SortOrder
+  }
+
+  export type ExportJobMaxOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    orderNumber?: SortOrder
+    tenantId?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    downloadToken?: SortOrder
+    downloadUrl?: SortOrder
+    filePath?: SortOrder
+    fileName?: SortOrder
+    fileSizeBytes?: SortOrder
+    expiresAt?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ExportJobMinOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    orderNumber?: SortOrder
+    tenantId?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    downloadToken?: SortOrder
+    downloadUrl?: SortOrder
+    filePath?: SortOrder
+    fileName?: SortOrder
+    fileSizeBytes?: SortOrder
+    expiresAt?: SortOrder
+    errorMessage?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ExportJobSumOrderByAggregateInput = {
+    fileSizeBytes?: SortOrder
+  }
+
+  export type EnumExportJobStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExportJobStatus | EnumExportJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ExportJobStatus[] | ListEnumExportJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExportJobStatus[] | ListEnumExportJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumExportJobStatusWithAggregatesFilter<$PrismaModel> | $Enums.ExportJobStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumExportJobStatusFilter<$PrismaModel>
+    _max?: NestedEnumExportJobStatusFilter<$PrismaModel>
+  }
+
+  export type BigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
+  }
+
   export type TenantRelationFilter = {
     is?: TenantWhereInput
     isNot?: TenantWhereInput
@@ -66250,17 +67890,6 @@ export namespace Prisma {
     in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumProjectStatusFilter<$PrismaModel> | $Enums.ProjectStatus
-  }
-
-  export type BigIntNullableFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
   }
 
   export type FloatNullableFilter<$PrismaModel = never> = {
@@ -66453,22 +68082,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumProjectStatusFilter<$PrismaModel>
     _max?: NestedEnumProjectStatusFilter<$PrismaModel>
-  }
-
-  export type BigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedBigIntNullableFilter<$PrismaModel>
-    _min?: NestedBigIntNullableFilter<$PrismaModel>
-    _max?: NestedBigIntNullableFilter<$PrismaModel>
   }
 
   export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -70182,6 +71795,20 @@ export namespace Prisma {
     connect?: TemplateWhereUniqueInput
   }
 
+  export type ExportJobCreateNestedManyWithoutOrderInput = {
+    create?: XOR<ExportJobCreateWithoutOrderInput, ExportJobUncheckedCreateWithoutOrderInput> | ExportJobCreateWithoutOrderInput[] | ExportJobUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: ExportJobCreateOrConnectWithoutOrderInput | ExportJobCreateOrConnectWithoutOrderInput[]
+    createMany?: ExportJobCreateManyOrderInputEnvelope
+    connect?: ExportJobWhereUniqueInput | ExportJobWhereUniqueInput[]
+  }
+
+  export type ExportJobUncheckedCreateNestedManyWithoutOrderInput = {
+    create?: XOR<ExportJobCreateWithoutOrderInput, ExportJobUncheckedCreateWithoutOrderInput> | ExportJobCreateWithoutOrderInput[] | ExportJobUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: ExportJobCreateOrConnectWithoutOrderInput | ExportJobCreateOrConnectWithoutOrderInput[]
+    createMany?: ExportJobCreateManyOrderInputEnvelope
+    connect?: ExportJobWhereUniqueInput | ExportJobWhereUniqueInput[]
+  }
+
   export type EnumOrderStatusFieldUpdateOperationsInput = {
     set?: $Enums.OrderStatus
   }
@@ -70192,6 +71819,60 @@ export namespace Prisma {
     upsert?: TemplateUpsertWithoutOrdersInput
     connect?: TemplateWhereUniqueInput
     update?: XOR<XOR<TemplateUpdateToOneWithWhereWithoutOrdersInput, TemplateUpdateWithoutOrdersInput>, TemplateUncheckedUpdateWithoutOrdersInput>
+  }
+
+  export type ExportJobUpdateManyWithoutOrderNestedInput = {
+    create?: XOR<ExportJobCreateWithoutOrderInput, ExportJobUncheckedCreateWithoutOrderInput> | ExportJobCreateWithoutOrderInput[] | ExportJobUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: ExportJobCreateOrConnectWithoutOrderInput | ExportJobCreateOrConnectWithoutOrderInput[]
+    upsert?: ExportJobUpsertWithWhereUniqueWithoutOrderInput | ExportJobUpsertWithWhereUniqueWithoutOrderInput[]
+    createMany?: ExportJobCreateManyOrderInputEnvelope
+    set?: ExportJobWhereUniqueInput | ExportJobWhereUniqueInput[]
+    disconnect?: ExportJobWhereUniqueInput | ExportJobWhereUniqueInput[]
+    delete?: ExportJobWhereUniqueInput | ExportJobWhereUniqueInput[]
+    connect?: ExportJobWhereUniqueInput | ExportJobWhereUniqueInput[]
+    update?: ExportJobUpdateWithWhereUniqueWithoutOrderInput | ExportJobUpdateWithWhereUniqueWithoutOrderInput[]
+    updateMany?: ExportJobUpdateManyWithWhereWithoutOrderInput | ExportJobUpdateManyWithWhereWithoutOrderInput[]
+    deleteMany?: ExportJobScalarWhereInput | ExportJobScalarWhereInput[]
+  }
+
+  export type ExportJobUncheckedUpdateManyWithoutOrderNestedInput = {
+    create?: XOR<ExportJobCreateWithoutOrderInput, ExportJobUncheckedCreateWithoutOrderInput> | ExportJobCreateWithoutOrderInput[] | ExportJobUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: ExportJobCreateOrConnectWithoutOrderInput | ExportJobCreateOrConnectWithoutOrderInput[]
+    upsert?: ExportJobUpsertWithWhereUniqueWithoutOrderInput | ExportJobUpsertWithWhereUniqueWithoutOrderInput[]
+    createMany?: ExportJobCreateManyOrderInputEnvelope
+    set?: ExportJobWhereUniqueInput | ExportJobWhereUniqueInput[]
+    disconnect?: ExportJobWhereUniqueInput | ExportJobWhereUniqueInput[]
+    delete?: ExportJobWhereUniqueInput | ExportJobWhereUniqueInput[]
+    connect?: ExportJobWhereUniqueInput | ExportJobWhereUniqueInput[]
+    update?: ExportJobUpdateWithWhereUniqueWithoutOrderInput | ExportJobUpdateWithWhereUniqueWithoutOrderInput[]
+    updateMany?: ExportJobUpdateManyWithWhereWithoutOrderInput | ExportJobUpdateManyWithWhereWithoutOrderInput[]
+    deleteMany?: ExportJobScalarWhereInput | ExportJobScalarWhereInput[]
+  }
+
+  export type OrderCreateNestedOneWithoutExportJobsInput = {
+    create?: XOR<OrderCreateWithoutExportJobsInput, OrderUncheckedCreateWithoutExportJobsInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutExportJobsInput
+    connect?: OrderWhereUniqueInput
+  }
+
+  export type EnumExportJobStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ExportJobStatus
+  }
+
+  export type NullableBigIntFieldUpdateOperationsInput = {
+    set?: bigint | number | null
+    increment?: bigint | number
+    decrement?: bigint | number
+    multiply?: bigint | number
+    divide?: bigint | number
+  }
+
+  export type OrderUpdateOneRequiredWithoutExportJobsNestedInput = {
+    create?: XOR<OrderCreateWithoutExportJobsInput, OrderUncheckedCreateWithoutExportJobsInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutExportJobsInput
+    upsert?: OrderUpsertWithoutExportJobsInput
+    connect?: OrderWhereUniqueInput
+    update?: XOR<XOR<OrderUpdateToOneWithWhereWithoutExportJobsInput, OrderUpdateWithoutExportJobsInput>, OrderUncheckedUpdateWithoutExportJobsInput>
   }
 
   export type TenantCreateNestedOneWithoutSubscriptionInput = {
@@ -70232,14 +71913,6 @@ export namespace Prisma {
 
   export type EnumProjectStatusFieldUpdateOperationsInput = {
     set?: $Enums.ProjectStatus
-  }
-
-  export type NullableBigIntFieldUpdateOperationsInput = {
-    set?: bigint | number | null
-    increment?: bigint | number
-    decrement?: bigint | number
-    multiply?: bigint | number
-    divide?: bigint | number
   }
 
   export type NullableFloatFieldUpdateOperationsInput = {
@@ -71968,6 +73641,50 @@ export namespace Prisma {
     _max?: NestedEnumOrderStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumExportJobStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExportJobStatus | EnumExportJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ExportJobStatus[] | ListEnumExportJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExportJobStatus[] | ListEnumExportJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumExportJobStatusFilter<$PrismaModel> | $Enums.ExportJobStatus
+  }
+
+  export type NestedBigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
+  }
+
+  export type NestedEnumExportJobStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExportJobStatus | EnumExportJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ExportJobStatus[] | ListEnumExportJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExportJobStatus[] | ListEnumExportJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumExportJobStatusWithAggregatesFilter<$PrismaModel> | $Enums.ExportJobStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumExportJobStatusFilter<$PrismaModel>
+    _max?: NestedEnumExportJobStatusFilter<$PrismaModel>
+  }
+
+  export type NestedBigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
+  }
+
   export type NestedEnumProjectTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.ProjectType | EnumProjectTypeFieldRefInput<$PrismaModel>
     in?: $Enums.ProjectType[] | ListEnumProjectTypeFieldRefInput<$PrismaModel>
@@ -71980,17 +73697,6 @@ export namespace Prisma {
     in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumProjectStatusFilter<$PrismaModel> | $Enums.ProjectStatus
-  }
-
-  export type NestedBigIntNullableFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
   }
 
   export type NestedEnumProjectTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -72011,22 +73717,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumProjectStatusFilter<$PrismaModel>
     _max?: NestedEnumProjectStatusFilter<$PrismaModel>
-  }
-
-  export type NestedBigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedBigIntNullableFilter<$PrismaModel>
-    _min?: NestedBigIntNullableFilter<$PrismaModel>
-    _max?: NestedBigIntNullableFilter<$PrismaModel>
   }
 
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -75076,6 +76766,7 @@ export namespace Prisma {
     version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    exportJobs?: ExportJobCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutTemplateInput = {
@@ -75099,6 +76790,7 @@ export namespace Prisma {
     version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    exportJobs?: ExportJobUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutTemplateInput = {
@@ -75765,6 +77457,50 @@ export namespace Prisma {
     create: XOR<TemplateCreateWithoutOrdersInput, TemplateUncheckedCreateWithoutOrdersInput>
   }
 
+  export type ExportJobCreateWithoutOrderInput = {
+    id?: string
+    orderNumber: string
+    tenantId?: string | null
+    userId?: string | null
+    status?: $Enums.ExportJobStatus
+    downloadToken?: string | null
+    downloadUrl?: string | null
+    filePath?: string | null
+    fileName?: string | null
+    fileSizeBytes?: bigint | number | null
+    expiresAt?: Date | string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExportJobUncheckedCreateWithoutOrderInput = {
+    id?: string
+    orderNumber: string
+    tenantId?: string | null
+    userId?: string | null
+    status?: $Enums.ExportJobStatus
+    downloadToken?: string | null
+    downloadUrl?: string | null
+    filePath?: string | null
+    fileName?: string | null
+    fileSizeBytes?: bigint | number | null
+    expiresAt?: Date | string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExportJobCreateOrConnectWithoutOrderInput = {
+    where: ExportJobWhereUniqueInput
+    create: XOR<ExportJobCreateWithoutOrderInput, ExportJobUncheckedCreateWithoutOrderInput>
+  }
+
+  export type ExportJobCreateManyOrderInputEnvelope = {
+    data: ExportJobCreateManyOrderInput | ExportJobCreateManyOrderInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TemplateUpsertWithoutOrdersInput = {
     update: XOR<TemplateUpdateWithoutOrdersInput, TemplateUncheckedUpdateWithoutOrdersInput>
     create: XOR<TemplateCreateWithoutOrdersInput, TemplateUncheckedCreateWithoutOrdersInput>
@@ -75834,6 +77570,155 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutTemplateNestedInput
     draft?: TemplateDraftUncheckedUpdateOneWithoutTemplateNestedInput
     versions?: TemplateVersionUncheckedUpdateManyWithoutTemplateNestedInput
+  }
+
+  export type ExportJobUpsertWithWhereUniqueWithoutOrderInput = {
+    where: ExportJobWhereUniqueInput
+    update: XOR<ExportJobUpdateWithoutOrderInput, ExportJobUncheckedUpdateWithoutOrderInput>
+    create: XOR<ExportJobCreateWithoutOrderInput, ExportJobUncheckedCreateWithoutOrderInput>
+  }
+
+  export type ExportJobUpdateWithWhereUniqueWithoutOrderInput = {
+    where: ExportJobWhereUniqueInput
+    data: XOR<ExportJobUpdateWithoutOrderInput, ExportJobUncheckedUpdateWithoutOrderInput>
+  }
+
+  export type ExportJobUpdateManyWithWhereWithoutOrderInput = {
+    where: ExportJobScalarWhereInput
+    data: XOR<ExportJobUpdateManyMutationInput, ExportJobUncheckedUpdateManyWithoutOrderInput>
+  }
+
+  export type ExportJobScalarWhereInput = {
+    AND?: ExportJobScalarWhereInput | ExportJobScalarWhereInput[]
+    OR?: ExportJobScalarWhereInput[]
+    NOT?: ExportJobScalarWhereInput | ExportJobScalarWhereInput[]
+    id?: StringFilter<"ExportJob"> | string
+    orderId?: StringFilter<"ExportJob"> | string
+    orderNumber?: StringFilter<"ExportJob"> | string
+    tenantId?: StringNullableFilter<"ExportJob"> | string | null
+    userId?: StringNullableFilter<"ExportJob"> | string | null
+    status?: EnumExportJobStatusFilter<"ExportJob"> | $Enums.ExportJobStatus
+    downloadToken?: StringNullableFilter<"ExportJob"> | string | null
+    downloadUrl?: StringNullableFilter<"ExportJob"> | string | null
+    filePath?: StringNullableFilter<"ExportJob"> | string | null
+    fileName?: StringNullableFilter<"ExportJob"> | string | null
+    fileSizeBytes?: BigIntNullableFilter<"ExportJob"> | bigint | number | null
+    expiresAt?: DateTimeNullableFilter<"ExportJob"> | Date | string | null
+    errorMessage?: StringNullableFilter<"ExportJob"> | string | null
+    createdAt?: DateTimeFilter<"ExportJob"> | Date | string
+    updatedAt?: DateTimeFilter<"ExportJob"> | Date | string
+  }
+
+  export type OrderCreateWithoutExportJobsInput = {
+    id?: string
+    orderNumber: string
+    fullName: string
+    email: string
+    phone: string
+    note?: string | null
+    subdomain?: string | null
+    type: string
+    status?: $Enums.OrderStatus
+    userId?: string | null
+    tenantId?: string | null
+    plan?: string | null
+    amount?: number | null
+    paidAt?: Date | string | null
+    billImageUrl?: string | null
+    transactionCode?: string | null
+    adminNotes?: string | null
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    template: TemplateCreateNestedOneWithoutOrdersInput
+  }
+
+  export type OrderUncheckedCreateWithoutExportJobsInput = {
+    id?: string
+    orderNumber: string
+    fullName: string
+    email: string
+    phone: string
+    note?: string | null
+    subdomain?: string | null
+    type: string
+    status?: $Enums.OrderStatus
+    templateId: string
+    userId?: string | null
+    tenantId?: string | null
+    plan?: string | null
+    amount?: number | null
+    paidAt?: Date | string | null
+    billImageUrl?: string | null
+    transactionCode?: string | null
+    adminNotes?: string | null
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OrderCreateOrConnectWithoutExportJobsInput = {
+    where: OrderWhereUniqueInput
+    create: XOR<OrderCreateWithoutExportJobsInput, OrderUncheckedCreateWithoutExportJobsInput>
+  }
+
+  export type OrderUpsertWithoutExportJobsInput = {
+    update: XOR<OrderUpdateWithoutExportJobsInput, OrderUncheckedUpdateWithoutExportJobsInput>
+    create: XOR<OrderCreateWithoutExportJobsInput, OrderUncheckedCreateWithoutExportJobsInput>
+    where?: OrderWhereInput
+  }
+
+  export type OrderUpdateToOneWithWhereWithoutExportJobsInput = {
+    where?: OrderWhereInput
+    data: XOR<OrderUpdateWithoutExportJobsInput, OrderUncheckedUpdateWithoutExportJobsInput>
+  }
+
+  export type OrderUpdateWithoutExportJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    subdomain?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    adminNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    template?: TemplateUpdateOneRequiredWithoutOrdersNestedInput
+  }
+
+  export type OrderUncheckedUpdateWithoutExportJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    subdomain?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    templateId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    billImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionCode?: NullableStringFieldUpdateOperationsInput | string | null
+    adminNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TenantCreateWithoutSubscriptionInput = {
@@ -86257,6 +88142,7 @@ export namespace Prisma {
     version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportJobs?: ExportJobUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutTemplateInput = {
@@ -86280,6 +88166,7 @@ export namespace Prisma {
     version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exportJobs?: ExportJobUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateManyWithoutTemplateInput = {
@@ -86434,6 +88321,74 @@ export namespace Prisma {
     updateNotes?: NullableStringFieldUpdateOperationsInput | string | null
     publishedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     publishedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ExportJobCreateManyOrderInput = {
+    id?: string
+    orderNumber: string
+    tenantId?: string | null
+    userId?: string | null
+    status?: $Enums.ExportJobStatus
+    downloadToken?: string | null
+    downloadUrl?: string | null
+    filePath?: string | null
+    fileName?: string | null
+    fileSizeBytes?: bigint | number | null
+    expiresAt?: Date | string | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExportJobUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumExportJobStatusFieldUpdateOperationsInput | $Enums.ExportJobStatus
+    downloadToken?: NullableStringFieldUpdateOperationsInput | string | null
+    downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSizeBytes?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExportJobUncheckedUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumExportJobStatusFieldUpdateOperationsInput | $Enums.ExportJobStatus
+    downloadToken?: NullableStringFieldUpdateOperationsInput | string | null
+    downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSizeBytes?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExportJobUncheckedUpdateManyWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumExportJobStatusFieldUpdateOperationsInput | $Enums.ExportJobStatus
+    downloadToken?: NullableStringFieldUpdateOperationsInput | string | null
+    downloadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    filePath?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSizeBytes?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TagUpdateWithoutProjectsInput = {
@@ -87395,6 +89350,10 @@ export namespace Prisma {
      */
     export type TemplateCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = TemplateCountOutputTypeDefaultArgs<ExtArgs>
     /**
+     * @deprecated Use OrderCountOutputTypeDefaultArgs instead
+     */
+    export type OrderCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = OrderCountOutputTypeDefaultArgs<ExtArgs>
+    /**
      * @deprecated Use ProjectCountOutputTypeDefaultArgs instead
      */
     export type ProjectCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ProjectCountOutputTypeDefaultArgs<ExtArgs>
@@ -87466,6 +89425,10 @@ export namespace Prisma {
      * @deprecated Use OrderDefaultArgs instead
      */
     export type OrderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = OrderDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use ExportJobDefaultArgs instead
+     */
+    export type ExportJobArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ExportJobDefaultArgs<ExtArgs>
     /**
      * @deprecated Use SubscriptionDefaultArgs instead
      */

@@ -46,37 +46,109 @@ export default function CustomerDashboard() {
     );
   };
 
-  // Download ZIP state & handler
-  const [downloadingSlug, setDownloadingSlug] = useState<string | null>(null);
+  // Single-Tenant Export Engine state
+  const [exportJobs, setExportJobs] = useState<Record<string, {
+    status: 'NONE' | 'PENDING' | 'PROCESSING' | 'READY' | 'FAILED' | 'EXPIRED';
+    downloadToken?: string;
+    downloadUrl?: string;
+    fileName?: string;
+    expiresAt?: string;
+    isPolling?: boolean;
+  }>>({});
 
-  const handleDownloadZip = async (slug: string, orderNumber: string) => {
+  const handleRequestExport = async (orderNumber: string) => {
     try {
-      setDownloadingSlug(slug);
-      showToast('Đang chuẩn bị gói mã nguồn ZIP Landing Page...', 'info');
-      const cleanOrdNo = orderNumber.replace(/\s+/g, '-');
-      const downloadUrl = `${API_URL}/api/marketplace/templates/${encodeURIComponent(slug)}/download?orderNumber=${encodeURIComponent(cleanOrdNo)}`;
-      
-      const res = await axios.get(downloadUrl, {
-        withCredentials: true,
-        responseType: 'blob',
-      });
-      
-      const blob = new Blob([res.data], { type: 'application/zip' });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `PLATFORMBDS-${slug}-${cleanOrdNo}.zip`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-      showToast('🎉 Tải xuống trọn bộ mã nguồn Landing Page thành công!', 'success');
+      setExportJobs((prev) => ({
+        ...prev,
+        [orderNumber]: { status: 'PROCESSING', isPolling: true },
+      }));
+      showToast('🚀 Đang khởi tạo tiến trình bóc tách & đóng gói Single-Tenant Next.js...', 'info');
+
+      const res = await axios.post(
+        `${API_URL}/api/marketplace/orders/${encodeURIComponent(orderNumber)}/request-export`,
+        {},
+        { withCredentials: true }
+      );
+
+      if (res.data?.success) {
+        const jobData = res.data.data;
+        if (jobData.status === 'READY') {
+          setExportJobs((prev) => ({
+            ...prev,
+            [orderNumber]: {
+              status: 'READY',
+              downloadToken: jobData.downloadToken,
+              downloadUrl: jobData.downloadUrl,
+              fileName: jobData.fileName,
+              expiresAt: jobData.expiresAt,
+              isPolling: false,
+            },
+          }));
+          showToast('🎉 Gói mã nguồn đã sẵn sàng tải về!', 'success');
+          return;
+        }
+
+        // Bắt đầu polling kiểm tra tiến trình
+        const pollInterval = setInterval(async () => {
+          try {
+            const statusRes = await axios.get(
+              `${API_URL}/api/marketplace/orders/${encodeURIComponent(orderNumber)}/export-status`,
+              { withCredentials: true }
+            );
+
+            if (statusRes.data?.success) {
+              const currentJob = statusRes.data.data;
+              if (currentJob.status === 'READY') {
+                clearInterval(pollInterval);
+                setExportJobs((prev) => ({
+                  ...prev,
+                  [orderNumber]: {
+                    status: 'READY',
+                    downloadToken: currentJob.downloadToken,
+                    downloadUrl: currentJob.downloadUrl,
+                    fileName: currentJob.fileName,
+                    expiresAt: currentJob.expiresAt,
+                    isPolling: false,
+                  },
+                }));
+                showToast('🎉 Đóng gói Single-Tenant hoàn tất! Bạn có thể tải file ZIP ngay.', 'success');
+              } else if (currentJob.status === 'FAILED') {
+                clearInterval(pollInterval);
+                setExportJobs((prev) => ({
+                  ...prev,
+                  [orderNumber]: { status: 'FAILED', isPolling: false },
+                }));
+                showToast(currentJob.errorMessage || 'Lỗi khi đóng gói mã nguồn.', 'error');
+              }
+            }
+          } catch (pollErr) {
+            console.error('Polling error:', pollErr);
+          }
+        }, 2500);
+
+        // Dừng polling sau tối đa 60 giây
+        setTimeout(() => clearInterval(pollInterval), 60000);
+      }
     } catch (err: any) {
-      console.error('Download error:', err);
-      showToast('Không thể tải file source code. Vui lòng liên hệ Admin để được hỗ trợ.', 'error');
-    } finally {
-      setDownloadingSlug(null);
+      console.error('Export request error:', err);
+      const errMsg = err?.response?.data?.error?.message || err.message || 'Lỗi khi yêu cầu đóng gói.';
+      showToast(errMsg, 'error');
+      setExportJobs((prev) => ({
+        ...prev,
+        [orderNumber]: { status: 'FAILED', isPolling: false },
+      }));
     }
+  };
+
+  const handleDownloadByToken = (token: string, fileName?: string) => {
+    const downloadUrl = `${API_URL}/api/marketplace/exports/download/${token}`;
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = fileName || 'bds-single-tenant-source.zip';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    showToast('🚀 Đang bắt đầu tải xuống gói mã nguồn Single-Tenant...', 'info');
   };
 
   // Payment proof modal states
@@ -641,59 +713,138 @@ export default function CustomerDashboard() {
                 </div>
               )}
 
-              {/* TAB 3: DOWNLOADS */}
+              {/* TAB 3: DOWNLOADS — SINGLE-TENANT EXPORT ENGINE */}
               {activeTab === 'downloads' && (
                 <div className="space-y-6">
                   <div className="text-left">
-                    <h2 className="text-2xl md:text-[32px] font-bold text-slate-900 leading-[1.15]">Kho Tải File Source Code Landing Page</h2>
-                    <p className="text-[14px] text-[#64748B] font-normal leading-[1.7] mt-1">Tải xuống trọn bộ mã nguồn Landing Page (HTML5, CSS3, JavaScript, PHP & MySQL) của các mẫu bạn đã sở hữu.</p>
+                    <h2 className="text-2xl md:text-[32px] font-bold text-slate-900 leading-[1.15]">Bản Quyền & Tải Mã Nguồn Single-Tenant</h2>
+                    <p className="text-[14px] text-[#64748B] font-normal leading-[1.7] mt-1">
+                      Đóng gói và tải xuống bộ mã nguồn độc lập (Next.js 15, Tailwind, Prisma, PostgreSQL + CMS Admin Panel) dành riêng cho các đơn hàng Mua Đứt.
+                    </p>
                   </div>
 
                   <div className="space-y-4">
                     {!orders || orders.filter((o: any) => o.status === 'COMPLETED').length === 0 ? (
                       <div className="bg-slate-50 border border-dashed border-slate-200 p-10 rounded-2xl text-center text-slate-500 text-xs">
-                        Không có tệp tin tải xuống nào khả dụng. Vui lòng đặt mua hoặc thuê mẫu website và thanh toán để kích hoạt tải file ZIP.
+                        Chưa có đơn hàng Mua Đứt nào hoàn tất. Hãy mua bản quyền template để kích hoạt đường ống đóng gói mã nguồn Single-Tenant độc quyền.
                       </div>
                     ) : (
                       orders.filter((o: any) => o.status === 'COMPLETED').map((ord: any) => {
-                        const targetSlug = ord.template?.slug || ord.templateId || 'bds-01';
-                        const isDownloading = downloadingSlug === targetSlug;
+                        const isBuyOut = ord.type === 'BUY' || ord.type === 'BUY_SOURCE';
+                        const currentJob = exportJobs[ord.orderNumber];
+                        const isProcessing = currentJob?.status === 'PROCESSING' || currentJob?.status === 'PENDING';
+                        const isReady = currentJob?.status === 'READY' && currentJob?.downloadToken;
+
+                        if (!isBuyOut) {
+                          // Đơn hàng Thuê Cloud SaaS
+                          return (
+                            <div key={ord.id} className="bg-slate-50/80 border border-slate-200 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-left">
+                              <div className="space-y-1.5">
+                                <div className="flex items-center gap-2">
+                                  <span className="bg-amber-100 text-amber-900 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                                    GÓI THUÊ CLOUD SAAS
+                                  </span>
+                                  <span className="text-slate-400 text-xs font-mono font-bold">#{ord.orderNumber}</span>
+                                </div>
+                                <h4 className="text-base font-bold text-slate-800">
+                                  {ord.template?.name || 'Website BĐS'} — Vận Hành Trực Tiếp Trên Cloud
+                                </h4>
+                                <p className="text-xs text-slate-600">
+                                  Gói Thuê SaaS được lưu trữ và tối ưu trên hạ tầng Cloud Server của hệ thống. Bạn có toàn quyền truy cập CMS để quản lý tin tức, dự án và thu lead mà không cần cài đặt code.
+                                </p>
+                              </div>
+                              <a
+                                href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition shrink-0"
+                              >
+                                <LayoutDashboard className="w-4 h-4 text-teal-400" />
+                                <span>Quản Trị CMS</span>
+                              </a>
+                            </div>
+                          );
+                        }
+
+                        // Đơn hàng Mua Đứt Bản Quyền
                         return (
-                          <div key={ord.id} className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:border-slate-300 transition-all flex flex-col md:flex-row justify-between items-start md:items-center text-slate-950 gap-4 text-left">
-                            <div className="space-y-1.5">
+                          <div key={ord.id} className="bg-white border-2 border-indigo-100 hover:border-indigo-300 p-6 rounded-2xl shadow-sm transition-all flex flex-col justify-between items-start text-slate-950 gap-5 text-left">
+                            <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-2 border-b border-slate-100 pb-3">
                               <div className="flex items-center gap-2">
-                                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                                  MÃ NGUỒN LANDING PAGE
+                                <span className="bg-indigo-100 text-indigo-900 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
+                                  MUA ĐỨT BẢN QUYỀN (SINGLE-TENANT)
                                 </span>
                                 <span className="text-slate-400 text-xs font-mono font-bold">#{ord.orderNumber}</span>
                               </div>
-                              <h4 className="text-base font-bold text-slate-900">
-                                {ord.template?.name || 'Mẫu Landing Page BĐS'} — Gói Source Code Độc Lập
-                              </h4>
-                              <p className="text-xs text-slate-500 font-medium">
-                                Định dạng: <span className="font-mono font-bold text-slate-700">ZIP</span> | Trọn bộ: <span className="font-bold text-slate-700">HTML5, CSS3, JavaScript Thuần & PHP/MySQL</span>
-                              </p>
-                              <p className="text-[11px] text-blue-600 font-semibold">
-                                ✨ Mở file <code className="bg-blue-50 px-1 py-0.5 rounded text-blue-700">html/index.html</code> xem ngay hoặc upload hosting PHP có sẵn <code className="bg-blue-50 px-1 py-0.5 rounded text-blue-700">database.sql</code>.
-                              </p>
-                            </div>
-                            <button 
-                              onClick={() => handleDownloadZip(targetSlug, ord.orderNumber)}
-                              disabled={isDownloading}
-                              className="h-[48px] bg-[#2563EB] hover:bg-[#1D4ED8] disabled:bg-blue-400 text-white text-xs font-bold uppercase tracking-wider px-6 rounded-xl flex items-center gap-2 transition-all shadow-md shrink-0 cursor-pointer"
-                            >
-                              {isDownloading ? (
-                                <>
-                                  <Loader2 className="w-4 h-4 text-white animate-spin" />
-                                  <span>Đang nén ZIP...</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Download className="w-4 h-4 text-white" />
-                                  <span>Tải xuống ZIP</span>
-                                </>
+                              {isReady && currentJob?.expiresAt && (
+                                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200">
+                                  ✓ Sẵn sàng tải về (Hạn đến: {new Date(currentJob.expiresAt).toLocaleDateString('vi-VN')})
+                                </span>
                               )}
-                            </button>
+                            </div>
+
+                            <div className="space-y-2">
+                              <h4 className="text-lg font-black text-slate-900">
+                                {ord.template?.name || 'Website BĐS'} — Gói Mã Nguồn Single-Tenant Next.js Độc Lập
+                              </h4>
+                              <p className="text-xs text-slate-600 font-medium">
+                                Bản xuất sạch 100% được bóc tách từ CloneCraft, tích hợp sẵn cả Website công khai và CMS Admin Panel (<code className="bg-slate-100 text-indigo-700 px-1 py-0.5 rounded">/admin</code>).
+                              </p>
+                              
+                              {/* Feature Checklist */}
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 text-xs text-slate-700 font-medium">
+                                <div className="flex items-center gap-1.5 text-slate-800">
+                                  <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                                  <span>Next.js 15 + React 19 + Tailwind CSS (Bỏ multi-tenant)</span>
+                                </div>
+                                <div className="flex items-center gap-1.5 text-slate-800">
+                                  <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                                  <span>Prisma Schema độc lập + PostgreSQL</span>
+                                </div>
+                                <div className="flex items-center gap-1.5 text-slate-800">
+                                  <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                                  <span>Seed script chứa 100% dữ liệu dự án & liên hệ của bạn</span>
+                                </div>
+                                <div className="flex items-center gap-1.5 text-slate-800">
+                                  <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                                  <span>Sổ tay README.md tiếng Việt hướng dẫn chạy Local & Deploy</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-3 border-t border-slate-100">
+                              <p className="text-[11px] text-slate-500 italic">
+                                * Mã nguồn sẽ được nén thành file ZIP bảo mật và lưu trữ trong 7 ngày.
+                              </p>
+
+                              {isReady ? (
+                                <button
+                                  onClick={() => handleDownloadByToken(currentJob.downloadToken!, currentJob.fileName)}
+                                  className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider rounded-xl flex items-center gap-2 shadow-lg transition cursor-pointer shrink-0"
+                                >
+                                  <Download className="w-4 h-4" />
+                                  <span>Tải Mã Nguồn ZIP (.ZIP)</span>
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleRequestExport(ord.orderNumber)}
+                                  disabled={isProcessing}
+                                  className="px-6 py-3 bg-[#2563EB] hover:bg-[#1D4ED8] disabled:bg-blue-400 text-white font-black text-xs uppercase tracking-wider rounded-xl flex items-center gap-2 shadow-md transition cursor-pointer shrink-0"
+                                >
+                                  {isProcessing ? (
+                                    <>
+                                      <Loader2 className="w-4 h-4 text-white animate-spin" />
+                                      <span>Đang bóc tách & nạp seed data...</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Sparkles className="w-4 h-4 text-amber-300" />
+                                      <span>Đóng Gói Mã Nguồn Single-Tenant</span>
+                                    </>
+                                  )}
+                                </button>
+                              )}
+                            </div>
                           </div>
                         );
                       })

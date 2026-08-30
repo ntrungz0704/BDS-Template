@@ -211,10 +211,44 @@ model Order {
   createdAt       DateTime    @default(now()) @map("created_at")
   updatedAt       DateTime    @updatedAt @map("updated_at")
 
+  exportJobs ExportJob[]
+
   @@index([orderNumber])
   @@index([status])
   @@index([createdAt])
   @@map("orders")
+}
+
+enum ExportJobStatus {
+  PENDING
+  PROCESSING
+  READY
+  FAILED
+  EXPIRED
+}
+
+model ExportJob {
+  id            String          @id @default(cuid())
+  orderId       String          @map("order_id")
+  order         Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderNumber   String          @map("order_number")
+  tenantId      String?         @map("tenant_id")
+  userId        String?         @map("user_id")
+  status        ExportJobStatus @default(PENDING)
+  downloadToken String?         @unique @map("download_token")
+  downloadUrl   String?         @map("download_url")
+  filePath      String?         @map("file_path")
+  fileName      String?         @map("file_name")
+  fileSizeBytes BigInt?         @map("file_size_bytes")
+  expiresAt     DateTime?       @map("expires_at")
+  errorMessage  String?         @map("error_message")
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  @@index([orderNumber])
+  @@index([downloadToken])
+  @@index([status])
+  @@map("export_jobs")
 }
 
 model Subscription {

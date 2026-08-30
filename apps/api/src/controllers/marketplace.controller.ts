@@ -9,6 +9,7 @@ import fs from 'fs';
 import { approveOrder } from './admin.controller';
 import { websiteProvisioningService } from '../services/website-provisioning.service';
 import { TemplatePackagingService } from '../services/template-packaging.service';
+import { ExportJobService } from '../services/export-job.service';
 import { resolveTemplateAlias } from '../utils/template-aliases';
 
 // Định nghĩa schemas Zod validation
@@ -816,3 +817,88 @@ export async function createContactSubmission(req: Request, res: Response, next:
     next(error);
   }
 }
+
+/**
+ * Trigger yêu cầu đóng gói mã nguồn Single-Tenant cho đơn hàng Mua Đứt
+ */
+export async function requestExportPackage(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { orderNumber } = req.params;
+    const userId = req.user?.userId;
+    const userEmail = req.user?.email;
+    const userRole = req.user?.role;
+
+    if (!userId && !userEmail) {
+      return res.status(401).json({
+        success: false,
+        error: { code: 'UNAUTHENTICATED', message: 'Vui lòng đăng nhập để thực hiện.' },
+      });
+    }
+
+    const result = await ExportJobService.requestExport(orderNumber, {
+      userId,
+      email: userEmail,
+      role: userRole,
+    });
+
+    return res.status(200).json({ success: true, data: result });
+  } catch (error: any) {
+    return res.status(400).json({
+      success: false,
+      error: { code: 'EXPORT_REQUEST_FAILED', message: error.message || 'Lỗi khi yêu cầu đóng gói mã nguồn.' },
+    });
+  }
+}
+
+/**
+ * Kiểm tra tiến trình đóng gói mã nguồn (Polling)
+ */
+export async function getExportPackageStatus(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { orderNumber } = req.params;
+    const userId = req.user?.userId;
+    const userEmail = req.user?.email;
+    const userRole = req.user?.role;
+
+    if (!userId && !userEmail) {
+      return res.status(401).json({
+        success: false,
+        error: { code: 'UNAUTHENTICATED', message: 'Vui lòng đăng nhập.' },
+      });
+    }
+
+    const status = await ExportJobService.getExportStatus(orderNumber, {
+      userId,
+      email: userEmail,
+      role: userRole,
+    });
+
+    return res.status(200).json({ success: true, data: status });
+  } catch (error: any) {
+    return res.status(400).json({
+      success: false,
+      error: { code: 'EXPORT_STATUS_FAILED', message: error.message || 'Lỗi khi kiểm tra tiến trình.' },
+    });
+  }
+}
+
+/**
+ * Tải file ZIP mã nguồn Single-Tenant qua Signed Download Token
+ */
+export async function downloadExportByToken(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { token } = req.params;
+    const fileInfo = await ExportJobService.getDownloadFileByToken(token);
+
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileInfo.fileName)}"`);
+    const fileStream = fs.createReadStream(fileInfo.filePath);
+    fileStream.pipe(res);
+  } catch (error: any) {
+    return res.status(400).json({
+      success: false,
+      error: { code: 'DOWNLOAD_FAILED', message: error.message || 'Không thể tải file mã nguồn.' },
+    });
+  }
+}
+
