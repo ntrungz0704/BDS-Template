@@ -353,52 +353,7 @@ export async function autoSeedDatabase() {
       },
     });
 
-    // 3. Reset toàn bộ tài khoản rác/khách thử nghiệm, website test & đơn hàng để Admin test lại từ đầu
-    try {
-      await prisma.order.deleteMany({});
-      await prisma.lead.deleteMany({});
-      await prisma.project.deleteMany({});
-      await prisma.post.deleteMany({});
-      await prisma.companyInfo.deleteMany({});
-      await prisma.tenantSection.deleteMany({});
-      await prisma.tenantPage.deleteMany({});
-      await prisma.tenantThemeSettings.deleteMany({});
-      await prisma.tenantDomainSettings.deleteMany({});
-      await prisma.subscription.deleteMany({});
-      await prisma.tenantMembership.deleteMany({});
-      await prisma.tenant.deleteMany({});
-      await prisma.refreshToken.deleteMany({
-        where: { userId: { not: superAdmin.id } },
-      });
-      await prisma.passwordResetToken.deleteMany({
-        where: { userId: { not: superAdmin.id } },
-      });
-      await prisma.emailVerificationToken.deleteMany({
-        where: { userId: { not: superAdmin.id } },
-      });
-      await prisma.customerProfile.deleteMany({
-        where: { userId: { not: superAdmin.id } },
-      });
-      await prisma.cart.deleteMany({
-        where: { userId: { not: superAdmin.id } },
-      });
-      await prisma.wishlist.deleteMany({
-        where: { userId: { not: superAdmin.id } },
-      });
-      await prisma.review.deleteMany({
-        where: { userId: { not: superAdmin.id } },
-      });
-      await prisma.auditLog.deleteMany({
-        where: { userId: { not: superAdmin.id } },
-      });
-      await prisma.user.deleteMany({
-        where: { id: { not: superAdmin.id } },
-      });
-    } catch (cleanupErr: any) {
-      console.warn('Lỗi phụ khi dọn dẹp data rác:', cleanupErr.message);
-    }
-
-    console.log('✅ Đã đồng bộ thành công 16+ Templates và duy nhất 1 tài khoản Super Admin (admin@aireviewbds.com) vào Database!');
+    console.log('✅ Đã đồng bộ thành công các Templates và tài khoản Super Admin vào Database!');
   } catch (err: any) {
     console.warn('⚠️ Gặp lỗi khi tự động seed database (bỏ qua):', err.message);
   }
