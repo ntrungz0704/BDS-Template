@@ -1014,7 +1014,7 @@ export default function BDS08Template({
                 ★ VINH DANH THƯƠNG HIỆU UY TÍN ★
               </span>
               <h4 className="text-sm font-black text-center text-white mt-1">
-                "Hưng Lộc Phát vào TOP 10 thương hiệu mạnh uy tín của Việt Nam"
+                &ldquo;Hưng Lộc Phát vào TOP 10 thương hiệu mạnh uy tín của Việt Nam&rdquo;
               </h4>
               <p className="text-[11px] text-slate-300 text-center leading-relaxed mt-2">
                 Liên hoan các Doanh nghiệp Rồng Vàng & Thương hiệu mạnh Việt Nam 2017-2018 vừa diễn ra tại Hà Nội nhằm tri ân Tập đoàn Hưng Lộc Phát lọt vào Top 10.

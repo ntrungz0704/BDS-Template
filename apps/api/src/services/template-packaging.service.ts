@@ -178,10 +178,18 @@ export class TemplatePackagingService {
   public static async generateStandalonePackage(options: PackageOptions): Promise<{ buffer: Buffer; fileName: string }> {
     const { slug, orderNumber = 'ORD', customerName = 'Khách Hàng', customerPhone = '', customerEmail = '', tenantId } = options;
 
+    // Never substitute another template when a source package has not been
+    // built for the exact product/version. In particular, LP packages are not
+    // yet present under standalone-templates, so serving a BDS fallback would
+    // be a commercial misdelivery.
+    if (slug.toLowerCase().startsWith('lp-')) {
+      throw new Error(`SOURCE_PACKAGE_UNAVAILABLE:${slug}`);
+    }
+
     const zip = new AdmZip();
 
     // 0. Kiểm tra nếu đã có sẵn thư mục standalone-templates (HTML5 + PHP)
-    let folderCode = 'bds-01';
+    let folderCode: string | undefined;
     const SLUG_TO_FOLDER: Record<string, string> = {
       'luxury-gold': 'bds-01', 'minimal-white': 'bds-02', 'minimal-zen': 'bds-02',
       'modern-corporate': 'bds-03', 'resort-paradise': 'bds-04', 'ocean-view': 'bds-04',
@@ -217,6 +225,10 @@ export class TemplatePackagingService {
           break;
         }
       }
+    }
+
+    if (!folderCode) {
+      throw new Error(`SOURCE_PACKAGE_UNAVAILABLE:${slug}`);
     }
 
     const possibleStandaloneDirs = [
@@ -316,6 +328,8 @@ INSERT INTO \`company_info\` (\`name\`, \`phone\`, \`email\`, \`address\`, \`slo
         buffer: zipBuffer,
         fileName: downloadFileName,
       };
+    } else {
+      throw new Error(`SOURCE_PACKAGE_UNAVAILABLE:${slug}`);
     }
 
     throw new Error(`Không tìm thấy thư mục template ${folderCode} trên máy chủ.`);

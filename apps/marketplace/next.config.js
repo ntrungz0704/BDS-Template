@@ -1,19 +1,16 @@
-const apiProxyTarget = process.env.API_PROXY_TARGET
-  || process.env.NEXT_PUBLIC_API_URL
-  || 'https://bds-template-api.onrender.com';
-const publicApiBase = process.env.NODE_ENV === 'production'
-  ? 'https://templates.aireviewbds.com'
-  : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000');
+const apiProxyTarget = process.env.API_PROXY_TARGET || process.env.NEXT_PUBLIC_API_URL;
+const publicApiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   transpilePackages: ["@repo/ui", "@repo/config", "@repo/types", "@repo/utils"],
   env: {
     NEXT_PUBLIC_API_URL: publicApiBase,
   },
   async rewrites() {
-    return [{ source: '/api/:path*', destination: `${apiProxyTarget}/api/:path*` }];
+    return apiProxyTarget ? [{ source: '/api/:path*', destination: `${apiProxyTarget}/api/:path*` }] : [];
   },
   eslint: {
     ignoreDuringBuilds: true,

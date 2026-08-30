@@ -1200,7 +1200,7 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
       return <BDS24Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
 
-    return <BDS17Template template={template} viewport={viewport} initialPage={initialPage} />;
+    return <div className="grid min-h-screen place-items-center bg-slate-950 p-8 text-center text-white"><p>Demo chưa có renderer tương ứng cho template này.</p></div>;
   };
 
   return (

@@ -13,20 +13,19 @@ interface TenantRendererProps {
 export default function TenantRenderer({ templateSlug, company, theme, projects, posts, initialPage = 'home', pageContent }: TenantRendererProps) {
   const slug = templateSlug?.toLowerCase();
 
-  // Resolve template component dynamically from Registry (supports 100+ templates)
-  const templateDef = (slug ? WebsiteTemplateRegistry.get(slug) : undefined) 
-    || WebsiteTemplateRegistry.get('luxury-gold') 
-    || WebsiteTemplateRegistry.list()[0];
+  // Tenant must render the exact template that was provisioned. Rendering a
+  // different default design would be a cross-product commercial misdelivery.
+  const templateDef = slug ? WebsiteTemplateRegistry.get(slug) : undefined;
 
   if (!templateDef) {
-    return <main className="grid min-h-screen place-items-center bg-slate-950 p-6 text-center text-white"><p>Website đang được cấu hình. Vui lòng quay lại sau.</p></main>;
+    return <main className="grid min-h-screen place-items-center bg-slate-950 p-6 text-center text-white"><p>Website chưa có cấu hình template hợp lệ. Vui lòng liên hệ quản trị viên.</p></main>;
   }
   const TemplateComponent = templateDef.component;
 
   const templateMock = {
-    name: company?.name || templateDef.name || 'PlatformBDS Residence',
+    name: company?.name || templateDef.name,
     slug: templateDef.slug,
-    collectionSlug: templateDef.category || slug.split('-')[0] || 'luxury',
+    collectionSlug: templateDef.category,
   };
 
   return (

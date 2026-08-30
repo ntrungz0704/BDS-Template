@@ -276,6 +276,45 @@ export namespace $Enums {
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
+export const ProductType: {
+  WEBSITE_TEMPLATE: 'WEBSITE_TEMPLATE',
+  LANDING_PAGE: 'LANDING_PAGE'
+};
+
+export type ProductType = (typeof ProductType)[keyof typeof ProductType]
+
+
+export const PurchaseType: {
+  SAAS: 'SAAS',
+  SOURCE_TEMPLATE: 'SOURCE_TEMPLATE',
+  FULL_PLATFORM: 'FULL_PLATFORM'
+};
+
+export type PurchaseType = (typeof PurchaseType)[keyof typeof PurchaseType]
+
+
+export const PaymentStatus: {
+  PENDING_PAYMENT: 'PENDING_PAYMENT',
+  WAITING_CONFIRMATION: 'WAITING_CONFIRMATION',
+  PAID: 'PAID',
+  REJECTED: 'REJECTED',
+  FAILED: 'FAILED'
+};
+
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
+export const FulfillmentStatus: {
+  NOT_REQUIRED: 'NOT_REQUIRED',
+  PENDING: 'PENDING',
+  PROVISIONING: 'PROVISIONING',
+  ACTIVE: 'ACTIVE',
+  FAILED: 'FAILED'
+};
+
+export type FulfillmentStatus = (typeof FulfillmentStatus)[keyof typeof FulfillmentStatus]
+
+
 export const OrderStatus: {
   PENDING: 'PENDING',
   PENDING_SUBDOMAIN_CONFLICT: 'PENDING_SUBDOMAIN_CONFLICT',
@@ -348,6 +387,22 @@ export type LeadActivityType = (typeof LeadActivityType)[keyof typeof LeadActivi
 export type UserRole = $Enums.UserRole
 
 export const UserRole: typeof $Enums.UserRole
+
+export type ProductType = $Enums.ProductType
+
+export const ProductType: typeof $Enums.ProductType
+
+export type PurchaseType = $Enums.PurchaseType
+
+export const PurchaseType: typeof $Enums.PurchaseType
+
+export type PaymentStatus = $Enums.PaymentStatus
+
+export const PaymentStatus: typeof $Enums.PaymentStatus
+
+export type FulfillmentStatus = $Enums.FulfillmentStatus
+
+export const FulfillmentStatus: typeof $Enums.FulfillmentStatus
 
 export type OrderStatus = $Enums.OrderStatus
 
@@ -9102,6 +9157,7 @@ export namespace Prisma {
     priceRentMonthly: number | null
     priceRentYearly: number | null
     priceBuySource: number | null
+    salePrice: number | null
     sortOrder: number | null
   }
 
@@ -9110,6 +9166,7 @@ export namespace Prisma {
     priceRentMonthly: number | null
     priceRentYearly: number | null
     priceBuySource: number | null
+    salePrice: number | null
     sortOrder: number | null
   }
 
@@ -9124,6 +9181,9 @@ export namespace Prisma {
     priceRentMonthly: number | null
     priceRentYearly: number | null
     priceBuySource: number | null
+    productType: $Enums.ProductType | null
+    category: string | null
+    salePrice: number | null
     isActive: boolean | null
     sortOrder: number | null
     deletedAt: Date | null
@@ -9144,6 +9204,9 @@ export namespace Prisma {
     priceRentMonthly: number | null
     priceRentYearly: number | null
     priceBuySource: number | null
+    productType: $Enums.ProductType | null
+    category: string | null
+    salePrice: number | null
     isActive: boolean | null
     sortOrder: number | null
     deletedAt: Date | null
@@ -9166,6 +9229,10 @@ export namespace Prisma {
     priceRentMonthly: number
     priceRentYearly: number
     priceBuySource: number
+    productType: number
+    category: number
+    salePrice: number
+    supportedCmsModules: number
     isActive: number
     sortOrder: number
     deletedAt: number
@@ -9182,6 +9249,7 @@ export namespace Prisma {
     priceRentMonthly?: true
     priceRentYearly?: true
     priceBuySource?: true
+    salePrice?: true
     sortOrder?: true
   }
 
@@ -9190,6 +9258,7 @@ export namespace Prisma {
     priceRentMonthly?: true
     priceRentYearly?: true
     priceBuySource?: true
+    salePrice?: true
     sortOrder?: true
   }
 
@@ -9204,6 +9273,9 @@ export namespace Prisma {
     priceRentMonthly?: true
     priceRentYearly?: true
     priceBuySource?: true
+    productType?: true
+    category?: true
+    salePrice?: true
     isActive?: true
     sortOrder?: true
     deletedAt?: true
@@ -9224,6 +9296,9 @@ export namespace Prisma {
     priceRentMonthly?: true
     priceRentYearly?: true
     priceBuySource?: true
+    productType?: true
+    category?: true
+    salePrice?: true
     isActive?: true
     sortOrder?: true
     deletedAt?: true
@@ -9246,6 +9321,10 @@ export namespace Prisma {
     priceRentMonthly?: true
     priceRentYearly?: true
     priceBuySource?: true
+    productType?: true
+    category?: true
+    salePrice?: true
+    supportedCmsModules?: true
     isActive?: true
     sortOrder?: true
     deletedAt?: true
@@ -9355,6 +9434,10 @@ export namespace Prisma {
     priceRentMonthly: number | null
     priceRentYearly: number | null
     priceBuySource: number | null
+    productType: $Enums.ProductType
+    category: string | null
+    salePrice: number | null
+    supportedCmsModules: JsonValue | null
     isActive: boolean
     sortOrder: number
     deletedAt: Date | null
@@ -9396,6 +9479,10 @@ export namespace Prisma {
     priceRentMonthly?: boolean
     priceRentYearly?: boolean
     priceBuySource?: boolean
+    productType?: boolean
+    category?: boolean
+    salePrice?: boolean
+    supportedCmsModules?: boolean
     isActive?: boolean
     sortOrder?: boolean
     deletedAt?: boolean
@@ -9428,6 +9515,10 @@ export namespace Prisma {
     priceRentMonthly?: boolean
     priceRentYearly?: boolean
     priceBuySource?: boolean
+    productType?: boolean
+    category?: boolean
+    salePrice?: boolean
+    supportedCmsModules?: boolean
     isActive?: boolean
     sortOrder?: boolean
     deletedAt?: boolean
@@ -9450,6 +9541,10 @@ export namespace Prisma {
     priceRentMonthly?: boolean
     priceRentYearly?: boolean
     priceBuySource?: boolean
+    productType?: boolean
+    category?: boolean
+    salePrice?: boolean
+    supportedCmsModules?: boolean
     isActive?: boolean
     sortOrder?: boolean
     deletedAt?: boolean
@@ -9499,6 +9594,10 @@ export namespace Prisma {
       priceRentMonthly: number | null
       priceRentYearly: number | null
       priceBuySource: number | null
+      productType: $Enums.ProductType
+      category: string | null
+      salePrice: number | null
+      supportedCmsModules: Prisma.JsonValue | null
       isActive: boolean
       sortOrder: number
       deletedAt: Date | null
@@ -9920,6 +10019,10 @@ export namespace Prisma {
     readonly priceRentMonthly: FieldRef<"Template", 'Int'>
     readonly priceRentYearly: FieldRef<"Template", 'Int'>
     readonly priceBuySource: FieldRef<"Template", 'Int'>
+    readonly productType: FieldRef<"Template", 'ProductType'>
+    readonly category: FieldRef<"Template", 'String'>
+    readonly salePrice: FieldRef<"Template", 'Int'>
+    readonly supportedCmsModules: FieldRef<"Template", 'Json'>
     readonly isActive: FieldRef<"Template", 'Boolean'>
     readonly sortOrder: FieldRef<"Template", 'Int'>
     readonly deletedAt: FieldRef<"Template", 'DateTime'>
@@ -11401,12 +11504,17 @@ export namespace Prisma {
     note: string | null
     subdomain: string | null
     type: string | null
+    productType: $Enums.ProductType | null
+    purchaseType: $Enums.PurchaseType | null
+    paymentStatus: $Enums.PaymentStatus | null
+    fulfillmentStatus: $Enums.FulfillmentStatus | null
     status: $Enums.OrderStatus | null
     templateId: string | null
     userId: string | null
     tenantId: string | null
     plan: string | null
     amount: number | null
+    idempotencyKey: string | null
     paidAt: Date | null
     billImageUrl: string | null
     transactionCode: string | null
@@ -11425,12 +11533,17 @@ export namespace Prisma {
     note: string | null
     subdomain: string | null
     type: string | null
+    productType: $Enums.ProductType | null
+    purchaseType: $Enums.PurchaseType | null
+    paymentStatus: $Enums.PaymentStatus | null
+    fulfillmentStatus: $Enums.FulfillmentStatus | null
     status: $Enums.OrderStatus | null
     templateId: string | null
     userId: string | null
     tenantId: string | null
     plan: string | null
     amount: number | null
+    idempotencyKey: string | null
     paidAt: Date | null
     billImageUrl: string | null
     transactionCode: string | null
@@ -11449,12 +11562,18 @@ export namespace Prisma {
     note: number
     subdomain: number
     type: number
+    productType: number
+    purchaseType: number
+    paymentStatus: number
+    fulfillmentStatus: number
     status: number
     templateId: number
     userId: number
     tenantId: number
     plan: number
     amount: number
+    productSnapshot: number
+    idempotencyKey: number
     paidAt: number
     billImageUrl: number
     transactionCode: number
@@ -11485,12 +11604,17 @@ export namespace Prisma {
     note?: true
     subdomain?: true
     type?: true
+    productType?: true
+    purchaseType?: true
+    paymentStatus?: true
+    fulfillmentStatus?: true
     status?: true
     templateId?: true
     userId?: true
     tenantId?: true
     plan?: true
     amount?: true
+    idempotencyKey?: true
     paidAt?: true
     billImageUrl?: true
     transactionCode?: true
@@ -11509,12 +11633,17 @@ export namespace Prisma {
     note?: true
     subdomain?: true
     type?: true
+    productType?: true
+    purchaseType?: true
+    paymentStatus?: true
+    fulfillmentStatus?: true
     status?: true
     templateId?: true
     userId?: true
     tenantId?: true
     plan?: true
     amount?: true
+    idempotencyKey?: true
     paidAt?: true
     billImageUrl?: true
     transactionCode?: true
@@ -11533,12 +11662,18 @@ export namespace Prisma {
     note?: true
     subdomain?: true
     type?: true
+    productType?: true
+    purchaseType?: true
+    paymentStatus?: true
+    fulfillmentStatus?: true
     status?: true
     templateId?: true
     userId?: true
     tenantId?: true
     plan?: true
     amount?: true
+    productSnapshot?: true
+    idempotencyKey?: true
     paidAt?: true
     billImageUrl?: true
     transactionCode?: true
@@ -11644,12 +11779,18 @@ export namespace Prisma {
     note: string | null
     subdomain: string | null
     type: string
+    productType: $Enums.ProductType
+    purchaseType: $Enums.PurchaseType
+    paymentStatus: $Enums.PaymentStatus
+    fulfillmentStatus: $Enums.FulfillmentStatus
     status: $Enums.OrderStatus
     templateId: string
     userId: string | null
     tenantId: string | null
     plan: string | null
     amount: number | null
+    productSnapshot: JsonValue | null
+    idempotencyKey: string | null
     paidAt: Date | null
     billImageUrl: string | null
     transactionCode: string | null
@@ -11687,12 +11828,18 @@ export namespace Prisma {
     note?: boolean
     subdomain?: boolean
     type?: boolean
+    productType?: boolean
+    purchaseType?: boolean
+    paymentStatus?: boolean
+    fulfillmentStatus?: boolean
     status?: boolean
     templateId?: boolean
     userId?: boolean
     tenantId?: boolean
     plan?: boolean
     amount?: boolean
+    productSnapshot?: boolean
+    idempotencyKey?: boolean
     paidAt?: boolean
     billImageUrl?: boolean
     transactionCode?: boolean
@@ -11714,12 +11861,18 @@ export namespace Prisma {
     note?: boolean
     subdomain?: boolean
     type?: boolean
+    productType?: boolean
+    purchaseType?: boolean
+    paymentStatus?: boolean
+    fulfillmentStatus?: boolean
     status?: boolean
     templateId?: boolean
     userId?: boolean
     tenantId?: boolean
     plan?: boolean
     amount?: boolean
+    productSnapshot?: boolean
+    idempotencyKey?: boolean
     paidAt?: boolean
     billImageUrl?: boolean
     transactionCode?: boolean
@@ -11739,12 +11892,18 @@ export namespace Prisma {
     note?: boolean
     subdomain?: boolean
     type?: boolean
+    productType?: boolean
+    purchaseType?: boolean
+    paymentStatus?: boolean
+    fulfillmentStatus?: boolean
     status?: boolean
     templateId?: boolean
     userId?: boolean
     tenantId?: boolean
     plan?: boolean
     amount?: boolean
+    productSnapshot?: boolean
+    idempotencyKey?: boolean
     paidAt?: boolean
     billImageUrl?: boolean
     transactionCode?: boolean
@@ -11778,12 +11937,18 @@ export namespace Prisma {
       note: string | null
       subdomain: string | null
       type: string
+      productType: $Enums.ProductType
+      purchaseType: $Enums.PurchaseType
+      paymentStatus: $Enums.PaymentStatus
+      fulfillmentStatus: $Enums.FulfillmentStatus
       status: $Enums.OrderStatus
       templateId: string
       userId: string | null
       tenantId: string | null
       plan: string | null
       amount: number | null
+      productSnapshot: Prisma.JsonValue | null
+      idempotencyKey: string | null
       paidAt: Date | null
       billImageUrl: string | null
       transactionCode: string | null
@@ -12194,12 +12359,18 @@ export namespace Prisma {
     readonly note: FieldRef<"Order", 'String'>
     readonly subdomain: FieldRef<"Order", 'String'>
     readonly type: FieldRef<"Order", 'String'>
+    readonly productType: FieldRef<"Order", 'ProductType'>
+    readonly purchaseType: FieldRef<"Order", 'PurchaseType'>
+    readonly paymentStatus: FieldRef<"Order", 'PaymentStatus'>
+    readonly fulfillmentStatus: FieldRef<"Order", 'FulfillmentStatus'>
     readonly status: FieldRef<"Order", 'OrderStatus'>
     readonly templateId: FieldRef<"Order", 'String'>
     readonly userId: FieldRef<"Order", 'String'>
     readonly tenantId: FieldRef<"Order", 'String'>
     readonly plan: FieldRef<"Order", 'String'>
     readonly amount: FieldRef<"Order", 'Int'>
+    readonly productSnapshot: FieldRef<"Order", 'Json'>
+    readonly idempotencyKey: FieldRef<"Order", 'String'>
     readonly paidAt: FieldRef<"Order", 'DateTime'>
     readonly billImageUrl: FieldRef<"Order", 'String'>
     readonly transactionCode: FieldRef<"Order", 'String'>
@@ -25781,6 +25952,15 @@ export namespace Prisma {
     phone: string | null
     message: string | null
     source: string | null
+    formId: string | null
+    sourcePage: string | null
+    sourceUrl: string | null
+    projectId: string | null
+    utmSource: string | null
+    utmMedium: string | null
+    utmCampaign: string | null
+    ipAddress: string | null
+    userAgent: string | null
     isRead: boolean | null
     readAt: Date | null
     createdAt: Date | null
@@ -25794,6 +25974,15 @@ export namespace Prisma {
     phone: string | null
     message: string | null
     source: string | null
+    formId: string | null
+    sourcePage: string | null
+    sourceUrl: string | null
+    projectId: string | null
+    utmSource: string | null
+    utmMedium: string | null
+    utmCampaign: string | null
+    ipAddress: string | null
+    userAgent: string | null
     isRead: boolean | null
     readAt: Date | null
     createdAt: Date | null
@@ -25807,6 +25996,15 @@ export namespace Prisma {
     phone: number
     message: number
     source: number
+    formId: number
+    sourcePage: number
+    sourceUrl: number
+    projectId: number
+    utmSource: number
+    utmMedium: number
+    utmCampaign: number
+    ipAddress: number
+    userAgent: number
     isRead: number
     readAt: number
     createdAt: number
@@ -25822,6 +26020,15 @@ export namespace Prisma {
     phone?: true
     message?: true
     source?: true
+    formId?: true
+    sourcePage?: true
+    sourceUrl?: true
+    projectId?: true
+    utmSource?: true
+    utmMedium?: true
+    utmCampaign?: true
+    ipAddress?: true
+    userAgent?: true
     isRead?: true
     readAt?: true
     createdAt?: true
@@ -25835,6 +26042,15 @@ export namespace Prisma {
     phone?: true
     message?: true
     source?: true
+    formId?: true
+    sourcePage?: true
+    sourceUrl?: true
+    projectId?: true
+    utmSource?: true
+    utmMedium?: true
+    utmCampaign?: true
+    ipAddress?: true
+    userAgent?: true
     isRead?: true
     readAt?: true
     createdAt?: true
@@ -25848,6 +26064,15 @@ export namespace Prisma {
     phone?: true
     message?: true
     source?: true
+    formId?: true
+    sourcePage?: true
+    sourceUrl?: true
+    projectId?: true
+    utmSource?: true
+    utmMedium?: true
+    utmCampaign?: true
+    ipAddress?: true
+    userAgent?: true
     isRead?: true
     readAt?: true
     createdAt?: true
@@ -25934,6 +26159,15 @@ export namespace Prisma {
     phone: string
     message: string
     source: string | null
+    formId: string | null
+    sourcePage: string | null
+    sourceUrl: string | null
+    projectId: string | null
+    utmSource: string | null
+    utmMedium: string | null
+    utmCampaign: string | null
+    ipAddress: string | null
+    userAgent: string | null
     isRead: boolean
     readAt: Date | null
     createdAt: Date
@@ -25964,6 +26198,15 @@ export namespace Prisma {
     phone?: boolean
     message?: boolean
     source?: boolean
+    formId?: boolean
+    sourcePage?: boolean
+    sourceUrl?: boolean
+    projectId?: boolean
+    utmSource?: boolean
+    utmMedium?: boolean
+    utmCampaign?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
     isRead?: boolean
     readAt?: boolean
     createdAt?: boolean
@@ -25978,6 +26221,15 @@ export namespace Prisma {
     phone?: boolean
     message?: boolean
     source?: boolean
+    formId?: boolean
+    sourcePage?: boolean
+    sourceUrl?: boolean
+    projectId?: boolean
+    utmSource?: boolean
+    utmMedium?: boolean
+    utmCampaign?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
     isRead?: boolean
     readAt?: boolean
     createdAt?: boolean
@@ -25992,6 +26244,15 @@ export namespace Prisma {
     phone?: boolean
     message?: boolean
     source?: boolean
+    formId?: boolean
+    sourcePage?: boolean
+    sourceUrl?: boolean
+    projectId?: boolean
+    utmSource?: boolean
+    utmMedium?: boolean
+    utmCampaign?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
     isRead?: boolean
     readAt?: boolean
     createdAt?: boolean
@@ -26017,6 +26278,15 @@ export namespace Prisma {
       phone: string
       message: string
       source: string | null
+      formId: string | null
+      sourcePage: string | null
+      sourceUrl: string | null
+      projectId: string | null
+      utmSource: string | null
+      utmMedium: string | null
+      utmCampaign: string | null
+      ipAddress: string | null
+      userAgent: string | null
       isRead: boolean
       readAt: Date | null
       createdAt: Date
@@ -26421,6 +26691,15 @@ export namespace Prisma {
     readonly phone: FieldRef<"ContactFormSubmission", 'String'>
     readonly message: FieldRef<"ContactFormSubmission", 'String'>
     readonly source: FieldRef<"ContactFormSubmission", 'String'>
+    readonly formId: FieldRef<"ContactFormSubmission", 'String'>
+    readonly sourcePage: FieldRef<"ContactFormSubmission", 'String'>
+    readonly sourceUrl: FieldRef<"ContactFormSubmission", 'String'>
+    readonly projectId: FieldRef<"ContactFormSubmission", 'String'>
+    readonly utmSource: FieldRef<"ContactFormSubmission", 'String'>
+    readonly utmMedium: FieldRef<"ContactFormSubmission", 'String'>
+    readonly utmCampaign: FieldRef<"ContactFormSubmission", 'String'>
+    readonly ipAddress: FieldRef<"ContactFormSubmission", 'String'>
+    readonly userAgent: FieldRef<"ContactFormSubmission", 'String'>
     readonly isRead: FieldRef<"ContactFormSubmission", 'Boolean'>
     readonly readAt: FieldRef<"ContactFormSubmission", 'DateTime'>
     readonly createdAt: FieldRef<"ContactFormSubmission", 'DateTime'>
@@ -58246,6 +58525,10 @@ export namespace Prisma {
     priceRentMonthly: 'priceRentMonthly',
     priceRentYearly: 'priceRentYearly',
     priceBuySource: 'priceBuySource',
+    productType: 'productType',
+    category: 'category',
+    salePrice: 'salePrice',
+    supportedCmsModules: 'supportedCmsModules',
     isActive: 'isActive',
     sortOrder: 'sortOrder',
     deletedAt: 'deletedAt',
@@ -58280,12 +58563,18 @@ export namespace Prisma {
     note: 'note',
     subdomain: 'subdomain',
     type: 'type',
+    productType: 'productType',
+    purchaseType: 'purchaseType',
+    paymentStatus: 'paymentStatus',
+    fulfillmentStatus: 'fulfillmentStatus',
     status: 'status',
     templateId: 'templateId',
     userId: 'userId',
     tenantId: 'tenantId',
     plan: 'plan',
     amount: 'amount',
+    productSnapshot: 'productSnapshot',
+    idempotencyKey: 'idempotencyKey',
     paidAt: 'paidAt',
     billImageUrl: 'billImageUrl',
     transactionCode: 'transactionCode',
@@ -58553,6 +58842,15 @@ export namespace Prisma {
     phone: 'phone',
     message: 'message',
     source: 'source',
+    formId: 'formId',
+    sourcePage: 'sourcePage',
+    sourceUrl: 'sourceUrl',
+    projectId: 'projectId',
+    utmSource: 'utmSource',
+    utmMedium: 'utmMedium',
+    utmCampaign: 'utmCampaign',
+    ipAddress: 'ipAddress',
+    userAgent: 'userAgent',
     isRead: 'isRead',
     readAt: 'readAt',
     createdAt: 'createdAt'
@@ -59194,6 +59492,62 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ProductType'
+   */
+  export type EnumProductTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductType'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProductType[]'
+   */
+  export type ListEnumProductTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PurchaseType'
+   */
+  export type EnumPurchaseTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PurchaseType'>
+    
+
+
+  /**
+   * Reference to a field of type 'PurchaseType[]'
+   */
+  export type ListEnumPurchaseTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PurchaseType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentStatus'
+   */
+  export type EnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentStatus[]'
+   */
+  export type ListEnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'FulfillmentStatus'
+   */
+  export type EnumFulfillmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FulfillmentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'FulfillmentStatus[]'
+   */
+  export type ListEnumFulfillmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FulfillmentStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'OrderStatus'
    */
   export type EnumOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderStatus'>
@@ -59680,6 +60034,10 @@ export namespace Prisma {
     priceRentMonthly?: IntNullableFilter<"Template"> | number | null
     priceRentYearly?: IntNullableFilter<"Template"> | number | null
     priceBuySource?: IntNullableFilter<"Template"> | number | null
+    productType?: EnumProductTypeFilter<"Template"> | $Enums.ProductType
+    category?: StringNullableFilter<"Template"> | string | null
+    salePrice?: IntNullableFilter<"Template"> | number | null
+    supportedCmsModules?: JsonNullableFilter<"Template">
     isActive?: BoolFilter<"Template"> | boolean
     sortOrder?: IntFilter<"Template"> | number
     deletedAt?: DateTimeNullableFilter<"Template"> | Date | string | null
@@ -59711,6 +60069,10 @@ export namespace Prisma {
     priceRentMonthly?: SortOrderInput | SortOrder
     priceRentYearly?: SortOrderInput | SortOrder
     priceBuySource?: SortOrderInput | SortOrder
+    productType?: SortOrder
+    category?: SortOrderInput | SortOrder
+    salePrice?: SortOrderInput | SortOrder
+    supportedCmsModules?: SortOrderInput | SortOrder
     isActive?: SortOrder
     sortOrder?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -59745,6 +60107,10 @@ export namespace Prisma {
     priceRentMonthly?: IntNullableFilter<"Template"> | number | null
     priceRentYearly?: IntNullableFilter<"Template"> | number | null
     priceBuySource?: IntNullableFilter<"Template"> | number | null
+    productType?: EnumProductTypeFilter<"Template"> | $Enums.ProductType
+    category?: StringNullableFilter<"Template"> | string | null
+    salePrice?: IntNullableFilter<"Template"> | number | null
+    supportedCmsModules?: JsonNullableFilter<"Template">
     isActive?: BoolFilter<"Template"> | boolean
     sortOrder?: IntFilter<"Template"> | number
     deletedAt?: DateTimeNullableFilter<"Template"> | Date | string | null
@@ -59776,6 +60142,10 @@ export namespace Prisma {
     priceRentMonthly?: SortOrderInput | SortOrder
     priceRentYearly?: SortOrderInput | SortOrder
     priceBuySource?: SortOrderInput | SortOrder
+    productType?: SortOrder
+    category?: SortOrderInput | SortOrder
+    salePrice?: SortOrderInput | SortOrder
+    supportedCmsModules?: SortOrderInput | SortOrder
     isActive?: SortOrder
     sortOrder?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -59806,6 +60176,10 @@ export namespace Prisma {
     priceRentMonthly?: IntNullableWithAggregatesFilter<"Template"> | number | null
     priceRentYearly?: IntNullableWithAggregatesFilter<"Template"> | number | null
     priceBuySource?: IntNullableWithAggregatesFilter<"Template"> | number | null
+    productType?: EnumProductTypeWithAggregatesFilter<"Template"> | $Enums.ProductType
+    category?: StringNullableWithAggregatesFilter<"Template"> | string | null
+    salePrice?: IntNullableWithAggregatesFilter<"Template"> | number | null
+    supportedCmsModules?: JsonNullableWithAggregatesFilter<"Template">
     isActive?: BoolWithAggregatesFilter<"Template"> | boolean
     sortOrder?: IntWithAggregatesFilter<"Template"> | number
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Template"> | Date | string | null
@@ -59892,12 +60266,18 @@ export namespace Prisma {
     note?: StringNullableFilter<"Order"> | string | null
     subdomain?: StringNullableFilter<"Order"> | string | null
     type?: StringFilter<"Order"> | string
+    productType?: EnumProductTypeFilter<"Order"> | $Enums.ProductType
+    purchaseType?: EnumPurchaseTypeFilter<"Order"> | $Enums.PurchaseType
+    paymentStatus?: EnumPaymentStatusFilter<"Order"> | $Enums.PaymentStatus
+    fulfillmentStatus?: EnumFulfillmentStatusFilter<"Order"> | $Enums.FulfillmentStatus
     status?: EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
     templateId?: StringFilter<"Order"> | string
     userId?: StringNullableFilter<"Order"> | string | null
     tenantId?: StringNullableFilter<"Order"> | string | null
     plan?: StringNullableFilter<"Order"> | string | null
     amount?: IntNullableFilter<"Order"> | number | null
+    productSnapshot?: JsonNullableFilter<"Order">
+    idempotencyKey?: StringNullableFilter<"Order"> | string | null
     paidAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     billImageUrl?: StringNullableFilter<"Order"> | string | null
     transactionCode?: StringNullableFilter<"Order"> | string | null
@@ -59918,12 +60298,18 @@ export namespace Prisma {
     note?: SortOrderInput | SortOrder
     subdomain?: SortOrderInput | SortOrder
     type?: SortOrder
+    productType?: SortOrder
+    purchaseType?: SortOrder
+    paymentStatus?: SortOrder
+    fulfillmentStatus?: SortOrder
     status?: SortOrder
     templateId?: SortOrder
     userId?: SortOrderInput | SortOrder
     tenantId?: SortOrderInput | SortOrder
     plan?: SortOrderInput | SortOrder
     amount?: SortOrderInput | SortOrder
+    productSnapshot?: SortOrderInput | SortOrder
+    idempotencyKey?: SortOrderInput | SortOrder
     paidAt?: SortOrderInput | SortOrder
     billImageUrl?: SortOrderInput | SortOrder
     transactionCode?: SortOrderInput | SortOrder
@@ -59938,6 +60324,7 @@ export namespace Prisma {
   export type OrderWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     orderNumber?: string
+    idempotencyKey?: string
     transactionCode?: string
     AND?: OrderWhereInput | OrderWhereInput[]
     OR?: OrderWhereInput[]
@@ -59948,12 +60335,17 @@ export namespace Prisma {
     note?: StringNullableFilter<"Order"> | string | null
     subdomain?: StringNullableFilter<"Order"> | string | null
     type?: StringFilter<"Order"> | string
+    productType?: EnumProductTypeFilter<"Order"> | $Enums.ProductType
+    purchaseType?: EnumPurchaseTypeFilter<"Order"> | $Enums.PurchaseType
+    paymentStatus?: EnumPaymentStatusFilter<"Order"> | $Enums.PaymentStatus
+    fulfillmentStatus?: EnumFulfillmentStatusFilter<"Order"> | $Enums.FulfillmentStatus
     status?: EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
     templateId?: StringFilter<"Order"> | string
     userId?: StringNullableFilter<"Order"> | string | null
     tenantId?: StringNullableFilter<"Order"> | string | null
     plan?: StringNullableFilter<"Order"> | string | null
     amount?: IntNullableFilter<"Order"> | number | null
+    productSnapshot?: JsonNullableFilter<"Order">
     paidAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     billImageUrl?: StringNullableFilter<"Order"> | string | null
     adminNotes?: StringNullableFilter<"Order"> | string | null
@@ -59962,7 +60354,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Order"> | Date | string
     template?: XOR<TemplateRelationFilter, TemplateWhereInput>
     exportJobs?: ExportJobListRelationFilter
-  }, "id" | "orderNumber" | "transactionCode">
+  }, "id" | "orderNumber" | "idempotencyKey" | "transactionCode">
 
   export type OrderOrderByWithAggregationInput = {
     id?: SortOrder
@@ -59973,12 +60365,18 @@ export namespace Prisma {
     note?: SortOrderInput | SortOrder
     subdomain?: SortOrderInput | SortOrder
     type?: SortOrder
+    productType?: SortOrder
+    purchaseType?: SortOrder
+    paymentStatus?: SortOrder
+    fulfillmentStatus?: SortOrder
     status?: SortOrder
     templateId?: SortOrder
     userId?: SortOrderInput | SortOrder
     tenantId?: SortOrderInput | SortOrder
     plan?: SortOrderInput | SortOrder
     amount?: SortOrderInput | SortOrder
+    productSnapshot?: SortOrderInput | SortOrder
+    idempotencyKey?: SortOrderInput | SortOrder
     paidAt?: SortOrderInput | SortOrder
     billImageUrl?: SortOrderInput | SortOrder
     transactionCode?: SortOrderInput | SortOrder
@@ -60005,12 +60403,18 @@ export namespace Prisma {
     note?: StringNullableWithAggregatesFilter<"Order"> | string | null
     subdomain?: StringNullableWithAggregatesFilter<"Order"> | string | null
     type?: StringWithAggregatesFilter<"Order"> | string
+    productType?: EnumProductTypeWithAggregatesFilter<"Order"> | $Enums.ProductType
+    purchaseType?: EnumPurchaseTypeWithAggregatesFilter<"Order"> | $Enums.PurchaseType
+    paymentStatus?: EnumPaymentStatusWithAggregatesFilter<"Order"> | $Enums.PaymentStatus
+    fulfillmentStatus?: EnumFulfillmentStatusWithAggregatesFilter<"Order"> | $Enums.FulfillmentStatus
     status?: EnumOrderStatusWithAggregatesFilter<"Order"> | $Enums.OrderStatus
     templateId?: StringWithAggregatesFilter<"Order"> | string
     userId?: StringNullableWithAggregatesFilter<"Order"> | string | null
     tenantId?: StringNullableWithAggregatesFilter<"Order"> | string | null
     plan?: StringNullableWithAggregatesFilter<"Order"> | string | null
     amount?: IntNullableWithAggregatesFilter<"Order"> | number | null
+    productSnapshot?: JsonNullableWithAggregatesFilter<"Order">
+    idempotencyKey?: StringNullableWithAggregatesFilter<"Order"> | string | null
     paidAt?: DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
     billImageUrl?: StringNullableWithAggregatesFilter<"Order"> | string | null
     transactionCode?: StringNullableWithAggregatesFilter<"Order"> | string | null
@@ -61320,6 +61724,15 @@ export namespace Prisma {
     phone?: StringFilter<"ContactFormSubmission"> | string
     message?: StringFilter<"ContactFormSubmission"> | string
     source?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    formId?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    sourcePage?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    sourceUrl?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    projectId?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    utmSource?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    utmMedium?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    utmCampaign?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    ipAddress?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    userAgent?: StringNullableFilter<"ContactFormSubmission"> | string | null
     isRead?: BoolFilter<"ContactFormSubmission"> | boolean
     readAt?: DateTimeNullableFilter<"ContactFormSubmission"> | Date | string | null
     createdAt?: DateTimeFilter<"ContactFormSubmission"> | Date | string
@@ -61334,6 +61747,15 @@ export namespace Prisma {
     phone?: SortOrder
     message?: SortOrder
     source?: SortOrderInput | SortOrder
+    formId?: SortOrderInput | SortOrder
+    sourcePage?: SortOrderInput | SortOrder
+    sourceUrl?: SortOrderInput | SortOrder
+    projectId?: SortOrderInput | SortOrder
+    utmSource?: SortOrderInput | SortOrder
+    utmMedium?: SortOrderInput | SortOrder
+    utmCampaign?: SortOrderInput | SortOrder
+    ipAddress?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
     isRead?: SortOrder
     readAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -61351,6 +61773,15 @@ export namespace Prisma {
     phone?: StringFilter<"ContactFormSubmission"> | string
     message?: StringFilter<"ContactFormSubmission"> | string
     source?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    formId?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    sourcePage?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    sourceUrl?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    projectId?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    utmSource?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    utmMedium?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    utmCampaign?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    ipAddress?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    userAgent?: StringNullableFilter<"ContactFormSubmission"> | string | null
     isRead?: BoolFilter<"ContactFormSubmission"> | boolean
     readAt?: DateTimeNullableFilter<"ContactFormSubmission"> | Date | string | null
     createdAt?: DateTimeFilter<"ContactFormSubmission"> | Date | string
@@ -61365,6 +61796,15 @@ export namespace Prisma {
     phone?: SortOrder
     message?: SortOrder
     source?: SortOrderInput | SortOrder
+    formId?: SortOrderInput | SortOrder
+    sourcePage?: SortOrderInput | SortOrder
+    sourceUrl?: SortOrderInput | SortOrder
+    projectId?: SortOrderInput | SortOrder
+    utmSource?: SortOrderInput | SortOrder
+    utmMedium?: SortOrderInput | SortOrder
+    utmCampaign?: SortOrderInput | SortOrder
+    ipAddress?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
     isRead?: SortOrder
     readAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -61384,6 +61824,15 @@ export namespace Prisma {
     phone?: StringWithAggregatesFilter<"ContactFormSubmission"> | string
     message?: StringWithAggregatesFilter<"ContactFormSubmission"> | string
     source?: StringNullableWithAggregatesFilter<"ContactFormSubmission"> | string | null
+    formId?: StringNullableWithAggregatesFilter<"ContactFormSubmission"> | string | null
+    sourcePage?: StringNullableWithAggregatesFilter<"ContactFormSubmission"> | string | null
+    sourceUrl?: StringNullableWithAggregatesFilter<"ContactFormSubmission"> | string | null
+    projectId?: StringNullableWithAggregatesFilter<"ContactFormSubmission"> | string | null
+    utmSource?: StringNullableWithAggregatesFilter<"ContactFormSubmission"> | string | null
+    utmMedium?: StringNullableWithAggregatesFilter<"ContactFormSubmission"> | string | null
+    utmCampaign?: StringNullableWithAggregatesFilter<"ContactFormSubmission"> | string | null
+    ipAddress?: StringNullableWithAggregatesFilter<"ContactFormSubmission"> | string | null
+    userAgent?: StringNullableWithAggregatesFilter<"ContactFormSubmission"> | string | null
     isRead?: BoolWithAggregatesFilter<"ContactFormSubmission"> | boolean
     readAt?: DateTimeNullableWithAggregatesFilter<"ContactFormSubmission"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ContactFormSubmission"> | Date | string
@@ -64420,6 +64869,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -64451,6 +64904,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -64482,6 +64939,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -64513,6 +64974,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -64544,6 +65009,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -64566,6 +65035,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -64588,6 +65061,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -64675,11 +65152,17 @@ export namespace Prisma {
     note?: string | null
     subdomain?: string | null
     type: string
+    productType?: $Enums.ProductType
+    purchaseType?: $Enums.PurchaseType
+    paymentStatus?: $Enums.PaymentStatus
+    fulfillmentStatus?: $Enums.FulfillmentStatus
     status?: $Enums.OrderStatus
     userId?: string | null
     tenantId?: string | null
     plan?: string | null
     amount?: number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: string | null
     paidAt?: Date | string | null
     billImageUrl?: string | null
     transactionCode?: string | null
@@ -64700,12 +65183,18 @@ export namespace Prisma {
     note?: string | null
     subdomain?: string | null
     type: string
+    productType?: $Enums.ProductType
+    purchaseType?: $Enums.PurchaseType
+    paymentStatus?: $Enums.PaymentStatus
+    fulfillmentStatus?: $Enums.FulfillmentStatus
     status?: $Enums.OrderStatus
     templateId: string
     userId?: string | null
     tenantId?: string | null
     plan?: string | null
     amount?: number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: string | null
     paidAt?: Date | string | null
     billImageUrl?: string | null
     transactionCode?: string | null
@@ -64725,11 +65214,17 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     subdomain?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    purchaseType?: EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    fulfillmentStatus?: EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     billImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     transactionCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64750,12 +65245,18 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     subdomain?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    purchaseType?: EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    fulfillmentStatus?: EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
     templateId?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     billImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     transactionCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64775,12 +65276,18 @@ export namespace Prisma {
     note?: string | null
     subdomain?: string | null
     type: string
+    productType?: $Enums.ProductType
+    purchaseType?: $Enums.PurchaseType
+    paymentStatus?: $Enums.PaymentStatus
+    fulfillmentStatus?: $Enums.FulfillmentStatus
     status?: $Enums.OrderStatus
     templateId: string
     userId?: string | null
     tenantId?: string | null
     plan?: string | null
     amount?: number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: string | null
     paidAt?: Date | string | null
     billImageUrl?: string | null
     transactionCode?: string | null
@@ -64799,11 +65306,17 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     subdomain?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    purchaseType?: EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    fulfillmentStatus?: EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     billImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     transactionCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64822,12 +65335,18 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     subdomain?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    purchaseType?: EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    fulfillmentStatus?: EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
     templateId?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     billImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     transactionCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66335,6 +66854,15 @@ export namespace Prisma {
     phone: string
     message: string
     source?: string | null
+    formId?: string | null
+    sourcePage?: string | null
+    sourceUrl?: string | null
+    projectId?: string | null
+    utmSource?: string | null
+    utmMedium?: string | null
+    utmCampaign?: string | null
+    ipAddress?: string | null
+    userAgent?: string | null
     isRead?: boolean
     readAt?: Date | string | null
     createdAt?: Date | string
@@ -66349,6 +66877,15 @@ export namespace Prisma {
     phone: string
     message: string
     source?: string | null
+    formId?: string | null
+    sourcePage?: string | null
+    sourceUrl?: string | null
+    projectId?: string | null
+    utmSource?: string | null
+    utmMedium?: string | null
+    utmCampaign?: string | null
+    ipAddress?: string | null
+    userAgent?: string | null
     isRead?: boolean
     readAt?: Date | string | null
     createdAt?: Date | string
@@ -66361,6 +66898,15 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
     source?: NullableStringFieldUpdateOperationsInput | string | null
+    formId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourcePage?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -66375,6 +66921,15 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
     source?: NullableStringFieldUpdateOperationsInput | string | null
+    formId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourcePage?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -66388,6 +66943,15 @@ export namespace Prisma {
     phone: string
     message: string
     source?: string | null
+    formId?: string | null
+    sourcePage?: string | null
+    sourceUrl?: string | null
+    projectId?: string | null
+    utmSource?: string | null
+    utmMedium?: string | null
+    utmCampaign?: string | null
+    ipAddress?: string | null
+    userAgent?: string | null
     isRead?: boolean
     readAt?: Date | string | null
     createdAt?: Date | string
@@ -66400,6 +66964,15 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
     source?: NullableStringFieldUpdateOperationsInput | string | null
+    formId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourcePage?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -66413,6 +66986,15 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
     source?: NullableStringFieldUpdateOperationsInput | string | null
+    formId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourcePage?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -69960,6 +70542,13 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type EnumProductTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProductType | EnumProductTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ProductType[] | ListEnumProductTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProductType[] | ListEnumProductTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumProductTypeFilter<$PrismaModel> | $Enums.ProductType
+  }
+
   export type TenantListRelationFilter = {
     every?: TenantWhereInput
     some?: TenantWhereInput
@@ -70033,6 +70622,10 @@ export namespace Prisma {
     priceRentMonthly?: SortOrder
     priceRentYearly?: SortOrder
     priceBuySource?: SortOrder
+    productType?: SortOrder
+    category?: SortOrder
+    salePrice?: SortOrder
+    supportedCmsModules?: SortOrder
     isActive?: SortOrder
     sortOrder?: SortOrder
     deletedAt?: SortOrder
@@ -70047,6 +70640,7 @@ export namespace Prisma {
     priceRentMonthly?: SortOrder
     priceRentYearly?: SortOrder
     priceBuySource?: SortOrder
+    salePrice?: SortOrder
     sortOrder?: SortOrder
   }
 
@@ -70061,6 +70655,9 @@ export namespace Prisma {
     priceRentMonthly?: SortOrder
     priceRentYearly?: SortOrder
     priceBuySource?: SortOrder
+    productType?: SortOrder
+    category?: SortOrder
+    salePrice?: SortOrder
     isActive?: SortOrder
     sortOrder?: SortOrder
     deletedAt?: SortOrder
@@ -70081,6 +70678,9 @@ export namespace Prisma {
     priceRentMonthly?: SortOrder
     priceRentYearly?: SortOrder
     priceBuySource?: SortOrder
+    productType?: SortOrder
+    category?: SortOrder
+    salePrice?: SortOrder
     isActive?: SortOrder
     sortOrder?: SortOrder
     deletedAt?: SortOrder
@@ -70095,6 +70695,7 @@ export namespace Prisma {
     priceRentMonthly?: SortOrder
     priceRentYearly?: SortOrder
     priceBuySource?: SortOrder
+    salePrice?: SortOrder
     sortOrder?: SortOrder
   }
 
@@ -70112,6 +70713,16 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type EnumProductTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProductType | EnumProductTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ProductType[] | ListEnumProductTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProductType[] | ListEnumProductTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumProductTypeWithAggregatesFilter<$PrismaModel> | $Enums.ProductType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProductTypeFilter<$PrismaModel>
+    _max?: NestedEnumProductTypeFilter<$PrismaModel>
   }
   export type JsonFilter<$PrismaModel = never> = 
     | PatchUndefined<
@@ -70190,6 +70801,27 @@ export namespace Prisma {
     _max?: NestedJsonFilter<$PrismaModel>
   }
 
+  export type EnumPurchaseTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PurchaseType | EnumPurchaseTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PurchaseType[] | ListEnumPurchaseTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PurchaseType[] | ListEnumPurchaseTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPurchaseTypeFilter<$PrismaModel> | $Enums.PurchaseType
+  }
+
+  export type EnumPaymentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentStatusFilter<$PrismaModel> | $Enums.PaymentStatus
+  }
+
+  export type EnumFulfillmentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FulfillmentStatus | EnumFulfillmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FulfillmentStatus[] | ListEnumFulfillmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FulfillmentStatus[] | ListEnumFulfillmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFulfillmentStatusFilter<$PrismaModel> | $Enums.FulfillmentStatus
+  }
+
   export type EnumOrderStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.OrderStatus | EnumOrderStatusFieldRefInput<$PrismaModel>
     in?: $Enums.OrderStatus[] | ListEnumOrderStatusFieldRefInput<$PrismaModel>
@@ -70216,12 +70848,18 @@ export namespace Prisma {
     note?: SortOrder
     subdomain?: SortOrder
     type?: SortOrder
+    productType?: SortOrder
+    purchaseType?: SortOrder
+    paymentStatus?: SortOrder
+    fulfillmentStatus?: SortOrder
     status?: SortOrder
     templateId?: SortOrder
     userId?: SortOrder
     tenantId?: SortOrder
     plan?: SortOrder
     amount?: SortOrder
+    productSnapshot?: SortOrder
+    idempotencyKey?: SortOrder
     paidAt?: SortOrder
     billImageUrl?: SortOrder
     transactionCode?: SortOrder
@@ -70245,12 +70883,17 @@ export namespace Prisma {
     note?: SortOrder
     subdomain?: SortOrder
     type?: SortOrder
+    productType?: SortOrder
+    purchaseType?: SortOrder
+    paymentStatus?: SortOrder
+    fulfillmentStatus?: SortOrder
     status?: SortOrder
     templateId?: SortOrder
     userId?: SortOrder
     tenantId?: SortOrder
     plan?: SortOrder
     amount?: SortOrder
+    idempotencyKey?: SortOrder
     paidAt?: SortOrder
     billImageUrl?: SortOrder
     transactionCode?: SortOrder
@@ -70269,12 +70912,17 @@ export namespace Prisma {
     note?: SortOrder
     subdomain?: SortOrder
     type?: SortOrder
+    productType?: SortOrder
+    purchaseType?: SortOrder
+    paymentStatus?: SortOrder
+    fulfillmentStatus?: SortOrder
     status?: SortOrder
     templateId?: SortOrder
     userId?: SortOrder
     tenantId?: SortOrder
     plan?: SortOrder
     amount?: SortOrder
+    idempotencyKey?: SortOrder
     paidAt?: SortOrder
     billImageUrl?: SortOrder
     transactionCode?: SortOrder
@@ -70287,6 +70935,36 @@ export namespace Prisma {
   export type OrderSumOrderByAggregateInput = {
     amount?: SortOrder
     version?: SortOrder
+  }
+
+  export type EnumPurchaseTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PurchaseType | EnumPurchaseTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PurchaseType[] | ListEnumPurchaseTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PurchaseType[] | ListEnumPurchaseTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPurchaseTypeWithAggregatesFilter<$PrismaModel> | $Enums.PurchaseType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPurchaseTypeFilter<$PrismaModel>
+    _max?: NestedEnumPurchaseTypeFilter<$PrismaModel>
+  }
+
+  export type EnumPaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.PaymentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentStatusFilter<$PrismaModel>
+    _max?: NestedEnumPaymentStatusFilter<$PrismaModel>
+  }
+
+  export type EnumFulfillmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FulfillmentStatus | EnumFulfillmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FulfillmentStatus[] | ListEnumFulfillmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FulfillmentStatus[] | ListEnumFulfillmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFulfillmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.FulfillmentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFulfillmentStatusFilter<$PrismaModel>
+    _max?: NestedEnumFulfillmentStatusFilter<$PrismaModel>
   }
 
   export type EnumOrderStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -71209,6 +71887,15 @@ export namespace Prisma {
     phone?: SortOrder
     message?: SortOrder
     source?: SortOrder
+    formId?: SortOrder
+    sourcePage?: SortOrder
+    sourceUrl?: SortOrder
+    projectId?: SortOrder
+    utmSource?: SortOrder
+    utmMedium?: SortOrder
+    utmCampaign?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
     isRead?: SortOrder
     readAt?: SortOrder
     createdAt?: SortOrder
@@ -71222,6 +71909,15 @@ export namespace Prisma {
     phone?: SortOrder
     message?: SortOrder
     source?: SortOrder
+    formId?: SortOrder
+    sourcePage?: SortOrder
+    sourceUrl?: SortOrder
+    projectId?: SortOrder
+    utmSource?: SortOrder
+    utmMedium?: SortOrder
+    utmCampaign?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
     isRead?: SortOrder
     readAt?: SortOrder
     createdAt?: SortOrder
@@ -71235,6 +71931,15 @@ export namespace Prisma {
     phone?: SortOrder
     message?: SortOrder
     source?: SortOrder
+    formId?: SortOrder
+    sourcePage?: SortOrder
+    sourceUrl?: SortOrder
+    projectId?: SortOrder
+    utmSource?: SortOrder
+    utmMedium?: SortOrder
+    utmCampaign?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
     isRead?: SortOrder
     readAt?: SortOrder
     createdAt?: SortOrder
@@ -74292,6 +74997,10 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type EnumProductTypeFieldUpdateOperationsInput = {
+    set?: $Enums.ProductType
+  }
+
   export type TenantUpdateManyWithoutTemplateNestedInput = {
     create?: XOR<TenantCreateWithoutTemplateInput, TenantUncheckedCreateWithoutTemplateInput> | TenantCreateWithoutTemplateInput[] | TenantUncheckedCreateWithoutTemplateInput[]
     connectOrCreate?: TenantCreateOrConnectWithoutTemplateInput | TenantCreateOrConnectWithoutTemplateInput[]
@@ -74560,6 +75269,18 @@ export namespace Prisma {
     connectOrCreate?: ExportJobCreateOrConnectWithoutOrderInput | ExportJobCreateOrConnectWithoutOrderInput[]
     createMany?: ExportJobCreateManyOrderInputEnvelope
     connect?: ExportJobWhereUniqueInput | ExportJobWhereUniqueInput[]
+  }
+
+  export type EnumPurchaseTypeFieldUpdateOperationsInput = {
+    set?: $Enums.PurchaseType
+  }
+
+  export type EnumPaymentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.PaymentStatus
+  }
+
+  export type EnumFulfillmentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.FulfillmentStatus
   }
 
   export type EnumOrderStatusFieldUpdateOperationsInput = {
@@ -76416,6 +77137,13 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
+  export type NestedEnumProductTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProductType | EnumProductTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ProductType[] | ListEnumProductTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProductType[] | ListEnumProductTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumProductTypeFilter<$PrismaModel> | $Enums.ProductType
+  }
+
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -76442,6 +77170,16 @@ export namespace Prisma {
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
+
+  export type NestedEnumProductTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProductType | EnumProductTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ProductType[] | ListEnumProductTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProductType[] | ListEnumProductTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumProductTypeWithAggregatesFilter<$PrismaModel> | $Enums.ProductType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProductTypeFilter<$PrismaModel>
+    _max?: NestedEnumProductTypeFilter<$PrismaModel>
+  }
   export type NestedJsonFilter<$PrismaModel = never> = 
     | PatchUndefined<
         Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -76465,11 +77203,62 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedEnumPurchaseTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PurchaseType | EnumPurchaseTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PurchaseType[] | ListEnumPurchaseTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PurchaseType[] | ListEnumPurchaseTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPurchaseTypeFilter<$PrismaModel> | $Enums.PurchaseType
+  }
+
+  export type NestedEnumPaymentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentStatusFilter<$PrismaModel> | $Enums.PaymentStatus
+  }
+
+  export type NestedEnumFulfillmentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FulfillmentStatus | EnumFulfillmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FulfillmentStatus[] | ListEnumFulfillmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FulfillmentStatus[] | ListEnumFulfillmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFulfillmentStatusFilter<$PrismaModel> | $Enums.FulfillmentStatus
+  }
+
   export type NestedEnumOrderStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.OrderStatus | EnumOrderStatusFieldRefInput<$PrismaModel>
     in?: $Enums.OrderStatus[] | ListEnumOrderStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.OrderStatus[] | ListEnumOrderStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumOrderStatusFilter<$PrismaModel> | $Enums.OrderStatus
+  }
+
+  export type NestedEnumPurchaseTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PurchaseType | EnumPurchaseTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PurchaseType[] | ListEnumPurchaseTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PurchaseType[] | ListEnumPurchaseTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPurchaseTypeWithAggregatesFilter<$PrismaModel> | $Enums.PurchaseType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPurchaseTypeFilter<$PrismaModel>
+    _max?: NestedEnumPurchaseTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.PaymentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentStatusFilter<$PrismaModel>
+    _max?: NestedEnumPaymentStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumFulfillmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FulfillmentStatus | EnumFulfillmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FulfillmentStatus[] | ListEnumFulfillmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FulfillmentStatus[] | ListEnumFulfillmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFulfillmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.FulfillmentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFulfillmentStatusFilter<$PrismaModel>
+    _max?: NestedEnumFulfillmentStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumOrderStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -77457,6 +78246,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -77487,6 +78280,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -78065,6 +78862,15 @@ export namespace Prisma {
     phone: string
     message: string
     source?: string | null
+    formId?: string | null
+    sourcePage?: string | null
+    sourceUrl?: string | null
+    projectId?: string | null
+    utmSource?: string | null
+    utmMedium?: string | null
+    utmCampaign?: string | null
+    ipAddress?: string | null
+    userAgent?: string | null
     isRead?: boolean
     readAt?: Date | string | null
     createdAt?: Date | string
@@ -78077,6 +78883,15 @@ export namespace Prisma {
     phone: string
     message: string
     source?: string | null
+    formId?: string | null
+    sourcePage?: string | null
+    sourceUrl?: string | null
+    projectId?: string | null
+    utmSource?: string | null
+    utmMedium?: string | null
+    utmCampaign?: string | null
+    ipAddress?: string | null
+    userAgent?: string | null
     isRead?: boolean
     readAt?: Date | string | null
     createdAt?: Date | string
@@ -78623,6 +79438,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78653,6 +79472,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -79138,6 +79961,15 @@ export namespace Prisma {
     phone?: StringFilter<"ContactFormSubmission"> | string
     message?: StringFilter<"ContactFormSubmission"> | string
     source?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    formId?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    sourcePage?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    sourceUrl?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    projectId?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    utmSource?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    utmMedium?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    utmCampaign?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    ipAddress?: StringNullableFilter<"ContactFormSubmission"> | string | null
+    userAgent?: StringNullableFilter<"ContactFormSubmission"> | string | null
     isRead?: BoolFilter<"ContactFormSubmission"> | boolean
     readAt?: DateTimeNullableFilter<"ContactFormSubmission"> | Date | string | null
     createdAt?: DateTimeFilter<"ContactFormSubmission"> | Date | string
@@ -79713,11 +80545,17 @@ export namespace Prisma {
     note?: string | null
     subdomain?: string | null
     type: string
+    productType?: $Enums.ProductType
+    purchaseType?: $Enums.PurchaseType
+    paymentStatus?: $Enums.PaymentStatus
+    fulfillmentStatus?: $Enums.FulfillmentStatus
     status?: $Enums.OrderStatus
     userId?: string | null
     tenantId?: string | null
     plan?: string | null
     amount?: number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: string | null
     paidAt?: Date | string | null
     billImageUrl?: string | null
     transactionCode?: string | null
@@ -79737,11 +80575,17 @@ export namespace Prisma {
     note?: string | null
     subdomain?: string | null
     type: string
+    productType?: $Enums.ProductType
+    purchaseType?: $Enums.PurchaseType
+    paymentStatus?: $Enums.PaymentStatus
+    fulfillmentStatus?: $Enums.FulfillmentStatus
     status?: $Enums.OrderStatus
     userId?: string | null
     tenantId?: string | null
     plan?: string | null
     amount?: number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: string | null
     paidAt?: Date | string | null
     billImageUrl?: string | null
     transactionCode?: string | null
@@ -80019,12 +80863,18 @@ export namespace Prisma {
     note?: StringNullableFilter<"Order"> | string | null
     subdomain?: StringNullableFilter<"Order"> | string | null
     type?: StringFilter<"Order"> | string
+    productType?: EnumProductTypeFilter<"Order"> | $Enums.ProductType
+    purchaseType?: EnumPurchaseTypeFilter<"Order"> | $Enums.PurchaseType
+    paymentStatus?: EnumPaymentStatusFilter<"Order"> | $Enums.PaymentStatus
+    fulfillmentStatus?: EnumFulfillmentStatusFilter<"Order"> | $Enums.FulfillmentStatus
     status?: EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
     templateId?: StringFilter<"Order"> | string
     userId?: StringNullableFilter<"Order"> | string | null
     tenantId?: StringNullableFilter<"Order"> | string | null
     plan?: StringNullableFilter<"Order"> | string | null
     amount?: IntNullableFilter<"Order"> | number | null
+    productSnapshot?: JsonNullableFilter<"Order">
+    idempotencyKey?: StringNullableFilter<"Order"> | string | null
     paidAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     billImageUrl?: StringNullableFilter<"Order"> | string | null
     transactionCode?: StringNullableFilter<"Order"> | string | null
@@ -80228,6 +81078,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -80258,6 +81112,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -80304,6 +81162,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -80334,6 +81196,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -80364,6 +81230,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -80394,6 +81264,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -80484,6 +81358,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -80514,6 +81392,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -80577,11 +81459,17 @@ export namespace Prisma {
     note?: string | null
     subdomain?: string | null
     type: string
+    productType?: $Enums.ProductType
+    purchaseType?: $Enums.PurchaseType
+    paymentStatus?: $Enums.PaymentStatus
+    fulfillmentStatus?: $Enums.FulfillmentStatus
     status?: $Enums.OrderStatus
     userId?: string | null
     tenantId?: string | null
     plan?: string | null
     amount?: number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: string | null
     paidAt?: Date | string | null
     billImageUrl?: string | null
     transactionCode?: string | null
@@ -80601,12 +81489,18 @@ export namespace Prisma {
     note?: string | null
     subdomain?: string | null
     type: string
+    productType?: $Enums.ProductType
+    purchaseType?: $Enums.PurchaseType
+    paymentStatus?: $Enums.PaymentStatus
+    fulfillmentStatus?: $Enums.FulfillmentStatus
     status?: $Enums.OrderStatus
     templateId: string
     userId?: string | null
     tenantId?: string | null
     plan?: string | null
     amount?: number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: string | null
     paidAt?: Date | string | null
     billImageUrl?: string | null
     transactionCode?: string | null
@@ -80641,11 +81535,17 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     subdomain?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    purchaseType?: EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    fulfillmentStatus?: EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     billImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     transactionCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -80665,12 +81565,18 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     subdomain?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    purchaseType?: EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    fulfillmentStatus?: EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
     templateId?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     billImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     transactionCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -83555,6 +84461,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -83585,6 +84495,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -83631,6 +84545,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -83661,6 +84579,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -84192,6 +85114,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -84222,6 +85148,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -84343,6 +85273,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -84373,6 +85307,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -84604,6 +85542,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -84634,6 +85576,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -84705,6 +85651,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -84735,6 +85685,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -84834,6 +85788,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -84864,6 +85822,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -84985,6 +85947,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -85015,6 +85981,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -85189,6 +86159,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -85219,6 +86193,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -85265,6 +86243,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -85295,6 +86277,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -85325,6 +86311,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -85355,6 +86345,10 @@ export namespace Prisma {
     priceRentMonthly?: number | null
     priceRentYearly?: number | null
     priceBuySource?: number | null
+    productType?: $Enums.ProductType
+    category?: string | null
+    salePrice?: number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: boolean
     sortOrder?: number
     deletedAt?: Date | string | null
@@ -85505,6 +86499,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -85535,6 +86533,10 @@ export namespace Prisma {
     priceRentMonthly?: NullableIntFieldUpdateOperationsInput | number | null
     priceRentYearly?: NullableIntFieldUpdateOperationsInput | number | null
     priceBuySource?: NullableIntFieldUpdateOperationsInput | number | null
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    salePrice?: NullableIntFieldUpdateOperationsInput | number | null
+    supportedCmsModules?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -90486,6 +91488,15 @@ export namespace Prisma {
     phone: string
     message: string
     source?: string | null
+    formId?: string | null
+    sourcePage?: string | null
+    sourceUrl?: string | null
+    projectId?: string | null
+    utmSource?: string | null
+    utmMedium?: string | null
+    utmCampaign?: string | null
+    ipAddress?: string | null
+    userAgent?: string | null
     isRead?: boolean
     readAt?: Date | string | null
     createdAt?: Date | string
@@ -91194,6 +92205,15 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
     source?: NullableStringFieldUpdateOperationsInput | string | null
+    formId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourcePage?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -91206,6 +92226,15 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
     source?: NullableStringFieldUpdateOperationsInput | string | null
+    formId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourcePage?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -91218,6 +92247,15 @@ export namespace Prisma {
     phone?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
     source?: NullableStringFieldUpdateOperationsInput | string | null
+    formId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourcePage?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    utmSource?: NullableStringFieldUpdateOperationsInput | string | null
+    utmMedium?: NullableStringFieldUpdateOperationsInput | string | null
+    utmCampaign?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -91589,11 +92627,17 @@ export namespace Prisma {
     note?: string | null
     subdomain?: string | null
     type: string
+    productType?: $Enums.ProductType
+    purchaseType?: $Enums.PurchaseType
+    paymentStatus?: $Enums.PaymentStatus
+    fulfillmentStatus?: $Enums.FulfillmentStatus
     status?: $Enums.OrderStatus
     userId?: string | null
     tenantId?: string | null
     plan?: string | null
     amount?: number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: string | null
     paidAt?: Date | string | null
     billImageUrl?: string | null
     transactionCode?: string | null
@@ -91772,11 +92816,17 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     subdomain?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    purchaseType?: EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    fulfillmentStatus?: EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     billImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     transactionCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -91796,11 +92846,17 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     subdomain?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    purchaseType?: EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    fulfillmentStatus?: EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     billImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     transactionCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -91820,11 +92876,17 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     subdomain?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
+    productType?: EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+    purchaseType?: EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    fulfillmentStatus?: EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
+    productSnapshot?: NullableJsonNullValueInput | InputJsonValue
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     billImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     transactionCode?: NullableStringFieldUpdateOperationsInput | string | null

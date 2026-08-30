@@ -5,11 +5,19 @@ import AdmZip from 'adm-zip';
 
 describe('CloneCraft Export Engine Integration Tests', () => {
   let testOrder: any;
+  let testUser: any;
 
   beforeAll(async () => {
     // Tạo đơn hàng test Mua Đứt
     const tpl = await prisma.template.findFirst({ where: { isActive: true } });
     const orderNumber = `TEST-BUY-${Date.now()}`;
+    testUser = await prisma.user.create({
+      data: {
+        email: `test.export.${Date.now()}@example.com`,
+        passwordHash: 'test-password-hash',
+        fullName: 'Người mua test',
+      },
+    });
 
     testOrder = await prisma.order.create({
       data: {
@@ -17,9 +25,10 @@ describe('CloneCraft Export Engine Integration Tests', () => {
         fullName: 'Nguyễn Văn Test',
         email: 'test.buyer@example.com',
         phone: '0988888888',
-        type: 'BUY',
+        type: 'BUY_SOURCE',
         status: 'COMPLETED',
         templateId: tpl?.id || 'bds-01',
+        userId: testUser.id,
         amount: 399000,
       },
       include: {
@@ -34,6 +43,7 @@ describe('CloneCraft Export Engine Integration Tests', () => {
         await prisma.exportJob.deleteMany({ where: { orderId: testOrder.id } });
         await prisma.order.deleteMany({ where: { id: testOrder.id } });
       }
+      if (testUser) await prisma.user.delete({ where: { id: testUser.id } });
     } catch (e) {
       // Ignore cleanup error
     }
@@ -80,7 +90,7 @@ describe('CloneCraft Export Engine Integration Tests', () => {
     expect(readmeContent).toContain('npm run dev');
   });
 
-  it('ExportJobService nên từ chối đơn hàng loại Thuê (RENT)', async () => {
+  it('ExportJobService nên từ chối mọi đơn hàng không có quyền source', async () => {
     const rentOrder = await prisma.order.create({
       data: {
         orderNumber: `TEST-RENT-${Date.now()}`,
@@ -90,13 +100,14 @@ describe('CloneCraft Export Engine Integration Tests', () => {
         type: 'RENT',
         status: 'COMPLETED',
         templateId: testOrder.templateId,
+        userId: testUser.id,
         amount: 129000,
       },
     });
 
     await expect(
-      ExportJobService.requestExport(rentOrder.orderNumber, { email: rentOrder.email })
-    ).rejects.toThrow('Gói Thuê Cloud SaaS chỉ hỗ trợ quản trị trực tiếp trên CMS');
+      ExportJobService.requestExport(rentOrder.orderNumber, { userId: testUser.id })
+    ).rejects.toThrow('SOURCE_TEMPLATE_LICENSE');
 
     await prisma.order.delete({ where: { id: rentOrder.id } });
   });

@@ -9,6 +9,13 @@ const contactFormSchema = z.object({
   phone: z.string().min(10, 'Số điện thoại tối thiểu 10 số.'),
   message: z.string().min(5, 'Lời nhắn tối thiểu từ 5 ký tự.'),
   source: z.string().optional(),
+  formId: z.string().max(100).optional(),
+  sourcePage: z.string().max(500).optional(),
+  sourceUrl: z.string().url().max(2000).optional(),
+  projectId: z.string().max(100).optional(),
+  utm_source: z.string().max(200).optional(),
+  utm_medium: z.string().max(200).optional(),
+  utm_campaign: z.string().max(200).optional(),
 });
 
 export async function getCompanyInfo(req: Request, res: Response, next: NextFunction) {
@@ -198,21 +205,41 @@ export async function submitContactForm(req: Request, res: Response, next: NextF
 
   try {
     const data = contactFormSchema.parse(req.body);
+    // Identified public forms receive a short duplicate window. Generic contact
+    // forms keep the route-level IP limiter only, so a visitor is not blocked
+    // because another person reuses a family/business phone number.
+    if (data.formId) {
+      const duplicateAfter = new Date(Date.now() - 10 * 60 * 1000);
+      const duplicate = await prisma.contactFormSubmission.findFirst({
+        where: { tenantId, phone: data.phone, formId: data.formId, createdAt: { gte: duplicateAfter } },
+        select: { id: true },
+      });
+      if (duplicate) {
+        return res.status(429).json({ success: false, error: { code: 'DUPLICATE_SUBMISSION', message: 'Yêu cầu này đã được ghi nhận. Vui lòng chờ tư vấn viên liên hệ.' } });
+      }
+    }
 
-    const submission = await prisma.contactFormSubmission.create({
-      data: {
-        tenantId,
-        fullName: data.fullName,
-        email: data.email,
-        phone: data.phone,
-        message: data.message,
-        source: data.source || 'website_contact_page',
-      },
-    });
-
-    // Automatically create a CRM Lead record for Tenant's Lead Management (/leads)
-    try {
-      await prisma.lead.create({
+    const [submission] = await prisma.$transaction([
+      prisma.contactFormSubmission.create({
+        data: {
+          tenantId,
+          fullName: data.fullName,
+          email: data.email,
+          phone: data.phone,
+          message: data.message,
+          source: data.source || 'website_contact_page',
+          formId: data.formId || null,
+          sourcePage: data.sourcePage || null,
+          sourceUrl: data.sourceUrl || null,
+          projectId: data.projectId || null,
+          utmSource: data.utm_source || null,
+          utmMedium: data.utm_medium || null,
+          utmCampaign: data.utm_campaign || null,
+          ipAddress: req.ip || null,
+          userAgent: req.get('user-agent') || null,
+        },
+      }),
+      prisma.lead.create({
         data: {
           tenantId,
           fullName: data.fullName,
@@ -221,12 +248,11 @@ export async function submitContactForm(req: Request, res: Response, next: NextF
           source: 'FORM',
           status: 'NEW',
           note: data.message ? `Yêu cầu từ Form Website: ${data.message}` : 'Khách hàng liên hệ qua Form Website',
-          tags: ['Website Lead', 'Tư vấn'],
+          projectId: data.projectId || null,
+          tags: ['Website Lead', 'Tư vấn', ...(data.formId ? [`form:${data.formId}`] : [])],
         },
-      });
-    } catch (leadErr: any) {
-      logger.warn(`Could not sync lead to CRM: ${leadErr.message}`);
-    }
+      }),
+    ]);
 
     logger.info(`Nhận form liên hệ mới từ khách hàng ${data.fullName} tại Website Tenant ID ${tenantId}`);
 
@@ -306,14 +332,9 @@ export async function getPageContent(req: Request, res: Response, next: NextFunc
     });
 
     if (!page) {
-      return res.json({
-        success: true,
-        data: {
-          id: `default-${pageSlug}`,
-          title: pageSlug === 'home' ? 'Trang Chủ' : pageSlug,
-          slug: pageSlug,
-          sections: [],
-        },
+      return res.status(404).json({
+        success: false,
+        error: { code: 'PAGE_NOT_FOUND', message: 'Trang chưa được xuất bản hoặc chưa được cấu hình.' },
       });
     }
 

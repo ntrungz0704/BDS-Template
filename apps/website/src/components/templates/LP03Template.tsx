@@ -191,7 +191,7 @@ export default function LP03Template({
 
           {/* Slogan */}
           <div className="hidden lg:block text-slate-300 text-xs italic">
-            "Đẳng Cấp Không Gian Sống — Khẳng Định Vị Thế Thượng Lưu"
+            &ldquo;Đẳng Cấp Không Gian Sống — Khẳng Định Vị Thế Thượng Lưu&rdquo;
           </div>
 
           {/* Contact Fast Info */}

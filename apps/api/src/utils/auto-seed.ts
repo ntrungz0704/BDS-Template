@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { prisma } from '@repo/database';
+import { prisma, ProductType } from '@repo/database';
 
 const DEFAULT_TEMPLATES = [
   {
@@ -268,13 +268,38 @@ const DEFAULT_TEMPLATES = [
   },
 ];
 
+const LANDING_PAGE_TEMPLATES = [
+  { slug: 'lp-01', name: 'LP #01 - Căn Hộ Chung Cư Cao Cấp Launch Funnel', category: 'CAN_HO_CHUNG_CU', shortDescription: 'Landing Page 1 trang · Bán Căn Hộ · Thu Lead Chạy Ads Siêu Tốc', thumbnail: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=80', features: ['Sales funnel một trang cho chiến dịch Ads', 'Form nhận bảng giá và mặt bằng VIP', 'Countdown ưu đãi', 'Bảng tính khoản vay'], priceBuy: 399000, priceBuySource: null, priceRentMonthly: 129000, sortOrder: 25 },
+  { slug: 'lp-02', name: 'LP #02 - Tuyển Dụng 300 Chuyên Viên Kinh Doanh BĐS', category: 'TUYEN_DUNG', shortDescription: 'Landing Page 1 trang · Tuyển Dụng Sale BĐS · Đột Phá Thu Nhập Trăm Triệu', thumbnail: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&auto=format&fit=crop&q=80', features: ['Form ứng tuyển nhanh', 'Trình bày chương trình đào tạo', 'Bảng quyền lợi và hoa hồng', 'Gallery văn hóa doanh nghiệp'], priceBuy: 399000, priceBuySource: null, priceRentMonthly: 129000, sortOrder: 26 },
+  { slug: 'lp-03', name: 'LP #03 - Tổ Hợp Căn Hộ Cao Cấp Simple Page', category: 'CAN_HO_CAO_CAP', shortDescription: 'Landing Page 1 trang · Căn Hộ Nghỉ Dưỡng 5 Sao · Mở Bán Đợt 1', thumbnail: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=80', features: ['Form báo giá hero', 'Mặt bằng tương tác', 'Giỏ hàng mở bán', 'Đặt lịch xe xem nhà mẫu'], priceBuy: 399000, priceBuySource: null, priceRentMonthly: 129000, sortOrder: 27 },
+  { slug: 'lp-04', name: 'LP #04 - Sale Môi Giới BĐS Triệu Đô Authority', category: 'THUONG_HIEU_CA_NHAN', shortDescription: 'Landing Page 1 trang · Sale Cá Nhân · Khẳng Định Uy Tín Broker VIP', thumbnail: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&auto=format&fit=crop&q=80', features: ['Profile thành tích', 'Giỏ hàng độc quyền', 'Khảo sát nhu cầu', 'Kết nối Zalo và hotline'], priceBuy: 399000, priceBuySource: null, priceRentMonthly: 129000, sortOrder: 28 },
+  { slug: 'lp-05', name: 'LP #05 - Tổ Hợp Căn Hộ Khách Sạn 5 Sao Golden Park Tower', category: 'CAN_HO_NGHI_DUONG', shortDescription: 'Landing Page 1 trang · Căn Hộ Khách Sạn 5 Sao · Tâm Điểm Cầu Giấy', thumbnail: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=80', features: ['Bảng tiến độ thanh toán', 'Mặt bằng tầng', 'Lưới mẫu căn hộ', 'Form nhận bảng giá'], priceBuy: 399000, priceBuySource: null, priceRentMonthly: 129000, sortOrder: 29 },
+  { slug: 'lp-06', name: 'LP #06 - Đại Đô Thị Sân Bay Stella Mega City Cần Thơ', category: 'DO_THI', shortDescription: 'Landing Page 1 trang · Đại Đô Thị Sân Bay 150ha · Sổ Đỏ Trao Tay', thumbnail: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&auto=format&fit=crop&q=80', features: ['Lead box nổi bật', 'Bản đồ vị trí', 'Lý do đầu tư', 'Form nhận bảng giá đợt 1'], priceBuy: 399000, priceBuySource: null, priceRentMonthly: 129000, sortOrder: 30 },
+  { slug: 'lp-07', name: 'LP #07 - Siêu Thành Phố Biển NovaWorld Phan Thiết 1.000ha', category: 'NGHI_DUONG_BIEN', shortDescription: 'Landing Page 1 trang · Siêu Thành Phố Biển 1.000ha · Chiết Khấu 1.6 Tỷ', thumbnail: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=80', features: ['Phân khu tương tác', 'Phân tích đầu tư', 'Video giới thiệu', 'Form nhận brochure và bảng giá'], priceBuy: 399000, priceBuySource: null, priceRentMonthly: 129000, sortOrder: 31 },
+];
+
+const DEFAULT_TEMPLATE_CONFIG = {
+  themeConfig: { colorPrimary: '#2563EB', colorSecondary: '#1E293B', fontHeading: 'Plus Jakarta Sans', fontBody: 'Inter' },
+  layoutConfig: { header: 'sticky', footer: 'simple-4-columns', homeSections: ['hero', 'stats', 'featured-projects', 'amenities', 'about', 'posts', 'contact'] },
+  featureFlags: { enableBlog: true, enableMap: true, enableVirtualTour: true },
+};
+
+const CATALOG_TEMPLATES = [
+  ...DEFAULT_TEMPLATES.map((template) => ({
+    ...template,
+    productType: template.slug === 'agency-onepage' ? ProductType.LANDING_PAGE : ProductType.WEBSITE_TEMPLATE,
+    category: template.slug === 'agency-onepage' ? 'LANDING_PAGE' : 'WEBSITE',
+  })),
+  ...LANDING_PAGE_TEMPLATES.map((template) => ({ ...template, productType: ProductType.LANDING_PAGE })),
+];
+
 export async function autoSeedDatabase() {
   try {
     console.log('🌱 Đang đồng bộ hóa dữ liệu 16+ Mẫu Templates & Super Admin...');
 
-    // 1. Đồng bộ 16+ Templates với ảnh 4K và thông tin đầy đủ
-    for (const t of DEFAULT_TEMPLATES) {
-      await prisma.template.upsert({
+    // 1. Đồng bộ catalog chuẩn. Không tự xóa template vì có thể đã gắn với đơn hàng/tenant.
+    for (const t of CATALOG_TEMPLATES) {
+      const template = await prisma.template.upsert({
         where: { slug: t.slug },
         update: {
           name: t.name,
@@ -284,6 +309,10 @@ export async function autoSeedDatabase() {
           priceBuy: t.priceBuy,
           priceBuySource: t.priceBuySource,
           priceRentMonthly: t.priceRentMonthly,
+          productType: t.productType,
+          category: t.category,
+          salePrice: null,
+          supportedCmsModules: ['LEADS', 'MEDIA', 'SEO', 'FORMS'],
           isActive: true,
           sortOrder: t.sortOrder,
         },
@@ -297,6 +326,9 @@ export async function autoSeedDatabase() {
           priceBuy: t.priceBuy,
           priceBuySource: t.priceBuySource,
           priceRentMonthly: t.priceRentMonthly,
+          productType: t.productType,
+          category: t.category,
+          supportedCmsModules: ['LEADS', 'MEDIA', 'SEO', 'FORMS'],
           isActive: true,
           sortOrder: t.sortOrder,
           templateConfig: {
@@ -321,37 +353,42 @@ export async function autoSeedDatabase() {
           },
         },
       });
-    }
-
-    // Xóa toàn bộ các template thừa/cũ/alias để giữ chuẩn xác đúng 16 mẫu
-    const validSlugs = DEFAULT_TEMPLATES.map((t) => t.slug);
-    try {
-      await prisma.template.deleteMany({
-        where: {
-          slug: { notIn: validSlugs },
+      await prisma.templateVersion.upsert({
+        where: { templateId_version: { templateId: template.id, version: 1 } },
+        update: { ...DEFAULT_TEMPLATE_CONFIG, components: { runtime: t.slug }, status: 'PUBLISHED' },
+        create: {
+          templateId: template.id,
+          version: 1,
+          ...DEFAULT_TEMPLATE_CONFIG,
+          components: { runtime: t.slug },
+          status: 'PUBLISHED',
         },
       });
-    } catch (tmplErr: any) {
-      console.warn('Lỗi phụ khi dọn dẹp template cũ:', tmplErr.message);
     }
 
-    // 2. Tạo DUY NHẤT 1 Super Admin tài khoản chính thức
-    const bootstrapPassword = process.env.SEED_ADMIN_PASSWORD || 'adminsuper@123456';
-    if (!bootstrapPassword || bootstrapPassword.length < 12) {
-      throw new Error('SEED_ADMIN_PASSWORD with at least 12 characters is required when ALLOW_AUTO_SEED=true.');
+    // 2. Bootstrap Super Admin chỉ khi chưa có; không bao giờ ghi đè mật khẩu hiện hữu.
+    const adminEmail = 'admin@aireviewbds.com';
+    const existingAdmin = await prisma.user.findUnique({ where: { email: adminEmail } });
+    if (existingAdmin) {
+      await prisma.user.update({
+        where: { id: existingAdmin.id },
+        data: { role: 'SUPER_ADMIN', isActive: true, fullName: 'Super Admin AI Review BDS' },
+      });
+    } else {
+      const bootstrapPassword = process.env.SEED_ADMIN_PASSWORD;
+      if (!bootstrapPassword || bootstrapPassword.length < 12) {
+        throw new Error('SEED_ADMIN_PASSWORD with at least 12 characters is required to bootstrap the first Super Admin.');
+      }
+      await prisma.user.create({
+        data: {
+          email: adminEmail,
+          passwordHash: await bcrypt.hash(bootstrapPassword, 12),
+          fullName: 'Super Admin AI Review BDS',
+          role: 'SUPER_ADMIN',
+          isActive: true,
+        },
+      });
     }
-    const adminPasswordHash = await bcrypt.hash(bootstrapPassword, 12);
-    const superAdmin = await prisma.user.upsert({
-      where: { email: 'admin@aireviewbds.com' },
-      update: { role: 'SUPER_ADMIN', isActive: true, fullName: 'Super Admin AI Review BDS', passwordHash: adminPasswordHash },
-      create: {
-        email: 'admin@aireviewbds.com',
-        passwordHash: adminPasswordHash,
-        fullName: 'Super Admin AI Review BDS',
-        role: 'SUPER_ADMIN',
-        isActive: true,
-      },
-    });
 
     console.log('✅ Đã đồng bộ thành công các Templates và tài khoản Super Admin vào Database!');
   } catch (err: any) {

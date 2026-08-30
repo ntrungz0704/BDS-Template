@@ -33,10 +33,9 @@ export interface TenantTheme {
   darkMode?: boolean;
   buttonStyle?: 'rounded' | 'square' | 'pill';
   animationsEnabled?: boolean;
-  customCss?: string;
 }
 
-const DEFAULTS: Required<Omit<TenantTheme, 'customCss'>> = {
+const DEFAULTS: Required<TenantTheme> = {
   primaryColor: '#2563EB',
   secondaryColor: '#64748B',
   accentColor: '#F59E0B',
@@ -58,7 +57,7 @@ const DEFAULTS: Required<Omit<TenantTheme, 'customCss'>> = {
 };
 
 // Merge theme with defaults, ignoring null/undefined values
-export function mergeTheme(theme?: TenantTheme | null): Required<Omit<TenantTheme, 'customCss'>> {
+export function mergeTheme(theme?: TenantTheme | null): Required<TenantTheme> {
   if (!theme) return DEFAULTS;
   return {
     primaryColor: theme.primaryColor || DEFAULTS.primaryColor,
@@ -176,11 +175,6 @@ body {
   transition-duration: 0.01ms !important;
 }
 `;
-  }
-
-  // Inject custom CSS if provided
-  if (theme?.customCss) {
-    css += `\n/* Custom CSS */\n${theme.customCss}\n`;
   }
 
   return css;

@@ -59,6 +59,9 @@ const LP01Template = dynamic(() => import('../components/templates/LP01Template'
 const LP02Template = dynamic(() => import('../components/templates/LP02Template'), { loading: () => <LoadingSkeleton /> });
 const LP03Template = dynamic(() => import('../components/templates/LP03Template'), { loading: () => <LoadingSkeleton /> });
 const LP04Template = dynamic(() => import('../components/templates/LP04Template'), { loading: () => <LoadingSkeleton /> });
+const LP05Template = dynamic(() => import('../components/templates/LP05Template'), { loading: () => <LoadingSkeleton /> });
+const LP06Template = dynamic(() => import('../components/templates/LP06Template'), { loading: () => <LoadingSkeleton /> });
+const LP07Template = dynamic(() => import('../components/templates/LP07Template'), { loading: () => <LoadingSkeleton /> });
 
 class WebsiteTemplateRegistry {
   private static templates = new Map<string, TemplateDefinition>();
@@ -233,6 +236,9 @@ const INITIAL_TEMPLATES: TemplateDefinition[] = [
   { id: 'lp-02', slug: 'lp-02', name: 'LP 02 — Biệt Thự & Nghỉ Dưỡng Hoàng Gia VIP', category: 'landing', version: '1.0.0', component: LP02Template },
   { id: 'lp-03', slug: 'lp-03', name: 'LP 03 — Đất Nền Phân Lô F0 Sổ Đỏ Trao Tay', category: 'landing', version: '1.0.0', component: LP03Template },
   { id: 'lp-04', slug: 'lp-04', name: 'LP 04 — Sale Môi Giới BĐS Triệu Đô Authority', category: 'landing', version: '1.0.0', component: LP04Template },
+  { id: 'lp-05', slug: 'lp-05', name: 'LP 05 — Tổ Hợp Căn Hộ Khách Sạn 5 Sao', category: 'landing', version: '1.0.0', component: LP05Template },
+  { id: 'lp-06', slug: 'lp-06', name: 'LP 06 — Đại Đô Thị Sân Bay', category: 'landing', version: '1.0.0', component: LP06Template },
+  { id: 'lp-07', slug: 'lp-07', name: 'LP 07 — Siêu Thành Phố Biển', category: 'landing', version: '1.0.0', component: LP07Template },
 ];
 
 for (const tpl of INITIAL_TEMPLATES) {

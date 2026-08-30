@@ -222,7 +222,13 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
     // Atomically claim approval before provisioning
     const claim = await prisma.order.updateMany({
       where: { id, version: order.version },
-      data: { status: 'COMPLETED', paidAt: order.paidAt || new Date(), version: { increment: 1 } },
+      data: {
+        status: 'COMPLETED',
+        paidAt: order.paidAt || new Date(),
+        paymentStatus: 'PAID',
+        fulfillmentStatus: order.type === 'BUY_SOURCE' ? 'NOT_REQUIRED' : 'PROVISIONING',
+        version: { increment: 1 },
+      },
     });
     if (claim.count !== 1 && !isUnprovisionedCompleted) {
       return res.status(409).json({
@@ -301,7 +307,7 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
 
     await prisma.order.update({
       where: { id },
-      data: { tenantId, subdomain: finalSubdomain },
+      data: { tenantId, subdomain: finalSubdomain, fulfillmentStatus: 'ACTIVE' },
     });
 
     // Gửi email chào mừng ngoài block transaction
@@ -366,6 +372,7 @@ export async function rejectOrder(req: Request, res: Response, next: NextFunctio
       where: { id, version: order.version },
       data: {
         status: 'REJECTED',
+        paymentStatus: 'REJECTED',
         adminNotes: adminNotes || 'Giao dịch chuyển tiền không hợp lệ hoặc sai số tiền.',
         version: { increment: 1 },
       },

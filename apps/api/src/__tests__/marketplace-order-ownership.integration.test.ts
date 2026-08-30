@@ -118,4 +118,29 @@ describe('Marketplace order ownership regression', () => {
     const stored = await prisma.order.findUnique({ where: { id: legacyOrder.id } });
     expect(stored?.userId).toBe(owner.id);
   });
+
+  it('never treats a completed SaaS order as permission to download source', async () => {
+    await prisma.order.create({
+      data: {
+        orderNumber: `ORD-SAAS-${Date.now()}`,
+        fullName: owner.fullName,
+        email: owner.email,
+        phone: owner.phone,
+        type: 'BUY',
+        status: 'COMPLETED',
+        paymentStatus: 'PAID',
+        fulfillmentStatus: 'ACTIVE',
+        amount: template.priceBuy,
+        templateId: template.id,
+        userId: owner.id,
+      },
+    });
+
+    const denied = await request(app)
+      .get(`/api/marketplace/templates/${template.slug}/download`)
+      .set('Authorization', `Bearer ${ownerToken}`);
+
+    expect(denied.status).toBe(403);
+    expect(denied.body.error.code).toBe('NO_PURCHASE');
+  });
 });

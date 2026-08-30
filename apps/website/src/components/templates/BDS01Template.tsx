@@ -1876,7 +1876,7 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
             </div>
 
             <p className="text-sm font-semibold text-slate-700 leading-relaxed italic bg-slate-50 p-4 rounded-lg border-l-4 border-blue-600">
-              "{selectedArticle.desc}"
+              &ldquo;{selectedArticle.desc}&rdquo;
             </p>
 
             <div className="text-sm text-slate-700 leading-relaxed space-y-4">

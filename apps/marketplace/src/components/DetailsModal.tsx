@@ -647,7 +647,10 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
   const [techOpen, setTechOpen] = useState(false);
 
   const tAny = template as any;
-  const fallbackExtra = TEMPLATE_EXTRA[template.slug] || TEMPLATE_EXTRA[template.id] || TEMPLATE_EXTRA['bds-01'] || TEMPLATE_EXTRA['mock-1'];
+  const fallbackExtra = TEMPLATE_EXTRA[template.slug] || TEMPLATE_EXTRA[template.id] || {
+    screenshots: [], accentColor: '#2563EB', badge: 'TEMPLATE', targetAudience: [],
+    highlights: [], availablePages: [], modules: [], benefits: [],
+  };
   const extra = {
     screenshots: tAny.screenshots && tAny.screenshots.length > 0 ? tAny.screenshots : fallbackExtra.screenshots,
     accentColor: tAny.accentColor || fallbackExtra.accentColor,

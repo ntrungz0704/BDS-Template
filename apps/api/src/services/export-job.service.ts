@@ -3,7 +3,7 @@ import path from 'path';
 import crypto from 'crypto';
 import { prisma } from '@repo/database';
 import { logger } from '../index';
-import { SingleTenantExporterService } from './single-tenant-exporter.service';
+import { TemplatePackagingService } from './template-packaging.service';
 
 export class ExportJobService {
   private static exportsDir = path.resolve(process.cwd(), 'uploads/exports');
@@ -36,16 +36,18 @@ export class ExportJobService {
 
     // 2. Phân quyền kiểm tra chủ sở hữu đơn hàng
     if (currentUser.role !== 'SUPER_ADMIN') {
-      const isOwner = (currentUser.userId && order.userId === currentUser.userId) || 
-                      (currentUser.email && order.email === currentUser.email);
-      if (!isOwner) {
+      if (!currentUser.userId || order.userId !== currentUser.userId) {
         throw new Error('Bạn không có quyền truy cập đơn hàng này.');
       }
     }
 
-    // 3. RÀNG BUỘC NGHIỆP VỤ: Chỉ áp dụng cho đơn Mua Đứt ('BUY')
-    if (order.type === 'RENT') {
-      throw new Error('Gói Thuê Cloud SaaS chỉ hỗ trợ quản trị trực tiếp trên CMS, không bao gồm quyền tải mã nguồn độc lập.');
+    // 3. RÀNG BUỘC NGHIỆP VỤ: only an explicit source-code purchase grants
+    // export rights. Hosted SaaS (RENT) and ordinary BUY orders never do.
+    if (order.type !== 'BUY_SOURCE') {
+      throw new Error('Chỉ đơn hàng có quyền SOURCE_TEMPLATE_LICENSE mới được tải mã nguồn. Gói SaaS chỉ quản trị trực tiếp trên CMS.');
+    }
+    if (!order.template?.priceBuySource) {
+      throw new Error('Template này chưa có gói mã nguồn được phát hành.');
     }
 
     // 4. Chỉ cho phép khi đơn hàng đã hoàn tất duyệt (COMPLETED)
@@ -127,12 +129,14 @@ export class ExportJobService {
 
       logger.info(`[ExportJobService] Bắt đầu chạy tiến trình đóng gói Single-Tenant cho Job ${jobId}`);
 
-      const templateSlug = order.template?.slug || order.templateId || 'bds-01';
+      const templateSlug = order.template?.slug;
+      if (!templateSlug) {
+        throw new Error('SOURCE_TEMPLATE_MISSING: đơn hàng không có template hợp lệ để đóng gói.');
+      }
 
-      const exportResult = await SingleTenantExporterService.generateSingleTenantZip({
-        orderId: order.id,
+      const exportResult = await TemplatePackagingService.generateStandalonePackage({
         orderNumber: order.orderNumber,
-        templateSlug,
+        slug: templateSlug,
         customerName: order.fullName,
         customerPhone: order.phone,
         customerEmail: order.email,
@@ -159,7 +163,7 @@ export class ExportJobService {
           downloadUrl,
           filePath: fullFilePath,
           fileName: exportResult.fileName,
-          fileSizeBytes: exportResult.fileSizeBytes,
+          fileSizeBytes: BigInt(exportResult.buffer.length),
           expiresAt,
         },
       });
@@ -191,9 +195,7 @@ export class ExportJobService {
     }
 
     if (currentUser.role !== 'SUPER_ADMIN') {
-      const isOwner = (currentUser.userId && order.userId === currentUser.userId) || 
-                      (currentUser.email && order.email === currentUser.email);
-      if (!isOwner) {
+      if (!currentUser.userId || order.userId !== currentUser.userId) {
         throw new Error('Bạn không có quyền truy cập thông tin này.');
       }
     }
@@ -246,7 +248,7 @@ export class ExportJobService {
   /**
    * Tải file ZIP qua Signed Token an toàn
    */
-  public static async getDownloadFileByToken(token: string) {
+  public static async getDownloadFileByToken(token: string, currentUser: { userId?: string; role?: string }) {
     if (!token || token.length < 16) {
       throw new Error('Token tải mã nguồn không hợp lệ.');
     }
@@ -257,6 +259,9 @@ export class ExportJobService {
 
     if (!job) {
       throw new Error('Liên kết tải mã nguồn không tồn tại hoặc đã bị xóa.');
+    }
+    if (currentUser.role !== 'SUPER_ADMIN' && (!currentUser.userId || job.userId !== currentUser.userId)) {
+      throw new Error('Bạn không có quyền tải gói mã nguồn này.');
     }
 
     if (job.status !== 'READY' || !job.filePath) {

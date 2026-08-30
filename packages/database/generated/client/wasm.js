@@ -181,6 +181,10 @@ exports.Prisma.TemplateScalarFieldEnum = {
   priceRentMonthly: 'priceRentMonthly',
   priceRentYearly: 'priceRentYearly',
   priceBuySource: 'priceBuySource',
+  productType: 'productType',
+  category: 'category',
+  salePrice: 'salePrice',
+  supportedCmsModules: 'supportedCmsModules',
   isActive: 'isActive',
   sortOrder: 'sortOrder',
   deletedAt: 'deletedAt',
@@ -209,12 +213,18 @@ exports.Prisma.OrderScalarFieldEnum = {
   note: 'note',
   subdomain: 'subdomain',
   type: 'type',
+  productType: 'productType',
+  purchaseType: 'purchaseType',
+  paymentStatus: 'paymentStatus',
+  fulfillmentStatus: 'fulfillmentStatus',
   status: 'status',
   templateId: 'templateId',
   userId: 'userId',
   tenantId: 'tenantId',
   plan: 'plan',
   amount: 'amount',
+  productSnapshot: 'productSnapshot',
+  idempotencyKey: 'idempotencyKey',
   paidAt: 'paidAt',
   billImageUrl: 'billImageUrl',
   transactionCode: 'transactionCode',
@@ -443,6 +453,15 @@ exports.Prisma.ContactFormSubmissionScalarFieldEnum = {
   phone: 'phone',
   message: 'message',
   source: 'source',
+  formId: 'formId',
+  sourcePage: 'sourcePage',
+  sourceUrl: 'sourceUrl',
+  projectId: 'projectId',
+  utmSource: 'utmSource',
+  utmMedium: 'utmMedium',
+  utmCampaign: 'utmCampaign',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
   isRead: 'isRead',
   readAt: 'readAt',
   createdAt: 'createdAt'
@@ -887,6 +906,33 @@ exports.UserRole = exports.$Enums.UserRole = {
   STAFF: 'STAFF',
   CUSTOMER: 'CUSTOMER',
   GUEST: 'GUEST'
+};
+
+exports.ProductType = exports.$Enums.ProductType = {
+  WEBSITE_TEMPLATE: 'WEBSITE_TEMPLATE',
+  LANDING_PAGE: 'LANDING_PAGE'
+};
+
+exports.PurchaseType = exports.$Enums.PurchaseType = {
+  SAAS: 'SAAS',
+  SOURCE_TEMPLATE: 'SOURCE_TEMPLATE',
+  FULL_PLATFORM: 'FULL_PLATFORM'
+};
+
+exports.PaymentStatus = exports.$Enums.PaymentStatus = {
+  PENDING_PAYMENT: 'PENDING_PAYMENT',
+  WAITING_CONFIRMATION: 'WAITING_CONFIRMATION',
+  PAID: 'PAID',
+  REJECTED: 'REJECTED',
+  FAILED: 'FAILED'
+};
+
+exports.FulfillmentStatus = exports.$Enums.FulfillmentStatus = {
+  NOT_REQUIRED: 'NOT_REQUIRED',
+  PENDING: 'PENDING',
+  PROVISIONING: 'PROVISIONING',
+  ACTIVE: 'ACTIVE',
+  FAILED: 'FAILED'
 };
 
 exports.OrderStatus = exports.$Enums.OrderStatus = {

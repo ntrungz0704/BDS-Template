@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import Head from 'next/head';
 import Link from 'next/link';
 import { 
@@ -8,28 +9,54 @@ import {
 } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { LANDING_TEMPLATES } from '../data/templatesData';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/router';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 export default function LandingPagesPage() {
   const router = useRouter();
   const { addToCart, showToast } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [landingTemplates, setLandingTemplates] = useState<any[]>([]);
+  const [isCatalogLoading, setIsCatalogLoading] = useState(true);
+  const [catalogError, setCatalogError] = useState<string | null>(null);
 
-  const landingTemplates = LANDING_TEMPLATES;
+  useEffect(() => {
+    let active = true;
+    const loadCatalog = async () => {
+      setIsCatalogLoading(true);
+      setCatalogError(null);
+      try {
+        const response = await axios.get(`${API_URL}/api/marketplace/templates`, {
+          params: { limit: 100, productType: 'LANDING_PAGE' },
+          timeout: 8000,
+        });
+        if (!response.data?.success || !Array.isArray(response.data?.data)) {
+          throw new Error('Danh mục không hợp lệ.');
+        }
+        if (active) setLandingTemplates(response.data.data);
+      } catch {
+        if (active) setCatalogError('Không thể tải danh mục landing page từ hệ thống. Vui lòng thử lại sau.');
+      } finally {
+        if (active) setIsCatalogLoading(false);
+      }
+    };
+    loadCatalog();
+    return () => { active = false; };
+  }, []);
 
   const categories = [
     { id: 'all', label: 'Tất Cả Mẫu' },
-    { id: 'lp-01', label: 'Bán Căn Hộ Chung Cư' },
-    { id: 'lp-02', label: 'Biệt Thự & Nghỉ Dưỡng VIP' },
-    { id: 'lp-03', label: 'Đất Nền Phân Lô F0' },
-    { id: 'lp-04', label: 'Sale Môi Giới BĐS Cá Nhân' },
+    ...Array.from(new Set(landingTemplates.map((template) => template.category).filter(Boolean))).map((id: string) => ({
+      id,
+      label: id.replace(/_/g, ' '),
+    })),
   ];
 
   const filteredTemplates = selectedCategory === 'all' 
     ? landingTemplates 
-    : landingTemplates.filter(t => t.id === selectedCategory);
+    : landingTemplates.filter(t => t.category === selectedCategory);
 
   const handleBuyTemplate = (tpl: any) => {
     addToCart(tpl, 'BUY');
@@ -120,8 +147,21 @@ export default function LandingPagesPage() {
 
         {/* 3. TEMPLATES GRID */}
         <section className="pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+          {isCatalogLoading ? (
+            <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 text-sm text-slate-600">Đang tải danh mục landing page…</div>
+          ) : catalogError ? (
+            <div className="text-center py-16 bg-white rounded-3xl border border-slate-200">
+              <p className="text-base font-bold text-slate-800 mb-1">Không thể tải danh mục</p>
+              <p className="text-xs text-slate-500">{catalogError}</p>
+            </div>
+          ) : filteredTemplates.length === 0 ? (
+            <div className="text-center py-16 bg-white rounded-3xl border border-slate-200">
+              <p className="text-base font-bold text-slate-800 mb-1">Chưa có landing page phù hợp</p>
+              <button onClick={() => setSelectedCategory('all')} className="mt-4 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold">Xem tất cả</button>
+            </div>
+          ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {filteredTemplates.map((tpl, index) => (
+            {filteredTemplates.map((tpl) => (
               <div
                 key={tpl.id}
                 className="bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col group"
@@ -170,7 +210,7 @@ export default function LandingPagesPage() {
                         Đặc điểm nổi bật dành cho Sale:
                       </span>
                       <ul className="space-y-1.5 text-xs text-slate-700">
-                        {tpl.features.slice(0, 4).map((feat, i) => (
+                      {(tpl.features || []).slice(0, 4).map((feat: string, i: number) => (
                           <li key={i} className="flex items-start gap-2">
                             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                             <span>{feat}</span>
@@ -186,7 +226,7 @@ export default function LandingPagesPage() {
                       <span className="text-[10px] text-slate-400 uppercase font-bold block">Giá sở hữu trọn đời:</span>
                       <div className="flex items-baseline gap-1.5">
                         <span className="text-xl font-black text-blue-600 font-mono">
-                          {tpl.priceBuy.toLocaleString('vi-VN')} đ
+                          {(tpl.salePrice ?? tpl.priceBuy ?? 0).toLocaleString('vi-VN')} đ
                         </span>
                         <span className="text-xs text-slate-400 line-through font-mono">
                           990.000 đ
@@ -217,6 +257,7 @@ export default function LandingPagesPage() {
               </div>
             ))}
           </div>
+          )}
         </section>
 
         {/* 4. COMPARISON: LANDING PAGE VS MULTI-PAGE WEBSITE */}

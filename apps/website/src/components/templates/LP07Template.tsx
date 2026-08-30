@@ -792,11 +792,11 @@ export default function LP07Template({
               <div className="space-y-3 text-xs text-slate-200">
                 <div className="p-3 bg-white/10 border border-white/20">
                   <p className="font-bold text-amber-300">Báo Thanh Niên:</p>
-                  <p className="text-[11px] text-slate-300">"Cao tốc Dầu Giây - Phan Thiết đúng tiến độ, khu vực nào hưởng lợi lớn nhất từ thị trường BĐS biển?"</p>
+                  <p className="text-[11px] text-slate-300">&ldquo;Cao tốc Dầu Giây - Phan Thiết đúng tiến độ, khu vực nào hưởng lợi lớn nhất từ thị trường BĐS biển?&rdquo;</p>
                 </div>
                 <div className="p-3 bg-white/10 border border-white/20">
                   <p className="font-bold text-amber-300">Báo Người Lao Động:</p>
-                  <p className="text-[11px] text-slate-300">"Thiếu tướng Nguyễn Văn Đức khẳng định tiến độ giải ngân xây dựng Cảng Hàng Không Phan Thiết."</p>
+                  <p className="text-[11px] text-slate-300">&ldquo;Thiếu tướng Nguyễn Văn Đức khẳng định tiến độ giải ngân xây dựng Cảng Hàng Không Phan Thiết.&rdquo;</p>
                 </div>
               </div>
             </div>
@@ -890,7 +890,7 @@ export default function LP07Template({
               NHẬN TƯ VẤN CHUYÊN SÂU
             </h3>
             <p className="text-sm font-bold text-white uppercase tracking-wider">
-              "Chiết Khấu Đến 1.6 Tỷ" GTCH trong Tháng 11/2026
+              &ldquo;Chiết Khấu Đến 1.6 Tỷ&rdquo; GTCH trong Tháng 11/2026
             </p>
             <p className="text-xs text-slate-300">
               NovaWorld Phan Thiết chỉ liên hệ và tư vấn theo thời gian đã đăng ký để đảm bảo quý khách sẽ không bị làm phiền.

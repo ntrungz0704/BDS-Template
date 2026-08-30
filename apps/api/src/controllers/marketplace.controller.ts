@@ -23,6 +23,10 @@ const createOrderSchema = z.object({
   note: z.string().optional(),
 });
 
+function resolvePurchaseType(type: 'BUY' | 'RENT' | 'BUY_SOURCE') {
+  return type === 'BUY_SOURCE' ? 'SOURCE_TEMPLATE' : 'SAAS';
+}
+
 const uploadPaymentSchema = z.object({
   transactionCode: z.string().min(3, 'Mã giao dịch tối thiểu 3 ký tự.'),
   billImageUrl: z.string().url('URL ảnh hóa đơn không hợp lệ.'),
@@ -37,21 +41,23 @@ const contactSubmissionSchema = z.object({
   message: z.string().optional(),
 });
 
-// Legacy development catalog
-const LEGACY_MOCK_TEMPLATES = [
-  { id: 'mock-1', name: 'Luxury Gold Style', slug: 'luxury-gold', shortDescription: 'Giao diện sang trọng phong cách vàng cao cấp', description: 'Website BĐS cao cấp với tông màu vàng sang trọng, phù hợp cho dự án hạng A.', thumbnail: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'luxury', tags: ['luxury', 'gold', 'premium'], isActive: true, sortOrder: 1, isFeatured: true, templateConfig: null },
-  { id: 'mock-2', name: 'Minimal White Style', slug: 'minimal-white', shortDescription: 'Thiết kế tối giản, hiện đại, sạch sẽ', description: 'Website BĐS với thiết kế tối giản, trắng tinh tế, phù hợp thương hiệu hiện đại.', thumbnail: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600', priceBuy: 499000, priceBuySource: 799000, priceRentMonthly: 199000, category: 'minimal', tags: ['minimal', 'white', 'modern'], isActive: true, sortOrder: 2, isFeatured: true, templateConfig: null },
-];
-
 export async function getTemplates(req: Request, res: Response, next: NextFunction) {
   try {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 16;
-    const search = req.query.q as string || '';
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 16));
+    const search = (req.query.q as string || '').trim();
+    const productType = req.query.productType as string | undefined;
+    const category = (req.query.category as string | undefined)?.trim();
+    const sort = req.query.sort as string | undefined;
+    if (productType && productType !== 'WEBSITE_TEMPLATE' && productType !== 'LANDING_PAGE') {
+      return res.status(400).json({ success: false, error: { code: 'INVALID_PRODUCT_TYPE', message: 'productType không hợp lệ.' } });
+    }
     const skip = (page - 1) * limit;
 
     const where: any = {
       isActive: true,
+      ...(productType ? { productType } : {}),
+      ...(category ? { category } : {}),
       ...(search && {
         OR: [
           { name: { contains: search, mode: 'insensitive' } },
@@ -61,7 +67,16 @@ export async function getTemplates(req: Request, res: Response, next: NextFuncti
     };
 
     const [templates, total] = await prisma.$transaction([
-      prisma.template.findMany({ where, skip, take: limit, orderBy: { sortOrder: 'asc' } }),
+      prisma.template.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: sort === 'price-asc'
+          ? [{ salePrice: 'asc' }, { priceBuy: 'asc' }, { sortOrder: 'asc' }]
+          : sort === 'price-desc'
+            ? [{ salePrice: 'desc' }, { priceBuy: 'desc' }, { sortOrder: 'asc' }]
+            : { sortOrder: 'asc' },
+      }),
       prisma.template.count({ where }),
     ]);
 
@@ -144,6 +159,10 @@ export async function checkSubdomain(req: Request, res: Response, next: NextFunc
 export async function createOrder(req: Request, res: Response, next: NextFunction) {
   try {
     const data = createOrderSchema.parse(req.body);
+    const idempotencyKey = req.get('idempotency-key')?.trim() || null;
+    if (idempotencyKey && (idempotencyKey.length < 16 || idempotencyKey.length > 128)) {
+      return res.status(400).json({ success: false, error: { code: 'INVALID_IDEMPOTENCY_KEY', message: 'Idempotency-Key không hợp lệ.' } });
+    }
     const authenticatedUserId = req.user?.userId || null;
     let orderEmail = data.email.trim().toLowerCase();
 
@@ -231,6 +250,16 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
     const randomHex = crypto.randomBytes(2).toString('hex').toUpperCase();
     const orderNumber = `ORD-${dateStr}-${randomHex}`;
 
+    if (idempotencyKey) {
+      const existing = await prisma.order.findUnique({ where: { idempotencyKey } });
+      if (existing) {
+        if (existing.userId !== authenticatedUserId || existing.templateId !== template.id || existing.type !== data.type) {
+          return res.status(409).json({ success: false, error: { code: 'IDEMPOTENCY_KEY_REUSED', message: 'Idempotency-Key đã được dùng cho yêu cầu khác.' } });
+        }
+        return res.status(200).json({ success: true, data: existing, meta: { idempotentReplay: true } });
+      }
+    }
+
     const order = await prisma.order.create({
       data: {
         orderNumber,
@@ -239,8 +268,22 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
         phone: data.phone,
         type: data.type,
         status: 'PENDING',
+        productType: template.productType,
+        purchaseType: resolvePurchaseType(data.type),
+        paymentStatus: 'PENDING_PAYMENT',
+        fulfillmentStatus: data.type === 'BUY_SOURCE' ? 'NOT_REQUIRED' : 'PENDING',
         templateId: template.id,
         amount,
+        productSnapshot: {
+          templateId: template.id,
+          slug: template.slug,
+          name: template.name,
+          productType: template.productType,
+          purchaseType: resolvePurchaseType(data.type),
+          amount,
+          priceAtPurchase: amount,
+        },
+        idempotencyKey,
         subdomain: normalizedSubdomain || null,
         note: data.note,
         userId: authenticatedUserId,
@@ -339,6 +382,7 @@ export async function uploadPaymentProof(req: Request, res: Response, next: Next
       where: { id, version: order.version },
       data: {
         status: 'WAITING_CONFIRM',
+        paymentStatus: 'WAITING_CONFIRMATION',
         billImageUrl: data.billImageUrl,
         transactionCode: data.transactionCode,
         version: { increment: 1 },
@@ -376,12 +420,7 @@ export async function getMarketplaceStats(req: Request, res: Response, next: Nex
 
     res.status(200).json({
       success: true,
-      data: {
-        totalCustomers: 500 + totalTenants,
-        totalWebsitesCreated: 1200 + completedOrders,
-        totalTemplates: Math.max(16, totalTemplates),
-        averageRating: 4.9,
-      },
+      data: { totalCustomers: totalTenants, totalWebsitesCreated: completedOrders, totalTemplates, averageRating: null },
     });
   } catch (error) {
     next(error);
@@ -408,20 +447,26 @@ export async function downloadTemplateSource(req: Request, res: Response, next: 
       },
     });
 
-    const targetSlug = tpl?.slug || cleanSlug;
-    const userEmail = req.user?.email;
+    if (!tpl) {
+      return res.status(404).json({ success: false, error: { code: 'TEMPLATE_NOT_FOUND', message: 'Không tìm thấy template.' } });
+    }
+
+    const targetSlug = tpl.slug;
+    const userEmail = req.user?.email?.trim().toLowerCase();
 
     const orderNumberQuery = (req.query.orderNumber as string || '').trim();
     const cleanOrdNo = orderNumberQuery ? orderNumberQuery.replace(/\s+/g, '-') : '';
 
+    // A source entitlement is never inferred from an unrelated completed
+    // purchase. An optional order number can only narrow the current user's
+    // own entitlement; it cannot select someone else's order.
     const paidOrder = await prisma.order.findFirst({
       where: {
-        OR: [
-          ...(userId ? [{ userId }] : []),
-          ...(userEmail ? [{ email: userEmail }] : []),
-          ...(cleanOrdNo ? [{ orderNumber: cleanOrdNo }, { orderNumber: orderNumberQuery }] : []),
-        ],
+        userId,
+        templateId: tpl.id,
+        type: 'BUY_SOURCE',
         status: 'COMPLETED',
+        ...(cleanOrdNo ? { orderNumber: { in: [cleanOrdNo, orderNumberQuery] } } : {}),
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -562,6 +607,10 @@ export async function getOrderStatus(req: Request, res: Response, next: NextFunc
     const cleanOrd = decodeURIComponent(rawOrderNo).trim().replace(/\s+/g, '-');
     const userId = req.user?.userId;
 
+    if (!userId && req.user?.role !== 'SUPER_ADMIN') {
+      return res.status(401).json({ success: false, error: { code: 'UNAUTHENTICATED', message: 'Vui lòng đăng nhập để xem trạng thái đơn hàng.' } });
+    }
+
     let order = await prisma.order.findFirst({
       where: {
         OR: [
@@ -588,8 +637,10 @@ export async function getOrderStatus(req: Request, res: Response, next: NextFunc
       logger.info(`[OrderRepair] Đã gắn lại đơn ${order.orderNumber} cho tài khoản ${req.user?.email}`);
     }
 
-    // Only block if an authenticated user explicitly tries to inspect another user's order
-    if (userId && order.userId && order.userId !== userId && req.user?.role !== 'SUPER_ADMIN') {
+    // Orders must always be owned by the authenticated user. A legacy order
+    // can only be repaired after an exact email match; every other order is
+    // indistinguishable from a missing one.
+    if (req.user?.role !== 'SUPER_ADMIN' && order.userId !== userId) {
       return res.status(404).json({ success: false, error: { code: 'ORDER_NOT_FOUND', message: 'Không tìm thấy đơn hàng' } });
     }
 
@@ -828,7 +879,7 @@ export async function requestExportPackage(req: Request, res: Response, next: Ne
     const userEmail = req.user?.email;
     const userRole = req.user?.role;
 
-    if (!userId && !userEmail) {
+    if (!userId) {
       return res.status(401).json({
         success: false,
         error: { code: 'UNAUTHENTICATED', message: 'Vui lòng đăng nhập để thực hiện.' },
@@ -860,7 +911,7 @@ export async function getExportPackageStatus(req: Request, res: Response, next: 
     const userEmail = req.user?.email;
     const userRole = req.user?.role;
 
-    if (!userId && !userEmail) {
+    if (!userId) {
       return res.status(401).json({
         success: false,
         error: { code: 'UNAUTHENTICATED', message: 'Vui lòng đăng nhập.' },
@@ -888,7 +939,11 @@ export async function getExportPackageStatus(req: Request, res: Response, next: 
 export async function downloadExportByToken(req: Request, res: Response, next: NextFunction) {
   try {
     const { token } = req.params;
-    const fileInfo = await ExportJobService.getDownloadFileByToken(token);
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, error: { code: 'UNAUTHENTICATED', message: 'Vui lòng đăng nhập.' } });
+    }
+    const fileInfo = await ExportJobService.getDownloadFileByToken(token, { userId, role: req.user?.role });
 
     res.setHeader('Content-Type', 'application/zip');
     res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileInfo.fileName)}"`);
@@ -901,4 +956,3 @@ export async function downloadExportByToken(req: Request, res: Response, next: N
     });
   }
 }
-

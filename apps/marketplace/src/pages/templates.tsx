@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 import DetailsModal from '../components/DetailsModal';
-import { WEBSITE_TEMPLATES, Template } from '../data/templatesData';
-import { DESIGN_COLLECTIONS } from '../data/collectionsData';
 import { Search, Sparkles, CheckCircle2, SlidersHorizontal, Grid } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 export default function TemplatesPage() {
   const router = useRouter();
   const { addToCart } = useAuth();
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | any | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<any | null>(null);
+  const [templates, setTemplates] = useState<any[]>([]);
+  const [catalogError, setCatalogError] = useState<string | null>(null);
+  const [isCatalogLoading, setIsCatalogLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc'>('featured');
@@ -28,59 +32,54 @@ export default function TemplatesPage() {
     }
   }, [router.isReady, router.query]);
 
+  useEffect(() => {
+    let active = true;
+    const loadCatalog = async () => {
+      setIsCatalogLoading(true);
+      setCatalogError(null);
+      try {
+        const response = await axios.get(`${API_URL}/api/marketplace/templates`, {
+          params: { limit: 100, productType: 'WEBSITE_TEMPLATE' },
+          timeout: 8000,
+        });
+        if (!response.data?.success || !Array.isArray(response.data?.data)) throw new Error('Danh mục không hợp lệ.');
+        if (active) setTemplates(response.data.data);
+      } catch (error) {
+        if (active) setCatalogError('Không thể tải danh mục từ hệ thống. Vui lòng thử lại sau.');
+      } finally {
+        if (active) setIsCatalogLoading(false);
+      }
+    };
+    loadCatalog();
+    return () => { active = false; };
+  }, []);
+
   const categories = [
-    { id: 'all', label: 'Tất cả', count: WEBSITE_TEMPLATES.length },
-    { id: 'PORTAL_SAN', label: 'Cổng Tin & Sàn BĐS', count: 5 },
-    { id: 'CHUNG_CU', label: 'Căn Hộ & Chung Cư', count: 3 },
-    { id: 'BIET_THU', label: 'Biệt Thự & Villa', count: 4 },
-    { id: 'NGHI_DUONG', label: 'Nghỉ Dưỡng & Biển', count: 3 },
-    { id: 'CA_NHAN', label: 'Nhà Phố & Môi Giới', count: 4 },
-    { id: 'DAT_THUONG_MAI', label: 'Đất Nền & Đầu Tư', count: 4 },
-    { id: 'KCN_NHA_XUONG', label: 'KCN & Nhà Xưởng', count: 1 },
+    { id: 'all', label: 'Tất cả', count: templates.length },
+    ...Array.from(new Set(templates.map((template) => template.category).filter(Boolean))).map((id: string) => ({
+      id,
+      label: id.replace(/_/g, ' '),
+      count: templates.filter((template) => template.category === id).length,
+    })),
   ];
 
-  const filteredTemplates = WEBSITE_TEMPLATES.filter((tpl) => {
-    const matchSearch = tpl.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        tpl.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        tpl.shortDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        tpl.collectionName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        tpl.slug.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredTemplates = templates.filter((tpl) => {
+    const haystack = [tpl.name, tpl.description, tpl.shortDescription, tpl.category, tpl.slug]
+      .filter(Boolean).join(' ').toLocaleLowerCase('vi-VN');
+    const matchSearch = haystack.includes(searchQuery.toLocaleLowerCase('vi-VN'));
     if (!matchSearch) return false;
-
-    if (activeCategory === 'all') return true;
-    if (activeCategory === 'PORTAL_SAN') {
-      return ['portal-01', 'portal-02', 'portal-04', 'portal-05', 'portal-18', 'bds-17', 'bds-18', 'bds-19', 'bds-21', 'bds-24'].includes(tpl.slug);
-    }
-    if (activeCategory === 'CHUNG_CU') {
-      return ['portal-12', 'portal-15', 'portal-21', 'bds-02', 'bds-05', 'bds-20'].includes(tpl.slug);
-    }
-    if (activeCategory === 'BIET_THU') {
-      return ['portal-03', 'portal-11', 'portal-23', 'portal-24', 'bds-01', 'bds-07', 'bds-09', 'bds-12'].includes(tpl.slug);
-    }
-    if (activeCategory === 'NGHI_DUONG') {
-      return ['portal-07', 'portal-19', 'portal-20', 'bds-04', 'bds-08', 'bds-22'].includes(tpl.slug);
-    }
-    if (activeCategory === 'CA_NHAN') {
-      return ['portal-09', 'portal-16', 'portal-17', 'portal-22', 'bds-11', 'bds-13', 'bds-16', 'bds-23'].includes(tpl.slug);
-    }
-    if (activeCategory === 'DAT_THUONG_MAI') {
-      return ['portal-06', 'portal-10', 'portal-13', 'portal-14', 'bds-03', 'bds-10', 'bds-14', 'bds-15'].includes(tpl.slug);
-    }
-    if (activeCategory === 'KCN_NHA_XUONG') {
-      return ['portal-08', 'bds-06'].includes(tpl.slug);
-    }
-    return true;
+    return activeCategory === 'all' || tpl.category === activeCategory;
   }).sort((a, b) => {
-    if (sortBy === 'price-asc') return a.priceBuy - b.priceBuy;
-    if (sortBy === 'price-desc') return b.priceBuy - a.priceBuy;
+    if (sortBy === 'price-asc') return (a.salePrice ?? a.priceBuy ?? 0) - (b.salePrice ?? b.priceBuy ?? 0);
+    if (sortBy === 'price-desc') return (b.salePrice ?? b.priceBuy ?? 0) - (a.salePrice ?? a.priceBuy ?? 0);
     return a.sortOrder - b.sortOrder;
   });
 
   return (
     <>
       <Head>
-        <title>Bộ Sưu Tập {WEBSITE_TEMPLATES.length} Mẫu Website Bất Động Sản Việt Nam | TEMPLATES BDS</title>
-        <meta name="description" content={`${WEBSITE_TEMPLATES.length} mẫu website BĐS Việt Nam: sàn giao dịch, căn hộ, đất nền, villa, nghỉ dưỡng, công nghiệp và môi giới cá nhân.`} />
+        <title>Bộ Sưu Tập {templates.length} Mẫu Website Bất Động Sản Việt Nam | TEMPLATES BDS</title>
+        <meta name="description" content={`${templates.length} mẫu website BĐS đang được phát hành.`} />
       </Head>
 
       <Header 
@@ -97,7 +96,7 @@ export default function TemplatesPage() {
               <Sparkles className="w-3.5 h-3.5 text-blue-600" /> Kho Giao Diện BĐS Độc Quyền
             </span>
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-slate-900 mb-3">
-              {WEBSITE_TEMPLATES.length} Mẫu Website <span className="text-[#2563EB]">Bất Động Sản Việt Nam</span>
+              {templates.length} Mẫu Website <span className="text-[#2563EB]">Bất Động Sản Việt Nam</span>
             </h1>
             <p className="text-slate-600 max-w-2xl mx-auto text-xs sm:text-sm leading-relaxed font-medium">
               Mỗi mẫu được thiết kế riêng biệt cho từng phân khúc BĐS, tích hợp sẵn CMS quản trị tin đăng, form thu thập khách hàng (Leads) và tối ưu chuyển đổi cao.
@@ -174,7 +173,14 @@ export default function TemplatesPage() {
           </div>
 
           {/* Templates Display */}
-          {filteredTemplates.length === 0 ? (
+          {isCatalogLoading ? (
+            <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm text-sm text-slate-600">Đang tải danh mục sản phẩm…</div>
+          ) : catalogError ? (
+            <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm">
+              <p className="text-base font-bold text-slate-800 mb-1">Không thể tải danh mục</p>
+              <p className="text-xs text-slate-500">{catalogError}</p>
+            </div>
+          ) : filteredTemplates.length === 0 ? (
             <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm">
               <p className="text-base font-bold text-slate-800 mb-1">Không tìm thấy mẫu website nào phù hợp</p>
               <p className="text-xs text-slate-500 mb-4">Hãy thử từ khóa khác hoặc chọn tất cả phân khúc</p>
@@ -182,7 +188,7 @@ export default function TemplatesPage() {
                 onClick={() => { setSearchQuery(''); setActiveCategory('all'); }}
                 className="px-5 py-2 bg-[#2563EB] text-white rounded-xl text-xs font-bold hover:bg-blue-600 transition-colors shadow-sm"
               >
-                Xem toàn bộ {WEBSITE_TEMPLATES.length} mẫu
+                Xem toàn bộ {templates.length} mẫu
               </button>
             </div>
           ) : (
@@ -207,7 +213,7 @@ export default function TemplatesPage() {
                 Được tích hợp sẵn công nghệ bán hàng BĐS hàng đầu
               </h2>
               <p className="text-blue-100 text-sm mb-8 leading-relaxed font-medium">
-                Tất cả {WEBSITE_TEMPLATES.length} mẫu website của PlatformBDS đều đi kèm bộ CMS quản lý tin đăng độc quyền, hỗ trợ cập nhật giá, giỏ hàng, thông báo Zalo OA tự động khi có khách đăng ký.
+                Tất cả {templates.length} mẫu website đang phát hành đều đi kèm CMS theo cấu hình sản phẩm.
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-left">
                 {[

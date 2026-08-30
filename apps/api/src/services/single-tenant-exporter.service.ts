@@ -1192,7 +1192,7 @@ Nếu Quý Khách muốn sử dụng phiên bản PHP truyền thống, vui lòn
     zip.addFile('HUONG-DAN-CAI-DAT-XAMPP-CPANEL.md', Buffer.from(phpGuideContent, 'utf-8'));
 
     // 18. README.md — HƯỚNG DẪN TỔNG THỂ TIẾNG VIỆT
-    const readmeContent = `# HƯỚNG DẪN SỬ DỤNG TRỌN BỘ MÃ NGUỒN BẤT ĐỘNG SẢN
+    const readmeContent = `# HƯỚNG DẪN CÀI ĐẶT & TRIỂN KHAI MÃ NGUỒN BẤT ĐỘNG SẢN
 
 Xin chúc mừng Quý Khách đã sở hữu trọn bộ mã nguồn **Website & Hệ Thống Quản Trị Bất Động Sản** (Đơn hàng: **#${orderNumber}**).
 

@@ -57,7 +57,6 @@ const themeSchema = z.object({
   darkMode: z.boolean().optional(),
   buttonStyle: z.enum(['rounded', 'square', 'pill']).optional(),
   animationsEnabled: z.boolean().optional(),
-  customCss: z.string().max(50000).optional().nullable(),
 });
 
 const pageCreateSchema = z.object({

@@ -27,6 +27,35 @@ enum OrderStatus {
   REJECTED
 }
 
+/// Immutable commercial classification. A product may be fulfilled as hosted
+/// SaaS or as a separately licensed source package; the two must not blend.
+enum ProductType {
+  WEBSITE_TEMPLATE
+  LANDING_PAGE
+}
+
+enum PurchaseType {
+  SAAS
+  SOURCE_TEMPLATE
+  FULL_PLATFORM
+}
+
+enum PaymentStatus {
+  PENDING_PAYMENT
+  WAITING_CONFIRMATION
+  PAID
+  REJECTED
+  FAILED
+}
+
+enum FulfillmentStatus {
+  NOT_REQUIRED
+  PENDING
+  PROVISIONING
+  ACTIVE
+  FAILED
+}
+
 enum ProjectStatus {
   COMING_SOON
   SELLING
@@ -153,6 +182,10 @@ model Template {
   priceRentMonthly Int?              @map("price_rent_monthly")
   priceRentYearly  Int?              @map("price_rent_yearly")
   priceBuySource   Int?              @map("price_buy_source")
+  productType      ProductType       @default(WEBSITE_TEMPLATE) @map("product_type")
+  category         String?           @map("category")
+  salePrice        Int?              @map("sale_price")
+  supportedCmsModules Json?          @default("[]") @map("supported_cms_modules")
   isActive         Boolean           @default(true) @map("is_active")
   sortOrder        Int               @default(0) @map("sort_order")
   deletedAt        DateTime?         @map("deleted_at")
@@ -172,6 +205,7 @@ model Template {
 
   @@index([slug])
   @@index([isActive])
+  @@index([productType, category])
   @@index([sortOrder])
   @@map("templates")
 }
@@ -198,6 +232,10 @@ model Order {
   note            String?
   subdomain       String?     @map("subdomain") // Đăng ký subdomain cho đơn thuê
   type            String // BUY, RENT
+  productType     ProductType @default(WEBSITE_TEMPLATE) @map("product_type")
+  purchaseType    PurchaseType @default(SAAS) @map("purchase_type")
+  paymentStatus   PaymentStatus @default(PENDING_PAYMENT) @map("payment_status")
+  fulfillmentStatus FulfillmentStatus @default(PENDING) @map("fulfillment_status")
   status          OrderStatus @default(PENDING)
   templateId      String      @map("template_id")
   template        Template    @relation(fields: [templateId], references: [id], onDelete: Restrict)
@@ -205,6 +243,8 @@ model Order {
   tenantId        String?     @map("tenant_id")
   plan            String? // BASIC, PRO, PREMIUM
   amount          Int?
+  productSnapshot Json?       @map("product_snapshot")
+  idempotencyKey  String?     @unique @map("idempotency_key")
   paidAt          DateTime?   @map("paid_at")
   billImageUrl    String?     @map("bill_image_url")
   transactionCode String?     @unique @map("transaction_code")
@@ -511,6 +551,15 @@ model ContactFormSubmission {
   phone     String
   message   String
   source    String? // e.g. "project_detail_grand_riverside"
+  formId    String? @map("form_id")
+  sourcePage String? @map("source_page")
+  sourceUrl String? @map("source_url")
+  projectId String? @map("project_id")
+  utmSource String? @map("utm_source")
+  utmMedium String? @map("utm_medium")
+  utmCampaign String? @map("utm_campaign")
+  ipAddress String? @map("ip_address")
+  userAgent String? @map("user_agent")
   isRead    Boolean   @default(false) @map("is_read")
   readAt    DateTime? @map("read_at")
   createdAt DateTime  @default(now()) @map("created_at")

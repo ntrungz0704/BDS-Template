@@ -30,7 +30,7 @@ export default function TenantHome({ company, theme, pageContent, projects, post
   React.useEffect(() => {
     if (typeof globalThis !== 'undefined') {
       (globalThis as any).submitContactForm = async (formData: any) => {
-        const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
         const response = await fetch(`${API_URL}/api/website/${tenantSlug}/contact`, {
           method: 'POST',
           headers: {
@@ -120,8 +120,11 @@ export default function TenantHome({ company, theme, pageContent, projects, post
     );
   }
 
-  // Đọc template slug thực tế từ thông tin tenant trả về từ API hoặc fallback
-  const templateSlug = company?.tenant?.template?.slug || company?.tenant?.templateId || company?.templateSlug || 'luxury-gold';
+  // A tenant runtime may only render the template assigned to that tenant.
+  const templateSlug = company?.tenant?.template?.slug || company?.tenant?.templateId || company?.templateSlug;
+  if (!templateSlug) {
+    return <div className="grid min-h-screen place-items-center bg-slate-950 p-6 text-center text-slate-100">Website chưa được gán template hợp lệ.</div>;
+  }
 
   return (
     <>
@@ -157,14 +160,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   try {
-    const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
     const [compRes, themeRes, pageRes, projRes, postRes, statusRes] = await Promise.all([
       axios.get(`${API_URL}/api/website/${tenantSlug}/company-info`).catch(() => ({ data: { data: null } })),
       axios.get(`${API_URL}/api/website/${tenantSlug}/theme`).catch(() => ({ data: { data: null } })),
       axios.get(`${API_URL}/api/website/${tenantSlug}/pages/home`).catch(() => ({ data: { data: null } })),
       axios.get(`${API_URL}/api/website/${tenantSlug}/projects?limit=6`).catch(() => ({ data: { data: [] } })),
       axios.get(`${API_URL}/api/website/${tenantSlug}/posts?limit=3`).catch(() => ({ data: { data: [] } })),
-      axios.get(`${API_URL}/api/website/${tenantSlug}/status`).catch(() => ({ data: { data: { isAccessible: true } } })),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/status`).catch(() => ({ data: { data: null } })),
     ]);
 
     const defaultProjects = [
@@ -233,43 +236,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     ];
 
-    if (!compRes.data?.data) {
+    if (!compRes.data?.data || !themeRes.data?.data || !statusRes.data?.data) {
       return {
         props: {
-          company: {
-            name: 'AI Review BĐS — Hệ Thống Website Bất Động Sản Cao Cấp',
-            slogan: 'Nâng Tầm Vị Thế Doanh Nghiệp Bất Động Sản',
-            phone: '0983 312 219',
-            hotline: '0919 006 030',
-            email: 'contact@aireviewbds.com',
-            address: 'Tòa nhà Landmark 81, TP. Hồ Chí Minh',
-            workingHours: '8:00 - 18:00 (Thứ 2 - Thứ 7)',
-            aboutContent: 'Hệ thống nền tảng cung cấp giải pháp chuyển đổi số toàn diện cho doanh nghiệp và nhà môi giới bất động sản hàng đầu Việt Nam.',
-            logo: '',
-            tenant: {
-              id: 'showcase-tenant',
-              name: 'AI Review BĐS',
-              slug: 'luxury-gold',
-              template: {
-                id: 'template-luxury-gold',
-                slug: 'luxury-gold',
-                name: 'Luxury Gold Style',
-              },
-            },
-          },
-          theme: themeRes.data?.data || {
-            primaryColor: '#2563EB',
-            secondaryColor: '#1E293B',
-            accentColor: '#F59E0B',
-            fontHeading: 'Plus Jakarta Sans',
-            fontBody: 'Inter',
-          },
-          pageContent: pageRes.data?.data || null,
-          projects: (projRes.data?.data && projRes.data.data.length > 0) ? projRes.data.data : defaultProjects,
-          posts: (postRes.data?.data && postRes.data.data.length > 0) ? postRes.data.data : defaultPosts,
-          tenantSlug: tenantSlug || 'showcase',
+          company: null,
+          theme: null,
+          pageContent: null,
+          projects: [],
+          posts: [],
+          tenantSlug,
           initialPage,
-          tenantStatus: { isAccessible: true },
+          error: 'Không thể nạp cấu hình website tenant từ hệ thống.',
         },
       };
     }
@@ -277,13 +254,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       props: {
         company: compRes.data.data,
-        theme: themeRes.data?.data || null,
+        theme: themeRes.data.data,
         pageContent: pageRes.data?.data || null,
         projects: projRes.data?.data || [],
         posts: postRes.data?.data || [],
         tenantSlug,
         initialPage,
-        tenantStatus: statusRes.data?.data || { isAccessible: true },
+        tenantStatus: statusRes.data.data,
       },
     };
   } catch (error: any) {
