@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Maximize2, X } from 'lucide-react';
 
@@ -68,6 +69,11 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({
 
   const activeBorderClass = ringBorderClasses[themeColor] || ringBorderClasses.blue;
 
+  // Cấu hình linh hoạt cho số lượng ảnh (4, 6, 7, 8, 10+ ảnh)
+  const gridColsClass = total <= 4 
+    ? 'grid grid-cols-4 gap-2.5' 
+    : 'grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 max-h-44 overflow-y-auto p-1 border border-slate-100 rounded-lg bg-slate-50/50';
+
   return (
     <div 
       className="space-y-3 select-none w-full"
@@ -136,13 +142,13 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({
         </button>
       </div>
 
-      {/* 4 Thumbnails nhỏ bên dưới */}
-      <div className="grid grid-cols-4 gap-2.5">
+      {/* Thumbnails nhỏ bên dưới (Linh hoạt tự co giãn từ 4 đến 6, 7, 8, 10+ ảnh) */}
+      <div className={gridColsClass}>
         {galleryList.map((img, i) => (
           <div
             key={i}
             onClick={() => setActiveIdx(i)}
-            className={`h-20 rounded-lg overflow-hidden border-2 cursor-pointer transition relative group ${
+            className={`h-16 sm:h-20 rounded-lg overflow-hidden border-2 cursor-pointer transition relative group ${
               activeIdx === i ? `${activeBorderClass} scale-95 shadow-md` : 'border-slate-200 opacity-70 hover:opacity-100'
             }`}
           >
@@ -203,7 +209,7 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({
           </div>
 
           {/* Danh sách ảnh nhỏ trong Lightbox */}
-          <div className="w-full max-w-2xl flex justify-center gap-2 overflow-x-auto py-2 z-20" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-3xl flex justify-center gap-2 overflow-x-auto py-2 px-2 z-20" onClick={(e) => e.stopPropagation()}>
             {galleryList.map((img, i) => (
               <div
                 key={i}
