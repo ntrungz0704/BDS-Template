@@ -11,6 +11,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/router';
+import { LANDING_PAGE_TEMPLATES } from '../data/templatesData';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -18,15 +19,13 @@ export default function LandingPagesPage() {
   const router = useRouter();
   const { addToCart, showToast } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [landingTemplates, setLandingTemplates] = useState<any[]>([]);
-  const [isCatalogLoading, setIsCatalogLoading] = useState(true);
+  const [landingTemplates, setLandingTemplates] = useState<any[]>(LANDING_PAGE_TEMPLATES);
+  const [isCatalogLoading, setIsCatalogLoading] = useState(false);
   const [catalogError, setCatalogError] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
     const loadCatalog = async () => {
-      setIsCatalogLoading(true);
-      setCatalogError(null);
       try {
         const response = await axios.get(`${API_URL}/api/marketplace/templates`, {
           params: { limit: 100, productType: 'LANDING_PAGE' },
@@ -35,11 +34,15 @@ export default function LandingPagesPage() {
         if (!response.data?.success || !Array.isArray(response.data?.data)) {
           throw new Error('Danh mục không hợp lệ.');
         }
-        if (active) setLandingTemplates(response.data.data);
+        const canonicalSlugs = new Set(LANDING_PAGE_TEMPLATES.map(l => l.slug));
+        const canonicalOnly = response.data.data.filter((tpl: any) => 
+          canonicalSlugs.has(tpl.slug) || tpl.slug.startsWith('lp-')
+        );
+        if (active && canonicalOnly.length > 0) {
+          setLandingTemplates(canonicalOnly);
+        }
       } catch {
-        if (active) setCatalogError('Không thể tải danh mục landing page từ hệ thống. Vui lòng thử lại sau.');
-      } finally {
-        if (active) setIsCatalogLoading(false);
+        if (active) setLandingTemplates(LANDING_PAGE_TEMPLATES);
       }
     };
     loadCatalog();

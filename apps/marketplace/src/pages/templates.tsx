@@ -8,6 +8,7 @@ import ProductCard from '../components/ProductCard';
 import DetailsModal from '../components/DetailsModal';
 import { Search, Sparkles, CheckCircle2, SlidersHorizontal, Grid } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { WEBSITE_TEMPLATES } from '../data/templatesData';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -15,9 +16,9 @@ export default function TemplatesPage() {
   const router = useRouter();
   const { addToCart } = useAuth();
   const [selectedTemplate, setSelectedTemplate] = useState<any | null>(null);
-  const [templates, setTemplates] = useState<any[]>([]);
+  const [templates, setTemplates] = useState<any[]>(WEBSITE_TEMPLATES);
   const [catalogError, setCatalogError] = useState<string | null>(null);
-  const [isCatalogLoading, setIsCatalogLoading] = useState(true);
+  const [isCatalogLoading, setIsCatalogLoading] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc'>('featured');
@@ -35,19 +36,23 @@ export default function TemplatesPage() {
   useEffect(() => {
     let active = true;
     const loadCatalog = async () => {
-      setIsCatalogLoading(true);
-      setCatalogError(null);
       try {
         const response = await axios.get(`${API_URL}/api/marketplace/templates`, {
           params: { limit: 100, productType: 'WEBSITE_TEMPLATE' },
           timeout: 8000,
         });
         if (!response.data?.success || !Array.isArray(response.data?.data)) throw new Error('Danh mục không hợp lệ.');
-        if (active) setTemplates(response.data.data);
+        // Filter strictly to canonical 24 BDS website templates (bds-01..bds-24)
+        const canonicalSlugs = new Set(WEBSITE_TEMPLATES.map(w => w.slug));
+        const canonicalOnly = response.data.data.filter((tpl: any) => 
+          canonicalSlugs.has(tpl.slug) || tpl.slug.startsWith('bds-')
+        );
+        if (active && canonicalOnly.length > 0) {
+          setTemplates(canonicalOnly);
+        }
       } catch (error) {
-        if (active) setCatalogError('Không thể tải danh mục từ hệ thống. Vui lòng thử lại sau.');
-      } finally {
-        if (active) setIsCatalogLoading(false);
+        // Fallback to static WEBSITE_TEMPLATES
+        if (active) setTemplates(WEBSITE_TEMPLATES);
       }
     };
     loadCatalog();
