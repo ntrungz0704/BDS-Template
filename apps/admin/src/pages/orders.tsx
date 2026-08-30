@@ -484,17 +484,19 @@ export default function AdminOrders() {
                           >
                             Chi tiết
                           </button>
-                          <button
-                            onClick={() => {
-                              if (confirm(`Bạn có chắc chắn muốn xóa đơn hàng #${order.orderNumber} của ${order.fullName || order.email}?`)) {
-                                deleteOrderMutation.mutate(order.id);
-                              }
-                            }}
-                            className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-xl text-xs transition-all border border-rose-200"
-                            title="Xóa đơn hàng"
-                          >
-                            Xóa
-                          </button>
+                          {order.status !== 'COMPLETED' && (
+                            <button
+                              onClick={() => {
+                                if (confirm(`Bạn có chắc chắn muốn hủy đơn hàng #${order.orderNumber} của ${order.fullName || order.email}?`)) {
+                                  deleteOrderMutation.mutate(order.id);
+                                }
+                              }}
+                              className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-xl text-xs transition-all border border-rose-200"
+                              title="Hủy đơn hàng"
+                            >
+                              Hủy Đơn
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -613,14 +615,24 @@ export default function AdminOrders() {
                 <div className="space-y-2.5 text-xs font-mono">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                     <span className="text-slate-500 font-sans">Website Khách Hàng:</span>
-                    <a
-                      href={getTenantUrl(selectedOrder.subdomain || selectedOrder.tenantId || 'website')}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-blue-600 font-bold hover:underline font-mono"
-                    >
-                      {getTenantUrl(selectedOrder.subdomain || selectedOrder.tenantId || 'website')}
-                    </a>
+                    <div className="text-right">
+                      <a
+                        href={getTenantUrl(selectedOrder.subdomain || selectedOrder.tenantId || 'website')}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-blue-600 font-bold hover:underline font-mono block"
+                      >
+                        {getTenantUrl(selectedOrder.subdomain || selectedOrder.tenantId || 'website')}
+                      </a>
+                      <a
+                        href={`https://website.aireviewbds.com/?subdomain=${selectedOrder.subdomain || selectedOrder.tenantId || 'website'}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[11px] text-emerald-600 font-sans font-bold hover:underline block mt-0.5"
+                      >
+                        👉 Xem trực tiếp tức thì (Instant Demo)
+                      </a>
+                    </div>
                   </div>
 
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
@@ -641,9 +653,9 @@ export default function AdminOrders() {
                   </div>
 
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                    <span className="text-slate-500 font-sans">Mật Khẩu CMS (Mặc định):</span>
+                    <span className="text-slate-500 font-sans">Mật Khẩu CMS:</span>
                     <span className="font-bold text-emerald-800 bg-white px-2 py-0.5 rounded border border-emerald-300 inline-block w-fit">
-                      Chỉ hiển thị sau khi hệ thống tạo tài khoản mới
+                      {selectedOrder.email ? selectedOrder.email.split('@')[0] : '123456'}
                     </span>
                   </div>
                 </div>
@@ -651,14 +663,14 @@ export default function AdminOrders() {
                 <div className="mt-4 pt-3 border-t border-emerald-200/60 flex flex-col sm:flex-row items-center gap-2">
                   <button
                     onClick={() => {
-                      const prefix = '';
+                      const pwd = selectedOrder.email ? selectedOrder.email.split('@')[0] : '123456';
                       const targetSub = selectedOrder.subdomain || selectedOrder.tenantId || 'website';
                       const siteLink = getTenantUrl(targetSub);
                       const info = `🎉 THÔNG TIN BÀN GIAO WEBSITE BẤT ĐỘNG SẢN:\n\n` +
                         `- Website công khai: ${siteLink}\n` +
                         `- Trang quản trị CMS: ${CMS_APP_URL}\n` +
                         `- Email đăng nhập: ${selectedOrder.email}\n` +
-                        `- Mật khẩu CMS: ${prefix}\n\n` +
+                        `- Mật khẩu CMS: ${pwd}\n\n` +
                         `👉 Bạn hãy đăng nhập vào CMS để đổi thông tin và đăng tải dự án ngay!`;
                       handleCopy(info, `HANDOVER_${selectedOrder.id}`);
                     }}
@@ -697,17 +709,21 @@ export default function AdminOrders() {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-100 pt-5">
-              <button
-                onClick={() => {
-                  if (confirm(`Xác nhận xóa hoàn toàn đơn hàng #${selectedOrder.orderNumber}?`)) {
-                    deleteOrderMutation.mutate(selectedOrder.id);
-                  }
-                }}
-                disabled={deleteOrderMutation.isPending}
-                className="w-full sm:w-auto px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs rounded-xl border border-rose-200 transition-all"
-              >
-                {deleteOrderMutation.isPending ? 'Đang xóa...' : '🗑️ Xóa Đơn Hàng'}
-              </button>
+              {selectedOrder.status !== 'COMPLETED' ? (
+                <button
+                  onClick={() => {
+                    if (confirm(`Xác nhận hủy đơn hàng #${selectedOrder.orderNumber}?`)) {
+                      deleteOrderMutation.mutate(selectedOrder.id);
+                    }
+                  }}
+                  disabled={deleteOrderMutation.isPending}
+                  className="w-full sm:w-auto px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs rounded-xl border border-rose-200 transition-all"
+                >
+                  {deleteOrderMutation.isPending ? 'Đang hủy...' : '🚫 Hủy Đơn Hàng'}
+                </button>
+              ) : (
+                <div />
+              )}
 
               <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
                 <button
@@ -792,6 +808,14 @@ export default function AdminOrders() {
                 >
                   {getTenantUrl(approvalResult.subdomain || approvalResult.tenantSlug || 'website')}
                 </a>
+                <a
+                  href={`https://website.aireviewbds.com/?subdomain=${approvalResult.subdomain || approvalResult.tenantSlug || 'website'}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[11px] text-emerald-600 font-sans font-bold hover:underline block mt-0.5"
+                >
+                  👉 Xem trực tiếp tức thì (Instant Demo)
+                </a>
               </div>
 
               <div>
@@ -812,9 +836,9 @@ export default function AdminOrders() {
               </div>
 
               <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Mật khẩu CMS:</span>
-                <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                  {approvalResult.cmsPassword || approvalResult.tempPassword || 'Tài khoản đã có mật khẩu riêng'}
+                <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Mật khẩu CMS (Mặc định):</span>
+                <span className="font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200 text-sm">
+                  {approvalResult.cmsPassword || approvalResult.password || (approvalResult.email ? approvalResult.email.split('@')[0] : '123456')}
                 </span>
               </div>
             </div>
@@ -823,7 +847,7 @@ export default function AdminOrders() {
               <button
                 onClick={() => {
                   const targetSub = approvalResult.subdomain || approvalResult.tenantSlug || 'website';
-                  const pwd = approvalResult.cmsPassword || approvalResult.tempPassword || '';
+                  const pwd = approvalResult.cmsPassword || approvalResult.password || (approvalResult.email ? approvalResult.email.split('@')[0] : '123456');
                   const tenantLink = getTenantUrl(targetSub);
                   const info = `🎉 CHÚC MỪNG! WEBSITE CỦA BẠN ĐÃ KÍCH HOẠT THÀNH CÔNG:\n\n` +
                     `- Website công khai: ${tenantLink}\n` +
@@ -838,7 +862,6 @@ export default function AdminOrders() {
                 {copiedField === 'ALL_INFO' ? '✓ Đã Sao Chép Toàn Bộ' : '📋 Sao Chép Thông Tin Gửi Zalo'}
               </button>
 
-
               <button
                 onClick={() => setApprovalResult(null)}
                 className="px-6 py-3 border border-slate-300 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-50 transition-all"
@@ -852,4 +875,3 @@ export default function AdminOrders() {
     </AdminLayout>
   );
 }
-

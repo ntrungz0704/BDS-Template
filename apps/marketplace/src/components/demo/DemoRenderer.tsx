@@ -21,52 +21,25 @@ const MinimalTemplate = dynamic(() => import('./templates/MinimalTemplate'), { l
 const CorporateTemplate = dynamic(() => import('./templates/CorporateTemplate'), { loading: () => <LoadingSkeleton /> });
 const ResortTemplate = dynamic(() => import('./templates/ResortTemplate'), { loading: () => <LoadingSkeleton /> });
 const UrbanTemplate = dynamic(() => import('./templates/UrbanTemplate'), { loading: () => <LoadingSkeleton /> });
-const ApartmentTemplate = dynamic(() => import('./templates/ApartmentTemplate'), { loading: () => <LoadingSkeleton /> });
 const IndustrialTemplate = dynamic(() => import('./templates/IndustrialTemplate'), { loading: () => <LoadingSkeleton /> });
 const VillaTemplate = dynamic(() => import('./templates/VillaTemplate'), { loading: () => <LoadingSkeleton /> });
-const EcoTemplate = dynamic(() => import('./templates/BDS08Template'), { loading: () => <LoadingSkeleton /> });
-const ClassicTemplate = dynamic(() => import('./templates/BDS09Template'), { loading: () => <LoadingSkeleton /> });
-const InvestmentTemplate = dynamic(() => import('./templates/BDS10Template'), { loading: () => <LoadingSkeleton /> });
-const AgencyTemplate = dynamic(() => import('./templates/BDS11Template'), { loading: () => <LoadingSkeleton /> });
-const RetailTemplate = dynamic(() => import('./templates/BDS15Template'), { loading: () => <LoadingSkeleton /> });
-const ListingMarketplace = dynamic(() => import('./templates/BDS12Template'), { loading: () => <LoadingSkeleton /> });
-const PersonalAgentTemplate = dynamic(() => import('./templates/BDS16Template'), { loading: () => <LoadingSkeleton /> });
-const AuctionTemplate = dynamic(() => import('./templates/BDS13Template'), { loading: () => <LoadingSkeleton /> });
-const LandPlotTemplate = dynamic(() => import('./templates/BDS14Template'), { loading: () => <LoadingSkeleton /> });
-const VietnameseProjectTemplate = dynamic(() => import('./templates/VietnameseProjectTemplate'), { loading: () => <LoadingSkeleton /> });
-const VietnameseCollectionTemplate = dynamic(() => import('./templates/VietnameseCollectionTemplate'), { loading: () => <LoadingSkeleton /> });
-const PortalListingTemplate = dynamic(() => import('./templates/BDS17Template'), { loading: () => <LoadingSkeleton /> });
-const Bds123PortalTemplate = dynamic(() => import('./templates/BDS18Template'), { loading: () => <LoadingSkeleton /> });
-const NhadatsoDensityTemplate = dynamic(() => import('./templates/BDS19Template'), { loading: () => <LoadingSkeleton /> });
-const MinhKhaiApartmentTemplate = dynamic(() => import('./templates/BDS20Template'), { loading: () => <LoadingSkeleton /> });
-const HanoiRentalPortalTemplate = dynamic(() => import('./templates/BDS21Template'), { loading: () => <LoadingSkeleton /> });
-const HappyLandResortTemplate = dynamic(() => import('./templates/BDS22Template'), { loading: () => <LoadingSkeleton /> });
-const HomeoMultiThumbnailTemplate = dynamic(() => import('./templates/BDS23Template'), { loading: () => <LoadingSkeleton /> });
-const RealtyBuildTechTemplate = dynamic(() => import('./templates/BDS24Template'), { loading: () => <LoadingSkeleton /> });
-const Portal01ClassicTemplate = dynamic(() => import('./portal-templates/Portal01ClassicTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal02ModernMetroTemplate = dynamic(() => import('./portal-templates/Portal02ModernMetroTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal03LuxuryPrestigeTemplate = dynamic(() => import('./portal-templates/Portal03LuxuryPrestigeTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal04DensityRaoVatTemplate = dynamic(() => import('./portal-templates/Portal04DensityRaoVatTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal05MapCentricTemplate = dynamic(() => import('./portal-templates/Portal05MapCentricTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal06EcoGreenTemplate = dynamic(() => import('./portal-templates/Portal06EcoGreenTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal07CoastalResortTemplate = dynamic(() => import('./portal-templates/Portal07CoastalResortTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal08IndustrialHubTemplate = dynamic(() => import('./portal-templates/Portal08IndustrialHubTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal09HeritageColonialTemplate = dynamic(() => import('./portal-templates/Portal09HeritageColonialTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal10InvestmentYieldTemplate = dynamic(() => import('./portal-templates/Portal10InvestmentYieldTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal11VillaWaterfrontTemplate = dynamic(() => import('./portal-templates/Portal11VillaWaterfrontTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal12MegaDeveloperTemplate = dynamic(() => import('./portal-templates/Portal12MegaDeveloperTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal13AuctionLiquidationTemplate = dynamic(() => import('./portal-templates/Portal13AuctionLiquidationTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal14LandplotFarmlandTemplate = dynamic(() => import('./portal-templates/Portal14LandplotFarmlandTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal15RetailCommercialTemplate = dynamic(() => import('./portal-templates/Portal15RetailCommercialTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal16EliteBrokerTemplate = dynamic(() => import('./portal-templates/Portal16EliteBrokerTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal17HanoiCapitalTemplate = dynamic(() => import('./portal-templates/Portal17HanoiCapitalTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal18SaigonRiverfrontTemplate = dynamic(() => import('./portal-templates/Portal18SaigonRiverfrontTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal19CentralCoastTemplate = dynamic(() => import('./portal-templates/Portal19CentralCoastTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal20HighlandRetreatTemplate = dynamic(() => import('./portal-templates/Portal20HighlandRetreatTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal21NordicMinimalTemplate = dynamic(() => import('./portal-templates/Portal21NordicMinimalTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal22NightLifeStripTemplate = dynamic(() => import('./portal-templates/Portal22NightLifeStripTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal23PenthouseSkyVillaTemplate = dynamic(() => import('./portal-templates/Portal23PenthouseSkyVillaTemplate'), { loading: () => <LoadingSkeleton /> });
-const Portal24SmartCityTemplate = dynamic(() => import('./portal-templates/Portal24SmartCityTemplate'), { loading: () => <LoadingSkeleton /> });
+const BDS08Template = dynamic(() => import('./templates/BDS08Template'), { loading: () => <LoadingSkeleton /> });
+const BDS09Template = dynamic(() => import('./templates/BDS09Template'), { loading: () => <LoadingSkeleton /> });
+const BDS10Template = dynamic(() => import('./templates/BDS10Template'), { loading: () => <LoadingSkeleton /> });
+const BDS11Template = dynamic(() => import('./templates/BDS11Template'), { loading: () => <LoadingSkeleton /> });
+const BDS12Template = dynamic(() => import('./templates/BDS12Template'), { loading: () => <LoadingSkeleton /> });
+const BDS13Template = dynamic(() => import('./templates/BDS13Template'), { loading: () => <LoadingSkeleton /> });
+const BDS14Template = dynamic(() => import('./templates/BDS14Template'), { loading: () => <LoadingSkeleton /> });
+const BDS15Template = dynamic(() => import('./templates/BDS15Template'), { loading: () => <LoadingSkeleton /> });
+const BDS16Template = dynamic(() => import('./templates/BDS16Template'), { loading: () => <LoadingSkeleton /> });
+const BDS17Template = dynamic(() => import('./templates/BDS17Template'), { loading: () => <LoadingSkeleton /> });
+const BDS18Template = dynamic(() => import('./templates/BDS18Template'), { loading: () => <LoadingSkeleton /> });
+const BDS19Template = dynamic(() => import('./templates/BDS19Template'), { loading: () => <LoadingSkeleton /> });
+const BDS20Template = dynamic(() => import('./templates/BDS20Template'), { loading: () => <LoadingSkeleton /> });
+const BDS21Template = dynamic(() => import('./templates/BDS21Template'), { loading: () => <LoadingSkeleton /> });
+const BDS22Template = dynamic(() => import('./templates/BDS22Template'), { loading: () => <LoadingSkeleton /> });
+const BDS23Template = dynamic(() => import('./templates/BDS23Template'), { loading: () => <LoadingSkeleton /> });
+const BDS24Template = dynamic(() => import('./templates/BDS24Template'), { loading: () => <LoadingSkeleton /> });
 
 interface DemoRendererProps {
   template: Template;
@@ -1121,74 +1094,74 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
     }
     // 08. Green Eco Living
     if (['08', 'bds-08', 'portal-08', 'eco-green', 'eco-living', 'green-eco'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <EcoTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS08Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 09. Classic Heritage
     if (['09', 'bds-09', 'portal-09', 'classic-heritage', 'heritage-colonial', 'classic-elegant'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <ClassicTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS09Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 10. Investment Pro Hub
     if (['10', 'bds-10', 'portal-10', 'investment-pro', 'invest-yield'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <InvestmentTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS10Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 11. Agency Marketing OnePage
     if (['11', 'bds-11', 'portal-11', 'agency-onepage', 'agency-marketing'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <AgencyTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS11Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 12. Mega Developer Portal
     if (['12', 'bds-12', 'portal-12', 'mega-developer', 'listing-portal'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <ListingMarketplace template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS12Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 13. Auction Bidding Platform
     if (['13', 'bds-13', 'portal-13', 'auction-platform', 'auction-template'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <AuctionTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS13Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 14. LandPlot Masterplan
     if (['14', 'bds-14', 'portal-14', 'landplot-masterplan', 'landplot-template', 'land-plot'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <LandPlotTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS14Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 15. Retail & Shophouse Podium
     if (['15', 'bds-15', 'portal-15', 'retail-shophouse', 'retail-podium'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <RetailTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS15Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 16. Top Personal Broker
     if (['16', 'bds-16', 'portal-16', 'personal-top-broker', 'personal-agent', 'elite-broker'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <PersonalAgentTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS16Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 17. Portal BĐS Số 1 (Hà Nội Heritage)
     if (['17', 'bds-17', 'portal-17', 'portal-bds-so1', 'portal-listing', 'hanoi-capital'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <PortalListingTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS17Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 18. Sàn Giao Dịch & Đấu Giá Bến Thành Bds123
     if (['18', 'bds-18', 'portal-18', 'bds123-benthanh', 'bds123-portal', 'saigon-riverfront'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <Bds123PortalTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS18Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 19. Sàn Niêm Yết Mật Độ Cao Nhà Đất Số
     if (['19', 'bds-19', 'portal-19', 'nhadatso-density', 'nhadatso-portal'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <NhadatsoDensityTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS19Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 20. Chung Cư Minh Khai & Times City
     if (['20', 'bds-20', 'portal-20', 'minhkhai-timescity', 'minhkhai-apartment'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <MinhKhaiApartmentTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS20Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 21. Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội
     if (['21', 'bds-21', 'portal-21', 'hanoi-rental-portal', 'hanoi-rental'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <HanoiRentalPortalTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS21Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 22. ZoHotels & Happy Land Nha Trang
     if (['22', 'bds-22', 'portal-22', 'happyland-zohotels', 'happyland-resort'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <HappyLandResortTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS22Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 23. Sàn Giao Dịch Nhà Phố Homeo
     if (['23', 'bds-23', 'portal-23', 'homeo-agency', 'homeo-multithumb'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <HomeoMultiThumbnailTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS23Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
     // 24. RealtyBuild Trang Tin BĐS Số 1 Việt Nam
     if (['24', 'bds-24', 'portal-24', 'realtybuild-tech', 'realtybuild-portal'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <RealtyBuildTechTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+      return <BDS24Template template={template} viewport={viewport} initialPage={initialPage} />;
     }
 
-    return <PortalListingTemplate template={template} viewport={viewport} initialPage={initialPage} />;
+    return <BDS17Template template={template} viewport={viewport} initialPage={initialPage} />;
   };
 
   return (

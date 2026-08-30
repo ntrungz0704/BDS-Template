@@ -128,9 +128,9 @@ export class WebsiteProvisioningService {
       }
     }
 
-    // A new account receives a high-entropy temporary password. Existing
-    // accounts keep their current password when another tenant is assigned.
-    const cmsPassword = `${crypto.randomBytes(18).toString('base64url')}Aa1!`;
+    // Cấp mật khẩu mặc định tự động từ phần trước @ của email khách hàng
+    const defaultPassword = customerEmail.split('@')[0] || '123456';
+    const cmsPassword = defaultPassword;
     const passwordHash = await bcrypt.hash(cmsPassword, 12);
 
     const result = await prisma.$transaction(async (tx: any) => {
@@ -156,7 +156,7 @@ export class WebsiteProvisioningService {
         },
       });
 
-      // b. Create/Update User as TENANT_OWNER with CMS password
+      // b. Create/Update User
       let user;
       let isNewUser = false;
       if (customerId) {
@@ -182,6 +182,7 @@ export class WebsiteProvisioningService {
               tenantId: tenant.id,
               isActive: true,
               status: 'ACTIVE',
+              passwordHash: existingUser.passwordHash || passwordHash,
               emailVerified: existingUser.emailVerified || new Date(),
             },
           });
@@ -201,7 +202,7 @@ export class WebsiteProvisioningService {
         }
       }
 
-      // d. Create TenantMembership
+      // c. Create TenantMembership
       await tx.tenantMembership.create({
         data: {
           userId: user.id,
@@ -221,7 +222,7 @@ export class WebsiteProvisioningService {
         fontHeading: 'Playfair Display, serif',
         fontBody: 'Plus Jakarta Sans, sans-serif',
         borderRadius: '8px',
-        shadow: 'lg'
+        shadow: 'lg',
       };
 
       await tx.tenantThemeSettings.create({
@@ -687,13 +688,11 @@ export class WebsiteProvisioningService {
       tenant: result.tenant,
       user: result.user,
       credentials: {
-        tempPassword: result.isNewUser ? cmsPassword : '',
-        cmsPassword: result.isNewUser ? cmsPassword : '',
+        tempPassword: cmsPassword,
+        cmsPassword: cmsPassword,
       },
     };
-
   }
 }
 
 export const websiteProvisioningService = new WebsiteProvisioningService();
-

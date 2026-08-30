@@ -1,1794 +1,1502 @@
 'use client';
-import Image from 'next/image';
-import React, { useState, useEffect } from 'react';
-import { syncDemoUrl } from '../lib/demo';
-import Link from 'next/link';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
-  Leaf, Trees, Droplets, Sun, Wind, ChevronRight, Play, Check, MapPin, 
-  ArrowRight, Star, Phone, Mail, ChevronDown, Menu, X, Award, Users, 
-  Building2, TrendingUp, Heart, Shield, Zap, Coffee, BookOpen, Bike, Search, Filter 
+  Menu, X, Search, ChevronRight, ChevronLeft, MapPin, Phone, Mail, 
+  Building2, Home, Layers, Calendar, User, Eye, CheckCircle2, 
+  ArrowRight, UploadCloud, Compass, DollarSign, Calculator, Share2, Heart,
+  Shield, Check, MessageSquare, Star, Sparkles, Send, Award, FileText,
+  Play, Download, Maximize2, Bed, Bath, Clock, Filter, ArrowUpRight,
+  Gift, Trophy, Briefcase, Users, ExternalLink, HelpCircle
 } from 'lucide-react';
 import { MAX_W } from '../lib/design-system';
-import { FacebookIcon, YoutubeIcon, TiktokIcon, ZaloIcon, InstagramIcon } from '../../icons/SocialIcons';
+import UniversalTemplateFooter from '../UniversalTemplateFooter';
+import { syncDemoUrl } from '../lib/demo';
 
 interface TemplateProps {
-  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
+  template: { name: string; slug: string; collectionSlug?: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
+  company?: {
+    name?: string;
+    slogan?: string;
+    phone?: string;
+    email?: string;
+    address?: string;
+    logo?: string;
+    social?: {
+      facebook?: string;
+      instagram?: string;
+      twitter?: string;
+      youtube?: string;
+      tiktok?: string;
+      zalo?: string;
+    };
+    footerColumns?: Array<{
+      title: string;
+      links: Array<{ label: string; url?: string; page?: string }>;
+    }>;
+  };
+  theme?: Record<string, string>;
+  projects?: Array<Record<string, unknown>>;
+  posts?: Array<Record<string, unknown>>;
 }
 
-const t = {
-  bg: '#f0fdf4',
-  headerBg: '#ffffff',
-  primary: '#15803d',
-  secondary: '#166534',
-  accent: '#86efac',
-  accentDark: '#16a34a',
-  text: '#1e3a2f',
-  muted: '#4b7a55',
-  heading: '#052e16',
-  surface: '#ffffff',
-  dark: '#052e16',
-  gold: '#d4a72c',
-};
+export interface ProjectCardItem {
+  id: number;
+  title: string;
+  slug: string;
+  category: 'can-ho' | 'dat-nen' | 'condotel' | 'biet-thu' | 'shophouse';
+  categoryLabel: string;
+  statusBadge: string;
+  price: string;
+  priceNum: number;
+  area: string;
+  areaNum: number;
+  location: string;
+  city: string;
+  bedrooms: number;
+  bathrooms: number;
+  image: string;
+  gallery: string[];
+  featured: boolean;
+  desc: string;
+  details: string[];
+  investor: string;
+  legal: string;
+  handover: string;
+}
 
-// Expanded detailed list of 8 realistic projects
-const PROJECTS = [
+export interface NewsItem {
+  id: number;
+  title: string;
+  slug: string;
+  date: string;
+  author: string;
+  category: string;
+  image: string;
+  excerpt: string;
+  content: string[];
+  views: number;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BDS-08 MOCK DATA (MATCHING EXACT REFERENCE SCREENSHOT)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const BDS08_PROJECTS: ProjectCardItem[] = [
   {
     id: 1,
-    name: 'Ecopark Grand The Island',
-    loc: 'Hưng Yên',
-    price: 32.5, // Billion VND
-    area: '270m² - 950m²',
-    type: 'Biệt thự sinh thái',
-    badge: 'Đang mở bán',
-    img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-    cert: 'LEED Platinum',
-    desc: 'Biệt thự đảo thượng lưu được bao quanh bởi 100% diện tích mặt nước tự nhiên và hệ sinh thái cây xanh nhiều tầng. Thiết kế kiến trúc tối giản hiện đại nhập khẩu trực tiếp từ các kiến trúc sư Singapore.',
-    specs: ['Tiết kiệm 45% năng lượng sạch', 'Hệ thống lọc nước hồ sinh học', '100% vật liệu không phát thải VOC', 'Pin mặt trời công suất 10kWp'],
-    beds: 5,
-    baths: 6
+    title: 'DỰ ÁN PHỐ MỸ GOLD CITY BÀ RỊA VŨNG TÀU',
+    slug: 'du-an-pho-my-gold-city-ba-ria-vung-tau',
+    category: 'dat-nen',
+    categoryLabel: 'Đất Nền Phố Thương Mại',
+    statusBadge: 'Dự án đang phân phối',
+    price: '1.85 Tỷ VNĐ',
+    priceNum: 1.85,
+    area: '105 m²',
+    areaNum: 105,
+    location: 'Mặt tiền Quốc lộ 51, TX. Phú Mỹ, Bà Rịa - Vũng Tàu',
+    city: 'Bà Rịa - Vũng Tàu',
+    bedrooms: 0,
+    bathrooms: 0,
+    image: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=1200&q=80',
+      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200&q=80'
+    ],
+    featured: true,
+    desc: 'Khu đô thị thương mại trung tâm thành phố cảng Phú Mỹ, kết nối trực tiếp cụm cảng nước sâu Cái Mép - Thị Vải và cao tốc Biên Hòa - Vũng Tàu.',
+    details: [
+      'Quy mô: 8.5 ha với hơn 400 nền nhà phố thương mại.',
+      'Pháp lý: Sổ đỏ riêng từng nền, công chứng sang tên ngay trong ngày.',
+      'Hạ tầng: Đường nhựa nội khu 14-20m, điện âm nước máy, vỉa hè lát đá hoa cương.'
+    ],
+    investor: 'Hưng Lộc Phát Land',
+    legal: 'Sổ đỏ riêng từng lô, sở hữu lâu dài',
+    handover: 'Đã hoàn thiện hạ tầng 100%'
   },
   {
     id: 2,
-    name: 'Forest Valley Residences',
-    loc: 'Bình Dương',
-    price: 2.8, // Billion VND
-    area: '65m² - 110m²',
-    type: 'Căn hộ xanh',
-    badge: 'Sắp ra mắt',
-    img: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80',
-    cert: 'EDGE Advanced',
-    desc: 'Căn hộ sinh thái thông minh với ban công phủ đầy mảng xanh tự nhiên. Tận dụng tối đa gió trời và ánh sáng tự nhiên giúp tối ưu hoá năng lượng tiêu thụ.',
-    specs: ['Tiết kiệm 30% nước sinh hoạt', 'Sơn tường phản nhiệt tự nhiên', 'Hệ thống thông gió thu hồi nhiệt HRV', 'Thiết bị vệ sinh đạt chứng nhận WaterSense'],
-    beds: 2,
-    baths: 2
+    title: 'DỰ ÁN CĂN HỘ GOLDEN STAR QUẬN 7, TP.HCM',
+    slug: 'du-an-can-ho-golden-star-quan-7',
+    category: 'can-ho',
+    categoryLabel: 'Căn Hộ Cao Cấp',
+    statusBadge: 'Dự án đang phân phối',
+    price: '3.45 Tỷ VNĐ',
+    priceNum: 3.45,
+    area: '68 m²',
+    areaNum: 68,
+    location: 'Số 72 Nguyễn Thị Thập, Phường Bình Thuận, Quận 7, TP.HCM',
+    city: 'TP. Hồ Chí Minh',
+    bedrooms: 2,
+    bathrooms: 2,
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80',
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80'
+    ],
+    featured: true,
+    desc: 'Tổ hợp căn hộ cao cấp bàn giao full nội thất cao cấp nhập khẩu châu Âu, hồ bơi tràn bờ tự động điều chỉnh nhiệt độ tại tầng 21.',
+    details: [
+      'Quy mô: 2 block cao 26 tầng, tổng số 478 căn hộ hạng sang.',
+      'Tiện ích: Hệ thống nước uống tinh khiết tại vòi tiêu chuẩn WHO, thang máy thẻ từ Otis.',
+      'Vị trí: Ngay cạnh trung tâm thương mại Crescent Mall, SC VivoCity và Bệnh viện FV.'
+    ],
+    investor: 'Hưng Lộc Phát Group',
+    legal: 'Sổ hồng sở hữu lâu dài',
+    handover: 'Bàn giao nhà ngay, full nội thất'
   },
   {
     id: 3,
-    name: 'Green Horizon Villa',
-    loc: 'Đà Lạt',
-    price: 8.5, // Billion VND
-    area: '180m² - 320m²',
-    type: 'Villa vườn',
-    badge: 'Hot',
-    img: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80',
-    cert: 'LOTUS Gold',
-    desc: 'Biệt thự sườn đồi với tầm nhìn rừng thông bạt ngàn. Tích hợp giải pháp năng lượng sạch tự cấp và hệ thống sưởi sàn địa nhiệt bền vững.',
-    specs: ['Hệ thống sưởi địa nhiệt sạch', 'Kính hộp Low-E 3 lớp cách nhiệt', 'Sử dụng gỗ rừng trồng bền vững', 'Bể thu gom nước mưa tưới tiêu tự động'],
-    beds: 3,
-    baths: 4
+    title: 'DỰ ÁN CĂN HỘ GREEN STAR TP. QUẬN 7, TP.HCM',
+    slug: 'du-an-can-ho-green-star-quan-7',
+    category: 'can-ho',
+    categoryLabel: 'Căn Hộ Xanh Singapore',
+    statusBadge: 'Dự án đang phân phối',
+    price: '3.90 Tỷ VNĐ',
+    priceNum: 3.90,
+    area: '75 m²',
+    areaNum: 75,
+    location: 'Đường Phạm Hữu Lầu, Phường Phú Mỹ, Quận 7, TP.HCM',
+    city: 'TP. Hồ Chí Minh',
+    bedrooms: 2,
+    bathrooms: 2,
+    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80',
+      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80'
+    ],
+    featured: true,
+    desc: 'Khu phức hợp căn hộ xanh chăm sóc sức khỏe và sắc đẹp đầu tiên tại khu Nam Sài Gòn với hồ cảnh quan 7.000m² và tổ hợp suối khoáng nóng Onsen.',
+    details: [
+      'Công nghệ: Sơn kháng khuẩn nano, kính Low-E cản tia cực tím 99%.',
+      'Tiện ích: Công viên nhiệt đới Luna Park, đài phun nước nghệ thuật, vườn thảo mộc trị liệu.',
+      'Chính sách: Hỗ trợ vay ngân hàng 70% với lãi suất 0% trong 24 tháng.'
+    ],
+    investor: 'Hưng Lộc Phát Land',
+    legal: 'Sổ hồng vĩnh viễn',
+    handover: 'Quý 4/2026'
   },
   {
     id: 4,
-    name: 'EcoCity Riverside',
-    loc: 'Cần Thơ',
-    price: 4.2, // Billion VND
-    area: '90m² - 150m²',
-    type: 'Nhà phố xanh',
-    badge: 'Mới',
-    img: 'https://images.unsplash.com/photo-1513584684374-8bab748fbf90?w=800&q=80',
-    cert: 'LEED Gold',
-    desc: 'Dãy nhà phố thương mại nằm dọc bờ sông Hậu thơ mộng. Thiết kế mái xanh thích ứng đô thị và hành lang đệm ngăn bức xạ nhiệt.',
-    specs: ['Thiết kế mái xanh trồng cây cách nhiệt', 'Đèn chiếu sáng LED thông minh 100%', 'Trạm sạc xe điện tại mỗi phân khu', 'Sử dụng gạch không nung thân thiện'],
-    beds: 4,
-    baths: 4
+    title: 'DỰ ÁN CĂN HỘ ECO GREEN QUẬN 7, TP.HCM (MỚI NHẤT)',
+    slug: 'du-an-can-ho-eco-green-quan-7',
+    category: 'can-ho',
+    categoryLabel: 'Căn Hộ Công Viên 22ha',
+    statusBadge: 'Dự án đang phân phối',
+    price: '4.20 Tỷ VNĐ',
+    priceNum: 4.20,
+    area: '80 m²',
+    areaNum: 80,
+    location: 'Đại lộ Nguyễn Văn Linh, Phường Tân Thuận Tây, Quận 7, TP.HCM',
+    city: 'TP. Hồ Chí Minh',
+    bedrooms: 2,
+    bathrooms: 2,
+    image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1200&q=80',
+      'https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?w=1200&q=80'
+    ],
+    featured: true,
+    desc: 'Đại đô thị sinh thái 14ha tọa lạc ngay cửa ngõ kết nối Quận 7 sang Quận 1 qua cầu Thủ Thiêm 4, liền kề công viên Hương Tràm 22ha.',
+    details: [
+      'Quy mô: 7 tòa tháp cao 36 tầng + Khách sạn 5 sao Grand Hyatt 69 tầng.',
+      'Trang bị nội thất: Thiết bị vệ sinh Duravit, bếp Bosch, máy lạnh âm trần Daikin.',
+      'Tầm nhìn: View trực diện sông Sài Gòn và trung tâm tài chính Thủ Thiêm.'
+    ],
+    investor: 'Xuân Mai Corp & Hưng Lộc Phát F1',
+    legal: 'Sổ hồng lâu dài',
+    handover: 'Nhận nhà ở ngay'
   },
   {
     id: 5,
-    name: 'Bamboo Hills Farmhouse',
-    loc: 'Hòa Bình',
-    price: 6.8, // Billion VND
-    area: '350m² - 600m²',
-    type: 'Farmhouse',
-    badge: 'Độc quyền',
-    img: 'https://images.unsplash.com/photo-1449844908441-8829872d2607?w=800&q=80',
-    cert: 'LOTUS Platinum',
-    desc: 'Khu trang trại nghỉ dưỡng sinh thái được bao quanh bởi rặng tre và đồi chè hữu cơ. Nơi kết hợp hoàn hảo giữa nông nghiệp sạch và nghỉ dưỡng cao cấp.',
-    specs: ['Vật liệu xây dựng bằng tre ép chịu lực', 'Bể tự hoại sinh học không mùi', 'Vườn rau hữu cơ khép kín', 'Năng lượng gió tự nhiên nội khu'],
-    beds: 4,
-    baths: 3
+    title: 'DỰ ÁN CĂN HỘ HƯNG PHÁT SILVER STAR NHÀ BÈ',
+    slug: 'du-an-can-ho-hung-phat-silver-star-nha-be',
+    category: 'can-ho',
+    categoryLabel: 'Căn Hộ Hiện Đại',
+    statusBadge: 'Dự án đang phân phối',
+    price: '2.85 Tỷ VNĐ',
+    priceNum: 2.85,
+    area: '72 m²',
+    areaNum: 72,
+    location: 'Đường Nguyễn Hữu Thọ, Phước Kiển, Huyện Nhà Bè, TP.HCM',
+    city: 'TP. Hồ Chí Minh',
+    bedrooms: 2,
+    bathrooms: 2,
+    image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1200&q=80'
+    ],
+    featured: true,
+    desc: 'Căn hộ chung cư mặt tiền trục giao thông huyết mạch Nguyễn Hữu Thọ, cách Phú Mỹ Hưng chỉ 3 phút di chuyển.',
+    details: [
+      'Quy mô: 3 block cao 24 tầng với 447 căn hộ tiện nghi.',
+      'Tiện ích: Trung tâm thương mại 3 tầng, hồ bơi chân mây, gym & yoga cao cấp.',
+      'Cộng đồng: Cư dân văn minh, hệ thống bảo vệ an ninh đa lớp 24/7.'
+    ],
+    investor: 'Hưng Lộc Phát Group',
+    legal: 'Sổ hồng trao tay',
+    handover: 'Đã bàn giao & đang đón cư dân'
   },
   {
     id: 6,
-    name: 'Lotus Garden Land',
-    loc: 'Long An',
-    price: 1.9, // Billion VND
-    area: '100m² - 200m²',
-    type: 'Đất vườn',
-    badge: 'Còn ít',
-    img: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80',
-    cert: 'EDGE',
-    desc: 'Đất vườn sinh thái đã phân lô hoàn chỉnh với hạ tầng điện nước ngầm hiện đại. Có sẵn thiết kế nhà gỗ bungalow xanh và vườn cây ăn trái sum suê.',
-    specs: ['Hệ thống tưới nhỏ giọt tiết kiệm nước', 'Đường nội bộ trải cỏ sinh thái', 'Có sẵn vườn cây ăn trái 3 năm tuổi', 'Hệ thống camera giám sát thông minh'],
-    beds: 0,
-    baths: 0
-  },
-  {
-    id: 7,
-    name: 'Eco Oasis Premium',
-    loc: 'Đà Nẵng',
-    price: 15.6, // Billion VND
-    area: '220m² - 450m²',
-    type: 'Biệt thự sinh thái',
-    badge: 'Đang mở bán',
-    img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-    cert: 'LEED Platinum',
-    desc: 'Dự án nghỉ dưỡng sinh thái mặt biển hiếm hoi sở hữu hồ cảnh quan ngầm giúp giảm nhiệt độ khu vực đến 3 độ C. Kiến trúc xanh nhiệt đới phóng khoáng.',
-    specs: ['Tiết kiệm 50% điện năng vận hành', 'Hệ thống kính Low-E tràn viền phản nhiệt', 'Hồ bơi lọc muối không hoá chất', 'Quản lý vận hành thông minh bằng AI'],
-    beds: 4,
-    baths: 5
-  },
-  {
-    id: 8,
-    name: 'Green Pine Hill',
-    loc: 'Lâm Đồng',
-    price: 3.5, // Billion VND
-    area: '110m² - 180m²',
-    type: 'Villa vườn',
-    badge: 'Đang mở bán',
-    img: 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=800&q=80',
-    cert: 'EDGE Advanced',
-    desc: 'Biệt thự thông gỗ ven rừng thông Đà Lạt thơ mộng, không khí mát mẻ quanh năm. Thiết kế sinh thái thích ứng biến đổi khí hậu.',
-    specs: ['Sử dụng gỗ thông Chile nhập khẩu bền vững', 'Bếp dùng năng lượng mặt trời', 'Cách âm cách nhiệt tuyệt đối', 'Hệ thống thông gió thụ động tự nhiên'],
-    beds: 3,
-    baths: 3
+    title: 'DỰ ÁN DIAMOND ISLAND CONDOTEL HƯNG LỘC PHÁT',
+    slug: 'du-an-diamond-island-condotel-hung-loc-phat',
+    category: 'condotel',
+    categoryLabel: 'Condotel Biển 5 Sao',
+    statusBadge: 'Dự án đang phân phối',
+    price: '1.65 Tỷ VNĐ',
+    priceNum: 1.65,
+    area: '45 m²',
+    areaNum: 45,
+    location: 'Đường Huỳnh Thúc Kháng, Mũi Né, TP. Phan Thiết, Bình Thuận',
+    city: 'Phan Thiết',
+    bedrooms: 1,
+    bathrooms: 1,
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80'
+    ],
+    featured: true,
+    desc: 'Tổ hợp căn hộ khách sạn condotel view trực diện biển Mũi Né, cam kết lợi nhuận cho thuê 12%/năm trong 5 năm đầu tiên.',
+    details: [
+      'Đặc quyền: Tặng 15 đêm nghỉ dưỡng miễn phí hàng năm trên toàn hệ thống resort.',
+      'Quản lý: Thương hiệu quốc tế Accor Hotels vận hành tiêu chuẩn 5 sao.',
+      'Kết nối: Chỉ mất 10 phút đến Sân bay Phan Thiết và Cao tốc Dầu Giây - Phan Thiết.'
+    ],
+    investor: 'Hưng Lộc Phát Land & NovaWorld',
+    legal: 'Sổ hồng thương mại dịch vụ 50 năm',
+    handover: 'Quý 1/2027'
   }
 ];
 
-const AMENITIES = [
-  { icon: Trees, title: 'Công Viên 15ha', desc: 'Hơn 5,000 cây xanh bản địa phủ kín toàn khu' },
-  { icon: Droplets, title: 'Hồ Điều Hòa 5ha', desc: 'Hệ thống hồ nước ngọt tự nhiên, thanh lọc không khí' },
-  { icon: Sun, title: 'Năng Lượng Mặt Trời', desc: '100% điện năng từ pin mặt trời trên mái nhà' },
-  { icon: Wind, title: 'Không Khí Sạch', desc: 'Chỉ số AQI luôn dưới 50 — mức tuyệt vời' },
-  { icon: Bike, title: 'Đường Dạo Bộ 15km', desc: 'Hành lang xanh dài 15km xuyên suốt khu đô thị' },
-  { icon: Coffee, title: 'Organic Café & Market', desc: 'Nông sản hữu cơ từ vườn sinh thái nội khu' },
-  { icon: BookOpen, title: 'Thư Viện Sinh Thái', desc: 'Không gian đọc sách ngoài trời giữa vườn cây' },
-  { icon: Heart, title: 'Y Tế Xanh', desc: 'Phòng khám sức khỏe toàn diện 24/7 trong khu' },
+export const BDS08_SIDEBAR_INTERESTS = [
+  { id: 1, title: 'DỰ ÁN PHỐ MỸ GOLD CITY BÀ RỊA VŨNG TÀU', slug: 'du-an-pho-my-gold-city-ba-ria-vung-tau', img: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=200&q=80' },
+  { id: 2, title: 'DỰ ÁN CĂN HỘ GOLDEN STAR QUẬN 7, TP.HCM', slug: 'du-an-can-ho-golden-star-quan-7', img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=200&q=80' },
+  { id: 3, title: 'DỰ ÁN CĂN HỘ GREEN STAR TP. QUẬN 7, TP.HCM', slug: 'du-an-can-ho-green-star-quan-7', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=200&q=80' },
+  { id: 4, title: 'DỰ ÁN CĂN HỘ BLUE STAR HƯNG LỘC PHÁT', slug: 'du-an-can-ho-green-star-quan-7', img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=200&q=80' },
+  { id: 5, title: 'DỰ ÁN CĂN HỘ HƯNG PHÁT SILVER STAR NHÀ BÈ', slug: 'du-an-can-ho-hung-phat-silver-star-nha-be', img: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=200&q=80' },
+  { id: 6, title: 'DỰ ÁN DIAMOND LAND MŨI NÉ PHAN THIẾT', slug: 'du-an-diamond-island-condotel-hung-loc-phat', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200&q=80' }
 ];
 
-// Categorized Gallery
-const GALLERY = [
-  { url: 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=900&q=80', category: 'Cảnh quan', title: 'Hồ sinh học lúc bình minh' },
-  { url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=900&q=80', category: 'Kiến trúc', title: 'Biệt thự đảo Ecopark' },
-  { url: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=900&q=80', category: 'Tiện ích', title: 'Vườn rau hữu cơ nội khu' },
-  { url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=900&q=80', category: 'Kiến trúc', title: 'Căn hộ Forest Valley' },
-  { url: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=900&q=80', category: 'Kiến trúc', title: 'Villa sân vườn Đà Lạt' },
-  { url: 'https://images.unsplash.com/photo-1513584684374-8bab748fbf90?w=900&q=80', category: 'Nội thất', title: 'Phòng khách tràn ánh sáng' },
-  { url: 'https://images.unsplash.com/photo-1449844908441-8829872d2607?w=900&q=80', category: 'Nội thất', title: 'Bungalow gỗ thông Hòa Bình' },
-  { url: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=900&q=80', category: 'Tiện ích', title: 'Đường xe đạp ven hồ' },
-];
-
-// Expanded list of 6 realistic news items
-const NEWS = [
+export const BDS08_NEWS_EVENTS: NewsItem[] = [
   {
     id: 1,
-    title: 'Eco Properties được vinh danh "Khu đô thị xanh tốt nhất Việt Nam 2026"',
-    date: '05/07/2026',
-    cat: 'Giải thưởng',
-    img: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80',
-    summary: 'Tại lễ trao giải Bất động sản Việt Nam 2026, Eco Properties đã xuất sắc giành giải thưởng danh giá nhờ đóng góp trong phát triển bền vững.',
-    content: 'Giải thưởng Bất động sản Việt Nam vinh danh những nhà phát triển hàng đầu. Eco Properties đã vượt qua hàng chục đề cử nhờ dự án Ecopark Grand The Island đạt chứng chỉ LEED Platinum. Đây là minh chứng cho định hướng nhất quán của chúng tôi trong việc kiến tạo cuộc sống xanh chuẩn mực toàn cầu.',
-    author: 'Nguyễn Văn Nam',
-    views: '1,240 lượt xem'
+    title: 'Dự án Căn hộ Condotel Oyster Gành Hào Vũng Tàu',
+    slug: 'du-an-can-ho-condotel-oyster-ganh-hao-vung-tau',
+    date: '28 Tháng Tư, 2026',
+    author: 'Ban Quản Lý',
+    category: 'Tin Tức - Sự Kiện',
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&q=80',
+    excerpt: 'Dự án condotel mặt tiền biển Gành Hào sở hữu thế tựa sơn hướng thủy đón đầu lượng khách du lịch...',
+    content: [
+      'Oyster Gành Hào là điểm sáng nổi bật trên cung đường biển Trần Phú - Vũng Tàu.',
+      'Dự án được trang bị hồ bơi chân mây tầng thượng và sky bar ngắm toàn cảnh biển Đông.'
+    ],
+    views: 4120
   },
   {
     id: 2,
-    title: 'Xu hướng sống xanh: Người Việt ngày càng chuộng bất động sản sinh thái',
-    date: '28/06/2026',
-    cat: 'Thị trường',
-    img: 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=600&q=80',
-    summary: 'Báo cáo thị trường BĐS quý II chỉ ra nhu cầu tìm kiếm căn hộ và biệt thự có không gian cây xanh tăng vọt 150% so với cùng kỳ năm trước.',
-    content: 'Theo khảo sát của Hiệp hội Bất động sản, sức khỏe và không gian sống trong lành đã trở thành ưu tiên hàng đầu của người mua nhà hiện đại. Xu hướng này thúc đẩy các chủ đầu tư chuyển dịch sang các tiêu chuẩn công trình xanh như LEED, EDGE, LOTUS để tăng tính cạnh tranh và đáp ứng nhu cầu thị trường.',
-    author: 'Trần Thị Thuỷ',
-    views: '890 lượt xem'
+    title: 'Bảng giá dự án căn hộ Golden Star tháng 08/2026',
+    slug: 'bang-gia-du-an-can-ho-golden-star-thang-8-2026',
+    date: '25 Tháng Tư, 2026',
+    author: 'Phòng Kinh Doanh',
+    category: 'Tin Tức - Sự Kiện',
+    image: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=400&q=80',
+    excerpt: 'Cập nhật bảng giá giỏ hàng ngoại giao đợt mới nhất từ chủ đầu tư Hưng Lộc Phát với chiết khấu đến 8%...',
+    content: [
+      'Các căn hộ 2 phòng ngủ diện tích 68m2 đang có mức giá hấp dẫn chỉ từ 3.45 tỷ đồng.',
+      'Khách hàng thanh toán sớm được tặng gói nội thất cao cấp trị giá 150 triệu đồng.'
+    ],
+    views: 3890
   },
   {
     id: 3,
-    title: 'Bamboo Hills Hòa Bình chính thức ra mắt phân khu Bungalow xanh độc bản',
-    date: '20/06/2026',
-    cat: 'Dự án mới',
-    img: 'https://images.unsplash.com/photo-1449844908441-8829872d2607?w=600&q=80',
-    summary: 'Phân khu Bamboo Hills với phong cách nông trang xanh kết hợp tiện nghi cao cấp chính thức nhận đăng ký giữ chỗ từ hôm nay.',
-    content: 'Với mong muốn đưa phong cách sống nông trại nghỉ dưỡng đến gần hơn với người dân thủ đô, Bamboo Hills Hòa Bình ra mắt phân khu mới với 50 căn bungalow gỗ thông minh tự cấp năng lượng. Dự án được bao quanh bởi 5ha chè sạch hữu cơ và suối tự nhiên chảy qua.',
-    author: 'Lê Minh Hoàng',
-    views: '1,560 lượt xem'
+    title: 'Có nên mua căn hộ Blue Star từ Hưng Lộc Phát?',
+    slug: 'co-nen-mua-can-ho-blue-star-tu-hung-loc-phat',
+    date: '20 Tháng Tư, 2026',
+    author: 'Chuyên Gia BĐS',
+    category: 'Tin Tức - Sự Kiện',
+    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80',
+    excerpt: 'Phân tích chi tiết tiềm năng tăng giá và khả năng khai thác cho thuê của tổ hợp Blue Star Quận 7...',
+    content: [
+      'Vị trí đắc địa tại cửa ngõ khu đô thị Phú Mỹ Hưng đảm bảo tỷ suất sinh lời trên 8%/năm.',
+      'Chủ đầu tư uy tín với lịch sử bàn giao sổ hồng đúng hẹn trên hàng loạt dự án trước đó.'
+    ],
+    views: 5200
   },
   {
     id: 4,
-    title: 'Hội thảo Kiến trúc Xanh: Hành trình hướng tới Net Zero của Eco Properties',
-    date: '15/06/2026',
-    cat: 'Sự kiện',
-    img: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&q=80',
-    summary: 'Eco Properties phối hợp với Bộ Xây dựng tổ chức hội thảo bàn về các giải pháp giảm phát thải khí nhà kính trong ngành xây dựng.',
-    content: 'Tại hội thảo, ban lãnh đạo Eco Properties đã cam kết lộ trình Net Zero Carbon vào năm 2035 thông qua việc ứng dụng 100% pin mặt trời, vật liệu tái chế thân thiện và công nghệ tuần hoàn nước trong tất cả các đại đô thị tiếp theo của tập đoàn.',
-    author: 'Phạm Đức Anh',
-    views: '730 lượt xem'
+    title: 'Căn hộ mẫu dự án Green Star TP.HCM Quận 7',
+    slug: 'can-ho-mau-du-an-green-star-tphcm-quan-7',
+    date: '15 Tháng Tư, 2026',
+    author: 'Phòng Marketing',
+    category: 'Tin Tức - Sự Kiện',
+    image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&q=80',
+    excerpt: 'Khai trương nhà mẫu Green Star thu hút hơn 1.000 lượt khách tham quan trong tuần lễ đầu tiên...',
+    content: [
+      'Không gian sống xanh chuẩn resort được tái hiện chân thực với ban công rộng và view sông thoáng đãng.'
+    ],
+    views: 2980
   },
   {
     id: 5,
-    title: 'Công nghệ lọc nước tuần hoàn sinh học: Điểm sáng tại Ecopark Grand',
-    date: '10/06/2026',
-    cat: 'Công nghệ',
-    img: 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=600&q=80',
-    summary: 'Hệ thống hồ nước nhân tạo tuần hoàn sinh học tại dự án giúp tự làm sạch nước mà không cần sử dụng bất kỳ hoá chất công nghiệp nào.',
-    content: 'Sử dụng các loại thủy sinh vật và đá lọc tự nhiên, hệ thống tuần hoàn sinh học khép kín của Ecopark Grand giúp nước hồ luôn trong vắt và an toàn tuyệt đối. Công nghệ này được chuyển giao từ các chuyên gia hàng đầu Thụy Sĩ, khẳng định đẳng cấp sống xanh.',
-    author: 'Vũ Minh Đức',
-    views: '1,120 lượt xem'
-  },
-  {
-    id: 6,
-    title: 'Cư dân Eco Living hưởng lợi ích kép từ phí vận hành tiết kiệm đến 40%',
-    date: '02/06/2026',
-    cat: 'Cộng đồng',
-    img: 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=600&q=80',
-    summary: 'Nhờ lắp đặt hệ thống pin năng lượng mặt trời trên mái và thiết bị nước thông minh, hoá đơn dịch vụ của cư dân giảm đáng kể.',
-    content: 'Theo thống kê vận hành thực tế tại Forest Valley và Green Horizon, chi phí năng lượng và nước sinh hoạt trung bình mỗi hộ gia đình tiết kiệm tới 40% so với các tòa chung cư thông thường. Đây là lợi thế kinh tế rõ rệt bên cạnh giá trị to lớn về sức khỏe.',
-    author: 'Nguyễn Lan Hương',
-    views: '950 lượt xem'
+    title: 'Summer Land Mũi Né — Điểm đầu tư sáng giá năm 2026',
+    slug: 'summer-land-mui-ne-diem-dau-tu-sang-gia-2026',
+    date: '10 Tháng Tư, 2026',
+    author: 'Nghiên Cứu Thị Trường',
+    category: 'Tin Tức - Sự Kiện',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80',
+    excerpt: 'Đón sóng cao tốc Dầu Giây - Phan Thiết và sân bay, BĐS nghỉ dưỡng Phan Thiết bứt phá ngoạn mục...',
+    content: [
+      'Tổ hợp giải trí Summer Land mang đến cơ hội sinh lời kép từ tăng giá vốn và kinh doanh lưu trú.'
+    ],
+    views: 6140
   }
 ];
 
-const FAQS = [
-  { q: 'Tiêu chí nào để một dự án được gọi là "bất động sản sinh thái"?', a: 'Chúng tôi áp dụng tiêu chuẩn LEED và EDGE: tối thiểu 65% diện tích cây xanh/mặt nước, 30% tiết kiệm năng lượng, 100% vật liệu thân thiện môi trường và hệ thống xử lý nước mưa.' },
-  { q: 'Chỉ số không khí AQI tại khu đô thị đạt mức bao nhiêu?', a: 'Theo dữ liệu đo lường tự động 24/7, AQI trung bình trong khu đô thị luôn dưới 50 (mức Tốt), thấp hơn 60-70% so với nội thành TP.HCM.' },
-  { q: 'Chi phí điện, nước hàng tháng có tiết kiệm không?', a: 'Nhờ hệ thống pin mặt trời và thiết bị tiết kiệm nước, cư dân tiết kiệm trung bình 35-40% chi phí điện nước so với chung cư thông thường.' },
-  { q: 'Pháp lý các dự án có đảm bảo không?', a: 'Tất cả dự án đều có sổ đỏ/sổ hồng, quy hoạch 1/500 được duyệt, được bảo lãnh bởi ngân hàng uy tín. Chúng tôi cam kết công khai 100% hồ sơ pháp lý.' },
-  { q: 'Có thể vay ngân hàng để mua không?', a: 'Có. Chúng tôi hợp tác với VietcomBank, BIDV, Techcombank cho vay lên đến 70% giá trị, lãi suất ưu đãi 8.5%/năm trong 2 năm đầu.' },
-  { q: 'Tiềm năng tăng giá bất động sản sinh thái như thế nào?', a: 'Theo nghiên cứu của CBRE, BĐS sinh thái có mức tăng giá trung bình 15-22%/năm, cao hơn 40% so với BĐS thông thường tại cùng vị trí.' },
+export const BDS08_COMPANY_ACTIVITIES: NewsItem[] = [
+  {
+    id: 1,
+    title: 'Lễ bàn giao sổ hồng đợt 3 cho cư dân Golden Star',
+    slug: 'le-ban-giao-so-hong-dot-3-cu-dan-golden-star',
+    date: '28 Tháng Tư, 2026',
+    author: 'Ban Pháp Lý',
+    category: 'Hoạt Động Công Ty',
+    image: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=400&q=80',
+    excerpt: 'Hưng Lộc Phát trao tận tay hơn 150 sổ hồng sở hữu lâu dài cho cư dân tòa tháp tháp A...',
+    content: [
+      'Sự kiện khẳng định cam kết pháp lý vững vàng và trách nhiệm cao nhất của chủ đầu tư đối với khách hàng.'
+    ],
+    views: 4500
+  },
+  {
+    id: 2,
+    title: 'Lễ ký kết hợp tác chiến lược dự án NovaWorld',
+    slug: 'le-ky-ket-hop-tac-chien-luoc-du-an-novaworld',
+    date: '22 Tháng Tư, 2026',
+    author: 'Ban Giám Đốc',
+    category: 'Hoạt Động Công Ty',
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&q=80',
+    excerpt: 'Hưng Lộc Phát Land chính thức trở thành đại lý phân phối chiến lược F1 dự án NovaWorld Phan Thiết...',
+    content: [
+      'Thỏa thuận hợp tác mở ra nhiều cơ hội đầu tư hấp dẫn với quỹ sản phẩm đẹp nhất giỏ hàng.'
+    ],
+    views: 3900
+  },
+  {
+    id: 3,
+    title: 'Chương trình thiện nguyện Tiếp Sức Đến Trường 2026',
+    slug: 'chuong-trinh-thien-nguyen-tiep-suc-den-truong-2026',
+    date: '18 Tháng Tư, 2026',
+    author: 'Công Đoàn Công Ty',
+    category: 'Hoạt Động Công Ty',
+    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80',
+    excerpt: 'Trao tặng 200 suất học bổng cho học sinh nghèo hiếu học tại tỉnh Bình Thuận...',
+    content: [
+      'Hoạt động an sinh xã hội là một phần không thể thiếu trong triết lý phát triển bền vững của doanh nghiệp.'
+    ],
+    views: 2800
+  },
+  {
+    id: 4,
+    title: 'Hội nghị sơ kết hoạt động kinh doanh Quý 1/2026',
+    slug: 'hoi-nghi-so-ket-hoat-dong-kinh-doanh-quy-1-2026',
+    date: '12 Tháng Tư, 2026',
+    author: 'Khối Kinh Doanh',
+    category: 'Hoạt Động Công Ty',
+    image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&q=80',
+    excerpt: 'Vinh danh các chiến binh sale xuất sắc và trao thưởng 3 xe hơi Mercedes cho Best Seller...',
+    content: [
+      'Doanh số Quý 1 tăng trưởng 180% so với cùng kỳ năm trước nhờ chiến lược chuyển đổi số hiệu quả.'
+    ],
+    views: 3100
+  },
+  {
+    id: 5,
+    title: 'Chuyến tham quan thực địa dự án Phú Mỹ Gold City',
+    slug: 'chuyen-tham-quan-thuc-dia-du-an-phu-my-gold-city',
+    date: '05 Tháng Tư, 2026',
+    author: 'Ban Tổ Chức',
+    category: 'Hoạt Động Công Ty',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80',
+    excerpt: 'Đoàn hơn 200 nhà đầu tư TP.HCM tham gia hành trình trải nghiệm thực tế hạ tầng dự án...',
+    content: [
+      'Hơn 80% sản phẩm mở bán trong ngày đã được khách hàng đặt cọc giữ chỗ thành công.'
+    ],
+    views: 4300
+  }
 ];
 
-const TIMELINE = [
-  { year: '2012', title: 'Thành lập Eco Properties', desc: 'Ra đời với sứ mệnh xây dựng đô thị sống xanh cho người Việt' },
-  { year: '2015', title: 'Dự án đầu tiên', desc: 'Ecopark Phase 1 với 500 căn hộ tại Hưng Yên, bán hết trong 3 ngày' },
-  { year: '2019', title: 'Mở rộng toàn quốc', desc: 'Phát triển 8 dự án tại 6 tỉnh thành, đạt 5,000 cư dân' },
-  { year: '2022', title: 'Chứng nhận LEED Platinum', desc: 'Trở thành chủ đầu tư đầu tiên tại Việt Nam đạt LEED Platinum' },
-  { year: '2026', title: 'Tầm nhìn 2030', desc: '20 dự án, 50,000 cư dân sống xanh — thay đổi cách người Việt sống' },
+export const BDS08_CAREERS = [
+  {
+    id: 1,
+    title: 'Tuyển Dụng 15 Chuyên Viên Tư Vấn Bất Động Sản Cao Cấp',
+    salary: '15 - 50 Triệu + Hoa Hồng Đến 100Tr/Giao Dịch',
+    location: 'Quận 7, TP. Hồ Chí Minh & Cầu Giấy, Hà Nội',
+    deadline: '30/09/2026',
+    requirements: ['Đam mê kinh doanh, nhanh nhẹn, tự tin giao tiếp', 'Không yêu cầu kinh nghiệm, được đào tạo bài bản', 'Được hỗ trợ data khách hàng nét & marketing hàng tuần']
+  },
+  {
+    id: 2,
+    title: 'Tuyển Dụng 02 Trưởng Nhóm Kinh Doanh (Team Leader)',
+    salary: '25 - 70 Triệu + Thưởng KPI Nhóm',
+    location: 'TP. Hồ Chí Minh',
+    deadline: '25/09/2026',
+    requirements: ['Tối thiểu 1 năm kinh nghiệm quản lý đội ngũ sale BĐS', 'Kỹ năng dẫn dắt, truyền lửa và chốt deal dự án lớn', 'Có sẵn đội nhóm từ 5 nhân sự là một lợi thế']
+  },
+  {
+    id: 3,
+    title: 'Tuyển Dụng 01 Chuyên Viên Pháp Lý Dự Án BĐS',
+    salary: '18 - 25 Triệu (Thỏa thuận theo năng lực)',
+    location: 'Hà Nội & TP.HCM',
+    deadline: '20/09/2026',
+    requirements: ['Tốt nghiệp Đại học Luật chính quy', 'Hiểu sâu Luật Đất đai, Luật Nhà ở, thủ tục công chứng sang tên', 'Cẩn trọng, trung thực, có khả năng làm việc độc lập']
+  }
 ];
 
-const LEADERSHIP = [
-  { 
-    name: 'Nguyễn Thế Phương', 
-    role: 'Chủ tịch HĐQT & Sáng lập', 
-    img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80', 
-    bio: 'Hơn 20 năm kinh nghiệm trong ngành quy hoạch đô thị bền vững. Anh là người định hình triết lý sống xanh của tập đoàn.' 
-  },
-  { 
-    name: 'Lê Hoài Nam', 
-    role: 'Tổng Giám Đốc (CEO)', 
-    img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80', 
-    bio: 'Nguyên Giám đốc dự án khu vực Châu Á của tập đoàn kiến trúc Foster + Partners. Chuyên gia hàng đầu về công trình xanh.' 
-  },
-  { 
-    name: 'Trần Minh Thuỷ', 
-    role: 'Giám đốc Thiết kế & Quy hoạch', 
-    img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80', 
-    bio: 'Tốt nghiệp xuất sắc chuyên ngành Quy hoạch Cảnh quan tại ĐH Harvard, sở hữu nhiều giải thưởng kiến trúc xanh quốc tế.' 
-  },
-  { 
-    name: 'Michael Harrison', 
-    role: 'Giám đốc Công nghệ & Bền vững', 
-    img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80', 
-    bio: 'Hơn 15 năm làm việc tại Hội đồng Công trình Xanh Hoa Kỳ (USGBC), chịu trách nhiệm áp dụng các tiêu chuẩn LEED vào dự án.' 
-  },
-];
-
-const CORE_VALUES = [
-  { icon: Shield, title: 'Bền Vững (Sustainability)', desc: 'Đặt môi trường và tương lai con cháu lên hàng đầu trong mọi quyết định thiết kế và thi công.' },
-  { icon: Zap, title: 'Sáng Tạo Xanh (Innovation)', desc: 'Không ngừng cải tiến, ứng dụng các công nghệ tiết kiệm năng lượng và xử lý tuần hoàn rác thải thông minh.' },
-  { icon: Heart, title: 'Tôn Trọng Tự Nhiên (Nature First)', desc: 'Quy hoạch hài hoà, hạn chế san lấp, bảo vệ tối đa thảm thực vật bản địa tại các vùng đất dự án.' },
-  { icon: Users, title: 'Cộng Đồng Nhân Văn (Community)', desc: 'Kiến tạo những hoạt động gắn kết cư dân, hướng đến lối sống lành mạnh, gắn bó mật thiết với thiên nhiên.' }
-];
-
-const normalizeEcoPage = (p: string) => {
-  const clean = (p || '').toLowerCase().trim();
-  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
-  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
-  if (['du-an', 'projects', 'san-pham', 'sinh-thai'].includes(clean)) return 'projects';
-  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
-  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
-  return clean || 'home';
+export const resolvePageAndDetail = (p?: string) => {
+  if (!p || p === 'home') return { page: 'home', propSlug: '', artSlug: '' };
+  const clean = p.replace(/^\//, '').trim();
+  if (clean.startsWith('tin-tuc/') || clean.startsWith('news/')) {
+    return { page: 'news-detail', propSlug: '', artSlug: clean.replace(/^(tin-tuc\/|news\/)/, '') };
+  }
+  if (clean === 'tin-tuc' || clean === 'news') return { page: 'news', propSlug: '', artSlug: '' };
+  if (clean.startsWith('chi-tiet/') || clean.startsWith('property/')) {
+    return { page: 'property-detail', propSlug: clean.replace(/^(chi-tiet\/|property\/)/, ''), artSlug: '' };
+  }
+  if (clean === 'gioi-thieu' || clean === 'about') return { page: 'about', propSlug: '', artSlug: '' };
+  if (clean === 'lien-he' || clean === 'contact') return { page: 'contact', propSlug: '', artSlug: '' };
+  if (clean === 'du-an' || clean === 'projects') return { page: 'projects', propSlug: '', artSlug: '' };
+  if (clean === 'hoat-dong' || clean === 'activities') return { page: 'activities', propSlug: '', artSlug: '' };
+  if (clean === 'tuyen-dung' || clean === 'career') return { page: 'career', propSlug: '', artSlug: '' };
+  if (['can-ho', 'dat-nen', 'condotel', 'biet-thu', 'shophouse'].includes(clean)) {
+    return { page: clean, propSlug: '', artSlug: '' };
+  }
+  return { page: 'home', propSlug: '', artSlug: '' };
 };
 
-export default function EcoTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const [currentPage, setCurrentPageState] = useState(normalizeEcoPage(initialPage));
+export default function BDS08Template({
+  template,
+  viewport = 'desktop',
+  initialPage = 'home',
+  company,
+  theme,
+  projects,
+  posts
+}: TemplateProps) {
+  const isSmall = viewport === 'mobile' || viewport === 'tablet';
+  const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
+
+  const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
+  const [selectedProperty, setSelectedProperty] = useState<ProjectCardItem>(() => {
+    if (initialParsed.propSlug) {
+      const found = BDS08_PROJECTS.find(p => p.slug === initialParsed.propSlug);
+      if (found) return found;
+    }
+    return BDS08_PROJECTS[0];
+  });
+  const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
+    if (initialParsed.artSlug) {
+      const found = [...BDS08_NEWS_EVENTS, ...BDS08_COMPANY_ACTIVITIES].find(a => a.slug === initialParsed.artSlug);
+      if (found) return found;
+    }
+    return BDS08_NEWS_EVENTS[0];
+  });
+
+  // UI Interactive States
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [leadModalOpen, setLeadModalOpen] = useState(false);
+  const [partnerSlideIdx, setPartnerSlideIdx] = useState(0);
+
+  // Form States
+  const [quickLeadForm, setQuickLeadForm] = useState({ name: '', email: '', phone: '', project: 'Dự án Phố Mỹ Gold City' });
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const tSlug = template?.slug || 'bds-08';
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 4000);
+  };
 
   useEffect(() => {
-    setCurrentPageState(normalizeEcoPage(initialPage));
+    const res = resolvePageAndDetail(initialPage);
+    setCurrentPageState(res.page);
+    if (res.propSlug) {
+      const found = BDS08_PROJECTS.find(p => p.slug === res.propSlug);
+      if (found) setSelectedProperty(found);
+    }
+    if (res.artSlug) {
+      const found = [...BDS08_NEWS_EVENTS, ...BDS08_COMPANY_ACTIVITIES].find(a => a.slug === res.artSlug);
+      if (found) setSelectedArticle(found);
+    }
   }, [initialPage]);
 
-  const setCurrentPage = (p: string, customSlug?: string) => {
-    if (typeof setSelectedProject === "function") setSelectedProject(null);
-    if (typeof setSelectedArticle === "function") setSelectedArticle(null);
-
-    setCurrentPageState(p);
-    const tSlug = template?.slug || 'bds-08';
-    syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
-  };
-
-  useEffect(() => {
-    const handlePopState = () => {
-      const parts = window.location.pathname.split('/').filter(Boolean);
-      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-08') ? parts[1] : 'home');
-      if (sub) {
-        setCurrentPageState(normalizeEcoPage(sub));
-      }
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [template?.slug]);
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
-  // Interactive Project filtering states
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState('Tất cả'); // Standard Type Pills
-  const [filterLocation, setFilterLocation] = useState('Tất cả');
-  const [filterPrice, setFilterPrice] = useState('Tất cả');
-  const [filterCert, setFilterCert] = useState('Tất cả');
-  const [selectedProject, setSelectedProject] = useState<typeof PROJECTS[0] | null>(null);
-
-  // Gallery interactive states
-  const [selectedGalleryTab, setSelectedGalleryTab] = useState('Tất cả');
-  const [selectedGalleryImg, setSelectedGalleryImg] = useState<string | null>(null);
-
-  // News interactive states
-  const [searchNewsQuery, setSearchNewsQuery] = useState('');
-  const [newsCategory, setNewsCategory] = useState('Tất cả');
-  const [selectedArticle, setSelectedArticle] = useState<typeof NEWS[0] | null>(null);
-
-  // Contact form submission states
-  const [contactName, setContactName] = useState('');
-  const [contactEmail, setContactEmail] = useState('');
-  const [contactPhone, setContactPhone] = useState('');
-  const [contactMessage, setContactMessage] = useState('');
-  const [contactSubmitted, setContactSubmitted] = useState(false);
-
-  // Consultation form state
-  const [consultPhone, setConsultPhone] = useState('');
-  const [consultName, setConsultName] = useState('');
-  const [consultInterest, setConsultInterest] = useState('Dự án quan tâm');
-  const [consultMessage, setConsultMessage] = useState('');
-  const [consultSubmitted, setConsultSubmitted] = useState(false);
-
-  // About page tab
-  const [aboutActiveTab, setAboutActiveTab] = useState('values'); // 'values' | 'timeline' | 'leadership'
-  
-  // Expanded leader bio state
-  const [expandedLeader, setExpandedLeader] = useState<string | null>(null);
-
-  const isMobile = viewport === 'mobile';
-  const isSmall = isMobile || viewport === 'tablet';
-
-  const getPageHref = (page: string) => `/demo/${template.slug}${page === 'home' ? '' : '/' + page}`;
-
-  const navLinks = [
-    { label: 'Trang chủ', page: 'home' },
-    { label: 'Dự án', page: 'projects' },
-    { label: 'Về chúng tôi', page: 'about' },
-    { label: 'Thư viện', page: 'gallery' },
-    { label: 'Tin tức', page: 'news' },
-    { label: 'Liên hệ', page: 'contact' },
-  ];
-
-  // Helper to reset filters
-  const resetFilters = () => {
-    setSearchQuery('');
-    setActiveFilter('Tất cả');
-    setFilterLocation('Tất cả');
-    setFilterPrice('Tất cả');
-    setFilterCert('Tất cả');
-  };
-
-  // Reactive Project filtering logic
-  const filteredProjects = PROJECTS.filter(p => {
-    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          p.loc.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          p.desc.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesType = activeFilter === 'Tất cả' || p.type === activeFilter;
-    const matchesLocation = filterLocation === 'Tất cả' || p.loc === filterLocation;
-    const matchesCert = filterCert === 'Tất cả' || p.cert === filterCert;
-    
-    let matchesPrice = true;
-    if (filterPrice === 'Dưới 2 tỷ') {
-      matchesPrice = p.price < 2.0;
-    } else if (filterPrice === '2 - 5 tỷ') {
-      matchesPrice = p.price >= 2.0 && p.price <= 5.0;
-    } else if (filterPrice === '5 - 10 tỷ') {
-      matchesPrice = p.price >= 5.0 && p.price <= 10.0;
-    } else if (filterPrice === 'Trên 10 tỷ') {
-      matchesPrice = p.price > 10.0;
+  const navigate = (page: string, slug?: string) => {
+    setCurrentPageState(page);
+    setMobileMenuOpen(false);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    return matchesSearch && matchesType && matchesLocation && matchesCert && matchesPrice;
-  });
+    let urlSlug = '';
+    if (page === 'home') urlSlug = '';
+    else if (page === 'news-detail' && slug) urlSlug = `tin-tuc/${slug}`;
+    else if (page === 'property-detail' && slug) urlSlug = `chi-tiet/${slug}`;
+    else if (page === 'news') urlSlug = 'tin-tuc';
+    else if (page === 'about') urlSlug = 'gioi-thieu';
+    else if (page === 'contact') urlSlug = 'lien-he';
+    else if (page === 'projects') urlSlug = 'du-an';
+    else if (page === 'activities') urlSlug = 'hoat-dong';
+    else if (page === 'career') urlSlug = 'tuyen-dung';
+    else urlSlug = page;
 
-  // Reactive News filtering logic
-  const filteredNews = NEWS.filter(n => {
-    const matchesSearch = n.title.toLowerCase().includes(searchNewsQuery.toLowerCase()) ||
-                          n.summary.toLowerCase().includes(searchNewsQuery.toLowerCase()) ||
-                          n.content.toLowerCase().includes(searchNewsQuery.toLowerCase());
-    
-    const matchesCategory = newsCategory === 'Tất cả' || n.cat === newsCategory;
-    return matchesSearch && matchesCategory;
-  });
+    syncDemoUrl(urlSlug, tSlug);
+  };
 
-  // Reactive Gallery filtering logic
-  const filteredGallery = selectedGalleryTab === 'Tất cả'
-    ? GALLERY
-    : GALLERY.filter(g => g.category === selectedGalleryTab);
+  const handleOpenProperty = (prop: ProjectCardItem) => {
+    setSelectedProperty(prop);
+    navigate('property-detail', prop.slug);
+  };
 
-  const renderNav = () => (
-    <nav className="sticky top-0 z-40 shadow-sm transition-all duration-300" style={{ backgroundColor: t.headerBg }}>
-      <div className={`${MAX_W} mx-auto px-4 md:px-8 flex justify-between items-center h-20`}>
-        <button onClick={() => { setCurrentPage('home'); resetFilters(); }} className="flex items-center gap-2.5 group">
-          <div className="w-10 h-10 rounded-sm flex items-center justify-center transition-colors" style={{ backgroundColor: t.primary }}>
-            <Leaf className="w-5 h-5 text-white" />
+  const handleOpenArticle = (art: NewsItem) => {
+    setSelectedArticle(art);
+    navigate('news-detail', art.slug);
+  };
+
+  const handleQuickLeadSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!quickLeadForm.phone || !quickLeadForm.name) {
+      alert('Vui lòng điền họ tên và số điện thoại nhận bảng giá!');
+      return;
+    }
+    showToast(`🎉 Đã tiếp nhận đăng ký nhận bảng giá ${quickLeadForm.project} cho quý khách ${quickLeadForm.name} (${quickLeadForm.phone}). Chuyên viên sẽ gửi hồ sơ VIP qua Zalo trong 3 phút!`);
+    setQuickLeadForm({ name: '', email: '', phone: '', project: 'Dự án Phố Mỹ Gold City' });
+    setLeadModalOpen(false);
+  };
+
+  const handleImgError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80';
+  };
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 1. TOP BAR & STICKY HEADER
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderHeader = () => (
+    <header className="sticky top-0 z-40 bg-white text-slate-800 shadow-md border-b border-slate-200">
+      {/* Top Cyan Micro Bar */}
+      <div className="bg-[#48C0D8] text-white text-xs py-1.5 px-4 hidden md:block font-medium">
+        <div className={`${MAX_W} mx-auto flex items-center justify-between`}>
+          <div className="flex items-center gap-6">
+            <a href="mailto:admin@templatebds.com" className="flex items-center gap-1.5 hover:underline text-white">
+              <Mail size={13} /> admin@templatebds.com
+            </a>
+            <span className="opacity-70">|</span>
+            <span>Hotline 24/7: <strong>0919 006 030</strong></span>
           </div>
-          <span className="text-xl font-black tracking-tight" style={{ color: t.heading }}>{template.name || 'ECO LIVING'}</span>
-        </button>
+          <div className="flex items-center gap-4">
+            <button onClick={() => navigate('contact')} className="hover:underline cursor-pointer">Liên hệ</button>
+            <span className="opacity-50">|</span>
+            <button onClick={() => showToast('Chức năng đăng nhập thành viên đang được tích hợp với hệ sinh thái CMS!')} className="hover:underline cursor-pointer">Đăng nhập</button>
+            <Search size={14} className="cursor-pointer hover:scale-110 transition" />
+          </div>
+        </div>
+      </div>
 
-        {/* Desktop Nav */}
-        <div className="hidden lg:flex items-center gap-8 text-sm font-semibold">
-          {navLinks.map(link => (
-            <button key={link.page} onClick={() => setCurrentPage(link.page)}
-              className="transition-colors hover:opacity-70"
-              style={{ color: currentPage === link.page ? t.primary : t.muted }}>
-              {link.label}
-            </button>
-          ))}
-          <button 
-            onClick={() => setCurrentPage('contact')} 
-            className="px-6 py-2.5 text-white rounded-sm font-bold shadow-md transition-all hover:-translate-y-0.5"
-            style={{ backgroundColor: t.primary }}>
-            Tư vấn miễn phí
-          </button>
+      {/* Main Navbar */}
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-3`}>
+        {/* Brand Logo with 3D Blocks */}
+        <div 
+          onClick={() => navigate('home')}
+          className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
+        >
+          <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-sm bg-gradient-to-br from-[#0284C7] via-[#16A34A] to-[#EAB308] flex items-center justify-center text-white font-black shadow-md group-hover:scale-105 transition-transform p-1.5 sm:p-2 shrink-0">
+            <Building2 size={20} className="text-white" />
+          </div>
+          <div className="min-w-0 truncate">
+            <div className="flex items-center gap-1">
+              <span className="text-base sm:text-xl font-black tracking-tight text-[#0284C7] group-hover:text-[#0369A1] transition truncate">
+                THEME
+              </span>
+              <span className="text-base sm:text-xl font-black tracking-tight text-[#E11D48] truncate">
+                WP
+              </span>
+            </div>
+            <span className="text-[7.5px] sm:text-[10px] tracking-widest text-[#15803D] block uppercase font-extrabold truncate">
+              SÀN PHÂN PHỐI BẤT ĐỘNG SẢN CAO CẤP
+            </span>
+          </div>
         </div>
 
-        {/* Mobile Hamburger Button */}
-        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2" style={{ color: t.heading }}>
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
-      </div>
-      {mobileMenuOpen && (
-        <div className="lg:hidden border-t py-4 px-4 animate-fadeIn" style={{ borderColor: t.accent, backgroundColor: t.surface }}>
-          {navLinks.map(link => (
-            <button key={link.page} onClick={() => { setCurrentPage(link.page); setMobileMenuOpen(false); }}
-              className="block w-full text-left py-3 font-semibold border-b last:border-0 transition-colors"
-              style={{ color: currentPage === link.page ? t.primary : t.text, borderColor: '#e5e7eb' }}>
-              {link.label}
-            </button>
-          ))}
+        {/* Navigation Menu */}
+        <nav className="hidden lg:flex items-center gap-1.5 xl:gap-3 text-[11px] xl:text-xs font-bold uppercase tracking-wider text-slate-700 whitespace-nowrap">
           <button 
-            onClick={() => { setCurrentPage('contact'); setMobileMenuOpen(false); }} 
-            className="mt-4 w-full py-3 text-white rounded-sm font-bold" 
-            style={{ backgroundColor: t.primary }}>
-            Tư vấn miễn phí
+            onClick={() => navigate('home')} 
+            className={`whitespace-nowrap px-2.5 py-1.5 rounded-lg transition-all ${currentPage === 'home' ? 'text-[#16A34A] font-extrabold border-b-2 border-[#16A34A]' : 'hover:text-[#16A34A]'}`}
+          >
+            Trang Chủ
           </button>
+          <button 
+            onClick={() => navigate('about')} 
+            className={`whitespace-nowrap px-2.5 py-1.5 rounded-lg transition-all ${currentPage === 'about' ? 'text-[#16A34A] font-extrabold border-b-2 border-[#16A34A]' : 'hover:text-[#16A34A]'}`}
+          >
+            Giới Thiệu
+          </button>
+          <button 
+            onClick={() => navigate('projects')} 
+            className={`whitespace-nowrap px-2.5 py-1.5 rounded-lg transition-all ${currentPage === 'projects' || currentPage === 'property-detail' ? 'text-[#16A34A] font-extrabold border-b-2 border-[#16A34A]' : 'hover:text-[#16A34A]'}`}
+          >
+            Dự Án
+          </button>
+          <button 
+            onClick={() => navigate('news')} 
+            className={`whitespace-nowrap px-2.5 py-1.5 rounded-lg transition-all ${currentPage === 'news' || currentPage === 'news-detail' ? 'text-[#16A34A] font-extrabold border-b-2 border-[#16A34A]' : 'hover:text-[#16A34A]'}`}
+          >
+            Tin Tức
+          </button>
+          <button 
+            onClick={() => navigate('activities')} 
+            className={`whitespace-nowrap px-2.5 py-1.5 rounded-lg transition-all ${currentPage === 'activities' ? 'text-[#16A34A] font-extrabold border-b-2 border-[#16A34A]' : 'hover:text-[#16A34A]'}`}
+          >
+            Hoạt Động Công Ty
+          </button>
+          <button 
+            onClick={() => navigate('career')} 
+            className={`whitespace-nowrap px-2.5 py-1.5 rounded-lg transition-all ${currentPage === 'career' ? 'text-[#16A34A] font-extrabold border-b-2 border-[#16A34A]' : 'hover:text-[#16A34A]'}`}
+          >
+            Tuyển Dụng
+          </button>
+          <button 
+            onClick={() => navigate('contact')} 
+            className={`whitespace-nowrap px-2.5 py-1.5 rounded-lg transition-all ${currentPage === 'contact' ? 'text-[#16A34A] font-extrabold border-b-2 border-[#16A34A]' : 'hover:text-[#16A34A]'}`}
+          >
+            Liên Hệ
+          </button>
+        </nav>
+
+        {/* CTA & Mobile Toggle */}
+        <div className="flex items-center gap-2.5 shrink-0 ml-auto">
+          <a
+            href="tel:0919006030"
+            className="hidden xl:flex items-center gap-1.5 px-3.5 py-2 rounded-sm bg-emerald-50 text-[#15803D] border border-emerald-200 text-xs font-black whitespace-nowrap shrink-0 hover:bg-emerald-100 transition"
+          >
+            <Phone size={13} className="text-[#16A34A] animate-pulse shrink-0" />
+            <span>0919 006 030</span>
+          </a>
+          <button
+            onClick={() => setLeadModalOpen(true)}
+            className="hidden md:inline-block px-3.5 py-2 bg-gradient-to-r from-[#16A34A] to-[#15803D] hover:from-[#15803D] hover:to-[#166534] text-white text-xs font-black rounded-sm shadow-md transition uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 active:scale-95"
+          >
+            Tải Báo Giá VIP
+          </button>
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-1.5 sm:p-2 rounded-sm bg-slate-100 text-slate-800 lg:hidden hover:bg-slate-200 shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Drawer Menu */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-white border-b border-slate-200 px-6 py-5 space-y-2 animate-in slide-in-from-top duration-200 shadow-xl">
+          <div className="grid grid-cols-2 gap-2 text-xs font-bold uppercase">
+            <button onClick={() => navigate('home')} className="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700">Trang Chủ</button>
+            <button onClick={() => navigate('about')} className="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700">Giới Thiệu</button>
+            <button onClick={() => navigate('projects')} className="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700">Dự Án</button>
+            <button onClick={() => navigate('news')} className="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700">Tin Tức</button>
+            <button onClick={() => navigate('activities')} className="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700">Hoạt Động</button>
+            <button onClick={() => navigate('career')} className="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700">Tuyển Dụng</button>
+            <button onClick={() => navigate('contact')} className="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700">Liên Hệ</button>
+          </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 
-  const renderHome = () => (
-    <main>
-      {/* HERO */}
-      <section className="relative min-h-screen flex items-center overflow-hidden" style={{ backgroundColor: t.dark }}>
-        <div className="absolute inset-0">
-          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=1800&q=85" alt="Eco Living Hero" className="w-full h-full object-cover opacity-30" loading="eager" />
-          <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${t.dark}F0 0%, ${t.primary}99 50%, ${t.dark}CC 100%)` }} />
+  // ─────────────────────────────────────────────────────────────────────────
+  // 2. HERO PANORAMA GOLF RESORT BANNER (EXACT MATCHING MOCKUP)
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderHero = () => (
+    <section className="relative min-h-[380px] sm:min-h-[460px] lg:min-h-[500px] flex items-center justify-end text-white overflow-hidden bg-slate-900">
+      {/* Background Golf Resort Panoramic Image */}
+      <img
+        src="https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=1600&q=80"
+        alt="Golf Resort Banner"
+        onError={handleImgError}
+        className="absolute inset-0 w-full h-full object-cover object-center"
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-[#0284C7]/80" />
+
+      {/* Script "Just for you" */}
+      <div className="absolute top-8 left-8 sm:left-16 text-white/90 text-2xl sm:text-4xl font-serif italic drop-shadow-md select-none">
+        Just for you
+      </div>
+
+      {/* Right Content Overlay Box */}
+      <div className={`relative z-20 ${MAX_W} mx-auto px-4 py-12 flex justify-end w-full`}>
+        <div className="max-w-md lg:max-w-lg text-right space-y-4">
+          {/* Cyan Emblem Badge */}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0284C7] text-white text-xs font-bold shadow-md">
+            <Building2 size={14} /> Đầu Tư Bất Động Sản
+          </div>
+
+          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-serif italic text-white font-black leading-tight drop-shadow-lg">
+            Thanh toán ban đầu chỉ <span className="text-amber-300 not-italic font-sans font-black">500 triệu</span>
+          </h1>
+
+          <div className="inline-block px-5 py-2 rounded-sm bg-[#15803D] text-[#FDE047] text-xs sm:text-sm font-black tracking-wider uppercase shadow-xl border border-emerald-300/40">
+            ★ SINH LỜI TỪ 12–15% MỖI NĂM ★
+          </div>
+
+          <div className="pt-2 flex justify-end">
+            <a
+              href="tel:0919006030"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-sm bg-white text-slate-900 hover:bg-slate-100 transition shadow-2xl font-black text-sm sm:text-base border-2 border-emerald-500"
+            >
+              <Phone size={18} className="text-[#16A34A] animate-pulse" />
+              <span>0919.006.030</span>
+            </a>
+          </div>
         </div>
-        <div className={`relative z-10 w-full ${MAX_W} mx-auto px-4 md:px-8 py-32`}>
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm text-xs font-black uppercase tracking-widest mb-8 border"
-              style={{ backgroundColor: `${t.accentDark}33`, borderColor: t.accentDark, color: t.accent }}>
-              <Leaf className="w-4 h-4" /> Khu Đô Thị Sinh Thái Tiêu Chuẩn LEED Platinum
-            </div>
-            <h1 className="font-black text-white leading-[1.05] mb-6" style={{ fontSize: isSmall ? '3rem' : '5.5rem' }}>
-              Sống Xanh —<br />Sống Thật
-            </h1>
-            <p className="text-lg leading-relaxed mb-10 max-w-xl opacity-90" style={{ color: t.accent }}>
-              Không phải chỉ là nhà. Đây là nơi bạn thức giấc mỗi sáng giữa 15ha công viên nguyên sinh, hít thở không khí trong lành AQI &lt;50 và sống chậm lại trong nhịp điệu thiên nhiên.
-            </p>
-            <div className="flex flex-wrap gap-4 mb-16">
-              <button 
-                onClick={() => setCurrentPage('projects')} 
-                className="px-8 py-4 rounded-sm font-bold text-white flex items-center gap-2 shadow-xl transition-all hover:-translate-y-1"
-                style={{ backgroundColor: t.primary }}>
-                Khám Phá Dự Án <ArrowRight className="w-5 h-5" />
-              </button>
-              <a 
-                href="https://www.youtube.com" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="flex items-center gap-3 px-6 py-4 rounded-sm font-bold border-2 text-white transition-all hover:bg-white/10"
-                style={{ borderColor: 'rgba(255,255,255,0.4)' }}>
-                <div className="w-8 h-8 rounded-sm border-2 border-white flex items-center justify-center">
-                  <Play className="w-3 h-3 text-white fill-white" />
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 3. MAIN SECTION: 6 PROJECTS GRID + RIGHT SIDEBAR (MATCHING MOCKUP)
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderProjectsAndSidebar = () => (
+    <section className="py-12 bg-white text-slate-800">
+      <div className={`${MAX_W} mx-auto px-4`}>
+        
+        {/* Section Heading */}
+        <div className="text-center max-w-2xl mx-auto mb-10 space-y-1">
+          <h2 className="text-xl sm:text-2xl font-black tracking-tight text-[#15803D] uppercase">
+            DỰ ÁN BẤT ĐỘNG SẢN ĐANG PHÂN PHỐI
+          </h2>
+          <div className="w-24 h-1 bg-[#16A34A] mx-auto rounded-sm" />
+        </div>
+
+        {/* 2-Column Layout: Left 8 Cols (6 Projects) + Right 4 Cols (Sidebar) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* LEFT: 6 Project Cards Grid (2 rows x 3 cols) */}
+          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+            {BDS08_PROJECTS.map(proj => (
+              <div
+                key={proj.id}
+                onClick={() => handleOpenProperty(proj)}
+                className="group bg-white rounded-sm overflow-hidden border border-slate-200 hover:border-emerald-500 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between"
+              >
+                <div>
+                  {/* Thumbnail with Green Badge */}
+                  <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                    <img
+                      src={proj.image}
+                      alt={proj.title}
+                      onError={handleImgError}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-[#15803D] text-white text-[10px] font-bold shadow-md">
+                      {proj.statusBadge}
+                    </div>
+                  </div>
+
+                  {/* Title & Info */}
+                  <div className="p-3.5 space-y-2">
+                    <h3 className="text-xs font-black text-slate-800 group-hover:text-[#16A34A] transition-colors leading-snug line-clamp-2 uppercase min-h-[34px]">
+                      {proj.title}
+                    </h3>
+                    <div className="text-[11px] text-slate-500 flex items-center gap-1">
+                      <MapPin size={11} className="text-emerald-600 shrink-0" />
+                      <span className="truncate">{proj.city}</span>
+                    </div>
+                  </div>
                 </div>
-                Xem Video Dự Án
+
+                <div className="px-3.5 pb-3.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                  <span className="font-extrabold text-[#E11D48] text-sm">{proj.price}</span>
+                  <span className="text-[11px] font-bold text-slate-400">{proj.area}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* RIGHT SIDEBAR (Col-span-4) */}
+          <div className="lg:col-span-4 space-y-4">
+            
+            {/* Button 1: Green Gradient */}
+            <button
+              onClick={() => setLeadModalOpen(true)}
+              className="w-full py-3.5 px-5 rounded-sm bg-gradient-to-r from-[#16A34A] to-[#15803D] hover:from-[#15803D] hover:to-[#166534] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02]"
+            >
+              <Download size={16} /> TẢI BÁO GIÁ DỰ ÁN
+            </button>
+
+            {/* Button 2: Sky Blue Gradient */}
+            <button
+              onClick={() => setLeadModalOpen(true)}
+              className="w-full py-3.5 px-5 rounded-sm bg-gradient-to-r from-[#0284C7] to-[#0369A1] hover:from-[#0369A1] hover:to-[#075985] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02]"
+            >
+              <Gift size={16} /> THÔNG TIN ƯU ĐÃI
+            </button>
+
+            {/* Banner 3: Orange Hotline Box */}
+            <div className="w-full p-4 rounded-sm bg-gradient-to-r from-[#F59E0B] to-[#EA580C] text-white text-center shadow-lg space-y-1">
+              <span className="text-[11px] font-extrabold uppercase tracking-widest block opacity-90">TƯ VẤN 24/7</span>
+              <a href="tel:0919006030" className="text-xl sm:text-2xl font-black block tracking-tight hover:underline">
+                0919.006.030
               </a>
             </div>
-            {/* Stats bar */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { num: '100ha', label: 'Diện tích cây xanh' },
-                { num: '70%', label: 'Cảnh quan & mặt nước' },
-                { num: '<50', label: 'Chỉ số AQI' },
-                { num: '15km', label: 'Đường dạo bộ' },
-              ].map((stat, i) => (
-                <div key={i} className="p-4 rounded-sm border text-center" style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.2)' }}>
-                  <div className="text-3xl font-black text-white mb-1">{stat.num}</div>
-                  <div className="text-xs font-semibold opacity-70 text-white">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        {/* Wave */}
-        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
-          <svg className="relative block w-full h-16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118.08,130.83,115.1,188.44,101.4,233.56,90.62,279.7,73.5,321.39,56.44Z" fill={t.bg} />
-          </svg>
-        </div>
-      </section>
 
-      {/* QUICK SEARCH WITH REDIRECT FILTER BINDINGS */}
-      <section className="py-6" style={{ backgroundColor: t.bg }}>
-        <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
-          <div className="p-6 rounded-md shadow-xl grid grid-cols-1 md:grid-cols-4 gap-4" style={{ backgroundColor: t.surface }}>
-            <select 
-              className="border rounded-sm px-4 py-3 text-sm font-medium focus:outline-none bg-transparent text-slate-800" 
-              style={{ borderColor: t.accent }}
-              value={activeFilter}
-              onChange={(e) => setActiveFilter(e.target.value)}
-            >
-              <option value="Tất cả">Loại BĐS xanh (Tất cả)</option>
-              <option value="Biệt thự sinh thái">Biệt thự sinh thái</option>
-              <option value="Căn hộ xanh">Căn hộ xanh</option>
-              <option value="Villa vườn">Villa vườn</option>
-              <option value="Farmhouse">Farmhouse</option>
-              <option value="Nhà phố xanh">Nhà phố xanh</option>
-              <option value="Đất vườn">Đất vườn</option>
-            </select>
-            <select 
-              className="border rounded-sm px-4 py-3 text-sm font-medium focus:outline-none bg-transparent text-slate-800" 
-              style={{ borderColor: t.accent }}
-              value={filterLocation}
-              onChange={(e) => setFilterLocation(e.target.value)}
-            >
-              <option value="Tất cả">Khu vực (Tất cả)</option>
-              <option value="Hưng Yên">Hưng Yên</option>
-              <option value="Bình Dương">Bình Dương</option>
-              <option value="Đà Lạt">Đà Lạt</option>
-              <option value="Cần Thơ">Cần Thơ</option>
-              <option value="Hòa Bình">Hòa Bình</option>
-              <option value="Long An">Long An</option>
-              <option value="Đà Nẵng">Đà Nẵng</option>
-              <option value="Lâm Đồng">Lâm Đồng</option>
-            </select>
-            <select 
-              className="border rounded-sm px-4 py-3 text-sm font-medium focus:outline-none bg-transparent text-slate-800" 
-              style={{ borderColor: t.accent }}
-              value={filterPrice}
-              onChange={(e) => setFilterPrice(e.target.value)}
-            >
-              <option value="Tất cả">Ngân sách (Tất cả)</option>
-              <option value="Dưới 2 tỷ">Dưới 2 tỷ</option>
-              <option value="2 - 5 tỷ">2 - 5 tỷ</option>
-              <option value="5 - 10 tỷ">5 - 10 tỷ</option>
-              <option value="Trên 10 tỷ">Trên 10 tỷ</option>
-            </select>
-            <button 
-              onClick={() => setCurrentPage('projects')} 
-              className="py-3 px-6 rounded-sm text-white font-bold flex items-center justify-center gap-2 transition-all hover:opacity-90"
-              style={{ backgroundColor: t.primary }}>
-              <MapPin className="w-4 h-4" /> Tìm kiếm ngay
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ECO METRICS */}
-      <section className="py-20" style={{ backgroundColor: t.bg }}>
-        <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { num: '100ha', label: 'Cây xanh & công viên', icon: Trees, color: t.primary },
-              { num: '50+', label: 'Loài cây bản địa', icon: Leaf, color: '#0891b2' },
-              { num: '98%', label: 'Cư dân hài lòng', icon: Heart, color: '#dc2626' },
-              { num: '12', label: 'Năm kinh nghiệm', icon: Award, color: t.gold },
-            ].map((item, i) => (
-              <div key={i} className="p-8 rounded-md text-center shadow-sm hover:shadow-lg transition-all hover:-translate-y-1" style={{ backgroundColor: t.surface }}>
-                <div className="w-16 h-16 rounded-sm flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: `${item.color}20` }}>
-                  <item.icon className="w-8 h-8" style={{ color: item.color }} />
-                </div>
-                <div className="text-4xl font-black mb-2" style={{ color: t.heading }}>{item.num}</div>
-                <div className="text-sm font-medium" style={{ color: t.muted }}>{item.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FEATURED PROJECTS */}
-      <section className="py-20" style={{ backgroundColor: t.surface }}>
-        <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
-            <div>
-              <div className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: t.primary }}>🌿 Dự án nổi bật</div>
-              <h2 className="text-4xl md:text-5xl font-black leading-tight" style={{ color: t.heading }}>Những Không Gian<br />Xanh Tuyệt Vời</h2>
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              {['Tất cả', 'Biệt thự sinh thái', 'Căn hộ xanh', 'Villa vườn'].map(f => (
-                <button key={f} onClick={() => setActiveFilter(f)}
-                  className="px-4 py-2 rounded-sm text-sm font-bold transition-all"
-                  style={{ backgroundColor: activeFilter === f ? t.primary : t.bg, color: activeFilter === f ? 'white' : t.muted }}>
-                  {f}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {PROJECTS.filter(p => activeFilter === 'Tất cả' || p.type === activeFilter).slice(0, 6).map((p, i) => (
-              <div key={i} className="rounded-md overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group flex flex-col justify-between" style={{ backgroundColor: t.surface }}>
-                <div>
-                  <div className="relative overflow-hidden h-56">
-                    <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={p.img} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
-                    <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 rounded-sm text-xs font-black text-white" style={{ backgroundColor: t.primary }}>{p.badge}</span>
-                    </div>
-                    <div className="absolute top-4 right-4">
-                      <span className="px-3 py-1 rounded-sm text-xs font-bold" style={{ backgroundColor: 'rgba(255,255,255,0.9)', color: t.heading }}>{p.type}</span>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-lg font-black mb-1" style={{ color: t.heading }}>{p.name}</h3>
-                    <div className="flex items-center gap-1 text-sm mb-3" style={{ color: t.muted }}>
-                      <MapPin className="w-4 h-4" /> {p.loc}
-                    </div>
-                    <p className="text-xs text-slate-500 line-clamp-2 mb-4">{p.desc}</p>
-                    <div className="flex justify-between items-center pt-4 border-t" style={{ borderColor: t.accent }}>
-                      <div>
-                        <div className="text-xs font-semibold mb-0.5" style={{ color: t.muted }}>Diện tích</div>
-                        <div className="font-bold text-sm" style={{ color: t.text }}>{p.area}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-xs font-semibold mb-0.5" style={{ color: t.muted }}>Giá từ</div>
-                        <div className="font-black text-lg" style={{ color: t.primary }}>{p.price} tỷ</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="px-6 pb-6">
-                  <button 
-                    onClick={() => setSelectedProject(p)} 
-                    className="w-full py-3 rounded-sm font-bold text-sm transition-all hover:opacity-90" 
-                    style={{ backgroundColor: `${t.primary}15`, color: t.primary }}>
-                    Xem chi tiết →
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="text-center mt-12">
-            <button onClick={() => { resetFilters(); setCurrentPage('projects'); }} className="px-10 py-4 rounded-sm font-bold border-2 transition-all hover:bg-opacity-10" style={{ borderColor: t.primary, color: t.primary }}>
-              Xem tất cả {PROJECTS.length} dự án <ArrowRight className="w-4 h-4 inline ml-1" />
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ABOUT / STORY */}
-      <section className="py-24" style={{ backgroundColor: t.bg }}>
-        <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <div className="text-xs font-black uppercase tracking-widest mb-4" style={{ color: t.primary }}>🌱 Về chúng tôi</div>
-              <h2 className="text-4xl md:text-5xl font-black leading-tight mb-6" style={{ color: t.heading }}>Chúng Tôi Tin<br />Vào Cách Sống Khác</h2>
-              <p className="text-lg leading-relaxed mb-6" style={{ color: t.muted }}>
-                Eco Properties ra đời năm 2012 từ một niềm tin đơn giản: con người xứng đáng được sống trong môi trường trong lành, không phải đánh đổi thiên nhiên để đổi lấy tiện nghi đô thị.
-              </p>
-              <p className="text-base leading-relaxed mb-10" style={{ color: t.muted }}>
-                14 năm qua, chúng tôi đã xây dựng hơn 15 khu đô thị sinh thái trên toàn quốc, là ngôi nhà cho hơn 30,000 cư dân đang tận hưởng cuộc sống xanh đích thực.
-              </p>
-              <div className="grid grid-cols-3 gap-6 mb-10">
-                {[{ num: '15+', label: 'Dự án' }, { num: '30K+', label: 'Cư dân' }, { num: '12', label: 'Năm KN' }].map((s, i) => (
-                  <div key={i} className="text-center">
-                    <div className="text-3xl font-black mb-1" style={{ color: t.primary }}>{s.num}</div>
-                    <div className="text-sm" style={{ color: t.muted }}>{s.label}</div>
+            {/* Box: Có Thể Bạn Quan Tâm */}
+            <div className="bg-slate-50 border border-slate-200 rounded-sm p-4 space-y-3">
+              <h4 className="text-xs font-black uppercase text-[#15803D] tracking-wider border-b border-slate-200 pb-2">
+                CÓ THỂ BẠN QUAN TÂM
+              </h4>
+              <div className="space-y-3">
+                {BDS08_SIDEBAR_INTERESTS.map(item => (
+                  <div
+                    key={item.id}
+                    onClick={() => {
+                      const found = BDS08_PROJECTS.find(p => p.slug === item.slug) || BDS08_PROJECTS[0];
+                      handleOpenProperty(found);
+                    }}
+                    className="flex items-center gap-3 cursor-pointer group hover:bg-white p-1.5 rounded-sm transition"
+                  >
+                    <img
+                      src={item.img}
+                      alt={item.title}
+                      onError={handleImgError}
+                      className="w-12 h-12 rounded-sm object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition"
+                    />
+                    <span className="text-[11px] font-bold text-slate-700 group-hover:text-[#16A34A] leading-snug line-clamp-2 uppercase">
+                      {item.title}
+                    </span>
                   </div>
                 ))}
               </div>
-              <button onClick={() => setCurrentPage('about')} className="px-8 py-4 rounded-sm font-bold text-white transition-all hover:opacity-90 flex items-center gap-2" style={{ backgroundColor: t.primary }}>
-                Câu chuyện của chúng tôi <ArrowRight className="w-5 h-5" />
-              </button>
             </div>
-            <div className="relative">
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=900&q=85" alt="Eco Living" className="w-full h-96 object-cover rounded-md shadow-2xl" loading="lazy" />
-              <div className="absolute -bottom-6 -left-6 p-6 rounded-sm shadow-xl" style={{ backgroundColor: t.surface }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-sm flex items-center justify-center" style={{ backgroundColor: t.primary }}>
-                    <Award className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <div className="font-black text-sm" style={{ color: t.heading }}>LEED Platinum 2026</div>
-                    <div className="text-xs" style={{ color: t.muted }}>Chứng nhận quốc tế cao nhất</div>
-                  </div>
-                </div>
-              </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 4. EXPERT CONSULTANT PROFILE STRIP
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderConsultantProfile = () => (
+    <section className="py-8 bg-[#F8FAFC] border-y border-slate-200">
+      <div className={`${MAX_W} mx-auto px-4`}>
+        <div className="bg-white rounded-md p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row items-center gap-6 lg:gap-10">
+          
+          {/* Avatar Profile */}
+          <div className="flex items-center gap-4 shrink-0">
+            <img
+              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80"
+              alt="Trần Thanh Phương"
+              className="w-20 h-20 rounded-sm object-cover border-4 border-emerald-100 shadow-md shrink-0"
+            />
+            <div>
+              <h4 className="text-base font-black text-slate-900">Trần Thanh Phương</h4>
+              <p className="text-xs text-slate-500 font-medium">Trưởng phòng kinh doanh</p>
+              <a href="tel:0919006030" className="text-xs font-black text-[#E11D48] hover:underline block mt-0.5">
+                Hotline: 0919 006 030
+              </a>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* AMENITIES */}
-      <section className="py-24" style={{ backgroundColor: t.dark }}>
-        <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
-          <div className="text-center mb-16">
-            <div className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: t.accent }}>Tiện ích đặc biệt</div>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-4">Hệ Sinh Thái Tiện Ích<br />Xanh Đỉnh Cao</h2>
-            <p className="text-lg max-w-2xl mx-auto" style={{ color: `${t.accent}CC` }}>
-              Không chỉ có cây xanh — đây là cả một hệ sinh thái sống đầy đủ, tiện nghi và bền vững
+          {/* Vertical Divider */}
+          <div className="hidden md:block w-px h-16 bg-slate-200 shrink-0" />
+
+          {/* Description Quote */}
+          <div className="space-y-1 text-center md:text-left">
+            <h5 className="text-xs font-black text-[#15803D] uppercase tracking-wider">
+              CHUYÊN VIÊN TƯ VẤN LÂU NĂM KINH NGHIỆM
+            </h5>
+            <p className="text-xs text-slate-600 leading-relaxed max-w-3xl">
+              Chuyên viên tư vấn của Hưng Lộc Phát Land là những người dày dặn kinh nghiệm, am hiểu sâu sắc trong lĩnh vực bất động sản và luôn tận tâm, nhiệt tình tư vấn giúp mang lại lợi ích và sự thỏa mãn tối đa cho mọi khách hàng.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {AMENITIES.map((a, i) => (
-              <div key={i} className="p-6 rounded-sm border transition-all hover:bg-white/10 group" style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)' }}>
-                <div className="w-14 h-14 rounded-sm flex items-center justify-center mb-5 transition-colors" style={{ backgroundColor: `${t.primary}40` }}>
-                  <a.icon className="w-7 h-7" style={{ color: t.accent }} />
-                </div>
-                <h3 className="text-lg font-black text-white mb-2">{a.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: `${t.accent}99` }}>{a.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* GALLERY PREVIEW WITH LIGHTBOX TRIGGER */}
-      <section className="py-24" style={{ backgroundColor: t.bg }}>
-        <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
-          <div className="flex justify-between items-end mb-12">
-            <div>
-              <div className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: t.primary }}>Thư viện ảnh</div>
-              <h2 className="text-4xl md:text-5xl font-black" style={{ color: t.heading }}>Cảm Hứng Thiên Nhiên</h2>
+        </div>
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 5. 3 COLUMNS: TIN TỨC - HOẠT ĐỘNG - GIẢI THƯỞNG VINH DANH
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderNewsAndAwards = () => (
+    <section className="py-12 bg-white text-slate-800">
+      <div className={`${MAX_W} mx-auto px-4`}>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          
+          {/* CỘT 1: Tin tức - sự kiện */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-black text-slate-900 uppercase border-b-2 border-[#16A34A] pb-2">
+              Tin tức — sự kiện
+            </h3>
+            <div className="space-y-3">
+              {BDS08_NEWS_EVENTS.map(news => (
+                <div
+                  key={news.id}
+                  onClick={() => handleOpenArticle(news)}
+                  className="flex gap-3 cursor-pointer group p-1.5 rounded-sm hover:bg-slate-50 transition"
+                >
+                  <img
+                    src={news.image}
+                    alt={news.title}
+                    onError={handleImgError}
+                    className="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition"
+                  />
+                  <div className="space-y-0.5">
+                    <h4 className="text-[11px] font-bold text-slate-800 group-hover:text-[#16A34A] line-clamp-2 leading-snug">
+                      {news.title}
+                    </h4>
+                    <span className="text-[10px] text-slate-400 block">{news.date}</span>
+                  </div>
+                </div>
+              ))}
             </div>
-            <button onClick={() => setCurrentPage('gallery')} className="text-sm font-bold flex items-center gap-2 transition-colors hover:opacity-70" style={{ color: t.primary }}>
-              Xem tất cả <ArrowRight className="w-4 h-4" />
-            </button>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {GALLERY.slice(0, 4).map((img, i) => (
-              <div 
-                key={i} 
-                onClick={() => setSelectedGalleryImg(img.url)} 
-                className={`relative overflow-hidden rounded-sm cursor-pointer group ${i === 0 ? 'col-span-2 row-span-2' : ''}`} 
-                style={{ aspectRatio: i === 0 ? '1' : '1' }}
-              >
-                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={img.url} alt={img.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-4 text-center" style={{ backgroundColor: 'rgba(5,46,22,0.6)' }}>
-                  <span className="text-emerald-400 font-bold text-xs uppercase tracking-wider mb-1">{img.category}</span>
-                  <span className="text-white font-black text-sm">{img.title}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* CONTACT/CONSULT CTA WITH SUCCESS SCREEN */}
-      <section className="py-24" style={{ backgroundColor: t.dark }}>
-        <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* CỘT 2: Hoạt động công ty */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-black text-slate-900 uppercase border-b-2 border-[#0284C7] pb-2">
+              Hoạt động công ty
+            </h3>
+            <div className="space-y-3">
+              {BDS08_COMPANY_ACTIVITIES.map(act => (
+                <div
+                  key={act.id}
+                  onClick={() => handleOpenArticle(act)}
+                  className="flex gap-3 cursor-pointer group p-1.5 rounded-sm hover:bg-slate-50 transition"
+                >
+                  <img
+                    src={act.image}
+                    alt={act.title}
+                    onError={handleImgError}
+                    className="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition"
+                  />
+                  <div className="space-y-0.5">
+                    <h4 className="text-[11px] font-bold text-slate-800 group-hover:text-[#0284C7] line-clamp-2 leading-snug">
+                      {act.title}
+                    </h4>
+                    <span className="text-[10px] text-slate-400 block">{act.date}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CỘT 3: Giải thưởng vinh danh TOP 10 thương hiệu */}
+          <div className="bg-slate-900 text-white rounded-sm overflow-hidden shadow-xl border border-slate-800 flex flex-col justify-between p-5 space-y-4">
             <div>
-              <div className="text-xs font-black uppercase tracking-widest mb-4" style={{ color: t.accent }}>Liên hệ ngay</div>
-              <h2 className="text-4xl md:text-5xl font-black text-white mb-6">Bắt Đầu Hành Trình<br />Sống Xanh Cùng Chúng Tôi</h2>
-              <p className="text-lg mb-8" style={{ color: `${t.accent}CC` }}>
-                Để lại thông tin, chuyên viên tư vấn sẽ liên hệ trong vòng 30 phút và tư vấn miễn phí về dự án phù hợp nhất với bạn.
+              <img
+                src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&q=80"
+                alt="Award Gala"
+                className="w-full h-44 object-cover rounded-sm border border-white/20 mb-3"
+              />
+              <span className="text-[11px] font-extrabold text-[#FDE047] uppercase tracking-wider block text-center">
+                ★ VINH DANH THƯƠNG HIỆU UY TÍN ★
+              </span>
+              <h4 className="text-sm font-black text-center text-white mt-1">
+                "Hưng Lộc Phát vào TOP 10 thương hiệu mạnh uy tín của Việt Nam"
+              </h4>
+              <p className="text-[11px] text-slate-300 text-center leading-relaxed mt-2">
+                Liên hoan các Doanh nghiệp Rồng Vàng & Thương hiệu mạnh Việt Nam 2017-2018 vừa diễn ra tại Hà Nội nhằm tri ân Tập đoàn Hưng Lộc Phát lọt vào Top 10.
               </p>
-              <div className="flex flex-col gap-4">
-                <a href="tel:0919006030" className="flex items-center gap-3 hover:underline transition-colors" style={{ color: t.accent }}>
-                  <Phone className="w-5 h-5 shrink-0" /> <span>0919 006 030 (Hotline CSKH)</span>
-                </a>
-                <a href="mailto:hello@ecoliving.vn" className="flex items-center gap-3 hover:underline transition-colors" style={{ color: t.accent }}>
-                  <Mail className="w-5 h-5 shrink-0" /> <span>hello@ecoliving.vn</span>
-                </a>
-                <a href="https://maps.google.com/?q=208+Giang+Vo+Ba+Dinh+Ha+Noi" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:underline transition-colors" style={{ color: t.accent }}>
-                  <MapPin className="w-5 h-5 shrink-0" /> <span>Tầng 12, Vinhomes Center, 208 Giảng Võ, Hà Nội</span>
-                </a>
-              </div>
             </div>
             
-            <div className="p-8 rounded-md" style={{ backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
-              {consultSubmitted ? (
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 rounded-sm bg-emerald-500 flex items-center justify-center mx-auto mb-6 text-white animate-bounce">
-                    <Check className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-2xl font-black text-white mb-2">Đăng Ký Thành Công!</h3>
-                  <p className="text-emerald-200 text-sm mb-6">Chúng tôi sẽ gọi lại cho bạn qua số điện thoại <strong>{consultPhone}</strong> trong 30 phút nữa.</p>
-                  <button 
-                    type="button"
-                    onClick={() => {
-                      setConsultSubmitted(false);
-                      setConsultName('');
-                      setConsultPhone('');
-                      setConsultMessage('');
-                    }}
-                    className="px-6 py-2.5 rounded-sm font-bold text-sm bg-white text-emerald-800 hover:bg-emerald-50 transition-colors"
-                  >
-                    Gửi yêu cầu mới
-                  </button>
-                </div>
-              ) : (
-                <form onSubmit={(e) => {
-                  e.preventDefault();
-                  const phoneClean = consultPhone.replace(/\s/g, '');
-                  if (!phoneClean || !/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) {
-                    alert('Số điện thoại phải từ 10-11 số (VD: 0919006030 hoặc +84919006030).');
-                    return;
-                  }
-                  if (consultName.trim()) {
-                    setConsultSubmitted(true);
-                  }
-                }}>
-                  <h3 className="text-xl font-black text-white mb-6">Đăng ký tư vấn miễn phí</h3>
-                  <div className="space-y-4">
-                    <input 
-                      type="text" 
-                      placeholder="Họ và tên *" 
-                      required
-                      className="w-full px-4 py-3 rounded-sm text-sm outline-none" 
-                      style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}
-                      value={consultName}
-                      onChange={(e) => setConsultName(e.target.value)}
-                    />
-                    <input 
-                      type="tel" 
-                      placeholder="Số điện thoại *" 
-                      required
-                      className="w-full px-4 py-3 rounded-sm text-sm outline-none" 
-                      style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}
-                      value={consultPhone}
-                      onChange={(e) => setConsultPhone(e.target.value)}
-                    />
-                    <select 
-                      className="w-full px-4 py-3 rounded-sm text-sm outline-none text-slate-800" 
-                      value={consultInterest}
-                      onChange={(e) => setConsultInterest(e.target.value)}
-                    >
-                      <option value="Dự án quan tâm">Chọn dự án quan tâm</option>
-                      {PROJECTS.map(p => (
-                        <option key={p.id} value={p.name}>{p.name}</option>
-                      ))}
-                    </select>
-                    <textarea 
-                      placeholder="Yêu cầu thêm (VD: mức giá muốn mua, hướng nhà...)" 
-                      rows={3} 
-                      className="w-full px-4 py-3 rounded-sm text-sm outline-none resize-none" 
-                      style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}
-                      value={consultMessage}
-                      onChange={(e) => setConsultMessage(e.target.value)}
-                    />
-                    <button type="submit" className="w-full py-4 rounded-sm font-black text-white transition-all hover:opacity-90 text-lg" style={{ backgroundColor: t.primary }}>
-                      Gửi Đăng Ký →
-                    </button>
-                  </div>
-                </form>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-  );
-
-  const renderProjects = () => (
-    <main className="py-24 min-h-screen" style={{ backgroundColor: t.bg }}>
-      <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
-        <div className="text-center mb-12">
-          <div className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: t.primary }}>Khám phá</div>
-          <h1 className="text-5xl font-black mb-4" style={{ color: t.heading }}>Tất Cả Dự Án Xanh</h1>
-          <p className="text-lg max-w-2xl mx-auto" style={{ color: t.muted }}>Từ căn hộ sinh thái giữa lòng đô thị đến biệt thự đảo giữa sông nước</p>
-        </div>
-
-        {/* Dynamic Filters Panel */}
-        <div className="p-6 rounded-md bg-white shadow-md mb-8 space-y-4">
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            {/* Search */}
-            <div className="relative w-full md:w-80">
-              <Search className="absolute left-3 top-3.5 w-4 h-4 text-slate-400" />
-              <input 
-                type="text" 
-                placeholder="Tìm tên dự án, khu vực..."
-                className="w-full pl-9 pr-4 py-2.5 text-sm border rounded-sm focus:outline-none focus:border-green-600 bg-transparent text-slate-800"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              {searchQuery && (
-                <button onClick={() => setSearchQuery('')} className="absolute right-3 top-3 text-slate-400 hover:text-slate-600">
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-
-            {/* Dropdowns */}
-            <div className="grid grid-cols-3 gap-3 w-full md:w-auto flex-1 max-w-2xl">
-              <select 
-                className="border rounded-sm px-3 py-2.5 text-xs md:text-sm font-semibold text-slate-700 bg-transparent"
-                value={filterLocation} 
-                onChange={(e) => setFilterLocation(e.target.value)}
-              >
-                <option value="Tất cả">Tất cả khu vực</option>
-                <option value="Hưng Yên">Hưng Yên</option>
-                <option value="Bình Dương">Bình Dương</option>
-                <option value="Đà Lạt">Đà Lạt</option>
-                <option value="Cần Thơ">Cần Thơ</option>
-                <option value="Hòa Bình">Hòa Bình</option>
-                <option value="Long An">Long An</option>
-                <option value="Đà Nẵng">Đà Nẵng</option>
-                <option value="Lâm Đồng">Lâm Đồng</option>
-              </select>
-
-              <select 
-                className="border rounded-sm px-3 py-2.5 text-xs md:text-sm font-semibold text-slate-700 bg-transparent"
-                value={filterPrice} 
-                onChange={(e) => setFilterPrice(e.target.value)}
-              >
-                <option value="Tất cả">Tất cả mức giá</option>
-                <option value="Dưới 2 tỷ">Dưới 2 tỷ</option>
-                <option value="2 - 5 tỷ">2 - 5 tỷ</option>
-                <option value="5 - 10 tỷ">5 - 10 tỷ</option>
-                <option value="Trên 10 tỷ">Trên 10 tỷ</option>
-              </select>
-
-              <select 
-                className="border rounded-sm px-3 py-2.5 text-xs md:text-sm font-semibold text-slate-700 bg-transparent"
-                value={filterCert} 
-                onChange={(e) => setFilterCert(e.target.value)}
-              >
-                <option value="Tất cả">Tất cả chứng nhận</option>
-                <option value="LEED Platinum">LEED Platinum</option>
-                <option value="LEED Gold">LEED Gold</option>
-                <option value="EDGE">EDGE</option>
-                <option value="EDGE Advanced">EDGE Advanced</option>
-                <option value="LOTUS Platinum">LOTUS Platinum</option>
-                <option value="LOTUS Gold">LOTUS Gold</option>
-              </select>
+            <div className="pt-2 border-t border-slate-800 text-center">
+              <span className="text-xs text-slate-400">HOTLINE: </span>
+              <a href="tel:0919006030" className="text-xs font-black text-amber-400 hover:underline">
+                0919 006 030
+              </a>
             </div>
           </div>
 
-          {/* Type Pills */}
-          <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-100 items-center">
-            <span className="text-xs font-bold text-slate-400 mr-2 flex items-center gap-1"><Filter className="w-3.5 h-3.5" /> Loại BĐS:</span>
-            {['Tất cả', 'Biệt thự sinh thái', 'Căn hộ xanh', 'Villa vườn', 'Farmhouse', 'Nhà phố xanh', 'Đất vườn'].map(f => (
-              <button key={f} onClick={() => setActiveFilter(f)} className="px-4 py-1.5 rounded-sm text-xs font-bold transition-all"
-                style={{ backgroundColor: activeFilter === f ? t.primary : t.bg, color: activeFilter === f ? 'white' : t.muted, border: `1px solid ${activeFilter === f ? t.primary : t.accent}` }}>
-                {f}
-              </button>
-            ))}
-
-            {(searchQuery || activeFilter !== 'Tất cả' || filterLocation !== 'Tất cả' || filterPrice !== 'Tất cả' || filterCert !== 'Tất cả') && (
-              <button onClick={resetFilters} className="text-xs text-red-600 hover:text-red-800 font-bold ml-auto flex items-center gap-1">
-                <X className="w-3.5 h-3.5" /> Xóa bộ lọc
-              </button>
-            )}
-          </div>
         </div>
 
-        {/* Results Counter */}
-        <div className="text-sm font-bold text-slate-500 mb-6">
-          Tìm thấy {filteredProjects.length} dự án xanh phù hợp.
-        </div>
-
-        {/* Project Cards Grid */}
-        {filteredProjects.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProjects.map((p, i) => (
-              <div key={i} className="rounded-md overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group bg-white flex flex-col justify-between" style={{ backgroundColor: t.surface }}>
-                <div>
-                  <div className="relative overflow-hidden h-56">
-                    <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={p.img} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
-                    <div className="absolute top-4 left-4 flex flex-col gap-2">
-                      <span className="px-3 py-1 rounded-sm text-xs font-black text-white" style={{ backgroundColor: t.primary }}>{p.badge}</span>
-                      <span className="px-3 py-1 rounded-sm text-xs font-bold text-white bg-slate-900/80 flex items-center gap-1">
-                        <Leaf className="w-3 h-3 text-emerald-400" /> {p.cert}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-lg font-black mb-1" style={{ color: t.heading }}>{p.name}</h3>
-                    <div className="flex items-center gap-1 text-sm mb-2" style={{ color: t.muted }}><MapPin className="w-4 h-4" />{p.loc}</div>
-                    <div className="text-xs text-slate-500 line-clamp-3 mb-4">{p.desc}</div>
-                    <div className="text-xs font-bold text-slate-400 mb-3">{p.type} • {p.area}</div>
-                  </div>
-                </div>
-                <div className="p-6 pt-0 border-t border-slate-50 flex justify-between items-center mt-auto">
-                  <div className="font-black text-xl" style={{ color: t.primary }}>{p.price} tỷ</div>
-                  <button 
-                    onClick={() => setSelectedProject(p)} 
-                    className="px-5 py-2 rounded-sm text-sm font-bold text-white shadow-sm hover:opacity-90" 
-                    style={{ backgroundColor: t.primary }}
-                  >
-                    Xem ngay
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20 bg-white rounded-md border border-slate-200">
-            <Trees className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-black text-slate-700 mb-2">Không Tìm Thấy Dự Án Phù Hợp</h3>
-            <p className="text-slate-500 text-sm max-w-md mx-auto mb-6">Vui lòng thử thay đổi từ khoá tìm kiếm hoặc reset lại các dropdown lọc ở trên.</p>
-            <button onClick={resetFilters} className="px-6 py-2.5 rounded-sm text-white font-bold text-sm" style={{ backgroundColor: t.primary }}>Reset bộ lọc</button>
-          </div>
-        )}
       </div>
-    </main>
+    </section>
   );
 
-  const renderAbout = () => (
-    <main className="min-h-screen" style={{ backgroundColor: t.bg }}>
-      <section className="py-32 text-center" style={{ backgroundColor: t.dark }}>
-        <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
-          <div className="text-xs font-black uppercase tracking-widest mb-4" style={{ color: t.accent }}>Về chúng tôi</div>
-          <h1 className="text-5xl md:text-6xl font-black text-white mb-6">Eco Properties<br />Vietnam</h1>
-          <p className="text-xl max-w-3xl mx-auto" style={{ color: `${t.accent}CC` }}>
-            14 năm kiến tạo đô thị sinh thái — biến giấc mơ sống xanh thành hiện thực cho 30,000 gia đình Việt
-          </p>
-        </div>
-      </section>
+  // ─────────────────────────────────────────────────────────────────────────
+  // 6. PARTNERS LOGO CAROUSEL
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderPartners = () => {
+    const partners = [
+      { name: 'CCI FRANCE VIETNAM', icon: '🇫🇷', sub: 'CCI France' },
+      { name: 'METROPOLIS', icon: '🏙️', sub: 'Metropolis Saigon' },
+      { name: 'VINCITY', icon: '🌳', sub: 'VinCity Grand Park' },
+      { name: 'VINHOMES', icon: '👑', sub: 'Vinhomes Central Park' },
+      { name: 'TẬP ĐOÀN THĂNG LONG', icon: '🐲', sub: 'Thang Long Corp' },
+      { name: 'HƯNG LỘC PHÁT', icon: '⭐', sub: 'Hung Loc Phat Land' }
+    ];
 
-      {/* Sứ Mệnh & Tầm Nhìn Core values layout */}
-      <section className="py-16" style={{ backgroundColor: t.surface }}>
-        <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
-          {/* Interactive tabs navigation */}
-          <div className="flex justify-center border-b border-slate-200 mb-16 overflow-x-auto">
-            <div className="flex gap-8">
-              <button 
-                onClick={() => setAboutActiveTab('values')}
-                className="pb-4 text-base font-black border-b-2 transition-all whitespace-nowrap"
-                style={{ 
-                  color: aboutActiveTab === 'values' ? t.primary : t.muted, 
-                  borderColor: aboutActiveTab === 'values' ? t.primary : 'transparent' 
-                }}
-              >
-                Sứ mệnh & Giá trị
-              </button>
-              <button 
-                onClick={() => setAboutActiveTab('timeline')}
-                className="pb-4 text-base font-black border-b-2 transition-all whitespace-nowrap"
-                style={{ 
-                  color: aboutActiveTab === 'timeline' ? t.primary : t.muted, 
-                  borderColor: aboutActiveTab === 'timeline' ? t.primary : 'transparent' 
-                }}
-              >
-                Lịch sử phát triển
-              </button>
-              <button 
-                onClick={() => setAboutActiveTab('leadership')}
-                className="pb-4 text-base font-black border-b-2 transition-all whitespace-nowrap"
-                style={{ 
-                  color: aboutActiveTab === 'leadership' ? t.primary : t.muted, 
-                  borderColor: aboutActiveTab === 'leadership' ? t.primary : 'transparent' 
-                }}
-              >
-                Ban lãnh đạo
-              </button>
-            </div>
-          </div>
-
-          {/* Tab 1: values & Core value list */}
-          {aboutActiveTab === 'values' && (
-            <div className="space-y-16 animate-fadeIn">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                <div>
-                  <h2 className="text-4xl font-black mb-6" style={{ color: t.heading }}>Sứ Mệnh & Tầm Nhìn</h2>
-                  <p className="text-lg leading-relaxed mb-6" style={{ color: t.muted }}>
-                    Sứ mệnh: Xây dựng những không gian sống xanh, lành mạnh và bền vững để người Việt được sống chất lượng cao mà không phải hy sinh thiên nhiên.
-                  </p>
-                  <p className="text-base leading-relaxed" style={{ color: t.muted }}>
-                    Tầm nhìn 2030: Trở thành nhà phát triển BĐS sinh thái hàng đầu Đông Nam Á, với 20 khu đô thị xanh đạt chuẩn quốc tế, phục vụ 100,000 cư dân và đạt Net Zero Carbon vào năm 2035.
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { num: '15+', label: 'Dự án', icon: Building2 },
-                    { num: '30K', label: 'Cư dân', icon: Users },
-                    { num: '14', label: 'Năm hoạt động', icon: Award },
-                    { num: '98%', label: 'Hài lòng', icon: Heart },
-                  ].map((s, i) => (
-                    <div key={i} className="p-6 rounded-sm text-center shadow-sm" style={{ backgroundColor: t.bg }}>
-                      <s.icon className="w-8 h-8 mx-auto mb-3" style={{ color: t.primary }} />
-                      <div className="text-3xl font-black mb-1" style={{ color: t.heading }}>{s.num}</div>
-                      <div className="text-sm font-semibold" style={{ color: t.muted }}>{s.label}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-3xl font-black text-center mb-10" style={{ color: t.heading }}>Giá Trị Cốt Lõi</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {CORE_VALUES.map((val, i) => (
-                    <div key={i} className="p-6 rounded-sm border shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: t.surface, borderColor: t.accent }}>
-                      <div className="w-12 h-12 rounded-sm flex items-center justify-center mb-4" style={{ backgroundColor: `${t.primary}15` }}>
-                        <val.icon className="w-6 h-6" style={{ color: t.primary }} />
-                      </div>
-                      <h4 className="font-black text-lg mb-2" style={{ color: t.heading }}>{val.title}</h4>
-                      <p className="text-sm leading-relaxed" style={{ color: t.muted }}>{val.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Tab 2: Timeline Milestones */}
-          {aboutActiveTab === 'timeline' && (
-            <div className="max-w-3xl mx-auto animate-fadeIn">
-              <h2 className="text-3xl font-black text-center mb-12" style={{ color: t.heading }}>Hành Trình Kiến Tạo Công Trình Xanh</h2>
-              <div className="relative">
-                <div className="absolute left-6 top-0 bottom-0 w-0.5" style={{ backgroundColor: t.accent }} />
-                <div className="space-y-12">
-                  {TIMELINE.map((item, i) => (
-                    <div key={i} className="flex gap-8 group relative">
-                      <div className="flex-shrink-0 w-12 h-12 rounded-sm flex items-center justify-center z-10 font-black text-sm text-white" style={{ backgroundColor: t.primary }}>
-                        {item.year}
-                      </div>
-                      <div className="bg-emerald-50/50 p-6 rounded-sm border border-slate-100 flex-1 hover:bg-emerald-50 transition-colors">
-                        <div className="text-sm font-black mb-1" style={{ color: t.primary }}>Năm {item.year}</div>
-                        <h4 className="text-xl font-black mb-2" style={{ color: t.heading }}>{item.title}</h4>
-                        <p className="text-sm leading-relaxed" style={{ color: t.muted }}>{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Tab 3: Leadership List */}
-          {aboutActiveTab === 'leadership' && (
-            <div className="animate-fadeIn">
-              <h2 className="text-3xl font-black text-center mb-4" style={{ color: t.heading }}>Đội Ngũ Sáng Lập & Điều Hành</h2>
-              <p className="text-slate-500 text-center max-w-xl mx-auto mb-12">Những bộ óc tiên phong mang triết lý kiến trúc bền vững và chuẩn mực quốc tế về Việt Nam.</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {LEADERSHIP.map((leader, i) => (
-                  <div key={i} className="bg-white rounded-md overflow-hidden border border-slate-100 shadow-md hover:shadow-lg transition-shadow">
-                    <div className="h-64 overflow-hidden relative">
-                      <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={leader.img} alt={leader.name} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="p-6">
-                      <h4 className="font-black text-lg text-slate-800 mb-1">{leader.name}</h4>
-                      <p className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-4">{leader.role}</p>
-                      
-                      <div className="text-sm text-slate-500">
-                        {expandedLeader === leader.name ? (
-                          <div className="space-y-3">
-                            <p>{leader.bio}</p>
-                            <button onClick={() => setExpandedLeader(null)} className="text-xs font-bold text-red-600 hover:underline">Ẩn bớt</button>
-                          </div>
-                        ) : (
-                          <div>
-                            <p className="line-clamp-2">{leader.bio}</p>
-                            <button onClick={() => setExpandedLeader(leader.name)} className="text-xs font-bold text-emerald-600 hover:underline mt-2 block">Đọc thêm tiểu sử →</button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
-    </main>
-  );
-
-  const renderGallery = () => (
-    <main className="py-24 min-h-screen" style={{ backgroundColor: t.bg }}>
-      <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
-        <div className="text-center mb-12">
-          <div className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: t.primary }}>Thư viện ảnh</div>
-          <h1 className="text-5xl font-black mb-4" style={{ color: t.heading }}>Cảm Hứng Thiên Nhiên</h1>
-          <p className="text-lg max-w-2xl mx-auto" style={{ color: t.muted }}>Hình ảnh chân thực về cảnh quan và quy hoạch sống xanh tại các dự án.</p>
-        </div>
-
-        {/* Gallery Interactive Tabs */}
-        <div className="flex flex-wrap gap-2 justify-center mb-12">
-          {['Tất cả', 'Kiến trúc', 'Cảnh quan', 'Tiện ích', 'Nội thất'].map(tab => (
+    return (
+      <section className="py-10 bg-slate-50 border-t border-slate-200">
+        <div className={`${MAX_W} mx-auto px-4`}>
+          <div className="flex items-center justify-between gap-4">
             <button 
-              key={tab} 
-              onClick={() => setSelectedGalleryTab(tab)} 
-              className="px-5 py-2 rounded-sm text-sm font-bold transition-all"
-              style={{ 
-                backgroundColor: selectedGalleryTab === tab ? t.primary : t.surface, 
-                color: selectedGalleryTab === tab ? 'white' : t.muted, 
-                border: `1px solid ${selectedGalleryTab === tab ? t.primary : t.accent}` 
-              }}
+              onClick={() => setPartnerSlideIdx((partnerSlideIdx - 1 + partners.length) % partners.length)}
+              className="p-2 rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-100 transition cursor-pointer"
             >
-              {tab}
+              <ChevronLeft size={18} />
             </button>
-          ))}
-        </div>
 
-        {/* Gallery Image Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredGallery.map((img, i) => (
-            <div 
-              key={i} 
-              onClick={() => setSelectedGalleryImg(img.url)} 
-              className="group aspect-square overflow-hidden rounded-sm cursor-pointer relative shadow-sm hover:shadow-lg transition-all"
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 w-full text-center">
+              {partners.map((p, i) => (
+                <div key={i} className="p-3 bg-white rounded-sm border border-slate-200 shadow-sm flex flex-col items-center justify-center space-y-1 hover:border-emerald-400 transition">
+                  <span className="text-xl">{p.icon}</span>
+                  <span className="text-[10px] font-black text-slate-800 uppercase tracking-tight">{p.name}</span>
+                  <span className="text-[9px] text-slate-400">{p.sub}</span>
+                </div>
+              ))}
+            </div>
+
+            <button 
+              onClick={() => setPartnerSlideIdx((partnerSlideIdx + 1) % partners.length)}
+              className="p-2 rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-100 transition cursor-pointer"
             >
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={img.url} alt={img.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
-                <span className="text-emerald-400 font-bold text-xs uppercase tracking-wider mb-0.5">{img.category}</span>
-                <span className="text-white font-bold text-sm">{img.title}</span>
-              </div>
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  };
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 7. GREEN FOOTER BANNER: NOVAWORLD & FORM TẢI BÁO GIÁ NHANH
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderGreenFooterBanner = () => (
+    <section className="py-14 bg-[#15803D] text-white">
+      <div className={`${MAX_W} mx-auto px-4`}>
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10">
+          
+          {/* CỘT 1: NovaWorld & Hưng Lộc Phát Info */}
+          <div className="md:col-span-5 space-y-4">
+            <div className="space-y-1">
+              <span className="text-xl sm:text-2xl font-black text-amber-300 tracking-tight block">
+                NovaWorld PHAN THIẾT
+              </span>
+              <span className="text-sm font-extrabold text-emerald-100 block">
+                Hưng Lộc Phát Land Phân Phối F1
+              </span>
             </div>
-          ))}
-        </div>
-      </div>
-    </main>
-  );
 
-  const renderNews = () => (
-    <main className="py-24 min-h-screen" style={{ backgroundColor: t.bg }}>
-      <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
-        <div className="text-center mb-12">
-          <div className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: t.primary }}>Blog & Tin tức</div>
-          <h1 className="text-5xl font-black mb-4" style={{ color: t.heading }}>Câu Chuyện Xanh</h1>
-          <p className="text-lg max-w-2xl mx-auto" style={{ color: t.muted }}>Cập nhật những giải pháp, tin tức công nghệ xanh và phân tích thị trường mới nhất</p>
-        </div>
-
-        {/* Search & Filter News */}
-        <div className="max-w-4xl mx-auto bg-white rounded-md p-6 shadow-md mb-12 flex flex-col md:flex-row gap-4 items-center justify-between">
-          <div className="relative w-full md:w-80">
-            <Search className="absolute left-3 top-3.5 w-4 h-4 text-slate-400" />
-            <input 
-              type="text" 
-              placeholder="Tìm kiếm bài viết..."
-              className="w-full pl-9 pr-4 py-2.5 text-sm border rounded-sm focus:outline-none focus:border-green-600 bg-transparent text-slate-800"
-              value={searchNewsQuery}
-              onChange={(e) => setSearchNewsQuery(e.target.value)}
-            />
-          </div>
-
-          <div className="flex flex-wrap gap-2 w-full md:w-auto overflow-x-auto">
-            {['Tất cả', 'Thị trường', 'Dự án mới', 'Giải thưởng', 'Sự kiện', 'Công nghệ', 'Cộng đồng'].map(cat => (
-              <button 
-                key={cat} 
-                onClick={() => setNewsCategory(cat)}
-                className="px-3.5 py-1.5 rounded-sm text-xs font-bold transition-all"
-                style={{ 
-                  backgroundColor: newsCategory === cat ? t.primary : t.bg, 
-                  color: newsCategory === cat ? 'white' : t.text 
-                }}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* News Grid */}
-        {filteredNews.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {filteredNews.map((n, i) => (
-              <div 
-                key={i} 
-                className="rounded-sm overflow-hidden shadow-md hover:shadow-xl transition-all hover:-translate-y-1 bg-white cursor-pointer flex flex-col justify-between border border-slate-100"
-                onClick={() => setSelectedArticle(n)}
-              >
-                <div>
-                  <div className="h-52 overflow-hidden relative">
-                    <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={n.img} alt={n.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
-                    <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 rounded-sm text-xs font-black text-white bg-slate-900/80">
-                        {n.cat}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <div className="text-xs text-slate-400 font-bold mb-2 flex justify-between">
-                      <span>{n.date}</span>
-                      <span>{n.views}</span>
-                    </div>
-                    <h3 className="text-base font-black mb-3 leading-snug text-slate-900 line-clamp-2 hover:text-green-700 transition-colors">{n.title}</h3>
-                    <p className="text-xs text-slate-500 line-clamp-3">{n.summary}</p>
-                  </div>
-                </div>
-                <div className="px-6 pb-6 pt-4 border-t border-slate-50 flex justify-between items-center text-xs font-bold text-green-700">
-                  <span>Tác giả: {n.author}</span>
-                  <span>Đọc tiếp →</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20 bg-white rounded-md border border-slate-200">
-            <BookOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-black text-slate-700 mb-2">Không Tìm Thấy Tin Tức Phù Hợp</h3>
-            <p className="text-slate-500 text-sm max-w-md mx-auto mb-4">Vui lòng thử gõ từ khoá khác hoặc click vào nút "Tất cả" danh mục ở trên.</p>
-            <button onClick={() => { setSearchNewsQuery(''); setNewsCategory('Tất cả'); }} className="px-6 py-2.5 rounded-sm text-white font-bold text-sm" style={{ backgroundColor: t.primary }}>Tất cả bài viết</button>
-          </div>
-        )}
-      </div>
-    </main>
-  );
-
-  const renderContact = () => (
-    <main className="py-24 min-h-screen" style={{ backgroundColor: t.bg }}>
-      <div className={`${MAX_W} mx-auto px-4 md:px-8`}>
-        <div className="text-center mb-16">
-          <div className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: t.primary }}>Liên hệ</div>
-          <h1 className="text-5xl font-black mb-4" style={{ color: t.heading }}>Gặp Gỡ Chúng Tôi</h1>
-          <p className="text-lg max-w-2xl mx-auto" style={{ color: t.muted }}>Đội ngũ tư vấn viên am hiểu quy hoạch công trình xanh sẵn sàng giải đáp thắc mắc của bạn.</p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          {/* Info cards */}
-          <div className="space-y-6">
-            <h2 className="text-2xl font-black mb-6" style={{ color: t.heading }}>Hệ Thống Văn Phòng & Bản Đồ</h2>
-            {[
-              { icon: Phone, label: 'Hotline Chăm sóc khách hàng', val: '1800 1234 (Miễn phí 24/7)' },
-              { icon: Mail, label: 'Email Hỗ trợ pháp lý & thông tin', val: 'hello@ecoliving.vn' },
-              { icon: MapPin, label: 'Văn phòng giao dịch Hà Nội', val: '208 Giảng Võ, Ba Đình, Hà Nội' },
-              { icon: MapPin, label: 'Văn phòng giao dịch TP. Hồ Chí Minh', val: '65 Lê Lợi, Quận 1, TP.HCM' },
-            ].map((item, i) => (
-              <div key={i} className="flex items-start gap-4 p-5 rounded-sm bg-white shadow-sm border border-slate-50">
-                <div className="w-12 h-12 rounded-sm flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${t.primary}15` }}>
-                  <item.icon className="w-5 h-5" style={{ color: t.primary }} />
-                </div>
-                <div>
-                  <div className="text-xs font-black uppercase tracking-wider mb-1" style={{ color: t.muted }}>{item.label}</div>
-                  <div className="font-bold text-slate-800 text-sm md:text-base">{item.val}</div>
-                </div>
-              </div>
-            ))}
-
-            {/* Interactive Google Map */}
-            <div className="rounded-md overflow-hidden border border-emerald-100 shadow-md flex flex-col h-64 bg-white">
-              <div className="px-4 py-2.5 bg-emerald-950 text-white flex items-center justify-between text-xs">
-                <span className="font-bold flex items-center gap-1.5 truncate"><MapPin className="w-3.5 h-3.5 text-emerald-400" /> Trụ sở Eco Living — 208 Giảng Võ, Ba Đình, Hà Nội</span>
-                <a
-                  href="https://www.google.com/maps/search/?api=1&query=208+Gi%E1%BA%A3ng+V%C3%B5,+Ba+%C4%90%C3%ACnh,+H%C3%A0+N%E1%BB%99i"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shrink-0"
-                >
-                  Mở Google Maps
-                </a>
-              </div>
-              <div className="flex-1 w-full h-full">
-                <iframe
-                  title="Bản đồ Eco Living Giảng Võ"
-                  src="https://maps.google.com/maps?q=208+Gi%E1%BA%A3ng+V%C3%B5,+Ba+%C4%90%C3%ACnh,+H%C3%A0+N%E1%BB%99i&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                  className="w-full h-full border-0"
-                  loading="lazy"
-                  allowFullScreen
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Form and success box */}
-          <div className="p-8 rounded-md bg-white shadow-md border border-slate-100">
-            {contactSubmitted ? (
-              <div className="text-center py-12">
-                <div className="w-20 h-20 bg-emerald-500 rounded-sm flex items-center justify-center text-white mx-auto mb-6 shadow-md animate-bounce">
-                  <Check className="w-10 h-10" />
-                </div>
-                <h3 className="text-3xl font-black text-slate-900 mb-2">Gửi Tin Nhắn Thành Công!</h3>
-                <p className="text-slate-500 text-sm mb-8 max-w-sm mx-auto">
-                  Chào <strong>{contactName}</strong>, chúng tôi đã nhận được thông tin liên hệ của bạn qua email <strong>{contactEmail}</strong>. Chuyên viên sẽ gọi điện tư vấn trực tiếp cho bạn qua số <strong>{contactPhone}</strong> trong vòng 30 phút.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <button 
-                    type="button"
-                    onClick={() => {
-                      setContactSubmitted(false);
-                      setContactName('');
-                      setContactEmail('');
-                      setContactPhone('');
-                      setContactMessage('');
-                    }}
-                    className="px-6 py-3 rounded-sm font-bold text-sm border border-green-700 text-green-700 hover:bg-slate-50 transition-colors"
-                  >
-                    Gửi tin nhắn khác
-                  </button>
-                  <button 
-                    type="button"
-                    onClick={() => {
-                      setContactSubmitted(false);
-                      setCurrentPage('home');
-                    }}
-                    className="px-6 py-3 rounded-sm font-bold text-sm text-white bg-green-700 hover:bg-green-800 transition-colors"
-                  >
-                    Về Trang Chủ
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                if (contactName.trim() && contactEmail.trim() && contactPhone.trim()) {
-                  setContactSubmitted(true);
-                }
-              }}>
-                <h3 className="text-2xl font-black mb-6 text-slate-900">Gửi Tin Nhắn Cho Chúng Tôi</h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 mb-1">Họ và tên *</label>
-                    <input 
-                      type="text" 
-                      placeholder="Nguyễn Văn A" 
-                      required
-                      className="w-full px-4 py-3 rounded-sm text-sm outline-none border focus:border-green-600 bg-transparent text-slate-800" 
-                      style={{ borderColor: t.accent }}
-                      value={contactName}
-                      onChange={(e) => setContactName(e.target.value)}
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-500 mb-1">Số điện thoại *</label>
-                      <input 
-                        type="tel" 
-                        placeholder="0901234567" 
-                        required
-                        className="w-full px-4 py-3 rounded-sm text-sm outline-none border focus:border-green-600 bg-transparent text-slate-800" 
-                        style={{ borderColor: t.accent }}
-                        value={contactPhone}
-                        onChange={(e) => setContactPhone(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-500 mb-1">Email liên hệ *</label>
-                      <input 
-                        type="email" 
-                        placeholder="ten@email.com" 
-                        required
-                        className="w-full px-4 py-3 rounded-sm text-sm outline-none border focus:border-green-600 bg-transparent text-slate-800" 
-                        style={{ borderColor: t.accent }}
-                        value={contactEmail}
-                        onChange={(e) => setContactEmail(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 mb-1">Nội dung tin nhắn</label>
-                    <textarea 
-                      placeholder="Tôi muốn tìm hiểu kỹ hơn về các dự án có chứng chỉ LEED Platinum..." 
-                      rows={5} 
-                      className="w-full px-4 py-3 rounded-sm text-sm outline-none border focus:border-green-600 resize-none bg-transparent text-slate-800" 
-                      style={{ borderColor: t.accent }}
-                      value={contactMessage}
-                      onChange={(e) => setContactMessage(e.target.value)}
-                    />
-                  </div>
-                  <button type="submit" className="w-full py-4 rounded-sm font-black text-white hover:opacity-95 transition-opacity text-base shadow-sm" style={{ backgroundColor: t.primary }}>Gửi tin nhắn ngay →</button>
-                </div>
-              </form>
-            )}
-          </div>
-        </div>
-      </div>
-    </main>
-  );
-
-  const renderFooter = () => (
-    <footer style={{ backgroundColor: t.dark, color: 'rgba(255,255,255,0.7)' }}>
-      <div className={`${MAX_W} mx-auto px-4 md:px-8 py-16`}>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <Leaf className="w-6 h-6" style={{ color: t.accent }} />
-              <span className="text-xl font-black text-white">{template.name || 'ECO LIVING'}</span>
-            </div>
-            <p className="text-sm leading-relaxed mb-6" style={{ color: 'rgba(255,255,255,0.5)' }}>
-              Tiên phong phát triển bất động sản sinh thái bền vững tại Việt Nam.
+            <p className="text-xs text-emerald-100 leading-relaxed">
+              Trúng Top Phân Phối TOP 10 thương hiệu mạnh uy tín của Việt Nam! Liên hoan các Doanh nghiệp Rồng Vàng & Thương hiệu mạnh Việt Nam 2017-2018 vừa diễn ra tại Hà Nội nhằm tri ân Tập đoàn Hưng Lộc Phát lọt vào Top 10.
             </p>
-            <div className="flex items-center gap-2.5">
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Facebook"
-                className="w-9 h-9 rounded-sm flex items-center justify-center hover:bg-blue-600 text-white transition-all shadow-xs"
-                style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
-              >
-                <FacebookIcon className="w-4 h-4" />
-              </a>
-              <a
-                href="https://zalo.me/0919006030"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Zalo Chat"
-                className="w-9 h-9 rounded-sm flex items-center justify-center hover:bg-[#0068FF] text-white transition-all shadow-xs p-2"
-                style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
-              >
-                <ZaloIcon className="w-full h-full" />
-              </a>
-              <a
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="YouTube"
-                className="w-9 h-9 rounded-sm flex items-center justify-center hover:bg-red-600 text-white transition-all shadow-xs"
-                style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
-              >
-                <YoutubeIcon className="w-4 h-4" />
-              </a>
-              <a
-                href="https://tiktok.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="TikTok"
-                className="w-9 h-9 rounded-sm flex items-center justify-center hover:bg-slate-800 text-white transition-all shadow-xs"
-                style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
-              >
-                <TiktokIcon className="w-4 h-4" />
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Instagram"
-                className="w-9 h-9 rounded-sm flex items-center justify-center hover:bg-pink-600 text-white transition-all shadow-xs"
-                style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
-              >
-                <InstagramIcon className="w-4 h-4" />
-              </a>
+
+            <div className="flex items-center gap-2.5 pt-2">
+              <a href="https://facebook.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-blue-600 flex items-center justify-center text-xs font-bold transition">FB</a>
+              <a href="https://zalo.me/0919006030" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-blue-600 flex items-center justify-center text-xs font-bold transition">ZL</a>
+              <a href="tel:0919006030" className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-emerald-700 flex items-center justify-center text-xs font-bold transition">📞</a>
+              <a href="https://youtube.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-red-600 flex items-center justify-center text-xs font-bold transition">YT</a>
             </div>
           </div>
-          {[
-            { title: 'Dự án', links: ['Ecopark Grand', 'Forest Valley', 'Green Horizon', 'Bamboo Hills', 'Lotus Garden'] },
-            { title: 'Thông tin', links: ['Về chúng tôi', 'Tin tức', 'Báo cáo', 'Tuyển dụng', 'Đối tác'] },
-            { title: 'Pháp lý', links: ['Điều khoản sử dụng', 'Bảo mật', 'Cookie', 'Khiếu nại'] },
-          ].map((col, i) => (
-            <div key={i}>
-              <h4 className="font-black text-white mb-4">{col.title}</h4>
-              <ul className="space-y-2">
-                {col.links.map((l, j) => (
-                  <li key={j}><button onClick={() => { resetFilters(); setCurrentPage('projects'); }} className="text-sm hover:text-white transition-colors">{l}</button></li>
+
+          {/* CỘT 2: Thông tin liên hệ */}
+          <div className="md:col-span-3 space-y-3 text-xs">
+            <h4 className="text-sm font-black uppercase tracking-wider text-amber-300 border-b border-white/20 pb-2">
+              Thông tin liên hệ
+            </h4>
+            <div className="space-y-2 text-emerald-100">
+              <p>📍 VPĐD: 180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội</p>
+              <p>📍 Trụ sở TP.HCM: Số 72 Nguyễn Thị Thập, Quận 7, TP.HCM</p>
+              <p>📞 Hotline: <a href="tel:0919006030" className="font-bold text-white hover:underline">0919 006 030</a></p>
+              <p>✉️ Email: admin@templatebds.com</p>
+            </div>
+          </div>
+
+          {/* CỘT 3: Form Tải Báo Giá Nhanh */}
+          <div className="md:col-span-4 space-y-3">
+            <h4 className="text-sm font-black uppercase tracking-wider text-amber-300 border-b border-white/20 pb-2">
+              Tải báo giá nhanh
+            </h4>
+            <form onSubmit={handleQuickLeadSubmit} className="space-y-2 text-xs">
+              <input
+                type="text"
+                placeholder="Họ và tên..."
+                value={quickLeadForm.name}
+                onChange={e => setQuickLeadForm({ ...quickLeadForm, name: e.target.value })}
+                required
+                className="w-full bg-white text-slate-800 px-3.5 py-2 rounded-lg focus:outline-none placeholder-slate-400"
+              />
+              <input
+                type="email"
+                placeholder="Địa chỉ Email..."
+                value={quickLeadForm.email}
+                onChange={e => setQuickLeadForm({ ...quickLeadForm, email: e.target.value })}
+                className="w-full bg-white text-slate-800 px-3.5 py-2 rounded-lg focus:outline-none placeholder-slate-400"
+              />
+              <input
+                type="tel"
+                placeholder="Số điện thoại (*)..."
+                value={quickLeadForm.phone}
+                onChange={e => setQuickLeadForm({ ...quickLeadForm, phone: e.target.value })}
+                required
+                className="w-full bg-white text-slate-800 px-3.5 py-2 rounded-lg focus:outline-none placeholder-slate-400 font-bold"
+              />
+              <select
+                value={quickLeadForm.project}
+                onChange={e => setQuickLeadForm({ ...quickLeadForm, project: e.target.value })}
+                className="w-full bg-white text-slate-800 px-3.5 py-2 rounded-lg focus:outline-none"
+              >
+                {BDS08_PROJECTS.map(p => (
+                  <option key={p.id} value={p.title}>{p.title}</option>
+                ))}
+              </select>
+              <button
+                type="submit"
+                className="w-full py-2.5 bg-gradient-to-r from-[#0284C7] to-[#0369A1] hover:from-[#0369A1] hover:to-[#075985] text-white font-black rounded-lg shadow-md transition uppercase tracking-wider cursor-pointer"
+              >
+                Đăng ký nhận báo giá
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 8. SUBPAGES: ABOUT, PROJECTS, NEWS, PROPERTY DETAIL, NEWS DETAIL, CAREER
+  // ─────────────────────────────────────────────────────────────────────────
+
+  const renderPropertyDetail = () => (
+    <div className="py-12 bg-white text-slate-900 min-h-screen">
+      <div className={`${MAX_W} mx-auto px-4 space-y-8`}>
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+          <button onClick={() => navigate('home')} className="hover:text-emerald-700">Trang chủ</button>
+          <span>/</span>
+          <button onClick={() => navigate('projects')} className="hover:text-emerald-700">Dự án</button>
+          <span>/</span>
+          <span className="text-slate-800 font-bold truncate">{selectedProperty.title}</span>
+        </div>
+
+        {/* Top Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-6">
+          <div>
+            <div className="inline-block px-3 py-1 rounded-md bg-[#15803D] text-white text-xs font-bold mb-2">
+              {selectedProperty.statusBadge}
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 uppercase">{selectedProperty.title}</h1>
+            <p className="text-xs sm:text-sm text-slate-500 flex items-center gap-1.5 mt-1">
+              <MapPin size={14} className="text-[#16A34A]" /> {selectedProperty.location}
+            </p>
+          </div>
+          <div className="text-right">
+            <span className="text-xs text-slate-400 block font-bold">Giá bán chính thức:</span>
+            <span className="text-2xl sm:text-3xl font-black text-[#E11D48]">{selectedProperty.price}</span>
+          </div>
+        </div>
+
+        {/* Gallery */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <img src={selectedProperty.image} alt={selectedProperty.title} className="w-full h-80 sm:h-96 object-cover rounded-sm shadow" />
+          <div className="grid grid-cols-2 gap-4">
+            {selectedProperty.gallery.map((g, idx) => (
+              <img key={idx} src={g} alt="Gallery" className="w-full h-36 sm:h-44 object-cover rounded-sm shadow" />
+            ))}
+          </div>
+        </div>
+
+        {/* Details & Specs */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8 space-y-6">
+            <div className="bg-slate-50 p-6 rounded-sm border space-y-4">
+              <h3 className="text-lg font-black text-[#15803D] uppercase">Thông Tin Chi Tiết Dự Án</h3>
+              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{selectedProperty.desc}</p>
+              <ul className="space-y-2 text-xs sm:text-sm text-slate-600">
+                {selectedProperty.details.map((d, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <CheckCircle2 size={16} className="text-[#16A34A] shrink-0 mt-0.5" />
+                    <span>{d}</span>
+                  </li>
                 ))}
               </ul>
             </div>
-          ))}
-        </div>
-        <div className="pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-sm" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-          <div style={{ color: 'rgba(255,255,255,0.4)' }}>© 2026 {template.name || 'Eco Living Vietnam'}. All rights reserved.</div>
-          <div style={{ color: 'rgba(255,255,255,0.4)' }}>🌿 Sống xanh — sống thật</div>
+          </div>
+
+          <div className="lg:col-span-4 bg-slate-50 p-6 rounded-sm border space-y-4">
+            <h3 className="text-base font-black text-slate-900 uppercase">Liên Hệ Đặt Lịch Xem Nhà</h3>
+            <form onSubmit={handleQuickLeadSubmit} className="space-y-3 text-xs">
+              <input
+                type="text"
+                placeholder="Họ và tên quý khách..."
+                required
+                className="w-full p-3 rounded-sm border bg-white focus:outline-none"
+              />
+              <input
+                type="tel"
+                placeholder="Số điện thoại (*)..."
+                required
+                className="w-full p-3 rounded-sm border bg-white focus:outline-none font-bold"
+              />
+              <button
+                type="submit"
+                className="w-full py-3 bg-[#15803D] hover:bg-[#166534] text-white font-black rounded-sm uppercase tracking-wider"
+              >
+                Gửi Yêu Cầu Tư Vấn Ngay
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-    </footer>
+    </div>
+  );
+
+  const renderNewsList = () => (
+    <div className="py-12 bg-white text-slate-900 min-h-screen">
+      <div className={`${MAX_W} mx-auto px-4 space-y-8`}>
+        <div className="text-center max-w-xl mx-auto space-y-1">
+          <h1 className="text-2xl sm:text-3xl font-black text-[#15803D] uppercase">TIN TỨC & BẤT ĐỘNG SẢN</h1>
+          <p className="text-xs text-slate-500">Cập nhật tin tức thị trường và phân tích chuyên sâu</p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {[...BDS08_NEWS_EVENTS, ...BDS08_COMPANY_ACTIVITIES].map(news => (
+            <div
+              key={news.id}
+              onClick={() => handleOpenArticle(news)}
+              className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition cursor-pointer flex flex-col justify-between"
+            >
+              <div>
+                <img src={news.image} alt={news.title} className="w-full h-48 object-cover" />
+                <div className="p-4 space-y-2">
+                  <span className="text-[10px] font-bold text-[#16A34A] uppercase">{news.category}</span>
+                  <h3 className="text-xs sm:text-sm font-black text-slate-900 line-clamp-2">{news.title}</h3>
+                  <p className="text-xs text-slate-500 line-clamp-2">{news.excerpt}</p>
+                </div>
+              </div>
+              <div className="px-4 pb-4 text-[10px] text-slate-400 flex justify-between border-t pt-2">
+                <span>{news.date}</span>
+                <span>{news.views} lượt xem</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderNewsDetail = () => (
+    <div className="py-12 bg-white text-slate-900 min-h-screen">
+      <div className={`${MAX_W} mx-auto px-4 max-w-4xl space-y-6`}>
+        <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+          <button onClick={() => navigate('home')} className="hover:text-emerald-700">Trang chủ</button>
+          <span>/</span>
+          <button onClick={() => navigate('news')} className="hover:text-emerald-700">Tin tức</button>
+          <span>/</span>
+          <span className="text-slate-800 font-bold truncate">{selectedArticle.title}</span>
+        </div>
+
+        <div className="space-y-2 border-b pb-4">
+          <span className="px-2.5 py-1 rounded bg-emerald-100 text-[#15803D] text-[10px] font-bold uppercase">{selectedArticle.category}</span>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">{selectedArticle.title}</h1>
+          <div className="text-xs text-slate-400 flex items-center gap-4">
+            <span>📅 {selectedArticle.date}</span>
+            <span>✍️ {selectedArticle.author}</span>
+            <span>👁️ {selectedArticle.views} lượt xem</span>
+          </div>
+        </div>
+
+        <img src={selectedArticle.image} alt={selectedArticle.title} className="w-full h-80 sm:h-96 object-cover rounded-sm shadow" />
+
+        <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
+          <p className="font-bold text-slate-900">{selectedArticle.excerpt}</p>
+          {selectedArticle.content.map((p, idx) => (
+            <p key={idx}>{p}</p>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderCareerPage = () => (
+    <div className="py-12 bg-white text-slate-900 min-h-screen">
+      <div className={`${MAX_W} mx-auto px-4 space-y-8`}>
+        <div className="text-center max-w-2xl mx-auto space-y-2">
+          <h1 className="text-2xl sm:text-3xl font-black text-[#15803D] uppercase">CƠ HỘI NGHỀ NGHIỆP</h1>
+          <p className="text-xs sm:text-sm text-slate-600">Gia nhập đội ngũ tư vấn chuyên nghiệp hàng đầu thị trường bất động sản</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {BDS08_CAREERS.map(c => (
+            <div key={c.id} className="bg-slate-50 p-6 rounded-sm border border-slate-200 space-y-4 shadow-sm hover:shadow-lg transition">
+              <span className="px-2.5 py-1 rounded bg-emerald-100 text-[#15803D] text-[10px] font-extrabold uppercase">Đang tuyển</span>
+              <h3 className="text-sm font-black text-slate-900">{c.title}</h3>
+              <p className="text-xs font-bold text-[#E11D48]">💰 Mức lương: {c.salary}</p>
+              <p className="text-xs text-slate-500">📍 Địa điểm: {c.location}</p>
+              <div className="space-y-1 text-xs text-slate-600 pt-2 border-t">
+                {c.requirements.map((r, i) => (
+                  <p key={i}>• {r}</p>
+                ))}
+              </div>
+              <button
+                onClick={() => {
+                  alert('Vui lòng gửi CV về địa chỉ email: tuyendung@templatebds.com hoặc liên hệ hotline: 0919 006 030');
+                }}
+                className="w-full py-2.5 bg-[#15803D] hover:bg-[#166534] text-white text-xs font-black rounded-sm uppercase tracking-wider transition"
+              >
+                Ứng Tuyển Ngay
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 
   return (
-    <div className="font-sans min-h-screen flex flex-col justify-between" style={{ backgroundColor: t.bg }}>
-      <div>
-        {renderNav()}
-        {['home'].includes(currentPage) && renderHome()}
-        {['projects', 'du-an', 'san-pham', 'sinh-thai'].includes(currentPage) && renderProjects()}
-        {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAbout()}
-        {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGallery()}
-        {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNews()}
-        {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContact()}
-        {!['home', 'projects', 'du-an', 'san-pham', 'sinh-thai', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
+    <div className="w-full min-h-screen bg-white text-slate-900 font-sans flex flex-col justify-between selection:bg-emerald-600 selection:text-white">
+      
+      {/* Toast popup */}
+      {toastMessage && (
+        <div className="fixed bottom-24 right-6 z-50 bg-emerald-700 text-white px-5 py-3 rounded-sm shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce">
+          <CheckCircle2 size={16} className="text-amber-300" /> {toastMessage}
+        </div>
+      )}
+
+      {/* LEFT FLOATING ACTION PILLS (EXACT MATCHING MOCKUP) */}
+      <div className="fixed left-4 top-1/2 -translate-y-1/2 z-40 hidden sm:flex flex-col gap-2.5">
+        <a
+          href="https://zalo.me/0919006030"
+          target="_blank"
+          rel="noreferrer"
+          className="px-3.5 py-1.5 rounded-sm bg-[#16A34A] hover:bg-[#15803D] text-white text-xs font-bold shadow-lg transition flex items-center gap-1.5 hover:scale-105"
+        >
+          <MessageSquare size={13} /> Chat Zalo
+        </a>
+        <a
+          href="https://www.facebook.com/groups/847532091275214"
+          target="_blank"
+          rel="noreferrer"
+          className="px-3.5 py-1.5 rounded-sm bg-[#0284C7] hover:bg-[#0369A1] text-white text-xs font-bold shadow-lg transition flex items-center gap-1.5 hover:scale-105"
+        >
+          <Share2 size={13} /> Chat Facebook
+        </a>
+        <a
+          href="tel:0919006030"
+          className="px-3.5 py-1.5 rounded-sm bg-[#E11D48] hover:bg-[#BE123C] text-white text-xs font-black shadow-lg transition flex items-center gap-1.5 hover:scale-105"
+        >
+          <Phone size={13} className="animate-pulse" /> Hotline: 0919 006 030
+        </a>
       </div>
-      {renderFooter()}
 
-      {/* PROJECT DETAILS MODAL */}
-      {selectedProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 overflow-y-auto">
-          <div className="relative w-full max-w-4xl bg-white rounded-md overflow-hidden shadow-2xl my-8">
+      {/* LEAD MODAL POPUP */}
+      {leadModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-md p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-4 relative border border-slate-200 animate-in zoom-in-95 duration-200">
             <button 
-              onClick={() => setSelectedProject(null)} 
-              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-sm bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors border border-white/20"
+              onClick={() => setLeadModalOpen(false)}
+              className="absolute top-4 right-4 p-2 rounded-sm hover:bg-slate-100 text-slate-500"
             >
-              <X className="w-6 h-6" />
+              <X size={18} />
             </button>
-
-            <div className="grid grid-cols-1 md:grid-cols-2">
-              <div className="relative h-64 md:h-auto min-h-[300px]">
-                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedProject.img} alt={selectedProject.name} className="w-full h-full object-cover" />
-                <div className="absolute top-4 left-4 flex flex-col gap-2">
-                  <span className="px-3 py-1 rounded-sm text-xs font-black text-white bg-green-600 shadow-md">
-                    {selectedProject.badge}
-                  </span>
-                  <span className="px-3 py-1 rounded-sm text-xs font-black text-white bg-emerald-700 shadow-md flex items-center gap-1">
-                    <Leaf className="w-3.5 h-3.5" /> {selectedProject.cert}
-                  </span>
-                </div>
-              </div>
-
-              <div className="p-8 md:p-10 flex flex-col justify-between text-slate-800">
-                <div>
-                  <div className="text-sm font-bold uppercase tracking-wider text-green-600 mb-2">{selectedProject.type}</div>
-                  <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-4">{selectedProject.name}</h2>
-                  
-                  <div className="flex items-center gap-1 text-sm text-slate-500 mb-6">
-                    <MapPin className="w-4 h-4 text-emerald-600" />
-                    <span>{selectedProject.loc}</span>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-4 py-4 border-t border-b border-slate-100 mb-6">
-                    <div>
-                      <div className="text-xs text-slate-400 font-semibold mb-0.5">Giá bán</div>
-                      <div className="text-lg font-black text-green-700">{selectedProject.price} tỷ</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-slate-400 font-semibold mb-0.5">Diện tích</div>
-                      <div className="text-base font-bold text-slate-800">{selectedProject.area}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-slate-400 font-semibold mb-0.5">Thiết kế</div>
-                      <div className="text-base font-bold text-slate-800">
-                        {selectedProject.beds > 0 ? `${selectedProject.beds} PN` : 'Lô đất'}
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="text-sm text-slate-600 leading-relaxed mb-6">
-                    {selectedProject.desc}
-                  </p>
-
-                  <div className="mb-8">
-                    <h4 className="text-sm font-bold text-slate-800 mb-3">Đặc điểm sinh thái & kỹ thuật:</h4>
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {selectedProject.specs.map((spec, i) => (
-                        <li key={i} className="flex items-start gap-2 text-xs text-slate-600">
-                          <Check className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
-                          <span>{spec}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                <div>
-                  {consultSubmitted ? (
-                    <div className="p-4 rounded-sm bg-emerald-50 border border-emerald-200 text-center">
-                      <div className="flex items-center justify-center gap-2 text-emerald-800 font-bold text-sm mb-1">
-                        <Check className="w-4 h-4" /> Đã gửi yêu cầu tư vấn!
-                      </div>
-                      <div className="text-xs text-emerald-600">Chúng tôi sẽ liên hệ lại trong vòng 30 phút.</div>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <div className="flex gap-2">
-                        <input 
-                          type="tel" 
-                          placeholder="Nhập số điện thoại..." 
-                          className="flex-1 px-4 py-2 text-sm border rounded-sm focus:outline-none focus:border-green-600 bg-transparent text-slate-800"
-                          value={consultPhone}
-                          onChange={(e) => setConsultPhone(e.target.value)}
-                        />
-                        <button 
-                          onClick={() => {
-                            if (consultPhone.trim()) {
-                              setConsultSubmitted(true);
-                              setTimeout(() => setConsultSubmitted(false), 5000);
-                            }
-                          }}
-                          className="px-6 py-2 rounded-sm text-sm font-bold text-white bg-green-600 hover:bg-green-700 transition-colors"
-                        >
-                          Đăng ký tư vấn
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
+            <div className="text-center space-y-1">
+              <span className="text-xs font-black text-[#15803D] uppercase tracking-wider">ĐĂNG KÝ NHẬN BẢNG GIÁ GỐC</span>
+              <h3 className="text-lg sm:text-xl font-black text-slate-900">Báo Giá & Ưu Đãi Đợt 1</h3>
+              <p className="text-xs text-slate-500">Chuyên viên tư vấn cấp cao sẽ gửi bảng giá chi tiết qua Zalo trong 3 phút.</p>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* GALLERY LIGHTBOX */}
-      {selectedGalleryImg && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95">
-          <button 
-            onClick={() => setSelectedGalleryImg(null)} 
-            className="absolute top-4 right-4 w-12 h-12 rounded-sm bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
-          >
-            <X className="w-6 h-6" />
-          </button>
-          
-          <div className="max-w-4xl max-h-[85vh] flex flex-col items-center">
-            <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedGalleryImg} alt="Gallery Lightbox" className="max-w-full max-h-[70vh] rounded-sm object-contain shadow-2xl" />
-            
-            {(() => {
-              const imgObj = GALLERY.find(g => g.url === selectedGalleryImg);
-              return imgObj ? (
-                <div className="text-center mt-6">
-                  <span className="px-3 py-1 rounded-sm text-xs font-black text-emerald-400 bg-emerald-950 border border-emerald-800 uppercase tracking-widest">
-                    {imgObj.category}
-                  </span>
-                  <h4 className="text-lg font-bold text-white mt-2">{imgObj.title}</h4>
-                </div>
-              ) : null;
-            })()}
-          </div>
-        </div>
-      )}
-
-      {/* NEWS DETAIL MODAL */}
-      {selectedArticle && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 overflow-y-auto">
-          <div className="relative w-full max-w-3xl bg-white rounded-md overflow-hidden shadow-2xl my-8">
-            <button 
-              onClick={() => setSelectedArticle(null)} 
-              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-sm bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors border border-white/20"
-            >
-              <X className="w-6 h-6" />
-            </button>
-
-            <div className="p-6 md:p-10 max-h-[85vh] overflow-y-auto">
-              <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 mb-4">
-                <span className="px-3 py-1 rounded-sm font-bold text-green-700 bg-green-50 border border-green-200">
-                  {selectedArticle.cat}
-                </span>
-                <span>• {selectedArticle.date}</span>
-                <span>• Tác giả: {selectedArticle.author}</span>
-                <span>• {selectedArticle.views}</span>
-              </div>
-
-              <h2 className="text-2xl md:text-3xl font-black text-slate-900 leading-snug mb-6">{selectedArticle.title}</h2>
-              
-              <div className="h-64 md:h-96 rounded-sm overflow-hidden mb-6">
-                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
-              </div>
-
-              <p className="text-base text-slate-700 font-bold leading-relaxed mb-6 border-l-4 border-green-600 pl-4 bg-slate-50 py-3 rounded-r-xl">
-                {selectedArticle.summary}
-              </p>
-
-              <div className="text-sm md:text-base text-slate-600 leading-relaxed space-y-4">
-                {selectedArticle.content.split('\n\n').map((para, idx) => (
-                  <p key={idx}>{para}</p>
+            <form onSubmit={handleQuickLeadSubmit} className="space-y-3 text-xs">
+              <input
+                type="text"
+                placeholder="Họ và tên của bạn..."
+                required
+                value={quickLeadForm.name}
+                onChange={e => setQuickLeadForm({ ...quickLeadForm, name: e.target.value })}
+                className="w-full p-3 rounded-sm border bg-slate-50 focus:bg-white focus:outline-none"
+              />
+              <input
+                type="tel"
+                placeholder="Số điện thoại / Zalo (*)..."
+                required
+                value={quickLeadForm.phone}
+                onChange={e => setQuickLeadForm({ ...quickLeadForm, phone: e.target.value })}
+                className="w-full p-3 rounded-sm border bg-slate-50 focus:bg-white focus:outline-none font-bold text-[#0284C7]"
+              />
+              <select
+                value={quickLeadForm.project}
+                onChange={e => setQuickLeadForm({ ...quickLeadForm, project: e.target.value })}
+                className="w-full p-3 rounded-sm border bg-slate-50 focus:bg-white focus:outline-none"
+              >
+                {BDS08_PROJECTS.map(p => (
+                  <option key={p.id} value={p.title}>{p.title}</option>
                 ))}
-              </div>
-
-              <div className="border-t border-slate-100 pt-6 mt-8 flex justify-end">
-                <button 
-                  onClick={() => setSelectedArticle(null)}
-                  className="px-6 py-2.5 rounded-sm font-bold text-sm text-white bg-green-700 hover:bg-green-800 transition-colors"
-                >
-                  Đóng bài viết
-                </button>
-              </div>
-            </div>
+              </select>
+              <button
+                type="submit"
+                className="w-full py-3 bg-[#15803D] hover:bg-[#166534] text-white font-black rounded-sm uppercase tracking-wider shadow-lg"
+              >
+                Gửi Đăng Ký Ngay
+              </button>
+            </form>
           </div>
         </div>
       )}
+
+      {/* Main Layout Rendering */}
+      <div>
+        {renderHeader()}
+
+        {currentPage === 'home' && (
+          <main>
+            {renderHero()}
+            {renderProjectsAndSidebar()}
+            {renderConsultantProfile()}
+            {renderNewsAndAwards()}
+            {renderPartners()}
+            {renderGreenFooterBanner()}
+          </main>
+        )}
+
+        {currentPage === 'property-detail' && renderPropertyDetail()}
+        {currentPage === 'news-detail' && renderNewsDetail()}
+        {(currentPage === 'news' || currentPage === 'activities') && renderNewsList()}
+        {currentPage === 'career' && renderCareerPage()}
+        {currentPage === 'projects' && renderProjectsAndSidebar()}
+        {currentPage === 'about' && (
+          <div className="py-12 bg-white text-slate-900">
+            <div className={`${MAX_W} mx-auto px-4 space-y-8`}>
+              {renderConsultantProfile()}
+              {renderNewsAndAwards()}
+              {renderPartners()}
+            </div>
+          </div>
+        )}
+        {currentPage === 'contact' && (
+          <div className="py-12 bg-white text-slate-900">
+            <div className={`${MAX_W} mx-auto px-4 space-y-8`}>
+              {renderGreenFooterBanner()}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Universal Footer & Copyright */}
+      <UniversalTemplateFooter
+        company={company}
+        templateName="BDS-08 (Hưng Lộc Phát Land & NovaWorld Phan Thiết)"
+        onNavigate={page => navigate(page)}
+      />
+
     </div>
   );
 }
-

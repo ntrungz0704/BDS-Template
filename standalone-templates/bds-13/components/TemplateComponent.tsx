@@ -1,2034 +1,1134 @@
-import Image from 'next/image';
-import React, { useState, useEffect } from 'react';
-import { syncDemoUrl } from '../lib/demo';
-import Link from 'next/link';
+'use client';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
-  Menu, X, Search, ChevronRight, Phone, Mail, MapPin, 
-  Clock, Gavel, FileText, CheckCircle2, ShieldCheck, 
-  PlayCircle, Users, TrendingUp, HelpCircle, ArrowRight,
-  Calendar, Eye, Anchor, Building2, Map, Star, Instagram, Facebook, Twitter, Linkedin,
-  Award, Target, ThumbsUp, Heart, ChevronLeft, Send
+  Menu, X, Search, ChevronRight, ChevronLeft, MapPin, Phone, Mail, 
+  Building2, Home, Layers, Calendar, User, Eye, CheckCircle2, 
+  ArrowRight, UploadCloud, Compass, DollarSign, Calculator, Share2, Heart,
+  Shield, Check, MessageSquare, Star, Sparkles, Send, Award, FileText,
+  Play, Download, Maximize2, Bed, Bath, Clock, Filter, ArrowUpRight,
+  TrendingUp, Users, Briefcase, ExternalLink, HelpCircle, CheckCircle, Info,
+  Key, Tag, RefreshCw, PhoneCall, CheckSquare
 } from 'lucide-react';
 import { MAX_W } from '../lib/design-system';
+import UniversalTemplateFooter from '../UniversalTemplateFooter';
+import { syncDemoUrl } from '../lib/demo';
 
 interface TemplateProps {
-  template: { name: string; slug: string; collectionSlug: string; sectionConfig?: Record<string, unknown> };
+  template: { name: string; slug: string; collectionSlug?: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
+  company?: {
+    name?: string;
+    slogan?: string;
+    phone?: string;
+    email?: string;
+    address?: string;
+    logo?: string;
+    social?: {
+      facebook?: string;
+      instagram?: string;
+      twitter?: string;
+      youtube?: string;
+      tiktok?: string;
+      zalo?: string;
+    };
+    footerColumns?: Array<{
+      title: string;
+      links: Array<{ label: string; url?: string; page?: string }>;
+    }>;
+  };
+  theme?: Record<string, string>;
+  projects?: Array<Record<string, unknown>>;
+  posts?: Array<Record<string, unknown>>;
 }
 
-interface Auction {
-  id: number;
+export interface PropertyItem {
+  id: string;
   title: string;
-  image: string;
+  slug: string;
+  type: string;
+  category: 'ban' | 'thue' | 'du-an';
+  price: string;
+  priceNum: number; // in billion VND
+  area: string;
+  areaNum: number; // in m2
   location: string;
-  region: 'Miền Bắc' | 'Miền Trung' | 'Miền Nam';
-  type: 'dat-nen' | 'can-ho' | 'nha-pho' | 'biet-thu';
-  startPrice: number;
-  currentPrice: number;
-  priceStep: number;
-  timeLeft: { hours: number; minutes: number; seconds: number };
-  viewers: number;
-  status: 'live' | 'upcoming';
-  startDate?: string;
+  district: string;
+  direction: string;
+  image: string;
+  hot?: boolean;
+  featured?: boolean;
   description: string;
-  size: string;
-  specifications: string[];
-  history: { time: string; bidder: string; amount: number }[];
+  specs: string[];
 }
 
-interface Article {
+export interface NewsItem {
   id: number;
   title: string;
-  image: string;
-  category: string;
+  slug: string;
   date: string;
   author: string;
-  summary: string;
-  content: string;
-}
-
-interface GalleryItem {
-  id: number;
-  title: string;
+  category: string;
   image: string;
-  category: 'dat-nen' | 'can-ho' | 'biet-thu' | 'nha-pho';
+  excerpt: string;
+  content: string[];
+  views: number;
 }
 
-const INITIAL_AUCTIONS: Auction[] = [
+// ─────────────────────────────────────────────────────────────────────────────
+// BDS-13 MOCK DATA: ĐẠI PHÁT LAND - BẤT ĐỘNG SẢN THỦY NGUYÊN HẢI PHÒNG
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const BDS13_PROPERTIES: PropertyItem[] = [
   {
-    id: 1,
-    title: "Biệt thự song lập khu đô thị sinh thái xanh EcoPark",
-    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
-    location: "Văn Giang, Hưng Yên",
-    region: "Miền Bắc",
-    type: "biet-thu",
-    startPrice: 15000000000,
-    currentPrice: 17500000000,
-    priceStep: 100000000,
-    timeLeft: { hours: 2, minutes: 14, seconds: 45 },
-    viewers: 154,
-    status: "live",
-    description: "Biệt thự song lập nằm tại vị trí đắc địa nhất khu đô thị EcoPark, sở hữu tầm nhìn trực diện ra hồ thiên nga. Thiết kế hiện đại mang phong cách Châu Âu, tối ưu hóa ánh sáng tự nhiên và thông gió đối lưu.",
-    size: "250m²",
-    specifications: ["Sổ hồng riêng", "Mặt tiền 12.5m", "Hướng Đông Nam", "Bàn giao thô hoàn thiện mặt ngoài"],
-    history: [
-      { time: "16:40", bidder: "Nguyễn Văn A", amount: 17500000000 },
-      { time: "16:30", bidder: "Trần Thị B", amount: 17400000000 },
-      { time: "16:15", bidder: "Lê Văn C", amount: 17200000000 }
-    ]
+    id: 'hoang-huy-new-city',
+    title: 'Khu Đô Thị Hoàng Huy New City Bắc Sông Cấm Thủy Nguyên',
+    slug: 'khu-do-thi-hoang-huy-new-city-bac-song-cam-thuy-nguyen',
+    type: 'Khu Đô Thị Kiểu Mẫu',
+    category: 'du-an',
+    price: '3.85 Tỷ / Lô',
+    priceNum: 3.85,
+    area: '90 m²',
+    areaNum: 90,
+    location: 'Xã Tân Dương, TP. Thủy Nguyên, Hải Phòng',
+    district: 'Tân Dương',
+    direction: 'Đông Nam',
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+    hot: true,
+    featured: true,
+    description: 'Đại dự án đô thị thông minh bậc nhất Thủy Nguyên ngay cạnh Trung tâm hành chính mới Bắc Sông Cấm và cầu Hoàng Văn Thụ.',
+    specs: ['Sổ đỏ từng lô', 'Đường rộng 13.5m', 'Hạ tầng ngầm đồng bộ', 'Gần TTHC mới Hải Phòng']
   },
   {
-    id: 2,
-    title: "Căn hộ Penthouse đẳng cấp dự án Landmark 81",
-    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
-    location: "Bình Thạnh, TP.HCM",
-    region: "Miền Nam",
-    type: "can-ho",
-    startPrice: 25000000000,
-    currentPrice: 28200000000,
-    priceStep: 200000000,
-    timeLeft: { hours: 4, minutes: 30, seconds: 0 },
-    viewers: 218,
-    status: "live",
-    description: "Căn hộ Penthouse đỉnh cao tọa lạc tại tầng cao nhất của tháp Landmark 81, biểu tượng của sự phồn vinh. Tầm nhìn 360 độ ôm trọn sông Sài Gòn và trung tâm thành phố. Thiết bị bàn giao từ các thương hiệu xa xỉ hàng đầu thế giới.",
-    size: "320m²",
-    specifications: ["Sổ hồng sở hữu lâu dài", "Full nội thất nhập khẩu", "Thang máy kính riêng biệt", "Hồ bơi tràn bờ riêng"],
-    history: [
-      { time: "16:22", bidder: "Phạm Hồng S", amount: 28200000000 },
-      { time: "16:10", bidder: "Trần Minh K", amount: 28000000000 }
-    ]
+    id: 'belhomes-vsip',
+    title: 'Khu Đô Thị Belhomes Vsip Thủy Nguyên Hải Phòng',
+    slug: 'khu-do-thi-belhomes-vsip-thuy-nguyen-hai-phong',
+    type: 'Nhà Phố Xanh Singapore',
+    category: 'du-an',
+    price: '3.20 Tỷ / Căn',
+    priceNum: 3.2,
+    area: '75 m²',
+    areaNum: 75,
+    location: 'Đô thị Vsip Hải Phòng, Xã An Lư, Thủy Nguyên',
+    district: 'An Lư',
+    direction: 'Nam',
+    image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80',
+    hot: true,
+    featured: true,
+    description: 'Khu đô thị sinh thái xanh chuẩn Singapore ngay trong lòng đại đô thị VSIP Hải Phòng với công viên hồ điều hòa 6ha.',
+    specs: ['Nhà 3 tầng hoàn thiện mặt ngoài', 'An ninh 3 lớp 24/7', 'Công viên ven sông', 'Pháp lý chuẩn 100%']
   },
   {
-    id: 3,
-    title: "Nhà phố thương mại (Shophouse) mặt tiền Nguyễn Huệ",
-    image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80",
-    location: "Quận 1, TP.HCM",
-    region: "Miền Nam",
-    type: "nha-pho",
-    startPrice: 45000000000,
-    currentPrice: 48900000000,
-    priceStep: 500000000,
-    timeLeft: { hours: 1, minutes: 45, seconds: 20 },
-    viewers: 342,
-    status: "live",
-    description: "Shophouse độc bản tại mặt tiền phố đi bộ Nguyễn Huệ, vị trí kim cương sầm uất bậc nhất Việt Nam. Phù hợp cho mọi loại hình kinh doanh cao cấp, trụ sở ngân hàng, hoặc văn phòng đại diện tập đoàn đa quốc gia.",
-    size: "150m²",
-    specifications: ["Sổ hồng chính chủ", "Kết cấu 1 trệt 3 lầu", "Mặt tiền 6m", "Khu vực kinh doanh sầm uất 24/7"],
-    history: [
-      { time: "16:44", bidder: "Hoàng Gia Bảo", amount: 48900000000 },
-      { time: "16:30", bidder: "Đoàn Nguyên Đ", amount: 48400000000 }
-    ]
+    id: 'shophouse-hoang-huy-grand',
+    title: 'Nhà Phố Thương Mại Shophouse Hoàng Huy Grand Tower',
+    slug: 'nha-pho-thuong-mai-shophouse-hoang-huy-grand-tower',
+    type: 'Shophouse Khối Đế',
+    category: 'ban',
+    price: '4.80 Tỷ / Căn',
+    priceNum: 4.8,
+    area: '100 m²',
+    areaNum: 100,
+    location: 'Đại lộ Hùng Vương, Sở Dầu, Hồng Bàng (Liền kề Thủy Nguyên)',
+    district: 'Sở Dầu',
+    direction: 'Đông Bắc',
+    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+    hot: true,
+    featured: true,
+    description: 'Dãy shophouse thương mại sầm uất kinh doanh mọi ngành nghề ngay cửa ngõ kết nối trung tâm Hải Phòng sang Thủy Nguyên.',
+    specs: ['Mặt tiền 6m', 'Vỉa hè 8m', 'Đang cho thuê 25 Tr/tháng', 'Sổ hồng lâu dài']
   },
   {
-    id: 4,
-    title: "Lô đất nền ven biển trung tâm TP. Nha Trang",
-    image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80",
-    location: "Trần Phú, Nha Trang, Khánh Hòa",
-    region: "Miền Trung",
-    type: "dat-nen",
-    startPrice: 8000000000,
-    currentPrice: 9100000000,
-    priceStep: 100000000,
-    timeLeft: { hours: 6, minutes: 10, seconds: 15 },
-    viewers: 95,
-    status: "live",
-    description: "Đất nền sát biển đường Trần Phú, cơ hội cuối cùng sở hữu quỹ đất vàng trung tâm du lịch Nha Trang. Thích hợp xây dựng khách sạn, nhà hàng, căn hộ dịch vụ cao cấp phục vụ khách du lịch trong và ngoài nước.",
-    size: "180m²",
-    specifications: ["Đất ở đô thị 100%", "Mặt tiền 9m hướng biển", "Độ lộ giới đường 20m", "Xây dựng tự do đến 15 tầng"],
-    history: [
-      { time: "15:55", bidder: "Vũ Văn T", amount: 9100000000 },
-      { time: "15:40", bidder: "Nguyễn Thị M", amount: 9000000000 }
-    ]
+    id: 'dat-nen-bac-song-cam',
+    title: 'Đất Tái Định Cư Bắc Sông Cấm Phân Lô Sổ Đỏ',
+    slug: 'dat-tai-dinh-cu-bac-song-cam-phan-lo-so-do',
+    type: 'Đất Nền Tái Định Cư',
+    category: 'ban',
+    price: '2.85 Tỷ / Lô',
+    priceNum: 2.85,
+    area: '60 m²',
+    areaNum: 60,
+    location: 'Khu TĐC Bắc Sông Cấm, Xã Dương Quan, Thủy Nguyên',
+    district: 'Dương Quan',
+    direction: 'Đông',
+    image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80',
+    hot: false,
+    featured: true,
+    description: 'Lô đất vuông vắn tại khu tái định cư đắc địa nhất Thủy Nguyên, cách trung tâm chính trị Hải Phòng chỉ 300m.',
+    specs: ['Sổ đỏ trao tay', 'Đường 12m trải nhựa', 'Khu dân trí cao', 'Xây tự do']
   },
   {
-    id: 5,
-    title: "Biệt thự nghỉ dưỡng view biển trọn vẹn tại Đà Nẵng",
-    image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80",
-    location: "Ngũ Hành Sơn, Đà Nẵng",
-    region: "Miền Trung",
-    type: "biet-thu",
-    startPrice: 32000000000,
-    currentPrice: 32000000000,
-    priceStep: 300000000,
-    timeLeft: { hours: 0, minutes: 0, seconds: 0 },
-    viewers: 0,
-    status: "upcoming",
-    startDate: "15/08/2026",
-    description: "Biệt thự nghỉ dưỡng 5 sao nằm trong quần thể resort cao cấp tại biển Mỹ Khê - Đà Nẵng. Thiết kế không gian mở hòa quyện với thiên nhiên, toàn bộ phòng ngủ đều sở hữu tầm nhìn trực diện ra biển khơi.",
-    size: "400m²",
-    specifications: ["Sổ hồng sở hữu lâu dài", "Full nội thất tiêu chuẩn 5 sao", "Hồ bơi vô cực sát biển", "Hệ thống quản lý vận hành quốc tế"],
-    history: []
+    id: 'nha-pho-thuy-duong',
+    title: 'Nhà Phố Mặt Tiền Đường 359 Xã Thủy Đường Thủy Nguyên',
+    slug: 'nha-pho-mat-tien-duong-359-xa-thuy-duong-thuy-nguyen',
+    type: 'Nhà Mặt Phố',
+    category: 'ban',
+    price: '5.60 Tỷ / Căn',
+    priceNum: 5.6,
+    area: '110 m²',
+    areaNum: 110,
+    location: 'Mặt đường 359, Xã Thủy Đường, TP. Thủy Nguyên',
+    district: 'Thủy Đường',
+    direction: 'Tây Nam',
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+    hot: false,
+    featured: false,
+    description: 'Nhà 4 tầng kiên cố mặt phố kinh doanh đông đúc gần chợ Núi Đèo và siêu thị Lan Chi.',
+    specs: ['Mặt tiền 5m', 'Kinh doanh tốt', 'Full nội thất gỗ', 'Sổ đỏ chính chủ']
   },
   {
-    id: 6,
-    title: "Nhà phố cổ mặt tiền phố Hàng Bông, Hoàn Kiếm",
-    image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80",
-    location: "Hoàn Kiếm, Hà Nội",
-    region: "Miền Bắc",
-    type: "nha-pho",
-    startPrice: 60000000000,
-    currentPrice: 60000000000,
-    priceStep: 1000000000,
-    timeLeft: { hours: 0, minutes: 0, seconds: 0 },
-    viewers: 0,
-    status: "upcoming",
-    startDate: "20/08/2026",
-    description: "Nhà cổ mang đậm dấu ấn kiến trúc Pháp thuộc tại trung tâm phố cổ Hà Nội. Vị trí vàng vô cùng đắc địa, lưu lượng giao thông lớn, thích hợp kinh doanh hàng hiệu, nhà hàng cao cấp hoặc làm khách sạn boutique.",
-    size: "120m²",
-    specifications: ["Sổ đỏ chính chủ, pháp lý sạch", "Mặt tiền 5.5m hiếm hoi", "Xây dựng 4 tầng vững chãi", "Thuộc khu vực lõi di sản bảo tồn"],
-    history: []
-  },
-  {
-    id: 7,
-    title: "Căn hộ Dual Key Vinhomes Metropolis Liễu Giai",
-    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
-    location: "Ba Đình, Hà Nội",
-    region: "Miền Bắc",
-    type: "can-ho",
-    startPrice: 7500000000,
-    currentPrice: 7500000000,
-    priceStep: 100000000,
-    timeLeft: { hours: 0, minutes: 0, seconds: 0 },
-    viewers: 0,
-    status: "upcoming",
-    startDate: "12/08/2026",
-    description: "Căn hộ Dual Key (chìa khóa đôi) tại Vinhomes Metropolis, vị trí ngoại giao đoàn đắc địa bậc nhất quận Ba Đình. Vừa có thể ở vừa có thể cho thuê độc lập, tối ưu hóa dòng tiền đầu tư với lượng khách thuê là chuyên gia nước ngoài lớn.",
-    size: "115m²",
-    specifications: ["Sổ đỏ lâu dài", "Thiết kế 2 lối đi riêng biệt", "Bàn giao kèm thiết bị vệ sinh Duravit", "View hồ Tây thoáng đạt"],
-    history: []
-  },
-  {
-    id: 8,
-    title: "Lô đất nền thổ cư ven sông Cổ Cò, Quảng Nam",
-    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80",
-    location: "Điện Bàn, Quảng Nam",
-    region: "Miền Trung",
-    type: "dat-nen",
-    startPrice: 3500000000,
-    currentPrice: 3500000000,
-    priceStep: 50000000,
-    timeLeft: { hours: 0, minutes: 0, seconds: 0 },
-    viewers: 0,
-    status: "upcoming",
-    startDate: "18/08/2026",
-    description: "Đất nền ven sông Cổ Cò, nằm trên trục đường thông ra biển Thống Nhất. Quy hoạch đồng bộ, hạ tầng hoàn thiện 100%, kết nối giao thông thuận tiện giữa Đà Nẵng và Hội An. Thích hợp mua để dành hoặc xây biệt thự vườn nghỉ dưỡng.",
-    size: "200m²",
-    specifications: ["Đã có sổ đỏ từng lô", "Đường quy hoạch 17.5m", "Hệ thống điện âm hiện đại", "Mặt tiền hướng trực diện sông"],
-    history: []
+    id: 'cho-thue-mat-bang-nui-deo',
+    title: 'Cho Thuê Mặt Bằng Kinh Doanh Trung Tâm Thị Trấn Núi Đèo',
+    slug: 'cho-thue-mat-bang-kinh-doanh-trung-tam-thi-tran-nui-deo',
+    type: 'Mặt Bằng Cho Thuê',
+    category: 'thue',
+    price: '18 Triệu / Tháng',
+    priceNum: 0.018,
+    area: '150 m²',
+    areaNum: 150,
+    location: 'Đường Bạch Đằng, Thị trấn Núi Đèo, Thủy Nguyên',
+    district: 'Núi Đèo',
+    direction: 'Đông',
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+    hot: false,
+    featured: false,
+    description: 'Mặt bằng thông sàn rộng 150m2 cực đẹp thích hợp mở văn phòng công chứng, showroom, phòng khám, ngân hàng.',
+    specs: ['Mặt tiền 8m', 'Chỗ đỗ xe ô tô thoải mái', 'Hợp đồng dài hạn', 'Bàn giao ngay']
   }
 ];
 
-const MOCK_NEWS: Article[] = [
+export const BDS13_NEWS: NewsItem[] = [
   {
     id: 1,
-    title: "Luật Đấu Giá Tài Sản Sửa Đổi 2026: Những điểm mới quan trọng",
-    image: "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=800&q=80",
-    category: "Pháp Lý",
-    date: "10/07/2026",
-    author: "Luật sư Trần Quốc Tuấn",
-    summary: "Những thay đổi quan trọng trong Luật Đấu giá tài sản mới nhất sẽ tác động trực tiếp đến cách thức tham gia và quyền lợi của người tham gia đấu giá.",
-    content: "Luật Đấu giá tài sản sửa đổi 2026 chính thức có hiệu lực với nhiều cải cách lớn nhằm ngăn chặn tình trạng quân xanh quân đỏ, bỏ cọc và thổi giá. Đáng chú ý là việc nâng mức tiền đặt trước đối với đất nền và quy định chặt chẽ hơn về hình thức đấu giá trực tuyến. Người tham gia cần đăng ký tài khoản định danh cấp độ 2 để đảm bảo tính minh bạch."
+    title: 'Thành Phố Thủy Nguyên Chính Thức Thành Lập: Đòn Bẩy Tăng Giá BĐS Vượt Bậc',
+    slug: 'thanh-pho-thuy-nguyen-chinh-thuc-thanh-lap-don-bay-tang-gia-bds',
+    date: '28/08/2026',
+    author: 'Đại Phát Land',
+    category: 'Quy Hoạch',
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+    excerpt: 'Hải Phòng công bố lộ trình phát triển TP Thủy Nguyên thành trung tâm kinh tế, hành chính mới với hạ tầng nghìn tỷ.',
+    content: [
+      'Thành phố Thủy Nguyên trực thuộc TP Hải Phòng được định hướng là đô thị loại 3, hướng tới đô thị loại 2 và là trung tâm hành chính - chính trị mới của toàn thành phố.',
+      'Sự xuất hiện của các đại đô thị như Hoàng Huy New City, Belhomes Vsip, Centa City đã tạo cú hích mạnh mẽ cho thị trường bất động sản khu vực Bắc Sông Cấm.'
+    ],
+    views: 1840
   },
   {
     id: 2,
-    title: "Thị trường bất động sản đấu giá nửa cuối năm 2026: Cơ hội và thách thức",
-    image: "https://images.unsplash.com/photo-1460472178825-e5240623afd5?auto=format&fit=crop&w=800&q=80",
-    category: "Thị Trường",
-    date: "08/07/2026",
-    author: "Chuyên gia Nguyễn Minh Phong",
-    summary: "Phân tích xu hướng dòng tiền dịch chuyển vào phân khúc bất động sản đấu giá công khai nhờ tính pháp lý an toàn và giá khởi điểm hợp lý.",
-    content: "Trong bối cảnh thị trường bất động sản đang hồi phục, phân khúc đấu giá công khai nổi lên như một điểm sáng. Nguyên nhân chính là do người mua ngày càng đề cao tính an toàn pháp lý của tài sản do cơ quan nhà nước tổ chức. Nhiều lô đất có vị trí đắc địa tại vùng ven Hà Nội và TP.HCM đang thu hút lượng hồ sơ kỷ lục."
+    title: 'Tiến Độ Thông Xe Cầu Nguyễn Trãi Nối Trung Tâm Hải Phòng Sang Thủy Nguyên',
+    slug: 'tien-do-thong-xe-cau-nguyen-trai-noi-trung-tam-sang-thuy-nguyen',
+    date: '25/08/2026',
+    author: 'Ban Quản Lý Dự Án',
+    category: 'Hạ Tầng',
+    image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80',
+    excerpt: 'Cây cầu dây văng quy mô hơn 6.000 tỷ đồng sắp về đích, rút ngắn thời gian di chuyển từ nội đô cũ sang Thủy Nguyên chỉ còn 5 phút.',
+    content: [
+      'Cầu Nguyễn Trãi cùng với cầu Hoàng Văn Thụ và cầu Bính tạo nên tam giác giao thông hoàn hảo, thúc đẩy giá trị bất động sản ven bờ sông Cấm bứt phá không ngừng.'
+    ],
+    views: 2450
   },
   {
     id: 3,
-    title: "Hướng dẫn nộp tiền đặt trước đấu giá qua ứng dụng ngân hàng số",
-    image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80",
-    category: "Hướng Dẫn",
-    date: "05/07/2026",
-    author: "Phòng Giao Dịch Khách Hàng",
-    summary: "Quy trình chuyển khoản tiền cọc đấu giá nhanh chóng, chính xác qua QR Code và hệ thống định danh thông minh mới.",
-    content: "Nhằm tạo điều kiện thuận lợi cho khách hàng tham gia đấu giá, chúng tôi đã hợp tác với các ngân hàng lớn triển khai giải pháp nộp tiền cọc qua QR Code định danh. Khách hàng chỉ cần quét mã trên hồ sơ đấu giá, tiền sẽ lập tức được ghi nhận vào hệ thống mà không lo nhầm lẫn thông tin giao dịch hay chậm trễ."
-  },
-  {
-    id: 4,
-    title: "Đấu giá thành công 10 lô đất ven sông Cổ Cò với mức chênh lệch ấn tượng",
-    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
-    category: "Tin Sự Kiện",
-    date: "03/07/2026",
-    author: "Ban Biên Tập PlatformBDS",
-    summary: "Phiên đấu giá trực tuyến thành công tốt đẹp với sự tham gia của hơn 100 nhà đầu tư, giá trúng bình quân cao hơn 25% so với khởi điểm.",
-    content: "Phiên đấu giá trực tuyến ngày 3/7 vừa qua đã ghi nhận sự quan tâm đặc biệt đối với 10 lô đất nền ven sông Cổ Cò. Trải qua hơn 30 lượt trả giá kịch tính, toàn bộ các lô đất đã tìm được chủ nhân. Lô đất ký hiệu A5 ghi nhận mức chênh lệch cao nhất, đạt 32% so với giá khởi điểm ban đầu."
-  },
-  {
-    id: 5,
-    title: "Làm thế nào để tránh mất tiền đặt trước khi tham gia đấu giá?",
-    image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=800&q=80",
-    category: "Pháp Lý",
-    date: "01/07/2026",
-    author: "Ths. Luật Nguyễn Thị Mai",
-    summary: "Các trường hợp phổ biến dẫn đến việc người tham gia bị tịch thu tiền đặt trước và lời khuyên pháp lý hữu ích giúp bạn bảo vệ quyền lợi.",
-    content: "Một trong những rủi ro lớn nhất của nhà đầu tư khi tham gia đấu giá là mất tiền đặt trước. Luật quy định rõ các trường hợp mất cọc như: rút lại giá đã trả, trúng đấu giá nhưng từ chối ký biên bản hoặc không nộp đủ tiền đúng hạn. Nhà đầu tư cần nghiên cứu kỹ quy chế và khảo sát thực địa kỹ lưỡng trước khi đặt bút nộp hồ sơ."
-  },
-  {
-    id: 6,
-    title: "Xu hướng số hóa toàn diện hoạt động đấu giá bất động sản tại Việt Nam",
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
-    category: "Công Nghệ",
-    date: "28/06/2026",
-    author: "Giám Đốc Công Nghệ Lê Anh Đức",
-    summary: "Khám phá cách công nghệ Blockchain và AI giúp nâng cao tính bảo mật, ngăn chặn thông đồng dìm giá trong đấu giá trực tuyến.",
-    content: "Việc ứng dụng công nghệ hiện đại vào nền tảng đấu giá trực tuyến mang lại sự minh bạch chưa từng có. Mọi lệnh trả giá đều được ghi nhận vĩnh viễn trên blockchain và mã hóa đầu cuối. Hệ thống AI phân tích hành vi giúp phát hiện sớm các dấu hiệu thông đồng hoặc thao túng giá, đảm bảo môi trường cạnh tranh lành mạnh cho mọi thành viên."
+    title: 'Phân Tích Dòng Tiền Đầu Tư Đất Nền Tái Định Cư Bắc Sông Cấm 2026',
+    slug: 'phan-tich-dong-tien-dau-tu-dat-nen-tdc-bac-song-cam',
+    date: '20/08/2026',
+    author: 'Chuyên Gia BĐS Hải Phòng',
+    category: 'Đầu Tư',
+    image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80',
+    excerpt: 'Lý do vì sao các nhà đầu tư sành sỏi từ Hà Nội và Hải Phòng đang đổ dồn dòng tiền về khu tái định cư Dương Quan, Tân Dương.',
+    content: [
+      'Với biên độ tăng giá ổn định 20-30%/năm cùng tính thanh khoản cao và sổ đỏ sở hữu lâu dài, phân khúc đất nền TĐC tiếp tục là kênh trú ẩn dòng tiền an toàn nhất.'
+    ],
+    views: 1290
   }
 ];
 
-const GALLERY_ITEMS: GalleryItem[] = [
-  { id: 1, title: "Khu đất nền biệt thự EcoPark", image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80", category: "dat-nen" },
-  { id: 2, title: "Nội thất căn hộ Landmark 81", image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80", category: "can-ho" },
-  { id: 3, title: "Hồ bơi tràn bờ biệt thự nghỉ dưỡng", image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80", category: "biet-thu" },
-  { id: 4, title: "Phòng khách penthouse đẳng cấp", image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80", category: "can-ho" },
-  { id: 5, title: "Mặt tiền shophouse kinh doanh", image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80", category: "nha-pho" },
-  { id: 6, title: "Tổng quan dự án từ trên cao", image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80", category: "dat-nen" },
-  { id: 7, title: "Biệt thự view biển Ngũ Hành Sơn", image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80", category: "biet-thu" },
-  { id: 8, title: "Không gian kiến trúc nhà cổ", image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80", category: "nha-pho" },
-  { id: 9, title: "Đất nền ven sông Cổ Cò", image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80", category: "dat-nen" },
-  { id: 10, title: "Phòng ngủ view hồ Tây Liễu Giai", image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80", category: "can-ho" }
-];
-
-const normalizeAuctionPage = (p: string) => {
-  const clean = (p || '').toLowerCase().trim();
-  if (['lien-he', 'contact', 'tu-van'].includes(clean)) return 'contact';
-  if (['gioi-thieu', 'about', 've-chung-toi'].includes(clean)) return 'about';
-  if (['du-an', 'projects', 'san-pham', 'dau-gia', 'auctions'].includes(clean)) return 'auctions';
-  if (['thu-vien', 'gallery', 'hinh-anh'].includes(clean)) return 'gallery';
-  if (['tin-tuc', 'news', 'bai-viet'].includes(clean)) return 'news';
-  return clean || 'home';
+export const resolvePageAndDetail = (p?: string) => {
+  if (!p || p === 'home') return { page: 'home', propSlug: '', artSlug: '' };
+  const clean = p.replace(/^\//, '').trim();
+  if (clean.startsWith('tin-tuc/') || clean.startsWith('news/')) {
+    return { page: 'news-detail', propSlug: '', artSlug: clean.replace(/^(tin-tuc\/|news\/)/, '') };
+  }
+  if (clean === 'tin-tuc' || clean === 'news') return { page: 'news', propSlug: '', artSlug: '' };
+  if (clean.startsWith('chi-tiet/') || clean.startsWith('property/')) {
+    return { page: 'property-detail', propSlug: clean.replace(/^(chi-tiet\/|property\/)/, ''), artSlug: '' };
+  }
+  if (clean === 'gioi-thieu' || clean === 'about') return { page: 'about', propSlug: '', artSlug: '' };
+  if (clean === 'nha-dat-ban' || clean === 'for-sale') return { page: 'for-sale', propSlug: '', artSlug: '' };
+  if (clean === 'nha-dat-cho-thue' || clean === 'for-rent') return { page: 'for-rent', propSlug: '', artSlug: '' };
+  if (clean === 'du-an' || clean === 'projects') return { page: 'projects', propSlug: '', artSlug: '' };
+  if (clean === 'ky-gui' || clean === 'consignment') return { page: 'consignment', propSlug: '', artSlug: '' };
+  if (clean === 'lien-he' || clean === 'contact') return { page: 'contact', propSlug: '', artSlug: '' };
+  return { page: 'home', propSlug: '', artSlug: '' };
 };
 
-export default function AuctionTemplate({ template, viewport = 'desktop', initialPage = 'home' }: TemplateProps) {
-  const [currentPage, setCurrentPageState] = useState(normalizeAuctionPage(initialPage));
+export default function BDS13Template({
+  template,
+  viewport = 'desktop',
+  initialPage = 'home',
+  company,
+  theme,
+  projects,
+  posts
+}: TemplateProps) {
+  const isSmall = viewport === 'mobile' || viewport === 'tablet';
+  const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
+
+  const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
+  const [selectedProperty, setSelectedProperty] = useState<PropertyItem>(() => {
+    if (initialParsed.propSlug) {
+      const found = BDS13_PROPERTIES.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
+      if (found) return found;
+    }
+    return BDS13_PROPERTIES[0];
+  });
+
+  const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
+    if (initialParsed.artSlug) {
+      const found = BDS13_NEWS.find(n => n.slug === initialParsed.artSlug || n.id.toString() === initialParsed.artSlug);
+      if (found) return found;
+    }
+    return BDS13_NEWS[0];
+  });
+
+  // Dynamic Options for 100% CMS Resilience
+  const availableTypes = useMemo(() => {
+    const set = new Set(BDS13_PROPERTIES.map(p => p.type).filter(Boolean));
+    return ['all', ...Array.from(set)];
+  }, []);
+
+  const availableDistricts = useMemo(() => {
+    const set = new Set(BDS13_PROPERTIES.map(p => p.district).filter(Boolean));
+    return ['all', ...Array.from(set)];
+  }, []);
+
+  // UI Interactive States
+  const [activeSearchTab, setActiveSearchTab] = useState<'all' | 'ban' | 'thue' | 'du-an'>('all');
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [filterType, setFilterType] = useState('all');
+  const [filterDistrict, setFilterDistrict] = useState('all');
+  const [filterPrice, setFilterPrice] = useState('all');
+  const [filterArea, setFilterArea] = useState('all');
+  const [filterDirection, setFilterDirection] = useState('all');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Forms
+  const [consignmentForm, setConsignmentForm] = useState({ name: '', phone: '', address: '', type: 'Nhà Đất Bán', price: '', note: '' });
+  const [contactForm, setContactForm] = useState({ name: '', phone: '', email: '', message: '' });
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const tSlug = template?.slug || 'bds-13';
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 4000);
+  };
 
   useEffect(() => {
-    setCurrentPageState(normalizeAuctionPage(initialPage));
+    const res = resolvePageAndDetail(initialPage);
+    setCurrentPageState(res.page);
+    if (res.propSlug) {
+      const found = BDS13_PROPERTIES.find(p => p.slug === res.propSlug || p.id === res.propSlug);
+      if (found) setSelectedProperty(found);
+    }
+    if (res.artSlug) {
+      const found = BDS13_NEWS.find(n => n.slug === res.artSlug || n.id.toString() === res.artSlug);
+      if (found) setSelectedArticle(found);
+    }
   }, [initialPage]);
 
-  const setCurrentPage = (p: string, customSlug?: string) => {
-    if (typeof setSelectedArticle === "function") setSelectedArticle(null);
-    setCurrentPageState(p);
-    const tSlug = template?.slug || 'bds-13';
-    syncDemoUrl(customSlug || (p === 'home' ? '' : p), tSlug);
+  const navigate = (page: string, slug?: string) => {
+    setCurrentPageState(page);
+    setMobileMenuOpen(false);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    let urlSlug = '';
+    if (page === 'home') urlSlug = '';
+    else if (page === 'property-detail' && slug) urlSlug = `chi-tiet/${slug}`;
+    else if (page === 'news-detail' && slug) urlSlug = `tin-tuc/${slug}`;
+    else if (page === 'about') urlSlug = 'gioi-thieu';
+    else if (page === 'for-sale') urlSlug = 'nha-dat-ban';
+    else if (page === 'for-rent') urlSlug = 'nha-dat-cho-thue';
+    else if (page === 'projects') urlSlug = 'du-an';
+    else if (page === 'consignment') urlSlug = 'ky-gui';
+    else if (page === 'news') urlSlug = 'tin-tuc';
+    else if (page === 'contact') urlSlug = 'lien-he';
+    else urlSlug = page;
+
+    syncDemoUrl(urlSlug, tSlug);
   };
 
-  useEffect(() => {
-    const handlePopState = () => {
-      const parts = window.location.pathname.split('/').filter(Boolean);
-      const sub = parts.length > 2 ? parts[2] : (parts[1] !== (template?.slug || 'bds-13') ? parts[1] : 'home');
-      if (sub) {
-        setCurrentPageState(normalizeAuctionPage(sub));
-      }
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [template?.slug]);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
-
-  // States for filters, searches, modals, forms
-  const [auctionsData, setAuctionsData] = useState<Auction[]>(INITIAL_AUCTIONS);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState('');
-  const [filterPrice, setFilterPrice] = useState('');
-  const [filterRegion, setFilterRegion] = useState('');
-
-  const [selectedAuction, setSelectedAuction] = useState<Auction | null>(null);
-  const [bidInput, setBidInput] = useState('');
-  const [bidError, setBidError] = useState('');
-  const [bidSuccess, setBidSuccess] = useState('');
-
-  const [selectedGalleryTab, setSelectedGalleryTab] = useState('all');
-  const [selectedGalleryImg, setSelectedGalleryImg] = useState<string | null>(null);
-
-  const [searchNewsQuery, setSearchNewsQuery] = useState('');
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
-
-  const [contactForm, setContactForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
-  const [contactSubmitted, setContactSubmitted] = useState(false);
-
-  const [aboutTab, setAboutTab] = useState('mission'); // 'mission' | 'vision' | 'values'
-
-  const isMobile = viewport === 'mobile';
-  const isSmall = viewport === 'mobile' || viewport === 'tablet';
-
-  const navigateTo = (page: string) => {
-    setCurrentPage(page);
-    setIsMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleOpenProperty = (prop: PropertyItem) => {
+    setSelectedProperty(prop);
+    navigate('property-detail', prop.slug);
   };
 
-  const handlePlaceBid = (auctionId: number) => {
-    setBidError('');
-    setBidSuccess('');
-    const cleanedInput = bidInput.replace(/\./g, '').trim();
-    const bidAmount = parseInt(cleanedInput, 10);
-    
-    if (isNaN(bidAmount) || bidAmount <= 0) {
-      setBidError('Vui lòng nhập số tiền hợp lệ.');
+  const handleOpenArticle = (art: NewsItem) => {
+    setSelectedArticle(art);
+    navigate('news-detail', art.slug);
+  };
+
+  const handleConsignmentSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!consignmentForm.name || !consignmentForm.phone) {
+      alert('Vui lòng nhập họ tên và số điện thoại liên hệ ký gửi!');
       return;
     }
-    
-    const targetAuction = auctionsData.find(a => a.id === auctionId);
-    if (!targetAuction) return;
-    
-    const minBidRequired = targetAuction.currentPrice + targetAuction.priceStep;
-    if (bidAmount < minBidRequired) {
-      setBidError(`Số tiền đặt tối thiểu phải là ${minBidRequired.toLocaleString('vi-VN')} VNĐ (Giá hiện tại + Bước giá)`);
+    showToast(`🎉 Tiếp nhận hồ sơ ký gửi thành công từ ${consignmentForm.name} (${consignmentForm.phone}). Chuyên viên Đại Phát Land sẽ liên hệ thẩm định ngay!`);
+    setConsignmentForm({ name: '', phone: '', address: '', type: 'Nhà Đất Bán', price: '', note: '' });
+  };
+
+  const handleContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contactForm.name || !contactForm.phone) {
+      alert('Vui lòng điền họ tên và số điện thoại!');
       return;
     }
-    
-    // Success: Update state
-    setAuctionsData(prev => prev.map(a => {
-      if (a.id === auctionId) {
-        return {
-          ...a,
-          currentPrice: bidAmount,
-          history: [
-            {
-              time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
-              bidder: "Bạn (Khách thử nghiệm)",
-              amount: bidAmount
-            },
-            ...a.history
-          ]
-        };
+    showToast(`🎉 Cảm ơn ${contactForm.name}. Yêu cầu tư vấn bất động sản Thủy Nguyên đã được chuyển đến ban chuyên môn.`);
+    setContactForm({ name: '', phone: '', email: '', message: '' });
+  };
+
+  const handleImgError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80';
+  };
+
+  // Filter Logic
+  const filteredProperties = useMemo(() => {
+    return BDS13_PROPERTIES.filter(p => {
+      if (activeSearchTab !== 'all' && p.category !== activeSearchTab) return false;
+      if (searchKeyword && !p.title.toLowerCase().includes(searchKeyword.toLowerCase()) && !p.location.toLowerCase().includes(searchKeyword.toLowerCase())) return false;
+      if (filterType !== 'all') {
+        const f = filterType.toLowerCase();
+        const t = (p.type || '').toLowerCase();
+        if (t !== f && !t.includes(f) && !f.includes(t)) return false;
       }
-      return a;
-    }));
-    
-    setBidSuccess('Chúc mừng! Bạn đã đặt giá thử nghiệm thành công.');
-    setBidInput('');
-  };
-
-  const NavLinks = () => (
-    <>
-      <button onClick={() => navigateTo('home')} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'home' ? 'text-red-600' : 'text-gray-850 hover:text-red-600'}`}>Trang Chủ</button>
-      <button onClick={() => navigateTo('auctions')} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'auctions' ? 'text-red-600' : 'text-gray-850 hover:text-red-600'}`}>Đang Đấu Giá</button>
-      <button onClick={() => navigateTo('about')} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'about' ? 'text-red-600' : 'text-gray-850 hover:text-red-600'}`}>Về Chúng Tôi</button>
-      <button onClick={() => navigateTo('gallery')} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'gallery' ? 'text-red-600' : 'text-gray-850 hover:text-red-600'}`}>Hình Ảnh</button>
-      <button onClick={() => navigateTo('news')} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'news' ? 'text-red-600' : 'text-gray-850 hover:text-red-600'}`}>Tin Tức</button>
-      <button onClick={() => navigateTo('contact')} className={`font-['Barlow_Condensed'] font-semibold text-lg uppercase tracking-wider ${currentPage === 'contact' ? 'text-red-600' : 'text-gray-850 hover:text-red-600'}`}>Liên Hệ</button>
-    </>
-  );
-
-  // Countdown Hook Mockup
-  const Countdown = ({ hours = 10, minutes = 20, seconds = 0 }) => {
-    const [time, setTime] = useState({ h: hours, m: minutes, s: seconds });
-    useEffect(() => {
-      const timer = setInterval(() => {
-        setTime(prev => {
-          if (prev.s > 0) return { ...prev, s: prev.s - 1 };
-          if (prev.m > 0) return { ...prev, m: prev.m - 1, s: 59 };
-          if (prev.h > 0) return { h: prev.h - 1, m: 59, s: 59 };
-          return prev;
-        });
-      }, 1000);
-      return () => clearInterval(timer);
-    }, []);
-
-    return (
-      <div className="flex gap-2 text-center text-xs font-bold font-['Barlow']">
-        <div className="bg-red-600 text-white rounded p-1 w-10">{time.h.toString().padStart(2, '0')}<span className="block text-[8px] uppercase font-light mt-1">Giờ</span></div>
-        <div className="bg-red-600 text-white rounded p-1 w-10">{time.m.toString().padStart(2, '0')}<span className="block text-[8px] uppercase font-light mt-1">Phút</span></div>
-        <div className="bg-red-600 text-white rounded p-1 w-10">{time.s.toString().padStart(2, '0')}<span className="block text-[8px] uppercase font-light mt-1">Giây</span></div>
-      </div>
-    );
-  };
-
-  const renderHome = () => (
-    <main className="w-full font-['Barlow'] bg-[#FEF2F2]">
-      {/* 2. HERO */}
-      <section className="relative w-full min-h-[600px] lg:h-[800px] flex items-center justify-center pt-20">
-        <div className="absolute inset-0 z-0">
-          <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80" alt="Hero" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-red-950/90 to-red-900/60" />
-        </div>
-        <div className={`relative z-10 w-full ${MAX_W} px-4 flex flex-col items-center text-center`}>
-          <div className="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-500/50 text-amber-400 px-4 py-2 rounded-sm mb-6 font-semibold uppercase tracking-wider text-sm backdrop-blur-sm">
-            <span className="w-2 h-2 rounded-sm bg-amber-400 animate-pulse"></span>
-            Nền tảng đấu giá trực tuyến số 1 Việt Nam
-          </div>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-['Barlow_Condensed'] font-bold text-white uppercase leading-tight mb-6 tracking-tight drop-shadow-lg">
-            Đấu Giá <span className="text-red-500">Minh Bạch</span><br />
-            Giá Trị <span className="text-amber-400">Thực Tế</span>
-          </h1>
-          <p className="text-lg md:text-xl text-gray-200 max-w-2xl font-light mb-10">
-            Khám phá danh mục bất động sản đấu giá được kiểm định chặt chẽ, pháp lý an toàn, cơ hội đầu tư sinh lời vượt trội với nền tảng giao dịch bảo mật.
-          </p>
-          
-          <div className="w-full max-w-4xl bg-white p-4 rounded-sm shadow-2xl flex flex-col md:flex-row gap-4 items-center">
-            <div className="flex-1 w-full relative">
-              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-              <input 
-                type="text" 
-                placeholder="Khu vực, Tên dự án..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all text-gray-800 placeholder-gray-400 font-medium" 
-              />
-            </div>
-            <div className="flex-1 w-full relative">
-              <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-              <select 
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all text-gray-800 appearance-none font-medium"
-              >
-                <option value="">Loại tài sản</option>
-                <option value="dat-nen">Đất nền dự án</option>
-                <option value="can-ho">Căn hộ chung cư</option>
-                <option value="nha-pho">Nhà phố thương mại</option>
-                <option value="biet-thu">Biệt thự nghỉ dưỡng</option>
-              </select>
-            </div>
-            <button 
-              onClick={() => navigateTo('auctions')}
-              className="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 text-lg"
-            >
-              <Search size={20} /> Tìm Kiếm
-            </button>
-          </div>
-          
-          <div className="flex items-center gap-8 mt-12 text-white/80 font-['Barlow_Condensed'] uppercase tracking-wider text-sm font-semibold">
-            <div className="flex items-center gap-2"><ShieldCheck className="text-amber-400" size={20} /> Pháp lý rõ ràng</div>
-            <div className="flex items-center gap-2"><Gavel className="text-amber-400" size={20} /> Đấu giá công khai</div>
-            <div className="flex items-center gap-2"><Clock className="text-amber-400" size={20} /> Giao dịch 24/7</div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. LIVE AUCTIONS */}
-      <section className="py-20 bg-white">
-        <div className={`${MAX_W} px-4 mx-auto`}>
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b-2 border-red-100 pb-4">
-            <div>
-              <div className="inline-flex items-center gap-2 text-red-600 font-bold uppercase tracking-widest text-sm mb-2">
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-sm bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-sm h-3 w-3 bg-red-600"></span>
-                </span>
-                Đang Diễn Ra
-              </div>
-              <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Phiên Đấu Giá <span className="text-red-600">Trực Tiếp</span></h2>
-            </div>
-            <button onClick={() => navigateTo('auctions')} className="hidden md:flex items-center gap-2 text-red-600 font-bold hover:text-red-800 transition-colors uppercase tracking-wider">
-              Xem tất cả <ArrowRight size={20} />
-            </button>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {auctionsData.filter(a => a.status === 'live').slice(0, 3).map((item) => (
-              <div key={item.id} onClick={() => { setSelectedAuction(item); setBidError(''); setBidSuccess(''); }} className="bg-white rounded-sm shadow-xl overflow-hidden border border-red-50 hover:-translate-y-1 transition-transform duration-300 group cursor-pointer">
-                <div className="relative h-64 overflow-hidden">
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                  <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded font-bold text-sm shadow flex items-center gap-2 uppercase tracking-wider">
-                    <span className="w-2 h-2 bg-white rounded-sm animate-pulse"></span> LIVE
-                  </div>
-                  <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white px-3 py-1 rounded text-sm shadow flex items-center gap-1 font-medium">
-                    <Eye size={14} /> {item.viewers} người xem
-                  </div>
-                  <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4 flex justify-between items-end">
-                    <div className="text-white">
-                      <p className="text-xs text-gray-300 uppercase tracking-wider mb-1 font-semibold">Kết thúc sau</p>
-                      <Countdown hours={item.timeLeft.hours} minutes={item.timeLeft.minutes} seconds={item.timeLeft.seconds} />
-                    </div>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-2">
-                    <MapPin size={14} className="text-red-500"/> {item.location}
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 line-clamp-2 hover:text-red-600 transition-colors font-['Barlow_Condensed'] uppercase tracking-wide">
-                    {item.title}
-                  </h3>
-                  
-                  <div className="space-y-3 mb-6 bg-red-50/50 p-4 rounded-sm border border-red-100">
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-500 font-medium">Giá khởi điểm:</span>
-                      <span className="font-bold text-gray-900">{item.startPrice.toLocaleString('vi-VN')} VNĐ</span>
-                    </div>
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-500 font-medium">Giá hiện tại:</span>
-                      <span className="font-bold text-red-600 text-lg">{item.currentPrice.toLocaleString('vi-VN')} VNĐ</span>
-                    </div>
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-500 font-medium">Bước giá:</span>
-                      <span className="font-bold text-gray-700">{item.priceStep.toLocaleString('vi-VN')} VNĐ</span>
-                    </div>
-                  </div>
-                  
-                  <button 
-                    onClick={() => setSelectedAuction(item)}
-                    className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-sm font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 text-lg shadow-lg shadow-red-600/30 cursor-pointer"
-                  >
-                    <Gavel size={20} /> Đặt Giá Ngay
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-          {isMobile && (
-             <button onClick={() => navigateTo('auctions')} className="w-full mt-8 flex items-center justify-center gap-2 bg-gray-100 text-red-600 font-bold py-3 rounded-sm uppercase tracking-wider">
-               Xem tất cả <ArrowRight size={20} />
-             </button>
-          )}
-        </div>
-      </section>
-
-      {/* 4. UPCOMING AUCTIONS */}
-      <section className="py-20 bg-[#FEF2F2]">
-        <div className={`${MAX_W} px-4 mx-auto`}>
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Lịch Đấu Giá</span>
-            <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Sắp <span className="text-red-600">Diễn Ra</span></h2>
-            <p className="mt-4 text-gray-600 font-medium text-lg">Đăng ký ngay hôm nay để không bỏ lỡ các tài sản vàng sắp được lên sàn đấu giá với mức giá khởi điểm hấp dẫn.</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {auctionsData.filter(a => a.status === 'upcoming').slice(0, 6).map((item) => (
-              <div key={item.id} onClick={() => { setSelectedAuction(item); setBidError(''); setBidSuccess(''); }} className="bg-white p-4 rounded-sm flex flex-row gap-4 items-center shadow-sm hover:shadow-md transition-shadow border border-gray-100 group cursor-pointer">
-                <div className="w-24 h-24 rounded-sm overflow-hidden shrink-0 relative">
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1 flex items-center gap-1">
-                    <Calendar size={12} /> {item.startDate}
-                  </div>
-                  <h4 className="font-['Barlow_Condensed'] font-bold text-lg text-gray-900 truncate uppercase tracking-wide group-hover:text-red-600 transition-colors">{item.title}</h4>
-                  <p className="text-sm text-gray-500 font-medium flex items-center gap-1 mt-1 truncate"><MapPin size={12} /> {item.location}</p>
-                  <p className="text-sm font-bold text-red-600 mt-1">Khởi điểm: {(item.startPrice / 1000000000).toFixed(1)} Tỷ</p>
-                </div>
-                <div className="w-10 h-10 rounded-sm bg-red-50 flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white transition-colors shrink-0">
-                  <ChevronRight size={20} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 5. HOW IT WORKS */}
-      <section className="py-24 bg-gray-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1555529771-835f59bfc50c?auto=format&fit=crop&w=1920&q=80')] opacity-10 bg-cover bg-center mix-blend-overlay"></div>
-        <div className={`${MAX_W} px-4 mx-auto relative z-10`}>
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-red-500 font-bold uppercase tracking-widest text-sm mb-2 block">Quy Trình Chuẩn</span>
-            <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold uppercase">5 Bước <span className="text-red-500">Đấu Giá Dễ Dàng</span></h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 relative">
-            {/* Connecting Line */}
-            <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-800 -translate-y-1/2 z-0"></div>
-            
-            {[
-              { step: '01', title: 'Đăng Ký', desc: 'Tạo tài khoản & xác minh danh tính', icon: Users },
-              { step: '02', title: 'Nộp Cọc', desc: 'Nộp tiền đặt trước cho tài sản', icon: ShieldCheck },
-              { step: '03', title: 'Trả Giá', desc: 'Tham gia đấu giá trực tuyến', icon: Gavel },
-              { step: '04', title: 'Trúng Đấu Giá', desc: 'Nhận thông báo trúng đấu giá', icon: CheckCircle2 },
-              { step: '05', title: 'Thanh Toán', desc: 'Hoàn tất thủ tục pháp lý', icon: FileText }
-            ].map((item, index) => (
-              <div key={index} className="relative z-10 flex flex-col items-center text-center group">
-                <div className="w-20 h-20 bg-gray-800 rounded-sm flex items-center justify-center border-2 border-red-500 group-hover:bg-red-600 transition-colors duration-300 relative mb-6 shadow-[0_0_15px_rgba(220,38,38,0.3)]">
-                  <span className="absolute -top-3 -right-3 w-8 h-8 bg-amber-500 rounded-sm flex items-center justify-center text-gray-900 font-bold text-sm">
-                    {item.step}
-                  </span>
-                  <item.icon size={32} className="text-red-500 group-hover:text-white transition-colors" />
-                </div>
-                <h3 className="text-xl font-['Barlow_Condensed'] font-bold uppercase tracking-wide mb-2">{item.title}</h3>
-                <p className="text-gray-400 text-sm font-medium">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 6. CATEGORIES */}
-      <section className="py-20 bg-white">
-        <div className={`${MAX_W} px-4 mx-auto`}>
-           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b-2 border-red-100 pb-4">
-            <div>
-              <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Danh Mục</span>
-              <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Loại Hình <span className="text-red-600">Tài Sản</span></h2>
-            </div>
-            <p className="text-gray-600 font-medium max-w-md mt-4 md:mt-0 text-right hidden md:block">
-              Đa dạng các loại hình bất động sản phù hợp với mọi nhu cầu đầu tư và an cư của bạn.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {[
-              { name: 'Đất Nền', count: 120, img: '1500382017468-9049fed747ef', icon: Map, type: 'dat-nen' },
-              { name: 'Nhà Phố', count: 85, img: '1512917774080-9991f1c4c750', icon: Building2, type: 'nha-pho' },
-              { name: 'Biệt Thự', count: 42, img: '1600596542815-ffad4c1539a9', icon: Anchor, type: 'biet-thu' },
-              { name: 'Căn Hộ', count: 210, img: '1522708323590-d24dbb6b0267', icon: Building2, type: 'can-ho' },
-            ].map((cat, i) => (
-              <div key={i} onClick={() => { setFilterType(cat.type); navigateTo('auctions'); }} className="group relative rounded-sm overflow-hidden cursor-pointer aspect-square md:aspect-[3/4]">
-                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={`https://images.unsplash.com/photo-${cat.img}?auto=format&fit=crop&w=600&q=80`} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
-                <div className="absolute bottom-0 left-0 w-full p-6 text-white text-center">
-                  <div className="w-12 h-12 bg-red-600/90 rounded-sm flex items-center justify-center mx-auto mb-4 group-hover:-translate-y-2 transition-transform shadow-lg shadow-red-600/50 backdrop-blur-sm">
-                    <cat.icon size={24} />
-                  </div>
-                  <h3 className="font-['Barlow_Condensed'] font-bold text-2xl uppercase tracking-wider mb-1">{cat.name}</h3>
-                  <p className="text-sm text-gray-300 font-medium">{cat.count} Tài sản</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 7. ABOUT & 8. STATS */}
-      <section className="py-20 bg-[#FEF2F2]">
-        <div className={`${MAX_W} px-4 mx-auto`}>
-          <div className="flex flex-col lg:flex-row gap-12 items-center">
-            <div className="lg:w-1/2 relative">
-              <div className="absolute -inset-4 bg-red-600 rounded-md transform rotate-3 opacity-20"></div>
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80" alt="About" className="relative rounded-md shadow-2xl z-10 w-full h-[500px] object-cover" />
-              <div className="absolute -bottom-8 -right-8 bg-white p-6 rounded-sm shadow-xl z-20 hidden md:block">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-red-100 rounded-sm flex items-center justify-center">
-                    <Gavel className="text-red-600" size={32} />
-                  </div>
-                  <div>
-                    <p className="font-['Barlow_Condensed'] text-4xl font-bold text-gray-900">10+</p>
-                    <p className="text-gray-500 font-medium uppercase tracking-wider text-sm">Năm Kinh Nghiệm</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="lg:w-1/2">
-              <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Về Sàn Đấu Giá</span>
-              <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-6 leading-tight">
-                Nền Tảng Đấu Giá <br/><span className="text-red-600">Bất Động Sản Số 1</span>
-              </h2>
-              <p className="text-gray-600 font-medium text-lg mb-6 leading-relaxed">
-                Chúng tôi tự hào là đơn vị tiên phong trong việc ứng dụng công nghệ vào lĩnh vực đấu giá bất động sản, mang lại sự minh bạch, công bằng và hiệu quả tối đa cho cả người bán và người mua.
-              </p>
-              
-              <ul className="space-y-4 mb-10">
-                {[
-                  'Bảo mật thông tin khách hàng tuyệt đối',
-                  'Hệ thống đấu giá thời gian thực ổn định',
-                  'Đội ngũ chuyên gia hỗ trợ pháp lý 24/7',
-                  'Quy trình làm việc đạt chuẩn ISO 9001:2015'
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 font-medium text-gray-700">
-                    <div className="w-6 h-6 rounded-sm bg-red-100 flex items-center justify-center shrink-0">
-                      <CheckCircle2 size={16} className="text-red-600" />
-                    </div>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              
-              <button onClick={() => navigateTo('about')} className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-4 rounded-sm font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors text-lg shadow-lg">
-                Tìm Hiểu Thêm Về Chúng Tôi
-              </button>
-            </div>
-          </div>
-          
-          {/* STATS */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20">
-            {[
-              { number: '5,000+', label: 'Tài Sản Đã Đấu' },
-              { number: '12,000+', label: 'Thành Viên' },
-              { number: '98%', label: 'Đấu Giá Thành Công' },
-              { number: '15.5K', label: 'Tỷ VNĐ Giao Dịch' },
-            ].map((stat, i) => (
-              <div key={i} className="bg-white p-8 rounded-sm text-center shadow-lg border border-red-50 hover:-translate-y-2 transition-transform">
-                <div className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-red-600 mb-2">{stat.number}</div>
-                <div className="text-gray-500 font-bold uppercase tracking-wider text-sm">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 9. LEGAL & 10. AMENITIES */}
-      <section className="py-20 bg-white">
-        <div className={`${MAX_W} px-4 mx-auto`}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            <div>
-              <span className="text-amber-600 font-bold uppercase tracking-widest text-sm mb-2 block">Bảo Đảm Pháp Lý</span>
-              <h2 className="text-3xl md:text-4xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8">
-                Chứng Nhận <span className="text-amber-600">Cơ Quan Nhà Nước</span>
-              </h2>
-              <div className="bg-gray-50 p-6 rounded-sm border-l-4 border-amber-500 mb-8">
-                <p className="text-gray-700 font-medium italic">
-                  "Mọi phiên đấu giá trên hệ thống đều được giám sát chặt chẽ và tuân thủ đúng quy định của Luật Đấu giá tài sản 2016."
-                </p>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center gap-4 bg-white p-4 rounded-sm border border-gray-100 shadow-sm">
-                  <ShieldCheck size={32} className="text-amber-500" />
-                  <span className="font-bold text-gray-800">Bộ Tư Pháp cấp phép</span>
-                </div>
-                <div className="flex items-center gap-4 bg-white p-4 rounded-sm border border-gray-100 shadow-sm">
-                  <FileText size={32} className="text-amber-500" />
-                  <span className="font-bold text-gray-800">Sở Tư Pháp giám sát</span>
-                </div>
-                <div className="flex items-center gap-4 bg-white p-4 rounded-sm border border-gray-100 shadow-sm">
-                  <CheckCircle2 size={32} className="text-amber-500" />
-                  <span className="font-bold text-gray-800">Ngân hàng bảo lãnh</span>
-                </div>
-                <div className="flex items-center gap-4 bg-white p-4 rounded-sm border border-gray-100 shadow-sm">
-                  <ShieldCheck size={32} className="text-amber-500" />
-                  <span className="font-bold text-gray-800">Kiểm toán độc lập</span>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Dịch Vụ Hỗ Trợ</span>
-              <h2 className="text-3xl md:text-4xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8">
-                Hỗ Trợ <span className="text-red-600">Toàn Diện</span>
-              </h2>
-              <div className="space-y-6">
-                {[
-                  { title: 'Tư Vấn Pháp Lý 24/7', desc: 'Đội ngũ luật sư giàu kinh nghiệm tư vấn miễn phí thủ tục sang tên, đóng thuế.', icon: FileText },
-                  { title: 'Hỗ Trợ Tài Chính', desc: 'Liên kết ngân hàng cho vay lên đến 70% giá trị tài sản trúng đấu giá.', icon: TrendingUp },
-                  { title: 'Thẩm Định Giá Độc Lập', desc: 'Báo cáo thẩm định giá chi tiết từ các đơn vị uy tín hàng đầu.', icon: HelpCircle },
-                ].map((s, i) => (
-                  <div key={i} className="flex gap-4">
-                    <div className="w-12 h-12 bg-red-50 rounded-sm flex items-center justify-center shrink-0">
-                      <s.icon size={24} className="text-red-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-gray-900 text-lg mb-1">{s.title}</h4>
-                      <p className="text-gray-600 font-medium text-sm">{s.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 11. GALLERY */}
-      <section className="py-20 bg-gray-900">
-        <div className="w-full">
-          <div className="text-center max-w-2xl mx-auto mb-12 px-4">
-            <span className="text-red-500 font-bold uppercase tracking-widest text-sm mb-2 block">Thư Viện Ảnh</span>
-            <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-white uppercase">Tài Sản <span className="text-red-500">Tiêu Biểu</span></h2>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-1">
-            {GALLERY_ITEMS.slice(0, 8).map((item, i) => (
-              <div key={item.id} onClick={() => setSelectedGalleryImg(item.image)} className={`relative overflow-hidden group ${i === 0 || i === 5 ? 'col-span-2 row-span-2' : ''} aspect-square cursor-pointer`}>
-                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                <div className="absolute inset-0 bg-red-950/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
-                  <div className="w-12 h-12 bg-white rounded-sm flex items-center justify-center text-red-600 translate-y-4 group-hover:translate-y-0 transition-transform duration-300 shadow-lg mb-2">
-                    <Search size={20} />
-                  </div>
-                  <p className="text-white text-sm font-bold uppercase tracking-wider text-center translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75 line-clamp-1">{item.title}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 12. TESTIMONIALS */}
-      <section className="py-20 bg-[#FEF2F2]">
-        <div className={`${MAX_W} px-4 mx-auto`}>
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Khách Hàng Nói Gì</span>
-            <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Câu Chuyện <span className="text-red-600">Thành Công</span></h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((item) => (
-              <div key={item} className="bg-white p-8 rounded-sm shadow-lg relative border-t-4 border-red-600">
-                <div className="text-red-200 text-6xl font-serif absolute top-4 right-4 opacity-50">"</div>
-                <div className="flex gap-1 mb-4 text-amber-500">
-                  <Star size={16} fill="currentColor" />
-                  <Star size={16} fill="currentColor" />
-                  <Star size={16} fill="currentColor" />
-                  <Star size={16} fill="currentColor" />
-                  <Star size={16} fill="currentColor" />
-                </div>
-                <p className="text-gray-600 italic font-medium mb-8 relative z-10">
-                  "Hệ thống đấu giá chạy rất mượt mà. Tôi đã trúng đấu giá lô đất với mức giá tốt hơn thị trường 15%. Quy trình pháp lý sau đó được đội ngũ hỗ trợ rất nhanh chóng."
-                </p>
-                <div className="flex items-center gap-4">
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={`https://i.pravatar.cc/100?img=${item + 10}`} alt="User" className="w-14 h-14 rounded-sm object-cover border-2 border-red-100" />
-                  <div>
-                    <h4 className="font-bold text-gray-900 uppercase tracking-wide">Nguyễn Văn {String.fromCharCode(64+item)}</h4>
-                    <p className="text-xs text-red-600 font-bold uppercase tracking-wider">Nhà Đầu Tư</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 13. NEWS */}
-      <section className="py-20 bg-white">
-        <div className={`${MAX_W} px-4 mx-auto`}>
-           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b-2 border-red-100 pb-4">
-            <div>
-              <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Tin Tức Mới</span>
-              <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Thị Trường <span className="text-red-600">Đấu Giá</span></h2>
-            </div>
-            <button onClick={() => navigateTo('news')} className="hidden md:flex items-center gap-2 text-red-600 font-bold hover:text-red-800 transition-colors uppercase tracking-wider">
-              Xem tất cả tin tức <ArrowRight size={20} />
-            </button>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {MOCK_NEWS.slice(0, 3).map((item) => (
-              <div key={item.id} className="group cursor-pointer" onClick={() => setSelectedArticle(item)}>
-                <div className="relative rounded-sm overflow-hidden mb-6 aspect-video">
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded text-sm font-bold uppercase tracking-wider shadow-lg">
-                    {item.category}
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
-                  <span className="flex items-center gap-1"><Calendar size={14} className="text-red-500"/> {item.date}</span>
-                  <span className="flex items-center gap-1"><Users size={14} className="text-red-500"/> {item.author}</span>
-                </div>
-                <h3 className="text-xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase tracking-wide mb-3 group-hover:text-red-600 transition-colors">
-                  {item.title}
-                </h3>
-                <p className="text-gray-600 font-medium text-sm line-clamp-2">
-                  {item.summary}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 14. FAQ */}
-      <section className="py-20 bg-[#FEF2F2]">
-        <div className={`${MAX_W} px-4 mx-auto max-w-4xl`}>
-          <div className="text-center mb-16">
-            <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Giải Đáp Thắc Mắc</span>
-            <h2 className="text-4xl md:text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Câu Hỏi <span className="text-red-600">Thường Gặp</span></h2>
-          </div>
-          
-          <div className="space-y-4">
-            {[
-              { q: "Làm thế nào để đăng ký tham gia đấu giá?", a: "Bạn cần tạo tài khoản trên hệ thống, xác minh danh tính bằng CCCD/CMND, và nộp tiền đặt trước cho tài sản bạn muốn tham gia đấu giá chậm nhất 2 ngày trước khi phiên đấu giá diễn ra." },
-              { q: "Tiền đặt trước (tiền cọc) quy định như thế nào?", a: "Tiền đặt trước thường dao động từ 5% đến 20% giá khởi điểm của tài sản. Nếu bạn không trúng đấu giá, số tiền này sẽ được hoàn trả vào tài khoản của bạn trong vòng 3 ngày làm việc." },
-              { q: "Nếu tôi trả giá cao nhất nhưng đổi ý không mua nữa?", a: "Theo luật đấu giá, nếu bạn đã trả giá cao nhất nhưng từ chối mua, bạn sẽ mất toàn bộ số tiền đặt trước. Vui lòng cân nhắc kỹ khả năng tài chính trước khi đặt giá." },
-              { q: "Phí tham gia đấu giá là bao nhiêu?", a: "Phí mua hồ sơ tham gia đấu giá từ 100.000 VNĐ đến 500.000 VNĐ tùy thuộc vào giá trị của tài sản, khoản phí này không được hoàn lại." }
-            ].map((faq, i) => (
-              <div key={i} className="bg-white rounded-sm shadow-sm border border-red-50 overflow-hidden">
-                <button 
-                  className="w-full text-left px-6 py-5 flex justify-between items-center font-bold text-gray-900 hover:text-red-600 transition-colors uppercase tracking-wide font-['Barlow_Condensed'] text-lg"
-                  onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-                >
-                  {faq.q}
-                  <ChevronRight size={20} className={`transform transition-transform ${activeFaq === i ? 'rotate-90 text-red-600' : 'text-gray-400'}`} />
-                </button>
-                <div className={`px-6 overflow-hidden transition-all duration-300 ${activeFaq === i ? 'max-h-48 pb-5 opacity-100' : 'max-h-0 opacity-0'}`}>
-                  <p className="text-gray-600 font-medium leading-relaxed">{faq.a}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 15. CONTACT CTA / NEWSLETTER */}
-      <section className="py-24 bg-red-600 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-red-500 rounded-sm blur-3xl opacity-50 translate-x-1/3 -translate-y-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-red-700 rounded-sm blur-3xl opacity-50 -translate-x-1/3 translate-y-1/3"></div>
-        
-        <div className={`${MAX_W} px-4 mx-auto relative z-10 text-center`}>
-          <Gavel size={64} className="text-white mx-auto mb-6 opacity-80" />
-          <h2 className="text-4xl md:text-6xl font-['Barlow_Condensed'] font-bold text-white uppercase mb-6 tracking-wide drop-shadow">
-            Sẵn Sàng Săn Tài Sản Giá Trị?
-          </h2>
-          <p className="text-red-100 text-lg md:text-xl font-medium max-w-2xl mx-auto mb-10">
-            Đăng ký thành viên ngay hôm nay để nhận thông báo sớm nhất về các phiên đấu giá hấp dẫn và ưu đãi đặc quyền.
-          </p>
-          
-          <form 
-            onSubmit={(e) => {
-              e.preventDefault();
-              alert('Đăng ký nhận thông tin đấu giá thành công!');
-              (e.currentTarget.elements[0] as HTMLInputElement).value = '';
-            }}
-            className="flex flex-col sm:flex-row justify-center gap-4 max-w-lg mx-auto"
-          >
-            <input required type="email" placeholder="Nhập địa chỉ email của bạn..." className="w-full px-6 py-4 rounded-sm text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-red-400 bg-white" />
-            <button type="submit" className="bg-gray-900 hover:bg-black text-white px-8 py-4 rounded-sm font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors shadow-xl shrink-0 whitespace-nowrap cursor-pointer">
-              Đăng Ký Nhận Tin
-            </button>
-          </form>
-        </div>
-      </section>
-    </main>
-  );
-
-  const renderAuctions = () => {
-    const filteredAuctions = auctionsData.filter(item => {
-      const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            item.location.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesType = !filterType || item.type === filterType;
-      const matchesRegion = !filterRegion || item.region === filterRegion;
+      if (filterDistrict !== 'all') {
+        const d = filterDistrict.toLowerCase();
+        const loc = ((p.district || '') + ' ' + (p.location || '')).toLowerCase();
+        if (!loc.includes(d) && !d.includes((p.district || '').toLowerCase())) return false;
+      }
+      if (filterDirection !== 'all' && p.direction !== filterDirection) return false;
       
-      let matchesPrice = true;
-      if (filterPrice === 'under-10') {
-        matchesPrice = item.currentPrice < 10000000000;
-      } else if (filterPrice === '10-30') {
-        matchesPrice = item.currentPrice >= 10000000000 && item.currentPrice <= 30000000000;
-      } else if (filterPrice === 'over-30') {
-        matchesPrice = item.currentPrice > 30000000000;
-      }
+      if (filterPrice === 'under-3' && p.priceNum >= 3) return false;
+      if (filterPrice === '3-5' && (p.priceNum < 3 || p.priceNum > 5)) return false;
+      if (filterPrice === 'above-5' && p.priceNum <= 5) return false;
 
-      return matchesSearch && matchesType && matchesRegion && matchesPrice;
+      if (filterArea === 'under-80' && p.areaNum >= 80) return false;
+      if (filterArea === '80-120' && (p.areaNum < 80 || p.areaNum > 120)) return false;
+      if (filterArea === 'above-120' && p.areaNum <= 120) return false;
+
+      return true;
     });
+  }, [activeSearchTab, searchKeyword, filterType, filterDistrict, filterPrice, filterArea, filterDirection]);
 
-    return (
-      <div className="w-full font-['Barlow'] bg-[#FEF2F2] pt-24 pb-20">
-        <div className={`${MAX_W} px-4 mx-auto`}>
-          <h1 className="text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8 border-l-8 border-red-600 pl-6">Sàn Đấu Giá</h1>
-          
-          {/* Reactive Filter Controls */}
-          <div className="bg-white p-6 rounded-sm shadow-md border border-red-50 flex flex-col lg:flex-row gap-4 items-center mb-8">
-            <div className="w-full lg:flex-1 relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-              <input 
-                type="text" 
-                placeholder="Tìm kiếm khu vực, dự án..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-gray-800"
-              />
-            </div>
-            
-            <div className="w-full lg:w-48 relative">
-              <select 
-                value={filterType} 
-                onChange={(e) => setFilterType(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-gray-800 appearance-none font-medium"
-              >
-                <option value="">Tất cả loại hình</option>
-                <option value="dat-nen">Đất nền dự án</option>
-                <option value="can-ho">Căn hộ chung cư</option>
-                <option value="nha-pho">Nhà phố thương mại</option>
-                <option value="biet-thu">Biệt thự nghỉ dưỡng</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-750">
-                <ChevronRight size={16} className="transform rotate-90" />
-              </div>
-            </div>
-            
-            <div className="w-full lg:w-48 relative">
-              <select 
-                value={filterRegion} 
-                onChange={(e) => setFilterRegion(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-gray-800 appearance-none font-medium"
-              >
-                <option value="">Tất cả khu vực</option>
-                <option value="Miền Bắc">Miền Bắc</option>
-                <option value="Miền Trung">Miền Trung</option>
-                <option value="Miền Nam">Miền Nam</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-750">
-                <ChevronRight size={16} className="transform rotate-90" />
-              </div>
-            </div>
-            
-            <div className="w-full lg:w-48 relative">
-              <select 
-                value={filterPrice} 
-                onChange={(e) => setFilterPrice(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-gray-800 appearance-none font-medium"
-              >
-                <option value="">Tất cả giá</option>
-                <option value="under-10">Dưới 10 tỷ</option>
-                <option value="10-30">10 tỷ - 30 tỷ</option>
-                <option value="over-30">Trên 30 tỷ</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-750">
-                <ChevronRight size={16} className="transform rotate-90" />
-              </div>
-            </div>
-            
-            {(searchQuery || filterType || filterRegion || filterPrice) && (
-              <button 
-                onClick={() => { setSearchQuery(''); setFilterType(''); setFilterRegion(''); setFilterPrice(''); }}
-                className="w-full lg:w-auto text-red-600 hover:text-red-800 font-bold transition-colors font-['Barlow_Condensed'] uppercase tracking-wider text-sm px-4 whitespace-nowrap"
-              >
-                Xóa lọc
-              </button>
-            )}
+  // ─────────────────────────────────────────────────────────────────────────
+  // 1. TOP MICROBAR & HEADER
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderHeader = () => (
+    <header className="sticky top-0 z-40 bg-white text-slate-800 shadow-md border-b border-slate-200">
+      
+      {/* Top Microbar Navy */}
+      <div className="bg-[#0B3056] text-white text-xs py-1.5 px-4 hidden md:block border-b border-white/10">
+        <div className={`${MAX_W} mx-auto flex items-center justify-between text-[11px]`}>
+          <div className="flex items-center gap-6">
+            <span className="flex items-center gap-1.5 text-slate-200">
+              <Mail size={13} className="text-[#F97316]" /> info@templatebds.com
+            </span>
+            <span className="text-slate-500">|</span>
+            <span className="flex items-center gap-1.5 font-bold text-white">
+              <Phone size={13} className="text-[#F97316] animate-pulse" /> Hotline 24/7: 0917.85.88.85 — 0919 006 030
+            </span>
           </div>
-          
-          {/* Results Count */}
-          <div className="text-gray-650 font-medium mb-6">
-            Tìm thấy <span className="font-bold text-red-600">{filteredAuctions.length}</span> tài sản phù hợp.
-          </div>
-          
-          {/* Listings Grid */}
-          {filteredAuctions.length === 0 ? (
-            <div className="bg-white p-12 rounded-sm shadow-lg border border-red-50 text-center py-20">
-              <Gavel size={64} className="text-red-200 mx-auto mb-4" />
-              <h2 className="text-2xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Không tìm thấy tài sản phù hợp</h2>
-              <p className="text-gray-500 mt-2">Vui lòng thử lại với các tiêu chí tìm kiếm hoặc bộ lọc khác.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredAuctions.map((item) => (
-                <div key={item.id} onClick={() => { setSelectedAuction(item); setBidError(''); setBidSuccess(''); }} className="bg-white rounded-sm shadow-xl overflow-hidden border border-red-50 hover:-translate-y-1 transition-transform duration-300 group cursor-pointer flex flex-col justify-between">
-                  <div>
-                    <div className="relative h-56 overflow-hidden">
-                      <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                      <div className={`absolute top-4 left-4 text-white px-3 py-1 rounded font-bold text-sm shadow flex items-center gap-2 uppercase tracking-wider ${item.status === 'live' ? 'bg-red-600' : 'bg-amber-500'}`}>
-                        {item.status === 'live' ? (
-                          <>
-                            <span className="w-2 h-2 bg-white rounded-sm animate-pulse"></span> LIVE
-                          </>
-                        ) : (
-                          'SẮP DIỄN RA'
-                        )}
-                      </div>
-                      <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white px-3 py-1 rounded text-sm shadow flex items-center gap-1 font-medium">
-                        <Eye size={14} /> {item.status === 'live' ? `${item.viewers} người xem` : 'Đang chờ'}
-                      </div>
-                      {item.status === 'live' && (
-                        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4">
-                          <p className="text-[10px] text-gray-300 uppercase tracking-wider mb-1 font-semibold">Kết thúc sau</p>
-                          <Countdown hours={item.timeLeft.hours} minutes={item.timeLeft.minutes} seconds={item.timeLeft.seconds} />
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-6">
-                      <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-2">
-                        <MapPin size={14} className="text-red-500"/> {item.location}
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-4 line-clamp-2 hover:text-red-600 transition-colors font-['Barlow_Condensed'] uppercase tracking-wide">
-                        {item.title}
-                      </h3>
-                      
-                      <div className="space-y-3 mb-6 bg-red-50/50 p-4 rounded-sm border border-red-100">
-                        {item.status === 'live' ? (
-                          <>
-                            <div className="flex justify-between items-center text-sm">
-                              <span className="text-gray-500 font-medium">Giá khởi điểm:</span>
-                              <span className="font-bold text-gray-900">{(item.startPrice / 1000000000).toFixed(1)} Tỷ VNĐ</span>
-                            </div>
-                            <div className="flex justify-between items-center text-sm">
-                              <span className="text-gray-500 font-medium">Giá hiện tại:</span>
-                              <span className="font-bold text-red-600 text-lg">{(item.currentPrice / 1000000000).toLocaleString('vi-VN')} Tỷ VNĐ</span>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <div className="flex justify-between items-center text-sm">
-                              <span className="text-gray-500 font-medium">Giá khởi điểm:</span>
-                              <span className="font-bold text-red-600 text-lg">{(item.startPrice / 1000000000).toFixed(1)} Tỷ VNĐ</span>
-                            </div>
-                            <div className="flex justify-between items-center text-sm">
-                              <span className="text-gray-500 font-medium">Ngày bắt đầu:</span>
-                              <span className="font-bold text-gray-900">{item.startDate}</span>
-                            </div>
-                          </>
-                        )}
-                        <div className="flex justify-between items-center text-sm">
-                          <span className="text-gray-500 font-medium">Kích thước:</span>
-                          <span className="font-bold text-gray-750">{item.size}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="px-6 pb-6">
-                    <button 
-                      onClick={() => setSelectedAuction(item)}
-                      className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-sm font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 text-lg shadow-lg cursor-pointer"
-                    >
-                      <Gavel size={20} /> {item.status === 'live' ? 'Đấu Giá / Đặt Cọc' : 'Xem Chi Tiết'}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const renderAbout = () => {
-    const milestones = [
-      { year: "2016", title: "Thành Lập Công Ty", desc: "Được cấp phép hoạt động bởi Bộ Tư Pháp, đặt nền móng với trụ sở chính tại TP.HCM." },
-      { year: "2019", title: "Số Hóa Hoạt Động", desc: "Ra mắt phiên bản đầu tiên của nền tảng đấu giá trực tuyến, loại bỏ hoàn toàn thủ tục giấy tờ." },
-      { year: "2022", title: "Hệ Thống Real-time", desc: "Nâng cấp hạ tầng công nghệ, ứng dụng AI để nhận diện khách hàng và chống gian lận giá." },
-      { year: "2025", title: "Dẫn Đầu Thị Trường", desc: "Đạt mốc giao dịch lũy kế 15.500 tỷ VNĐ với tỷ lệ đấu giá thành công và bàn giao nhà đạt 98%." }
-    ];
-
-    const leaders = [
-      {
-        name: "Ông Nguyễn Thế Anh",
-        role: "Tổng Giám Đốc / Đồng Sáng Lập",
-        image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80",
-        bio: "Hơn 15 năm kinh nghiệm trong quản lý bất động sản và đấu giá tài sản công."
-      },
-      {
-        name: "Bà Lê Minh Trang",
-        role: "Giám Đốc Pháp Lý",
-        image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
-        bio: "Nguyên Thẩm phán với chuyên môn sâu về Luật Đất đai và thủ tục chuyển nhượng tài sản đấu giá."
-      },
-      {
-        name: "Ông Trần Hoài Nam",
-        role: "Giám Đốc Công Nghệ (CTO)",
-        image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80",
-        bio: "Chuyên gia công nghệ thông tin từ thung lũng Silicon, kiến trúc sư trưởng hệ thống đấu giá bảo mật."
-      }
-    ];
-
-    return (
-      <div className="w-full font-['Barlow'] bg-[#FEF2F2] pt-24 pb-20">
-        <div className={`${MAX_W} px-4 mx-auto`}>
-          <h1 className="text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8 border-l-8 border-red-600 pl-6">Về Chúng Tôi</h1>
-          
-          {/* Main Intro */}
-          <div className="bg-white rounded-sm shadow-xl p-8 lg:p-12 border border-red-50 mb-16">
-            <div className="flex flex-col lg:flex-row gap-12 items-center">
-              <div className="w-full lg:w-1/2">
-                <span className="text-red-600 font-bold uppercase tracking-widest text-sm mb-2 block">Thương Hiệu Tiên Phong</span>
-                <h2 className="text-3xl md:text-4xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-6">
-                  Kiến tạo môi trường giao dịch bất động sản công khai, minh bạch
-                </h2>
-                <p className="text-gray-600 font-medium text-lg leading-relaxed mb-6">
-                  PlatformBDS tự hào là doanh nghiệp tiên phong triển khai giải pháp công nghệ số vào hoạt động đấu giá bất động sản tại Việt Nam. Chúng tôi đồng hành cùng các cơ quan nhà nước, ngân hàng thương mại và các tập đoàn lớn để đưa những tài sản chất lượng tới tay khách hàng một cách công bằng nhất.
-                </p>
-                <div className="flex items-center gap-4">
-                  <div className="bg-red-50 text-red-600 p-4 rounded-sm">
-                    <ShieldCheck size={36} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900 text-lg uppercase">Bảo Chứng Pháp Lý</h4>
-                    <p className="text-gray-500 font-medium text-sm">Tuân thủ nghiêm ngặt Luật Đấu giá tài sản và quy định nhà nước.</p>
-                  </div>
-                </div>
-              </div>
-              <div className="w-full lg:w-1/2 relative">
-                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80" alt="Building" className="rounded-sm shadow-lg w-full h-[350px] object-cover" />
-                <div className="absolute -bottom-6 -left-6 bg-amber-500 text-gray-900 p-6 rounded-sm shadow-xl hidden md:block">
-                  <p className="text-5xl font-extrabold font-['Barlow_Condensed']">100%</p>
-                  <p className="text-xs uppercase font-bold tracking-wider mt-1 text-gray-950">Pháp lý minh bạch</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Interactive Working Tabs */}
-          <div className="bg-white rounded-sm shadow-xl p-8 border border-red-50 mb-16">
-            <div className="flex justify-center border-b border-gray-200 mb-8">
-              <div className="flex gap-4 md:gap-8 overflow-x-auto">
-                {[
-                  { id: 'mission', label: 'Sứ Mệnh', icon: Target },
-                  { id: 'vision', label: 'Tầm Nhìn', icon: Eye },
-                  { id: 'values', label: 'Giá Trị Cốt Lõi', icon: Award }
-                ].map(tab => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setAboutTab(tab.id)}
-                    className={`pb-4 px-2 font-['Barlow_Condensed'] font-bold text-xl uppercase tracking-wider flex items-center gap-2 border-b-4 transition-all whitespace-nowrap ${aboutTab === tab.id ? 'border-red-600 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-800'}`}
-                  >
-                    <tab.icon size={20} /> {tab.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-            
-            <div className="py-4">
-              {aboutTab === 'mission' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                  <div>
-                    <h3 className="text-2xl font-bold font-['Barlow_Condensed'] text-gray-900 uppercase mb-4">Sứ Mệnh Của Chúng Tôi</h3>
-                    <p className="text-gray-650 font-medium leading-relaxed">
-                      Sứ mệnh của chúng tôi là minh bạch hóa thị trường bất động sản thông qua công nghệ. PlatformBDS giúp loại bỏ rào cản địa lý, kết nối người mua thực và người bán thực, mang đến trải nghiệm đấu giá an toàn, tiện lợi nhất, đồng thời tối ưu hóa lợi ích tài chính cho toàn xã hội.
-                    </p>
-                  </div>
-                  <div className="bg-red-50 p-6 rounded-sm border-l-4 border-red-600">
-                    <p className="italic text-red-800 font-semibold">
-                      "Công khai - Công bằng - Minh bạch - Chuyên nghiệp là kim chỉ nam cho mọi hoạt động của sàn đấu giá."
-                    </p>
-                  </div>
-                </div>
-              )}
-              {aboutTab === 'vision' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                  <div>
-                    <h3 className="text-2xl font-bold font-['Barlow_Condensed'] text-gray-900 uppercase mb-4">Tầm Nhìn 2030</h3>
-                    <p className="text-gray-650 font-medium leading-relaxed">
-                      Trở thành nền tảng đấu giá bất động sản số trực tuyến lớn nhất Việt Nam và dẫn đầu khu vực Đông Nam Á về khối lượng giao dịch. Tích hợp các giải pháp Blockchain vào xác thực nguồn gốc đất đai và bảo lãnh đấu giá bằng tiền định danh.
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-gray-50 p-4 rounded-sm text-center shadow-sm">
-                      <p className="text-3xl font-extrabold text-red-600">50K+</p>
-                      <p className="text-xs text-gray-500 font-bold uppercase mt-1">Thành viên đăng ký</p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-sm text-center shadow-sm">
-                      <p className="text-3xl font-extrabold text-red-600">100%</p>
-                      <p className="text-xs text-gray-500 font-bold uppercase mt-1">Số hóa toàn diện</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-              {aboutTab === 'values' && (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {[
-                    { title: "Minh Bạch Tuyệt Đối", desc: "Mọi giao dịch, phiên đặt giá đều được hệ thống ghi nhận thời gian thực và không thể chỉnh sửa." },
-                    { title: "An Toàn Pháp Lý", desc: "Tất cả bất động sản trước khi lên sàn đều được đội ngũ luật sư kiểm định nghiêm ngặt về quy hoạch, tranh chấp." },
-                    { title: "Khách Hàng Là Trọng Tâm", desc: "Không ngừng cải tiến trải nghiệm người dùng, hỗ trợ khách hàng trước, trong và sau phiên đấu giá." }
-                  ].map((val, idx) => (
-                    <div key={idx} className="bg-gray-50 p-6 rounded-sm border border-gray-150 shadow-sm">
-                      <div className="w-10 h-10 bg-red-600 text-white rounded-lg flex items-center justify-center font-bold mb-4">{idx + 1}</div>
-                      <h4 className="font-bold text-gray-900 text-lg mb-2">{val.title}</h4>
-                      <p className="text-gray-650 font-medium text-sm">{val.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Timeline Milestones */}
-          <div className="mb-16">
-            <h2 className="text-4xl font-['Barlow_Condensed'] font-bold text-gray-900 text-center uppercase mb-12">Lịch Sử Phát Triển</h2>
-            <div className="relative border-l-2 border-red-200 ml-4 md:ml-32">
-              {milestones.map((ms, idx) => (
-                <div key={idx} className="mb-10 ml-6 relative">
-                  <span className="absolute -left-[35px] top-1 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-sm border-4 border-white shadow-md">
-                    {ms.year}
-                  </span>
-                  <div className="bg-white p-6 rounded-sm shadow-sm border border-gray-150 hover:shadow-md transition-shadow">
-                    <h3 className="font-bold text-gray-900 text-xl font-['Barlow_Condensed'] uppercase tracking-wide mb-2">{ms.title}</h3>
-                    <p className="text-gray-600 font-medium text-sm leading-relaxed">{ms.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Leadership Team */}
-          <div>
-            <h2 className="text-4xl font-['Barlow_Condensed'] font-bold text-gray-900 text-center uppercase mb-12">Ban Điều Hành</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {leaders.map((leader, index) => (
-                <div key={index} className="bg-white rounded-sm shadow-lg border border-red-50 overflow-hidden group hover:-translate-y-1 transition-transform">
-                  <div className="h-72 overflow-hidden relative">
-                    <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={leader.image} alt={leader.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
-                      <div className="flex gap-3 text-white">
-                        <Facebook size={18} className="hover:text-red-500 cursor-pointer transition-colors" />
-                        <Twitter size={18} className="hover:text-red-500 cursor-pointer transition-colors" />
-                        <Linkedin size={18} className="hover:text-red-500 cursor-pointer transition-colors" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="font-['Barlow_Condensed'] font-bold text-xl uppercase tracking-wide text-gray-900 mb-1">{leader.name}</h3>
-                    <p className="text-red-600 font-bold text-sm uppercase mb-3">{leader.role}</p>
-                    <p className="text-gray-500 font-medium text-sm leading-relaxed">{leader.bio}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-        </div>
-      </div>
-    );
-  };
-
-  const renderGallery = () => {
-    const galleryTabs = [
-      { id: 'all', label: 'Tất cả' },
-      { id: 'dat-nen', label: 'Đất nền' },
-      { id: 'can-ho', label: 'Căn hộ' },
-      { id: 'biet-thu', label: 'Biệt thự' },
-      { id: 'nha-pho', label: 'Nhà phố' }
-    ];
-
-    const filteredGalleryItems = selectedGalleryTab === 'all' 
-      ? GALLERY_ITEMS 
-      : GALLERY_ITEMS.filter(item => item.category === selectedGalleryTab);
-
-    return (
-      <div className="w-full font-['Barlow'] bg-[#FEF2F2] pt-24 pb-20">
-        <div className={`${MAX_W} px-4 mx-auto`}>
-          <h1 className="text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8 border-l-8 border-red-600 pl-6">Thư Viện Ảnh</h1>
-          
-          {/* Gallery Filter Tabs */}
-          <div className="flex flex-wrap gap-2 justify-center mb-12">
-            {galleryTabs.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setSelectedGalleryTab(tab.id)}
-                className={`px-6 py-2 rounded-sm font-['Barlow_Condensed'] font-bold text-lg uppercase tracking-wider transition-colors ${selectedGalleryTab === tab.id ? 'bg-red-600 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-red-50'}`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Gallery Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {filteredGalleryItems.map(item => (
-              <div 
-                key={item.id} 
-                onClick={() => setSelectedGalleryImg(item.image)}
-                className="group bg-white rounded-sm overflow-hidden shadow-md border border-red-50 cursor-pointer flex flex-col justify-between"
-              >
-                <div className="relative h-60 overflow-hidden">
-                  <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-red-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <Search size={28} className="text-white" />
-                  </div>
-                </div>
-                <div className="p-4 text-center">
-                  <span className="text-[10px] bg-red-50 text-red-600 px-2.5 py-1 rounded font-bold uppercase tracking-wider">{item.category === 'dat-nen' ? 'Đất nền' : item.category === 'can-ho' ? 'Căn hộ' : item.category === 'biet-thu' ? 'Biệt thự' : 'Nhà phố'}</span>
-                  <h3 className="font-bold text-gray-800 text-base mt-2 line-clamp-1 group-hover:text-red-600 transition-colors uppercase tracking-wide font-['Barlow_Condensed']">{item.title}</h3>
-                </div>
-              </div>
-            ))}
+          <div className="text-amber-300 font-bold uppercase tracking-wider">
+            SÀN GIAO DỊCH BẤT ĐỘNG SẢN ĐẠI PHÁT LAND — THÀNH PHỐ THỦY NGUYÊN HẢI PHÒNG
           </div>
         </div>
       </div>
-    );
-  };
 
-  const renderNews = () => {
-    const filteredNews = MOCK_NEWS.filter(article => 
-      article.title.toLowerCase().includes(searchNewsQuery.toLowerCase()) || 
-      article.summary.toLowerCase().includes(searchNewsQuery.toLowerCase()) ||
-      article.category.toLowerCase().includes(searchNewsQuery.toLowerCase())
-    );
+      {/* Main Header Bar */}
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
+        
+        {/* Brand Logo Đại Phát Land */}
+        <div 
+          onClick={() => navigate('home')}
+          className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
+        >
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#0284C7] via-[#0F4C81] to-[#0B3056] rounded-sm flex items-center justify-center text-white font-black text-base sm:text-xl shadow-md shrink-0">
+            <Building2 size={20} className="text-[#F97316]" />
+          </div>
+          <div className="min-w-0 truncate">
+            <span className="text-base sm:text-2xl font-black text-[#0F4C81] tracking-tight block leading-none truncate">
+              ĐẠI PHÁT <span className="text-[#F97316]">LAND</span>
+            </span>
+            <span className="text-[7.5px] sm:text-[9px] font-bold text-slate-500 uppercase tracking-widest block mt-0.5 truncate">
+              BẤT ĐỘNG SẢN THỦY NGUYÊN HẢI PHÒNG
+            </span>
+          </div>
+        </div>
 
-    return (
-      <div className="w-full font-['Barlow'] bg-[#FEF2F2] pt-24 pb-20">
-        <div className={`${MAX_W} px-4 mx-auto`}>
-          <h1 className="text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8 border-l-8 border-red-600 pl-6">Tin Tức</h1>
+        {/* Navigation Menu */}
+        <nav className="hidden xl:flex items-center gap-1.5 2xl:gap-3 text-xs font-bold uppercase tracking-wider text-slate-700 whitespace-nowrap">
+          <button 
+            onClick={() => navigate('home')} 
+            className={`whitespace-nowrap px-3 py-1.5 rounded-lg transition-all ${currentPage === 'home' ? 'text-[#0F4C81] font-extrabold border-b-2 border-[#0F4C81]' : 'hover:text-[#0F4C81]'}`}
+          >
+            Trang Chủ
+          </button>
+          <button 
+            onClick={() => navigate('about')} 
+            className={`whitespace-nowrap px-3 py-1.5 rounded-lg transition-all ${currentPage === 'about' ? 'text-[#0F4C81] font-extrabold border-b-2 border-[#0F4C81]' : 'hover:text-[#0F4C81]'}`}
+          >
+            Giới Thiệu
+          </button>
+          <button 
+            onClick={() => navigate('for-sale')} 
+            className={`whitespace-nowrap px-3 py-1.5 rounded-lg transition-all ${currentPage === 'for-sale' ? 'text-[#0F4C81] font-extrabold border-b-2 border-[#0F4C81]' : 'hover:text-[#0F4C81]'}`}
+          >
+            Nhà Đất Bán
+          </button>
+          <button 
+            onClick={() => navigate('for-rent')} 
+            className={`whitespace-nowrap px-3 py-1.5 rounded-lg transition-all ${currentPage === 'for-rent' ? 'text-[#0F4C81] font-extrabold border-b-2 border-[#0F4C81]' : 'hover:text-[#0F4C81]'}`}
+          >
+            Nhà Đất Cho Thuê
+          </button>
+          <button 
+            onClick={() => navigate('projects')} 
+            className={`whitespace-nowrap px-3 py-1.5 rounded-lg transition-all ${currentPage === 'projects' || currentPage === 'property-detail' ? 'text-[#0F4C81] font-extrabold border-b-2 border-[#0F4C81]' : 'hover:text-[#0F4C81]'}`}
+          >
+            Dự Án
+          </button>
+          <button 
+            onClick={() => navigate('consignment')} 
+            className={`whitespace-nowrap px-3 py-1.5 rounded-lg transition-all ${currentPage === 'consignment' ? 'text-[#0F4C81] font-extrabold border-b-2 border-[#0F4C81]' : 'hover:text-[#0F4C81]'}`}
+          >
+            Ký Gửi
+          </button>
+          <button 
+            onClick={() => navigate('news')} 
+            className={`whitespace-nowrap px-3 py-1.5 rounded-lg transition-all ${currentPage === 'news' || currentPage === 'news-detail' ? 'text-[#0F4C81] font-extrabold border-b-2 border-[#0F4C81]' : 'hover:text-[#0F4C81]'}`}
+          >
+            Tin Tức
+          </button>
+          <button 
+            onClick={() => navigate('contact')} 
+            className={`whitespace-nowrap px-3 py-1.5 rounded-lg transition-all ${currentPage === 'contact' ? 'text-[#0F4C81] font-extrabold border-b-2 border-[#0F4C81]' : 'hover:text-[#0F4C81]'}`}
+          >
+            Liên Hệ
+          </button>
+        </nav>
+
+        {/* CTA */}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
+          <a
+            href="tel:0917858885"
+            className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-sm bg-orange-50 border border-orange-200 text-[#EA580C] text-xs font-black whitespace-nowrap shrink-0 hover:bg-orange-100 transition"
+          >
+            <Phone size={13} className="text-[#EA580C] animate-bounce shrink-0" />
+            <span>0917.85.88.85</span>
+          </a>
+          <button
+            onClick={() => navigate('consignment')}
+            className="hidden md:inline-block px-4 py-2 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] text-white text-xs font-black rounded-sm shadow-md uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 transition cursor-pointer"
+          >
+            Ký Gửi Nhà Đất ›
+          </button>
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-1.5 sm:p-2 rounded-sm bg-slate-100 text-slate-800 xl:hidden hover:bg-slate-200 shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+
+      </div>
+
+      {/* Mobile Drawer Menu */}
+      {mobileMenuOpen && (
+        <div className="xl:hidden bg-white border-b border-slate-200 px-6 py-5 space-y-2 animate-in slide-in-from-top duration-200 shadow-2xl">
+          <div className="grid grid-cols-2 gap-2 text-xs font-bold uppercase">
+            <button onClick={() => navigate('home')} className="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-blue-50 hover:text-blue-700">Trang Chủ</button>
+            <button onClick={() => navigate('about')} className="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-blue-50 hover:text-blue-700">Giới Thiệu</button>
+            <button onClick={() => navigate('for-sale')} className="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-blue-50 hover:text-blue-700">Nhà Đất Bán</button>
+            <button onClick={() => navigate('for-rent')} className="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-blue-50 hover:text-blue-700">Cho Thuê</button>
+            <button onClick={() => navigate('projects')} className="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-blue-50 hover:text-blue-700">Dự Án</button>
+            <button onClick={() => navigate('consignment')} className="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-blue-50 hover:text-blue-700">Ký Gửi</button>
+            <button onClick={() => navigate('news')} className="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-blue-50 hover:text-blue-700">Tin Tức</button>
+            <button onClick={() => navigate('contact')} className="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-blue-50 hover:text-blue-700">Liên Hệ</button>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 2. HERO BANNER & SLOGAN
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderHero = () => (
+    <section className="relative bg-slate-900 text-white overflow-hidden py-16 sm:py-24 px-4">
+      <img
+        src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80"
+        alt="Hai Phong Skyline"
+        onError={handleImgError}
+        className="absolute inset-0 w-full h-full object-cover opacity-45 scale-105"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0B3056] via-[#0F4C81]/80 to-black/60" />
+
+      <div className={`relative z-20 ${MAX_W} mx-auto text-center space-y-4`}>
+        <span className="px-4 py-1 rounded-sm bg-white/10 text-amber-300 text-xs font-bold uppercase tracking-widest inline-block border border-white/20">
+          HỆ THỐNG PHÂN PHỐI BẤT ĐỘNG SẢN CHUYÊN NGHIỆP
+        </span>
+        <h1 className="text-3xl sm:text-5xl font-black uppercase text-[#F97316] tracking-tight drop-shadow-md">
+          BẤT ĐỘNG SẢN THỦY NGUYÊN
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-200 max-w-2xl mx-auto font-medium">
+          PHÂN PHỐI DỰ ÁN ĐẤT NỀN, NHÀ PHỐ & TÁI ĐỊNH CƯ TRỌNG ĐIỂM THÀNH PHỐ THỦY NGUYÊN HẢI PHÒNG
+        </p>
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 3. HERO SEARCH FILTER BAR (6 CRITERIA)
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderSearchFilter = () => (
+    <section className="relative z-30 -mt-8 px-4">
+      <div className={`${MAX_W} mx-auto bg-[#0B3056] p-6 sm:p-8 rounded-md shadow-2xl border border-white/15 text-white space-y-4`}>
+        
+        {/* Search Tabs */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setActiveSearchTab('all')}
+            className={`px-4 py-2 rounded-sm text-xs font-bold uppercase tracking-wider transition ${activeSearchTab === 'all' ? 'bg-[#F97316] text-white shadow' : 'bg-white/10 text-slate-300 hover:bg-white/20'}`}
+          >
+            TẤT CẢ
+          </button>
+          <button
+            onClick={() => setActiveSearchTab('ban')}
+            className={`px-4 py-2 rounded-sm text-xs font-bold uppercase tracking-wider transition ${activeSearchTab === 'ban' ? 'bg-[#F97316] text-white shadow' : 'bg-white/10 text-slate-300 hover:bg-white/20'}`}
+          >
+            NHÀ ĐẤT BÁN
+          </button>
+          <button
+            onClick={() => setActiveSearchTab('thue')}
+            className={`px-4 py-2 rounded-sm text-xs font-bold uppercase tracking-wider transition ${activeSearchTab === 'thue' ? 'bg-[#F97316] text-white shadow' : 'bg-white/10 text-slate-300 hover:bg-white/20'}`}
+          >
+            CHO THUÊ
+          </button>
+          <button
+            onClick={() => setActiveSearchTab('du-an')}
+            className={`px-4 py-2 rounded-sm text-xs font-bold uppercase tracking-wider transition ${activeSearchTab === 'du-an' ? 'bg-[#F97316] text-white shadow' : 'bg-white/10 text-slate-300 hover:bg-white/20'}`}
+          >
+            DỰ ÁN NỔI BẬT
+          </button>
+        </div>
+
+        {/* Filter Inputs Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
           
-          {/* News Search Bar */}
-          <div className="relative max-w-md mx-auto mb-12">
-            <input 
-              type="text" 
-              placeholder="Tìm kiếm tin tức, luật đấu giá, dự án..." 
-              value={searchNewsQuery}
-              onChange={(e) => setSearchNewsQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-sm focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-gray-800 shadow-sm"
+          {/* Keyword */}
+          <div className="relative">
+            <Search size={15} className="absolute left-3 top-3 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Nhập tên dự án, khu vực..."
+              value={searchKeyword}
+              onChange={e => setSearchKeyword(e.target.value)}
+              className="w-full bg-white text-slate-900 pl-9 pr-3 py-2.5 rounded-sm focus:outline-none font-medium"
             />
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
           </div>
 
-          {/* News Grid */}
-          {filteredNews.length === 0 ? (
-            <div className="bg-white p-12 rounded-sm shadow-lg border border-red-50 text-center py-20">
-              <FileText size={64} className="text-red-200 mx-auto mb-4" />
-              <h2 className="text-2xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase">Không tìm thấy tin tức nào</h2>
-              <p className="text-gray-500 mt-2">Vui lòng thử từ khóa tìm kiếm khác.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredNews.map(item => (
-                <div key={item.id} onClick={() => setSelectedArticle(item)} className="group bg-white rounded-sm overflow-hidden shadow-lg border border-red-50 cursor-pointer flex flex-col justify-between">
-                  <div>
-                    <div className="relative h-56 overflow-hidden">
-                      <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded text-xs font-bold uppercase tracking-wider shadow">
-                        {item.category}
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <div className="flex items-center gap-4 text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
-                        <span className="flex items-center gap-1"><Calendar size={14} className="text-red-500"/> {item.date}</span>
-                        <span className="flex items-center gap-1"><Users size={14} className="text-red-500"/> {item.author}</span>
-                      </div>
-                      <h3 className="text-xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase tracking-wide mb-3 group-hover:text-red-600 transition-colors line-clamp-2">
-                        {item.title}
-                      </h3>
-                      <p className="text-gray-600 font-medium text-sm line-clamp-3">
-                        {item.summary}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="px-6 pb-6">
-                    <button 
-                      onClick={() => setSelectedArticle(item)}
-                      className="text-red-600 group-hover:text-red-800 font-bold uppercase tracking-wider text-sm flex items-center gap-2 cursor-pointer"
-                    >
-                      Đọc Tiếp <ArrowRight size={16} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          {/* District / Ward */}
+          <select
+            value={filterDistrict}
+            onChange={e => setFilterDistrict(e.target.value)}
+            className="w-full bg-white text-slate-900 px-3 py-2.5 rounded-sm focus:outline-none font-medium"
+          >
+            <option value="all">Khu Vực (Tất Cả)</option>
+            <option value="Tân Dương">Xã Tân Dương</option>
+            <option value="An Lư">Xã An Lư (Vsip)</option>
+            <option value="Dương Quan">Xã Dương Quan (Bắc Sông Cấm)</option>
+            <option value="Thủy Đường">Xã Thủy Đường</option>
+            <option value="Núi Đèo">Thị Trấn Núi Đèo</option>
+            <option value="Sở Dầu">Quận Hồng Bàng</option>
+          </select>
+
+          {/* Price Range */}
+          <select
+            value={filterPrice}
+            onChange={e => setFilterPrice(e.target.value)}
+            className="w-full bg-white text-slate-900 px-3 py-2.5 rounded-sm focus:outline-none font-medium"
+          >
+            <option value="all">Mức Giá (Tất Cả)</option>
+            <option value="under-3">Dưới 3 Tỷ</option>
+            <option value="3-5">3 - 5 Tỷ</option>
+            <option value="above-5">Trên 5 Tỷ</option>
+          </select>
+
+          {/* Search Action */}
+          <button
+            onClick={() => showToast(`🔍 Tìm thấy ${filteredProperties.length} bất động sản phù hợp tiêu chí!`)}
+            className="w-full py-2.5 bg-[#F97316] hover:bg-[#EA580C] text-white font-black uppercase rounded-sm shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <Search size={15} />
+            <span>TÌM KIẾM ({filteredProperties.length})</span>
+          </button>
+
         </div>
+
       </div>
-    );
-  };
+    </section>
+  );
 
-  const renderContact = () => {
-    const handleContactSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!contactForm.name || !contactForm.email || !contactForm.message) {
-        alert('Vui lòng điền các trường bắt buộc (Họ tên, Email và Lời nhắn)');
-        return;
-      }
-      setContactSubmitted(true);
-    };
+  // ─────────────────────────────────────────────────────────────────────────
+  // 4. SECTION 1: GIỚI THIỆU DỰ ÁN TRỌNG ĐIỂM (2 BLOCKS)
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderFeaturedProjects = () => (
+    <section className="py-16 bg-white text-slate-800">
+      <div className={`${MAX_W} mx-auto px-4 space-y-8`}>
+        
+        {/* Heading */}
+        <div className="text-center max-w-2xl mx-auto space-y-2">
+          <div className="inline-block p-2 rounded-sm bg-blue-50 text-[#0F4C81] mb-1">
+            <Building2 size={24} />
+          </div>
+          <h2 className="text-2xl font-black text-[#0F4C81] uppercase tracking-wider">
+            GIỚI THIỆU DỰ ÁN TRỌNG ĐIỂM
+          </h2>
+          <p className="text-xs text-slate-500">
+            Đại Phát Land tự hào là đơn vị phân phối F1 các đại dự án quy mô biểu tượng tại Thành phố Thủy Nguyên.
+          </p>
+        </div>
 
-    const handleResetContact = () => {
-      setContactForm({ name: '', email: '', phone: '', subject: '', message: '' });
-      setContactSubmitted(false);
-    };
-
-    return (
-      <div className="w-full font-['Barlow'] bg-[#FEF2F2] pt-24 pb-20">
-        <div className={`${MAX_W} px-4 mx-auto`}>
-          <h1 className="text-5xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-8 border-l-8 border-red-600 pl-6">Liên Hệ</h1>
+        {/* 2 Big Projects */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
-          <div className="bg-white rounded-sm shadow-xl overflow-hidden border border-red-50 grid grid-cols-1 lg:grid-cols-3">
-            {/* Contact Info Panel */}
-            <div className="bg-gray-900 p-8 lg:p-12 text-white flex flex-col justify-between">
-              <div>
-                <h2 className="text-3xl font-['Barlow_Condensed'] font-bold uppercase mb-6 tracking-wide text-red-500">Thông Tin Liên Hệ</h2>
-                <p className="text-gray-400 font-medium mb-8">
-                  Hãy liên hệ với chúng tôi bất cứ khi nào bạn có thắc mắc về hồ sơ, quy trình đặt tiền trước hay thủ tục bàn giao bất động sản.
-                </p>
-                
-                <ul className="space-y-6">
-                  <li className="flex items-start gap-4">
-                    <MapPin className="text-red-500 shrink-0 mt-1" size={20} />
-                    <div>
-                      <p className="font-bold uppercase tracking-wider text-sm text-gray-300">Địa chỉ</p>
-                      <p className="text-gray-400 text-sm font-medium">123 Đường Đấu Giá, Phường Bình An, Quận 2, TP.HCM</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-4">
-                    <Phone className="text-red-500 shrink-0 mt-1" size={20} />
-                    <div>
-                      <p className="font-bold uppercase tracking-wider text-sm text-gray-300">Tổng đài hỗ trợ</p>
-                      <p className="text-gray-400 text-sm font-medium">1900 6868 (Hotline 24/7)</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-4">
-                    <Mail className="text-red-500 shrink-0 mt-1" size={20} />
-                    <div>
-                      <p className="font-bold uppercase tracking-wider text-sm text-gray-300">Email nhận hồ sơ</p>
-                      <p className="text-gray-400 text-sm font-medium">contact@auctionbds.vn</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              
-              <div className="mt-12">
-                <p className="font-bold uppercase tracking-wider text-xs text-red-500 mb-3">Kết nối với chúng tôi</p>
-                <div className="flex gap-4">
-                  <div className="w-10 h-10 rounded-sm bg-gray-800 flex items-center justify-center text-white hover:bg-red-600 transition-colors cursor-pointer"><Facebook size={18}/></div>
-                  <div className="w-10 h-10 rounded-sm bg-gray-800 flex items-center justify-center text-white hover:bg-red-600 transition-colors cursor-pointer"><Twitter size={18}/></div>
-                  <div className="w-10 h-10 rounded-sm bg-gray-800 flex items-center justify-center text-white hover:bg-red-600 transition-colors cursor-pointer"><Instagram size={18}/></div>
-                </div>
-              </div>
-            </div>
-
-            {/* Interactive Form or Success Screen */}
-            <div className="p-8 lg:p-12 lg:col-span-2">
-              {contactSubmitted ? (
-                <div className="h-full flex flex-col items-center justify-center text-center py-12">
-                  <div className="w-20 h-20 bg-green-100 text-green-600 rounded-sm flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(22,163,74,0.2)]">
-                    <CheckCircle2 size={48} />
-                  </div>
-                  <h2 className="text-3xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase mb-4">Gửi tin nhắn thành công!</h2>
-                  <p className="text-gray-655 max-w-md mb-8 font-medium">
-                    Cảm ơn bạn đã liên hệ với chúng tôi. Đội ngũ chăm sóc khách hàng của PlatformBDS sẽ phản hồi lời nhắn của bạn trong vòng 24 giờ làm việc.
-                  </p>
-                  <button 
-                    onClick={handleResetContact}
-                    className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-sm font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors text-lg"
-                  >
-                    Gửi tin nhắn khác
-                  </button>
-                </div>
-              ) : (
-                <form onSubmit={handleContactSubmit}>
-                  <h2 className="text-3xl font-['Barlow_Condensed'] font-bold uppercase text-gray-900 mb-6">Gửi Yêu Cầu Tư Vấn</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <label className="block text-gray-700 text-sm font-bold mb-2">Họ và tên *</label>
-                      <input 
-                        type="text" 
-                        required
-                        placeholder="Nguyễn Văn A" 
-                        value={contactForm.name}
-                        onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-gray-800 font-medium"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 text-sm font-bold mb-2">Địa chỉ Email *</label>
-                      <input 
-                        type="email" 
-                        required
-                        placeholder="email@example.com" 
-                        value={contactForm.email}
-                        onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-gray-800 font-medium"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 text-sm font-bold mb-2">Số điện thoại</label>
-                      <input 
-                        type="tel" 
-                        placeholder="0901234567" 
-                        value={contactForm.phone}
-                        onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-gray-800 font-medium"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 text-sm font-bold mb-2">Chủ đề quan tâm</label>
-                      <input 
-                        type="text" 
-                        placeholder="Hồ sơ đấu giá lô đất A" 
-                        value={contactForm.subject}
-                        onChange={(e) => setContactForm({ ...contactForm, subject: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-gray-800 font-medium"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="mb-6">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Lời nhắn của bạn *</label>
-                    <textarea 
-                      required
-                      rows={5}
-                      placeholder="Nội dung cần tư vấn chi tiết..." 
-                      value={contactForm.message}
-                      onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-gray-800 font-medium resize-none"
-                    ></textarea>
-                  </div>
-                  
-                  <button 
-                    type="submit"
-                    className="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-sm font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 text-lg shadow-lg"
-                  >
-                    <Send size={20} /> Gửi Lời Nhắn
-                  </button>
-                </form>
-              )}
+          <div 
+            onClick={() => handleOpenProperty(BDS13_PROPERTIES[0])}
+            className="relative rounded-md overflow-hidden shadow-xl group cursor-pointer border border-slate-200"
+          >
+            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1000&q=80" alt="Hoang Huy" className="w-full h-80 object-cover group-hover:scale-105 transition duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex flex-col justify-end p-6 text-white space-y-1">
+              <span className="text-[10px] font-black uppercase text-[#F97316] bg-black/50 px-2.5 py-1 rounded-md inline-block w-max">DỰ ÁN TIÊU BIỂU</span>
+              <h3 className="text-base sm:text-lg font-black uppercase">ĐẠI ĐÔ THỊ HOÀNG HUY NEW CITY BẮC SÔNG CẤM</h3>
+              <p className="text-xs text-slate-300">Quy mô 65ha liền kề Trung tâm chính trị - hành chính mới Hải Phòng.</p>
             </div>
           </div>
 
-          {/* Interactive Google Map Section */}
-          <div className="mt-12 bg-white rounded-sm p-4 shadow-xl border border-red-50 overflow-hidden flex flex-col">
-            <div className="px-4 py-3 bg-gray-900 rounded-sm text-white flex items-center justify-between text-xs mb-4">
-              <span className="font-bold flex items-center gap-2 text-sm text-white"><MapPin size={16} className="text-red-500" /> Trụ sở Sàn Đấu Giá BĐS — Bình An, Quận 2, TP.HCM</span>
-              <a
-                href="https://www.google.com/maps/search/?api=1&query=Ph%C6%B0%E1%BB%9Dng+B%C3%ACnh+An,+Qu%E1%BA%ADn+2,+TP.HCM"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-xs"
-              >
-                Mở Google Maps
-              </a>
+          <div 
+            onClick={() => handleOpenProperty(BDS13_PROPERTIES[1])}
+            className="relative rounded-md overflow-hidden shadow-xl group cursor-pointer border border-slate-200"
+          >
+            <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1000&q=80" alt="Belhomes" className="w-full h-80 object-cover group-hover:scale-105 transition duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex flex-col justify-end p-6 text-white space-y-1">
+              <span className="text-[10px] font-black uppercase text-[#F97316] bg-black/50 px-2.5 py-1 rounded-md inline-block w-max">DỰ ÁN XANH SINGAPORE</span>
+              <h3 className="text-base sm:text-lg font-black uppercase">KHU ĐÔ THỊ BELHOMES VSIP HẢI PHÒNG</h3>
+              <p className="text-xs text-slate-300">Khu đô thị sinh thái xanh chuẩn Singapore công viên ven sông 6ha.</p>
             </div>
-            <div className="w-full h-80 rounded-sm overflow-hidden">
-              <iframe
-                title="Bản đồ Sàn đấu giá Quận 2"
-                src="https://maps.google.com/maps?q=Ph%C6%B0%E1%BB%9Dng+B%C3%ACnh+An,+Qu%E1%BA%ADn+2,+TP.HCM&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                className="w-full h-full border-0"
-                loading="lazy"
-                allowFullScreen
-              />
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 5. SECTION 2: DỰ ÁN MỚI NỔI BẬT (3 HOT CARDS)
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderHotProjects = () => (
+    <section className="py-12 bg-slate-50 border-y border-slate-200">
+      <div className={`${MAX_W} mx-auto px-4 space-y-8`}>
+        
+        {/* Heading */}
+        <div className="text-center max-w-2xl mx-auto space-y-2">
+          <h2 className="text-2xl font-black text-[#0F4C81] uppercase tracking-wider">
+            DỰ ÁN MỚI NỔI BẬT
+          </h2>
+          <p className="text-xs text-slate-500">
+            Tổng hợp danh sách các dự án bất động sản có tiềm năng tăng trưởng sinh lời cao nhất Thủy Nguyên.
+          </p>
+        </div>
+
+        {/* 3 Hot Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {BDS13_PROPERTIES.slice(0, 3).map(prop => (
+            <div key={prop.id} className="bg-white rounded-md overflow-hidden border border-slate-200 shadow-md hover:shadow-2xl transition flex flex-col justify-between group">
+              <div className="relative aspect-[16/10] overflow-hidden bg-slate-900">
+                <img src={prop.image} alt={prop.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                <span className="absolute top-3 right-3 px-3 py-1 bg-[#EA580C] text-white text-[10px] font-black uppercase rounded-sm shadow">
+                  HOT
+                </span>
+              </div>
+              <div className="p-5 space-y-2">
+                <span className="text-[10px] font-bold text-[#F97316] uppercase">{prop.type}</span>
+                <h3 
+                  onClick={() => handleOpenProperty(prop)}
+                  className="text-xs font-black text-slate-900 uppercase line-clamp-2 hover:text-[#0F4C81] cursor-pointer min-h-[34px]"
+                >
+                  {prop.title}
+                </h3>
+                <p className="text-xs text-slate-500 flex items-center gap-1"><MapPin size={12} className="text-[#0F4C81]" /> {prop.location}</p>
+                <div className="pt-3 border-t flex items-center justify-between">
+                  <span className="text-sm font-black text-[#EA580C]">{prop.price}</span>
+                  <button
+                    onClick={() => handleOpenProperty(prop)}
+                    className="px-3 py-1.5 bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-bold rounded-lg transition"
+                  >
+                    Xem Chi Tiết
+                  </button>
+                </div>
+              </div>
             </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 6. SECTION 3: BANNER QUẢNG CÁO TÀI TRỢ BẮC SÔNG CẤM
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderPromoBanner = () => (
+    <section className="py-8 bg-white px-4">
+      <div className={`${MAX_W} mx-auto bg-gradient-to-r from-[#0F4C81] via-[#0284C7] to-[#0F4C81] text-white p-6 sm:p-8 rounded-md shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 border border-white/20`}>
+        <div className="space-y-1 text-center md:text-left">
+          <span className="text-[10px] font-black uppercase text-amber-300 tracking-widest bg-black/20 px-3 py-1 rounded-sm inline-block">
+            CƠ HỘI ĐẦU TƯ ĐỢT 1
+          </span>
+          <h3 className="text-lg sm:text-2xl font-black uppercase">
+            SỞ HỮU NGAY PHÂN LÔ TÁI ĐỊNH CƯ BẮC SÔNG CẤM
+          </h3>
+          <p className="text-xs text-slate-200">
+            Vị trí đắc địa cách trung tâm hành chính Hải Phòng 300m — Sổ đỏ từng lô — Giá chỉ từ <strong>30 Triệu/m²</strong>.
+          </p>
+        </div>
+        <a
+          href="tel:0917858885"
+          className="px-6 py-3 bg-[#F97316] hover:bg-[#EA580C] text-white font-black text-xs uppercase tracking-wider rounded-sm shadow-lg transition hover:scale-105 shrink-0 whitespace-nowrap"
+        >
+          Hotline: 0917.85.88.85
+        </a>
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 7. SECTION 4: BẤT ĐỘNG SẢN THỦY NGUYÊN (4-CARDS)
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderThuyNguyenListings = () => (
+    <section className="py-12 bg-white text-slate-800">
+      <div className={`${MAX_W} mx-auto px-4 space-y-6`}>
+        
+        <div className="flex items-center justify-between border-b pb-3">
+          <h2 className="text-lg font-black text-[#0F4C81] uppercase tracking-wider">
+            BẤT ĐỘNG SẢN THỦY NGUYÊN
+          </h2>
+          <div className="flex items-center gap-2">
+            <button className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700"><ChevronLeft size={16} /></button>
+            <button className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700"><ChevronRight size={16} /></button>
           </div>
         </div>
-      </div>
-    );
-  };
 
-  const User = ({ className, size }: { className?: string, size?: number }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width={size || 24} height={size || 24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {BDS13_PROPERTIES.map(prop => (
+            <div key={prop.id} className="bg-white rounded-sm overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition flex flex-col justify-between group">
+              <img src={prop.image} alt={prop.title} className="w-full h-40 object-cover group-hover:scale-105 transition" />
+              <div className="p-4 space-y-1.5">
+                <span className="text-[10px] font-bold text-[#F97316] uppercase">{prop.type}</span>
+                <h3 
+                  onClick={() => handleOpenProperty(prop)}
+                  className="text-xs font-black text-slate-900 uppercase line-clamp-2 hover:text-[#0F4C81] cursor-pointer min-h-[34px]"
+                >
+                  {prop.title}
+                </h3>
+                <p className="text-xs text-slate-500">{prop.location}</p>
+                <div className="pt-2 border-t flex justify-between items-center text-xs">
+                  <span className="font-black text-[#EA580C]">{prop.price}</span>
+                  <button onClick={() => handleOpenProperty(prop)} className="px-2.5 py-1 bg-blue-50 text-[#0F4C81] font-bold rounded hover:bg-blue-100">
+                    Xem ›
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 8. SECTION 5: VÌ SAO CHỌN BĐS THỦY NGUYÊN (6 ADVANTAGES)
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderWhyChooseUs = () => (
+    <section className="py-16 bg-[#0B3056] text-white">
+      <div className={`${MAX_W} mx-auto px-4 space-y-10`}>
+        
+        {/* Heading */}
+        <div className="text-center max-w-2xl mx-auto space-y-2">
+          <h2 className="text-2xl font-black uppercase text-amber-300 tracking-wider">
+            VÌ SAO CHỌN BĐS THỦY NGUYÊN — ĐẠI PHÁT LAND
+          </h2>
+          <p className="text-xs text-slate-300">
+            Chúng tôi cam kết mang lại giá trị bền vững và lợi nhuận tối đa cho mọi khách hàng và đối tác đầu tư.
+          </p>
+        </div>
+
+        {/* 6 Advantages */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            { title: 'ĐẤT LÀNH VƯỢNG KHÍ', desc: 'Thành phố mới Thủy Nguyên quy hoạch trung tâm hành chính mới của TP Hải Phòng.' },
+            { title: 'THÔNG TIN MINH BẠCH 100%', desc: 'Toàn bộ bất động sản đều có trích lục bản đồ địa chính và quy hoạch chuẩn.' },
+            { title: 'KẾT NỐI GIAO THÔNG VÀNG', desc: 'Hạ tầng đồng bộ với 5 cây cầu lớn nối thẳng sang trung tâm nội đô Hải Phòng.' },
+            { title: 'HỖ TRỢ PHÁP LÝ TỐI ĐA', desc: 'Hỗ trợ thủ tục công chứng, sang tên sổ đỏ và đo đạc miễn phí cho khách hàng.' },
+            { title: 'DỊCH VỤ KÝ GỬI NHANH CHÓNG', desc: 'Thanh khoản cực nhanh nhờ mạng lưới hơn 50.000 khách hàng tiềm năng.' },
+            { title: 'TƯ VẤN TẬN TÂM 24/7', desc: 'Đội ngũ chuyên viên am hiểu sâu sắc thị trường Thủy Nguyên đồng hành trọn đời.' },
+          ].map((item, idx) => (
+            <div key={idx} className="p-6 rounded-md bg-white/5 border border-white/10 space-y-2 hover:bg-white/10 transition">
+              <span className="w-8 h-8 rounded-sm bg-[#F97316] text-white font-black text-xs flex items-center justify-center">
+                {idx + 1}
+              </span>
+              <h3 className="text-sm font-black text-white uppercase">{item.title}</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 9. SECTION 6: TIN TỨC & SỰ KIỆN (NEWS & AD POSTER)
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderNewsAndPoster = () => (
+    <section id="tin-tuc" className="py-14 bg-white text-slate-800">
+      <div className={`${MAX_W} mx-auto px-4 space-y-8`}>
+        
+        {/* Heading */}
+        <div className="border-b pb-3">
+          <h2 className="text-lg font-black text-[#0F4C81] uppercase tracking-wider">
+            TIN TỨC & SỰ KIỆN THỊ TRƯỜNG THỦY NGUYÊN
+          </h2>
+        </div>
+
+        {/* 3 Columns: 2 News Col + 1 Ad Poster Col */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          
+          <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {BDS13_NEWS.map(n => (
+              <div key={n.id} className="bg-slate-50 rounded-sm overflow-hidden border border-slate-200 flex flex-col justify-between group">
+                <img src={n.image} alt={n.title} className="w-full h-44 object-cover group-hover:scale-105 transition" />
+                <div className="p-4 space-y-2">
+                  <span className="text-[10px] font-bold text-[#F97316] uppercase">{n.category} • {n.date}</span>
+                  <h3 
+                    onClick={() => handleOpenArticle(n)}
+                    className="text-xs font-black text-slate-900 uppercase line-clamp-2 hover:text-[#0F4C81] cursor-pointer"
+                  >
+                    {n.title}
+                  </h3>
+                  <p className="text-xs text-slate-500 line-clamp-2">{n.excerpt}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Ad Poster */}
+          <div className="lg:col-span-4 bg-gradient-to-b from-[#0F4C81] to-[#0B3056] text-white p-6 rounded-md flex flex-col justify-between space-y-4 text-center">
+            <div className="space-y-2">
+              <span className="text-[10px] font-black uppercase text-[#F97316] bg-white/10 px-3 py-1 rounded-sm inline-block">
+                DỰ ÁN ĐẶC QUYỀN
+              </span>
+              <h3 className="text-xl font-black uppercase text-amber-300">HOÀNG HUY NEW CITY</h3>
+              <p className="text-xs text-slate-300">Biểu tượng phồn hoa tại Trung tâm hành chính mới Bắc Sông Cấm.</p>
+            </div>
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Hoang Huy Ad" className="w-full h-40 object-cover rounded-sm border border-white/20" />
+            <a
+              href="tel:0917858885"
+              className="py-3 bg-[#F97316] hover:bg-[#EA580C] text-white font-black text-xs uppercase rounded-sm shadow transition"
+            >
+              HOTLINE: 0917.85.88.85
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 10. SECTION 7: FOOTER 5 CỘT ĐẠI PHÁT LAND
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderDaiPhatFooter = () => (
+    <section id="lien-he" className="py-14 bg-[#0B3056] text-slate-300 text-xs border-t border-white/10">
+      <div className={`${MAX_W} mx-auto px-4`}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+          
+          <div className="space-y-2">
+            <h4 className="font-bold text-white uppercase tracking-wider border-b border-white/10 pb-2">VỀ CHÚNG TÔI</h4>
+            <p className="text-slate-400">Sàn BĐS Đại Phát Land chuyên phân phối nhà đất và dự án trọng điểm tại Thủy Nguyên Hải Phòng.</p>
+            <p>Hotline: <strong className="text-[#F97316]">0917.85.88.85</strong></p>
+          </div>
+
+          <div className="space-y-2">
+            <h4 className="font-bold text-white uppercase tracking-wider border-b border-white/10 pb-2">CHÍNH SÁCH</h4>
+            <ul className="space-y-1.5 text-slate-400">
+              <li>Quy định giao dịch</li>
+              <li>Chính sách bảo mật</li>
+              <li>Điều khoản dịch vụ</li>
+              <li>Quy trình ký gửi</li>
+            </ul>
+          </div>
+
+          <div className="space-y-2">
+            <h4 className="font-bold text-white uppercase tracking-wider border-b border-white/10 pb-2">NHÀ ĐẤT BÁN</h4>
+            <ul className="space-y-1.5 text-slate-400">
+              <li>Đất nền Thủy Nguyên</li>
+              <li>Nhà phố Tân Dương</li>
+              <li>TĐC Bắc Sông Cấm</li>
+              <li>Đất vườn Thủy Đường</li>
+            </ul>
+          </div>
+
+          <div className="space-y-2">
+            <h4 className="font-bold text-white uppercase tracking-wider border-b border-white/10 pb-2">CHO THUÊ</h4>
+            <ul className="space-y-1.5 text-slate-400">
+              <li>Mặt bằng Núi Đèo</li>
+              <li>Kho xưởng Thủy Nguyên</li>
+              <li>Nhà nguyên căn Vsip</li>
+              <li>Văn phòng đại diện</li>
+            </ul>
+          </div>
+
+          <div className="space-y-2">
+            <h4 className="font-bold text-white uppercase tracking-wider border-b border-white/10 pb-2">DỰ ÁN NỔI BẬT</h4>
+            <ul className="space-y-1.5 text-slate-400">
+              <li>Hoàng Huy New City</li>
+              <li>Belhomes Vsip</li>
+              <li>Centa City Hải Phòng</li>
+              <li>Sakura Garden</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
   );
 
   return (
-    <div className="min-h-screen flex flex-col font-['Barlow'] selection:bg-red-600 selection:text-white">
-      {/* 1. HEADER */}
-      <header className="sticky w-full top-0 z-50 bg-white/95 backdrop-blur-md border-b border-red-100 shadow-sm transition-all duration-300">
-        <div className="bg-gray-900 text-white py-1">
-          <div className={`${MAX_W} px-4 mx-auto flex justify-between items-center text-xs font-medium uppercase tracking-wider`}>
-            <div className="flex gap-4">
-              <span className="flex items-center gap-1"><Phone size={12} className="text-red-500" /> 1900 6868</span>
-              <span className="hidden sm:flex items-center gap-1"><Mail size={12} className="text-red-500" /> contact@auctionbds.vn</span>
-            </div>
-            <div className="flex gap-4">
-              <span className="hidden sm:inline-block text-gray-400">Giờ làm việc: 08:00 - 17:30</span>
-              <div className="flex items-center gap-2 text-red-500">
-                <Facebook size={12} className="hover:text-white cursor-pointer" />
-                <Instagram size={12} className="hover:text-white cursor-pointer" />
-                <Linkedin size={12} className="hover:text-white cursor-pointer" />
-              </div>
-            </div>
-          </div>
+    <div className="w-full min-h-screen bg-white text-slate-900 font-sans flex flex-col justify-between selection:bg-[#0F4C81] selection:text-white">
+      
+      {/* Toast Popup */}
+      {toastMessage && (
+        <div className="fixed bottom-24 right-6 z-50 bg-[#0B3056] text-white border border-[#F97316] px-5 py-3 rounded-sm shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce">
+          <CheckCircle2 size={16} className="text-[#F97316]" /> {toastMessage}
         </div>
-        <div className={`${MAX_W} px-4 mx-auto h-20 flex items-center justify-between`}>
-          <div 
-            className="flex items-center gap-2 cursor-pointer group"
-            onClick={() => navigateTo('home')}
-          >
-            <div className="w-10 h-10 bg-red-600 text-white rounded-lg flex items-center justify-center transform group-hover:rotate-12 transition-transform shadow-lg shadow-red-600/30">
-              <Gavel size={24} />
+      )}
+
+      <div>
+        {renderHeader()}
+
+        {currentPage === 'home' && (
+          <main>
+            {renderHero()}
+            {renderSearchFilter()}
+            {renderFeaturedProjects()}
+            {renderHotProjects()}
+            {renderPromoBanner()}
+            {renderThuyNguyenListings()}
+            {renderWhyChooseUs()}
+            {renderNewsAndPoster()}
+            {renderDaiPhatFooter()}
+          </main>
+        )}
+
+        {currentPage === 'about' && (
+          <main>
+            {renderHero()}
+            {renderWhyChooseUs()}
+            {renderDaiPhatFooter()}
+          </main>
+        )}
+
+        {currentPage === 'for-sale' && (
+          <main>
+            {renderSearchFilter()}
+            {renderThuyNguyenListings()}
+            {renderDaiPhatFooter()}
+          </main>
+        )}
+
+        {currentPage === 'for-rent' && (
+          <main>
+            {renderSearchFilter()}
+            {renderThuyNguyenListings()}
+            {renderDaiPhatFooter()}
+          </main>
+        )}
+
+        {currentPage === 'projects' && (
+          <main>
+            {renderFeaturedProjects()}
+            {renderHotProjects()}
+            {renderDaiPhatFooter()}
+          </main>
+        )}
+
+        {currentPage === 'consignment' && (
+          <main className="py-14 bg-slate-50">
+            <div className={`${MAX_W} mx-auto px-4 max-w-2xl bg-white p-8 rounded-md border shadow-xl space-y-4`}>
+              <h1 className="text-xl font-black text-[#0F4C81] uppercase text-center">KÝ GỬI BẤT ĐỘNG SẢN THỦY NGUYÊN</h1>
+              <form onSubmit={handleConsignmentSubmit} className="space-y-3 text-xs">
+                <input type="text" placeholder="Họ và tên chủ sở hữu..." required value={consignmentForm.name} onChange={e => setConsignmentForm({ ...consignmentForm, name: e.target.value })} className="w-full p-3 rounded-sm border bg-slate-50" />
+                <input type="tel" placeholder="Số điện thoại (*)..." required value={consignmentForm.phone} onChange={e => setConsignmentForm({ ...consignmentForm, phone: e.target.value })} className="w-full p-3 rounded-sm border bg-slate-50 font-bold" />
+                <input type="text" placeholder="Địa chỉ bất động sản..." value={consignmentForm.address} onChange={e => setConsignmentForm({ ...consignmentForm, address: e.target.value })} className="w-full p-3 rounded-sm border bg-slate-50" />
+                <input type="text" placeholder="Giá mong muốn bán / cho thuê..." value={consignmentForm.price} onChange={e => setConsignmentForm({ ...consignmentForm, price: e.target.value })} className="w-full p-3 rounded-sm border bg-slate-50" />
+                <button type="submit" className="w-full py-3.5 bg-[#F97316] text-white font-black rounded-sm uppercase tracking-wider shadow">GỬI YÊU CẦU KÝ GỬI</button>
+              </form>
             </div>
-            <div className="font-['Barlow_Condensed'] font-bold text-2xl uppercase tracking-tighter text-gray-900">
-              Platform<span className="text-red-600">BDS</span>
-            </div>
-          </div>
+            {renderDaiPhatFooter()}
+          </main>
+        )}
 
-          <nav className="hidden lg:flex items-center gap-8">
-            <NavLinks />
-          </nav>
+        {currentPage === 'news' && (
+          <main>
+            {renderNewsAndPoster()}
+            {renderDaiPhatFooter()}
+          </main>
+        )}
 
-          <div className="hidden lg:flex items-center gap-4">
-             <button onClick={() => navigateTo('contact')} className="text-gray-900 font-bold font-['Barlow_Condensed'] uppercase tracking-wider hover:text-red-600 transition-colors cursor-pointer">
-               Đăng Nhập
-             </button>
-             <button onClick={() => navigateTo('contact')} className="bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-lg font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors shadow-lg shadow-red-600/30 cursor-pointer">
-               Đăng Ký Ngay
-             </button>
-          </div>
+        {currentPage === 'contact' && (
+          <main>
+            {renderWhyChooseUs()}
+            {renderDaiPhatFooter()}
+          </main>
+        )}
 
-          <button 
-            className="lg:hidden text-gray-900 p-2"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden absolute top-full left-0 w-full bg-white border-b border-gray-100 shadow-xl py-4 flex flex-col px-4 gap-4 max-h-[calc(100vh-100px)] overflow-y-auto">
-            <div className="flex flex-col gap-4 border-b border-gray-100 pb-4">
-              <NavLinks />
-            </div>
-            <div className="flex flex-col gap-3 pt-2">
-              <button onClick={() => navigateTo('contact')} className="w-full bg-gray-100 text-gray-900 font-bold py-3 rounded-sm font-['Barlow_Condensed'] uppercase tracking-wider cursor-pointer">
-                Đăng Nhập
-              </button>
-              <button onClick={() => navigateTo('contact')} className="w-full bg-red-600 text-white font-bold py-3 rounded-sm font-['Barlow_Condensed'] uppercase tracking-wider cursor-pointer">
-                Đăng Ký
-              </button>
+        {currentPage === 'property-detail' && (
+          <div className="py-12 bg-white min-h-screen">
+            <div className={`${MAX_W} mx-auto px-4 space-y-6`}>
+              <button onClick={() => navigate('home')} className="text-xs font-bold text-blue-600">‹ Quay lại danh sách</button>
+              <h1 className="text-2xl font-black text-[#0F4C81] uppercase">{selectedProperty.title}</h1>
+              <p className="text-sm font-black text-[#EA580C]">{selectedProperty.price} — Diện tích: {selectedProperty.area}</p>
+              <img src={selectedProperty.image} alt="" className="w-full h-96 object-cover rounded-md shadow-xl" />
+              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{selectedProperty.description}</p>
             </div>
           </div>
         )}
-      </header>
-
-      {/* PAGE CONTENT */}
-      <div className="flex-1 mt-[104px]">
-        {['home'].includes(currentPage) && renderHome()}
-        {['auctions', 'projects', 'du-an', 'san-pham', 'dau-gia'].includes(currentPage) && renderAuctions()}
-        {['about', 'gioi-thieu', 've-chung-toi'].includes(currentPage) && renderAbout()}
-        {['gallery', 'thu-vien', 'hinh-anh'].includes(currentPage) && renderGallery()}
-        {['news', 'tin-tuc', 'bai-viet'].includes(currentPage) && renderNews()}
-        {['contact', 'lien-he', 'tu-van'].includes(currentPage) && renderContact()}
-        {!['home', 'auctions', 'projects', 'du-an', 'san-pham', 'dau-gia', 'about', 'gioi-thieu', 've-chung-toi', 'gallery', 'thu-vien', 'hinh-anh', 'news', 'tin-tuc', 'bai-viet', 'contact', 'lien-he', 'tu-van'].includes(currentPage) && renderHome()}
       </div>
 
-      {/* DETAIL MODAL */}
-      {selectedAuction && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
-          <div className="bg-white rounded-sm shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative border-t-8 border-red-600 flex flex-col md:flex-row text-gray-800">
-            <button 
-              onClick={() => { setSelectedAuction(null); setBidError(''); setBidSuccess(''); }}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 bg-white/95 rounded-sm p-2 shadow-md z-10"
-            >
-              <X size={20} />
-            </button>
-            
-            <div className="w-full md:w-1/2 p-6 md:p-8 border-b md:border-b-0 md:border-r border-gray-150">
-              <div className="h-64 rounded-sm overflow-hidden mb-6">
-                <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedAuction.image} alt={selectedAuction.title} className="w-full h-full object-cover" />
-              </div>
-              <h3 className="font-['Barlow_Condensed'] font-bold text-xl uppercase tracking-wider text-gray-900 mb-4">Thông số kỹ thuật</h3>
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="bg-gray-50 p-3 rounded-lg border border-gray-150 text-center">
-                  <p className="text-xs text-gray-400 font-bold uppercase">Diện tích</p>
-                  <p className="font-bold text-gray-800 mt-0.5">{selectedAuction.size}</p>
-                </div>
-                <div className="bg-gray-50 p-3 rounded-lg border border-gray-150 text-center">
-                  <p className="text-xs text-gray-400 font-bold uppercase">Khu vực</p>
-                  <p className="font-bold text-gray-800 mt-0.5">{selectedAuction.region}</p>
-                </div>
-              </div>
-              
-              <ul className="space-y-2">
-                {selectedAuction.specifications.map((spec, index) => (
-                  <li key={index} className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                    <CheckCircle2 size={16} className="text-green-500 shrink-0" />
-                    {spec}
-                  </li>
-                ))}
-              </ul>
-            </div>
+      {/* Universal Footer & Copyright */}
+      <UniversalTemplateFooter
+        company={company}
+        templateName="BDS-13 (Đại Phát Land — BĐS Thủy Nguyên Hải Phòng)"
+        onNavigate={page => navigate(page)}
+      />
 
-            <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-between">
-              <div>
-                <span className={`inline-block text-[10px] text-white px-2.5 py-1 rounded font-bold uppercase tracking-wider mb-3 ${auctionsData.find(a => a.id === selectedAuction.id)?.status === 'live' ? 'bg-red-600' : 'bg-amber-500'}`}>
-                  {auctionsData.find(a => a.id === selectedAuction.id)?.status === 'live' ? 'Đang đấu giá' : 'Sắp diễn ra'}
-                </span>
-                <h2 className="text-2xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase tracking-wide leading-tight mb-4">
-                  {selectedAuction.title}
-                </h2>
-                <p className="text-gray-500 font-medium text-sm flex items-center gap-1 mb-6">
-                  <MapPin size={16} className="text-red-500" /> {selectedAuction.location}
-                </p>
-                <p className="text-gray-600 font-medium text-sm leading-relaxed mb-6">
-                  {selectedAuction.description}
-                </p>
-
-                <div className="bg-red-50 p-4 rounded-sm border border-red-100 mb-6">
-                  <div className="flex justify-between items-center text-sm mb-1.5">
-                    <span className="text-gray-500 font-medium">Giá khởi điểm:</span>
-                    <span className="font-bold text-gray-900">{selectedAuction.startPrice.toLocaleString('vi-VN')} VNĐ</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm mb-1.5">
-                    <span className="text-gray-500 font-medium">Giá hiện tại:</span>
-                    <span className="font-bold text-red-600 text-xl">{(auctionsData.find(a => a.id === selectedAuction.id)?.currentPrice ?? selectedAuction.currentPrice).toLocaleString('vi-VN')} VNĐ</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-500 font-medium">Bước giá:</span>
-                    <span className="font-bold text-gray-800">{selectedAuction.priceStep.toLocaleString('vi-VN')} VNĐ</span>
-                  </div>
-                </div>
-
-                {auctionsData.find(a => a.id === selectedAuction.id)?.status === 'live' ? (
-                  <div className="mb-6">
-                    <h4 className="font-bold text-gray-900 text-sm mb-2">Đấu giá thử nghiệm</h4>
-                    <div className="flex gap-2">
-                      <div className="flex-1 relative">
-                        <input 
-                          type="text" 
-                          placeholder={`Tối thiểu ${((auctionsData.find(a => a.id === selectedAuction.id)?.currentPrice || 0) + selectedAuction.priceStep).toLocaleString('vi-VN')}`}
-                          value={bidInput}
-                          onChange={(e) => setBidInput(e.target.value)}
-                          className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-red-500 focus:ring-1 text-gray-800 font-bold"
-                        />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">VNĐ</span>
-                      </div>
-                      <button 
-                        onClick={() => handlePlaceBid(selectedAuction.id)}
-                        className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-['Barlow_Condensed'] font-bold uppercase tracking-wider transition-colors shadow-lg"
-                      >
-                        Gửi
-                      </button>
-                    </div>
-                    {bidError && <p className="text-red-600 text-xs font-semibold mt-2">{bidError}</p>}
-                    {bidSuccess && <p className="text-green-600 text-xs font-semibold mt-2">{bidSuccess}</p>}
-                  </div>
-                ) : (
-                  <div className="mb-6 bg-amber-50 p-4 rounded-sm border border-amber-200 flex items-start gap-3">
-                    <Clock size={20} className="text-amber-500 shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-bold text-amber-800 text-sm mb-1">Phiên chưa mở</h4>
-                      <p className="text-amber-700 text-xs font-medium">Bắt đầu ngày {selectedAuction.startDate}.</p>
-                    </div>
-                  </div>
-                )}
-
-                {auctionsData.find(a => a.id === selectedAuction.id) && ((auctionsData.find(a => a.id === selectedAuction.id)?.history.length ?? 0) > 0) && (
-                  <div>
-                    <h4 className="font-bold text-gray-900 text-sm mb-2">Lịch sử đặt giá</h4>
-                    <div className="max-h-36 overflow-y-auto border border-gray-150 rounded-lg text-xs font-semibold">
-                      <table className="w-full text-left">
-                        <thead>
-                          <tr className="bg-gray-50 border-b border-gray-150 text-gray-500">
-                            <th className="p-2 font-bold">Thời gian</th>
-                            <th className="p-2 font-bold">Người đấu</th>
-                            <th className="p-2 font-bold text-right">Giá</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                          {auctionsData.find(a => a.id === selectedAuction.id)?.history.map((hist, idx) => (
-                            <tr key={idx} className={idx === 0 ? "bg-red-50 text-red-700" : "text-gray-600"}>
-                              <td className="p-2">{hist.time}</td>
-                              <td className="p-2 truncate max-w-[100px]">{hist.bidder}</td>
-                              <td className="p-2 text-right font-bold">{hist.amount.toLocaleString('vi-VN')} đ</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* GALLERY LIGHTBOX */}
-      {selectedGalleryImg && (
-        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/95 backdrop-blur-sm p-4">
-          <button 
-            onClick={() => setSelectedGalleryImg(null)}
-            className="absolute top-6 right-6 text-white hover:text-red-500 bg-gray-800 rounded-sm p-3 shadow-lg transition-colors"
-          >
-            <X size={24} />
-          </button>
-          
-          <div className="relative max-w-5xl w-full flex items-center justify-between gap-4">
-            <button 
-              onClick={() => {
-                const currentIndex = GALLERY_ITEMS.findIndex(item => item.image === selectedGalleryImg);
-                const prevIndex = currentIndex === 0 ? GALLERY_ITEMS.length - 1 : currentIndex - 1;
-                setSelectedGalleryImg(GALLERY_ITEMS[prevIndex].image);
-              }}
-              className="text-white hover:text-red-500 bg-gray-800 rounded-sm p-3 shadow-lg transition-colors shrink-0"
-            >
-              <ChevronLeft size={24} />
-            </button>
-            
-            <div className="flex-1 flex justify-center items-center h-[75vh]">
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} 
-                src={selectedGalleryImg} 
-                alt="Lightbox" 
-                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl" 
-              />
-            </div>
-            
-            <button 
-              onClick={() => {
-                const currentIndex = GALLERY_ITEMS.findIndex(item => item.image === selectedGalleryImg);
-                const nextIndex = currentIndex === GALLERY_ITEMS.length - 1 ? 0 : currentIndex + 1;
-                setSelectedGalleryImg(GALLERY_ITEMS[nextIndex].image);
-              }}
-              className="text-white hover:text-red-500 bg-gray-800 rounded-sm p-3 shadow-lg transition-colors shrink-0"
-            >
-              <ChevronRight size={24} />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* NEWS ARTICLE MODAL */}
-      {selectedArticle && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto text-gray-800">
-          <div className="bg-white rounded-sm shadow-2xl max-w-3xl w-full max-h-[85vh] overflow-y-auto relative border-t-8 border-red-600 p-6 md:p-8">
-            <button 
-              onClick={() => setSelectedArticle(null)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 bg-white/95 rounded-sm p-2 shadow-md z-10"
-            >
-              <X size={20} />
-            </button>
-            
-            <div className="mb-6">
-              <span className="bg-red-50 text-red-600 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">
-                {selectedArticle.category}
-              </span>
-              <h2 className="text-3xl font-['Barlow_Condensed'] font-bold text-gray-900 uppercase tracking-wide leading-tight mt-3 mb-4">
-                {selectedArticle.title}
-              </h2>
-              <div className="flex items-center gap-4 text-xs font-bold text-gray-500 uppercase tracking-wider pb-6 border-b border-gray-150">
-                <span className="flex items-center gap-1"><Calendar size={14} className="text-red-500"/> {selectedArticle.date}</span>
-                <span className="flex items-center gap-1"><Users size={14} className="text-red-500"/> {selectedArticle.author}</span>
-              </div>
-            </div>
-            
-            <div className="h-64 rounded-sm overflow-hidden mb-6">
-              <img onError={(e) => { e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><rect width='800' height='600' fill='%23E2E8F0'/><rect x='20' y='20' width='760' height='560' rx='8' fill='none' stroke='%23CBD5E1' stroke-width='2' stroke-dasharray='8 8'/><path d='M360,240 L440,240 L440,360 L360,360 Z M340,360 L460,360 L460,380 L340,380 Z M380,200 L420,200 L420,240 L380,240 Z' fill='%2394A3B8'/><text x='400' y='430' font-family='sans-serif' font-size='22' font-weight='bold' fill='%2364748B' text-anchor='middle'>PLATFORMBDS PREMIUM</text><text x='400' y='465' font-family='sans-serif' font-size='15' fill='%2394A3B8' text-anchor='middle'>PREMIUM PROPERTY TEMPLATE</text></svg>"; }} src={selectedArticle.image} alt={selectedArticle.title} className="w-full h-full object-cover" />
-            </div>
-            
-            <p className="text-gray-900 font-bold text-base leading-relaxed mb-4">
-              {selectedArticle.summary}
-            </p>
-            
-            <div className="text-gray-700 font-medium text-sm leading-relaxed whitespace-pre-line space-y-4">
-              {selectedArticle.content}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 16. FOOTER */}
-      <footer className="bg-gray-900 pt-20 pb-10 border-t-4 border-red-600 relative z-10">
-        <div className={`${MAX_W} px-4 mx-auto`}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-            <div>
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-10 h-10 bg-red-600 text-white rounded-lg flex items-center justify-center">
-                  <Gavel size={24} />
-                </div>
-                <div className="font-['Barlow_Condensed'] font-bold text-2xl uppercase tracking-tighter text-white">
-                  Platform<span className="text-red-600">BDS</span>
-                </div>
-              </div>
-              <p className="text-gray-400 font-medium mb-6">
-                Nền tảng đấu giá bất động sản trực tuyến hàng đầu Việt Nam. Mang lại sự minh bạch, an toàn và hiệu quả cho mọi giao dịch.
-              </p>
-              <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-sm bg-gray-800 flex items-center justify-center text-white hover:bg-red-600 transition-colors cursor-pointer"><Facebook size={18}/></div>
-                <div className="w-10 h-10 rounded-sm bg-gray-800 flex items-center justify-center text-white hover:bg-red-600 transition-colors cursor-pointer"><Twitter size={18}/></div>
-                <div className="w-10 h-10 rounded-sm bg-gray-800 flex items-center justify-center text-white hover:bg-red-600 transition-colors cursor-pointer"><Instagram size={18}/></div>
-              </div>
-            </div>
-            
-            <div>
-              <h3 className="font-['Barlow_Condensed'] text-xl font-bold text-white uppercase tracking-wider mb-6">Liên Hệ</h3>
-              <ul className="space-y-4 text-gray-400 font-medium text-sm">
-                <li className="flex items-start gap-3"><MapPin size={18} className="text-red-500 shrink-0 mt-0.5" /> 123 Đường Đấu Giá, Phường Bình An, Quận 2, TP.HCM</li>
-                <li className="flex items-center gap-3"><Phone size={18} className="text-red-500 shrink-0" /> 1900 6868 (Hotline)</li>
-                <li className="flex items-center gap-3"><Mail size={18} className="text-red-500 shrink-0" /> contact@auctionbds.vn</li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="font-['Barlow_Condensed'] text-xl font-bold text-white uppercase tracking-wider mb-6">Liên Kết Nhanh</h3>
-              <ul className="space-y-3 text-gray-400 font-medium text-sm">
-                <li><button onClick={() => navigateTo('home')} className="hover:text-red-500 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Trang chủ</button></li>
-                <li><button onClick={() => navigateTo('auctions')} className="hover:text-red-500 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Sàn đấu giá</button></li>
-                <li><button onClick={() => navigateTo('about')} className="hover:text-red-500 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Về chúng tôi</button></li>
-                <li><button onClick={() => navigateTo('news')} className="hover:text-red-500 transition-colors flex items-center gap-2"><ChevronRight size={14}/> Tin tức & Sự kiện</button></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="font-['Barlow_Condensed'] text-xl font-bold text-white uppercase tracking-wider mb-6">Chính Sách</h3>
-              <ul className="space-y-3 text-gray-400 font-medium text-sm">
-                <li><button onClick={() => navigateTo('about')} className="hover:text-red-500 transition-colors flex items-center gap-2 cursor-pointer"><ChevronRight size={14}/> Quy chế hoạt động</button></li>
-                <li><button onClick={() => navigateTo('about')} className="hover:text-red-500 transition-colors flex items-center gap-2 cursor-pointer"><ChevronRight size={14}/> Chính sách bảo mật</button></li>
-                <li><button onClick={() => navigateTo('about')} className="hover:text-red-500 transition-colors flex items-center gap-2 cursor-pointer"><ChevronRight size={14}/> Cơ chế giải quyết tranh chấp</button></li>
-                <li><button onClick={() => navigateTo('about')} className="hover:text-red-500 transition-colors flex items-center gap-2 cursor-pointer"><ChevronRight size={14}/> Hướng dẫn thanh toán</button></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-500 text-sm font-medium">© 2026 PlatformBDS. Bản quyền thuộc về Công ty CP Đấu Giá BĐS.</p>
-            <div className="flex gap-4 text-sm text-gray-500 font-medium">
-              <span>Được chứng nhận bởi Bộ Công Thương</span>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
-

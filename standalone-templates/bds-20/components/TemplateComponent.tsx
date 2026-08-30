@@ -1,789 +1,1223 @@
+'use client';
 import React, { useState, useEffect, useMemo } from 'react';
-import { syncDemoUrl } from '../lib/demo';
-import {
-  Search, MapPin, Building, Phone, Mail, ArrowRight, ChevronRight, ChevronLeft,
-  CheckCircle2, Calendar, X, Share2, Heart, Eye, Clock, Award, Users, Plus, Minus,
-  MessageCircle, Star, Sparkles, Send, Facebook, Home, ArrowLeft, ShieldCheck,
-  Check, FileText, Download, Calculator, Compass, Briefcase, Filter
+import { 
+  Menu, X, Search, ChevronRight, ChevronLeft, MapPin, Phone, Mail, 
+  Building2, Home, Layers, Calendar, User, Eye, CheckCircle2, 
+  ArrowRight, UploadCloud, Compass, DollarSign, Calculator, Share2, Heart,
+  Shield, Check, MessageSquare, Star, Sparkles, Send, Award, FileText,
+  Play, Download, Maximize2, Bed, Bath, Clock, Filter, ArrowUpRight,
+  TrendingUp, Users, Briefcase, ExternalLink, HelpCircle, CheckCircle, Info,
+  Key, Tag, RefreshCw, PhoneCall, PlusCircle, CheckSquare, Sparkle, Video,
+  Trees, Leaf, Droplets, Sun, Wind, Navigation
 } from 'lucide-react';
+import { MAX_W } from '../lib/design-system';
+import UniversalTemplateFooter from '../UniversalTemplateFooter';
+import { syncDemoUrl } from '../lib/demo';
 
-export interface MinhKhaiApartmentTemplateProps {
-  template?: any;
+interface TemplateProps {
+  template: { name: string; slug: string; collectionSlug?: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
-  themeConfig?: any;
-  company?: any;
-  theme?: any;
-  projects?: any[];
-  posts?: any[];
+  company?: {
+    name?: string;
+    slogan?: string;
+    phone?: string;
+    email?: string;
+    address?: string;
+    logo?: string;
+    social?: {
+      facebook?: string;
+      instagram?: string;
+      twitter?: string;
+      youtube?: string;
+      tiktok?: string;
+      zalo?: string;
+    };
+    footerColumns?: Array<{
+      title: string;
+      links: Array<{ label: string; url?: string; page?: string }>;
+    }>;
+  };
+  theme?: Record<string, string>;
+  projects?: Array<Record<string, unknown>>;
+  posts?: Array<Record<string, unknown>>;
 }
 
-const APARTMENT_PROJECTS = [
-  { 
-    id: 'mk1', 
-    slug: 'vinhomes-times-city-458-minh-khai',
-    title: 'Vinhomes Times City', 
-    loc: '458 Minh Khai, Hai Bà Trưng, Hà Nội', 
-    price: 'Từ 3.8 Tỷ', 
-    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80', 
-    status: 'Đang bàn giao', 
-    district: 'Hai Bà Trưng',
-    specs: '1-4 Phòng ngủ · 53 - 160m²',
-    developer: 'Tập đoàn Vingroup',
-    handover: 'Đã bàn giao sổ đỏ',
-    scale: 'Khu đô thị phức hợp 36ha gồm 23 tòa tháp căn hộ',
-    desc: 'Vinhomes Times City là biểu tượng sống thịnh vượng bậc nhất cửa ngõ Đông Nam thủ đô. Sở hữu hệ sinh thái khép kín all-in-one gồm Bệnh viện Vinmec, Trường Vinschool, TTTM Vincom Mega Mall.',
-    highlights: ['TTTM Vincom Mega Mall 230.000m²', 'Bệnh viện Đa khoa Quốc tế Vinmec', 'Trường liên cấp Vinschool', 'Quảng trường nhạc nước Times Square', 'Bể bơi 4 mùa 4000m²']
+export interface UnitItem {
+  id: string;
+  title: string;
+  code: string;
+  slug: string;
+  block: string; // 'Block A - Park View', 'Block B - Lake View', 'Block C - Garden View', 'Block D - Sky Palace'
+  type: string; // '1 Phòng Ngủ', '2 Phòng Ngủ', '3 Phòng Ngủ', 'Duplex View Hồ', 'Penthouse Eco'
+  floor: string;
+  price: string;
+  priceNum: number; // in billion VND
+  area: string;
+  areaNum: number; // in m2
+  beds: number;
+  baths: number;
+  view: string;
+  direction: string;
+  image: string;
+  hot?: boolean;
+  featured?: boolean;
+  description: string;
+  specs: string[];
+}
+
+export interface NewsItem {
+  id: number;
+  title: string;
+  slug: string;
+  date: string;
+  author: string;
+  category: string;
+  image: string;
+  excerpt: string;
+  content: string[];
+  views: number;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BDS-20 MOCK DATA: MONA PARK VIEW (KHU ĐÔ THỊ CÔNG VIÊN XANH & HỒ ĐIỀU HÒA)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const BDS20_UNITS: UnitItem[] = [
+  {
+    id: 'can-1pn-block-a-parkview',
+    title: 'Căn Hộ 1 Phòng Ngủ Eco Suite Block A View Công Viên Trung Tâm',
+    code: 'MPV-A0805',
+    slug: 'can-ho-1-phong-ngu-block-a-view-cong-vien',
+    block: 'Block A - Park View',
+    type: '1 Phòng Ngủ',
+    floor: 'Tầng 08',
+    price: '2.45 Tỷ VNĐ',
+    priceNum: 2.45,
+    area: '48 m²',
+    areaNum: 48,
+    beds: 1,
+    baths: 1,
+    view: 'Trực diện công viên cây xanh 100ha',
+    direction: 'Hướng Đông Nam',
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+    hot: true,
+    featured: true,
+    description: 'Thiết kế thông minh đón gió tự nhiên 100%, ban công kính rộng ngắm trọn vẹn cảnh quan xanh mát lành.',
+    specs: ['Ban công ngắm công viên', 'Thiết bị Toto cao cấp', 'Kính Low-E cách âm', 'Sở hữu lâu dài']
   },
-  { 
-    id: 'mk2', 
-    slug: 'green-pearl-city-378-minh-khai',
-    title: 'Green Pearl City', 
-    loc: '378 Minh Khai, Hai Bà Trưng, Hà Nội', 
-    price: 'Từ 3.2 Tỷ', 
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', 
-    status: 'Sổ hồng lâu dài', 
-    district: 'Hai Bà Trưng',
-    specs: '2-3 Phòng ngủ · 71 - 115m²',
-    developer: 'Phong Phú - Daewon - Thủ Đức',
-    handover: 'Ở ngay',
-    scale: '2 tòa chung cư 21 tầng + 69 căn liền kề biệt thự',
-    desc: 'Green Pearl City mang phong cách kiến trúc sinh thái Singapore với mật độ xây dựng chỉ 37%. Dự án sở hữu khuôn viên cây xanh nội khu rộng lớn và cụm bể bơi ngoài trời ngắm trọn sông Hồng.',
-    highlights: ['Mật độ xây dựng xanh chuẩn Singapore', 'Bể bơi tràn bờ view sông Hồng', 'Trường mầm non quốc tế khối đế', '2 tầng hầm đỗ xe thông minh']
+  {
+    id: 'can-2pn-block-b-lakeview',
+    title: 'Căn Hộ Góc 2 Phòng Ngủ Block B View Trực Diện Hồ Điều Hòa Sinh Thái',
+    code: 'MPV-B1502',
+    slug: 'can-ho-goc-2-phong-ngu-block-b-view-ho',
+    block: 'Block B - Lake View',
+    type: '2 Phòng Ngủ',
+    floor: 'Tầng 15',
+    price: '3.85 Tỷ VNĐ',
+    priceNum: 3.85,
+    area: '72 m²',
+    areaNum: 72,
+    beds: 2,
+    baths: 2,
+    view: 'View mặt nước hồ điều hòa & Thác tràn',
+    direction: 'Hướng Nam - Đông Nam',
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+    hot: true,
+    featured: true,
+    description: 'Căn góc 2 mặt thoáng view trọn vẹn mặt hồ gợn sóng trong lành, không gian thoáng đãng nuôi dưỡng sức khỏe gia đình.',
+    specs: ['Căn góc 2 mặt thoáng', 'Phòng ngủ Master view hồ', 'Bàn giao sàn gỗ An Cường', 'Tặng gói Smart Home']
   },
-  { 
-    id: 'mk3', 
-    slug: 'imperia-sky-garden-423-minh-khai',
-    title: 'Imperia Sky Garden', 
-    loc: '423 Minh Khai, Hai Bà Trưng, Hà Nội', 
-    price: 'Từ 3.5 Tỷ', 
-    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80', 
-    status: 'Căn hộ sân vườn', 
-    district: 'Hai Bà Trưng',
-    specs: '2-3 Phòng ngủ · 58 - 105m²',
-    developer: 'MIK Group',
-    handover: 'Bàn giao đầy đủ nội thất',
-    scale: '4 tòa tháp cao 27 tầng với 68 tiện ích đỉnh cao',
-    desc: 'Imperia Sky Garden là tổ hợp căn hộ cao cấp sở hữu chuỗi 68 tiện ích đỉnh cao, bao gồm khu vườn chân mây Sky Garden trên tầng thượng và bể bơi vô cực ngắm trọn pháo hoa.',
-    highlights: ['Khu vườn chân mây Sky Garden tầng 27', 'Bể bơi vô cực tầng thượng', 'Camera AI nhận diện khuôn mặt', 'Kính Low-E cách âm cản nhiệt']
+  {
+    id: 'can-3pn-block-c-gardenview',
+    title: 'Căn Hộ 3 Phòng Ngủ Gia Đình Block C View Vườn Thiền Nhật Bản',
+    code: 'MPV-C2008',
+    slug: 'can-ho-3-phong-ngu-block-c-view-vuon-thien',
+    block: 'Block C - Garden View',
+    type: '3 Phòng Ngủ',
+    floor: 'Tầng 20',
+    price: '5.20 Tỷ VNĐ',
+    priceNum: 5.2,
+    area: '98 m²',
+    areaNum: 98,
+    beds: 3,
+    baths: 2,
+    view: 'View vườn thiền Zen Garden & Đồi cỏ hoa',
+    direction: 'Hướng Đông Bắc',
+    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+    hot: false,
+    featured: true,
+    description: 'Không gian sống lý tưởng cho gia đình 3 thế hệ, phòng khách rộng hơn 40m² nối liền khu vực bếp và ban công ngắm hoa.',
+    specs: ['Bếp đảo phong cách châu Âu', 'Hệ thống lọc nước sạch', 'Miễn phí 2 năm phí dịch vụ', 'Hỗ trợ vay 70%']
   },
-  { 
-    id: 'mk4', 
-    slug: 'hoa-binh-green-city-505-minh-khai',
-    title: 'Hòa Bình Green City', 
-    loc: '505 Minh Khai, Hai Bà Trưng, Hà Nội', 
-    price: 'Từ 2.9 Tỷ', 
-    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80', 
-    status: 'Dát vàng 24K', 
-    district: 'Hai Bà Trưng',
-    specs: '2-3 Phòng ngủ · 65 - 126m²',
-    developer: 'Công ty TNHH Hòa Bình',
-    handover: 'Sổ hồng vĩnh viễn',
-    scale: '2 tòa tháp 27 tầng tiêu chuẩn 6 sao',
-    desc: 'Dự án độc bản tại Hà Nội với phào chỉ, lan can và thiết bị vệ sinh mạ vàng 24K. Kết cấu bê tông cốt thép dày 350mm chống động đất cấp 8.',
-    highlights: ['Thiết bị vệ sinh Toto mạ vàng 24K', 'Tường xây 3 lớp cách nhiệt', 'Sân golf mini tầng thượng', 'Trung tâm thương mại V+']
+  {
+    id: 'duplex-block-d-skypalace',
+    title: 'Căn Hộ Duplex Thông Tầng Block D Sky Palace View Triệu Đô',
+    code: 'MPV-D2801',
+    slug: 'can-ho-duplex-thong-tang-block-d-sky-palace',
+    block: 'Block D - Sky Palace',
+    type: 'Duplex View Hồ',
+    floor: 'Tầng 28 - 29',
+    price: '9.50 Tỷ VNĐ',
+    priceNum: 9.5,
+    area: '168 m²',
+    areaNum: 168,
+    beds: 4,
+    baths: 4,
+    view: 'View 360 độ công viên hồ điều hòa và thành phố',
+    direction: 'Hướng Đông Nam',
+    image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80',
+    hot: true,
+    featured: true,
+    description: 'Tuyệt tác duplex thông tầng cao 6m xa hoa bậc nhất, sở hữu ban công vườn treo riêng biệt ngắm trọn vẹn cảnh sắc thiên nhiên.',
+    specs: ['Thông tầng cao 6.2m', 'Sân vườn ban công 35m²', 'Thang máy riêng bảo mật', 'Sổ hồng vĩnh viễn']
   },
-  { 
-    id: 'mk5', 
-    slug: 'sunshine-garden-vinh-tuy',
-    title: 'Sunshine Garden', 
-    loc: 'Vĩnh Tuy, Hai Bà Trưng, Hà Nội', 
-    price: 'Từ 3.1 Tỷ', 
-    image: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&q=80', 
-    status: 'Sinh thái xanh', 
-    district: 'Hai Bà Trưng',
-    specs: '1-3 Phòng ngủ · 47 - 102m²',
-    developer: 'Sunshine Group',
-    handover: 'Full nội thất SmartHome',
-    scale: '3 tòa tháp cao 31 tầng liền kề Times City',
-    desc: 'Căn hộ kiến trúc Tân cổ điển Châu Âu quý phái kết hợp công nghệ Smart Home 4.0 điều khiển bằng giọng nói và điện thoại thông minh.',
-    highlights: ['Smart Home Sunshine Tech 4.0', 'Vườn sinh thái dạo bộ Châu Âu', 'Sát trục Minh Khai - Vĩnh Tuy mở rộng']
+  {
+    id: 'can-2pn-block-a-parkview',
+    title: 'Căn Hộ 2 Phòng Ngủ Tiêu Chuẩn Quốc Tế Block A Park View',
+    code: 'MPV-A1203',
+    slug: 'can-ho-2-phong-ngu-tieu-chuan-block-a',
+    block: 'Block A - Park View',
+    type: '2 Phòng Ngủ',
+    floor: 'Tầng 12',
+    price: '3.35 Tỷ VNĐ',
+    priceNum: 3.35,
+    area: '65 m²',
+    areaNum: 65,
+    beds: 2,
+    baths: 2,
+    view: 'Nội khu hồ bơi sinh thái & Vườn hoa rực rỡ',
+    direction: 'Hướng Tây Nam',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
+    hot: false,
+    featured: true,
+    description: 'Bố cục vuông vắn tối ưu công năng, phù hợp cho gia đình trẻ tìm kiếm chốn an cư trong lành cân bằng cuộc sống.',
+    specs: ['View hồ bơi sinh thái', 'Khóa từ vân tay 4 chức năng', 'Chiết khấu thanh toán 8%', 'Nhận nhà ở ngay']
   },
-  { 
-    id: 'mk6', 
-    slug: 'udic-riverside-122-vinh-tuy',
-    title: 'UDIC Riverside', 
-    loc: '122 Vĩnh Tuy, Hai Bà Trưng, Hà Nội', 
-    price: 'Từ 2.8 Tỷ', 
-    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80', 
-    status: 'View sông Hồng', 
-    district: 'Hai Bà Trưng',
-    specs: '2-3 Phòng ngủ · 62 - 134m²',
-    developer: 'Tổng công ty UDIC',
-    handover: 'Sổ hồng trao tay',
-    scale: 'Tổ hợp thương mại dịch vụ 22 tầng',
-    desc: 'Tọa lạc sát chân cầu Vĩnh Tuy, UDIC Riverside hưởng trọn không gian sống thoáng đãng và không khí trong lành mát mẻ từ dòng sông Hồng.',
-    highlights: ['Tầm nhìn Panorama ra sông Hồng', 'Chủ đầu tư UDIC uy tín hàng đầu', 'Phí quản lý hợp lý nhất Hai Bà Trưng']
-  },
-  { 
-    id: 'mk7', 
-    slug: 'hinode-city-201-minh-khai',
-    title: 'Hinode City', 
-    loc: '201 Minh Khai, Hai Bà Trưng, Hà Nội', 
-    price: 'Từ 4.5 Tỷ', 
-    image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80', 
-    status: 'Phong cách Nhật', 
-    district: 'Hai Bà Trưng',
-    specs: '2-4 Phòng ngủ · 76 - 128m²',
-    developer: 'Vietracimex (WTO)',
-    handover: 'Nội thất nhập khẩu Nhật Bản',
-    scale: '3 tòa tháp 26 tầng biểu tượng Ngũ Hành',
-    desc: 'Hinode City là tuyệt tác kiến trúc mang đậm triết lý sống Zen Nhật Bản với khu vườn ngũ hành, Onsen khoáng nóng và rạp CGV nội khu.',
-    highlights: ['Khu tắm khoáng nóng Onsen Nhật Bản', 'Vườn thiền Zen Garden tầng thượng', 'Khóa cửa vân tay tĩnh mạch thông minh']
-  },
-  { 
-    id: 'mk8', 
-    slug: 'sunshine-palace-linh-nam',
-    title: 'Sunshine Palace', 
-    loc: 'Ngõ 13 Lĩnh Nam, Hoàng Mai, Hà Nội', 
-    price: 'Từ 2.6 Tỷ', 
-    image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80', 
-    status: 'Sẵn sàng ở ngay', 
-    district: 'Hoàng Mai',
-    specs: '2-3 Phòng ngủ · 75 - 110m²',
-    developer: 'Sunshine Group',
-    handover: 'Đã có sổ đỏ',
-    scale: 'Tòa tháp 28 tầng phong cách Tân cổ điển',
-    desc: 'Vị trí giáp ranh Times City, thừa hưởng toàn bộ tiện ích đại đô thị với mức giá vô cùng dễ tiếp cận cho các gia đình trẻ an cư.',
-    highlights: ['Sát vách Times City hưởng trọn tiện ích', 'Nội thất Kohler, sàn gỗ nhập khẩu', 'Sổ hồng chính chủ sẵn sàng sang tên']
+  {
+    id: 'penthouse-eco-block-b',
+    title: 'Penthouse Eco Resort Đỉnh Tháp Block B Mona Park View',
+    code: 'MPV-PH02',
+    slug: 'penthouse-eco-resort-dinh-thap-block-b',
+    block: 'Block B - Lake View',
+    type: 'Penthouse Eco',
+    floor: 'Tầng 30',
+    price: '14.8 Tỷ VNĐ',
+    priceNum: 14.8,
+    area: '220 m²',
+    areaNum: 220,
+    beds: 4,
+    baths: 4,
+    view: 'View đỉnh cao bao quát toàn bộ thung lũng xanh',
+    direction: 'Hướng Đông Nam',
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
+    hot: true,
+    featured: true,
+    description: 'Dinh thự trên mây với hồ bơi vô cực ngoài trời, quầy bar BBQ sân thượng và tầm nhìn ngút ngàn xanh mướt.',
+    specs: ['Bể bơi tràn bờ trên mái', 'Vườn nướng BBQ riêng', 'Nội thất nhập khẩu Ý', 'Dịch vụ quản gia 24/7']
   }
 ];
 
-const FAQS = [
-  { q: 'Làm thế nào để mua được căn hộ ưng ý và nhanh chóng?', a: 'Quý khách chỉ cần để lại nhu cầu hoặc gọi trực tiếp Hotline. Chuyên viên của chúng tôi sẽ gửi bảng hàng cập nhật trong 15 phút, tư vấn vị trí căn tầng đẹp nhất và hỗ trợ thủ tục pháp lý, ngân hàng trọn gói miễn phí.' },
-  { q: 'Hỗ trợ vay ngân hàng mua chung cư Minh Khai như thế nào?', a: 'Chúng tôi liên kết với các ngân hàng lớn (Vietcombank, BIDV, Techcombank) hỗ trợ vay tới 70-80% giá trị căn hộ với lãi suất 0% và ân hạn nợ gốc từ 18-24 tháng.' },
-  { q: 'Quy trình ký hợp đồng và nhận bàn giao nhà ra sao?', a: 'Quy trình gồm 3 bước: Đặt cọc giữ chỗ -> Ký Hợp đồng mua bán chính thức với CĐT -> Nhận bàn giao căn hộ và hồ sơ làm sổ hồng.' },
-  { q: 'Tôi có được xem thực tế căn hộ mẫu trước khi mua không?', a: 'Hoàn toàn được! Đội ngũ tư vấn sẽ đón quý khách tham quan trực tiếp nhà mẫu và căn hộ thực tế tất cả các ngày trong tuần.' },
-  { q: 'Chi phí dịch vụ và quản lý căn hộ khoảng bao nhiêu?', a: 'Tùy từng dự án, phí quản lý dao động từ 8.000đ - 16.000đ/m²/tháng với đầy đủ dịch vụ an ninh 24/7, bể bơi, phòng gym, vệ sinh công cộng.' }
-];
-
-const NEWS_LIST = [
+export const BDS20_NEWS: NewsItem[] = [
   {
-    id: 'n1',
-    slug: 'ha-tang-duong-vanh-dai-2-minh-khai-hoan-thanh',
-    title: 'Hạ tầng Vành Đai 2 trên cao Minh Khai - Vĩnh Tuy hoàn thiện: Giá trị BĐS bứt phá',
-    date: '18/05/2026',
-    cat: 'Quy hoạch hạ tầng',
-    img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
-    summary: 'Tuyến đường Vành Đai 2 trên cao đoạn Vĩnh Tuy - Ngã Tư Sở thông xe toàn tuyến đã rút ngắn thời gian di chuyển từ Minh Khai sang Cầu Giấy chỉ còn 10 phút.',
+    id: 1,
+    title: 'Khánh Thành Công Viên Sinh Thái Trung Tâm 100ha & Hồ Điều Hòa Mona Park',
+    slug: 'khanh-thanh-cong-vien-sinh-thai-100ha',
+    date: '28/08/2026',
+    author: 'Ban Quản Lý Mona Park View',
+    category: 'Sự Kiện',
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+    excerpt: 'Lá phổi xanh khổng lồ chính thức đi vào hoạt động, mang lại không gian vui chơi, tập luyện thể thao và tái tạo năng lượng cho cư dân.',
     content: [
-      'Sau khi trục đường huyết mạch Vành đai 2 trên cao hoàn thành đồng bộ cùng cầu Vĩnh Tuy giai đoạn 2, khu vực Minh Khai - Hai Bà Trưng đã chính thức gỡ bỏ hoàn toàn nút thắt giao thông.',
-      'Sự thay đổi ngoạn mục về hạ tầng đã thúc đẩy mạnh mẽ dòng tiền đầu tư đổ về các dự án căn hộ cao cấp như Times City, Imperia Sky Garden, Green Pearl City.',
-      'Các chuyên gia dự báo trong giai đoạn 2026 - 2028, giá thuê và giá chuyển nhượng tại trục Minh Khai sẽ tiếp tục duy trì đà tăng trưởng bền vững từ 12 - 15%/năm.'
-    ]
+      'Công viên Mona Park View sở hữu đường chạy bộ ven hồ dài 5km, vườn thiền Nhật Bản và hồ cảnh quan sinh thái trong lành.',
+      'Dự án đạt giải thưởng Khu đô thị có cảnh quan sinh thái xuất sắc nhất năm 2026.'
+    ],
+    views: 4890
   },
   {
-    id: 'n2',
-    slug: 'kinh-nghiem-chon-huong-va-tang-can-ho-chung-cu',
-    title: 'Kinh nghiệm chọn hướng ban công và khoảng tầng đẹp nhất khi mua chung cư',
-    date: '14/05/2026',
-    cat: 'Cẩm nang mua nhà',
-    img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-    summary: 'Hướng dẫn chi tiết cách lựa chọn căn hộ Đông Nam đón gió mát mùa hè và các khoảng tầng trung 8 - 22 không lo bụi ồn.',
+    id: 2,
+    title: 'Lễ Cất Nóc Block A & Block B Vượt Tiến Độ 45 Ngày',
+    slug: 'le-cat-noc-block-a-b-vuot-tien-do',
+    date: '26/08/2026',
+    author: 'Tổng Thầu Xây Dựng',
+    category: 'Tiến Độ',
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+    excerpt: 'Chủ đầu tư cam kết bàn giao nhà đúng tiêu chuẩn chất lượng cao cấp và trao sổ hồng tận tay khách hàng.',
     content: [
-      'Khi chọn mua căn hộ cao tầng, hướng ban công Đông Nam và Nam luôn là ưu tiên số một của các gia đình Việt nhờ đặc tính mát mẻ vào mùa hè và ấm áp vào mùa đông.',
-      'Khoảng tầng vàng từ tầng 8 đến tầng 22 mang lại tầm nhìn thoáng đãng, đón gió trời tự nhiên và tránh được tiếng ồn từ giao thông đường bộ.',
-      'Quý khách nên trực tiếp kiểm tra ánh sáng thực tế vào các khung giờ sáng và chiều trước khi quyết định đặt cọc.'
-    ]
+      'Toàn bộ công tác hoàn thiện mặt ngoài và ốp đá khối sảnh lễ tân đang được triển khai khẩn trương.'
+    ],
+    views: 3950
   },
   {
-    id: 'n3',
-    slug: 'bang-gia-chuyen-nhuong-chung-cu-minh-khai-2026',
-    title: 'Cập nhật bảng giá chuyển nhượng và cho thuê căn hộ trục đường Minh Khai quý 2/2026',
-    date: '10/05/2026',
-    cat: 'Thị trường BĐS',
-    img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-    summary: 'Tổng hợp chi tiết mặt bằng giá bán từ 45 - 75 triệu/m² và giá thuê từ 9 - 25 triệu/tháng tại Times City, Imperia Sky Garden, Green Pearl.',
+    id: 3,
+    title: 'Chính Sách Thanh Toán Nhẹ Nhàng 8 Đợt — Hỗ Trợ Lãi Suất 0% Trong 24 Tháng',
+    slug: 'chinh-sach-thanh-toan-8-dot-uu-dai',
+    date: '24/08/2026',
+    author: 'Phòng Kinh Doanh',
+    category: 'Chính Sách',
+    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+    excerpt: 'Khách hàng chỉ cần thanh toán 15% đợt đầu là có thể ký hợp đồng mua bán và nhận nhà vào quý 4/2026.',
     content: [
-      'Thị trường căn hộ thứ cấp tại trục đường Minh Khai ghi nhận thanh khoản ấn tượng với hơn 350 giao dịch thành công trong quý vừa qua.',
-      'Các căn hộ diện tích 2 phòng ngủ (70 - 85m²) tiếp tục là phân khúc được tìm kiếm nhiều nhất nhờ tính thanh khoản cao và khả năng cho thuê tạo dòng tiền ổn định.'
-    ]
+      'Ngân hàng đối tác chiến lược hỗ trợ giải ngân lên đến 70% giá trị căn hộ với thời hạn vay tối đa 25 năm.'
+    ],
+    views: 5210
   }
 ];
 
-const CAREERS = [
-  { id: 'c1', title: 'Trưởng Phòng Kinh Doanh BĐS Cao Cấp', dept: 'Khối Kinh Doanh', exp: '2-3 năm kinh nghiệm', salary: '30 - 60 Triệu + Hoa hồng', loc: 'Minh Khai, Hai Bà Trưng' },
-  { id: 'c2', title: 'Chuyên Viên Tư Vấn Dự Án Căn Hộ F1', dept: 'Phòng Bán Hàng', exp: 'Không yêu cầu (Đào tạo từ đầu)', salary: '15 - 40 Triệu + Thưởng nóng', loc: 'Hai Bà Trưng, Hà Nội' },
-  { id: 'c3', title: 'Chuyên Viên Digital Marketing BĐS', dept: 'Khối Marketing', exp: '1 năm kinh nghiệm Ads', salary: '15 - 25 Triệu', loc: 'Hà Nội' }
-];
+export const resolvePageAndDetail = (p?: string) => {
+  if (!p || p === 'home') return { page: 'home', propSlug: '', artSlug: '' };
+  const clean = p.replace(/^\//, '').trim();
+  if (clean.startsWith('tin-tuc/') || clean.startsWith('news/')) {
+    return { page: 'news-detail', propSlug: '', artSlug: clean.replace(/^(tin-tuc\/|news\/)/, '') };
+  }
+  if (clean === 'tin-tuc' || clean === 'news') return { page: 'news', propSlug: '', artSlug: '' };
+  if (clean.startsWith('chi-tiet/') || clean.startsWith('property/')) {
+    return { page: 'property-detail', propSlug: clean.replace(/^(chi-tiet\/|property\/)/, ''), artSlug: '' };
+  }
+  if (clean === 'tong-quan' || clean === 'overview') return { page: 'overview', propSlug: '', artSlug: '' };
+  if (clean === 'vi-tri' || clean === 'location') return { page: 'location', propSlug: '', artSlug: '' };
+  if (clean === 'tien-ich' || clean === 'amenities') return { page: 'amenities', propSlug: '', artSlug: '' };
+  if (clean === 'khong-gian-xanh' || clean === 'eco-park') return { page: 'eco-park', propSlug: '', artSlug: '' };
+  if (clean === 'mat-bang' || clean === 'floor-plans') return { page: 'floor-plans', propSlug: '', artSlug: '' };
+  if (clean === 'can-ho-mau' || clean === 'showroom') return { page: 'showroom', propSlug: '', artSlug: '' };
+  if (clean === 'chinh-sach' || clean === 'policy') return { page: 'policy', propSlug: '', artSlug: '' };
+  if (clean === 'tien-do' || clean === 'progress') return { page: 'progress', propSlug: '', artSlug: '' };
+  if (clean === 'lien-he' || clean === 'contact') return { page: 'contact', propSlug: '', artSlug: '' };
+  return { page: 'home', propSlug: '', artSlug: '' };
+};
 
-export const MinhKhaiApartmentTemplate: React.FC<MinhKhaiApartmentTemplateProps> = ({
+export default function BDS20Template({
+  template,
+  viewport = 'desktop',
   initialPage = 'home',
-  company
-}) => {
-  const resolveRoute = (raw: string) => {
-    if (!raw || raw === 'home') return { page: 'home', proj: null, article: null };
-    const parts = raw.split('/');
-    if (parts[0] === 'du-an' || parts[0] === 'project-detail') {
-      const slug = parts.slice(1).join('/');
-      const match = APARTMENT_PROJECTS.find(p => p.slug === slug || p.id === slug) || APARTMENT_PROJECTS[0];
-      return { page: 'project-detail', proj: match, article: null };
+  company,
+  theme,
+  projects,
+  posts
+}: TemplateProps) {
+  const isSmall = viewport === 'mobile' || viewport === 'tablet';
+  const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
+
+  const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
+  const [selectedUnit, setSelectedUnit] = useState<UnitItem>(() => {
+    if (initialParsed.propSlug) {
+      const found = BDS20_UNITS.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
+      if (found) return found;
     }
-    if (parts[0] === 'tin-tuc' || parts[0] === 'news-detail') {
-      const slug = parts.slice(1).join('/');
-      const match = NEWS_LIST.find(a => a.slug === slug || a.id === slug) || NEWS_LIST[0];
-      return { page: 'news-detail', proj: null, article: match };
+    return BDS20_UNITS[0];
+  });
+
+  const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
+    if (initialParsed.artSlug) {
+      const found = BDS20_NEWS.find(n => n.slug === initialParsed.artSlug || n.id.toString() === initialParsed.artSlug);
+      if (found) return found;
     }
-    return { page: parts[0], proj: null, article: null };
+    return BDS20_NEWS[0];
+  });
+
+  // Dynamic Options derived from Data for 100% CMS Resilience
+  const availableBlocks = useMemo(() => {
+    const set = new Set(BDS20_UNITS.map(p => p.block).filter(Boolean));
+    return ['all', ...Array.from(set)];
+  }, []);
+
+  const availableTypes = useMemo(() => {
+    const set = new Set(BDS20_UNITS.map(p => p.type).filter(Boolean));
+    return ['all', ...Array.from(set)];
+  }, []);
+
+  // Filter States
+  const [filterBlock, setFilterBlock] = useState('all');
+  const [filterType, setFilterType] = useState('all');
+  const [filterPrice, setFilterPrice] = useState('all');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Forms
+  const [contactForm, setContactForm] = useState({ name: '', phone: '', email: '', blockInterested: 'Block A - Park View', note: '' });
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const tSlug = template?.slug || 'bds-20';
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 4000);
   };
 
-  const initialResolved = resolveRoute(initialPage);
-  const [currentPage, setCurrentPage] = useState<string>(initialResolved.page);
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [selectedProject, setSelectedProject] = useState<any | null>(initialResolved.proj || APARTMENT_PROJECTS[0]);
-  const [selectedArticle, setSelectedArticle] = useState<any | null>(initialResolved.article || NEWS_LIST[0]);
-  const [consultSubmitted, setConsultSubmitted] = useState<boolean>(false);
-  const [searchKw, setSearchKw] = useState<string>('');
-
-  const [districtFilter, setDistrictFilter] = useState<string>('all');
-
-  const filteredProjects = useMemo(() => {
-    return APARTMENT_PROJECTS.filter(p => {
-      if (districtFilter !== 'all' && p.district !== districtFilter) return false;
-      if (searchKw && !p.title.toLowerCase().includes(searchKw.toLowerCase()) && !p.loc.toLowerCase().includes(searchKw.toLowerCase())) return false;
-      return true;
-    });
-  }, [districtFilter, searchKw]);
-  
-  const [galleryTab, setGalleryTab] = useState<string>('all');
-
   useEffect(() => {
-    if (initialPage) {
-      const r = resolveRoute(initialPage);
-      setCurrentPage(r.page);
-      if (r.proj) setSelectedProject(r.proj);
-      if (r.article) setSelectedArticle(r.article);
+    const res = resolvePageAndDetail(initialPage);
+    setCurrentPageState(res.page);
+    if (res.propSlug) {
+      const found = BDS20_UNITS.find(p => p.slug === res.propSlug || p.id === res.propSlug);
+      if (found) setSelectedUnit(found);
+    }
+    if (res.artSlug) {
+      const found = BDS20_NEWS.find(n => n.slug === res.artSlug || n.id.toString() === res.artSlug);
+      if (found) setSelectedArticle(found);
     }
   }, [initialPage]);
 
-
-  const navigate = (page: string, slugParam?: string) => {
-    setCurrentPage(page);
-    const targetSlug = page === 'home' ? '' : (slugParam ? `${page}/${slugParam}` : page);
-    syncDemoUrl(targetSlug, 'bds-20');
+  const navigate = (page: string, slug?: string) => {
+    setCurrentPageState(page);
+    setMobileMenuOpen(false);
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    let urlSlug = '';
+    if (page === 'home') urlSlug = '';
+    else if (page === 'property-detail' && slug) urlSlug = `chi-tiet/${slug}`;
+    else if (page === 'news-detail' && slug) urlSlug = `tin-tuc/${slug}`;
+    else if (page === 'overview') urlSlug = 'tong-quan';
+    else if (page === 'location') urlSlug = 'vi-tri';
+    else if (page === 'amenities') urlSlug = 'tien-ich';
+    else if (page === 'eco-park') urlSlug = 'khong-gian-xanh';
+    else if (page === 'floor-plans') urlSlug = 'mat-bang';
+    else if (page === 'showroom') urlSlug = 'can-ho-mau';
+    else if (page === 'policy') urlSlug = 'chinh-sach';
+    else if (page === 'progress') urlSlug = 'tien-do';
+    else if (page === 'news') urlSlug = 'tin-tuc';
+    else if (page === 'contact') urlSlug = 'lien-he';
+    else urlSlug = page;
+
+    syncDemoUrl(urlSlug, tSlug);
   };
 
-  useEffect(() => {
-    const handlePopState = () => {
-      const parts = window.location.pathname.split('/').filter(Boolean);
-      const sub = parts.length > 2 ? parts.slice(2).join('/') : (parts[1] !== 'bds-20' ? parts[1] : 'home');
-      if (sub) {
-        const r = resolveRoute(sub);
-        setCurrentPage(r.page);
-        if (r.proj) setSelectedProject(r.proj);
-        if (r.article) setSelectedArticle(r.article);
-      }
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  const handleSelectProject = (proj: any) => {
-    setSelectedProject(proj);
-    navigate('du-an', proj.slug || proj.id);
+  const handleOpenUnit = (unit: UnitItem) => {
+    setSelectedUnit(unit);
+    navigate('property-detail', unit.slug);
   };
 
-  const handleSelectArticle = (art: any) => {
+  const handleOpenArticle = (art: NewsItem) => {
     setSelectedArticle(art);
-    navigate('tin-tuc', art.slug || art.id);
+    navigate('news-detail', art.slug);
   };
 
-  const isHome = currentPage === 'home' || (!['about', 'projects', 'news', 'gallery', 'knowledge', 'career', 'contact', 'project-detail', 'news-detail', 'du-an', 'tin-tuc'].includes(currentPage) && !currentPage.startsWith('du-an') && !currentPage.startsWith('tin-tuc'));
+  const handleContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contactForm.name || !contactForm.phone) {
+      alert('Vui lòng nhập họ tên và số điện thoại đăng ký nhận thông tin!');
+      return;
+    }
+    showToast(`🎉 Tiếp nhận thông tin từ ${contactForm.name} (${contactForm.phone}). Chuyên viên Mona Park View sẽ liên hệ trong 10 phút!`);
+    setContactForm({ name: '', phone: '', email: '', blockInterested: 'Block A - Park View', note: '' });
+  };
+
+  const handleImgError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80';
+  };
+
+  // Resilient Fuzzy & Dynamic Filter
+  const filteredUnits = useMemo(() => {
+    return BDS20_UNITS.filter(p => {
+      // Block
+      if (filterBlock !== 'all' && p.block !== filterBlock) return false;
+
+      // Type matching: fuzzy
+      if (filterType !== 'all') {
+        const f = filterType.toLowerCase();
+        const t = (p.type || '').toLowerCase();
+        if (t !== f && !t.includes(f) && !f.includes(t)) return false;
+      }
+
+      // Price matching
+      if (filterPrice === 'under-3' && p.priceNum >= 3) return false;
+      if (filterPrice === '3-6' && (p.priceNum < 3 || p.priceNum > 6)) return false;
+      if (filterPrice === 'above-6' && p.priceNum <= 6) return false;
+
+      return true;
+    });
+  }, [filterBlock, filterType, filterPrice]);
+
+  // Global Search View Auto-Switch Rule
+  const handleSearchSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (currentPage !== 'home' && currentPage !== 'floor-plans') {
+      setCurrentPageState('home');
+      syncDemoUrl('', tSlug);
+    }
+    const count = filteredUnits.length;
+    showToast(`🔍 Tìm thấy ${count} căn hộ sinh thái phù hợp tiêu chí!`);
+    setTimeout(() => {
+      const resultsElem = document.getElementById('bang-hang-can-ho');
+      if (resultsElem) {
+        resultsElem.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 1. TOP HEADER & NAVBAR (EMERALD GREEN & GOLD ACCENTS)
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderHeader = () => (
+    <header className="sticky top-0 z-40 bg-[#0B4635] text-white shadow-xl border-b border-amber-400/30">
+      <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
+        
+        {/* Brand Logo */}
+        <div 
+          onClick={() => navigate('home')}
+          className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none"
+        >
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#E5B869] to-[#9A7B4F] flex items-center justify-center text-slate-950 font-serif font-black text-base sm:text-xl shadow border border-amber-200 shrink-0">
+            🌿
+          </div>
+          <div className="min-w-0 truncate">
+            <span className="text-base sm:text-2xl font-serif font-black tracking-wider text-amber-300 block leading-none truncate">
+              MONA PARK VIEW
+            </span>
+            <span className="text-[7.5px] sm:text-[8.5px] font-bold text-amber-200/80 uppercase tracking-widest block mt-0.5 truncate">
+              KHU ĐÔ THỊ CÔNG VIÊN & HỒ ĐIỀU HÒA SINH THÁI
+            </span>
+          </div>
+        </div>
+
+        {/* Navigation Menu */}
+        <nav className="hidden xl:flex items-center gap-0.5 text-xs font-bold uppercase tracking-wider text-slate-200 whitespace-nowrap">
+          <button onClick={() => navigate('home')} className={`whitespace-nowrap px-3 py-2 transition-all ${currentPage === 'home' ? 'text-amber-300 font-extrabold bg-[#072C21]' : 'hover:text-amber-300'}`}>Trang Chủ</button>
+          <button onClick={() => navigate('overview')} className={`whitespace-nowrap px-3 py-2 transition-all ${currentPage === 'overview' ? 'text-amber-300 font-extrabold bg-[#072C21]' : 'hover:text-amber-300'}`}>Tổng Quan</button>
+          <button onClick={() => navigate('location')} className={`whitespace-nowrap px-3 py-2 transition-all ${currentPage === 'location' ? 'text-amber-300 font-extrabold bg-[#072C21]' : 'hover:text-amber-300'}`}>Vị Trí</button>
+          <button onClick={() => navigate('amenities')} className={`whitespace-nowrap px-3 py-2 transition-all ${currentPage === 'amenities' ? 'text-amber-300 font-extrabold bg-[#072C21]' : 'hover:text-amber-300'}`}>Tiện Ích</button>
+          <button onClick={() => navigate('eco-park')} className={`whitespace-nowrap px-3 py-2 transition-all ${currentPage === 'eco-park' ? 'text-amber-300 font-extrabold bg-[#072C21]' : 'hover:text-amber-300'}`}>Không Gian Xanh</button>
+          <button onClick={() => navigate('floor-plans')} className={`whitespace-nowrap px-3 py-2 transition-all ${currentPage === 'floor-plans' || currentPage === 'property-detail' ? 'text-amber-300 font-extrabold bg-[#072C21]' : 'hover:text-amber-300'}`}>Mặt Bằng</button>
+          <button onClick={() => navigate('showroom')} className={`whitespace-nowrap px-3 py-2 transition-all ${currentPage === 'showroom' ? 'text-amber-300 font-extrabold bg-[#072C21]' : 'hover:text-amber-300'}`}>Căn Hộ Mẫu</button>
+          <button onClick={() => navigate('policy')} className={`whitespace-nowrap px-3 py-2 transition-all ${currentPage === 'policy' ? 'text-amber-300 font-extrabold bg-[#072C21]' : 'hover:text-amber-300'}`}>Chính Sách</button>
+          <button onClick={() => navigate('news')} className={`whitespace-nowrap px-3 py-2 transition-all ${currentPage === 'news' || currentPage === 'news-detail' ? 'text-amber-300 font-extrabold bg-[#072C21]' : 'hover:text-amber-300'}`}>Tin Tức</button>
+          <button onClick={() => navigate('contact')} className={`whitespace-nowrap px-3 py-2 transition-all ${currentPage === 'contact' ? 'text-amber-300 font-extrabold bg-[#072C21]' : 'hover:text-amber-300'}`}>Liên Hệ</button>
+        </nav>
+
+        {/* CTA Right */}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
+          <button
+            onClick={() => {
+              const el = document.getElementById('form-dang-ky');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="hidden md:inline-block px-4 py-2 bg-gradient-to-r from-[#E5B869] to-[#D4AF37] hover:from-[#D4AF37] text-slate-950 font-black text-xs uppercase tracking-wider shadow cursor-pointer"
+          >
+            Nhận Bảng Giá Gốc
+          </button>
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-1.5 sm:p-2 text-white xl:hidden hover:bg-white/10 rounded-md shrink-0 flex items-center justify-center"
+            aria-label="Toggle navigation menu"
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+
+      </div>
+
+      {/* Mobile Drawer */}
+      {mobileMenuOpen && (
+        <div className="xl:hidden bg-[#072C21] border-t border-amber-400/30 px-6 py-4 space-y-2 animate-in slide-in-from-top duration-200">
+          <div className="grid grid-cols-2 gap-2 text-xs font-bold uppercase">
+            <button onClick={() => navigate('home')} className="p-2.5 text-left bg-[#0B4635] hover:text-amber-300">Trang Chủ</button>
+            <button onClick={() => navigate('overview')} className="p-2.5 text-left bg-[#0B4635] hover:text-amber-300">Tổng Quan</button>
+            <button onClick={() => navigate('location')} className="p-2.5 text-left bg-[#0B4635] hover:text-amber-300">Vị Trí</button>
+            <button onClick={() => navigate('amenities')} className="p-2.5 text-left bg-[#0B4635] hover:text-amber-300">Tiện Ích</button>
+            <button onClick={() => navigate('eco-park')} className="p-2.5 text-left bg-[#0B4635] hover:text-amber-300">Không Gian Xanh</button>
+            <button onClick={() => navigate('floor-plans')} className="p-2.5 text-left bg-[#0B4635] hover:text-amber-300">Mặt Bằng</button>
+            <button onClick={() => navigate('showroom')} className="p-2.5 text-left bg-[#0B4635] hover:text-amber-300">Căn Hộ Mẫu</button>
+            <button onClick={() => navigate('policy')} className="p-2.5 text-left bg-[#0B4635] hover:text-amber-300">Chính Sách</button>
+            <button onClick={() => navigate('news')} className="p-2.5 text-left bg-[#0B4635] hover:text-amber-300">Tin Tức</button>
+            <button onClick={() => navigate('contact')} className="p-2.5 text-left bg-[#0B4635] hover:text-amber-300">Liên Hệ</button>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 2. HERO SLIDER FLYCAM CÔNG VIÊN 100HA & THÁP CĂN HỘ
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderHeroSection = () => (
+    <section className="relative bg-slate-950 text-white min-h-[460px] sm:min-h-[560px] flex items-center justify-center overflow-hidden border-b border-amber-400/30">
+      <img
+        src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80"
+        alt="Mona Park View Flycam"
+        onError={handleImgError}
+        className="absolute inset-0 w-full h-full object-cover opacity-65"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0B4635] via-black/30 to-transparent" />
+
+      <div className="relative z-20 text-center space-y-4 max-w-4xl mx-auto px-4">
+        <div className="inline-block px-4 py-1.5 bg-[#0B4635]/90 border border-amber-300/40 text-amber-200 text-xs font-black uppercase tracking-widest">
+          KHU ĐÔ THỊ SINH THÁI XANH TRUNG TÂM
+        </div>
+
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-black uppercase text-amber-300 tracking-wider drop-shadow-2xl">
+          MONA PARK VIEW
+        </h1>
+        <p className="text-xs sm:text-base text-slate-100 max-w-2xl mx-auto font-medium leading-relaxed">
+          Chốn an cư lý tưởng giữa miền xanh thiên nhiên — Hưởng trọn tầm nhìn Panorama ôm trọn đại công viên 100ha và hồ cảnh quan sinh thái.
+        </p>
+
+        <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
+          <button
+            onClick={() => {
+              const el = document.getElementById('bang-hang-can-ho');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="px-6 py-3 bg-[#D4AF37] hover:bg-amber-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg cursor-pointer"
+          >
+            Khám Phá Bảng Hàng ›
+          </button>
+          <button
+            onClick={() => {
+              const el = document.getElementById('form-dang-ky');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white font-bold text-xs uppercase tracking-wider border border-white/30 cursor-pointer"
+          >
+            Đăng Ký Tham Quan 3D
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 3. SECTION 1: GIỚI THIỆU MONA PARK VIEW (ECO CITY)
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderOverviewSection = () => (
+    <section id="tong-quan" className="py-16 bg-white text-slate-900 border-b border-slate-200">
+      <div className={`${MAX_W} mx-auto px-4`}>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          
+          <div className="lg:col-span-6 space-y-4">
+            <span className="text-xs font-black uppercase text-amber-600 tracking-widest block">
+              MÔ HÌNH ĐÔ THỊ NGHỈ DƯỠNG
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-serif font-black uppercase text-[#0B4635] leading-tight">
+              Mona Park View — Thành Phố Sinh Thái Trong Lòng Đô Thị
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Với mật độ xây dựng kỷ lục chỉ 19%, Mona Park View dành trọn 81% quỹ đất cho hệ sinh thái công viên cây xanh, mặt nước hồ điều hòa và chuỗi tiện ích chăm sóc sức khỏe toàn diện.
+            </p>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Dự án là sự kết tinh hoàn hảo giữa lối sống xanh bền vững và tiện nghi thông minh hiện đại, mang lại không gian sống thanh khiết cho cộng đồng cư dân tinh hoa.
+            </p>
+
+            <div className="grid grid-cols-3 gap-3 pt-3 border-t border-slate-200 text-xs">
+              <div className="bg-slate-50 p-3 border border-slate-200">
+                <span className="text-slate-500 block text-[10px]">MẬT ĐỘ XÂY DỰNG</span>
+                <strong className="text-[#0B4635] text-sm font-black">19.2 %</strong>
+              </div>
+              <div className="bg-slate-50 p-3 border border-slate-200">
+                <span className="text-slate-500 block text-[10px]">DIỆN TÍCH CÔNG VIÊN</span>
+                <strong className="text-[#0B4635] text-sm font-black">100 Hecta</strong>
+              </div>
+              <div className="bg-slate-50 p-3 border border-slate-200">
+                <span className="text-slate-500 block text-[10px]">HÌNH THỨC SỞ HỮU</span>
+                <strong className="text-[#0B4635] text-sm font-black">Lâu Dài</strong>
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-6 relative aspect-[4/3] overflow-hidden border border-slate-300 shadow-xl">
+            <img
+              src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80"
+              alt="Hồ điều hòa sinh thái"
+              onError={handleImgError}
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 4. SECTION 2: VỊ TRÍ ĐẮC ĐỊA & KẾT NỐI VÙNG (LOCATION)
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderLocationSection = () => (
+    <section id="vi-tri" className="py-16 bg-[#0B4635] text-white">
+      <div className={`${MAX_W} mx-auto px-4 space-y-10`}>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          {/* Map Left */}
+          <div className="lg:col-span-6 relative aspect-[4/3] overflow-hidden border-2 border-amber-300/40 shadow-2xl bg-slate-900">
+            <iframe
+              src="https://maps.google.com/maps?q=Ecopark+Van+Giang+Hung+Yen&t=&z=13&ie=UTF8&iwloc=&output=embed"
+              className="w-full h-full border-0"
+              allowFullScreen
+              loading="lazy"
+            ></iframe>
+          </div>
+
+          {/* Text Right */}
+          <div className="lg:col-span-6 space-y-4">
+            <span className="text-xs font-black uppercase text-amber-300 tracking-widest block">
+              VỊ TRÍ CHIẾN LƯỢC
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-serif font-black uppercase text-white leading-tight">
+              TÂM ĐIỂM KẾT NỐI VÙNG ĐÔ THỊ VỆ TINH
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
+              Nằm tại vị trí giao thoa của các trục giao thông huyết mạch, Mona Park View kết nối nhanh chóng tới các trung tâm hành chính, giáo dục và giải trí:
+            </p>
+
+            <ul className="space-y-2.5 text-xs text-slate-200">
+              <li className="flex items-center gap-2">📍 <strong>Hệ thống Trường học Quốc tế:</strong> Cách 500m (2 phút đi bộ)</li>
+              <li className="flex items-center gap-2">📍 <strong>Bệnh viện Đa khoa Quốc tế:</strong> Cách 1.2 km (4 phút)</li>
+              <li className="flex items-center gap-2">📍 <strong>Trung tâm Thương mại Vincom Mega Mall:</strong> Cách 2.0 km (5 phút)</li>
+              <li className="flex items-center gap-2">📍 <strong>Trung tâm Hoàn Kiếm / Phố Cổ:</strong> 25 phút qua cầu Thanh Trì & Vĩnh Tuy</li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 5. SECTION 3: KHÔNG GIAN SỐNG XANH & TIỆN ÍCH RESORT
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderEcoParkSection = () => (
+    <section id="khong-gian-xanh" className="py-16 bg-slate-50 text-slate-900 border-b border-slate-200">
+      <div className={`${MAX_W} mx-auto px-4 space-y-10`}>
+        
+        <div className="text-center space-y-2 max-w-2xl mx-auto">
+          <span className="text-xs font-black uppercase text-amber-600 tracking-widest">
+            HỆ SINH THÁI 365 NGÀY NGHỈ DƯỠNG
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-serif font-black text-[#0B4635] uppercase">
+            TIỆN ÍCH ĐẶC QUYỀN CHUẨN RESORT
+          </h2>
+          <p className="text-xs text-slate-600">
+            Tận hưởng chuỗi tiện ích đa tầng đan xen giữa không gian mặt nước và bóng mát đại thụ xanh tươi.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 text-center text-xs">
+          <div className="bg-white p-4 border border-slate-200 shadow-sm space-y-2">
+            <div className="w-12 h-12 mx-auto bg-[#0B4635] text-amber-300 flex items-center justify-center text-xl font-bold">🏊</div>
+            <strong className="block text-slate-900 font-bold">Hồ Bơi Sinh Thái</strong>
+            <span className="text-[10px] text-slate-500">Nước mặn bốn mùa</span>
+          </div>
+
+          <div className="bg-white p-4 border border-slate-200 shadow-sm space-y-2">
+            <div className="w-12 h-12 mx-auto bg-[#0B4635] text-amber-300 flex items-center justify-center text-xl font-bold">🌳</div>
+            <strong className="block text-slate-900 font-bold">Đường Dạo Bộ 5km</strong>
+            <span className="text-[10px] text-slate-500">Ven hồ điều hòa</span>
+          </div>
+
+          <div className="bg-white p-4 border border-slate-200 shadow-sm space-y-2">
+            <div className="w-12 h-12 mx-auto bg-[#0B4635] text-amber-300 flex items-center justify-center text-xl font-bold">🍖</div>
+            <strong className="block text-slate-900 font-bold">Vườn Nướng BBQ</strong>
+            <span className="text-[10px] text-slate-500">Khu picnic gia đình</span>
+          </div>
+
+          <div className="bg-white p-4 border border-slate-200 shadow-sm space-y-2">
+            <div className="w-12 h-12 mx-auto bg-[#0B4635] text-amber-300 flex items-center justify-center text-xl font-bold">🎾</div>
+            <strong className="block text-slate-900 font-bold">Sân Tennis & Gym</strong>
+            <span className="text-[10px] text-slate-500">Thể thao đa năng</span>
+          </div>
+
+          <div className="bg-white p-4 border border-slate-200 shadow-sm space-y-2">
+            <div className="w-12 h-12 mx-auto bg-[#0B4635] text-amber-300 flex items-center justify-center text-xl font-bold">🧘</div>
+            <strong className="block text-slate-900 font-bold">Vườn Thiền Yoga</strong>
+            <span className="text-[10px] text-slate-500">Tái tạo năng lượng</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 6. SECTION 4: MẶT BẰNG & BẢNG HÀNG CĂN HỘ (FLOOR PLANS & INVENTORY)
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderFloorPlansSection = () => (
+    <section id="bang-hang-can-ho" className="py-16 bg-white border-b border-slate-200">
+      <div className={`${MAX_W} mx-auto px-4 space-y-8`}>
+        
+        <div className="flex flex-col md:flex-row md:items-end justify-between border-b-2 border-[#0B4635] pb-3 gap-4">
+          <div>
+            <span className="text-xs font-black uppercase text-amber-600 tracking-widest block">
+              MẶT BẰNG TẦNG ĐIỂN HÌNH & BẢNG HÀNG
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 uppercase">
+              DANH SÁCH CĂN HỘ ĐANG MỞ BÁN ({filteredUnits.length})
+            </h2>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 text-xs w-full lg:w-auto">
+            <select
+              value={filterBlock}
+              onChange={e => setFilterBlock(e.target.value)}
+              className="w-full sm:w-auto bg-slate-50 border border-slate-300 px-3 py-2 focus:outline-none"
+            >
+              <option value="all">Tòa Block (Tất cả)</option>
+              {availableBlocks.filter(b => b !== 'all').map(b => (
+                <option key={b} value={b}>{b}</option>
+              ))}
+            </select>
+
+            <select
+              value={filterType}
+              onChange={e => setFilterType(e.target.value)}
+              className="w-full sm:w-auto bg-slate-50 border border-slate-300 px-3 py-2 focus:outline-none"
+            >
+              <option value="all">Loại Căn Hộ (Tất cả)</option>
+              {availableTypes.filter(t => t !== 'all').map(t => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
+
+            <button
+              onClick={handleSearchSubmit}
+              className="w-full sm:w-auto px-6 py-2 bg-[#0B4635] hover:bg-[#072C21] text-white font-bold uppercase shadow text-center cursor-pointer transition text-xs"
+            >
+              Lọc
+            </button>
+          </div>
+        </div>
+
+        {filteredUnits.length === 0 ? (
+          <div className="p-12 text-center bg-slate-50 border border-slate-200 space-y-3">
+            <p className="text-sm font-bold text-slate-600">Không tìm thấy căn hộ nào khớp với tiêu chí lọc.</p>
+            <button
+              onClick={() => {
+                setFilterBlock('all');
+                setFilterType('all');
+                setFilterPrice('all');
+              }}
+              className="px-5 py-2 bg-[#D4AF37] text-slate-950 font-bold text-xs uppercase shadow"
+            >
+              Xem Toàn Bộ Bảng Hàng
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredUnits.map(unit => (
+              <div 
+                key={unit.id}
+                className="bg-white border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden"
+              >
+                <div className="relative aspect-[16/10] overflow-hidden bg-slate-950">
+                  <img
+                    src={unit.image}
+                    alt={unit.title}
+                    onError={handleImgError}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                  />
+                  <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-[#0B4635] text-amber-300 text-[10px] font-black uppercase">
+                    {unit.code} • {unit.block}
+                  </span>
+                  {unit.hot && (
+                    <span className="absolute top-2.5 right-2.5 px-2 py-0.5 bg-[#E11D48] text-white text-[9px] font-black uppercase">
+                      HOT
+                    </span>
+                  )}
+                </div>
+
+                <div className="p-4 space-y-2">
+                  <h3 
+                    onClick={() => handleOpenUnit(unit)}
+                    className="text-xs font-serif font-black text-slate-900 uppercase line-clamp-2 hover:text-[#0B4635] cursor-pointer min-h-[34px]"
+                  >
+                    {unit.title}
+                  </h3>
+
+                  <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-600 bg-slate-50 p-2.5 border border-slate-200">
+                    <div>📐 Diện tích: <strong>{unit.area}</strong></div>
+                    <div>🏢 Tầng: <strong>{unit.floor}</strong></div>
+                    <div>🧭 Hướng: <strong>{unit.direction}</strong></div>
+                    <div>🛏 Phòng: <strong>{unit.beds} PN • {unit.baths} WC</strong></div>
+                  </div>
+
+                  <p className="text-[11px] text-emerald-800 font-medium truncate">
+                    🌿 {unit.view}
+                  </p>
+
+                  <div className="pt-3 border-t flex items-center justify-between">
+                    <span className="text-sm font-black text-[#E11D48]">{unit.price}</span>
+                    <button
+                      onClick={() => handleOpenUnit(unit)}
+                      className="px-3 py-1.5 bg-[#0B4635] hover:bg-[#072C21] text-amber-300 font-bold text-xs uppercase transition cursor-pointer"
+                    >
+                      Chi Tiết ›
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 7. SECTION 5: TIẾN ĐỘ THANH TOÁN 8 ĐỢT (PAYMENT SCHEDULE)
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderPaymentSchedule = () => (
+    <section id="chinh-sach" className="py-16 bg-slate-50 text-slate-900 border-b border-slate-200">
+      <div className={`${MAX_W} mx-auto px-4 space-y-8`}>
+        
+        <div className="text-center space-y-2 max-w-2xl mx-auto">
+          <span className="text-xs font-black uppercase text-amber-600 tracking-widest">
+            PHƯƠNG THỨC THANH TOÁN LINH HOẠT
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-serif font-black text-[#0B4635] uppercase">
+            TIẾN ĐỘ THANH TOÁN 8 ĐỢT CHUẨN CĐT
+          </h2>
+        </div>
+
+        <div className="bg-white p-6 border border-slate-300 shadow-md">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+            <div className="p-3 bg-slate-50 border border-slate-200 space-y-1">
+              <strong className="text-[#0B4635] block">ĐỢT 1 (KÝ HĐMB)</strong>
+              <p className="text-sm font-black text-slate-900">15% Giá Trị Căn Hộ</p>
+              <span className="text-[10px] text-slate-500">Trong 7 ngày đặt cọc</span>
+            </div>
+
+            <div className="p-3 bg-slate-50 border border-slate-200 space-y-1">
+              <strong className="text-[#0B4635] block">ĐỢT 2 (XÂY TẦNG 5)</strong>
+              <p className="text-sm font-black text-slate-900">10% Giá Trị Căn Hộ</p>
+              <span className="text-[10px] text-slate-500">Sau 60 ngày đợt 1</span>
+            </div>
+
+            <div className="p-3 bg-slate-50 border border-slate-200 space-y-1">
+              <strong className="text-[#0B4635] block">ĐỢT 3 (XÂY TẦNG 15)</strong>
+              <p className="text-sm font-black text-slate-900">10% Giá Trị Căn Hộ</p>
+              <span className="text-[10px] text-slate-500">Sau 60 ngày đợt 2</span>
+            </div>
+
+            <div className="p-3 bg-slate-50 border border-slate-200 space-y-1">
+              <strong className="text-[#0B4635] block">ĐỢT 4 (CẤT NÓC)</strong>
+              <p className="text-sm font-black text-slate-900">15% Giá Trị Căn Hộ</p>
+              <span className="text-[10px] text-slate-500">Hoàn thành cất nóc</span>
+            </div>
+
+            <div className="p-3 bg-slate-50 border border-slate-200 space-y-1">
+              <strong className="text-[#0B4635] block">ĐỢT 5 (HOÀN THIỆN)</strong>
+              <p className="text-sm font-black text-slate-900">10% Giá Trị Căn Hộ</p>
+              <span className="text-[10px] text-slate-500">Hoàn thiện nội thất</span>
+            </div>
+
+            <div className="p-3 bg-slate-50 border border-slate-200 space-y-1">
+              <strong className="text-[#0B4635] block">ĐỢT 6 (BÀN GIAO)</strong>
+              <p className="text-sm font-black text-slate-900">25% + 2% KPBT</p>
+              <span className="text-[10px] text-slate-500">Nhận chìa khóa nhà</span>
+            </div>
+
+            <div className="p-3 bg-slate-50 border border-slate-200 space-y-1">
+              <strong className="text-[#0B4635] block">ĐỢT 7 & 8 (SỔ HỒNG)</strong>
+              <p className="text-sm font-black text-slate-900">5% Cuối Cùng</p>
+              <span className="text-[10px] text-slate-500">Nhận giấy chứng nhận</span>
+            </div>
+
+            <div className="p-3 bg-emerald-50 border border-emerald-300 space-y-1">
+              <strong className="text-emerald-800 block">ƯU ĐÃI ĐẶC BIỆT</strong>
+              <p className="text-sm font-black text-emerald-900">Chiết khấu 8%</p>
+              <span className="text-[10px] text-emerald-700">Khi thanh toán sớm 95%</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 8. SECTION 6: THỰC TẾ CĂN HỘ MẪU (SHOWROOM)
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderShowroomSection = () => (
+    <section id="can-ho-mau" className="py-16 bg-white border-b border-slate-200">
+      <div className={`${MAX_W} mx-auto px-4 space-y-8`}>
+        
+        <div className="text-center space-y-2 max-w-2xl mx-auto">
+          <span className="text-xs font-black uppercase text-amber-600 tracking-widest">
+            TRẢI NGHIỆM THỰC TẾ
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-serif font-black text-[#0B4635] uppercase">
+            HÌNH ẢNH CĂN HỘ MẪU HOÀN THIỆN
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { title: 'Phòng Khách Ban Công Kính Tràn', img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80' },
+            { title: 'Phòng Ngủ Master View Hồ Nước', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80' },
+            { title: 'Khu Vực Bếp Đảo Hiện Đại', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80' },
+            { title: 'Phòng Tắm Ốp Đá Tự Nhiên VIP', img: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&q=80' },
+          ].map((item, idx) => (
+            <div key={idx} className="relative aspect-[4/3] overflow-hidden border border-slate-300 shadow-sm group">
+              <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              <div className="absolute inset-0 bg-black/40 flex items-end p-3">
+                <span className="text-xs font-bold text-white drop-shadow">{item.title}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 9. SECTION 7: TIN TỨC & TIẾN ĐỘ DỰ ÁN
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderNewsSection = () => (
+    <section id="tin-tuc" className="py-16 bg-slate-50 text-slate-900 border-b border-slate-200">
+      <div className={`${MAX_W} mx-auto px-4 space-y-8`}>
+        
+        <div className="flex items-center justify-between border-b-2 border-[#0B4635] pb-3">
+          <h2 className="text-2xl font-serif font-black uppercase text-[#0B4635]">
+            TIN TỨC MONA PARK VIEW
+          </h2>
+          <button onClick={() => navigate('news')} className="text-xs font-bold text-emerald-800 hover:underline">
+            Xem Tất Cả Tin Tức ›
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {BDS20_NEWS.map(n => (
+            <div key={n.id} className="bg-white border border-slate-200 shadow-sm flex flex-col justify-between group overflow-hidden">
+              <img src={n.image} alt={n.title} className="w-full h-44 object-cover group-hover:scale-105 transition duration-500" />
+              <div className="p-4 space-y-2">
+                <span className="text-[10px] font-bold text-emerald-700 uppercase">{n.category} • {n.date}</span>
+                <h3 
+                  onClick={() => handleOpenArticle(n)}
+                  className="text-xs font-black text-slate-900 uppercase line-clamp-2 hover:text-[#0B4635] cursor-pointer"
+                >
+                  {n.title}
+                </h3>
+                <p className="text-xs text-slate-600 line-clamp-2">{n.excerpt}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 10. SECTION 8: FORM ĐĂNG KÝ BẢNG GIÁ NGOẠI GIAO (CONTACT FORM)
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderContactSection = () => (
+    <section id="form-dang-ky" className="py-16 bg-[#0B4635] text-white">
+      <div className={`${MAX_W} mx-auto px-4 max-w-xl text-center space-y-6`}>
+        
+        <div className="space-y-2">
+          <span className="text-xs font-black uppercase text-amber-300 tracking-widest block">
+            CHƯƠNG TRÌNH MỞ BÁN ĐỢT 1
+          </span>
+          <h2 className="text-2xl sm:text-4xl font-serif font-black uppercase text-white">
+            ĐĂNG KÝ NHẬN BẢNG GIÁ GỐC & VOUCHER 100 TRIỆU
+          </h2>
+          <p className="text-xs text-slate-200">
+            Ưu tiên chọn căn góc đẹp nhất và hưởng chính sách hỗ trợ lãi suất 0% trong 24 tháng.
+          </p>
+        </div>
+
+        <form onSubmit={handleContactSubmit} className="bg-white text-slate-900 p-6 shadow-2xl text-left text-xs space-y-3">
+          <div>
+            <label className="block font-bold text-slate-800 mb-1">Họ và tên quý khách *</label>
+            <input
+              type="text"
+              required
+              value={contactForm.name}
+              onChange={e => setContactForm({ ...contactForm, name: e.target.value })}
+              placeholder="Nguyễn Văn A"
+              className="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block font-bold text-slate-800 mb-1">Số điện thoại *</label>
+            <input
+              type="tel"
+              required
+              value={contactForm.phone}
+              onChange={e => setContactForm({ ...contactForm, phone: e.target.value })}
+              placeholder="0919 006 030"
+              className="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block font-bold text-slate-800 mb-1">Tòa Block quan tâm</label>
+            <select
+              value={contactForm.blockInterested}
+              onChange={e => setContactForm({ ...contactForm, blockInterested: e.target.value })}
+              className="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none"
+            >
+              <option value="Block A - Park View">Block A - Park View (View Công Viên)</option>
+              <option value="Block B - Lake View">Block B - Lake View (View Hồ Sinh Thái)</option>
+              <option value="Block C - Garden View">Block C - Garden View (View Vườn Thiền)</option>
+              <option value="Block D - Sky Palace">Block D - Sky Palace (Duplex Đỉnh Cao)</option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full py-3 bg-[#0B4635] hover:bg-[#072C21] text-amber-300 font-black text-xs uppercase tracking-wider shadow cursor-pointer transition"
+          >
+            Gửi Yêu Cầu Nhận Bảng Giá Gốc CĐT
+          </button>
+        </form>
+
+      </div>
+    </section>
+  );
 
   return (
-    <div className="min-h-screen bg-white font-sans text-slate-800 flex flex-col">
-      {/* 1. HEADER WITH GOLDEN EAGLE LOGO */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
-        <div className="max-w-[1360px] mx-auto px-4 h-22 flex items-center justify-between gap-4">
-          <nav className="hidden lg:flex items-center gap-9 text-sm font-bold uppercase tracking-wider text-slate-700">
-            <button onClick={() => navigate('home')} className={`hover:text-amber-600 ${currentPage === 'home' ? 'text-amber-600 font-black' : ''}`}>TRANG CHỦ</button>
-            <button onClick={() => navigate('about')} className={`hover:text-amber-600 ${currentPage === 'about' ? 'text-amber-600 font-black' : ''}`}>GIỚI THIỆU</button>
-            <button onClick={() => navigate('projects')} className={`hover:text-amber-600 ${currentPage === 'projects' || currentPage === 'project-detail' ? 'text-amber-600 font-black' : ''}`}>DỰ ÁN</button>
-            <button onClick={() => navigate('news')} className={`hover:text-amber-600 ${currentPage === 'news' || currentPage === 'news-detail' ? 'text-amber-600 font-black' : ''}`}>TIN TỨC</button>
-          </nav>
-
-          <div 
-            onClick={() => navigate('home')}
-            className="cursor-pointer flex flex-col items-center justify-center -my-2"
-          >
-            <div className="w-12 h-12 flex items-center justify-center text-amber-500 text-3xl font-serif">
-              🦅
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-700 -mt-1">
-              MINH KHAI LUXURY
-            </span>
-          </div>
-
-          <nav className="hidden lg:flex items-center gap-9 text-sm font-bold uppercase tracking-wider text-slate-700">
-            <button onClick={() => navigate('gallery')} className={`hover:text-amber-600 ${currentPage === 'gallery' ? 'text-amber-600 font-black' : ''}`}>THƯ VIỆN</button>
-            <button onClick={() => navigate('knowledge')} className={`hover:text-amber-600 ${currentPage === 'knowledge' ? 'text-amber-600 font-black' : ''}`}>KIẾN THỨC</button>
-            <button onClick={() => navigate('career')} className={`hover:text-amber-600 ${currentPage === 'career' ? 'text-amber-600 font-black' : ''}`}>TUYỂN DỤNG</button>
-            <button onClick={() => navigate('contact')} className={`hover:text-amber-600 ${currentPage === 'contact' ? 'text-amber-600 font-black' : ''}`}>LIÊN HỆ</button>
-          </nav>
+    <div className="w-full min-h-screen bg-white text-slate-900 font-sans flex flex-col justify-between selection:bg-[#0B4635] selection:text-amber-300">
+      
+      {/* Toast */}
+      {toastMessage && (
+        <div className="fixed bottom-24 right-6 z-50 bg-[#0B4635] text-white border border-amber-400 px-5 py-3 shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce">
+          <CheckCircle2 size={16} className="text-amber-300" /> {toastMessage}
         </div>
-      </header>
-
-      {/* 2. HERO (CHỈ Ở HOME) */}
-      {isHome && (
-        <section className="relative h-[520px] sm:h-[620px] bg-slate-950 overflow-hidden flex items-center justify-center text-center text-white">
-          <img
-            src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=1600&q=80"
-            alt="Đẳng Cấp Thượng Lưu"
-            className="w-full h-full object-cover opacity-75"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
-          <div className="relative z-10 max-w-3xl mx-auto px-4">
-            <h1 className="text-4xl sm:text-6xl font-serif italic text-amber-300 mb-3 drop-shadow-lg">
-              Đẳng Cấp Thượng Lưu
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-200 font-medium max-w-xl mx-auto leading-relaxed">
-              Kiến tạo những giá trị đỉnh cao, mang đến cho bạn một môi trường sống sang trọng, giàu tính nghệ thuật ngay tại trung tâm thủ đô.
-            </p>
-          </div>
-        </section>
       )}
 
-      {/* 3. HOME VIEW */}
-      {isHome && (
-        <main className="max-w-[1360px] mx-auto px-4 py-12 space-y-16 flex-1">
-          {/* SECTION 1: 8 DỰ ÁN CĂN HỘ */}
-          <section>
-            <div className="text-center mb-8">
-              <h2 className="text-xl sm:text-2xl font-bold uppercase text-slate-900 tracking-wide">
-                DỰ ÁN CHUNG CƯ MINH KHAI
-              </h2>
-              <p className="text-xs text-slate-500 mt-1">Hội tụ những dự án bất động sản thương mại sáng giá nhất</p>
-            </div>
+      <div>
+        {renderHeader()}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {filteredProjects.map((proj) => (
-                <div
-                  key={proj.id}
-                  onClick={() => handleSelectProject(proj)}
-                  className="bg-white border border-slate-200 overflow-hidden shadow-2xs hover:shadow-lg transition-all cursor-pointer group flex flex-col"
-                >
-                  <div className="aspect-[16/11] overflow-hidden bg-slate-100">
-                    <img
-                      src={proj.image}
-                      alt={proj.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                  <div className="p-3 text-center bg-slate-50 border-t border-slate-100">
-                    <h3 className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-amber-700 transition-colors">
-                      {proj.title}
-                    </h3>
-                  </div>
-                </div>
-              ))}
-            </div>
+        {currentPage === 'home' && (
+          <main>
+            {renderHeroSection()}
+            {renderOverviewSection()}
+            {renderLocationSection()}
+            {renderEcoParkSection()}
+            {renderFloorPlansSection()}
+            {renderPaymentSchedule()}
+            {renderShowroomSection()}
+            {renderNewsSection()}
+            {renderContactSection()}
+          </main>
+        )}
 
-            <div className="text-center mt-8">
-              <button
-                onClick={() => navigate('projects')}
-                className="px-8 py-2.5 bg-[#B48448] hover:bg-[#966b35] text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-xs"
-              >
-                XEM TẤT CẢ CÁC DỰ ÁN
+        {currentPage === 'overview' && (
+          <main>
+            {renderOverviewSection()}
+            {renderEcoParkSection()}
+            {renderContactSection()}
+          </main>
+        )}
+
+        {currentPage === 'location' && (
+          <main>
+            {renderLocationSection()}
+            {renderContactSection()}
+          </main>
+        )}
+
+        {currentPage === 'amenities' && (
+          <main>
+            {renderEcoParkSection()}
+            {renderShowroomSection()}
+            {renderContactSection()}
+          </main>
+        )}
+
+        {currentPage === 'eco-park' && (
+          <main>
+            {renderEcoParkSection()}
+            {renderContactSection()}
+          </main>
+        )}
+
+        {currentPage === 'floor-plans' && (
+          <main>
+            {renderFloorPlansSection()}
+            {renderPaymentSchedule()}
+            {renderContactSection()}
+          </main>
+        )}
+
+        {currentPage === 'showroom' && (
+          <main>
+            {renderShowroomSection()}
+            {renderContactSection()}
+          </main>
+        )}
+
+        {currentPage === 'policy' && (
+          <main>
+            {renderPaymentSchedule()}
+            {renderContactSection()}
+          </main>
+        )}
+
+        {currentPage === 'news' && (
+          <main>
+            {renderNewsSection()}
+            {renderContactSection()}
+          </main>
+        )}
+
+        {currentPage === 'contact' && (
+          <main>
+            {renderLocationSection()}
+            {renderContactSection()}
+          </main>
+        )}
+
+        {currentPage === 'property-detail' && (
+          <div className="py-12 bg-white min-h-screen">
+            <div className={`${MAX_W} mx-auto px-4 space-y-6`}>
+              <button onClick={() => navigate('floor-plans')} className="text-xs font-bold text-[#0B4635] hover:underline">
+                ‹ Quay lại bảng hàng căn hộ
               </button>
-            </div>
-          </section>
-
-          {/* SECTION 2: FAQ & LEAD FORM */}
-          <section className="border-t border-slate-200 pt-12">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              <div className="lg:col-span-8 space-y-4">
-                <h3 className="text-base font-bold uppercase text-slate-900 tracking-wide mb-4">
-                  CÂU HỎI THƯỜNG GẶP
-                </h3>
-                <div className="space-y-2">
-                  {FAQS.map((faq, index) => (
-                    <div key={index} className="border border-slate-200">
-                      <button
-                        onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                        className="w-full p-3.5 text-left font-bold text-xs sm:text-sm text-slate-800 hover:bg-amber-50/40 flex items-center justify-between gap-4 transition-colors"
-                      >
-                        <span className={openFaq === index ? 'text-amber-700' : ''}>^ {faq.q}</span>
-                      </button>
-                      {openFaq === index && (
-                        <div className="p-4 bg-slate-50 border-t border-slate-200 text-xs text-slate-600 leading-relaxed space-y-2">
-                          <p>{faq.a}</p>
-                        </div>
-                      )}
-                    </div>
+              <h1 className="text-2xl sm:text-3xl font-serif font-black text-[#0B4635] uppercase">
+                {selectedUnit.title} ({selectedUnit.code})
+              </h1>
+              <p className="text-sm font-black text-[#E11D48]">
+                Giá bán: {selectedUnit.price} — Tòa: {selectedUnit.block} — Diện tích: {selectedUnit.area}
+              </p>
+              <img src={selectedUnit.image} alt="" className="w-full h-96 object-cover shadow-lg border" />
+              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{selectedUnit.description}</p>
+              <div className="p-4 bg-[#0B4635] text-white space-y-2">
+                <h4 className="font-bold text-xs uppercase text-amber-300">Tiêu chuẩn bàn giao & tiện ích:</h4>
+                <ul className="grid grid-cols-2 gap-2 text-xs text-slate-200">
+                  {selectedUnit.specs.map((s, idx) => (
+                    <li key={idx} className="flex items-center gap-1.5">🌿 {s}</li>
                   ))}
-                </div>
-              </div>
-
-              <div className="lg:col-span-4 bg-slate-50 p-6 border border-slate-200 space-y-3">
-                <h4 className="font-bold text-xs uppercase text-slate-900 tracking-wider">ĐĂNG KÝ TƯ VẤN NHANH</h4>
-                {consultSubmitted ? (
-                  <div className="p-3 bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 font-medium">
-                    ✓ Đã nhận thông tin! Chuyên viên sẽ gọi lại trong 10 phút.
-                  </div>
-                ) : (
-                  <form onSubmit={(e) => { e.preventDefault(); setConsultSubmitted(true); }} className="space-y-3 text-xs">
-                    <input type="text" placeholder="Họ và tên của bạn..." required className="w-full p-2.5 bg-white border border-slate-300 focus:outline-none focus:border-amber-600" />
-                    <input type="tel" placeholder="Số điện thoại..." required className="w-full p-2.5 bg-white border border-slate-300 focus:outline-none focus:border-amber-600" />
-                    <textarea rows={3} placeholder="Nội dung cần tư vấn..." className="w-full p-2.5 bg-white border border-slate-300 focus:outline-none focus:border-amber-600" />
-                    <button type="submit" className="w-full py-2.5 bg-[#B48448] hover:bg-[#966b35] text-white font-bold uppercase tracking-wider transition-colors">
-                      ĐĂNG KÝ NGAY
-                    </button>
-                  </form>
-                )}
-              </div>
-            </div>
-          </section>
-
-          {/* SECTION 3: ĐỐI TÁC */}
-          <section className="border-t border-slate-200 pt-10 text-center">
-            <h3 className="text-base font-bold uppercase text-slate-900 tracking-wide mb-6">
-              ĐỐI TÁC CỦA CHÚNG TÔI
-            </h3>
-            <div className="flex flex-wrap items-center justify-center gap-8 py-4 opacity-80 grayscale hover:grayscale-0 transition-all">
-              {['Vingroup', 'Masterise Homes', 'MIK Group', 'Sunshine Group', 'Hòa Bình Group', 'UDIC Corp'].map((partner, i) => (
-                <div key={i} className="px-4 py-2 border border-slate-200 font-serif font-bold text-slate-700 text-sm">
-                  {partner}
-                </div>
-              ))}
-            </div>
-          </section>
-        </main>
-      )}
-
-      {/* 4. FULL DETAIL VIEW CHO DỰ ÁN */}
-      {(currentPage === 'project-detail' || currentPage === 'du-an' || currentPage.startsWith('du-an')) && (
-        <main className="max-w-[1360px] mx-auto px-4 py-8 space-y-8 flex-1 w-full">
-          <div className="flex items-center gap-2 text-xs text-slate-500">
-            <button onClick={() => navigate('home')} className="hover:text-amber-700 flex items-center gap-1">
-              <Home className="w-3.5 h-3.5" /> Trang chủ
-            </button>
-            <span>/</span>
-            <button onClick={() => navigate('projects')} className="hover:text-amber-700">Dự án</button>
-            <span>/</span>
-            <span className="text-slate-900 font-bold truncate max-w-md">{selectedProject.title}</span>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <button
-              onClick={() => navigate('projects')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" /> Quay lại danh sách dự án
-            </button>
-            <span className="text-xs bg-amber-100 text-amber-900 font-bold px-2.5 py-1">Chủ đầu tư: {selectedProject.developer}</span>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-8 space-y-6">
-              <div className="bg-white border border-slate-200 overflow-hidden shadow-xs">
-                <div className="aspect-[16/9] w-full bg-slate-900 relative">
-                  <img src={selectedProject.image} alt={selectedProject.title} className="w-full h-full object-cover" />
-                  <div className="absolute top-4 left-4 bg-[#B48448] text-white text-xs font-black px-3 py-1 shadow-md">
-                    {selectedProject.price}
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white border border-slate-200 p-6 space-y-4 shadow-xs">
-                <h1 className="text-xl sm:text-3xl font-serif font-black text-slate-900">{selectedProject.title}</h1>
-                <p className="text-xs text-slate-500 flex items-center gap-1.5"><MapPin className="w-4 h-4 text-amber-600" /><span>{selectedProject.loc}</span></p>
-
-                <div className="grid grid-cols-3 gap-3 py-3 border-y border-slate-100 text-xs">
-                  <div className="p-3 bg-slate-50 border border-slate-200"><span className="text-[10px] text-slate-400 block uppercase font-bold">Quy mô</span><strong>{selectedProject.specs}</strong></div>
-                  <div className="p-3 bg-slate-50 border border-slate-200"><span className="text-[10px] text-slate-400 block uppercase font-bold">Chủ đầu tư</span><strong>{selectedProject.developer}</strong></div>
-                  <div className="p-3 bg-slate-50 border border-slate-200"><span className="text-[10px] text-slate-400 block uppercase font-bold">Tình trạng</span><strong>{selectedProject.status}</strong></div>
-                </div>
-
-                <div>
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900 mb-2">Giới thiệu tổng quan</h3>
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{selectedProject.desc}</p>
-                </div>
-
-                <div className="pt-4 border-t border-slate-100">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900 mb-3">Đặc quyền & Tiện ích</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {selectedProject.highlights.map((hl: string, i: number) => (
-                      <div key={i} className="flex items-center gap-2 text-xs text-slate-700 bg-slate-50 p-2.5 border border-slate-200">
-                        <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
-                        <span>{hl}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="lg:col-span-4 space-y-6">
-              <div className="bg-white border border-slate-200 p-6 shadow-xs sticky top-24 space-y-4">
-                <div className="text-center pb-4 border-b border-slate-100">
-                  <div className="w-12 h-12 text-amber-600 flex items-center justify-center font-serif text-2xl mx-auto mb-1">
-                    🦅
-                  </div>
-                  <strong className="block text-sm font-bold text-slate-900">Phòng Kinh Doanh Minh Khai</strong>
-                  <span className="text-[11px] text-slate-500">Tư vấn bảng giá & chính sách F1</span>
-                </div>
-                <a href="tel:0919006030" className="w-full py-3 bg-[#B48448] hover:bg-[#966b35] text-white font-bold text-xs uppercase flex items-center justify-center gap-2 shadow-xs transition-colors">
-                  <Phone className="w-4 h-4" /> Gọi 0919 006 030
-                </a>
+                </ul>
               </div>
             </div>
           </div>
-        </main>
-      )}
+        )}
 
-      {/* 5. FULL ARTICLE DETAIL */}
-      {(currentPage === 'news-detail' || currentPage === 'tin-tuc' || currentPage.startsWith('tin-tuc')) && (
-        <main className="max-w-[900px] mx-auto px-4 py-8 space-y-6 flex-1 w-full">
-          <div className="flex items-center gap-2 text-xs text-slate-500">
-            <button onClick={() => navigate('home')} className="hover:text-amber-700 flex items-center gap-1"><Home className="w-3.5 h-3.5" /> Trang chủ</button>
-            <span>/</span>
-            <button onClick={() => navigate('news')} className="hover:text-amber-700">Tin tức</button>
-            <span>/</span>
-            <span className="text-slate-800 font-bold truncate max-w-sm">{selectedArticle.title}</span>
-          </div>
-
-          <button onClick={() => navigate('news')} className="px-3 py-1.5 bg-white border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-1.5 shadow-2xs">
-            <ArrowLeft className="w-3.5 h-3.5" /> Quay lại danh sách tin
-          </button>
-
-          <article className="bg-white border border-slate-200 p-6 sm:p-10 shadow-xs space-y-6">
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-2.5 py-1 border border-amber-200 inline-block">
-              {selectedArticle.cat}
-            </span>
-            <h1 className="text-xl sm:text-3xl font-serif font-black text-slate-900 leading-tight">{selectedArticle.title}</h1>
-            <div className="aspect-[16/9] bg-slate-900 overflow-hidden">
-              <img src={selectedArticle.img} alt={selectedArticle.title} className="w-full h-full object-cover" />
-            </div>
-            <div className="p-4 bg-amber-50/60 border-l-4 border-amber-600 text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-              {selectedArticle.summary}
-            </div>
-            <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
-              {selectedArticle.content?.map((para: string, i: number) => <p key={i}>{para}</p>)}
-            </div>
-          </article>
-        </main>
-      )}
-
-      {/* 6. SUBPAGES VỚI NỘI DUNG ĐẦY ĐỦ (KHÔNG BAO GIỜ BỊ TRỐNG) */}
-      {/* ── PROJECTS SUBPAGE ── */}
-      {currentPage === 'projects' && (
-        <main className="max-w-[1360px] mx-auto px-4 py-8 space-y-8 flex-1 w-full">
-          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-            <div>
-              <h1 className="text-xl sm:text-2xl font-bold uppercase text-slate-900">Danh Sách Dự Án Căn Hộ Chung Cư</h1>
-              <p className="text-xs text-slate-500 mt-1">Cập nhật quỹ căn đẹp và bảng giá chính thức từ chủ đầu tư</p>
-            </div>
-            <button onClick={() => navigate('home')} className="text-xs font-bold text-amber-700 hover:underline">← Về trang chủ</button>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredProjects.map((proj) => (
-              <div key={proj.id} onClick={() => handleSelectProject(proj)} className="bg-white border border-slate-200 overflow-hidden shadow-2xs hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between">
-                <div>
-                  <div className="aspect-[16/11] overflow-hidden bg-slate-100 relative">
-                    <img src={proj.image} alt={proj.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                    <div className="absolute top-2 right-2 bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5">{proj.price}</div>
-                  </div>
-                  <div className="p-3.5">
-                    <h3 className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-amber-700 mb-1">{proj.title}</h3>
-                    <p className="text-[11px] text-slate-500 truncate flex items-center gap-1"><MapPin className="w-3.5 h-3.5 text-slate-400" /><span>{proj.loc}</span></p>
-                  </div>
-                </div>
-                <div className="p-3 bg-slate-50 border-t border-slate-100 text-right">
-                  <span className="text-xs font-bold text-amber-700">Xem chi tiết dự án →</span>
-                </div>
+        {currentPage === 'news-detail' && (
+          <div className="py-12 bg-white min-h-screen">
+            <div className={`${MAX_W} mx-auto px-4 space-y-6`}>
+              <button onClick={() => navigate('news')} className="text-xs font-bold text-[#0B4635] hover:underline">
+                ‹ Quay lại trang tin tức
+              </button>
+              <h1 className="text-2xl font-serif font-black text-[#0B4635] uppercase">
+                {selectedArticle.title}
+              </h1>
+              <div className="text-[11px] text-slate-400 border-b pb-2">
+                🕒 {selectedArticle.date} • Tác giả: {selectedArticle.author} • {selectedArticle.views} lượt xem
               </div>
-            ))}
-          </div>
-        </main>
-      )}
-
-      {/* ── NEWS SUBPAGE ── */}
-      {currentPage === 'news' && (
-        <main className="max-w-[1360px] mx-auto px-4 py-8 space-y-8 flex-1 w-full">
-          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-            <div>
-              <h1 className="text-xl sm:text-2xl font-bold uppercase text-slate-900">Tin Tức Thị Trường & Quy Hoạch</h1>
-              <p className="text-xs text-slate-500 mt-1">Phân tích chuyên sâu hạ tầng và biến động giá nhà đất</p>
-            </div>
-            <button onClick={() => navigate('home')} className="text-xs font-bold text-amber-700 hover:underline">← Về trang chủ</button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {NEWS_LIST.map((art) => (
-              <div key={art.id} onClick={() => handleSelectArticle(art)} className="bg-white border border-slate-200 overflow-hidden shadow-2xs hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between">
-                <div>
-                  <div className="aspect-[16/10] overflow-hidden bg-slate-100">
-                    <img src={art.img} alt={art.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                  </div>
-                  <div className="p-4">
-                    <span className="text-[10px] font-bold text-amber-700 uppercase">{art.cat} · {art.date}</span>
-                    <h3 className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-amber-700 line-clamp-2 mt-1 mb-2">{art.title}</h3>
-                    <p className="text-xs text-slate-500 line-clamp-2">{art.summary}</p>
-                  </div>
-                </div>
-                <div className="p-3 bg-slate-50 border-t border-slate-100">
-                  <span className="text-xs font-bold text-amber-700">Đọc toàn bộ bài viết →</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </main>
-      )}
-
-      {/* ── ABOUT SUBPAGE ── */}
-      {currentPage === 'about' && (
-        <main className="max-w-[1360px] mx-auto px-4 py-8 space-y-8 flex-1 w-full">
-          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-            <h1 className="text-xl sm:text-2xl font-bold uppercase text-slate-900">Về Chúng Tôi — Minh Khai Luxury</h1>
-            <button onClick={() => navigate('home')} className="text-xs font-bold text-amber-700 hover:underline">← Về trang chủ</button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white p-6 sm:p-8 border border-slate-200 shadow-xs">
-            <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
-              <span className="text-xs font-bold text-amber-700 uppercase">Hành trình 10 năm kiến tạo</span>
-              <h2 className="text-xl sm:text-2xl font-serif font-black text-slate-900">Đơn Vị Phân Phối BĐS Cao Cấp Hàng Đầu</h2>
-              <p>Minh Khai Luxury là đơn vị phân phối chiến lược F1 của các tập đoàn bất động sản hàng đầu tại Việt Nam như Vingroup, MIK Group, Masterise Homes, Sunshine Group.</p>
-              <p>Chúng tôi tự hào đã đồng hành và mang đến tổ ấm thịnh vượng cho hơn 8.500 gia đình cư dân tại cửa ngõ Đông Nam thủ đô.</p>
-            </div>
-            <div className="aspect-[16/11] bg-slate-900 overflow-hidden border border-slate-200">
-              <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800&q=80" alt="Về chúng tôi" className="w-full h-full object-cover" />
-            </div>
-          </div>
-        </main>
-      )}
-
-      {/* ── GALLERY SUBPAGE ── */}
-      {currentPage === 'gallery' && (
-        <main className="max-w-[1360px] mx-auto px-4 py-8 space-y-8 flex-1 w-full">
-          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-            <h1 className="text-xl sm:text-2xl font-bold uppercase text-slate-900">Thư Viện Ảnh & Video Căn Hộ</h1>
-            <button onClick={() => navigate('home')} className="text-xs font-bold text-amber-700 hover:underline">← Về trang chủ</button>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {APARTMENT_PROJECTS.map((p, i) => (
-              <div key={i} className="aspect-[16/11] overflow-hidden border border-slate-200 group relative">
-                <img src={p.image} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold p-2 text-center">
-                  {p.title}
-                </div>
-              </div>
-            ))}
-          </div>
-        </main>
-      )}
-
-      {/* ── KNOWLEDGE SUBPAGE ── */}
-      {currentPage === 'knowledge' && (
-        <main className="max-w-[1360px] mx-auto px-4 py-8 space-y-8 flex-1 w-full">
-          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-            <h1 className="text-xl sm:text-2xl font-bold uppercase text-slate-900">Kiến Thức & Cẩm Nang Bất Động Sản</h1>
-            <button onClick={() => navigate('home')} className="text-xs font-bold text-amber-700 hover:underline">← Về trang chủ</button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {FAQS.map((faq, idx) => (
-              <div key={idx} className="bg-white p-5 border border-slate-200 shadow-xs space-y-2">
-                <h3 className="font-bold text-xs sm:text-sm text-slate-900">💡 {faq.q}</h3>
-                <p className="text-xs text-slate-600 leading-relaxed">{faq.a}</p>
-              </div>
-            ))}
-          </div>
-        </main>
-      )}
-
-      {/* ── CAREER SUBPAGE ── */}
-      {currentPage === 'career' && (
-        <main className="max-w-[1360px] mx-auto px-4 py-8 space-y-8 flex-1 w-full">
-          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-            <h1 className="text-xl sm:text-2xl font-bold uppercase text-slate-900">Cơ Hội Nghề Nghiệp & Tuyển Dụng</h1>
-            <button onClick={() => navigate('home')} className="text-xs font-bold text-amber-700 hover:underline">← Về trang chủ</button>
-          </div>
-          <div className="space-y-4">
-            {CAREERS.map((job) => (
-              <div key={job.id} className="bg-white p-5 border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <span className="text-[10px] font-bold text-amber-700 uppercase">{job.dept}</span>
-                  <h3 className="font-bold text-sm text-slate-900">{job.title}</h3>
-                  <p className="text-xs text-slate-500 mt-1">📍 {job.loc} · ⏱️ {job.exp}</p>
-                </div>
-                <div className="text-left sm:text-right">
-                  <strong className="text-xs font-black text-rose-600 font-mono block mb-2">{job.salary}</strong>
-                  <button onClick={() => alert('Vui lòng gửi CV về tuyendung@minhkhailuxury.com')} className="px-4 py-1.5 bg-[#B48448] text-white text-xs font-bold uppercase">Ứng Tuyển</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </main>
-      )}
-
-      {/* ── CONTACT SUBPAGE ── */}
-      {currentPage === 'contact' && (
-        <main className="max-w-[1360px] mx-auto px-4 py-8 space-y-8 flex-1 w-full">
-          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-            <h1 className="text-xl sm:text-2xl font-bold uppercase text-slate-900">Liên Hệ Ban Quản Lý Minh Khai Luxury</h1>
-            <button onClick={() => navigate('home')} className="text-xs font-bold text-amber-700 hover:underline">← Về trang chủ</button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white p-6 border border-slate-200 space-y-4">
-              <h2 className="font-bold text-sm text-slate-900 uppercase">Gửi Thông Điệp Trực Tiếp</h2>
-              <form onSubmit={(e) => { e.preventDefault(); alert('Cảm ơn bạn! Chúng tôi đã nhận được thông tin liên hệ.'); navigate('home'); }} className="space-y-3 text-xs">
-                <input type="text" placeholder="Họ và tên..." required className="w-full p-2.5 border border-slate-300" />
-                <input type="tel" placeholder="Số điện thoại..." required className="w-full p-2.5 border border-slate-300" />
-                <input type="email" placeholder="Email..." className="w-full p-2.5 border border-slate-300" />
-                <textarea rows={4} placeholder="Nội dung cần liên hệ..." className="w-full p-2.5 border border-slate-300" />
-                <button type="submit" className="w-full py-2.5 bg-[#B48448] hover:bg-[#966b35] text-white font-bold uppercase">GỬI LIÊN HỆ</button>
-              </form>
-            </div>
-            <div className="bg-slate-50 p-6 border border-slate-200 space-y-4 text-xs">
-              <h2 className="font-bold text-sm text-slate-900 uppercase">Văn Phòng Điều Hành</h2>
-              <p>📍 <strong>Địa chỉ:</strong> 458 Minh Khai, Q. Hai Bà Trưng, Hà Nội</p>
-              <p>📞 <strong>Hotline 24/7:</strong> 0919 006 030</p>
-              <p>✉️ <strong>Email:</strong> contact@minhkhailuxury.com</p>
-              <p>⏱️ <strong>Giờ làm việc:</strong> 8:00 - 20:00 (Tất cả các ngày trong tuần)</p>
-            </div>
-          </div>
-        </main>
-      )}
-
-      {/* FOOTER */}
-      <footer className="bg-[#0E131F] text-slate-400 text-xs mt-auto border-t border-slate-800">
-        <div className="max-w-[1360px] mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <h4 className="text-white font-bold text-xs uppercase mb-3 tracking-wider">THÔNG TIN LIÊN HỆ</h4>
-            <p className="mb-1">Hotline: <strong className="text-amber-400 font-mono">0919 006 030</strong></p>
-            <p className="mb-1">Địa chỉ: 458 Minh Khai, Q. Hai Bà Trưng, Hà Nội</p>
-            <p>Email: contact@minhkhailuxury.com</p>
-          </div>
-
-          <div>
-            <h4 className="text-white font-bold text-xs uppercase mb-3 tracking-wider">ĐĂNG KÝ TƯ VẤN MIỄN PHÍ</h4>
-            <p className="text-[11px] mb-3">Nhập số điện thoại để nhận ngay bảng giá căn đẹp đợt 1</p>
-            <div className="flex gap-2">
-              <input type="tel" placeholder="Số điện thoại..." className="bg-slate-800 border border-slate-700 text-white px-3 py-1.5 text-xs flex-1" />
-              <button className="bg-[#B48448] hover:bg-[#966b35] text-white font-bold px-4 py-1.5 text-xs">GỬI</button>
-            </div>
-          </div>
-
-          <div>
-            <h4 className="text-white font-bold text-xs uppercase mb-3 tracking-wider">FANPAGE DỰ ÁN</h4>
-            <div className="p-3 bg-slate-900 border border-slate-800 flex items-center gap-3">
-              <div className="w-9 h-9 bg-blue-600 text-white flex items-center justify-center font-bold">f</div>
-              <div>
-                <strong className="block text-white text-xs">Chung Cư Minh Khai Fanpage</strong>
-                <span className="text-[10px] text-slate-500">42.500 người theo dõi</span>
+              <img src={selectedArticle.image} alt="" className="w-full h-80 object-cover border" />
+              <div className="space-y-3 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                {selectedArticle.content.map((p, idx) => (
+                  <p key={idx}>{p}</p>
+                ))}
               </div>
             </div>
           </div>
-        </div>
+        )}
 
-        <div className="border-t border-slate-800/80 py-4 text-center text-slate-500 text-[11px]">
-          Copyright 2026 © MINH KHAI LUXURY. All Rights Reserved.
-        </div>
-      </footer>
+      </div>
+
+      {/* Universal Footer & Copyright */}
+      <UniversalTemplateFooter
+        company={company}
+        templateName="BDS-20 (Mona Park View — Khu Đô Thị Công Viên Xanh & Hồ Sinh Thái)"
+        onNavigate={page => navigate(page)}
+      />
+
     </div>
   );
-};
-
-export default MinhKhaiApartmentTemplate;
+}

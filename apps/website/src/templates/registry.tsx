@@ -36,26 +36,25 @@ const MinimalTemplate = dynamic(() => import('../components/templates/MinimalTem
 const CorporateTemplate = dynamic(() => import('../components/templates/CorporateTemplate'), { loading: () => <LoadingSkeleton /> });
 const ResortTemplate = dynamic(() => import('../components/templates/ResortTemplate'), { loading: () => <LoadingSkeleton /> });
 const UrbanTemplate = dynamic(() => import('../components/templates/UrbanTemplate'), { loading: () => <LoadingSkeleton /> });
-const ApartmentTemplate = dynamic(() => import('../components/templates/ApartmentTemplate'), { loading: () => <LoadingSkeleton /> });
 const IndustrialTemplate = dynamic(() => import('../components/templates/IndustrialTemplate'), { loading: () => <LoadingSkeleton /> });
 const VillaTemplate = dynamic(() => import('../components/templates/VillaTemplate'), { loading: () => <LoadingSkeleton /> });
-const EcoTemplate = dynamic(() => import('../components/templates/EcoTemplate'), { loading: () => <LoadingSkeleton /> });
-const ClassicTemplate = dynamic(() => import('../components/templates/ClassicTemplate'), { loading: () => <LoadingSkeleton /> });
-const InvestmentTemplate = dynamic(() => import('../components/templates/InvestmentTemplate'), { loading: () => <LoadingSkeleton /> });
-const AgencyTemplate = dynamic(() => import('../components/templates/AgencyTemplate'), { loading: () => <LoadingSkeleton /> });
-const RetailTemplate = dynamic(() => import('../components/templates/RetailTemplate'), { loading: () => <LoadingSkeleton /> });
-const ListingMarketplace = dynamic(() => import('../components/templates/ListingMarketplace'), { loading: () => <LoadingSkeleton /> });
-const PersonalAgentTemplate = dynamic(() => import('../components/templates/PersonalAgentTemplate'), { loading: () => <LoadingSkeleton /> });
-const AuctionTemplate = dynamic(() => import('../components/templates/AuctionTemplate'), { loading: () => <LoadingSkeleton /> });
-const LandPlotTemplate = dynamic(() => import('../components/templates/LandPlotTemplate'), { loading: () => <LoadingSkeleton /> });
-const PortalListingTemplate = dynamic(() => import('../components/templates/PortalListingTemplate'), { loading: () => <LoadingSkeleton /> });
-const Bds123PortalTemplate = dynamic(() => import('../components/templates/Bds123PortalTemplate'), { loading: () => <LoadingSkeleton /> });
-const NhadatsoDensityTemplate = dynamic(() => import('../components/templates/NhadatsoDensityTemplate'), { loading: () => <LoadingSkeleton /> });
-const MinhKhaiApartmentTemplate = dynamic(() => import('../components/templates/MinhKhaiApartmentTemplate'), { loading: () => <LoadingSkeleton /> });
-const HanoiRentalPortalTemplate = dynamic(() => import('../components/templates/HanoiRentalPortalTemplate'), { loading: () => <LoadingSkeleton /> });
-const HappyLandResortTemplate = dynamic(() => import('../components/templates/HappyLandResortTemplate'), { loading: () => <LoadingSkeleton /> });
-const HomeoMultiThumbnailTemplate = dynamic(() => import('../components/templates/HomeoMultiThumbnailTemplate'), { loading: () => <LoadingSkeleton /> });
-const RealtyBuildTechTemplate = dynamic(() => import('../components/templates/RealtyBuildTechTemplate'), { loading: () => <LoadingSkeleton /> });
+const BDS08Template = dynamic(() => import('../components/templates/BDS08Template'), { loading: () => <LoadingSkeleton /> });
+const BDS09Template = dynamic(() => import('../components/templates/BDS09Template'), { loading: () => <LoadingSkeleton /> });
+const BDS10Template = dynamic(() => import('../components/templates/BDS10Template'), { loading: () => <LoadingSkeleton /> });
+const BDS11Template = dynamic(() => import('../components/templates/BDS11Template'), { loading: () => <LoadingSkeleton /> });
+const BDS12Template = dynamic(() => import('../components/templates/BDS12Template'), { loading: () => <LoadingSkeleton /> });
+const BDS13Template = dynamic(() => import('../components/templates/BDS13Template'), { loading: () => <LoadingSkeleton /> });
+const BDS14Template = dynamic(() => import('../components/templates/BDS14Template'), { loading: () => <LoadingSkeleton /> });
+const BDS15Template = dynamic(() => import('../components/templates/BDS15Template'), { loading: () => <LoadingSkeleton /> });
+const BDS16Template = dynamic(() => import('../components/templates/BDS16Template'), { loading: () => <LoadingSkeleton /> });
+const BDS17Template = dynamic(() => import('../components/templates/BDS17Template'), { loading: () => <LoadingSkeleton /> });
+const BDS18Template = dynamic(() => import('../components/templates/BDS18Template'), { loading: () => <LoadingSkeleton /> });
+const BDS19Template = dynamic(() => import('../components/templates/BDS19Template'), { loading: () => <LoadingSkeleton /> });
+const BDS20Template = dynamic(() => import('../components/templates/BDS20Template'), { loading: () => <LoadingSkeleton /> });
+const BDS21Template = dynamic(() => import('../components/templates/BDS21Template'), { loading: () => <LoadingSkeleton /> });
+const BDS22Template = dynamic(() => import('../components/templates/BDS22Template'), { loading: () => <LoadingSkeleton /> });
+const BDS23Template = dynamic(() => import('../components/templates/BDS23Template'), { loading: () => <LoadingSkeleton /> });
+const BDS24Template = dynamic(() => import('../components/templates/BDS24Template'), { loading: () => <LoadingSkeleton /> });
 
 class WebsiteTemplateRegistry {
   private static templates = new Map<string, TemplateDefinition>();
@@ -77,7 +76,7 @@ class WebsiteTemplateRegistry {
   }
 }
 
-// ─── Register Initial 16 Templates ───────────────────────────────────────────
+// ─── Register Initial 24 Templates ───────────────────────────────────────────
 
 const INITIAL_TEMPLATES: TemplateDefinition[] = [
   // 1. Luxury Gold
@@ -125,105 +124,105 @@ const INITIAL_TEMPLATES: TemplateDefinition[] = [
   { id: 'template-7', slug: 'template-7', name: 'Villa Premium', category: 'villa', version: '1.0.0', component: VillaTemplate },
 
   // 8. Eco Green
-  { id: 'bds-08', slug: 'bds-08', name: 'BĐS 08 — Đô Thị Sinh Thái', category: 'eco', version: '1.0.0', component: EcoTemplate },
-  { id: 'template-eco-green', slug: 'eco-green', name: 'Eco Green Style', category: 'eco', version: '1.0.0', component: EcoTemplate },
-  { id: 'template-eco-living', slug: 'eco-living', name: 'Eco Living', category: 'eco', version: '1.0.0', component: EcoTemplate },
-  { id: 'template-green-eco', slug: 'green-eco', name: 'Green Eco Nature', category: 'eco', version: '1.0.0', component: EcoTemplate },
-  { id: 'template-8', slug: 'template-8', name: 'Eco Green', category: 'eco', version: '1.0.0', component: EcoTemplate },
+  { id: 'bds-08', slug: 'bds-08', name: 'BĐS 08 — Đô Thị Sinh Thái', category: 'eco', version: '1.0.0', component: BDS08Template },
+  { id: 'template-eco-green', slug: 'eco-green', name: 'Eco Green Style', category: 'eco', version: '1.0.0', component: BDS08Template },
+  { id: 'template-eco-living', slug: 'eco-living', name: 'Eco Living', category: 'eco', version: '1.0.0', component: BDS08Template },
+  { id: 'template-green-eco', slug: 'green-eco', name: 'Green Eco Nature', category: 'eco', version: '1.0.0', component: BDS08Template },
+  { id: 'template-8', slug: 'template-8', name: 'Eco Green', category: 'eco', version: '1.0.0', component: BDS08Template },
 
   // 9. Classic Elegant
-  { id: 'bds-09', slug: 'bds-09', name: 'BĐS 09 — Dinh Thự Di Sản', category: 'classic', version: '1.0.0', component: ClassicTemplate },
-  { id: 'template-classic-elegant', slug: 'classic-elegant', name: 'Classic Elegant', category: 'classic', version: '1.0.0', component: ClassicTemplate },
-  { id: 'template-classic-heritage', slug: 'classic-heritage', name: 'Classic Heritage', category: 'classic', version: '1.0.0', component: ClassicTemplate },
-  { id: 'template-heritage-classic', slug: 'heritage-classic', name: 'Heritage Classic Architecture', category: 'classic', version: '1.0.0', component: ClassicTemplate },
-  { id: 'template-9', slug: 'template-9', name: 'Classic Elegant', category: 'classic', version: '1.0.0', component: ClassicTemplate },
+  { id: 'bds-09', slug: 'bds-09', name: 'BĐS 09 — Dinh Thự Di Sản', category: 'classic', version: '1.0.0', component: BDS09Template },
+  { id: 'template-classic-elegant', slug: 'classic-elegant', name: 'Classic Elegant', category: 'classic', version: '1.0.0', component: BDS09Template },
+  { id: 'template-classic-heritage', slug: 'classic-heritage', name: 'Classic Heritage', category: 'classic', version: '1.0.0', component: BDS09Template },
+  { id: 'template-heritage-classic', slug: 'heritage-classic', name: 'Heritage Classic Architecture', category: 'classic', version: '1.0.0', component: BDS09Template },
+  { id: 'template-9', slug: 'template-9', name: 'Classic Elegant', category: 'classic', version: '1.0.0', component: BDS09Template },
 
   // 10. Investment Pro
-  { id: 'bds-10', slug: 'bds-10', name: 'BĐS 10 — Đầu Tư Bất Động Sản', category: 'investment', version: '1.0.0', component: InvestmentTemplate },
-  { id: 'template-investment-pro', slug: 'investment-pro', name: 'Investment Pro', category: 'investment', version: '1.0.0', component: InvestmentTemplate },
-  { id: 'template-tech-hub', slug: 'tech-hub', name: 'Future Tech City Hub', category: 'investment', version: '1.0.0', component: InvestmentTemplate },
-  { id: 'template-10', slug: 'template-10', name: 'Investment Pro', category: 'investment', version: '1.0.0', component: InvestmentTemplate },
+  { id: 'bds-10', slug: 'bds-10', name: 'BĐS 10 — Đầu Tư Bất Động Sản', category: 'investment', version: '1.0.0', component: BDS10Template },
+  { id: 'template-investment-pro', slug: 'investment-pro', name: 'Investment Pro', category: 'investment', version: '1.0.0', component: BDS10Template },
+  { id: 'template-tech-hub', slug: 'tech-hub', name: 'Future Tech City Hub', category: 'investment', version: '1.0.0', component: BDS10Template },
+  { id: 'template-10', slug: 'template-10', name: 'Investment Pro', category: 'investment', version: '1.0.0', component: BDS10Template },
 
   // 11. Agency Onepage
-  { id: 'bds-11', slug: 'bds-11', name: 'BĐS 11 — Landing Mở Bán', category: 'agency', version: '1.0.0', component: AgencyTemplate },
-  { id: 'template-agency-onepage', slug: 'agency-onepage', name: 'Agency Onepage', category: 'agency', version: '1.0.0', component: AgencyTemplate },
-  { id: 'template-suburban-family', slug: 'suburban-family', name: 'Suburban Family Living', category: 'agency', version: '1.0.0', component: AgencyTemplate },
-  { id: 'template-11', slug: 'template-11', name: 'Agency Onepage', category: 'agency', version: '1.0.0', component: AgencyTemplate },
+  { id: 'bds-11', slug: 'bds-11', name: 'BĐS 11 — Landing Mở Bán', category: 'agency', version: '1.0.0', component: BDS11Template },
+  { id: 'template-agency-onepage', slug: 'agency-onepage', name: 'Agency Onepage', category: 'agency', version: '1.0.0', component: BDS11Template },
+  { id: 'template-suburban-family', slug: 'suburban-family', name: 'Suburban Family Living', category: 'agency', version: '1.0.0', component: BDS11Template },
+  { id: 'template-11', slug: 'template-11', name: 'Agency Onepage', category: 'agency', version: '1.0.0', component: BDS11Template },
 
   // 12. Mega Developer Portal
-  { id: 'bds-12', slug: 'bds-12', name: 'BĐS 12 — Cổng Thông Tin Dự Án', category: 'portal', version: '1.0.0', component: ListingMarketplace },
-  { id: 'template-mega-developer', slug: 'mega-developer', name: 'Mega Developer', category: 'portal', version: '1.0.0', component: ListingMarketplace },
-  { id: 'template-listing-portal', slug: 'listing-portal', name: 'Listing Portal', category: 'portal', version: '1.0.0', component: ListingMarketplace },
-  { id: 'template-riverside-mansion', slug: 'riverside-mansion', name: 'Riverside Grand Mansion', category: 'portal', version: '1.0.0', component: ListingMarketplace },
-  { id: 'template-12', slug: 'template-12', name: 'Mega Developer', category: 'portal', version: '1.0.0', component: ListingMarketplace },
+  { id: 'bds-12', slug: 'bds-12', name: 'BĐS 12 — Cổng Thông Tin Dự Án', category: 'portal', version: '1.0.0', component: BDS12Template },
+  { id: 'template-mega-developer', slug: 'mega-developer', name: 'Mega Developer', category: 'portal', version: '1.0.0', component: BDS12Template },
+  { id: 'template-listing-portal', slug: 'listing-portal', name: 'Listing Portal', category: 'portal', version: '1.0.0', component: BDS12Template },
+  { id: 'template-riverside-mansion', slug: 'riverside-mansion', name: 'Riverside Grand Mansion', category: 'portal', version: '1.0.0', component: BDS12Template },
+  { id: 'template-12', slug: 'template-12', name: 'Mega Developer', category: 'portal', version: '1.0.0', component: BDS12Template },
 
   // 13. Sàn Đấu Giá BĐS
-  { id: 'bds-13', slug: 'bds-13', name: 'BĐS 13 — Sàn Đấu Giá Bất Động Sản', category: 'auction', version: '1.0.0', component: AuctionTemplate },
-  { id: 'template-auction-template', slug: 'auction-template', name: 'Auction Template', category: 'auction', version: '1.0.0', component: AuctionTemplate },
-  { id: 'template-auction-bds', slug: 'auction-bds', name: 'Auction BĐS', category: 'auction', version: '1.0.0', component: AuctionTemplate },
-  { id: 'template-13', slug: 'template-13', name: 'Auction Template', category: 'auction', version: '1.0.0', component: AuctionTemplate },
+  { id: 'bds-13', slug: 'bds-13', name: 'BĐS 13 — Sàn Đấu Giá Bất Động Sản', category: 'auction', version: '1.0.0', component: BDS13Template },
+  { id: 'template-auction-template', slug: 'auction-template', name: 'Auction Template', category: 'auction', version: '1.0.0', component: BDS13Template },
+  { id: 'template-auction-bds', slug: 'auction-bds', name: 'Auction BĐS', category: 'auction', version: '1.0.0', component: BDS13Template },
+  { id: 'template-13', slug: 'template-13', name: 'Auction Template', category: 'auction', version: '1.0.0', component: BDS13Template },
 
   // 14. Dự Án Đất Nền Phân Lô
-  { id: 'bds-14', slug: 'bds-14', name: 'BĐS 14 — Đất Nền Quy Hoạch', category: 'land', version: '1.0.0', component: LandPlotTemplate },
-  { id: 'template-landplot-template', slug: 'landplot-template', name: 'Landplot Template', category: 'land', version: '1.0.0', component: LandPlotTemplate },
-  { id: 'template-land-plot', slug: 'land-plot', name: 'Land Plot', category: 'land', version: '1.0.0', component: LandPlotTemplate },
-  { id: 'template-14', slug: 'template-14', name: 'Landplot Template', category: 'land', version: '1.0.0', component: LandPlotTemplate },
+  { id: 'bds-14', slug: 'bds-14', name: 'BĐS 14 — Đất Nền Quy Hoạch', category: 'land', version: '1.0.0', component: BDS14Template },
+  { id: 'template-landplot-template', slug: 'landplot-template', name: 'Landplot Template', category: 'land', version: '1.0.0', component: BDS14Template },
+  { id: 'template-land-plot', slug: 'land-plot', name: 'Land Plot', category: 'land', version: '1.0.0', component: BDS14Template },
+  { id: 'template-14', slug: 'template-14', name: 'Landplot Template', category: 'land', version: '1.0.0', component: BDS14Template },
 
   // 15. Retail Podium / Shophouse
-  { id: 'bds-15', slug: 'bds-15', name: 'BĐS 15 — Shophouse Thương Mại', category: 'retail', version: '1.0.0', component: RetailTemplate },
-  { id: 'template-retail-podium', slug: 'retail-podium', name: 'Retail Podium', category: 'retail', version: '1.0.0', component: RetailTemplate },
-  { id: 'template-retail-commercial', slug: 'retail-commercial', name: 'Retail Commercial', category: 'retail', version: '1.0.0', component: RetailTemplate },
-  { id: 'template-commercial-plaza', slug: 'commercial-plaza', name: 'Commercial Plaza', category: 'retail', version: '1.0.0', component: RetailTemplate },
-  { id: 'template-15', slug: 'template-15', name: 'Retail Podium', category: 'retail', version: '1.0.0', component: RetailTemplate },
+  { id: 'bds-15', slug: 'bds-15', name: 'BĐS 15 — Shophouse Thương Mại', category: 'retail', version: '1.0.0', component: BDS15Template },
+  { id: 'template-retail-podium', slug: 'retail-podium', name: 'Retail Podium', category: 'retail', version: '1.0.0', component: BDS15Template },
+  { id: 'template-retail-commercial', slug: 'retail-commercial', name: 'Retail Commercial', category: 'retail', version: '1.0.0', component: BDS15Template },
+  { id: 'template-commercial-plaza', slug: 'commercial-plaza', name: 'Commercial Plaza', category: 'retail', version: '1.0.0', component: BDS15Template },
+  { id: 'template-15', slug: 'template-15', name: 'Retail Podium', category: 'retail', version: '1.0.0', component: BDS15Template },
 
   // 16. Personal Agent
-  { id: 'bds-16', slug: 'bds-16', name: 'BĐS 16 — Môi Giới Nhà Đất', category: 'agent', version: '1.0.0', component: PersonalAgentTemplate },
-  { id: 'template-personal-agent', slug: 'personal-agent', name: 'Personal Agent', category: 'agent', version: '1.0.0', component: PersonalAgentTemplate },
-  { id: 'template-golf-residences', slug: 'golf-residences', name: 'Golf Residences', category: 'agent', version: '1.0.0', component: PersonalAgentTemplate },
-  { id: 'template-16', slug: 'template-16', name: 'Personal Agent', category: 'agent', version: '1.0.0', component: PersonalAgentTemplate },
+  { id: 'bds-16', slug: 'bds-16', name: 'BĐS 16 — Môi Giới Nhà Đất', category: 'agent', version: '1.0.0', component: BDS16Template },
+  { id: 'template-personal-agent', slug: 'personal-agent', name: 'Personal Agent', category: 'agent', version: '1.0.0', component: BDS16Template },
+  { id: 'template-golf-residences', slug: 'golf-residences', name: 'Golf Residences', category: 'agent', version: '1.0.0', component: BDS16Template },
+  { id: 'template-16', slug: 'template-16', name: 'Personal Agent', category: 'agent', version: '1.0.0', component: BDS16Template },
 
   // 17. Cổng Thông Tin Bất Động Sản Số 1 (HOT PORTAL)
-  { id: 'bds-17', slug: 'bds-17', name: 'BĐS 17 — Cổng Thông Tin Bất Động Sản Số 1', category: 'portal', version: '1.0.0', component: PortalListingTemplate },
-  { id: 'template-portal-listing', slug: 'portal-listing', name: 'Portal Listing', category: 'portal', version: '1.0.0', component: PortalListingTemplate },
-  { id: 'template-vietnam-portal', slug: 'vietnam-portal', name: 'Vietnam Portal', category: 'portal', version: '1.0.0', component: PortalListingTemplate },
-  { id: 'template-17', slug: 'template-17', name: 'Portal Listing', category: 'portal', version: '1.0.0', component: PortalListingTemplate },
+  { id: 'bds-17', slug: 'bds-17', name: 'BĐS 17 — Cổng Thông Tin Bất Động Sản Số 1', category: 'portal', version: '1.0.0', component: BDS17Template },
+  { id: 'template-portal-listing', slug: 'portal-listing', name: 'Portal Listing', category: 'portal', version: '1.0.0', component: BDS17Template },
+  { id: 'template-vietnam-portal', slug: 'vietnam-portal', name: 'Vietnam Portal', category: 'portal', version: '1.0.0', component: BDS17Template },
+  { id: 'template-17', slug: 'template-17', name: 'Portal Listing', category: 'portal', version: '1.0.0', component: BDS17Template },
 
   // 18. Sàn Giao Dịch & Đấu Giá Bến Thành
-  { id: 'bds-18', slug: 'bds-18', name: 'BĐS 18 — Sàn Giao Dịch & Đấu Giá Bến Thành', category: 'portal', version: '1.0.0', component: Bds123PortalTemplate },
-  { id: 'template-bds123-portal', slug: 'bds123-portal', name: 'Bds123 Portal', category: 'portal', version: '1.0.0', component: Bds123PortalTemplate },
-  { id: 'template-benthanh-portal', slug: 'benthanh-portal', name: 'Benthanh Portal', category: 'portal', version: '1.0.0', component: Bds123PortalTemplate },
-  { id: 'template-18', slug: 'template-18', name: 'Bds123 Portal', category: 'portal', version: '1.0.0', component: Bds123PortalTemplate },
+  { id: 'bds-18', slug: 'bds-18', name: 'BĐS 18 — Sàn Giao Dịch & Đấu Giá Bến Thành', category: 'portal', version: '1.0.0', component: BDS18Template },
+  { id: 'template-bds123-portal', slug: 'bds123-portal', name: 'Bds123 Portal', category: 'portal', version: '1.0.0', component: BDS18Template },
+  { id: 'template-benthanh-portal', slug: 'benthanh-portal', name: 'Benthanh Portal', category: 'portal', version: '1.0.0', component: BDS18Template },
+  { id: 'template-18', slug: 'template-18', name: 'Bds123 Portal', category: 'portal', version: '1.0.0', component: BDS18Template },
 
   // 19. Sàn Niêm Yết Mật Độ Cao Nhà Đất Số
-  { id: 'bds-19', slug: 'bds-19', name: 'BĐS 19 — Sàn Niêm Yết Mật Độ Cao Nhà Đất Số', category: 'portal', version: '1.0.0', component: NhadatsoDensityTemplate },
-  { id: 'template-nhadatso-density', slug: 'nhadatso-density', name: 'Nhadatso Density', category: 'portal', version: '1.0.0', component: NhadatsoDensityTemplate },
-  { id: 'template-nhadatso-portal', slug: 'nhadatso-portal', name: 'Nhadatso Portal', category: 'portal', version: '1.0.0', component: NhadatsoDensityTemplate },
-  { id: 'template-19', slug: 'template-19', name: 'Nhadatso Density', category: 'portal', version: '1.0.0', component: NhadatsoDensityTemplate },
+  { id: 'bds-19', slug: 'bds-19', name: 'BĐS 19 — Sàn Niêm Yết Mật Độ Cao Nhà Đất Số', category: 'portal', version: '1.0.0', component: BDS19Template },
+  { id: 'template-nhadatso-density', slug: 'nhadatso-density', name: 'Nhadatso Density', category: 'portal', version: '1.0.0', component: BDS19Template },
+  { id: 'template-nhadatso-portal', slug: 'nhadatso-portal', name: 'Nhadatso Portal', category: 'portal', version: '1.0.0', component: BDS19Template },
+  { id: 'template-19', slug: 'template-19', name: 'Nhadatso Density', category: 'portal', version: '1.0.0', component: BDS19Template },
 
   // 20. Chung Cư Minh Khai & Times City
-  { id: 'bds-20', slug: 'bds-20', name: 'BĐS 20 — Chung Cư Minh Khai & Times City', category: 'luxury', version: '1.0.0', component: MinhKhaiApartmentTemplate },
-  { id: 'template-minhkhai-apartment', slug: 'minhkhai-apartment', name: 'Minh Khai Apartment', category: 'luxury', version: '1.0.0', component: MinhKhaiApartmentTemplate },
-  { id: 'template-20', slug: 'template-20', name: 'Minh Khai Apartment', category: 'luxury', version: '1.0.0', component: MinhKhaiApartmentTemplate },
+  { id: 'bds-20', slug: 'bds-20', name: 'BĐS 20 — Chung Cư Minh Khai & Times City', category: 'luxury', version: '1.0.0', component: BDS20Template },
+  { id: 'template-minhkhai-apartment', slug: 'minhkhai-apartment', name: 'Minh Khai Apartment', category: 'luxury', version: '1.0.0', component: BDS20Template },
+  { id: 'template-20', slug: 'template-20', name: 'Minh Khai Apartment', category: 'luxury', version: '1.0.0', component: BDS20Template },
 
   // 21. Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội
-  { id: 'bds-21', slug: 'bds-21', name: 'BĐS 21 — Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội', category: 'portal', version: '1.0.0', component: HanoiRentalPortalTemplate },
-  { id: 'template-hanoi-rental', slug: 'hanoi-rental', name: 'Hanoi Rental Portal', category: 'portal', version: '1.0.0', component: HanoiRentalPortalTemplate },
-  { id: 'template-21', slug: 'template-21', name: 'Hanoi Rental Portal', category: 'portal', version: '1.0.0', component: HanoiRentalPortalTemplate },
+  { id: 'bds-21', slug: 'bds-21', name: 'BĐS 21 — Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội', category: 'portal', version: '1.0.0', component: BDS21Template },
+  { id: 'template-hanoi-rental', slug: 'hanoi-rental', name: 'Hanoi Rental Portal', category: 'portal', version: '1.0.0', component: BDS21Template },
+  { id: 'template-21', slug: 'template-21', name: 'Hanoi Rental Portal', category: 'portal', version: '1.0.0', component: BDS21Template },
 
   // 22. ZoHotels & Happy Land Nha Trang
-  { id: 'bds-22', slug: 'bds-22', name: 'BĐS 22 — ZoHotels & Happy Land Nha Trang', category: 'resort', version: '1.0.0', component: HappyLandResortTemplate },
-  { id: 'template-happyland-resort', slug: 'happyland-resort', name: 'Happy Land Nha Trang', category: 'resort', version: '1.0.0', component: HappyLandResortTemplate },
-  { id: 'template-22', slug: 'template-22', name: 'Happy Land Nha Trang', category: 'resort', version: '1.0.0', component: HappyLandResortTemplate },
+  { id: 'bds-22', slug: 'bds-22', name: 'BĐS 22 — ZoHotels & Happy Land Nha Trang', category: 'resort', version: '1.0.0', component: BDS22Template },
+  { id: 'template-happyland-resort', slug: 'happyland-resort', name: 'Happy Land Nha Trang', category: 'resort', version: '1.0.0', component: BDS22Template },
+  { id: 'template-22', slug: 'template-22', name: 'Happy Land Nha Trang', category: 'resort', version: '1.0.0', component: BDS22Template },
 
   // 23. Sàn Giao Dịch Nhà Phố Homeo
-  { id: 'bds-23', slug: 'bds-23', name: 'BĐS 23 — Sàn Giao Dịch Nhà Phố Homeo', category: 'agency', version: '1.0.0', component: HomeoMultiThumbnailTemplate },
-  { id: 'template-homeo-multithumb', slug: 'homeo-multithumb', name: 'Homeo Agency', category: 'agency', version: '1.0.0', component: HomeoMultiThumbnailTemplate },
-  { id: 'template-23', slug: 'template-23', name: 'Homeo Agency', category: 'agency', version: '1.0.0', component: HomeoMultiThumbnailTemplate },
+  { id: 'bds-23', slug: 'bds-23', name: 'BĐS 23 — Sàn Giao Dịch Nhà Phố Homeo', category: 'agency', version: '1.0.0', component: BDS23Template },
+  { id: 'template-homeo-multithumb', slug: 'homeo-multithumb', name: 'Homeo Agency', category: 'agency', version: '1.0.0', component: BDS23Template },
+  { id: 'template-23', slug: 'template-23', name: 'Homeo Agency', category: 'agency', version: '1.0.0', component: BDS23Template },
 
   // 24. RealtyBuild Trang Tin BĐS Số 1 Việt Nam
-  { id: 'bds-24', slug: 'bds-24', name: 'BĐS 24 — RealtyBuild Trang Tin BĐS Số 1 Việt Nam', category: 'portal', version: '1.0.0', component: RealtyBuildTechTemplate },
-  { id: 'template-realtybuild-tech', slug: 'realtybuild-tech', name: 'RealtyBuild Portal', category: 'portal', version: '1.0.0', component: RealtyBuildTechTemplate },
-  { id: 'template-24', slug: 'template-24', name: 'RealtyBuild Portal', category: 'portal', version: '1.0.0', component: RealtyBuildTechTemplate },
+  { id: 'bds-24', slug: 'bds-24', name: 'BĐS 24 — RealtyBuild Trang Tin BĐS Số 1 Việt Nam', category: 'portal', version: '1.0.0', component: BDS24Template },
+  { id: 'template-realtybuild-tech', slug: 'realtybuild-tech', name: 'RealtyBuild Portal', category: 'portal', version: '1.0.0', component: BDS24Template },
+  { id: 'template-24', slug: 'template-24', name: 'RealtyBuild Portal', category: 'portal', version: '1.0.0', component: BDS24Template },
 ];
 
 for (const tpl of INITIAL_TEMPLATES) {

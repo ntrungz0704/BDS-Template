@@ -51,8 +51,15 @@ export async function middleware(request: NextRequest) {
 
   let tenantSlug: string | null = null;
 
-  // 2. Subdomain resolution. Tenant selection never comes from a query
-  // string or cookie because both values are controlled by the caller.
+  // 2. Query param or preview resolution (cho phép xem thử tức thì ngay cả khi DNS chưa trỏ)
+  const queryTenant = request.nextUrl.searchParams.get('subdomain') || 
+                      request.nextUrl.searchParams.get('tenant') || 
+                      request.nextUrl.searchParams.get('preview');
+  if (queryTenant && !RESERVED_SLUGS.includes(queryTenant)) {
+    tenantSlug = queryTenant.toLowerCase().trim();
+  }
+
+  // 3. Subdomain resolution
   if (!tenantSlug) {
     if (isLocalhost) {
       if (cleanHost.endsWith('.localhost')) {
@@ -61,15 +68,27 @@ export async function middleware(request: NextRequest) {
           tenantSlug = parts[0];
         }
       }
-    } else if (cleanHost.endsWith(`.${PLATFORM_DOMAIN}`)) {
-      const subdomain = cleanHost.replace(`.${PLATFORM_DOMAIN}`, '');
-      if (subdomain && subdomain !== 'www' && subdomain !== PLATFORM_DOMAIN && !RESERVED_SLUGS.includes(subdomain)) {
-        tenantSlug = subdomain;
+    } else {
+      const knownSuffixes = [
+        `.${PLATFORM_DOMAIN}`,
+        '.aireviewbds.com',
+        '.templatesbds.com',
+        '.vercel.app',
+      ];
+      
+      for (const suffix of knownSuffixes) {
+        if (cleanHost.endsWith(suffix) && cleanHost !== suffix.slice(1)) {
+          const sub = cleanHost.slice(0, -suffix.length).split('.').pop();
+          if (sub && sub !== 'www' && !RESERVED_SLUGS.includes(sub)) {
+            tenantSlug = sub;
+            break;
+          }
+        }
       }
     }
   }
 
-  // 3. Custom domain resolution
+  // 4. Custom domain resolution via API
   if (!tenantSlug && !isLocalhost && cleanHost !== PLATFORM_DOMAIN && cleanHost !== `www.${PLATFORM_DOMAIN}` && !cleanHost.startsWith('bds-template-website')) {
     try {
       const resolveUrl = `${API_URL}/api/website/resolve-domain?domain=${encodeURIComponent(cleanHost)}`;
@@ -103,8 +122,6 @@ export async function middleware(request: NextRequest) {
   });
 
   response.headers.set(TENANT_SLUG_HEADER, tenantSlug);
-  response.headers.set(TENANT_HOST_HEADER, hostname);
-
   return response;
 }
 
@@ -113,4 +130,3 @@ export const config = {
     '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)',
   ],
 };
-
