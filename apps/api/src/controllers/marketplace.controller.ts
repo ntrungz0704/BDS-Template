@@ -834,6 +834,25 @@ export async function createContactSubmission(req: Request, res: Response, next:
     });
 
     try {
+      const firstTenant = await prisma.tenant.findFirst();
+      if (firstTenant) {
+        await prisma.contactFormSubmission.create({
+          data: {
+            tenantId: firstTenant.id,
+            fullName: data.fullName,
+            email: data.email || '',
+            phone: data.phone,
+            message: `[MẪU DEMO: ${templateName}] ${data.packageInterest ? `Gói: ${data.packageInterest}. ` : ''}${data.message || ''}`.trim(),
+            source: 'MARKETPLACE_DEMO',
+            sourcePage: templateName,
+          }
+        });
+      }
+    } catch (subErr) {
+      logger.warn(`Không thể tạo contactFormSubmission: ${(subErr as Error).message}`);
+    }
+
+    try {
       const admins = await prisma.user.findMany({ where: { role: 'SUPER_ADMIN', isActive: true } });
       if (admins.length > 0) {
         await prisma.notification.createMany({

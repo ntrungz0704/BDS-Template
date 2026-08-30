@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+﻿import React, { ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
@@ -26,13 +26,28 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
       });
       return res.data;
     },
-    refetchInterval: 3000,
+    refetchInterval: 5000,
+    enabled: !checkingAuth,
+  });
+
+  // Live query leads to show new leads badge counter in sidebar
+  const { data: liveLeadsRes } = useQuery({
+    queryKey: ['adminLayoutLeads'],
+    queryFn: async () => {
+      const res = await axios.get(`${API_URL}/api/admin/leads?limit=50`, {
+        withCredentials: true,
+      });
+      return res.data;
+    },
+    refetchInterval: 5000,
     enabled: !checkingAuth,
   });
 
   const pendingCount = (liveOrdersRes?.data || []).filter(
     (o: any) => o.status === 'PENDING' || o.status === 'WAITING_CONFIRM' || o.status === 'PENDING_SUBDOMAIN_CONFLICT' || o.status === 'AWAITING_MANUAL_REVIEW'
   ).length;
+
+  const newLeadsCount = liveLeadsRes?.data?.counts?.newCount || 0;
 
   useEffect(() => {
     let isMounted = true;
@@ -82,6 +97,15 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
       icon: (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+      ),
+    },
+    {
+      name: 'Khách Tư Vấn (CRM)',
+      href: '/leads',
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
         </svg>
       ),
     },
@@ -150,10 +174,11 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex-1 px-4 py-6 space-y-1.5">
+        <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
           {menuItems.map((item) => {
             const isActive = router.pathname === item.href;
             const isOrdersMenu = item.href === '/orders';
+            const isLeadsMenu = item.href === '/leads';
             return (
               <Link
                 key={item.name}
@@ -171,6 +196,11 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
                 {isOrdersMenu && pendingCount > 0 && (
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500 text-slate-950 animate-bounce shadow-xs">
                     {pendingCount}
+                  </span>
+                )}
+                {isLeadsMenu && newLeadsCount > 0 && (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500 text-white animate-pulse shadow-xs">
+                    {newLeadsCount}
                   </span>
                 )}
               </Link>
@@ -223,4 +253,3 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
     </div>
   );
 }
-

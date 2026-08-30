@@ -1,7 +1,11 @@
-import { Router } from 'express';
+﻿import { Router } from 'express';
 import { 
   getDashboardStats, 
   getOrders, 
+  getAdminLeads,
+  updateAdminLeadStatus,
+  deleteAdminLead,
+  addAdminLeadNote,
   approveOrder, 
   rejectOrder,
   deleteOrder,
@@ -43,6 +47,12 @@ router.use(requireRole(['SUPER_ADMIN']));
 
 router.get('/stats', getDashboardStats);
 router.get('/orders', getOrders);
+
+// ── CRM Leads Management ──────────────────────────────────────────────
+router.get('/leads', getAdminLeads);
+router.put('/leads/:id/status', csrfMiddleware, updateAdminLeadStatus);
+router.delete('/leads/:id', csrfMiddleware, deleteAdminLead);
+router.post('/leads/:id/notes', csrfMiddleware, addAdminLeadNote);
 
 // Phê duyệt, từ chối và xóa đơn hàng yêu cầu chống CSRF
 router.put('/orders/:id/approve', csrfMiddleware, approveOrder);
@@ -90,4 +100,3 @@ router.post('/customers/:id/activate-subscription', csrfMiddleware, activateSubs
 router.post('/customers/:id/suspend', csrfMiddleware, suspendCustomer);
 
 export default router;
-

@@ -1739,3 +1739,287 @@ export async function suspendCustomer(req: Request, res: Response, next: NextFun
   }
 }
 
+
+
+// ============================================================================
+// SUPER ADMIN CRM & LEADS MANAGEMENT
+// ============================================================================
+
+export async function getAdminLeads(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { search, status, type, page = '1', limit = '50' } = req.query;
+    const pageNum = Math.max(1, parseInt(page as string, 10) || 1);
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit as string, 10) || 50));
+    const skip = (pageNum - 1) * limitNum;
+
+    // 1. Fetch ContactFormSubmissions
+    const submissions = await prisma.contactFormSubmission.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        tenant: {
+          select: { id: true, name: true, slug: true, domain: true }
+        }
+      }
+    });
+
+    // 2. Fetch Orders that are consultation requests
+    const consultationOrders = await prisma.order.findMany({
+      where: {
+        OR: [
+          { note: { contains: '[LIÊN HỆ TƯ VẤN]' } },
+          { amount: 0 }
+        ]
+      },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        template: {
+          select: { id: true, name: true, slug: true }
+        }
+      }
+    });
+
+    // 3. Fetch Leads
+    const leads = await prisma.lead.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        tenant: {
+          select: { id: true, name: true, slug: true, domain: true }
+        },
+        notes: {
+          orderBy: { createdAt: 'desc' },
+          take: 5
+        }
+      }
+    });
+
+    const normalizedLeads: any[] = [];
+
+    // Add Leads
+    for (const l of leads) {
+      normalizedLeads.push({
+        id: l.id,
+        rawId: l.id,
+        kind: 'LEAD',
+        fullName: l.fullName,
+        phone: l.phone,
+        email: l.email || '',
+        message: l.note || '',
+        status: l.status,
+        source: l.source,
+        projectTitle: l.projectTitle || (l.tenant ? `Website: ${l.tenant.name}` : 'Mẫu BĐS'),
+        tenant: l.tenant || null,
+        isMarketplace: !l.tenantId,
+        createdAt: l.createdAt,
+        notes: l.notes || []
+      });
+    }
+
+    // Add Consultation Orders if not duplicated
+    for (const o of consultationOrders) {
+      const isDuplicated = normalizedLeads.some(l => l.phone === o.phone && Math.abs(new Date(l.createdAt).getTime() - new Date(o.createdAt).getTime()) < 60000);
+      if (!isDuplicated) {
+        normalizedLeads.push({
+          id: `ord_${o.id}`,
+          rawId: o.id,
+          kind: 'CONSULTATION_ORDER',
+          fullName: o.fullName,
+          phone: o.phone,
+          email: o.email || '',
+          message: o.note || 'Yêu cầu tư vấn mẫu giao diện',
+          status: o.status === 'COMPLETED' ? 'WON' : (o.status === 'REJECTED' ? 'LOST' : 'NEW'),
+          source: 'MARKETPLACE_ORDER',
+          projectTitle: o.template?.name || 'Mẫu BĐS',
+          templateSlug: o.template?.slug || '',
+          tenant: null,
+          isMarketplace: true,
+          createdAt: o.createdAt,
+          notes: []
+        });
+      }
+    }
+
+    // Add Submissions if not duplicated
+    for (const s of submissions) {
+      const isDuplicated = normalizedLeads.some(l => l.phone === s.phone && Math.abs(new Date(l.createdAt).getTime() - new Date(s.createdAt).getTime()) < 60000);
+      if (!isDuplicated) {
+        normalizedLeads.push({
+          id: `sub_${s.id}`,
+          rawId: s.id,
+          kind: 'SUBMISSION',
+          fullName: s.fullName,
+          phone: s.phone,
+          email: s.email || '',
+          message: s.message || '',
+          status: s.isRead ? 'CONTACTED' : 'NEW',
+          source: s.source || 'WEBSITE_FORM',
+          projectTitle: s.sourcePage || (s.tenant ? `Website: ${s.tenant.name}` : 'Mẫu BĐS Demo'),
+          tenant: s.tenant || null,
+          isMarketplace: !s.tenantId,
+          createdAt: s.createdAt,
+          notes: []
+        });
+      }
+    }
+
+    // Sort by createdAt descending
+    normalizedLeads.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+    // Apply search
+    let filtered = normalizedLeads;
+    if (search && typeof search === 'string') {
+      const s = search.toLowerCase();
+      filtered = filtered.filter(l => 
+        l.fullName.toLowerCase().includes(s) ||
+        l.phone.includes(s) ||
+        l.email.toLowerCase().includes(s) ||
+        (l.message && l.message.toLowerCase().includes(s)) ||
+        (l.projectTitle && l.projectTitle.toLowerCase().includes(s)) ||
+        (l.tenant && l.tenant.name.toLowerCase().includes(s))
+      );
+    }
+
+    // Apply status filter
+    if (status && status !== 'ALL') {
+      filtered = filtered.filter(l => l.status === status);
+    }
+
+    // Apply type filter: 'ALL' | 'MARKETPLACE' | 'TENANT'
+    if (type === 'MARKETPLACE') {
+      filtered = filtered.filter(l => l.isMarketplace);
+    } else if (type === 'TENANT') {
+      filtered = filtered.filter(l => !l.isMarketplace);
+    }
+
+    const total = filtered.length;
+    const paginated = filtered.slice(skip, skip + limitNum);
+
+    const counts = {
+      total: normalizedLeads.length,
+      marketplace: normalizedLeads.filter(l => l.isMarketplace).length,
+      tenant: normalizedLeads.filter(l => !l.isMarketplace).length,
+      newCount: normalizedLeads.filter(l => l.status === 'NEW').length,
+      contactedCount: normalizedLeads.filter(l => l.status === 'CONTACTED').length,
+      qualifiedCount: normalizedLeads.filter(l => l.status === 'QUALIFIED').length,
+      wonCount: normalizedLeads.filter(l => l.status === 'WON').length,
+      todayCount: normalizedLeads.filter(l => {
+        const d = new Date(l.createdAt);
+        const now = new Date();
+        return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      }).length,
+    };
+
+    res.status(200).json({
+      success: true,
+      data: {
+        leads: paginated,
+        total,
+        page: pageNum,
+        limit: limitNum,
+        totalPages: Math.ceil(total / limitNum),
+        counts
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateAdminLeadStatus(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params;
+    const { status, note } = req.body;
+
+    if (id.startsWith('sub_')) {
+      const subId = id.replace('sub_', '');
+      await prisma.contactFormSubmission.update({
+        where: { id: subId },
+        data: { isRead: status === 'CONTACTED' || status === 'WON' || status === 'QUALIFIED' }
+      });
+    } else if (id.startsWith('ord_')) {
+      const ordId = id.replace('ord_', '');
+      let orderStatus: any = 'PENDING';
+      if (status === 'WON') orderStatus = 'COMPLETED';
+      else if (status === 'LOST' || status === 'SPAM') orderStatus = 'REJECTED';
+      await prisma.order.update({
+        where: { id: ordId },
+        data: { status: orderStatus, adminNotes: note || undefined }
+      });
+    } else {
+      await prisma.lead.update({
+        where: { id },
+        data: {
+          status: status as any,
+          note: note !== undefined ? note : undefined,
+          lastActivityAt: new Date()
+        }
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Cập nhật trạng thái khách hàng thành công.'
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deleteAdminLead(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params;
+
+    if (id.startsWith('sub_')) {
+      const subId = id.replace('sub_', '');
+      await prisma.contactFormSubmission.delete({ where: { id: subId } });
+    } else if (id.startsWith('ord_')) {
+      const ordId = id.replace('ord_', '');
+      await prisma.order.delete({ where: { id: ordId } });
+    } else {
+      await prisma.lead.delete({ where: { id } });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Đã xóa thông tin khách hàng.'
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function addAdminLeadNote(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params;
+    const { content } = req.body;
+    const user = (req as any).user;
+
+    if (!content || !content.trim()) {
+      return res.status(400).json({ success: false, error: { message: 'Nội dung ghi chú không được để trống.' } });
+    }
+
+    if (!id.startsWith('sub_') && !id.startsWith('ord_')) {
+      const lead = await prisma.lead.findUnique({ where: { id } });
+      if (lead) {
+        await prisma.leadNote.create({
+          data: {
+            leadId: lead.id,
+            tenantId: lead.tenantId,
+            content: content.trim(),
+            createdBy: user?.id || 'admin',
+          }
+        });
+        await prisma.lead.update({
+          where: { id },
+          data: { lastActivityAt: new Date() }
+        });
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Đã thêm ghi chú chăm sóc khách hàng.'
+    });
+  } catch (error) {
+    next(error);
+  }
+}
