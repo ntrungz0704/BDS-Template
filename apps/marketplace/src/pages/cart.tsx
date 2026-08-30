@@ -56,10 +56,10 @@ export default function CartPage() {
     let price = Number(tpl.priceBuy) || Number(tpl.price) || 399000;
     const id = tpl.id || tpl.slug || 'default';
     if (includeMaintenance[id]) {
-      price += 299000; // Bảo trì website 299k/năm
+      price += 799000; // Bảo trì website 799k/năm
     }
     if (includeHosting[id]) {
-      price += 499000; // Hosting & Domain 499k/năm
+      price += 799000; // Hosting & Domain 799k/năm
     }
     return price;
   };
@@ -70,8 +70,8 @@ export default function CartPage() {
     const orig = Number(tpl?.originalPrice) || (buyPrice <= 399000 ? 799000 : Math.round(buyPrice * 1.5));
     const id = tpl?.id || tpl?.slug || 'default';
     let total = orig;
-    if (includeMaintenance[id]) total += 299000;
-    if (includeHosting[id]) total += 499000;
+    if (includeMaintenance[id]) total += 799000;
+    if (includeHosting[id]) total += 799000;
     return sum + total;
   }, 0);
 
@@ -129,10 +129,10 @@ export default function CartPage() {
         let selectedAddons = [];
         const itemId = tpl?.id || tpl?.slug;
         if (includeMaintenance[itemId]) {
-          selectedAddons.push("Gói Bảo trì website (+299.000đ/năm)");
+          selectedAddons.push("Gói Bảo trì website (+799.000đ/năm)");
         }
         if (includeHosting[itemId]) {
-          selectedAddons.push("Gói Hosting & Domain (+499.000đ/năm)");
+          selectedAddons.push("Gói Hosting & Domain (+799.000đ/năm)");
         }
 
         const itemSpecificNote = itemNotes[itemId]?.trim();
@@ -358,7 +358,7 @@ export default function CartPage() {
                             <div>
                               <span className="text-xs font-bold text-slate-800 flex items-center gap-1">
                                 <Settings className="w-3.5 h-3.5 text-slate-500" />
-                                Bảo trì Website VIP (+299k/năm)
+                                Bảo trì Website VIP (+799k/năm)
                               </span>
                               <p className="text-[10px] text-slate-500 leading-normal mt-0.5">Backup dữ liệu định kỳ, vá lỗi bảo mật, hỗ trợ kỹ thuật cả năm.</p>
                             </div>
@@ -375,7 +375,7 @@ export default function CartPage() {
                             <div>
                               <span className="text-xs font-bold text-slate-800 flex items-center gap-1">
                                 <DatabaseZap className="w-3.5 h-3.5 text-slate-500" />
-                                Hosting Cloud & Domain (+499k/năm)
+                                Hosting Cloud & Domain (+799k/năm)
                               </span>
                               <p className="text-[10px] text-slate-500 leading-normal mt-0.5">Tên miền thương hiệu riêng, máy chủ Cloud SSD siêu tốc 12 tháng.</p>
                             </div>
