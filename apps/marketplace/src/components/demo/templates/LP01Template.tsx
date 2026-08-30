@@ -86,6 +86,23 @@ export default function LP01Template({
     setTimeout(() => setIsMidSubmitted(false), 6000);
   };
 
+  // Seamless UX: Automatically pre-select the unit type when clicking "Nhận Báo Giá Căn Này"
+  const handleSelectUnitType = (unitTitle: string) => {
+    setHeroUnitType(unitTitle);
+    const element = document.getElementById('dang-ky');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => {
+        const selectEl = document.getElementById('hero-unit-select') as HTMLSelectElement | null;
+        if (selectEl) {
+          selectEl.focus();
+          selectEl.classList.add('ring-4', 'ring-amber-400', 'border-amber-500');
+          setTimeout(() => selectEl.classList.remove('ring-4', 'ring-amber-400', 'border-amber-500'), 2000);
+        }
+      }, 350);
+    }
+  };
+
   // 6 Tiện ích thực tế chuẩn ảnh cho Gallery
   const amenitiesList = [
     {
@@ -322,14 +339,15 @@ export default function LP01Template({
                   <div>
                     <label className="block text-slate-300 font-bold mb-1 text-[11px]">Loại căn hộ bạn đang quan tâm</label>
                     <select
+                      id="hero-unit-select"
                       value={heroUnitType}
                       onChange={(e) => setHeroUnitType(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-900 font-medium border border-slate-300 focus:ring-2 focus:ring-amber-400 outline-none"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-900 font-bold border border-slate-300 focus:ring-2 focus:ring-amber-400 outline-none transition-all duration-300"
                     >
-                      <option value="Căn Hộ 1 Phòng Ngủ (52m²)">Căn Hộ 1 Phòng Ngủ (52.8 m²)</option>
-                      <option value="Căn Hộ 2 Phòng Ngủ (74m² - 86m²)">Căn Hộ 2 Phòng Ngủ (74.2 m² - 86.5 m²)</option>
-                      <option value="Căn Hộ 3 Phòng Ngủ (112m²)">Căn Hộ 3 Phòng Ngủ Master (112.4 m²)</option>
-                      <option value="Căn Hộ Dual Key & Penthouse (149m²)">Căn Hộ Dual Key & Penthouse (149.0 m²)</option>
+                      <option value="Căn Hộ 1 Phòng Ngủ (52.8 m²)">Căn Hộ 1 Phòng Ngủ (52.8 m²)</option>
+                      <option value="Căn Hộ 2 Phòng Ngủ (74.2 m² - 86.5 m²)">Căn Hộ 2 Phòng Ngủ (74.2 m² - 86.5 m²)</option>
+                      <option value="Căn Hộ 3 Phòng Ngủ Master (112.4 m²)">Căn Hộ 3 Phòng Ngủ Master (112.4 m²)</option>
+                      <option value="Căn Hộ Dual Key & Sky Villa (149.0 m²)">Căn Hộ Dual Key & Sky Villa (149.0 m²)</option>
                     </select>
                   </div>
 
@@ -771,12 +789,14 @@ export default function LP01Template({
               </div>
 
               <div className="pt-2 flex items-center gap-3">
-                <a
-                  href="#dang-ky"
-                  className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md"
+                <button
+                  type="button"
+                  onClick={() => handleSelectUnitType(floorPlans[activeFloorTab].title)}
+                  className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5"
                 >
-                  Nhận Báo Giá Căn Này
-                </a>
+                  <span>Nhận Báo Giá Căn Này</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
 

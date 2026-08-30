@@ -34,7 +34,7 @@ export default function LP01Template({
   const [heroName, setHeroName] = useState('');
   const [heroEmail, setHeroEmail] = useState('');
   const [heroPhone, setHeroPhone] = useState('');
-  const [heroUnitType, setHeroUnitType] = useState('Căn Hộ 2 Phòng Ngủ (74m² - 86m²)');
+  const [heroUnitType, setHeroUnitType] = useState('Căn Hộ 2 Phòng Ngủ (74.2 m² - 86.5 m²)');
   const [isHeroSubmitted, setIsHeroSubmitted] = useState(false);
 
   const [midName, setMidName] = useState('');
@@ -47,7 +47,7 @@ export default function LP01Template({
   // Lightbox Zoom Modal State
   const [zoomImage, setZoomImage] = useState<string | null>(null);
 
-  // Countdown timer state: 5 ngày 14 giờ 36 phút 20 giây
+  // Countdown timer state
   const [countdown, setCountdown] = useState({
     days: 5,
     hours: 14,
@@ -80,6 +80,23 @@ export default function LP01Template({
     if (!midPhone.trim()) return;
     setIsMidSubmitted(true);
     setTimeout(() => setIsMidSubmitted(false), 6000);
+  };
+
+  // Seamless UX: Automatically pre-select the unit type when clicking "Nhận Báo Giá Căn Này"
+  const handleSelectUnitType = (unitTitle: string) => {
+    setHeroUnitType(unitTitle);
+    const element = document.getElementById('dang-ky');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => {
+        const selectEl = document.getElementById('hero-unit-select') as HTMLSelectElement | null;
+        if (selectEl) {
+          selectEl.focus();
+          selectEl.classList.add('ring-4', 'ring-amber-400', 'border-amber-500');
+          setTimeout(() => selectEl.classList.remove('ring-4', 'ring-amber-400', 'border-amber-500'), 2000);
+        }
+      }, 350);
+    }
   };
 
   // 6 Tiện ích thực tế chuẩn ảnh cho Gallery
@@ -152,15 +169,15 @@ export default function LP01Template({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           
           {/* Brand Logo */}
-          <a href="#tong-quan" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 font-black shadow-md">
-              <span className="text-base tracking-tighter">M</span>
+          <a href="#tong-quan" className="flex items-center gap-2 group min-w-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 font-black shadow-md shrink-0">
+              <span className="text-sm sm:text-base tracking-tighter">M</span>
             </div>
-            <div>
-              <span className="font-extrabold text-sm sm:text-base tracking-wider text-white uppercase block leading-none">
+            <div className="min-w-0">
+              <span className="font-extrabold text-xs sm:text-base tracking-wider text-white uppercase block leading-none truncate max-w-[140px] xs:max-w-[180px] sm:max-w-none">
                 {brandName}
               </span>
-              <span className="text-[10px] text-amber-300 tracking-widest font-mono uppercase">
+              <span className="text-[9px] sm:text-[10px] text-amber-300 tracking-widest font-mono uppercase block mt-0.5">
                 LUXURY APARTMENT
               </span>
             </div>
@@ -219,7 +236,6 @@ export default function LP01Template({
               Tổ hợp căn hộ cao cấp chuẩn quốc tế sở hữu vị trí kim cương đắt giá, tầm nhìn panorama ôm trọn công viên hồ điều hòa 14ha và hệ thống tiện ích 5 sao đặc quyền dành riêng cho cộng đồng cư dân tinh hoa.
             </p>
 
-            {/* Quick Benefits Bullet List */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs text-slate-200">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
@@ -250,11 +266,9 @@ export default function LP01Template({
             </div>
           </div>
 
-          {/* Right Column: Hero Lead Capture Form (Lưới lọc phễu số 1) */}
+          {/* Right Column: Hero Lead Capture Form */}
           <div id="dang-ky" className="lg:col-span-5">
             <div className="bg-[#05211E]/95 border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/50 text-left relative overflow-hidden backdrop-blur-xl">
-              <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
-              
               <div className="text-center mb-6">
                 <span className="text-[11px] font-extrabold text-amber-400 uppercase tracking-widest block mb-1">
                   ƯU ĐÃI ĐỢT 1 TỪ CHỦ ĐẦU TƯ
@@ -317,14 +331,15 @@ export default function LP01Template({
                   <div>
                     <label className="block text-slate-300 font-bold mb-1 text-[11px]">Loại căn hộ bạn đang quan tâm</label>
                     <select
+                      id="hero-unit-select"
                       value={heroUnitType}
                       onChange={(e) => setHeroUnitType(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-900 font-medium border border-slate-300 focus:ring-2 focus:ring-amber-400 outline-none"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-900 font-bold border border-slate-300 focus:ring-2 focus:ring-amber-400 outline-none transition-all duration-300"
                     >
-                      <option value="Căn Hộ 1 Phòng Ngủ (52m²)">Căn Hộ 1 Phòng Ngủ (52.8 m²)</option>
-                      <option value="Căn Hộ 2 Phòng Ngủ (74m² - 86m²)">Căn Hộ 2 Phòng Ngủ (74.2 m² - 86.5 m²)</option>
-                      <option value="Căn Hộ 3 Phòng Ngủ (112m²)">Căn Hộ 3 Phòng Ngủ Master (112.4 m²)</option>
-                      <option value="Căn Hộ Dual Key & Penthouse (149m²)">Căn Hộ Dual Key & Penthouse (149.0 m²)</option>
+                      <option value="Căn Hộ 1 Phòng Ngủ (52.8 m²)">Căn Hộ 1 Phòng Ngủ (52.8 m²)</option>
+                      <option value="Căn Hộ 2 Phòng Ngủ (74.2 m² - 86.5 m²)">Căn Hộ 2 Phòng Ngủ (74.2 m² - 86.5 m²)</option>
+                      <option value="Căn Hộ 3 Phòng Ngủ Master (112.4 m²)">Căn Hộ 3 Phòng Ngủ Master (112.4 m²)</option>
+                      <option value="Căn Hộ Dual Key & Sky Villa (149.0 m²)">Căn Hộ Dual Key & Sky Villa (149.0 m²)</option>
                     </select>
                   </div>
 
@@ -438,7 +453,6 @@ export default function LP01Template({
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           
-          {/* Left: Spec Table */}
           <div className="lg:col-span-5 space-y-6 text-left">
             <div>
               <span className="text-xs font-bold text-amber-700 uppercase tracking-widest block mb-1">
@@ -493,7 +507,6 @@ export default function LP01Template({
             </a>
           </div>
 
-          {/* Right: Master Plan Layout Image (with zoom) */}
           <div className="lg:col-span-7">
             <div className="relative rounded-3xl overflow-hidden border-2 border-amber-200 bg-slate-100 shadow-xl group cursor-pointer"
               onClick={() => setZoomImage('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80')}
@@ -533,7 +546,6 @@ export default function LP01Template({
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
-            {/* Left: Map Graphic preview */}
             <div className="lg:col-span-7">
               <div 
                 className="relative rounded-3xl overflow-hidden border-2 border-emerald-700/60 shadow-2xl bg-slate-900 aspect-[16/10] group cursor-pointer"
@@ -558,7 +570,6 @@ export default function LP01Template({
               </div>
             </div>
 
-            {/* Right: Distance & Linkages */}
             <div className="lg:col-span-5 space-y-4 text-left">
               <div className="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-700/40 space-y-1">
                 <div className="flex items-center justify-between">
@@ -669,7 +680,6 @@ export default function LP01Template({
             </p>
           </div>
 
-          {/* Grid 6 Amenities Cards with Lightbox Zoom & 3s auto animation */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {amenitiesList.map((item, idx) => (
               <div
@@ -724,7 +734,6 @@ export default function LP01Template({
             </p>
           </div>
 
-          {/* Interactive Floor Tabs */}
           <div className="flex justify-center flex-wrap gap-2 sm:gap-3">
             {[
               { id: '1pn', label: 'Căn 1 Phòng Ngủ (52.8 m²)' },
@@ -766,12 +775,14 @@ export default function LP01Template({
               </div>
 
               <div className="pt-2 flex items-center gap-3">
-                <a
-                  href="#dang-ky"
-                  className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md"
+                <button
+                  type="button"
+                  onClick={() => handleSelectUnitType(floorPlans[activeFloorTab].title)}
+                  className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5"
                 >
-                  Nhận Báo Giá Căn Này
-                </a>
+                  <span>Nhận Báo Giá Căn Này</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
 
@@ -837,7 +848,7 @@ export default function LP01Template({
               />
               <button
                 type="submit"
-                className="px-6 py-3 rounded-xl bg-slate-950 hover:bg-slate-900 text-amber-300 font-black text-xs uppercase tracking-wider transition-all shadow-lg shrink-0 w-full sm:w-auto"
+                className="px-6 py-3 rounded-xl bg-slate-950 hover:bg-slate-900 text-amber-300 font-black text-xs uppercase tracking-wider transition-all shadow-lg shrink-0 w-full sm:w-auto cursor-pointer"
               >
                 GỬI CHO TÔI
               </button>
@@ -935,7 +946,6 @@ export default function LP01Template({
             </p>
           </div>
 
-          {/* Countdown Clock Tiles */}
           <div className="flex items-center justify-center gap-3 sm:gap-4 font-mono">
             <div className="bg-slate-900/90 border border-slate-600 p-3 sm:p-4 rounded-2xl min-w-[64px] sm:min-w-[80px]">
               <span className="text-2xl sm:text-4xl font-black text-amber-400 block">{String(countdown.days).padStart(2, '0')}</span>

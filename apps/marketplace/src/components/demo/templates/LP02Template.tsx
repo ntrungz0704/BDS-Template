@@ -67,6 +67,23 @@ export default function LP02Template({
     setTimeout(() => setIsQuickSubmitted(false), 6000);
   };
 
+  // Seamless UX: Automatically pre-select the position when clicking CTA buttons across the page
+  const handleSelectPosition = (posName: string) => {
+    setHeroPosition(posName);
+    const element = document.getElementById('ung-tuyen');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => {
+        const selectEl = document.getElementById('hero-position-select') as HTMLSelectElement | null;
+        if (selectEl) {
+          selectEl.focus();
+          selectEl.classList.add('ring-4', 'ring-amber-500', 'border-amber-500');
+          setTimeout(() => selectEl.classList.remove('ring-4', 'ring-amber-500', 'border-amber-500'), 2000);
+        }
+      }, 350);
+    }
+  };
+
   // 12 Buổi Đào Tạo Thực Chiến BĐS Thiên Khôi / Cát Tường
   const trainingCurriculum = [
     { session: 'Buổi 1', title: 'Tổng quan thị trường BĐS & Luật Đất Đai mới 2026', tag: 'Nền tảng' },
@@ -334,9 +351,10 @@ export default function LP02Template({
                   <div>
                     <label className="block text-slate-700 font-bold mb-1 text-[11px]">Vị trí bạn muốn ứng tuyển</label>
                     <select
+                      id="hero-position-select"
                       value={heroPosition}
                       onChange={(e) => setHeroPosition(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 text-slate-900 font-medium border border-slate-300 focus:ring-2 focus:ring-red-500 focus:bg-white outline-none"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 text-slate-900 font-bold border border-slate-300 focus:ring-2 focus:ring-red-500 focus:bg-white outline-none transition-all duration-300"
                     >
                       <option value="Chuyên Viên Kinh Doanh BĐS">Chuyên Viên Kinh Doanh BĐS (Toàn thời gian)</option>
                       <option value="Trưởng Nhóm Kinh Doanh">Trưởng Nhóm / Trưởng Phòng Kinh Doanh</option>
@@ -541,13 +559,14 @@ export default function LP02Template({
           </div>
 
           <div className="text-center pt-2">
-            <a
-              href="#ung-tuyen"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-[#C59B27] hover:bg-amber-600 text-white font-black text-xs uppercase tracking-wider shadow-lg transition-all"
+            <button
+              type="button"
+              onClick={() => handleSelectPosition('Chuyên Viên Kinh Doanh BĐS')}
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-[#C59B27] hover:bg-amber-600 text-white font-black text-xs uppercase tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
             >
               <span>ĐĂNG KÝ THAM GIA KHÓA ĐÀO TẠO MIỄN PHÍ</span>
               <ArrowRight className="w-4 h-4" />
-            </a>
+            </button>
           </div>
 
         </div>
