@@ -298,6 +298,17 @@ INSERT INTO \`company_info\` (\`name\`, \`phone\`, \`email\`, \`address\`, \`slo
         }
       }
 
+      // 2. Đính kèm tài liệu hướng dẫn lấy Key Google Gemini AI miễn phí
+      const possibleGuidePaths = [
+        path.resolve(process.cwd(), 'HUONG-DAN-LAY-KEY-GEMINI-AI.md'),
+        path.resolve(__dirname, '../../../../HUONG-DAN-LAY-KEY-GEMINI-AI.md'),
+        path.resolve(__dirname, '../../../HUONG-DAN-LAY-KEY-GEMINI-AI.md'),
+      ];
+      const guidePath = possibleGuidePaths.find(p => fs.existsSync(p));
+      if (guidePath) {
+        zip.addLocalFile(guidePath);
+      }
+
       const zipBuffer = zip.toBuffer();
       const downloadFileName = `PLATFORMBDS-${slug}-${orderNumber}.zip`;
       logger.info(`[PackageService] Đã đóng gói từ standalone package ${folderCode} cho đơn ${orderNumber}`);

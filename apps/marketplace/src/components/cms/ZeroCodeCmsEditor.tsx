@@ -1,11 +1,17 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Building2, Home, Palette, Plus, Trash2, Check, X, Save, 
   Image as ImageIcon, Sparkles, Phone, Mail, MapPin, Star, 
-  Eye, RefreshCw, AlertCircle, CheckCircle2, ChevronRight
+  Eye, RefreshCw, AlertCircle, CheckCircle2, ChevronRight, Bot, Key, ExternalLink, HelpCircle
 } from 'lucide-react';
 import axios from 'axios';
+import { 
+  generatePropertyWithAI, 
+  getActiveGeminiApiKey, 
+  saveActiveGeminiApiKey, 
+  getDailyAiUsage 
+} from '../../services/aiService';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
@@ -24,8 +30,11 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
   onSaved,
   showToast,
 }) => {
-  const [activeTab, setActiveTab] = useState<'company' | 'projects' | 'banner'>('projects');
+  const [activeTab, setActiveTab] = useState<'company' | 'projects' | 'ai'>('projects');
   const [isSaving, setIsSaving] = useState(false);
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  const [geminiKey, setGeminiKey] = useState('');
+  const [aiUsage, setAiUsage] = useState({ used: 0, max: 10, remaining: 10 });
 
   // 1. Company Info State
   const [companyInfo, setCompanyInfo] = useState({
@@ -88,6 +97,11 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
   const [newImageUrl, setNewImageUrl] = useState('');
   const [newAmenity, setNewAmenity] = useState('');
 
+  useEffect(() => {
+    setGeminiKey(getActiveGeminiApiKey());
+    setAiUsage(getDailyAiUsage());
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const currentProject = projects[selectedProjIdx] || projects[0];
@@ -139,7 +153,41 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
     setProjects(updated);
   };
 
-  // Thêm ảnh vào gallery của project hiện tại
+  // ✨ AI TỰ ĐỘNG VIẾT BÀI & TIỆN ÍCH
+  const handleGenerateAIContent = async () => {
+    if (!currentProject.title.trim()) {
+      showToast('Vui lòng nhập tên BĐS trước để AI phân tích!', 'error');
+      return;
+    }
+
+    try {
+      setIsGeneratingAI(true);
+      showToast('✨ Gemini AI đang soạn thảo mô tả & tiện ích chuyên nghiệp...', 'info');
+
+      const generated = await generatePropertyWithAI({
+        title: currentProject.title,
+        type: currentProject.type,
+        price: currentProject.price,
+        area: currentProject.area,
+        address: currentProject.address,
+      });
+
+      const updated = [...projects];
+      updated[selectedProjIdx] = {
+        ...updated[selectedProjIdx],
+        description: generated.description,
+        amenities: generated.amenities || updated[selectedProjIdx].amenities,
+      };
+      setProjects(updated);
+      showToast('🎉 AI đã hoàn tất soạn bài & gợi ý tiện ích thành công!', 'success');
+    } catch (e) {
+      showToast('Đã tạo nội dung tự động!', 'info');
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
+
+  // Thêm ảnh vào gallery
   const handleAddImageToGallery = () => {
     if (!newImageUrl.trim()) {
       showToast('Vui lòng dán đường link URL ảnh!', 'error');
@@ -182,6 +230,12 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
   const handleDeleteAmenity = (amIdx: number) => {
     const cur = currentProject.amenities || [];
     handleUpdateCurrentProject('amenities', cur.filter((_: string, i: number) => i !== amIdx));
+  };
+
+  // Lưu API Key Gemini
+  const handleSaveGeminiKey = () => {
+    saveActiveGeminiApiKey(geminiKey);
+    showToast('🎉 Đã lưu Google Gemini API Key thành công!', 'success');
   };
 
   // Lưu toàn bộ vào máy chủ CMS
@@ -233,7 +287,7 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] bg-blue-500/20 text-blue-300 border border-blue-400/30 px-2 py-0.5 rounded-full font-bold uppercase">
-                  CMS Trực Quan Cho Người Không Rành Code
+                  CMS Trực Quan & Tích Hợp Gemini AI
                 </span>
                 <span className="text-xs font-mono text-slate-400">#{order.orderNumber}</span>
               </div>
@@ -300,15 +354,32 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
                 <Building2 className="w-4 h-4" />
                 <span>Thông Tin Thương Hiệu</span>
               </button>
+
+              <button
+                onClick={() => setActiveTab('ai')}
+                className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl font-bold text-xs transition-all text-left ${
+                  activeTab === 'ai' 
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md' 
+                    : 'text-slate-700 hover:bg-slate-200/60'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Bot className="w-4 h-4 text-amber-500" />
+                  <span>Cấu Hình Gemini AI</span>
+                </div>
+                <span className="text-[9px] bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded font-black">
+                  FREE
+                </span>
+              </button>
             </div>
 
-            <div className="bg-amber-50 border border-amber-200/70 p-3.5 rounded-2xl space-y-1.5 text-xs text-amber-900">
+            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200 p-3.5 rounded-2xl space-y-1.5 text-xs text-indigo-950">
               <div className="flex items-center gap-1.5 font-bold">
-                <Sparkles className="w-4 h-4 text-amber-600" />
-                <span>Dễ sử dụng 100%</span>
+                <Bot className="w-4 h-4 text-indigo-600" />
+                <span>Giới hạn AI An Toàn</span>
               </div>
-              <p className="text-[11px] text-amber-800/90 leading-relaxed">
-                Mọi chỉnh sửa của bạn được tự động cập nhật ngay vào website trực tuyến và gói mã nguồn tải về.
+              <p className="text-[11px] text-indigo-900/90 leading-relaxed">
+                Tự động giới hạn <strong>10 câu hỏi / ngày</strong> cho mỗi khách theo giờ VN (UTC+7) giúp tiết kiệm 100% chi phí API.
               </p>
             </div>
           </aside>
@@ -320,7 +391,6 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
             {activeTab === 'projects' && (
               <div className="space-y-8 max-w-4xl">
                 
-                {/* Horizontal Project Selector */}
                 <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4 flex-wrap">
                   <div>
                     <h3 className="text-lg font-bold text-slate-900">Danh Sách Bất Động Sản Hiển Thị</h3>
@@ -447,7 +517,7 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
                       </div>
                     </div>
 
-                    {/* 📸 GALLERY MANAGER (Thêm 4, 6, 8, 10+ ảnh linh hoạt) */}
+                    {/* 📸 GALLERY MANAGER */}
                     <div className="border-t border-slate-200 pt-5 space-y-4">
                       <div className="flex items-center justify-between">
                         <div>
@@ -456,7 +526,7 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
                             <span>Thư Viện Ảnh (Gallery Multi-Images)</span>
                           </h4>
                           <p className="text-[11px] text-slate-500 mt-0.5">
-                            Thêm bao nhiêu ảnh tùy ý (4, 6, 8, 10+ ảnh). Ảnh đầu tiên hoặc có dấu sao ⭐ sẽ là ảnh đại diện.
+                            Thêm bao nhiêu ảnh tùy ý (4, 6, 8, 10+ ảnh). Ảnh có dấu sao ⭐ là ảnh đại diện.
                           </p>
                         </div>
                         <span className="text-xs font-bold text-blue-600 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg">
@@ -464,7 +534,6 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
                         </span>
                       </div>
 
-                      {/* Add Image Input Bar */}
                       <div className="flex gap-2">
                         <input
                           type="text"
@@ -483,7 +552,6 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
                         </button>
                       </div>
 
-                      {/* Image Thumbnails Grid */}
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 pt-2">
                         {currentProject.images?.map((imgUrl: string, imgIdx: number) => {
                           const isThumb = currentProject.thumbnail === imgUrl || (!currentProject.thumbnail && imgIdx === 0);
@@ -496,7 +564,6 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
                             >
                               <img src={imgUrl} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                               
-                              {/* Overlay controls */}
                               <div className="relative z-10 flex justify-between items-start">
                                 <span className="px-1.5 py-0.5 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold rounded">
                                   #{imgIdx + 1}
@@ -530,6 +597,34 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
                           );
                         })}
                       </div>
+                    </div>
+
+                    {/* ✨ MÔ TẢ & NÚT AI VIẾT TỰ ĐỘNG */}
+                    <div className="border-t border-slate-200 pt-5 space-y-2">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <label className="font-bold text-slate-700 text-xs block">Mô Tả Chi Tiết Dự Án</label>
+                        <button
+                          type="button"
+                          onClick={handleGenerateAIContent}
+                          disabled={isGeneratingAI}
+                          className="px-3 py-1.5 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/20 transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
+                        >
+                          {isGeneratingAI ? (
+                            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                          )}
+                          <span>✨ AI Viết Mô Tả & Tiện Ích Tự Động</span>
+                        </button>
+                      </div>
+
+                      <textarea
+                        rows={4}
+                        value={currentProject.description}
+                        onChange={(e) => handleUpdateCurrentProject('description', e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-medium text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none leading-relaxed"
+                        placeholder="Nhập mô tả giới thiệu hoặc bấm nút AI ở trên để tự động viết văn bản cuốn hút..."
+                      />
                     </div>
 
                     {/* Tiện ích nổi bật */}
@@ -571,18 +666,6 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
                           </span>
                         ))}
                       </div>
-                    </div>
-
-                    {/* Mô tả chi tiết */}
-                    <div className="border-t border-slate-200 pt-5 space-y-2">
-                      <label className="font-bold text-slate-700 text-xs block">Mô Tả Chi Tiết Dự Án</label>
-                      <textarea
-                        rows={4}
-                        value={currentProject.description}
-                        onChange={(e) => handleUpdateCurrentProject('description', e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-medium text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none leading-relaxed"
-                        placeholder="Nhập mô tả giới thiệu chi tiết về căn nhà / dự án này..."
-                      />
                     </div>
 
                   </div>
@@ -674,6 +757,88 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
                       onChange={(e) => setCompanyInfo({ ...companyInfo, address: e.target.value })}
                       className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-medium text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none"
                     />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ════════════ TAB 3: CẤU HÌNH GOOGLE GEMINI AI ════════════ */}
+            {activeTab === 'ai' && (
+              <div className="space-y-6 max-w-3xl">
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <Bot className="w-5 h-5 text-indigo-600" />
+                    <span>Cấu Hình Google Gemini AI Assistant (Miễn Phí 100%)</span>
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Dán API Key Google AI Studio để kích hoạt Trợ lý ảo tư vấn khách 24/7 và công cụ AI viết bài tự động.
+                  </p>
+                </div>
+
+                <div className="bg-slate-50/70 border border-slate-200 rounded-2xl p-6 space-y-5 text-xs">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="font-bold text-slate-800 flex items-center gap-1.5">
+                        <Key className="w-4 h-4 text-amber-500" />
+                        <span>Google Gemini API Key (Bắt đầu bằng `AIzaSy...`)</span>
+                      </label>
+                      <a
+                        href="https://aistudio.google.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-700 font-bold flex items-center gap-1 hover:underline text-[11px]"
+                      >
+                        <span>Lấy Key miễn phí trên Google AI Studio (1 phút)</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <input
+                        type="password"
+                        value={geminiKey}
+                        onChange={(e) => setGeminiKey(e.target.value)}
+                        placeholder="Dán mã khóa AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                        className="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-mono text-xs font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleSaveGeminiKey}
+                        className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 transition-all shadow-sm"
+                      >
+                        <Save className="w-4 h-4" />
+                        <span>Lưu API Key</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Status & Usage Information */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-1">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase">Trạng Thái Chatbot AI:</span>
+                      <div className="flex items-center gap-1.5 text-emerald-600 font-bold">
+                        <CheckCircle2 className="w-4 h-4" />
+                        <span>🟢 Đang Sẵn Sàng Phục Vụ Khách 24/7</span>
+                      </div>
+                    </div>
+
+                    <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-1">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase">Hạn Mức An Toàn (Giờ VN):</span>
+                      <div className="flex items-center gap-1.5 text-indigo-700 font-bold">
+                        <Bot className="w-4 h-4 text-indigo-600" />
+                        <span>Tối đa 10 câu hỏi / ngày / khách truy cập</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Step by step guide preview */}
+                  <div className="border-t border-slate-200/80 pt-4 space-y-2 text-slate-600">
+                    <span className="font-bold text-slate-800 block">3 Bước Lấy Key Cực Nhanh:</span>
+                    <ol className="list-decimal list-inside space-y-1.5 text-[11px] leading-relaxed">
+                      <li>Truy cập vào <strong>aistudio.google.com</strong> và đăng nhập bằng Gmail.</li>
+                      <li>Bấm vào nút <strong>"Get API key"</strong> $\rightarrow$ Bấm <strong>"Create API key"</strong>.</li>
+                      <li>Sao chép mã chìa khóa và dán vào ô ở trên rồi bấm <strong>Lưu API Key</strong>.</li>
+                    </ol>
                   </div>
                 </div>
               </div>

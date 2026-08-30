@@ -44,6 +44,7 @@ const LP01Template = dynamic(() => import('./templates/LP01Template'), { loading
 const LP02Template = dynamic(() => import('./templates/LP02Template'), { loading: () => <LoadingSkeleton /> });
 const LP03Template = dynamic(() => import('./templates/LP03Template'), { loading: () => <LoadingSkeleton /> });
 const LP04Template = dynamic(() => import('./templates/LP04Template'), { loading: () => <LoadingSkeleton /> });
+import { AIChatWidget } from '../ai/AIChatWidget';
 
 interface DemoRendererProps {
   template: Template;
@@ -1189,6 +1190,11 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
   return (
     <div className={`demo-viewport-wrapper demo-viewport-${viewport || 'desktop'} w-full relative`}>
       <div className="demo-core-content">{renderContent()}</div>
+      <AIChatWidget
+        websiteName={template.name}
+        hotline="0905.568.888"
+        zalo="0905.568.888"
+      />
     </div>
   );
 }

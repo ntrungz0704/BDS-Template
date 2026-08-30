@@ -42,6 +42,7 @@ if (typeof window !== 'undefined') {
 }
 
 import Head from 'next/head';
+import { AIChatWidget } from '../components/ai/AIChatWidget';
 
 export default function App({ Component, pageProps }: AppProps) {
   React.useEffect(() => {
@@ -66,6 +67,11 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
       </Head>
       <Component {...pageProps} />
+      <AIChatWidget
+        websiteName={(pageProps as any)?.company?.name || 'Sàn Giao Dịch Bất Động Sản'}
+        hotline={(pageProps as any)?.company?.phone || '0905.568.888'}
+        zalo={(pageProps as any)?.company?.zalo || '0905.568.888'}
+      />
     </QueryClientProvider>
   );
 }
