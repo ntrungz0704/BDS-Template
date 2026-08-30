@@ -24,7 +24,7 @@ import {
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
 
 export default function MarketplaceHome() {
-  const { user, openAuthModal, addOrder, addToCart } = useAuth();
+  const { user, openAuthModal, addToCart } = useAuth();
   const [selectedTemplate, setSelectedTemplate] = useState<any | null>(null);
 
   // Query marketplace stats
@@ -116,7 +116,10 @@ export default function MarketplaceHome() {
   const createOrderMutation = useMutation({
     mutationFn: async (orderData: any) => {
       try {
-        const res = await axios.post(`${API_URL}/api/marketplace/orders`, orderData, { timeout: 3000 });
+        const res = await axios.post(`${API_URL}/api/marketplace/orders`, orderData, {
+          timeout: 5000,
+          withCredentials: true,
+        });
         return res.data || res;
       } catch (err: any) {
         throw err;
@@ -124,10 +127,11 @@ export default function MarketplaceHome() {
     },
     onSuccess: (data) => {
       const order = data.data || data;
-      addOrder(order);
-      alert(`Mua hàng thành công! Mã đơn hàng của bạn là: ${order.orderNumber}.\nVui lòng chuyển khoản thanh toán số tiền ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.amount)} hoặc kiểm tra trong mục Đơn Hàng Của Tôi.`);
       setSelectedTemplate(null);
       resetForm();
+      if (order.orderNumber) {
+        router.push(`/checkout/success?orderNumber=${encodeURIComponent(order.orderNumber)}`);
+      }
     },
   });
 
@@ -143,6 +147,13 @@ export default function MarketplaceHome() {
 
   const handleOrderSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      const redirect = selectedTemplate?.slug
+        ? `/?order=${encodeURIComponent(selectedTemplate.slug)}`
+        : '/';
+      router.push(`/login?redirect=${encodeURIComponent(redirect)}`);
+      return;
+    }
     // Client-side validation
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       alert('Email không hợp lệ. VD: ten@gmail.com');

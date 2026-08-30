@@ -46,11 +46,18 @@ export default function LoginPage() {
         const user = res.data.data.user;
         const allowedRoles = ['TENANT_OWNER', 'EDITOR', 'STAFF'];
         if (!allowedRoles.includes(user.role)) {
+          await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true }).catch(() => undefined);
           setErrorMsg('Tài khoản không hợp lệ.');
           return;
         }
         // Redirect về trang mà user muốn vào, hoặc trang chủ CMS
-        const redirectTo = (router.query.redirect as string) || '/';
+        const requestedRedirect = router.query.redirect;
+        const fallbackRedirect = user.role === 'STAFF' ? '/leads' : '/';
+        const redirectTo = typeof requestedRedirect === 'string'
+          && requestedRedirect.startsWith('/')
+          && !requestedRedirect.startsWith('//')
+          ? requestedRedirect
+          : fallbackRedirect;
         router.push(redirectTo);
       }
     } catch (error: any) {

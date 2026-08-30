@@ -45,6 +45,7 @@ export default function LoginPage() {
       if (res.data.success) {
         const user = res.data.data.user;
         if (user.role !== 'SUPER_ADMIN') {
+          await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true }).catch(() => undefined);
           setErrorMsg('Tài khoản của bạn không có quyền truy cập trang quản trị Super Admin.');
           return;
         }

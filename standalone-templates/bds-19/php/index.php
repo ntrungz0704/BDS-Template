@@ -1,61 +1,15 @@
 <?php
-/**
- * BDS-19: Sunshine City Saigon (Standalone PHP & MySQL)
- */
+require_once 'config/db.php';
 
-$db_host = 'localhost';
-$db_user = 'root';
-$db_pass = '';
-$db_name = 'bds19_sunshine';
-
-$conn = @new mysqli($db_host, $db_user, $db_pass, $db_name);
-$units = [];
-
-if ($conn && !$conn->connect_error) {
-    $conn->set_charset("utf8mb4");
-    $res = $conn->query("SELECT * FROM units ORDER BY id ASC");
-    if ($res) {
-        while ($row = $res->fetch_assoc()) {
-            $units[] = $row;
-        }
-    }
-}
-
-if (empty($units)) {
-    $units = [
-        [
-            'id' => 1,
-            'title' => 'Căn Hộ Thông Minh 1 Phòng Ngủ Tòa S1 Venus View Sông',
-            'code' => 'S1-0812',
-            'tower' => 'Tòa S1 - Venus',
-            'type' => '1 Phòng Ngủ',
-            'price' => '3.45 Tỷ VNĐ',
-            'area' => '52 m²',
-            'view' => 'View Sông Cả Cấm',
-            'image' => 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80'
-        ],
-        [
-            'id' => 2,
-            'title' => 'Căn Hộ Góc 2 Phòng Ngủ Tòa S4 Mercury View Toàn Cảnh',
-            'code' => 'S4-1806',
-            'tower' => 'Tòa S4 - Mercury',
-            'type' => '2 Phòng Ngủ',
-            'price' => '4.85 Tỷ VNĐ',
-            'area' => '76 m²',
-            'view' => 'View Phú Mỹ Hưng',
-            'image' => 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80'
-        ],
-        [
-            'id' => 3,
-            'title' => 'Căn Hộ 3 Phòng Ngủ Hoàng Gia Tòa S7 Jupiter Suite VIP',
-            'code' => 'S7-2802',
-            'tower' => 'Tòa S7 - Jupiter',
-            'type' => '3 Phòng Ngủ',
-            'price' => '6.90 Tỷ VNĐ',
-            'area' => '105 m²',
-            'view' => 'View Sông Sài Gòn',
-            'image' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80'
-        ]
+// Lấy danh sách BĐS từ MySQL nếu có kết nối, hoặc dùng mảng demo
+if ($pdo) {
+    $stmt = $pdo->query("SELECT * FROM properties ORDER BY id DESC LIMIT 6");
+    $properties = $stmt->fetchAll();
+} else {
+    $properties = [
+        ['title' => 'Biệt thự sang trọng view thoáng mát', 'slug' => 'biet-thu-view-thoang-mat', 'price' => '5.5 Tỷ VNĐ', 'area' => '300 m²', 'location' => 'Khu Đô Thị Mới', 'image' => 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80'],
+        ['title' => 'Nhà phố mặt tiền thương mại kinh doanh', 'slug' => 'nha-pho-mat-tien-kinh-doanh', 'price' => '8.2 Tỷ VNĐ', 'area' => '140 m²', 'location' => 'Trung tâm thành phố', 'image' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80'],
+        ['title' => 'Đất nền phân lô sổ đỏ sẵn sàng công chứng', 'slug' => 'dat-nen-phan-lo-so-do', 'price' => '1.9 Tỷ VNĐ', 'area' => '120 m²', 'location' => 'Khu dân cư hiện hữu', 'image' => 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80'],
     ];
 }
 ?>
@@ -64,44 +18,129 @@ if (empty($units)) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sunshine City Saigon | BDS-19 PHP</title>
+  <title>BĐS 19 — Sàn Niêm Yết Mật Độ Cao Nhà Đất Số — Website Bất Động Sản PHP & MySQL</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-white text-slate-800 flex flex-col min-h-screen">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
 
-  <header class="sticky top-0 z-40 bg-[#0F1E36] text-white p-4 shadow border-b border-amber-500/30">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <a href="index.php" class="flex items-center gap-2">
-        <div class="w-8 h-8 bg-[#D4AF37] flex items-center justify-center text-slate-950 font-black">☀️</div>
-        <span class="text-xl font-serif font-black text-amber-300">SUNSHINE CITY SAIGON</span>
+  <!-- Header PHP -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.php" class="flex items-center gap-2 font-black text-xl text-blue-600">
+        <span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-xs">TB</span>
+        <span>TEMPLATES<strong class="text-slate-900">BDS</strong></span>
       </a>
-      <div class="text-xs font-bold text-amber-300">Hotline: 0919 006 030</div>
+      <div class="flex items-center gap-3">
+        <a href="tel:0919006030" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow">
+          Hotline: 0919 006 030
+        </a>
+      </div>
     </div>
   </header>
 
-  <main class="py-12 flex-1 max-w-7xl mx-auto px-4 space-y-8">
-    <h2 class="text-2xl font-serif font-black uppercase text-[#0F1E36]">BẢNG HÀNG CĂN HỘ 4.0 SUNSHINE CITY SAIGON</h2>
-    
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <?php foreach ($units as $unit): ?>
-      <div class="bg-white border border-slate-300 shadow-sm flex flex-col justify-between">
-        <img src="<?php echo htmlspecialchars($unit['image']); ?>" alt="" class="w-full h-48 object-cover">
-        <div class="p-4 space-y-2">
-          <span class="text-[10px] text-[#D4AF37] font-black uppercase"><?php echo htmlspecialchars($unit['tower']); ?></span>
-          <h3 class="text-xs font-black text-slate-900"><?php echo htmlspecialchars($unit['title']); ?></h3>
-          <p class="text-xs text-slate-600">Mã: <?php echo htmlspecialchars($unit['code']); ?> • DT: <?php echo htmlspecialchars($unit['area']); ?></p>
-          <div class="pt-2 border-t flex justify-between items-center">
-            <span class="text-sm font-black text-red-600"><?php echo htmlspecialchars($unit['price']); ?></span>
-            <button onclick="alert('Đang kết nối chuyên viên...');" class="px-3 py-1 bg-[#0F1E36] text-amber-300 text-xs font-bold uppercase">Chi Tiết ›</button>
+  <!-- Main Content -->
+  <main class="flex-1 w-full space-y-12 pb-16">
+    <section class="py-16 px-4 bg-slate-900 text-white text-center">
+      <h1 class="text-3xl sm:text-5xl font-black uppercase mb-4">BĐS 19 — Sàn Niêm Yết Mật Độ Cao Nhà Đất Số</h1>
+      <p class="text-slate-300 max-w-xl mx-auto text-sm">Mật độ cao · Lọc 6 tiêu chí · Phong thủy nhà đất</p>
+    </section>
+
+    <!-- Danh sách BĐS từ MySQL -->
+    <section class="max-w-7xl mx-auto px-4 space-y-6">
+      <h2 class="text-2xl font-black text-slate-900 uppercase text-center">DANH SÁCH BẤT ĐỘNG SẢN</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <?php foreach ($properties as $item): ?>
+          <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition">
+            <img src="<?php echo htmlspecialchars($item['image']); ?>" alt="" class="w-full h-48 object-cover">
+            <div class="p-4 space-y-2">
+              <h3 class="font-bold text-sm text-slate-900"><?php echo htmlspecialchars($item['title']); ?></h3>
+              <p class="text-xs text-slate-500"><?php echo htmlspecialchars($item['location']); ?></p>
+              <div class="flex justify-between items-center pt-2 border-t text-xs">
+                <span class="font-black text-blue-600 text-sm"><?php echo htmlspecialchars($item['price']); ?></span>
+                <span class="text-slate-500"><?php echo htmlspecialchars($item['area']); ?></span>
+              </div>
+            </div>
           </div>
-        </div>
+        <?php endforeach; ?>
       </div>
-      <?php endforeach; ?>
-    </div>
+    </section>
+
+    <!-- Form Liên Hệ PHP -->
+    <section class="max-w-3xl mx-auto px-4">
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-md space-y-4">
+        <h3 class="text-lg font-black text-slate-900 uppercase text-center">GỬI YÊU CẦU TƯ VẤN</h3>
+        <form action="api/contact.php" method="POST" class="space-y-3 text-xs">
+          <input type="text" name="name" placeholder="Họ và tên (*)" required class="w-full p-3 bg-slate-50 border rounded-xl">
+          <input type="tel" name="phone" placeholder="Số điện thoại (*)" required class="w-full p-3 bg-slate-50 border rounded-xl font-bold text-blue-600">
+          <textarea name="message" rows="3" placeholder="Nội dung cần tư vấn..." class="w-full p-3 bg-slate-50 border rounded-xl"></textarea>
+          <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl">
+            GỬI THÔNG TIN
+          </button>
+        </form>
+      </div>
+    </section>
   </main>
 
-  <footer class="bg-[#0A1324] text-slate-400 text-xs py-8 border-t border-amber-500/30 text-center">
-    © TEMPLATEBDS — Nền tảng phân phối website BĐS chuyên nghiệp. Mẫu BDS-19 (Sunshine City Saigon)
+  <!-- Footer PHP -->
+  <footer class="w-full bg-[#07132B] text-slate-300 text-xs pt-12 pb-6 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-white/10">
+      <div class="md:col-span-5 space-y-3">
+        <h4 class="font-black text-sm text-white uppercase tracking-wider">
+          <span class="text-[#0084FF]">TEMPLATES</span><span class="text-white">BDS</span>
+        </h4>
+        <p class="text-slate-400 text-xs leading-relaxed max-w-sm">
+          Kho mẫu website bất động sản cao cấp số 1 Việt Nam. Tối ưu chuyển đổi, chuẩn SEO và tích hợp hệ thống CMS quản trị đa kênh.
+        </p>
+        <div class="space-y-1.5 text-xs text-slate-300 pt-1">
+          <div>📍 Địa chỉ: <strong class="text-white font-medium">180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội</strong></div>
+          <div>📞 Hotline 1: <a href="tel:0919006030" class="text-white font-bold font-mono hover:text-blue-400">0919 006 030</a></div>
+          <div>📞 Hotline 2: <a href="tel:0983312219" class="text-white font-bold font-mono hover:text-emerald-400">0983 312 219</a> (24/7)</div>
+          <div>✉️ Email: <a href="mailto:ntrungz0704@gmail.com" class="text-white hover:text-blue-400">ntrungz0704@gmail.com</a></div>
+          <div>⏰ Giờ làm việc: <strong class="text-white font-medium">8:00 - 20:00 (T2 - CN)</strong></div>
+        </div>
+
+        <!-- 4 Social Icons -->
+        <div class="flex items-center gap-2.5 pt-2">
+          <a href="https://zalo.me/0919006030" target="_blank" class="w-9 h-9 rounded-2xl bg-[#0068FF] text-white flex items-center justify-center font-black text-[10px]">ZALO</a>
+          <a href="https://www.facebook.com/groups/847532091275214" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1877F2] text-white flex items-center justify-center font-bold text-sm">f</a>
+          <a href="https://www.youtube.com/@tungchuofficial" target="_blank" class="w-9 h-9 rounded-2xl bg-[#E62117] text-white flex items-center justify-center text-xs">▶</a>
+          <a href="https://www.tiktok.com/@editnhadat" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1E293B] text-[#A78BFA] flex items-center justify-center text-xs">🎵</a>
+        </div>
+      </div>
+
+      <div class="md:col-span-2 space-y-3">
+        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">VỀ CHÚNG TÔI</h4>
+        <div class="space-y-2 text-slate-400">
+          <div><a href="index.php" class="hover:text-blue-400">Trang chủ</a></div>
+          <div><a href="#san-pham" class="hover:text-blue-400">Sản phẩm BĐS</a></div>
+          <div><a href="#du-an" class="hover:text-blue-400">Dự án mới</a></div>
+          <div><a href="#tin-tuc" class="hover:text-blue-400">Tin tức & Sự kiện</a></div>
+        </div>
+      </div>
+
+      <div class="md:col-span-2 space-y-3">
+        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">DANH MỤC</h4>
+        <div class="space-y-2 text-slate-400">
+          <div><a href="#san-pham" class="hover:text-blue-400">Đất dự án</a></div>
+          <div><a href="#san-pham" class="hover:text-blue-400">Đất nền</a></div>
+          <div><a href="#san-pham" class="hover:text-blue-400">Biệt thự biển</a></div>
+          <div><a href="#san-pham" class="hover:text-blue-400">Nhà phố</a></div>
+        </div>
+      </div>
+
+      <div class="md:col-span-3 space-y-3">
+        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">CHÍNH SÁCH</h4>
+        <div class="space-y-2 text-slate-400 text-xs">
+          <div>• Bàn giao 100% mã nguồn sạch</div>
+          <div>• Bảo hành & Hỗ trợ kỹ thuật trọn đời</div>
+          <div>• Hỗ trợ cài đặt lên Hosting cPanel / XAMPP</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 pt-6 text-center text-[11px] text-slate-400">
+      <p>© 2026 Bản quyền thuộc về <strong class="text-white">TEMPLATEBDS</strong> — Mẫu Giao Diện: BDS-19.</p>
+    </div>
   </footer>
 
 </body>

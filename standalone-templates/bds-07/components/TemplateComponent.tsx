@@ -609,90 +609,90 @@ export default function VillaTemplate({
       </div>
 
       {/* Main Navbar */}
-      <div className={`${MAX_W} mx-auto px-4 py-3.5 flex items-center justify-between gap-4`}>
+      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between gap-3`}>
         {/* Brand Logo */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-3 cursor-pointer group"
+          className="flex items-center gap-2.5 cursor-pointer group shrink-0"
         >
-          <div className="w-10 h-10 rounded-sm bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white font-black shadow-lg shadow-emerald-950/40 group-hover:scale-105 transition-transform border border-emerald-400/40">
+          <div className="w-10 h-10 rounded-sm bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white font-black shadow-lg shadow-emerald-950/40 group-hover:scale-105 transition-transform border border-emerald-400/40 shrink-0">
             <Mountain size={22} className="text-amber-300" />
           </div>
-          <div>
-            <span className="text-base sm:text-lg font-black tracking-tight block leading-tight text-white group-hover:text-emerald-300 transition-colors">
+          <div className="whitespace-nowrap">
+            <span className="text-sm sm:text-base font-black tracking-tight block leading-tight text-white group-hover:text-emerald-300 transition-colors">
               PANNAMERA BẢO LỘC
             </span>
-            <span className="text-[10px] tracking-widest text-emerald-300 block uppercase font-bold">
-              LÀNG SINH THÁI NGHỈ DƯỠNG SĂN MÂY
+            <span className="text-[9px] sm:text-[10px] tracking-widest text-emerald-300 block uppercase font-bold">
+              LÀNG SINH THÁI NGHỈ DƯỠNG
             </span>
           </div>
         </div>
 
         {/* Desktop Menu Nav */}
-        <nav className="hidden lg:flex items-center gap-5 text-xs font-bold uppercase tracking-wider text-emerald-100">
+        <nav className="hidden lg:flex items-center gap-2 xl:gap-4 text-[11px] xl:text-xs font-bold uppercase tracking-wider text-emerald-100 whitespace-nowrap">
           <button 
             onClick={() => navigate('home')} 
-            className={`transition-colors hover:text-amber-300 ${currentPage === 'home' ? 'text-amber-400 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-amber-300 ${currentPage === 'home' ? 'text-amber-400 font-extrabold' : ''}`}
           >
             Trang Chủ
           </button>
           <button 
             onClick={() => navigate('dat-vuon')} 
-            className={`transition-colors hover:text-amber-300 ${currentPage === 'dat-vuon' ? 'text-amber-400 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-amber-300 ${currentPage === 'dat-vuon' ? 'text-amber-400 font-extrabold' : ''}`}
           >
-            Đất Vườn Săn Mây
+            Đất Vườn
           </button>
           <button 
             onClick={() => navigate('bungalow')} 
-            className={`transition-colors hover:text-amber-300 ${currentPage === 'bungalow' ? 'text-amber-400 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-amber-300 ${currentPage === 'bungalow' ? 'text-amber-400 font-extrabold' : ''}`}
           >
-            Bungalow Gỗ
+            Bungalow
           </button>
           <button 
             onClick={() => navigate('biet-thu')} 
-            className={`transition-colors hover:text-amber-300 ${currentPage === 'biet-thu' ? 'text-amber-400 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-amber-300 ${currentPage === 'biet-thu' ? 'text-amber-400 font-extrabold' : ''}`}
           >
-            Biệt Thự Đồi
+            Biệt Thự
           </button>
           <button 
             onClick={() => navigate('tien-ich')} 
-            className={`transition-colors hover:text-amber-300 ${currentPage === 'tien-ich' ? 'text-amber-400 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-amber-300 ${currentPage === 'tien-ich' ? 'text-amber-400 font-extrabold' : ''}`}
           >
             Tiện Ích
           </button>
           <button 
             onClick={() => navigate('thu-vien')} 
-            className={`transition-colors hover:text-amber-300 ${currentPage === 'thu-vien' ? 'text-amber-400 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-amber-300 ${currentPage === 'thu-vien' ? 'text-amber-400 font-extrabold' : ''}`}
           >
-            Thư Viện Ảnh
+            Thư Viện
           </button>
           <button 
             onClick={() => navigate('tin-tuc')} 
-            className={`transition-colors hover:text-amber-300 ${currentPage === 'tin-tuc' || currentPage === 'news-detail' ? 'text-amber-400 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-amber-300 ${currentPage === 'tin-tuc' || currentPage === 'news-detail' ? 'text-amber-400 font-extrabold' : ''}`}
           >
             Tin Tức
           </button>
           <button 
             onClick={() => navigate('ky-gui')} 
-            className={`transition-colors hover:text-amber-300 ${currentPage === 'ky-gui' ? 'text-amber-400 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-amber-300 ${currentPage === 'ky-gui' ? 'text-amber-400 font-extrabold' : ''}`}
           >
             Ký Gửi
           </button>
           <button 
             onClick={() => navigate('lien-he')} 
-            className={`transition-colors hover:text-amber-300 ${currentPage === 'lien-he' ? 'text-amber-400 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-amber-300 ${currentPage === 'lien-he' ? 'text-amber-400 font-extrabold' : ''}`}
           >
             Liên Hệ
           </button>
         </nav>
 
         {/* CTA & Mobile Toggle */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 shrink-0">
           <a
             href="tel:0919006030"
-            className="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-sm bg-emerald-900/80 hover:bg-emerald-800 text-xs font-bold text-emerald-200 border border-emerald-700/60 transition-colors"
+            className="hidden xl:flex items-center gap-1.5 px-3 py-2 rounded-sm bg-emerald-900/80 hover:bg-emerald-800 text-xs font-bold text-emerald-200 border border-emerald-700/60 transition-colors whitespace-nowrap shrink-0"
           >
-            <Phone size={14} className="text-amber-400 animate-pulse" />
+            <Phone size={13} className="text-amber-400 animate-pulse shrink-0" />
             <span>0919 006 030</span>
           </a>
           <button
@@ -701,13 +701,13 @@ export default function VillaTemplate({
               if (el) el.scrollIntoView({ behavior: 'smooth' });
               else navigate('lien-he');
             }}
-            className="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-xs font-black rounded-sm shadow-lg shadow-amber-950/40 transition-all uppercase tracking-wider hover:scale-105 active:scale-95"
+            className="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-xs font-black rounded-sm shadow-lg transition-all uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 active:scale-95"
           >
             Tải Báo Giá VIP
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-sm bg-emerald-900 text-white lg:hidden hover:bg-emerald-800"
+            className="p-2 rounded-sm bg-emerald-900 text-white lg:hidden hover:bg-emerald-800 shrink-0"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -720,8 +720,8 @@ export default function VillaTemplate({
           <div className="grid grid-cols-2 gap-2 text-xs font-bold uppercase">
             <button onClick={() => navigate('home')} className="p-2.5 rounded-lg text-left bg-emerald-800/80 hover:bg-amber-500/20 hover:text-amber-300">Trang Chủ</button>
             <button onClick={() => navigate('dat-vuon')} className="p-2.5 rounded-lg text-left bg-emerald-800/80 hover:bg-amber-500/20 hover:text-amber-300">Đất Vườn</button>
-            <button onClick={() => navigate('bungalow')} className="p-2.5 rounded-lg text-left bg-emerald-800/80 hover:bg-amber-500/20 hover:text-amber-300">Bungalow Gỗ</button>
-            <button onClick={() => navigate('biet-thu')} className="p-2.5 rounded-lg text-left bg-emerald-800/80 hover:bg-amber-500/20 hover:text-amber-300">Biệt Thự Đồi</button>
+            <button onClick={() => navigate('bungalow')} className="p-2.5 rounded-lg text-left bg-emerald-800/80 hover:bg-amber-500/20 hover:text-amber-300">Bungalow</button>
+            <button onClick={() => navigate('biet-thu')} className="p-2.5 rounded-lg text-left bg-emerald-800/80 hover:bg-amber-500/20 hover:text-amber-300">Biệt Thự</button>
             <button onClick={() => navigate('tien-ich')} className="p-2.5 rounded-lg text-left bg-emerald-800/80 hover:bg-amber-500/20 hover:text-amber-300">Tiện Ích</button>
             <button onClick={() => navigate('thu-vien')} className="p-2.5 rounded-lg text-left bg-emerald-800/80 hover:bg-amber-500/20 hover:text-amber-300">Thư Viện</button>
             <button onClick={() => navigate('tin-tuc')} className="p-2.5 rounded-lg text-left bg-emerald-800/80 hover:bg-amber-500/20 hover:text-amber-300">Tin Tức</button>
@@ -754,13 +754,13 @@ export default function VillaTemplate({
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#F0FDF4] to-transparent z-10 opacity-90" />
 
       <div className={`relative z-20 ${MAX_W} mx-auto px-4 py-20 text-center space-y-6`}>
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-sm bg-[#047857]/90 text-white text-xs font-black tracking-widest uppercase shadow-xl backdrop-blur-md border border-emerald-400/30">
-          <Sparkles size={14} className="text-amber-300" /> THIÊN ĐƯỜNG NGHỈ DƯỠNG SINH THÁI TÂY NGUYÊN
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-sm bg-[#047857]/90 text-white text-xs font-black tracking-widest uppercase shadow-xl backdrop-blur-md border border-emerald-400/30 whitespace-nowrap">
+          <Sparkles size={14} className="text-amber-300 shrink-0" /> THIÊN ĐƯỜNG NGHỈ DƯỠNG SINH THÁI TÂY NGUYÊN
         </div>
 
-        <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black tracking-tight max-w-4xl mx-auto leading-[1.1] drop-shadow-2xl">
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight max-w-4xl mx-auto leading-tight drop-shadow-2xl">
           PANNAMERA <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-emerald-300 to-lime-300">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-emerald-300 to-lime-300 inline-block">
             NƠI DỪNG CHÂN LÝ TƯỞNG
           </span>
         </h1>

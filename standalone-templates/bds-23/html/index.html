@@ -3,223 +3,189 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dự Án Chung Cư Minh Khai | BDS-23</title>
+  <title>BĐS 23 — Sàn Giao Dịch Nhà Phố Homeo — Website Bất Động Sản Chuyên Nghiệp</title>
+  <meta name="description" content="Sàn nhà phố Homeo · Card đa ảnh · Cẩm nang người mua">
+  <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .bg-midnight { background-color: #0B132B; }
-    .bg-ochre { background-color: #D4AF37; }
-  </style>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-white text-slate-800 flex flex-col min-h-screen">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
 
-  <!-- Top Header -->
-  <header class="sticky top-0 z-40 bg-[#0B132B] text-white shadow-xl border-b border-amber-500/30">
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      
-      <!-- Brand Logo -->
-      <a href="index.html" class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-gradient-to-br from-[#E5B869] to-[#9A7B4F] flex items-center justify-center text-slate-950 font-serif font-black text-xl shadow border border-amber-200">
-          🦅
-        </div>
-        <div>
-          <span class="text-xl sm:text-2xl font-serif font-black tracking-wider text-amber-300 block leading-none">
-            MINH KHAI <span class="text-white">APARTMENTS</span>
-          </span>
-          <span class="text-[8.5px] font-bold text-amber-200/80 uppercase tracking-widest block mt-0.5">
-            CỔNG THÔNG TIN CHUNG CƯ CAO CẤP VÀNH ĐAI 2
-          </span>
-        </div>
+      <a href="index.html" class="flex items-center gap-2 font-black text-xl text-blue-600">
+        <span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-xs">TB</span>
+        <span>TEMPLATES<strong class="text-slate-900">BDS</strong></span>
       </a>
-
-      <!-- Navbar -->
-      <nav class="hidden xl:flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-slate-200">
-        <a href="index.html" class="px-3 py-2 text-amber-300 bg-[#1C2541]">Trang Chủ</a>
-        <a href="#du-an" class="px-3 py-2 hover:text-amber-300">Dự Án</a>
-        <a href="#faq" class="px-3 py-2 hover:text-amber-300">Câu Hỏi Thường Gặp</a>
-        <a href="#doi-tac" class="px-3 py-2 hover:text-amber-300">Đối Tác</a>
-        <a href="#tin-tuc" class="px-3 py-2 hover:text-amber-300">Tin Tức</a>
-        <a href="#lien-he" class="px-3 py-2 hover:text-amber-300">Liên Hệ</a>
+      <nav class="hidden md:flex items-center gap-6 text-xs font-bold uppercase text-slate-700">
+        <a href="index.html" class="text-blue-600">Trang Chủ</a>
+        <a href="#san-pham" class="hover:text-blue-600">Sản Phẩm</a>
+        <a href="#du-an" class="hover:text-blue-600">Dự Án</a>
+        <a href="#tin-tuc" class="hover:text-blue-600">Tin Tức</a>
+        <a href="#lien-he" class="hover:text-blue-600">Liên Hệ</a>
       </nav>
-
-      <div>
-        <a href="#form-tu-van" class="px-4 py-2 bg-gradient-to-r from-[#E5B869] to-[#D4AF37] text-slate-950 font-black text-xs uppercase tracking-wider shadow">
-          Đăng Ký Tư Vấn
+      <div class="flex items-center gap-3">
+        <a href="tel:0919006030" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow transition">
+          📞 0919 006 030
         </a>
       </div>
-
     </div>
   </header>
 
   <!-- Hero Section -->
-  <section class="relative bg-slate-950 text-white min-h-[460px] flex items-center justify-center overflow-hidden">
-    <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1600&q=80" alt="Đẳng Cấp Thượng Lưu" class="absolute inset-0 w-full h-full object-cover opacity-60">
-    <div class="absolute inset-0 bg-gradient-to-t from-[#0B132B] via-black/40 to-transparent"></div>
-    
-    <div class="relative z-20 text-center space-y-4 max-w-3xl mx-auto px-4">
-      <h1 class="text-3xl sm:text-5xl font-serif italic text-amber-300 tracking-wider drop-shadow-2xl">
-        Đẳng Cấp Thượng Lưu
-      </h1>
-      <p class="text-xs sm:text-sm text-slate-200 max-w-2xl mx-auto font-medium leading-relaxed">
-        Chắt lọc những giá trị đỉnh cao, mang đến cho bạn một môi trường sống xứng tầm giữa thiên nhiên tuyệt đẹp và hệ thống tiện nghi hiện đại bậc nhất trục Vành Đai 2 Hà Nội.
-      </p>
-      <div class="pt-4">
-        <a href="#du-an" class="px-6 py-3 bg-[#D4AF37] hover:bg-amber-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow">
-          Khám Phá Các Dự Án ›
-        </a>
+  <main class="flex-1 w-full space-y-12 pb-16">
+    <section class="relative py-20 px-4 bg-slate-900 text-white text-center">
+      <div class="max-w-4xl mx-auto space-y-4">
+        <span class="px-3.5 py-1 rounded-full bg-blue-600/30 text-blue-300 border border-blue-400/40 text-xs font-bold uppercase tracking-widest inline-block">
+          MẪU GIAO DIỆN BĐS 23 — SÀN GIAO DỊCH NHÀ PHỐ HOMEO
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-black uppercase leading-tight font-serif">
+          BĐS 23 — Sàn Giao Dịch Nhà Phố Homeo
+        </h1>
+        <p class="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
+          Sàn nhà phố Homeo · Card đa ảnh · Cẩm nang người mua — Giải pháp website bất động sản tối ưu chuẩn SEO, tải nhanh và dễ dàng sử dụng.
+        </p>
+        <div class="pt-4 flex justify-center gap-3">
+          <a href="#san-pham" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase rounded-full shadow">
+            Xem Sản Phẩm ›
+          </a>
+          <a href="#lien-he" class="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold text-xs uppercase rounded-full">
+            Đăng Ký Tư Vấn
+          </a>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Section: Projects Grid (8 Projects) -->
-  <section id="du-an" class="py-16 bg-[#F8FAFC] border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 space-y-8">
-      
-      <div class="text-center space-y-2 max-w-2xl mx-auto">
-        <h2 class="text-2xl sm:text-3xl font-serif font-black uppercase text-[#0B132B]">
-          DỰ ÁN CHUNG CƯ MINH KHAI
-        </h2>
-        <p class="text-xs text-slate-600">Những dự án hấp dẫn nhất được chúng tôi phân phối.</p>
-        <div class="w-16 h-1 bg-[#D4AF37] mx-auto"></div>
+    <!-- Danh Sách BĐS -->
+    <section id="san-pham" class="max-w-7xl mx-auto px-4 space-y-6">
+      <div class="text-center space-y-1">
+        <h2 class="text-2xl font-black text-slate-900 uppercase">SẢN PHẨM BẤT ĐỘNG SẢN NỔI BẬT</h2>
+        <div class="w-12 h-1 bg-blue-600 mx-auto rounded-full"></div>
       </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        
-        <div class="bg-white border border-slate-300 shadow-sm flex flex-col justify-between">
-          <div class="relative aspect-[4/3] overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" alt="" class="w-full h-full object-cover">
-            <div class="absolute bottom-2 inset-x-2 text-white font-serif font-black text-xs uppercase drop-shadow">Vinhomes Times City</div>
-          </div>
-          <div class="p-3 text-xs space-y-1">
-            <p class="text-slate-500 truncate">458 Minh Khai, Hai Bà Trưng</p>
-            <div class="flex justify-between items-center font-bold border-t pt-1">
-              <span class="text-red-600">3.8 - 14.5 Tỷ</span>
-              <span>53 - 178 m²</span>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="property-list">
+        <!-- Javascript renders cards here or static cards -->
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
+          <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80" alt="" class="w-full h-48 object-cover">
+          <div class="p-4 space-y-2">
+            <h3 class="font-bold text-sm text-slate-900">Biệt Thự Nghỉ Dưỡng Cao Cấp</h3>
+            <p class="text-xs text-slate-500">Vị trí đắc địa, sổ hồng riêng chính chủ</p>
+            <div class="flex justify-between items-center pt-2 border-t text-xs">
+              <span class="font-black text-blue-600 text-sm">4.5 Tỷ VNĐ</span>
+              <span class="text-slate-500">250 m²</span>
             </div>
           </div>
         </div>
-
-        <div class="bg-white border border-slate-300 shadow-sm flex flex-col justify-between">
-          <div class="relative aspect-[4/3] overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80" alt="" class="w-full h-full object-cover">
-            <div class="absolute bottom-2 inset-x-2 text-white font-serif font-black text-xs uppercase drop-shadow">Green Pearl City</div>
-          </div>
-          <div class="p-3 text-xs space-y-1">
-            <p class="text-slate-500 truncate">378 Minh Khai, Hai Bà Trưng</p>
-            <div class="flex justify-between items-center font-bold border-t pt-1">
-              <span class="text-red-600">4.2 - 9.8 Tỷ</span>
-              <span>71 - 139 m²</span>
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
+          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80" alt="" class="w-full h-48 object-cover">
+          <div class="p-4 space-y-2">
+            <h3 class="font-bold text-sm text-slate-900">Nhà Phố Mặt Tiền Thương Mại</h3>
+            <p class="text-xs text-slate-500">Thuận tiện kinh doanh showroom, văn phòng</p>
+            <div class="flex justify-between items-center pt-2 border-t text-xs">
+              <span class="font-black text-blue-600 text-sm">6.8 Tỷ VNĐ</span>
+              <span class="text-slate-500">120 m²</span>
             </div>
           </div>
         </div>
-
-        <div class="bg-white border border-slate-300 shadow-sm flex flex-col justify-between">
-          <div class="relative aspect-[4/3] overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80" alt="" class="w-full h-full object-cover">
-            <div class="absolute bottom-2 inset-x-2 text-white font-serif font-black text-xs uppercase drop-shadow">Imperia Sky Garden</div>
-          </div>
-          <div class="p-3 text-xs space-y-1">
-            <p class="text-slate-500 truncate">423 Minh Khai, Hai Bà Trưng</p>
-            <div class="flex justify-between items-center font-bold border-t pt-1">
-              <span class="text-red-600">4.5 - 11.2 Tỷ</span>
-              <span>58 - 106 m²</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white border border-slate-300 shadow-sm flex flex-col justify-between">
-          <div class="relative aspect-[4/3] overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80" alt="" class="w-full h-full object-cover">
-            <div class="absolute bottom-2 inset-x-2 text-white font-serif font-black text-xs uppercase drop-shadow">Hòa Bình Green City</div>
-          </div>
-          <div class="p-3 text-xs space-y-1">
-            <p class="text-slate-500 truncate">505 Minh Khai, Hai Bà Trưng</p>
-            <div class="flex justify-between items-center font-bold border-t pt-1">
-              <span class="text-red-600">3.6 - 8.5 Tỷ</span>
-              <span>63 - 127 m²</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Section: FAQ & Ochre Form -->
-  <section id="faq" class="py-16 bg-white border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      
-      <div class="lg:col-span-7 space-y-4">
-        <h2 class="text-xl font-serif font-black uppercase text-[#0B132B]">CÂU HỎI THƯỜNG GẶP</h2>
-        <div class="space-y-2 text-xs">
-          <div class="border border-slate-300">
-            <div class="bg-[#D4AF37] text-slate-950 p-3 font-black uppercase">LÀM THẾ NÀO ĐỂ THUÊ ĐƯỢC CĂN HỘ ƯNG Ý NHANH CHÓNG?</div>
-            <div class="p-4 bg-white text-slate-700 space-y-2">
-              <p>1. Xác định rõ ngân sách và số phòng ngủ cần thiết.</p>
-              <p>2. Kết nối với chuyên viên khu vực để kiểm tra danh sách căn hộ thực tế.</p>
-              <p>3. Đi xem nhà trực tiếp và ký hợp đồng bảo đảm quyền lợi.</p>
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
+          <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="" class="w-full h-48 object-cover">
+          <div class="p-4 space-y-2">
+            <h3 class="font-bold text-sm text-slate-900">Đất Nền Phân Lô Sổ Đỏ Trao Tay</h3>
+            <p class="text-xs text-slate-500">Hạ tầng đồng bộ điện âm nước máy</p>
+            <div class="flex justify-between items-center pt-2 border-t text-xs">
+              <span class="font-black text-blue-600 text-sm">1.8 Tỷ VNĐ</span>
+              <span class="text-slate-500">100 m²</span>
             </div>
           </div>
         </div>
       </div>
+    </section>
 
-      <div id="form-tu-van" class="lg:col-span-5 bg-gradient-to-b from-[#C5A059] to-[#B8860B] text-white p-6 shadow-2xl space-y-4">
-        <h3 class="text-lg font-serif font-black uppercase text-center">ĐĂNG KÝ TƯ VẤN</h3>
-        <form class="space-y-3 text-xs" onsubmit="event.preventDefault(); alert('Đã gửi thông tin!');">
-          <input type="text" required placeholder="Nhập họ tên *" class="w-full bg-white/20 border border-white/40 p-2.5 text-white placeholder-amber-100" />
-          <input type="tel" required placeholder="Nhập SĐT *" class="w-full bg-white/20 border border-white/40 p-2.5 text-white placeholder-amber-100" />
-          <input type="email" placeholder="Nhập Email" class="w-full bg-white/20 border border-white/40 p-2.5 text-white placeholder-amber-100" />
-          <button type="submit" class="w-full py-3 bg-white text-[#B8860B] font-black uppercase shadow">GỬI NGAY</button>
+    <!-- Form Liên Hệ -->
+    <section id="lien-he" class="max-w-4xl mx-auto px-4">
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-lg space-y-4">
+        <h3 class="text-xl font-black text-slate-900 text-center uppercase">LIÊN HỆ & TƯ VẤN BÁO GIÁ</h3>
+        <form id="contact-form" class="space-y-3 text-xs">
+          <input type="text" id="name" placeholder="Họ và tên của bạn (*)" required class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl">
+          <input type="tel" id="phone" placeholder="Số điện thoại / Zalo (*)" required class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl font-bold text-blue-600">
+          <textarea id="message" rows="3" placeholder="Nội dung cần tư vấn..." class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl"></textarea>
+          <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow transition">
+            GỬI YÊU CẦU TƯ VẤN
+          </button>
         </form>
       </div>
+    </section>
+  </main>
 
-    </div>
-  </section>
+    <!-- Footer HTML -->
+  <footer class="w-full bg-[#07132B] text-slate-300 text-xs pt-12 pb-6 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-white/10">
+      <!-- Cột 1: THÔNG TIN LIÊN HỆ ADMIN -->
+      <div class="md:col-span-5 space-y-3">
+        <h4 class="font-black text-sm text-white uppercase tracking-wider">
+          <span class="text-[#0084FF]">TEMPLATES</span><span class="text-white">BDS</span>
+        </h4>
+        <p class="text-slate-400 text-xs leading-relaxed max-w-sm">
+          Kho mẫu website bất động sản cao cấp số 1 Việt Nam. Tối ưu chuyển đổi, chuẩn SEO và tích hợp hệ thống CMS quản trị đa kênh.
+        </p>
+        <div class="space-y-1.5 text-xs text-slate-300 pt-1">
+          <div>📍 Địa chỉ: <strong class="text-white font-medium">180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội</strong></div>
+          <div>📞 Hotline 1: <a href="tel:0919006030" class="text-white font-bold font-mono hover:text-blue-400">0919 006 030</a></div>
+          <div>📞 Hotline 2: <a href="tel:0983312219" class="text-white font-bold font-mono hover:text-emerald-400">0983 312 219</a> (24/7)</div>
+          <div>✉️ Email: <a href="mailto:ntrungz0704@gmail.com" class="text-white hover:text-blue-400">ntrungz0704@gmail.com</a></div>
+          <div>⏰ Giờ làm việc: <strong class="text-white font-medium">8:00 - 20:00 (T2 - CN)</strong></div>
+        </div>
 
-  <!-- Partners -->
-  <section id="doi-tac" class="py-12 bg-slate-50 border-b border-slate-200 text-center text-xs">
-    <div class="max-w-7xl mx-auto px-4 space-y-4">
-      <h3 class="font-black uppercase text-slate-800 tracking-widest">ĐỐI TÁC CỦA CHÚNG TÔI</h3>
-      <div class="grid grid-cols-2 sm:grid-cols-6 gap-3 font-serif font-black text-slate-700">
-        <div class="bg-white p-3 border">VINGROUP</div>
-        <div class="bg-white p-3 border">VINHOMES</div>
-        <div class="bg-white p-3 border">VINHOMES RIVERSIDE</div>
-        <div class="bg-white p-3 border">ROYAL CITY</div>
-        <div class="bg-white p-3 border">TIMES CITY</div>
-        <div class="bg-white p-3 border">VINHOMES CENTRAL PARK</div>
+        <!-- 4 Social Icons -->
+        <div class="flex items-center gap-2.5 pt-2">
+          <a href="https://zalo.me/0919006030" target="_blank" class="w-9 h-9 rounded-2xl bg-[#0068FF] text-white flex items-center justify-center font-black text-[10px]">ZALO</a>
+          <a href="https://www.facebook.com/groups/847532091275214" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1877F2] text-white flex items-center justify-center font-bold text-sm">f</a>
+          <a href="https://www.youtube.com/@tungchuofficial" target="_blank" class="w-9 h-9 rounded-2xl bg-[#E62117] text-white flex items-center justify-center text-xs">▶</a>
+          <a href="https://www.tiktok.com/@editnhadat" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1E293B] text-[#A78BFA] flex items-center justify-center text-xs">🎵</a>
+        </div>
+      </div>
+
+      <!-- Cột 2: VỀ CHÚNG TÔI -->
+      <div class="md:col-span-2 space-y-3">
+        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">VỀ CHÚNG TÔI</h4>
+        <div class="space-y-2 text-slate-400">
+          <div><a href="index.html" class="hover:text-blue-400">Trang chủ</a></div>
+          <div><a href="#san-pham" class="hover:text-blue-400">Sản phẩm BĐS</a></div>
+          <div><a href="#du-an" class="hover:text-blue-400">Dự án mới</a></div>
+          <div><a href="#tin-tuc" class="hover:text-blue-400">Tin tức & Sự kiện</a></div>
+          <div><a href="#lien-he" class="hover:text-blue-400">Liên hệ tư vấn</a></div>
+        </div>
+      </div>
+
+      <!-- Cột 3: DANH MỤC BĐS -->
+      <div class="md:col-span-2 space-y-3">
+        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">DANH MỤC</h4>
+        <div class="space-y-2 text-slate-400">
+          <div><a href="#san-pham" class="hover:text-blue-400">Đất dự án</a></div>
+          <div><a href="#san-pham" class="hover:text-blue-400">Đất nền phân lô</a></div>
+          <div><a href="#san-pham" class="hover:text-blue-400">Biệt thự view biển</a></div>
+          <div><a href="#san-pham" class="hover:text-blue-400">Nhà phố thương mại</a></div>
+          <div><a href="#san-pham" class="hover:text-blue-400">Nhà cho thuê</a></div>
+        </div>
+      </div>
+
+      <!-- Cột 4: CHÍNH SÁCH -->
+      <div class="md:col-span-3 space-y-3">
+        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">CHÍNH SÁCH</h4>
+        <div class="space-y-2 text-slate-400 text-xs">
+          <div>• Bàn giao 100% mã nguồn sạch</div>
+          <div>• Bảo hành & Hỗ trợ kỹ thuật trọn đời</div>
+          <div>• Hỗ trợ cài đặt lên Hosting cPanel / XAMPP</div>
+        </div>
       </div>
     </div>
-  </section>
 
-  <!-- Footer Top -->
-  <div id="lien-he" class="bg-[#0B132B] text-white py-10 border-b border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-xs">
-      <div>
-        <h4 class="font-serif font-black text-amber-300 uppercase mb-2">THÔNG TIN LIÊN HỆ</h4>
-        <p>📞 Hotline: 0919 006 030</p>
-        <p>✉️ Email: contact@templatebds.com</p>
-        <p>📍 Địa chỉ: 458 Minh Khai, Hai Bà Trưng, Hà Nội</p>
-      </div>
-      <div>
-        <h4 class="font-serif font-black text-amber-300 uppercase mb-2">ĐĂNG KÝ NHẬN BẢNG GIÁ</h4>
-        <form class="flex gap-2" onsubmit="event.preventDefault(); alert('Đã nhận SĐT!');">
-          <input type="tel" required placeholder="Nhập SĐT..." class="flex-1 bg-slate-900 border border-slate-700 p-2 text-white text-xs" />
-          <button type="submit" class="px-4 py-2 bg-[#D4AF37] text-slate-950 font-black">GỬI ĐI</button>
-        </form>
-      </div>
-      <div>
-        <h4 class="font-serif font-black text-amber-300 uppercase mb-2">FANPAGE CỘNG ĐỒNG</h4>
-        <p class="text-slate-300">Cộng đồng cư dân Minh Khai hơn 230.000 thành viên.</p>
-      </div>
+    <div class="max-w-7xl mx-auto px-4 pt-6 text-center text-[11px] text-slate-400">
+      <p>© 2026 Bản quyền thuộc về <strong class="text-white">TEMPLATEBDS</strong> — Mẫu Giao Diện: BĐS 23 — Sàn Giao Dịch Nhà Phố Homeo.</p>
     </div>
-  </div>
-
-  <!-- Copyright -->
-  <footer class="bg-slate-950 text-slate-400 text-xs py-6 text-center">
-    © TEMPLATEBDS — Nền tảng phân phối website BĐS chuyên nghiệp. Mẫu BDS-23 (Minh Khai Apartments)
   </footer>
 
+  <script src="js/main.js"></script>
+  <script>lucide.createIcons();</script>
 </body>
 </html>

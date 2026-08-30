@@ -362,12 +362,12 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
         </div>
 
         {/* Desktop Menu */}
-        <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider">
+        <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider whitespace-nowrap">
           {[
             { id: 'home', label: 'Tổng Quan' },
-            { id: 'vi-tri', label: 'Vị Trí Kim Cương' },
-            { id: 'cong-nghe', label: 'Công Nghệ 4.0' },
-            { id: 'tien-ich', label: 'Tiện Ích Đặc Quyền' },
+            { id: 'vi-tri', label: 'Vị Trí' },
+            { id: 'cong-nghe', label: 'Công Nghệ' },
+            { id: 'tien-ich', label: 'Tiện Ích' },
             { id: 'can-ho', label: 'Mặt Bằng Căn Hộ' },
             { id: 'news', label: 'Tin Tức' },
             { id: 'contact', label: 'Liên Hệ' },
@@ -377,7 +377,7 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
               <button
                 key={navItem.id}
                 onClick={() => navigate(navItem.id)}
-                className={`px-3 py-2 rounded-md transition-all cursor-pointer ${
+                className={`whitespace-nowrap px-3 py-2 rounded-md transition-all cursor-pointer ${
                   isActive
                     ? 'bg-[#C5A059] text-[#07132B] font-black shadow-md'
                     : 'text-slate-200 hover:text-[#E6CA65] hover:bg-white/5'
@@ -390,10 +390,10 @@ export default function ResortTemplate({ template, viewport = 'desktop', initial
         </nav>
 
         {/* Right CTA */}
-        <div className="hidden sm:flex items-center gap-3">
+        <div className="hidden sm:flex items-center gap-3 shrink-0">
           <button
             onClick={() => navigate('contact')}
-            className="px-4 py-2 bg-gradient-to-r from-[#C5A059] to-[#E6CA65] hover:from-[#E6CA65] hover:to-[#C5A059] text-[#07132B] font-black text-xs uppercase tracking-wider rounded-sm shadow-md transition active:scale-95 cursor-pointer"
+            className="px-4 py-2 bg-gradient-to-r from-[#C5A059] to-[#E6CA65] hover:from-[#E6CA65] hover:to-[#C5A059] text-[#07132B] font-black text-xs uppercase tracking-wider rounded-sm shadow-md transition active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
           >
             Đăng Ký Tham Quan
           </button>

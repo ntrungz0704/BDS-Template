@@ -230,5 +230,20 @@ for (const tpl of INITIAL_TEMPLATES) {
   WebsiteTemplateRegistry.register(tpl);
 }
 
+// Marketplace uses portal-01…portal-24 while existing tenants may still store
+// bds-XX or legacy slugs. Register the current public slugs without duplicating
+// component bundles so every purchased template renders the matching design.
+for (let index = 1; index <= 24; index += 1) {
+  const number = String(index).padStart(2, '0');
+  const legacyDefinition = WebsiteTemplateRegistry.get(`bds-${number}`);
+  if (legacyDefinition) {
+    WebsiteTemplateRegistry.register({
+      ...legacyDefinition,
+      id: `portal-${number}`,
+      slug: `portal-${number}`,
+    });
+  }
+}
+
 export { WebsiteTemplateRegistry };
 

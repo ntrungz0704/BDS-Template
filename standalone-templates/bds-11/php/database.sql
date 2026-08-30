@@ -1,17 +1,16 @@
 -- ========================================================
--- DATABASE SCHEMA CHO TEMPLATE BDS-11 (NHÀ ĐẤT MIỀN TRUNG - LINKHOUSE MIỀN TRUNG)
--- Tạo database: bds_11_nhadatmientrung_linkhouse
+-- DATABASE SCHEMA CHO TEMPLATE AGENCY MARKETING ONEPAGE (BDS-11)
+-- Tạo database: bds_agency_marketing_onepage
 -- ========================================================
 
-CREATE DATABASE IF NOT EXISTS `bds_11_nhadatmientrung_linkhouse` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `bds_11_nhadatmientrung_linkhouse`;
+CREATE DATABASE IF NOT EXISTS `bds_agency_marketing_onepage` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `bds_agency_marketing_onepage`;
 
--- Bảng lưu danh sách Bất Động Sản / Đất nền / Căn hộ
+-- Bảng lưu danh sách Bất Động Sản
 CREATE TABLE IF NOT EXISTS `properties` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `title` VARCHAR(255) NOT NULL,
   `slug` VARCHAR(255) NOT NULL UNIQUE,
-  `type` VARCHAR(100) DEFAULT 'Đất Nền Dự Án',
   `price` VARCHAR(100) NOT NULL,
   `area` VARCHAR(50) NOT NULL,
   `location` VARCHAR(255) NOT NULL,
@@ -20,20 +19,18 @@ CREATE TABLE IF NOT EXISTS `properties` (
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Thêm dữ liệu mẫu các dự án Linkhouse Miền Trung
-INSERT INTO `properties` (`title`, `slug`, `type`, `price`, `area`, `location`, `image`, `description`) VALUES
-('DỰ ÁN KHU ĐÔ THỊ CẨM LỆ RIVERSIDE ĐÀ NẴNG', 'du-an-khu-do-thi-cam-le-riverside-da-nang', 'Đất Nền Dự Án', '1.85 Tỷ / Lô', '100 m²', 'Đường Nguyễn Tri Phương, Q. Cẩm Lệ, Đà Nẵng', 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80', 'Đất nền ven sông Cẩm Lệ hạ tầng hoàn thiện 100%, đường nhựa 7.5m, sổ đỏ từng lô.'),
-('DỰ ÁN BIỆT THỰ NGHỈ DƯỠNG SƠN TRÀ OCEAN VIEW', 'du-an-biet-thu-nghi-duong-son-tra-ocean-view', 'Biệt Thự Biển', '5.40 Tỷ / Căn', '250 m²', 'Bán đảo Sơn Trà, TP. Đà Nẵng', 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80', 'Biệt thự đồi tựa lưng núi Sơn Trà view trọn vẹn vịnh Đà Nẵng có hồ bơi riêng.'),
-('ĐẤT NỀN BIỂN NHƠN HỘI NEW CITY QUY NHƠN', 'dat-nen-bien-nhon-hoi-new-city-quy-nhon', 'Đất Nền Biển', '1.45 Tỷ / Nền', '90 m²', 'Khu kinh tế Nhơn Hội, TP. Quy Nhơn', 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80', 'Đại đô thị biển liền kề FLC Quy Nhơn và Kỳ Co - Eo Gió.'),
-('ĐẤT NỀN KHU ĐÔ THỊ FPT CITY ĐÀ NẴNG', 'dat-nen-khu-do-thi-fpt-city-da-nang', 'Đất Nền Công Nghệ', '2.65 Tỷ / Lô', '108 m²', 'Đô thị FPT City, Hòa Hải, Ngũ Hành Sơn, Đà Nẵng', 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80', 'Đất nền phân khu V1 liền kề Đại học FPT và trường quốc tế Singapore.');
+-- Thêm dữ liệu mẫu
+INSERT INTO `properties` (`title`, `slug`, `price`, `area`, `location`, `image`, `description`) VALUES
+('Biệt thự sang trọng view thoáng mát', 'biet-thu-view-thoang-mat', '5.5 Tỷ VNĐ', '300 m²', 'Khu Đô Thị Mới', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80', 'Biệt thự thiết kế hiện đại sang trọng, đầy đủ tiện nghi.'),
+('Nhà phố mặt tiền thương mại kinh doanh', 'nha-pho-mat-tien-kinh-doanh', '8.2 Tỷ VNĐ', '140 m²', 'Trung tâm thành phố', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', 'Thuận tiện mở văn phòng, spa hoặc showroom kinh doanh.'),
+('Đất nền phân lô sổ đỏ sẵn sàng công chứng', 'dat-nen-phan-lo-so-do', '1.9 Tỷ VNĐ', '120 m²', 'Khu dân cư hiện hữu', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80', 'Hạ tầng hoàn thiện điện âm nước máy, xây dựng tự do.');
 
--- Bảng lưu thông tin liên hệ / yêu cầu gửi về từ Form
-CREATE TABLE IF NOT EXISTS `leads` (
+-- Bảng lưu thông tin khách hàng gửi từ Form liên hệ
+CREATE TABLE IF NOT EXISTS `contacts` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `name` VARCHAR(255) NOT NULL,
   `phone` VARCHAR(50) NOT NULL,
   `email` VARCHAR(100),
-  `project_name` VARCHAR(255),
-  `note` TEXT,
+  `message` TEXT,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

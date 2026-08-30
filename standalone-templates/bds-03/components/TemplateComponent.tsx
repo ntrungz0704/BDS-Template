@@ -624,14 +624,14 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
         </div>
 
         {/* Desktop Menu */}
-        <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider">
+        <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider whitespace-nowrap">
           {[
             { id: 'home', label: 'Trang Chủ' },
-            { id: 'san-pham-bds', label: 'Sản Phẩm BĐS' },
+            { id: 'san-pham-bds', label: 'Sản Phẩm' },
             { id: 'du-an', label: 'Dự Án' },
-            { id: 'dia-diem', label: 'BĐS Theo Địa Điểm' },
+            { id: 'dia-diem', label: 'Khu Vực' },
             { id: 'news', label: 'Tin Tức' },
-            { id: 'about', label: 'Về Chúng Tôi' },
+            { id: 'about', label: 'Giới Thiệu' },
             { id: 'contact', label: 'Liên Hệ' },
           ].map(navItem => {
             const isActive = currentPage === navItem.id || (navItem.id === 'news' && currentPage === 'news-detail');
@@ -639,7 +639,7 @@ export default function CorporateTemplate({ template, viewport = 'desktop', init
               <button
                 key={navItem.id}
                 onClick={() => navigate(navItem.id)}
-                className={`px-3.5 py-2 rounded-md transition-all cursor-pointer ${
+                className={`whitespace-nowrap px-3 py-2 rounded-md transition-all cursor-pointer ${
                   isActive
                     ? 'bg-amber-500 text-slate-950 font-black shadow-sm'
                     : 'text-amber-100/90 hover:bg-white/10 hover:text-white'

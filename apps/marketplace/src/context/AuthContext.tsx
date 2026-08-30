@@ -92,7 +92,6 @@ interface AuthContextType {
   logout: () => Promise<void>;
   updateProfile: (profile: { fullName: string; phone: string; address: string; companyName: string; taxCode: string }) => void;
   updatePassword: (oldPassword: string, newPassword: string) => Promise<boolean>;
-  addOrder: (order: { template: OrderTemplateInfo; type: 'BUY' | 'RENT' | 'BUY_SOURCE'; amount: number; subdomain?: string; note?: string }) => Order;
   toggleWishlist: (template: any) => void;
   isWishlisted: (templateSlug: string) => boolean;
   isPurchased: (templateSlug: string) => boolean;
@@ -368,40 +367,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const addOrder = (orderInfo: { template: OrderTemplateInfo; type: 'BUY' | 'RENT' | 'BUY_SOURCE'; amount: number; subdomain?: string; note?: string }): Order => {
-    const newOrderNumber = `ORD-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(100 + Math.random() * 900)}`;
-    const newOrder: Order = {
-      id: `ord-${Date.now()}`,
-      orderNumber: newOrderNumber,
-      amount: orderInfo.amount,
-      type: orderInfo.type,
-      status: 'COMPLETED',
-      createdAt: new Date().toISOString(),
-      template: orderInfo.template,
-      subdomain: orderInfo.subdomain,
-      note: orderInfo.note,
-    };
-
-    const nextOrders = [newOrder, ...orders];
-    setOrders(nextOrders);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('platformbds_orders_v3', JSON.stringify(nextOrders));
-    }
-
-    axios.post(`${API_URL}/api/marketplace/orders`, {
-      templateId: orderInfo.template.id || orderInfo.template.slug,
-      type: orderInfo.type,
-      amount: orderInfo.amount,
-      fullName: user?.fullName || 'Khách hàng',
-      email: user?.email || 'customer@platformbds.vn',
-      phone: user?.phone || '0919006030',
-      subdomain: orderInfo.subdomain,
-      note: orderInfo.note,
-    }).catch(() => {});
-
-    return newOrder;
-  };
-
   const toggleWishlist = (template: any) => {
     if (!user) {
       openAuthModal('login');
@@ -556,7 +521,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         updateProfile,
         updatePassword,
-        addOrder,
         toggleWishlist,
         isWishlisted,
         isPurchased,

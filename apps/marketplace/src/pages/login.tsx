@@ -17,7 +17,12 @@ export default function LoginPage() {
   const [errorMsg, setErrorMsg] = useState('');
   const [registeredMsg, setRegisteredMsg] = useState('');
 
-  const redirectUrl = (router.query.redirect as string) || '/customer/dashboard';
+  const requestedRedirect = router.query.redirect;
+  const redirectUrl = typeof requestedRedirect === 'string'
+    && requestedRedirect.startsWith('/')
+    && !requestedRedirect.startsWith('//')
+    ? requestedRedirect
+    : '/customer/dashboard';
 
   // Handle registered query or email pre-fill
   useEffect(() => {

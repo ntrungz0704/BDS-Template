@@ -68,7 +68,9 @@ export default function CartPage() {
   // Mutator for creating orders
   const createOrderMutation = useMutation({
     mutationFn: async (orderPayload: any) => {
-      const res = await axios.post(`${API_URL}/api/marketplace/orders`, orderPayload);
+      const res = await axios.post(`${API_URL}/api/marketplace/orders`, orderPayload, {
+        withCredentials: true,
+      });
       return res.data;
     }
   });

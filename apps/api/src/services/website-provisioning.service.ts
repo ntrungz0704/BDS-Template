@@ -4,6 +4,7 @@ import { BUSINESS_CONFIG } from '@repo/config';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { vercelDomainService } from './vercel-domain.service';
+import { resolveTemplateAlias } from '../utils/template-aliases';
 
 export interface ProvisionWebsiteInput {
   templateId: string;
@@ -36,28 +37,26 @@ export class WebsiteProvisioningService {
       amount = 0,
     } = input;
 
-    // 1. Flexible lookup for template by id or slug
+    const normalizedTemplateId = templateId.replace(/^template-/, '').toLowerCase();
+    const resolvedTemplateSlug = resolveTemplateAlias(templateId);
+
+    // 1. Flexible lookup for template by id, current portal slug, or legacy slug
     let template = await prisma.template.findFirst({
       where: {
         OR: [
           { id: templateId },
           { slug: templateId },
-          { slug: templateId.replace(/^template-/, '') },
-          { id: `template-${templateId}` }
+          { slug: normalizedTemplateId },
+          { slug: resolvedTemplateSlug },
+          { id: `template-${normalizedTemplateId}` },
+          { id: `template-${resolvedTemplateSlug}` },
         ]
       },
       select: { id: true, slug: true, isActive: true },
     });
 
     if (!template) {
-      template = await prisma.template.findFirst({
-        where: { isActive: true },
-        select: { id: true, slug: true, isActive: true }
-      });
-    }
-
-    if (!template) {
-      throw new Error('Không tìm thấy template khả dụng.');
+      throw new Error(`Không tìm thấy template khả dụng cho mã "${templateId}".`);
     }
 
     const actualTemplateId = template.id;

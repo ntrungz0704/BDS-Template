@@ -31,7 +31,7 @@ if ($pdo) {
         <span>TEMPLATES<strong class="text-slate-900">BDS</strong></span>
       </a>
       <div class="flex items-center gap-3">
-        <a href="tel:0919006030" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-sm shadow">
+        <a href="tel:0919006030" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow">
           Hotline: 0919 006 030
         </a>
       </div>
@@ -50,7 +50,7 @@ if ($pdo) {
       <h2 class="text-2xl font-black text-slate-900 uppercase text-center">DANH SÁCH BẤT ĐỘNG SẢN</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <?php foreach ($properties as $item): ?>
-          <div class="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition">
+          <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition">
             <img src="<?php echo htmlspecialchars($item['image']); ?>" alt="" class="w-full h-48 object-cover">
             <div class="p-4 space-y-2">
               <h3 class="font-bold text-sm text-slate-900"><?php echo htmlspecialchars($item['title']); ?></h3>
@@ -67,13 +67,13 @@ if ($pdo) {
 
     <!-- Form Liên Hệ PHP -->
     <section class="max-w-3xl mx-auto px-4">
-      <div class="bg-white p-8 rounded-md border border-slate-200 shadow-md space-y-4">
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-md space-y-4">
         <h3 class="text-lg font-black text-slate-900 uppercase text-center">GỬI YÊU CẦU TƯ VẤN</h3>
         <form action="api/contact.php" method="POST" class="space-y-3 text-xs">
-          <input type="text" name="name" placeholder="Họ và tên (*)" required class="w-full p-3 bg-slate-50 border rounded-sm">
-          <input type="tel" name="phone" placeholder="Số điện thoại (*)" required class="w-full p-3 bg-slate-50 border rounded-sm font-bold text-blue-600">
-          <textarea name="message" rows="3" placeholder="Nội dung cần tư vấn..." class="w-full p-3 bg-slate-50 border rounded-sm"></textarea>
-          <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-sm">
+          <input type="text" name="name" placeholder="Họ và tên (*)" required class="w-full p-3 bg-slate-50 border rounded-xl">
+          <input type="tel" name="phone" placeholder="Số điện thoại (*)" required class="w-full p-3 bg-slate-50 border rounded-xl font-bold text-blue-600">
+          <textarea name="message" rows="3" placeholder="Nội dung cần tư vấn..." class="w-full p-3 bg-slate-50 border rounded-xl"></textarea>
+          <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl">
             GỬI THÔNG TIN
           </button>
         </form>
@@ -101,10 +101,10 @@ if ($pdo) {
 
         <!-- 4 Social Icons -->
         <div class="flex items-center gap-2.5 pt-2">
-          <a href="https://zalo.me/0919006030" target="_blank" class="w-9 h-9 rounded-sm bg-[#0068FF] text-white flex items-center justify-center font-black text-[10px]">ZALO</a>
-          <a href="https://www.facebook.com/groups/847532091275214" target="_blank" class="w-9 h-9 rounded-sm bg-[#1877F2] text-white flex items-center justify-center font-bold text-sm">f</a>
-          <a href="https://www.youtube.com/@tungchuofficial" target="_blank" class="w-9 h-9 rounded-sm bg-[#E62117] text-white flex items-center justify-center text-xs">▶</a>
-          <a href="https://www.tiktok.com/@editnhadat" target="_blank" class="w-9 h-9 rounded-sm bg-[#1E293B] text-[#A78BFA] flex items-center justify-center text-xs">🎵</a>
+          <a href="https://zalo.me/0919006030" target="_blank" class="w-9 h-9 rounded-2xl bg-[#0068FF] text-white flex items-center justify-center font-black text-[10px]">ZALO</a>
+          <a href="https://www.facebook.com/groups/847532091275214" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1877F2] text-white flex items-center justify-center font-bold text-sm">f</a>
+          <a href="https://www.youtube.com/@tungchuofficial" target="_blank" class="w-9 h-9 rounded-2xl bg-[#E62117] text-white flex items-center justify-center text-xs">▶</a>
+          <a href="https://www.tiktok.com/@editnhadat" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1E293B] text-[#A78BFA] flex items-center justify-center text-xs">🎵</a>
         </div>
       </div>
 

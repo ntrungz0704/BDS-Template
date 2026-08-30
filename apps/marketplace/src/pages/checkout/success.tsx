@@ -28,7 +28,9 @@ export default function CheckoutSuccessPage() {
   // 1. Fetch initial order status
   const fetchOrderStatus = async (ordNo: string) => {
     try {
-      const res = await axios.get(`${API_URL}/api/marketplace/orders/${ordNo}/status`);
+      const res = await axios.get(`${API_URL}/api/marketplace/orders/${encodeURIComponent(ordNo)}/status`, {
+        withCredentials: true,
+      });
       if (res.data?.success && res.data?.data) {
         setOrderData(res.data.data);
         if (res.data.data.isCompleted) {
@@ -57,7 +59,9 @@ export default function CheckoutSuccessPage() {
 
     const interval = setInterval(async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/marketplace/orders/${orderNumber}/status`);
+        const res = await axios.get(`${API_URL}/api/marketplace/orders/${encodeURIComponent(orderNumber)}/status`, {
+          withCredentials: true,
+        });
         if (res.data?.success && res.data?.data?.isCompleted) {
           setOrderPaid(true);
           setTenantSlug(res.data.data.tenantSlug || '');

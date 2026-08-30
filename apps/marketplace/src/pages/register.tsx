@@ -22,7 +22,12 @@ export default function RegisterPage() {
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  const redirectUrl = (router.query.redirect as string) || '/customer/dashboard';
+  const requestedRedirect = router.query.redirect;
+  const redirectUrl = typeof requestedRedirect === 'string'
+    && requestedRedirect.startsWith('/')
+    && !requestedRedirect.startsWith('//')
+    ? requestedRedirect
+    : '/customer/dashboard';
 
   // If already logged in, redirect
   useEffect(() => {

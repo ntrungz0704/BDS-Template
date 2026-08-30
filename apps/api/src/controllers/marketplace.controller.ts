@@ -9,6 +9,7 @@ import fs from 'fs';
 import { approveOrder } from './admin.controller';
 import { websiteProvisioningService } from '../services/website-provisioning.service';
 import { TemplatePackagingService } from '../services/template-packaging.service';
+import { resolveTemplateAlias } from '../utils/template-aliases';
 
 // Định nghĩa schemas Zod validation
 const createOrderSchema = z.object({
@@ -142,32 +143,48 @@ export async function checkSubdomain(req: Request, res: Response, next: NextFunc
 export async function createOrder(req: Request, res: Response, next: NextFunction) {
   try {
     const data = createOrderSchema.parse(req.body);
+    const authenticatedUserId = req.user?.userId || null;
+    let orderEmail = data.email.trim().toLowerCase();
+
+    if (authenticatedUserId) {
+      const authenticatedUser = await prisma.user.findUnique({
+        where: { id: authenticatedUserId },
+        select: { email: true, isActive: true, deletedAt: true, status: true },
+      });
+
+      if (!authenticatedUser || !authenticatedUser.isActive || authenticatedUser.deletedAt || authenticatedUser.status !== 'ACTIVE') {
+        return res.status(401).json({
+          success: false,
+          error: { code: 'UNAUTHENTICATED', message: 'Phiên đăng nhập không còn hợp lệ. Vui lòng đăng nhập lại.' },
+        });
+      }
+
+      // Orders created from an authenticated checkout must always belong to
+      // that account, regardless of a stale/autofilled email in the form.
+      orderEmail = authenticatedUser.email.trim().toLowerCase();
+    }
 
     const cleanSlug = data.templateId.replace(/^template-/, '').toLowerCase();
+    const resolvedSlug = resolveTemplateAlias(data.templateId);
     let template = await prisma.template.findFirst({
       where: {
         OR: [
           { id: data.templateId },
           { id: `template-${cleanSlug}` },
+          { id: `template-${resolvedSlug}` },
           { slug: data.templateId },
           { slug: cleanSlug },
+          { slug: resolvedSlug },
         ],
       },
     });
-
-    if (!template) {
-      template = await prisma.template.findFirst({
-        where: { isActive: true },
-        orderBy: { sortOrder: 'asc' },
-      });
-    }
 
     if (!template) {
       return res.status(404).json({
         success: false,
         error: {
           code: 'TEMPLATE_NOT_FOUND',
-          message: 'Hệ thống chưa có mẫu website nào được kích hoạt. Vui lòng liên hệ Admin.',
+          message: 'Mẫu website đã chọn không tồn tại hoặc chưa được kích hoạt. Vui lòng chọn lại mẫu.',
         },
       });
     }
@@ -217,7 +234,7 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
       data: {
         orderNumber,
         fullName: data.fullName,
-        email: data.email,
+        email: orderEmail,
         phone: data.phone,
         type: data.type,
         status: 'PENDING',
@@ -225,7 +242,7 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
         amount,
         subdomain: normalizedSubdomain || null,
         note: data.note,
-        userId: (req as any).user?.userId || null,
+        userId: authenticatedUserId,
       },
     });
     logger.info(`Đã tạo đơn hàng ${orderNumber} - ${amount} VNĐ`);
@@ -539,13 +556,26 @@ export async function getOrderStatus(req: Request, res: Response, next: NextFunc
   try {
     const { orderNumber } = req.params;
     const userId = req.user?.userId;
-    const order = await prisma.order.findUnique({
+    let order = await prisma.order.findUnique({
       where: { orderNumber },
       include: { template: { select: { name: true, slug: true, thumbnail: true } } },
     });
 
     if (!order) {
       return res.status(404).json({ success: false, error: { message: 'Không tìm thấy đơn hàng' } });
+    }
+
+    // Repair legacy checkout records that were created without cookies. The
+    // authenticated token email must match exactly, so an order number alone
+    // is never enough to claim or read another customer's order.
+    if (!order.userId && userId && req.user?.email?.trim().toLowerCase() === order.email.trim().toLowerCase()) {
+      const repaired = await prisma.order.update({
+        where: { id: order.id },
+        data: { userId },
+        include: { template: { select: { name: true, slug: true, thumbnail: true } } },
+      });
+      order = repaired;
+      logger.info(`[OrderRepair] Đã gắn lại đơn ${orderNumber} cho tài khoản ${req.user?.email}`);
     }
 
     if (req.user?.role !== 'SUPER_ADMIN' && order.userId !== userId) {

@@ -580,7 +580,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
       {/* Main Nav Bar (Dark Blue #0D3F8D + Red Active #D8232A) */}
       <div className="w-full bg-[#0D3F8D] text-white">
         <div className={`${MAX_W} mx-auto px-4 flex items-center justify-between`}>
-          <nav className="hidden lg:flex items-center text-xs font-bold uppercase tracking-wider">
+          <nav className="hidden lg:flex items-center text-xs font-bold uppercase tracking-wider whitespace-nowrap">
             {[
               { id: 'home', label: 'TRANG CHỦ' },
               { id: 'biet-thu', label: 'BIỆT THỰ' },
@@ -595,7 +595,7 @@ export default function MinimalTemplate({ template, viewport = 'desktop', initia
                 <button
                   key={navItem.id}
                   onClick={() => navigate(navItem.id)}
-                  className={`px-4 py-3.5 transition-all cursor-pointer ${
+                  className={`whitespace-nowrap px-4 py-3.5 transition-all cursor-pointer ${
                     isActive
                       ? 'bg-[#D8232A] text-white font-black shadow-inner'
                       : 'text-white/90 hover:bg-blue-900/60 hover:text-white'

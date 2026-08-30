@@ -63,19 +63,20 @@ async function writeAuthAudit(
 export async function register(req: Request, res: Response, next: NextFunction) {
   try {
     const data = registerSchema.parse(req.body);
+    const normalizedEmail = data.email.trim().toLowerCase();
 
     // Kiểm tra chủ động xem Email hoặc Phone đã tồn tại chưa
     const existingUser = await prisma.user.findFirst({
       where: {
         OR: [
-          { email: data.email },
+          { email: normalizedEmail },
           ...(data.phone ? [{ phone: data.phone }] : []),
         ],
       },
     });
 
     if (existingUser) {
-      const field = existingUser.email === data.email ? 'Email' : 'Số điện thoại';
+      const field = existingUser.email === normalizedEmail ? 'Email' : 'Số điện thoại';
       return res.status(409).json({
         success: false,
         error: {
@@ -91,7 +92,7 @@ export async function register(req: Request, res: Response, next: NextFunction) 
     // Lưu User mới
     const newUser = await prisma.user.create({
       data: {
-        email: data.email,
+        email: normalizedEmail,
         passwordHash,
         fullName: data.fullName,
         phone: data.phone,

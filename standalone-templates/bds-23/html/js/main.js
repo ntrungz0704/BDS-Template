@@ -1,2 +1,8 @@
-// BDS-23 Client Script
-console.log('BDS-23 Minh Khai Apartments Loaded');
+// JavaScript logic for BĐS 23 — Sàn Giao Dịch Nhà Phố Homeo
+document.getElementById('contact-form')?.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const name = document.getElementById('name').value;
+  const phone = document.getElementById('phone').value;
+  alert('🎉 Cảm ơn quý khách ' + name + ' (' + phone + ')! Chuyên viên tư vấn sẽ liên hệ lại trong ít phút.');
+  this.reset();
+});

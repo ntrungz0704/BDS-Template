@@ -1,5 +1,4 @@
-/* BDS-17 Custom Stylesheet */
-:root {
-  --primary-bronze: #9A7B4F;
-  --primary-bronze-dark: #855828;
-}
+/* CSS3 Custom Stylesheet for BĐS 17 — Cổng Thông Tin Bất Động Sản Số 1 */
+html { scroll-behavior: smooth; }
+body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+.card-hover:hover { transform: translateY(-4px); transition: all 0.3s ease; }

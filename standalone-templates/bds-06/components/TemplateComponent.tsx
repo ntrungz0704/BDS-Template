@@ -644,111 +644,111 @@ export default function IndustrialTemplate({
       </div>
 
       {/* Main Navbar */}
-      <div className={`${MAX_W} mx-auto px-4 py-3.5 flex items-center justify-between gap-4`}>
+      <div className={`${MAX_W} mx-auto px-4 py-3 flex items-center justify-between gap-3`}>
         {/* Brand Logo */}
         <div 
           onClick={() => navigate('home')}
-          className="flex items-center gap-3 cursor-pointer group"
+          className="flex items-center gap-2.5 cursor-pointer group shrink-0"
         >
-          <div className="w-10 h-10 rounded-sm bg-gradient-to-br from-[#D8232A] to-[#B91C1C] flex items-center justify-center text-white font-black shadow-lg shadow-red-900/40 group-hover:scale-105 transition-transform">
+          <div className="w-10 h-10 rounded-sm bg-gradient-to-br from-[#D8232A] to-[#B91C1C] flex items-center justify-center text-white font-black shadow-lg shadow-red-900/40 group-hover:scale-105 transition-transform shrink-0">
             <Building2 size={22} />
           </div>
-          <div>
-            <span className="text-base sm:text-lg font-black tracking-tight block leading-tight text-white group-hover:text-red-400 transition-colors">
+          <div className="whitespace-nowrap">
+            <span className="text-sm sm:text-base font-black tracking-tight block leading-tight text-white group-hover:text-red-400 transition-colors">
               GRAND RIVERSIDE PARK
             </span>
-            <span className="text-[10px] tracking-widest text-amber-400 block uppercase font-bold">
-              ĐẠI ĐÔ THỊ SINH THÁI CAO CẤP
+            <span className="text-[9px] sm:text-[10px] tracking-widest text-amber-400 block uppercase font-bold">
+              ĐẠI ĐÔ THỊ SINH THÁI 120HA
             </span>
           </div>
         </div>
 
         {/* Desktop Menu Nav */}
-        <nav className="hidden lg:flex items-center gap-5 text-xs font-bold uppercase tracking-wider text-slate-200">
+        <nav className="hidden lg:flex items-center gap-2 xl:gap-4 text-[11px] xl:text-xs font-bold uppercase tracking-wider text-slate-200 whitespace-nowrap">
           <button 
             onClick={() => navigate('home')} 
-            className={`transition-colors hover:text-red-400 ${currentPage === 'home' ? 'text-red-500 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-red-400 ${currentPage === 'home' ? 'text-red-500 font-extrabold' : ''}`}
           >
             Trang Chủ
           </button>
           <button 
             onClick={() => navigate('can-ho')} 
-            className={`transition-colors hover:text-red-400 ${currentPage === 'can-ho' ? 'text-red-500 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-red-400 ${currentPage === 'can-ho' ? 'text-red-500 font-extrabold' : ''}`}
           >
             Căn Hộ
           </button>
           <button 
             onClick={() => navigate('shophouse')} 
-            className={`transition-colors hover:text-red-400 ${currentPage === 'shophouse' ? 'text-red-500 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-red-400 ${currentPage === 'shophouse' ? 'text-red-500 font-extrabold' : ''}`}
           >
             Shophouse
           </button>
           <button 
             onClick={() => navigate('biet-thu')} 
-            className={`transition-colors hover:text-red-400 ${currentPage === 'biet-thu' ? 'text-red-500 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-red-400 ${currentPage === 'biet-thu' ? 'text-red-500 font-extrabold' : ''}`}
           >
             Biệt Thự
           </button>
           <button 
             onClick={() => navigate('tien-ich')} 
-            className={`transition-colors hover:text-red-400 ${currentPage === 'tien-ich' ? 'text-red-500 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-red-400 ${currentPage === 'tien-ich' ? 'text-red-500 font-extrabold' : ''}`}
           >
             Tiện Ích
           </button>
           <button 
             onClick={() => navigate('chinh-sach')} 
-            className={`transition-colors hover:text-red-400 ${currentPage === 'chinh-sach' ? 'text-red-500 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-red-400 ${currentPage === 'chinh-sach' ? 'text-red-500 font-extrabold' : ''}`}
           >
             Chính Sách
           </button>
           <button 
             onClick={() => navigate('thu-vien')} 
-            className={`transition-colors hover:text-red-400 ${currentPage === 'thu-vien' ? 'text-red-500 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-red-400 ${currentPage === 'thu-vien' ? 'text-red-500 font-extrabold' : ''}`}
           >
-            Thư Viện Ảnh
+            Thư Viện
           </button>
           <button 
             onClick={() => navigate('tin-tuc')} 
-            className={`transition-colors hover:text-red-400 ${currentPage === 'tin-tuc' || currentPage === 'news-detail' ? 'text-red-500 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-red-400 ${currentPage === 'tin-tuc' || currentPage === 'news-detail' ? 'text-red-500 font-extrabold' : ''}`}
           >
             Tin Tức
           </button>
           <button 
             onClick={() => navigate('ky-gui')} 
-            className={`transition-colors hover:text-red-400 ${currentPage === 'ky-gui' ? 'text-red-500 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-red-400 ${currentPage === 'ky-gui' ? 'text-red-500 font-extrabold' : ''}`}
           >
             Ký Gửi
           </button>
           <button 
             onClick={() => navigate('lien-he')} 
-            className={`transition-colors hover:text-red-400 ${currentPage === 'lien-he' ? 'text-red-500 font-extrabold' : ''}`}
+            className={`whitespace-nowrap px-1.5 py-1 transition-colors hover:text-red-400 ${currentPage === 'lien-he' ? 'text-red-500 font-extrabold' : ''}`}
           >
             Liên Hệ
           </button>
         </nav>
 
         {/* CTA & Mobile Toggle */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 shrink-0">
           <a
             href="tel:0919006030"
-            className="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-sm bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-slate-700 transition-colors"
+            className="hidden xl:flex items-center gap-1.5 px-3 py-2 rounded-sm bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-slate-700 transition-colors whitespace-nowrap shrink-0"
           >
-            <Phone size={14} className="text-emerald-400 animate-pulse" />
+            <Phone size={13} className="text-red-400 animate-pulse shrink-0" />
             <span>0919 006 030</span>
           </a>
           <button
             onClick={() => {
-              const el = document.getElementById('lead-form-section');
+              const el = document.getElementById('booking-lead-form');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
               else navigate('lien-he');
             }}
-            className="px-4 py-2.5 bg-[#D8232A] hover:bg-[#b91c1c] text-white text-xs font-extrabold rounded-sm shadow-lg shadow-red-900/40 transition-all uppercase tracking-wider hover:scale-105 active:scale-95"
+            className="px-3.5 py-2 bg-gradient-to-r from-[#D8232A] to-[#B91C1C] hover:from-red-700 hover:to-red-800 text-white text-xs font-black rounded-sm shadow-lg transition-all uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 active:scale-95"
           >
-            Nhận Bảng Giá VIP
+            Tải Bảng Giá F1
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-sm bg-slate-800 text-white lg:hidden hover:bg-slate-700"
+            className="p-2 rounded-sm bg-slate-800 text-white lg:hidden hover:bg-slate-700 shrink-0"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

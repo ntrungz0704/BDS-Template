@@ -482,7 +482,7 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
         </div>
 
         {/* Navigation Menu */}
-        <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider">
+        <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider whitespace-nowrap">
           {[
             { id: 'home', label: 'Trang Chủ' },
             { id: 'dat-du-an', label: 'Đất Dự Án' },
@@ -496,7 +496,7 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
               <button
                 key={navItem.id}
                 onClick={() => navigate(navItem.id)}
-                className={`px-3.5 py-2 rounded-md transition-all cursor-pointer ${
+                className={`whitespace-nowrap px-3 py-2 rounded-md transition-all cursor-pointer ${
                   isActive
                     ? 'text-[#0084FF] font-black border-b-2 border-[#0084FF] rounded-none'
                     : 'text-slate-600 hover:text-[#0084FF] hover:bg-slate-50'
@@ -509,16 +509,16 @@ export default function UrbanTemplate({ template, viewport = 'desktop', initialP
         </nav>
 
         {/* Right Action Buttons */}
-        <div className="hidden sm:flex items-center gap-2.5">
+        <div className="hidden sm:flex items-center gap-2.5 shrink-0">
           <button
             onClick={() => navigate('contact')}
-            className="px-4 py-2 bg-[#0084FF] hover:bg-blue-600 text-white font-bold text-xs uppercase tracking-wider rounded-sm shadow-sm transition active:scale-95 cursor-pointer"
+            className="px-4 py-2 bg-[#0084FF] hover:bg-blue-600 text-white font-bold text-xs uppercase tracking-wider rounded-sm shadow-sm transition active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
           >
             LIÊN HỆ NGAY
           </button>
           <button
             onClick={() => navigate('contact')}
-            className="px-4 py-2 bg-[#D83A3A] hover:bg-red-600 text-white font-bold text-xs uppercase tracking-wider rounded-sm shadow-sm transition active:scale-95 cursor-pointer"
+            className="px-4 py-2 bg-[#D83A3A] hover:bg-red-600 text-white font-bold text-xs uppercase tracking-wider rounded-sm shadow-sm transition active:scale-95 cursor-pointer whitespace-nowrap shrink-0"
           >
             NHẬN ƯU ĐÃI
           </button>

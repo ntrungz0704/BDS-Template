@@ -1,2 +1,8 @@
-// BDS-22 Client Script
-console.log('BDS-22 HappyLand Resort Loaded');
+// JavaScript logic for BĐS 22 — ZoHotels & Happy Land Nha Trang
+document.getElementById('contact-form')?.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const name = document.getElementById('name').value;
+  const phone = document.getElementById('phone').value;
+  alert('🎉 Cảm ơn quý khách ' + name + ' (' + phone + ')! Chuyên viên tư vấn sẽ liên hệ lại trong ít phút.');
+  this.reset();
+});

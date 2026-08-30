@@ -884,7 +884,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           </div>
         </div>
 
-        <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-slate-700">
+        <nav className="hidden lg:flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-slate-700 whitespace-nowrap">
           {[
             { id: 'home', label: 'Trang Chủ' },
             { id: 'about', label: 'Giới Thiệu' },
@@ -901,7 +901,7 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
               <button
                 key={navItem.id}
                 onClick={() => navigate(navItem.id)}
-                className={`px-3 py-1.5 rounded-lg cursor-pointer transition-all duration-200 ${
+                className={`whitespace-nowrap px-3 py-1.5 rounded-lg cursor-pointer transition-all duration-200 ${
                   isActive
                     ? 'bg-blue-600 text-white font-black shadow-sm ring-2 ring-blue-600/30'
                     : 'text-slate-700 hover:text-blue-600 hover:bg-slate-100/80 font-bold'
@@ -913,10 +913,10 @@ export default function LuxuryTemplate({ template, viewport = 'desktop', initial
           })}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => navigate('ky-gui')}
-            className={`hidden sm:flex px-4 py-2 text-white font-bold text-xs rounded-lg shadow-sm transition items-center gap-1.5 cursor-pointer ${
+            className={`hidden sm:flex px-4 py-2 text-white font-bold text-xs rounded-lg shadow-sm transition items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
               currentPage === 'ky-gui'
                 ? 'bg-amber-500 hover:bg-amber-600 ring-2 ring-amber-400 font-black'
                 : 'bg-blue-600 hover:bg-blue-700 active:scale-95'

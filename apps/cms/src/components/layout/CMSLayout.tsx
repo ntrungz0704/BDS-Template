@@ -218,6 +218,10 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
           router.replace('/login');
           return;
         }
+        if (user.role === 'STAFF' && router.pathname !== '/leads') {
+          router.replace('/leads');
+          return;
+        }
         setUserInfo({ fullName: user.fullName, email: user.email, role: user.role });
         setAuthChecked(true);
       } catch {
@@ -225,7 +229,7 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
       }
     };
     verifySession();
-  }, [router]);
+  }, [router, router.pathname]);
 
   // ── Fetch Domain / Subdomain Config ─────────────────────────────────────────
   const { data: domainData } = useQuery({
@@ -297,6 +301,9 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
   );
 
   const sidebarWidth = collapsed ? 'w-[60px]' : 'w-[240px]';
+  const visibleNavItems = userInfo?.role === 'STAFF'
+    ? NAV_ITEMS.filter((item) => item.href === '/leads')
+    : NAV_ITEMS;
 
   // Hiển thị màn hình loading trong khi kiểm tra auth
   if (!authChecked) {
@@ -413,7 +420,7 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
 
         {/* Navigation */}
         <nav className="flex-1 py-2 overflow-y-auto overflow-x-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-          {NAV_ITEMS.map((item) => (
+          {visibleNavItems.map((item) => (
             <SidebarNavItem
               key={item.href}
               item={item}

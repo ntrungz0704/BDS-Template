@@ -1,17 +1,16 @@
 -- ========================================================
--- DATABASE SCHEMA CHO TEMPLATE BDS-12 (SONASEA VÂN ĐỒN HARBOR CITY - CEO GROUP)
--- Tạo database: bds_12_sonasea_vandon
+-- DATABASE SCHEMA CHO TEMPLATE MEGA DEVELOPER PORTAL (BDS-12)
+-- Tạo database: bds_mega_developer_portal
 -- ========================================================
 
-CREATE DATABASE IF NOT EXISTS `bds_12_sonasea_vandon` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `bds_12_sonasea_vandon`;
+CREATE DATABASE IF NOT EXISTS `bds_mega_developer_portal` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `bds_mega_developer_portal`;
 
--- Bảng lưu danh sách Bất Động Sản / Shophouse / Biệt Thự
+-- Bảng lưu danh sách Bất Động Sản
 CREATE TABLE IF NOT EXISTS `properties` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `title` VARCHAR(255) NOT NULL,
   `slug` VARCHAR(255) NOT NULL UNIQUE,
-  `type` VARCHAR(100) DEFAULT 'Shophouse Biển',
   `price` VARCHAR(100) NOT NULL,
   `area` VARCHAR(50) NOT NULL,
   `location` VARCHAR(255) NOT NULL,
@@ -20,19 +19,18 @@ CREATE TABLE IF NOT EXISTS `properties` (
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Thêm dữ liệu mẫu các dòng sản phẩm Sonasea Vân Đồn
-INSERT INTO `properties` (`title`, `slug`, `type`, `price`, `area`, `location`, `image`, `description`) VALUES
-('Singapore Shophouse Mặt Tiền Đại Lộ 30m', 'singapore-shophouse-mat-tien-dai-lo-30m', 'Shophouse 480m²', '7.85 Tỷ VNĐ', '120 m² (XD: 480m²)', 'Đại Lộ Ánh Sáng, Sonasea Vân Đồn', 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1000&q=80', 'Dòng sản phẩm Shophouse phong cách Singapore tối ưu hóa công năng vừa ở vừa kinh doanh sinh lời vượt trội.'),
-('Căn Hộ Khách Sạn Wyndham Garden Sonasea', 'can-ho-khach-san-wyndham-garden-sonasea', 'Condotel 5 Sao', '2.15 Tỷ VNĐ', '45.5 m²', 'Vịnh Bái Tử Long, Sonasea Vân Đồn', 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1000&q=80', 'Tổ hợp condotel mặt biển đầu tiên tại Vân Đồn được quản lý bởi thương hiệu Wyndham Hotel Group.'),
-('Nhà Phố Thương Mại Silk Path Vân Đồn', 'nha-pho-thuong-mai-silk-path-van-don', 'Phố Đi Bộ', '6.20 Tỷ VNĐ', '100 m² (XD: 360m²)', 'Phân khu Silk Path, Sonasea Vân Đồn', 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1000&q=80', 'Nơi quy tụ hàng trăm thương hiệu ẩm thực, thời trang và giải trí hàng đầu.'),
-('Biệt Thự Đơn Lập Sonasea Ocean Villa', 'biet-thu-don-lap-sonasea-ocean-villa', 'Biệt Thự Đảo Cọ', '16.50 Tỷ VNĐ', '350 m²', 'Bờ biển riêng 2.2km, Sonasea Vân Đồn', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1000&q=80', 'Dinh thự nghỉ dưỡng biệt lập trên đảo cọ kỳ vĩ dành riêng cho các chủ nhân danh giá.');
+-- Thêm dữ liệu mẫu
+INSERT INTO `properties` (`title`, `slug`, `price`, `area`, `location`, `image`, `description`) VALUES
+('Biệt thự sang trọng view thoáng mát', 'biet-thu-view-thoang-mat', '5.5 Tỷ VNĐ', '300 m²', 'Khu Đô Thị Mới', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80', 'Biệt thự thiết kế hiện đại sang trọng, đầy đủ tiện nghi.'),
+('Nhà phố mặt tiền thương mại kinh doanh', 'nha-pho-mat-tien-kinh-doanh', '8.2 Tỷ VNĐ', '140 m²', 'Trung tâm thành phố', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', 'Thuận tiện mở văn phòng, spa hoặc showroom kinh doanh.'),
+('Đất nền phân lô sổ đỏ sẵn sàng công chứng', 'dat-nen-phan-lo-so-do', '1.9 Tỷ VNĐ', '120 m²', 'Khu dân cư hiện hữu', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80', 'Hạ tầng hoàn thiện điện âm nước máy, xây dựng tự do.');
 
--- Bảng lưu thông tin khách hàng nhận bảng giá
-CREATE TABLE IF NOT EXISTS `leads` (
+-- Bảng lưu thông tin khách hàng gửi từ Form liên hệ
+CREATE TABLE IF NOT EXISTS `contacts` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `name` VARCHAR(255) NOT NULL,
   `phone` VARCHAR(50) NOT NULL,
   `email` VARCHAR(100),
-  `unit_name` VARCHAR(255),
+  `message` TEXT,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

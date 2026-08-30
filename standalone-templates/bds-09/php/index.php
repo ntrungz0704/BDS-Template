@@ -1,18 +1,15 @@
 <?php
 require_once 'config/db.php';
 
-// Lấy danh sách sản phẩm từ MySQL nếu có kết nối, hoặc dùng dữ liệu demo BDS-09
+// Lấy danh sách BĐS từ MySQL nếu có kết nối, hoặc dùng mảng demo
 if ($pdo) {
-    $stmt = $pdo->query("SELECT * FROM properties ORDER BY id ASC LIMIT 6");
+    $stmt = $pdo->query("SELECT * FROM properties ORDER BY id DESC LIMIT 6");
     $properties = $stmt->fetchAll();
 } else {
     $properties = [
-        ['id' => 1, 'title' => 'Studio Suite Panorama #ST-1808', 'type' => 'Studio 45.5m²', 'price' => '2.35 Tỷ VNĐ', 'area' => '45.5 m²', 'location' => 'Bán Đảo An Viên, Nha Trang', 'image' => 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1000&q=80'],
-        ['id' => 2, 'title' => 'Executive 1BR Oceanview #EX-2205', 'type' => '1 Phòng Ngủ 58.2m²', 'price' => '3.10 Tỷ VNĐ', 'area' => '58.2 m²', 'location' => 'Bán Đảo An Viên, Nha Trang', 'image' => 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=1000&q=80'],
-        ['id' => 3, 'title' => 'Signature 2BR Grand Corner #SG-2802', 'type' => '2 Phòng Ngủ 78.6m²', 'price' => '4.45 Tỷ VNĐ', 'area' => '78.6 m²', 'location' => 'Bán Đảo An Viên, Nha Trang', 'image' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000&q=80'],
-        ['id' => 4, 'title' => 'Royal Ocean Suite #RY-3501', 'type' => '3 Phòng Ngủ 115.8m²', 'price' => '6.85 Tỷ VNĐ', 'area' => '115.8 m²', 'location' => 'Bán Đảo An Viên, Nha Trang', 'image' => 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1000&q=80'],
-        ['id' => 5, 'title' => 'Imperial Penthouse #PH-3901 (Đỉnh Tháp)', 'type' => 'Sky Villa 268m²', 'price' => '18.50 Tỷ VNĐ', 'area' => '268 m²', 'location' => 'Bán Đảo An Viên, Nha Trang', 'image' => 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1000&q=80'],
-        ['id' => 6, 'title' => 'Dual Key Harmony #DK-1604', 'type' => 'Dual Key 92.5m²', 'price' => '5.20 Tỷ VNĐ', 'area' => '92.5 m²', 'location' => 'Bán Đảo An Viên, Nha Trang', 'image' => 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1000&q=80'],
+        ['title' => 'Biệt thự sang trọng view thoáng mát', 'slug' => 'biet-thu-view-thoang-mat', 'price' => '5.5 Tỷ VNĐ', 'area' => '300 m²', 'location' => 'Khu Đô Thị Mới', 'image' => 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80'],
+        ['title' => 'Nhà phố mặt tiền thương mại kinh doanh', 'slug' => 'nha-pho-mat-tien-kinh-doanh', 'price' => '8.2 Tỷ VNĐ', 'area' => '140 m²', 'location' => 'Trung tâm thành phố', 'image' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80'],
+        ['title' => 'Đất nền phân lô sổ đỏ sẵn sàng công chứng', 'slug' => 'dat-nen-phan-lo-so-do', 'price' => '1.9 Tỷ VNĐ', 'area' => '120 m²', 'location' => 'Khu dân cư hiện hữu', 'image' => 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80'],
     ];
 }
 ?>
@@ -21,80 +18,130 @@ if ($pdo) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AN VIÊN RESIDENCE — PHP & MySQL Standalone Edition</title>
+  <title>Classic Heritage Architecture — Website Bất Động Sản PHP & MySQL</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-[#FDFBF7] text-slate-800 antialiased min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-slate-950">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
 
-  <!-- HEADER -->
-  <header class="sticky top-0 z-40 bg-[#0B132B] text-white border-b border-amber-500/30 shadow-2xl">
-    <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-4">
-      <a href="index.php" class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-sm bg-gradient-to-br from-[#D4AF37] to-[#92400E] p-0.5 flex items-center justify-center">
-          <div class="w-full h-full bg-[#0B132B] rounded-[10px] flex items-center justify-center">
-            <i data-lucide="anchor" class="w-5 h-5 text-[#D4AF37]"></i>
-          </div>
-        </div>
-        <div>
-          <span class="text-lg font-serif font-black tracking-wider text-[#FDE047]">AN VIÊN RESIDENCE</span>
-          <span class="text-[9px] tracking-widest text-[#D4AF37] block uppercase font-bold">BIỂU TƯỢNG NHA TRANG HIỆN ĐẠI</span>
-        </div>
+  <!-- Header PHP -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.php" class="flex items-center gap-2 font-black text-xl text-blue-600">
+        <span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-xs">TB</span>
+        <span>TEMPLATES<strong class="text-slate-900">BDS</strong></span>
       </a>
-
       <div class="flex items-center gap-3">
-        <a href="tel:0919006030" class="px-3.5 py-2 rounded-sm bg-amber-500/10 border border-amber-500/40 text-[#FDE047] text-xs font-black">
+        <a href="tel:0919006030" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow">
           Hotline: 0919 006 030
         </a>
       </div>
     </div>
   </header>
 
-  <!-- HERO -->
-  <section class="relative py-20 px-4 bg-[#070D1E] text-white text-center">
-    <div class="max-w-3xl mx-auto space-y-4">
-      <span class="px-4 py-1.5 rounded-sm bg-slate-900 text-[#FDE047] text-xs font-bold uppercase tracking-widest border border-amber-500/40 inline-block">
-        DỰ ÁN CĂN HỘ CAO CẤP NHA TRANG
-      </span>
-      <h1 class="text-3xl sm:text-5xl font-serif font-black uppercase text-white">
-        BIỂU TƯỢNG CỦA NHA TRANG HIỆN ĐẠI
-      </h1>
-      <p class="text-slate-300 text-xs sm:text-sm">
-        Tổ hợp căn hộ nghỉ dưỡng và bến du thuyền 5 sao đẳng cấp quốc tế tại bán đảo An Viên.
-      </p>
-    </div>
-  </section>
+  <!-- Main Content -->
+  <main class="flex-1 w-full space-y-12 pb-16">
+    <section class="py-16 px-4 bg-slate-900 text-white text-center">
+      <h1 class="text-3xl sm:text-5xl font-black uppercase mb-4">Classic Heritage Architecture</h1>
+      <p class="text-slate-300 max-w-xl mx-auto text-sm">Tân cổ điển Châu Âu · Lâu đài quý phái · Indochine</p>
+    </section>
 
-  <!-- DANH SÁCH SẢN PHẨM TỪ MYSQL -->
-  <section class="max-w-7xl mx-auto px-4 py-12 space-y-8">
-    <div class="text-center space-y-2">
-      <h2 class="text-2xl font-serif font-black text-[#B45309] uppercase">DANH MỤC CĂN HỘ CAO CẤP</h2>
-      <div class="w-20 h-0.5 bg-[#D4AF37] mx-auto"></div>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <?php foreach ($properties as $p): ?>
-        <div class="bg-white rounded-md overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
-          <img src="<?php echo htmlspecialchars($p['image']); ?>" alt="" class="w-full h-56 object-cover">
-          <div class="p-5 space-y-2">
-            <span class="text-[10px] font-black text-[#B45309] uppercase"><?php echo htmlspecialchars($p['type'] ?? 'Căn Hộ 5★'); ?></span>
-            <h3 class="text-sm font-black text-slate-900 uppercase"><?php echo htmlspecialchars($p['title']); ?></h3>
-            <p class="text-xs text-slate-500"><?php echo htmlspecialchars($p['location']); ?></p>
-            <div class="pt-2 border-t flex justify-between items-center text-xs">
-              <span class="font-black text-[#B45309] text-sm"><?php echo htmlspecialchars($p['price']); ?></span>
-              <span class="text-slate-400 font-bold"><?php echo htmlspecialchars($p['area']); ?></span>
+    <!-- Danh sách BĐS từ MySQL -->
+    <section class="max-w-7xl mx-auto px-4 space-y-6">
+      <h2 class="text-2xl font-black text-slate-900 uppercase text-center">DANH SÁCH BẤT ĐỘNG SẢN</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <?php foreach ($properties as $item): ?>
+          <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition">
+            <img src="<?php echo htmlspecialchars($item['image']); ?>" alt="" class="w-full h-48 object-cover">
+            <div class="p-4 space-y-2">
+              <h3 class="font-bold text-sm text-slate-900"><?php echo htmlspecialchars($item['title']); ?></h3>
+              <p class="text-xs text-slate-500"><?php echo htmlspecialchars($item['location']); ?></p>
+              <div class="flex justify-between items-center pt-2 border-t text-xs">
+                <span class="font-black text-blue-600 text-sm"><?php echo htmlspecialchars($item['price']); ?></span>
+                <span class="text-slate-500"><?php echo htmlspecialchars($item['area']); ?></span>
+              </div>
             </div>
           </div>
-        </div>
-      <?php endforeach; ?>
-    </div>
-  </section>
+        <?php endforeach; ?>
+      </div>
+    </section>
 
-  <!-- FOOTER -->
-  <footer class="w-full bg-[#07132B] text-white py-6 px-4 text-xs text-center border-t border-slate-800">
-    © 2026 Bản quyền thuộc về <strong>TEMPLATEBDS</strong> — Mẫu Giao Diện: <strong>BDS-09 (PHP & MySQL Standalone)</strong>
+    <!-- Form Liên Hệ PHP -->
+    <section class="max-w-3xl mx-auto px-4">
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-md space-y-4">
+        <h3 class="text-lg font-black text-slate-900 uppercase text-center">GỬI YÊU CẦU TƯ VẤN</h3>
+        <form action="api/contact.php" method="POST" class="space-y-3 text-xs">
+          <input type="text" name="name" placeholder="Họ và tên (*)" required class="w-full p-3 bg-slate-50 border rounded-xl">
+          <input type="tel" name="phone" placeholder="Số điện thoại (*)" required class="w-full p-3 bg-slate-50 border rounded-xl font-bold text-blue-600">
+          <textarea name="message" rows="3" placeholder="Nội dung cần tư vấn..." class="w-full p-3 bg-slate-50 border rounded-xl"></textarea>
+          <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl">
+            GỬI THÔNG TIN
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer PHP -->
+  <footer class="w-full bg-[#07132B] text-slate-300 text-xs pt-12 pb-6 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-white/10">
+      <div class="md:col-span-5 space-y-3">
+        <h4 class="font-black text-sm text-white uppercase tracking-wider">
+          <span class="text-[#0084FF]">TEMPLATES</span><span class="text-white">BDS</span>
+        </h4>
+        <p class="text-slate-400 text-xs leading-relaxed max-w-sm">
+          Kho mẫu website bất động sản cao cấp số 1 Việt Nam. Tối ưu chuyển đổi, chuẩn SEO và tích hợp hệ thống CMS quản trị đa kênh.
+        </p>
+        <div class="space-y-1.5 text-xs text-slate-300 pt-1">
+          <div>📍 Địa chỉ: <strong class="text-white font-medium">180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội</strong></div>
+          <div>📞 Hotline 1: <a href="tel:0919006030" class="text-white font-bold font-mono hover:text-blue-400">0919 006 030</a></div>
+          <div>📞 Hotline 2: <a href="tel:0983312219" class="text-white font-bold font-mono hover:text-emerald-400">0983 312 219</a> (24/7)</div>
+          <div>✉️ Email: <a href="mailto:ntrungz0704@gmail.com" class="text-white hover:text-blue-400">ntrungz0704@gmail.com</a></div>
+          <div>⏰ Giờ làm việc: <strong class="text-white font-medium">8:00 - 20:00 (T2 - CN)</strong></div>
+        </div>
+
+        <!-- 4 Social Icons -->
+        <div class="flex items-center gap-2.5 pt-2">
+          <a href="https://zalo.me/0919006030" target="_blank" class="w-9 h-9 rounded-2xl bg-[#0068FF] text-white flex items-center justify-center font-black text-[10px]">ZALO</a>
+          <a href="https://www.facebook.com/groups/847532091275214" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1877F2] text-white flex items-center justify-center font-bold text-sm">f</a>
+          <a href="https://www.youtube.com/@tungchuofficial" target="_blank" class="w-9 h-9 rounded-2xl bg-[#E62117] text-white flex items-center justify-center text-xs">▶</a>
+          <a href="https://www.tiktok.com/@editnhadat" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1E293B] text-[#A78BFA] flex items-center justify-center text-xs">🎵</a>
+        </div>
+      </div>
+
+      <div class="md:col-span-2 space-y-3">
+        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">VỀ CHÚNG TÔI</h4>
+        <div class="space-y-2 text-slate-400">
+          <div><a href="index.php" class="hover:text-blue-400">Trang chủ</a></div>
+          <div><a href="#san-pham" class="hover:text-blue-400">Sản phẩm BĐS</a></div>
+          <div><a href="#du-an" class="hover:text-blue-400">Dự án mới</a></div>
+          <div><a href="#tin-tuc" class="hover:text-blue-400">Tin tức & Sự kiện</a></div>
+        </div>
+      </div>
+
+      <div class="md:col-span-2 space-y-3">
+        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">DANH MỤC</h4>
+        <div class="space-y-2 text-slate-400">
+          <div><a href="#san-pham" class="hover:text-blue-400">Đất dự án</a></div>
+          <div><a href="#san-pham" class="hover:text-blue-400">Đất nền</a></div>
+          <div><a href="#san-pham" class="hover:text-blue-400">Biệt thự biển</a></div>
+          <div><a href="#san-pham" class="hover:text-blue-400">Nhà phố</a></div>
+        </div>
+      </div>
+
+      <div class="md:col-span-3 space-y-3">
+        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">CHÍNH SÁCH</h4>
+        <div class="space-y-2 text-slate-400 text-xs">
+          <div>• Bàn giao 100% mã nguồn sạch</div>
+          <div>• Bảo hành & Hỗ trợ kỹ thuật trọn đời</div>
+          <div>• Hỗ trợ cài đặt lên Hosting cPanel / XAMPP</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 pt-6 text-center text-[11px] text-slate-400">
+      <p>© 2026 Bản quyền thuộc về <strong class="text-white">TEMPLATEBDS</strong> — Mẫu Giao Diện: BDS-09.</p>
+    </div>
   </footer>
 
-  <script>lucide.createIcons();</script>
 </body>
 </html>

@@ -1,5 +1,4 @@
-/* BDS-21 Custom Stylesheet */
-:root {
-  --primary-cobalt: #1E40AF;
-  --accent-coral: #E11D48;
-}
+/* CSS3 Custom Stylesheet for BĐS 21 — Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội */
+html { scroll-behavior: smooth; }
+body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+.card-hover:hover { transform: translateY(-4px); transition: all 0.3s ease; }
