@@ -45,24 +45,15 @@ const SOURCE_COMP_DIR = path.join(ROOT_DIR, 'apps/marketplace/src/components/dem
 const DESIGN_SYSTEM_PATH = path.join(ROOT_DIR, 'apps/marketplace/src/components/demo/design-system.ts');
 
 async function exportAll() {
-  console.log('🚀 Bắt đầu xuất 24 templates thành các gói độc lập: Next.js + React + HTML5/CSS3/JS + PHP & MySQL...');
+  console.log('🚀 Bắt đầu xuất 24 templates thành các gói độc lập: HTML5/CSS3/JS + PHP & MySQL...');
 
   fs.mkdirSync(OUTPUT_BASE, { recursive: true });
-
-  const designSystemContent = fs.readFileSync(DESIGN_SYSTEM_PATH, 'utf-8');
 
   for (const t of TEMPLATES) {
     const folderName = `bds-${t.num}`;
     const targetFolder = path.join(OUTPUT_BASE, folderName);
     console.log(`📁 Đang xuất [${t.num}/24]: ${folderName} (${t.name})...`);
 
-    // Create subfolders
-    fs.mkdirSync(path.join(targetFolder, 'components'), { recursive: true });
-    fs.mkdirSync(path.join(targetFolder, 'pages'), { recursive: true });
-    fs.mkdirSync(path.join(targetFolder, 'styles'), { recursive: true });
-    fs.mkdirSync(path.join(targetFolder, 'public'), { recursive: true });
-    fs.mkdirSync(path.join(targetFolder, 'lib'), { recursive: true });
-    
     // HTML5 & PHP subfolders
     const htmlDir = path.join(targetFolder, 'html');
     const phpDir = path.join(targetFolder, 'php');
@@ -71,227 +62,6 @@ async function exportAll() {
     fs.mkdirSync(path.join(phpDir, 'config'), { recursive: true });
     fs.mkdirSync(path.join(phpDir, 'api'), { recursive: true });
 
-    // 1. package.json độc lập
-    const pkgJson = {
-      name: `bds-${t.slug}`,
-      version: '1.0.0',
-      private: true,
-      description: `Website Bất Động Sản Cao Cấp - Mẫu ${t.name}`,
-      scripts: {
-        dev: 'next dev',
-        build: 'next build',
-        start: 'next start',
-        lint: 'next lint',
-      },
-      dependencies: {
-        next: '15.1.0',
-        react: '19.0.0',
-        'react-dom': '19.0.0',
-        'lucide-react': '^1.16.0',
-        'clsx': '^2.1.1',
-        'tailwind-merge': '^3.0.2',
-      },
-      devDependencies: {
-        typescript: '^5.7.2',
-        '@types/node': '^22.10.2',
-        '@types/react': '^19.0.2',
-        '@types/react-dom': '^19.0.2',
-        tailwindcss: '^3.4.17',
-        postcss: '^8.4.49',
-        autoprefixer: '^10.4.20',
-      },
-    };
-    fs.writeFileSync(path.join(targetFolder, 'package.json'), JSON.stringify(pkgJson, null, 2), 'utf-8');
-
-    // 2. tsconfig.json
-    const tsconfig = {
-      compilerOptions: {
-        target: 'es5',
-        lib: ['dom', 'dom.iterable', 'esnext'],
-        allowJs: true,
-        skipLibCheck: true,
-        strict: false,
-        noEmit: true,
-        esModuleInterop: true,
-        module: 'esnext',
-        moduleResolution: 'bundler',
-        resolveJsonModule: true,
-        isolatedModules: true,
-        jsx: 'preserve',
-        incremental: true,
-        paths: {
-          '@/*': ['./*'],
-        },
-      },
-      include: ['next-env.d.ts', '**/*.ts', '**/*.tsx'],
-      exclude: ['node_modules'],
-    };
-    fs.writeFileSync(path.join(targetFolder, 'tsconfig.json'), JSON.stringify(tsconfig, null, 2), 'utf-8');
-
-    // 3. tailwind.config.js
-    const tailwindConfig = `/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './lib/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
-  theme: {
-    extend: {
-      colors: {
-        brand: {
-          gold: '#C5A572',
-          navy: '#0F172A',
-          blue: '#2563EB',
-        }
-      }
-    },
-  },
-  plugins: [],
-};
-`;
-    fs.writeFileSync(path.join(targetFolder, 'tailwind.config.js'), tailwindConfig, 'utf-8');
-
-    // 4. postcss.config.js
-    const postcssConfig = `module.exports = {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-  },
-};
-`;
-    fs.writeFileSync(path.join(targetFolder, 'postcss.config.js'), postcssConfig, 'utf-8');
-
-    // 5. next.config.js
-    const nextConfig = `/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-  images: {
-    remotePatterns: [
-      { protocol: 'https', hostname: 'images.unsplash.com' },
-      { protocol: 'https', hostname: 'res.cloudinary.com' },
-      { protocol: 'https', hostname: 'via.placeholder.com' },
-      { protocol: 'https', hostname: 'placehold.co' },
-    ],
-  },
-};
-
-module.exports = nextConfig;
-`;
-    fs.writeFileSync(path.join(targetFolder, 'next.config.js'), nextConfig, 'utf-8');
-
-    // 6. .gitignore
-    const gitignore = `node_modules
-.next
-out
-.DS_Store
-*.pem
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.env*.local
-`;
-    fs.writeFileSync(path.join(targetFolder, '.gitignore'), gitignore, 'utf-8');
-
-    // 7. styles/globals.css
-    const globalsCss = `@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  -webkit-font-smoothing: antialiased;
-}
-`;
-    fs.writeFileSync(path.join(targetFolder, 'styles/globals.css'), globalsCss, 'utf-8');
-
-    // 8. lib/design-system.ts
-    fs.writeFileSync(path.join(targetFolder, 'lib/design-system.ts'), designSystemContent, 'utf-8');
-
-    // 9. lib/demo.ts
-    const demoHelper = `export function syncDemoUrl(slug: string, path: string) {
-  // Standalone mode
-}
-`;
-    fs.writeFileSync(path.join(targetFolder, 'lib/demo.ts'), demoHelper, 'utf-8');
-
-    // 10. Copy and adjust Template Component
-    const sourceCompPath = path.join(SOURCE_COMP_DIR, t.compFile);
-    let compCode = fs.readFileSync(sourceCompPath, 'utf-8');
-    compCode = compCode.replace(/from\s+['"].*?design-system['"]/g, "from '../lib/design-system'");
-    compCode = compCode.replace(/from\s+['"].*?demo['"]/g, "from '../lib/demo'");
-
-    fs.writeFileSync(path.join(targetFolder, 'components/TemplateComponent.tsx'), compCode, 'utf-8');
-
-    // 11. pages/_app.tsx
-    const appTsx = `import '@/styles/globals.css';
-import type { AppProps } from 'next/app';
-
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
-}
-`;
-    fs.writeFileSync(path.join(targetFolder, 'pages/_app.tsx'), appTsx, 'utf-8');
-
-    // 12. pages/_document.tsx
-    const docTsx = `import { Html, Head, Main, NextScript } from 'next/document';
-
-export default function Document() {
-  return (
-    <Html lang="vi">
-      <Head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
-      <body>
-        <Main />
-        <NextScript />
-      </body>
-    </Html>
-  );
-}
-`;
-    fs.writeFileSync(path.join(targetFolder, 'pages/_document.tsx'), docTsx, 'utf-8');
-
-    // 13. pages/index.tsx
-    const indexTsx = `import Head from 'next/head';
-import TemplateComponent from '@/components/TemplateComponent';
-
-export default function HomePage() {
-  const templateConfig = {
-    name: '${t.name}',
-    slug: '${t.slug}',
-    collectionSlug: '${t.slug}',
-  };
-
-  return (
-    <>
-      <Head>
-        <title>${t.name} — Bất Động Sản Cao Cấp</title>
-        <meta name="description" content="${t.desc}" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className="min-h-screen">
-        <TemplateComponent template={templateConfig} />
-      </main>
-    </>
-  );
-}
-`;
-    fs.writeFileSync(path.join(targetFolder, 'pages/index.tsx'), indexTsx, 'utf-8');
 
     // ─────────────────────────────────────────────────────────────
     // 14. TẠO GÓI THUẦN HTML5 + CSS3 + JAVASCRIPT ĐƠN GIẢN
@@ -762,26 +532,24 @@ exit;
 `;
     fs.writeFileSync(path.join(phpDir, 'HUONG_DAN_CAI_DAT_XAMPP_CPANEL.md'), phpGuide, 'utf-8');
 
-    // 16. README.md cập nhật cả 3 gói
-    const readmeContent = `# ${t.name} — Trọn Bộ Mã Nguồn Website BĐS Chuyên Nghiệp
+    // 16. README.md cập nhật 2 gói Landing Page
+    const readmeContent = `# ${t.name} — Trọn Bộ Landing Page BĐS Chuyên Nghiệp
 
 > **Mô tả:** ${t.desc}  
 > **Mã mẫu (Slug):** \`bds-${t.num}\` (\`${t.slug}\`)  
+> **Công nghệ:** HTML5, CSS3, JavaScript Thuần & PHP/MySQL
 
 ---
 
-## 📦 BỘ MÃ NGUỒN NÀY BAO GỒM 3 GÓI HOÀN CHỈNH:
+## 📦 BỘ MÃ NGUỒN BAO GỒM:
 
-1. **Gói 1: HTML5 + CSS3 + Vanilla JavaScript thuần** (Nằm trong thư mục \`html/\`)
-   - Mở trực tiếp file \`index.html\` trên bất kỳ trình duyệt nào mà không cần cài đặt gì.
-   
-2. **Gói 2: PHP + MySQL Database** (Nằm trong thư mục \`php/\`)
-   - Chạy trên mọi hosting cPanel, DirectAdmin, XAMPP, Laragon.
-   - Có sẵn file \`database.sql\` và form lưu liên hệ khách hàng vào MySQL.
+### 1. 📁 Thư mục \`html/\` (Dành cho chạy trực tiếp hoặc GitHub Pages):
+- Mở trực tiếp file \`index.html\` trên bất kỳ trình duyệt nào (Chrome, Cốc Cốc, Edge, Safari) để xem website hoạt động ngay.
+- Không cần cài đặt Node.js hay máy chủ phức tạp.
 
-3. **Gói 3: Next.js + React + Tailwind CSS hiện đại** (Nằm tại thư mục gốc)
-   - Chạy lệnh \`npm install\` và \`npm run dev\` để khởi chạy.
-   - Deploy 1-Click lên Vercel / Netlify.
+### 2. 📁 Thư mục \`php/\` (Dành cho Hosting cPanel / XAMPP / DirectAdmin):
+- Có sẵn file \`index.php\`, \`config/\`, \`api/\`, \`database.sql\`.
+- Upload toàn bộ nội dung thư mục \`php/\` lên Hosting và import file \`database.sql\` vào phpMyAdmin là website PHP hoạt động 100% kèm tính năng lưu form liên hệ.
 
 ---
 © BĐS Template Engine. Bản quyền thuộc về TEMPLATEBDS.

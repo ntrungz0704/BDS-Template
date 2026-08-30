@@ -1,22 +1,20 @@
-# Luxury Gold Style (Dinh Thự Hoàng Gia) — Trọn Bộ Mã Nguồn Website BĐS Chuyên Nghiệp
+﻿# MẪU LANDING PAGE BẤT ĐỘNG SẢN BDS-01
 
-> **Mô tả:** Biệt thự · Penthouse · Dinh thự dát vàng hoàng gia  
-> **Mã mẫu (Slug):** `bds-01` (`luxury-gold`)  
-
----
-
-## 📦 BỘ MÃ NGUỒN NÀY BAO GỒM 3 GÓI HOÀN CHỈNH:
-
-1. **Gói 1: HTML5 + CSS3 + Vanilla JavaScript thuần** (Nằm trong thư mục `html/`)
-   - Mở trực tiếp file `index.html` trên bất kỳ trình duyệt nào mà không cần cài đặt gì.
-   
-2. **Gói 2: PHP + MySQL Database** (Nằm trong thư mục `php/`)
-   - Chạy trên mọi hosting cPanel, DirectAdmin, XAMPP, Laragon.
-   - Có sẵn file `database.sql` và form lưu liên hệ khách hàng vào MySQL.
-
-3. **Gói 3: Next.js + React + Tailwind CSS hiện đại** (Nằm tại thư mục gốc)
-   - Chạy lệnh `npm install` và `npm run dev` để khởi chạy.
-   - Deploy 1-Click lên Vercel / Netlify.
+> **Công nghệ:** HTML5, CSS3, JavaScript Thuần + PHP & MySQL
+> **Định dạng:** Landing Page Độc Lập
+> **Bản quyền:** TEMPLATES BDS
 
 ---
-© BĐS Template Engine. Bản quyền thuộc về TEMPLATEBDS.
+
+## 📦 BỘ MÃ NGUỒN GỒM 2 PHẦN:
+
+### 1. 📁 Thư mục \html/\ (Dành cho chạy trực tiếp hoặc GitHub Pages):
+- Mở trực tiếp file \index.html\ trên bất kỳ trình duyệt nào (Chrome, Cốc Cốc, Edge, Safari) để xem website hoạt động ngay.
+- Không cần cài đặt Node.js hay máy chủ phức tạp.
+
+### 2. 📁 Thư mục \php/\ (Dành cho Hosting cPanel / XAMPP / DirectAdmin):
+- Có sẵn file \index.php\, \config/\, \pi/\, \database.sql\.
+- Upload toàn bộ nội dung thư mục \php/\ lên Hosting và import file \database.sql\ vào phpMyAdmin là website PHP hoạt động 100% kèm tính năng lưu form liên hệ.
+
+---
+Chúc bạn kinh doanh Bất Động Sản thành công và phát đạt!
