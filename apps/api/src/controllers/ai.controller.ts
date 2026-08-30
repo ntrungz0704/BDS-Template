@@ -57,6 +57,16 @@ function getClientIp(req: Request): string {
   return req.socket.remoteAddress || '127.0.0.1';
 }
 
+function cleanHumanText(text: string): string {
+  if (!text) return '';
+  return text
+    .replace(/\*\*/g, '')
+    .replace(/\*/g, '')
+    .replace(/#{1,6}\s*/g, '')
+    .replace(/\\n/g, '\n')
+    .trim();
+}
+
 export class AiController {
   /**
    * POST /api/ai/chat
@@ -178,7 +188,13 @@ export class AiController {
         }
       }
 
-      const websiteName = compInfo?.companyName || compInfo?.websiteName || 'Sàn Giao Dịch Bất Động Sản';
+      const rawWebName = compInfo?.companyName || compInfo?.websiteName || 'Sàn Giao Dịch Bất Động Sản';
+      const cleanWebName = rawWebName
+        .replace(/^LP\s*#?\d+\s*-\s*/i, '')
+        .replace(/^Template\s*#?\d+\s*-\s*/i, '')
+        .replace(/\s*Launch Funnel/i, '')
+        .trim();
+
       const hotline = compInfo?.hotline || compInfo?.phone || '0905.568.888';
       const zalo = compInfo?.zalo || hotline;
 
@@ -187,7 +203,7 @@ export class AiController {
         return `${i + 1}. ${p.title} | Loại: ${p.type || 'Căn hộ'} | Giá: ${p.price || 'Liên hệ'} | Diện tích: ${p.area || 'Thỏa thuận'} | Vị trí: ${p.address || 'Trung tâm'}`;
       }).join('\n');
 
-      const systemPrompt = `Bạn là Trợ lý Ảo AI chuyên gia tư vấn Bất Động Sản cho website "${websiteName}".
+      const systemPrompt = `Bạn là chuyên viên tư vấn Bất Động Sản chuyên nghiệp, nhiệt tình của "${cleanWebName}".
 
 DỮ LIỆU BẤT ĐỘNG SẢN THỰC TẾ TRÊN WEBSITE (ĐƯỢC CẬP NHẬT TỪ CMS):
 ===================================================================
@@ -195,12 +211,13 @@ ${projectsSummary || 'Hiện tại đang cập nhật thêm các dự án mới.
 Hotline: ${hotline} | Zalo: ${zalo}
 ===================================================================
 
-NGUYÊN TẮC TƯ VẤN QUAN TRỌNG:
-1. Trả lời bằng tiếng Việt chuyên nghiệp, lịch sự, nhiệt tình.
-2. NẾU CÓ DỰ ÁN PHÙ HỢP TRONG DANH SÁCH: Giới thiệu chính xác tên, giá, vị trí và tiện ích của căn đó.
-3. NẾU KHÁCH HỎI THÔNG TIN KHÔNG CÓ TRONG DỮ LIỆU: Tuyệt đối KHÔNG tự bịa số liệu giá hay pháp lý. Hãy thông báo lịch sự và mời khách liên hệ Hotline ${hotline} hoặc Zalo ${zalo}.
-4. Ngắn gọn, súc tích (dưới 150 từ).
-5. Luôn khép lại bằng lời mời nhắn Zalo ${zalo} hoặc để lại SĐT để chuyên viên gửi trọn bộ mặt bằng và bảng giá gốc.`;
+QUY TẮC TRẢ LỜI BẮT BUỘC (PHONG CÁCH NHẮN TIN TỰ NHIÊN NHƯ NGƯỜI THẬT):
+1. Xưng hô tự nhiên: xưng "Em", gọi "Anh/Chị" hoặc "Bạn". Giọng điệu ân cần, lịch sự, mến khách như đang nhắn tin Zalo / Messenger.
+2. TUYỆT ĐỐI KHÔNG SỬ DỤNG KÝ TỰ MARKDOWN: KHÔNG dùng dấu sao ** in đậm, KHÔNG dùng dấu * gạch đầu dòng, KHÔNG dùng dấu thăng #. Hãy dùng câu văn gãy gọn, dấu chấm phẩy rõ ràng và biểu tượng cảm xúc lịch sự (như Dạ, Vâng ạ, 😊).
+3. NẾU CÓ DỰ ÁN PHÙ HỢP: Giới thiệu chính xác tên căn, giá bán, vị trí, điểm nổi bật.
+4. NẾU KHÔNG CÓ DỮ LIỆU CỤ THỂ: Tuyệt đối KHÔNG tự đoán hay bịa giá/pháp lý. Hãy thông báo lịch sự và mời khách nhắn Zalo ${zalo} hoặc gọi Hotline ${hotline} để nhận bảng giá chính xác nhất.
+5. Độ dài vừa phải (khoảng 80 - 120 từ).
+6. Kết thúc bằng lời mời lịch sự kết nối qua Zalo ${zalo} hoặc để lại SĐT để nhận mặt bằng chi tiết.`;
 
       let aiReply = '';
 
@@ -236,8 +253,10 @@ NGUYÊN TẮC TƯ VẤN QUAN TRỌNG:
       }
 
       if (!aiReply) {
-        aiReply = `Dạ chào bạn! Cảm ơn bạn đã quan tâm đến bất động sản tại ${websiteName}. Để nhận thông tin chi tiết và bảng giá dự án mới nhất, bạn vui lòng gọi Hotline ${hotline} hoặc nhắn tin Zalo ${zalo} để được chuyên viên tư vấn gửi bảng hàng VIP nhé!`;
+        aiReply = `Dạ em chào anh/chị ạ! Cảm ơn anh/chị đã quan tâm đến bất động sản tại ${cleanWebName}. Để nhận thông tin chi tiết và bảng giá dự án mới nhất, anh/chị vui lòng gọi Hotline ${hotline} hoặc nhắn tin Zalo ${zalo} để chuyên viên bên em gửi bảng hàng VIP ngay nhé!`;
       }
+
+      aiReply = cleanHumanText(aiReply);
 
       const replyTimeStr = getVietnamFullTimeStr();
 
@@ -246,7 +265,7 @@ NGUYÊN TẮC TƯ VẤN QUAN TRỌNG:
         data: {
           sessionId: session.id,
           role: 'assistant',
-          content: aiReply.trim(),
+          content: aiReply,
           timeStr: replyTimeStr,
         },
       });

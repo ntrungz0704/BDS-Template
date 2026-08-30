@@ -73,6 +73,12 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
   tenantId,
   themeColor = 'blue',
 }) => {
+  const cleanTitle = websiteName
+    .replace(/^LP\s*#?\d+\s*-\s*/i, '')
+    .replace(/^Template\s*#?\d+\s*-\s*/i, '')
+    .replace(/\s*Launch Funnel/i, '')
+    .trim();
+
   const [isOpen, setIsOpen] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -81,7 +87,7 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
     {
       id: 'welcome',
       sender: 'ai',
-      text: '👋 Chào bạn! Tôi là **Trợ Lý Ảo AI Bất Động Sản** của **' + websiteName + '**.\\n\\nTôi có thể hỗ trợ bạn tra cứu chi tiết giá bán, diện tích, tiện ích các căn đang mở bán, chính sách vay ngân hàng 0% hay tư vấn phong thủy hợp tuổi. Bạn đang quan tâm bất động sản nào ạ?',
+      text: 'Dạ em chào anh/chị ạ! Em là chuyên viên hỗ trợ tư vấn của ' + cleanTitle + '.\n\nEm có thể hỗ trợ anh/chị tra cứu bảng giá, chính sách chiết khấu, tiến độ thanh toán hoặc tư vấn hướng nhà phong thủy. Anh/chị đang quan tâm căn nào để em gửi thông tin chi tiết ạ?',
       time: getFullTimestamp(),
     },
   ]);
@@ -258,7 +264,7 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
 
               <div>
                 <div className="flex items-center gap-1.5">
-                  <h3 className="font-black text-sm text-white truncate max-w-[190px]">{websiteName}</h3>
+                  <h3 className="font-black text-sm text-white truncate max-w-[190px]">{cleanTitle}</h3>
                   <span className="px-1.5 py-0.2 bg-amber-500/20 text-amber-300 border border-amber-400/30 text-[9px] font-black rounded uppercase">
                     AI Agent
                   </span>
@@ -313,7 +319,7 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
                         : 'bg-white text-slate-800 border border-slate-200/80 rounded-tl-xs'
                     )}
                   >
-                    <p className="whitespace-pre-line">{m.text}</p>
+                    <p className="whitespace-pre-line leading-relaxed">{m.text.replace(/\*\*/g, '').replace(/\*/g, '')}</p>
                   </div>
                   
                   {/* Timestamp with seconds */}
@@ -348,17 +354,16 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Prompts */}
-          <div className="p-2.5 bg-white border-t border-slate-100 flex gap-1.5 overflow-x-auto no-scrollbar shrink-0">
+          {/* Quick Prompts - Clean 2-column Grid without horizontal scrollbar */}
+          <div className="p-2.5 bg-slate-50 border-t border-slate-200/70 grid grid-cols-2 gap-1.5 shrink-0">
             {quickPrompts.map((prompt, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSendMessage(prompt)}
                 disabled={isTyping || isLimitReached}
-                className="whitespace-nowrap px-2.5 py-1.5 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 rounded-xl text-[11px] font-bold transition-all border border-slate-200/60 shrink-0 disabled:opacity-50"
+                className="px-2.5 py-1.5 bg-white hover:bg-indigo-50 hover:text-indigo-600 text-slate-700 rounded-xl text-[11px] font-medium transition-all border border-slate-200 text-left truncate shadow-xs disabled:opacity-50"
               >
-                {prompt}
-              </button>
+                <span className="truncate">{prompt}</span>
             ))}
           </div>
 

@@ -222,6 +222,12 @@ KIẾN THỨC CHUYÊN MÔN BẤT ĐỘNG SẢN VIỆT NAM (BẠN ĐÃ ĐƯỢC H
     console.warn('Gemini API call failed, using dynamic local real estate intelligence:', err);
   }
 
+  const cleanWebName = (contextData?.websiteName || 'Sàn Bất Động Sản')
+    .replace(/^LP\s*#?\d+\s*-\s*/i, '')
+    .replace(/^Template\s*#?\d+\s*-\s*/i, '')
+    .replace(/\s*Launch Funnel/i, '')
+    .trim();
+
   // Dynamic Heuristic Knowledge Search (Matches actual CMS projects if API offline)
   const updatedUsage = recordAiQuery();
   const q = userQuestion.toLowerCase();
@@ -237,22 +243,22 @@ KIẾN THỨC CHUYÊN MÔN BẤT ĐỘNG SẢN VIỆT NAM (BẠN ĐÃ ĐƯỢC H
   let responseText = '';
 
   if (matchedProject) {
-    responseText = `Dạ chào bạn! Về **${matchedProject.title}**, đây là sản phẩm ${matchedProject.type || 'cao cấp'} với mức giá **${matchedProject.price || 'vô cùng ưu đãi'}**, diện tích **${matchedProject.area || 'rộng rãi'}** tại ${matchedProject.address || 'vị trí trung tâm'}. Căn này sở hữu các tiện ích nổi bật: ${matchedProject.amenities?.slice(0, 3).join(', ') || 'an ninh 24/7, khuôn viên xanh'}. Bạn có muốn mình gửi trọn bộ mặt bằng và hỗ trợ đặt lịch xem thực tế qua Zalo **${contextData?.zalo || '0905.568.888'}** không ạ?`;
+    responseText = `Dạ em chào anh/chị ạ! Về căn ${matchedProject.title}, đây là sản phẩm ${matchedProject.type || 'cao cấp'} với mức giá ${matchedProject.price || 'vô cùng ưu đãi'}, diện tích ${matchedProject.area || 'rộng rãi'} tại ${matchedProject.address || 'vị trí trung tâm'}. Căn này sở hữu các tiện ích nổi bật như ${matchedProject.amenities?.slice(0, 3).join(', ') || 'an ninh 24/7, khuôn viên xanh thoáng mát'}. Anh/chị có muốn em gửi trọn bộ mặt bằng và hỗ trợ đặt lịch xem nhà thực tế qua Zalo ${contextData?.zalo || '0905.568.888'} không ạ?`;
   } else if (q.includes('giá') || q.includes('bao nhiêu') || q.includes('bảng giá') || q.includes('chiết khấu')) {
     const sample = projects[0];
-    responseText = `Dạ trên website của chúng tôi hiện có các bất động sản hấp dẫn ${sample ? `như **${sample.title}** giá chỉ từ **${sample.price}**` : ''} kèm chính sách chiết khấu đợt 1 và quà tặng vàng 9999. Bạn vui lòng để lại Số Điện Thoại hoặc nhắn Zalo **${contextData?.zalo || '0905.568.888'}** để nhận bảng giá chi tiết từng căn nhé!`;
+    responseText = `Dạ hiện tại bên em đang có các căn rất đẹp ${sample ? `như ${sample.title} với mức giá chỉ từ ${sample.price}` : ''} kèm chính sách chiết khấu đợt 1 và quà tặng hấp dẫn. Anh/chị vui lòng để lại Số Điện Thoại hoặc nhắn tin Zalo ${contextData?.zalo || '0905.568.888'} để chuyên viên bên em gửi bảng giá chi tiết từng căn ngay nhé!`;
   } else if (q.includes('vay') || q.includes('ngân hàng') || q.includes('lãi suất') || q.includes('trả góp')) {
-    responseText = `Dạ đối tác ngân hàng (Techcombank, Vietcombank, MBBank) đang hỗ trợ gói vay ưu đãi tới **70% - 80% giá trị BĐS**, ân hạn nợ gốc và hỗ trợ lãi suất 0% trong 24 tháng. Bạn chỉ cần trả trước 15% - 30% là có thể nhận nhà. Bạn muốn tính toán lịch trả nợ cụ thể theo thu nhập gia đình không ạ?`;
+    responseText = `Dạ đối tác ngân hàng (Techcombank, Vietcombank, MBBank) đang hỗ trợ gói vay ưu đãi tới 70% - 80% giá trị căn hộ, ân hạn nợ gốc và hỗ trợ lãi suất 0% trong 24 tháng. Anh/chị chỉ cần thanh toán trước 15% - 30% là có thể nhận nhà. Anh/chị muốn em tính toán lịch trả nợ cụ thể theo thu nhập gia đình không ạ?`;
   } else if (q.includes('phong thủy') || q.includes('hướng') || q.includes('tuổi') || q.includes('mệnh')) {
-    responseText = `Dạ về phong thủy BĐS, người thuộc **Đông Tứ Mệnh** sẽ hợp hướng Đông, Đông Nam, Nam, Bắc; còn **Tây Tứ Mệnh** hợp hướng Tây, Tây Bắc, Tây Nam, Đông Bắc. Chúng tôi có đa dạng các căn với các hướng đón tài lộc vượng khí. Bạn đang tìm căn hướng nào để mình lọc gửi bạn ngay nhé!`;
+    responseText = `Dạ về phong thủy nhà ở, người thuộc Đông Tứ Mệnh sẽ hợp hướng Đông, Đông Nam, Nam, Bắc; còn Tây Tứ Mệnh hợp hướng Tây, Tây Bắc, Tây Nam, Đông Bắc. Bên em có đa dạng các căn với nhiều hướng đón tài lộc vượng khí. Anh/chị đang tìm căn hướng nào để em lọc gửi anh/chị xem ngay nhé!`;
   } else if (q.includes('pháp lý') || q.includes('sổ đỏ') || q.includes('sổ hồng') || q.includes('quy hoạch')) {
-    responseText = `Dạ toàn bộ sản phẩm trên website đều cam kết **Pháp lý 1/500 minh bạch 100%**, có giấy phép xây dựng và sẵn sàng bàn giao sổ hồng lâu dài cho khách hàng. Mọi thủ tục công chứng, sang tên đều được chuyên viên hỗ trợ trọn gói miễn phí!`;
+    responseText = `Dạ toàn bộ sản phẩm trên website đều cam kết pháp lý 1/500 minh bạch 100%, có giấy phép xây dựng và sẵn sàng bàn giao sổ hồng lâu dài cho khách hàng. Mọi thủ tục công chứng, sang tên đều được chuyên viên bên em hỗ trợ trọn gói miễn phí ạ!`;
   } else {
     const topProj = projects[0];
-    responseText = `Dạ cảm ơn bạn đã ghé thăm **${contextData?.websiteName || 'Sàn Bất Động Sản'}**! Chúng tôi đang phân phối nhiều căn đẹp ${topProj ? `như **${topProj.title}**` : ''}. Bạn có thể liên hệ Hotline **${contextData?.hotline || '0905.568.888'}** hoặc nhắn tin Zalo để được chuyên viên gửi thông tin giỏ hàng độc quyền ngay nhé!`;
+    responseText = `Dạ em cảm ơn anh/chị đã ghé thăm ${cleanWebName}! Bên em đang phân phối nhiều căn vị trí đẹp ${topProj ? `như ${topProj.title}` : ''}. Anh/chị có thể liên hệ Hotline ${contextData?.hotline || '0905.568.888'} hoặc nhắn tin Zalo để em gửi thông tin giỏ hàng chi tiết ngay nhé!`;
   }
 
-  return { text: responseText, success: true, remainingQueries: updatedUsage.remaining };
+  return { text: responseText.replace(/\*\*/g, '').replace(/\*/g, ''), success: true, remainingQueries: updatedUsage.remaining };
 }
 
 /**
