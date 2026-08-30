@@ -364,6 +364,7 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
                 className="px-2.5 py-1.5 bg-white hover:bg-indigo-50 hover:text-indigo-600 text-slate-700 rounded-xl text-[11px] font-medium transition-all border border-slate-200 text-left truncate shadow-xs disabled:opacity-50"
               >
                 <span className="truncate">{prompt}</span>
+              </button>
             ))}
           </div>
 
