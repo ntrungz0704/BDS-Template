@@ -17,8 +17,8 @@ const FOOTER_LINKS = {
   resources: {
     title: 'Tài nguyên',
     links: [
-      { label: 'Hướng dẫn quản trị CMS', href: '/guides/cms' },
-      { label: 'Hướng dẫn Hosting & Deploy', href: '/guides/hosting' },
+      { label: 'Kho Landing Page Sale BĐS', href: '/landing-pages' },
+      { label: 'Kho 24 Mẫu Website BĐS', href: '/templates' },
       { label: '10 Cam kết chất lượng', href: '/why-choose' },
       { label: 'Đăng ký tài khoản mới', href: '/register' },
     ],

@@ -55,6 +55,10 @@ const BDS21Template = dynamic(() => import('../components/templates/BDS21Templat
 const BDS22Template = dynamic(() => import('../components/templates/BDS22Template'), { loading: () => <LoadingSkeleton /> });
 const BDS23Template = dynamic(() => import('../components/templates/BDS23Template'), { loading: () => <LoadingSkeleton /> });
 const BDS24Template = dynamic(() => import('../components/templates/BDS24Template'), { loading: () => <LoadingSkeleton /> });
+const LP01Template = dynamic(() => import('../components/templates/LP01Template'), { loading: () => <LoadingSkeleton /> });
+const LP02Template = dynamic(() => import('../components/templates/LP02Template'), { loading: () => <LoadingSkeleton /> });
+const LP03Template = dynamic(() => import('../components/templates/LP03Template'), { loading: () => <LoadingSkeleton /> });
+const LP04Template = dynamic(() => import('../components/templates/LP04Template'), { loading: () => <LoadingSkeleton /> });
 
 class WebsiteTemplateRegistry {
   private static templates = new Map<string, TemplateDefinition>();
@@ -223,6 +227,12 @@ const INITIAL_TEMPLATES: TemplateDefinition[] = [
   { id: 'bds-24', slug: 'bds-24', name: 'BĐS 24 — RealtyBuild Trang Tin BĐS Số 1 Việt Nam', category: 'portal', version: '1.0.0', component: BDS24Template },
   { id: 'template-realtybuild-tech', slug: 'realtybuild-tech', name: 'RealtyBuild Portal', category: 'portal', version: '1.0.0', component: BDS24Template },
   { id: 'template-24', slug: 'template-24', name: 'RealtyBuild Portal', category: 'portal', version: '1.0.0', component: BDS24Template },
+
+  // ─── SPECIALIZED SALES LANDING PAGES ───
+  { id: 'lp-01', slug: 'lp-01', name: 'LP 01 — Căn Hộ Chung Cư Cao Cấp Launch Funnel', category: 'landing', version: '1.0.0', component: LP01Template },
+  { id: 'lp-02', slug: 'lp-02', name: 'LP 02 — Biệt Thự & Nghỉ Dưỡng Hoàng Gia VIP', category: 'landing', version: '1.0.0', component: LP02Template },
+  { id: 'lp-03', slug: 'lp-03', name: 'LP 03 — Đất Nền Phân Lô F0 Sổ Đỏ Trao Tay', category: 'landing', version: '1.0.0', component: LP03Template },
+  { id: 'lp-04', slug: 'lp-04', name: 'LP 04 — Sale Môi Giới BĐS Triệu Đô Authority', category: 'landing', version: '1.0.0', component: LP04Template },
 ];
 
 for (const tpl of INITIAL_TEMPLATES) {

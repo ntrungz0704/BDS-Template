@@ -163,6 +163,12 @@ export const TEMPLATE_SLUG_MAP: Record<string, { componentName: string; fileName
   'portal-24': { componentName: 'BDS24Template', fileName: 'BDS24Template.tsx', templateName: 'RealtyBuild Trang Tin BĐS Số 1 Việt Nam' },
   'realtybuild-tech': { componentName: 'BDS24Template', fileName: 'BDS24Template.tsx', templateName: 'RealtyBuild Trang Tin BĐS Số 1 Việt Nam' },
   'realtybuild-portal': { componentName: 'BDS24Template', fileName: 'BDS24Template.tsx', templateName: 'RealtyBuild Trang Tin BĐS Số 1 Việt Nam' },
+
+  // ─── SPECIALIZED SALES LANDING PAGES ───
+  'lp-01': { componentName: 'LP01Template', fileName: 'LP01Template.tsx', templateName: 'LP #01 - Căn Hộ Chung Cư Cao Cấp Launch Funnel' },
+  'lp-02': { componentName: 'LP02Template', fileName: 'LP02Template.tsx', templateName: 'LP #02 - Biệt Thự & Nghỉ Dưỡng Hoàng Gia VIP' },
+  'lp-03': { componentName: 'LP03Template', fileName: 'LP03Template.tsx', templateName: 'LP #03 - Đất Nền Phân Lô F0 Sổ Đỏ Trao Tay' },
+  'lp-04': { componentName: 'LP04Template', fileName: 'LP04Template.tsx', templateName: 'LP #04 - Sale Môi Giới BĐS Triệu Đô Authority' },
 };
 
 export class TemplatePackagingService {

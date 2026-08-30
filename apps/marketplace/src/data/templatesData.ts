@@ -1591,6 +1591,264 @@ export const ALL_TEMPLATES: Template[] = [
       heroTitle: "CỔNG BẤT ĐỘNG SẢN ĐÔ THỊ THÔNG MINH AI & NET-ZERO",
       heroSubtitle: "Tổng hợp hơn 4.200 căn hộ thông minh điều khiển giọng nói, biệt thự năng lượng mặt trời và shophouse công nghệ cao tại các đại đô thị thông minh tiên phong."
     }
+  },
+
+// ─── LP 01. LANDING PAGE CĂN HỘ CAO CẤP LAUNCH FUNNEL ──────────────────────
+  {
+    id: "lp-01",
+    name: "LP #01 - Căn Hộ Chung Cư Cao Cấp Launch Funnel",
+    slug: "lp-01",
+    collectionSlug: "landing-page",
+    collectionName: "Kho Landing Page Sale BĐS",
+    badge: "LANDING PAGE #01",
+    badgeBg: "#2563EB",
+    badgeColor: "#FFFFFF",
+    accentColor: "#2563EB",
+    description: "Landing Page chuyên biệt 1 trang tối ưu chuyển đổi cao cho chiến dịch chạy quảng cáo Facebook/Google Ads bán căn hộ chung cư cao cấp. Tích hợp Countdown Timer đếm ngược ưu đãi, Form nhận bảng giá VIP, Mặt bằng điển hình 1PN-2PN-3PN, Gallery thực tế kèm Lightbox Zoom và Bảng tính lãi vay trực quan.",
+    shortDescription: "Landing Page 1 trang · Bán Căn Hộ · Thu Lead Chạy Ads Siêu Tốc",
+    thumbnail: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Cấu trúc 1 trang Single-Page Sales Funnel chuyên chạy quảng cáo Ads chuyển đổi cao",
+      "Thanh thông báo đếm ngược Countdown Timer ưu đãi chiết khấu 10% đợt 1",
+      "Form nhận Bảng Giá & Mặt Bằng VIP thu lead trực tiếp về CMS và Zalo",
+      "Layout Mặt bằng điển hình 1PN, 2PN, 3PN, Penthouse tab mượt mà",
+      "Công cụ dự tính khoản vay ngân hàng & Lịch trả góp hàng tháng tự động",
+      "Thư viện ảnh thực tế tích hợp Lightbox phóng to và tự chuyển động 3s",
+      "Nút Hotline rung lắc và Chat Zalo 1 chạm bám theo góc màn hình"
+    ],
+    priceBuy: 399000,
+    priceBuySource: 1290000,
+    priceRentMonthly: 129000,
+    isActive: true,
+    sortOrder: 25,
+    targetAudience: ["Sale BĐS chuyên chạy Ads bán căn hộ", "Phòng kinh doanh phân phối dự án chung cư", "Môi giới BĐS độc lập", "Đại lý phân phối F1"],
+    highlights: ["Single-Page Sales Funnel", "Lead Capture VIP Form", "Loan Calculator", "Countdown Urgency Bar"],
+    availablePages: ["Trang chủ Single Page Landing"],
+    modules: ["UrgencyTimerModule", "SalesLeadFormModule", "FloorPlanInteractiveModule", "LoanCalculatorModule", "StickyContactModule"],
+    benefits: ["Tăng 400% tỷ lệ để lại số điện thoại", "Tối ưu chi phí mỗi lead chạy quảng cáo Facebook/Google", "Chuyên nghiệp hóa hình ảnh chuyên viên bán hàng"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#2563EB",
+      secondaryColor: "#1E293B",
+      accentColor: "#F59E0B",
+      bgColor: "#F8FAFC",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "16px",
+      shadowToken: "0 10px 25px -5px rgba(0,0,0,0.1)"
+    },
+    layoutConfig: {
+      heroStyle: "High-Converting Split Hero with Floating VIP Lead Form",
+      navigationStyle: "Clean Sticky Single-Page Nav",
+      cardStyle: "Modern Glassmorphism Card",
+      galleryStyle: "Interactive 3s Autoplay Gallery with Lightbox Zoom",
+      ctaStyle: "Glowing Urgent Sales CTA Button",
+      spacingScale: "Comfortable Conversion Spacing"
+    },
+    wireframe: ["TopUrgencyBar", "HeaderSticky", "HeroSplitLeadForm", "GalleryShowcase", "FloorPlanLayouts", "LoanCalculator", "FloatingContactBar"],
+    sectionConfig: {
+      sourceSlug: "lp-01",
+      heroTitle: "CĂN HỘ CAO CẤP VIEW TRỌN MẶT HỒ",
+      heroSubtitle: "Sở hữu căn hộ hạng sang trung tâm chỉ từ 3.2 Tỷ/căn. Thanh toán 15% nhận nhà ngay, ngân hàng hỗ trợ 70% ân hạn 24 tháng."
+    }
+  },
+
+// ─── LP 02. LANDING PAGE BIỆT THỰ & NGHỈ DƯỠNG HOÀNG GIA VIP ────────────────
+  {
+    id: "lp-02",
+    name: "LP #02 - Biệt Thự & Nghỉ Dưỡng Hoàng Gia VIP",
+    slug: "lp-02",
+    collectionSlug: "landing-page",
+    collectionName: "Kho Landing Page Sale BĐS",
+    badge: "LANDING PAGE #02",
+    badgeBg: "#D97706",
+    badgeColor: "#FFFFFF",
+    accentColor: "#D97706",
+    description: "Landing Page phong cách Hoàng Gia Thượng Lưu chuyên phân phối Biệt thự đơn lập, Dinh thự ven sông, Penthouse và BĐS nghỉ dưỡng triệu đô. Form đăng ký nhận hồ sơ pháp lý bảo mật & đặt lịch xe VIP/trực thăng đưa đón.",
+    shortDescription: "Landing Page 1 trang · Biệt Thự & Dinh Thự · Sang Trọng Đẳng Cấp",
+    thumbnail: "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Tone màu Đen Hoàng Gia (Dark Luxury) & Vàng Kim (Royal Gold) sang trọng bậc nhất",
+      "Form đăng ký bảo mật dành riêng cho giới thượng lưu và nhà đầu tư VIP",
+      "Trình diễn bộ sưu tập dinh thự ven sông giới hạn với Video & Gallery sắc nét",
+      "Tích hợp nút đặt lịch đưa đón bằng xe Limousine / Trực thăng xem thực tế",
+      "Bảng phân tích cam kết sinh lời và tiềm năng tăng giá bền vững"
+    ],
+    priceBuy: 399000,
+    priceBuySource: 1290000,
+    priceRentMonthly: 129000,
+    isActive: true,
+    sortOrder: 26,
+    targetAudience: ["Chuyên viên môi giới BĐS triệu đô", "Đơn vị phân phối Biệt thự & Dinh thự VIP", "Chủ đầu tư BĐS Nghỉ dưỡng 5 sao"],
+    highlights: ["Royal Dark Luxury Theme", "VIP Limousine Booking", "High Net Worth Funnel", "Exclusive Collection"],
+    availablePages: ["Trang chủ Single Page Landing"],
+    modules: ["DarkLuxuryHeroModule", "PrivateAuditLeadModule", "ExclusiveGalleryModule", "VIPBookingModule"],
+    benefits: ["Nâng tầm đẳng cấp giỏ hàng BĐS triệu đô", "Thu hút đúng tệp khách hàng thượng lưu nhiều tiền", "Gia tăng tỷ lệ chốt cọc bất động sản cao cấp"],
+    themeConfig: {
+      fontHeading: "'Cinzel', 'Playfair Display', serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#D97706",
+      secondaryColor: "#0B0F19",
+      accentColor: "#F59E0B",
+      bgColor: "#0B0F19",
+      cardBgColor: "#141A29",
+      textColor: "#F1F5F9",
+      radiusToken: "20px",
+      shadowToken: "0 20px 40px -15px rgba(217,119,6,0.2)"
+    },
+    layoutConfig: {
+      heroStyle: "Cinematic Dark Hero with Golden Highlights",
+      navigationStyle: "Dark Frosted Glass Navbar",
+      cardStyle: "Royal Gold Bordered Card",
+      galleryStyle: "Fullwidth Luxury Lightbox Carousel",
+      ctaStyle: "Gold Gradient Metallic Button",
+      spacingScale: "Spacious Luxury Spacing"
+    },
+    wireframe: ["RoyalAnnouncementBar", "DarkNavbar", "CinematicHeroLeadForm", "LuxuryGallery", "PrivateBookingCTA"],
+    sectionConfig: {
+      sourceSlug: "lp-02",
+      heroTitle: "DINH THỰ VEN SÔNG CHUẨN RESORT 6 SAO",
+      heroSubtitle: "Không gian sống riêng tư biệt lập, diện tích 450m² - 1200m², hầm rượu riêng, bến đỗ du thuyền cá nhân."
+    }
+  },
+
+// ─── LP 03. LANDING PAGE ĐẤT NỀN PHÂN LÔ F0 SỔ ĐỎ TRAO TAY ──────────────────
+  {
+    id: "lp-03",
+    name: "LP #03 - Đất Nền Phân Lô F0 Sổ Đỏ Trao Tay",
+    slug: "lp-03",
+    collectionSlug: "landing-page",
+    collectionName: "Kho Landing Page Sale BĐS",
+    badge: "LANDING PAGE #03",
+    badgeBg: "#059669",
+    badgeColor: "#FFFFFF",
+    accentColor: "#059669",
+    description: "Landing Page chuyên đánh hàng mở bán Đất Nền Phân Lô F0, Đô thị sinh thái ven đô. Tối ưu thu hút nhà đầu tư F0 với chính sách chiết khấu vàng, sổ hồng trao tay từng nền, form đặt lịch xe đón xem đất miễn phí cuối tuần.",
+    shortDescription: "Landing Page 1 trang · Đất Nền F0 · Bùng Nổ Doanh Số Mở Bán",
+    thumbnail: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Cấu trúc bùng nổ chuyển đổi dành riêng cho sự kiện mở bán Đất Nền đợt 1",
+      "Tập trung nhấn mạnh Pháp lý 1/500 hoàn thiện & Sổ đỏ trao tay công chứng ngay",
+      "Form đăng ký xe ô tô đưa đón tận nhà xem dự án miễn phí sáng Thứ 7 & Chủ Nhật",
+      "Trình diễn bản đồ quy hoạch phân lô, vị trí vàng đón đầu hạ tầng cao tốc",
+      "Cam kết chiết khấu khủng và tặng vàng 9999 cho khách hàng cọc sớm"
+    ],
+    priceBuy: 399000,
+    priceBuySource: 1290000,
+    priceRentMonthly: 129000,
+    isActive: true,
+    sortOrder: 27,
+    targetAudience: ["Đội nhóm sale chuyên đánh đất nền tỉnh & ven đô", "Công ty bất động sản phân lô bán nền", "Môi giới đất nền F0"],
+    highlights: ["F0 Launch Funnel", "Sổ Đỏ 100% Cam Kết", "Xe Đưa Đón Miễn Phí", "Chiết Khấu Vàng"],
+    availablePages: ["Trang chủ Single Page Landing"],
+    modules: ["F0UrgencyModule", "LandPlotLeadModule", "MasterPlanViewerModule", "BusBookingModule"],
+    benefits: ["Bùng nổ lượng đăng ký xe xem đất cuối tuần", "Thuyết phục nhà đầu tư bằng pháp lý minh bạch", "Chốt cọc nhanh chóng trong ngày mở bán"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#059669",
+      secondaryColor: "#0F172A",
+      accentColor: "#10B981",
+      bgColor: "#F8FAFC",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "16px",
+      shadowToken: "0 10px 25px -5px rgba(5,150,105,0.15)"
+    },
+    layoutConfig: {
+      heroStyle: "High Energy Green Emerald Hero with Fast Lead Form",
+      navigationStyle: "Clean Trust Navbar",
+      cardStyle: "Eco Clean Solid Card",
+      galleryStyle: "Site Progress Autoplay Slider",
+      ctaStyle: "Emerald Action Button",
+      spacingScale: "Tight Conversion Spacing"
+    },
+    wireframe: ["F0LaunchBar", "TrustNavbar", "HeroLeadForm", "MasterPlanGallery", "BusBookingCTA"],
+    sectionConfig: {
+      sourceSlug: "lp-03",
+      heroTitle: "ĐẤT NỀN TRUNG TÂM GIÁ GỐC F0 CHỈ 890 TRIỆU",
+      heroSubtitle: "Hạ tầng hoàn thiện đường nhựa 12m - 24m, điện âm nước máy. Sổ đỏ trao tay công chứng ngay."
+    }
+  },
+
+// ─── LP 04. LANDING PAGE SALE MÔI GIỚI BĐS TRIỆU ĐÔ AUTHORITY ────────────────
+  {
+    id: "lp-04",
+    name: "LP #04 - Sale Môi Giới BĐS Triệu Đô Authority",
+    slug: "lp-04",
+    collectionSlug: "landing-page",
+    collectionName: "Kho Landing Page Sale BĐS",
+    badge: "LANDING PAGE #04",
+    badgeBg: "#1D4ED8",
+    badgeColor: "#FFFFFF",
+    accentColor: "#1D4ED8",
+    description: "Landing Page xây dựng thương hiệu cá nhân uy tín số 1 cho Chuyên viên môi giới BĐS / Top Broker. Trưng bày giỏ hàng độc quyền cắt lỗ 15-25%, hồ sơ năng lực 10 năm kinh nghiệm, form gửi yêu cầu tìm nhà nhanh theo ngân sách.",
+    shortDescription: "Landing Page 1 trang · Sale Cá Nhân · Khẳng Định Uy Tín Broker VIP",
+    thumbnail: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Tối ưu 100% định vị thương hiệu Chuyên Gia BĐS Uy Tín & Đáng Tin Cậy",
+      "Khung giới thiệu Profile thành tích 10+ năm kinh nghiệm & 500+ giao dịch thành công",
+      "Bộ sưu tập giỏ hàng 150+ căn độc quyền giá cắt lỗ 15% - 25% thị trường",
+      "Form khảo sát nhu cầu tìm nhà theo ngân sách cá nhân hóa",
+      "Nút kết nối Zalo & Hotline trực tiếp luôn hiện diện ở mọi góc nhìn"
+    ],
+    priceBuy: 399000,
+    priceBuySource: 1290000,
+    priceRentMonthly: 129000,
+    isActive: true,
+    sortOrder: 28,
+    targetAudience: ["Môi giới BĐS chuyên nghiệp", "Top Sales cá nhân các sàn lớn", "Nhà môi giới tự do (Freelance Broker)", "Trưởng phòng kinh doanh BĐS"],
+    highlights: ["Personal Branding 100%", "Exclusive Discount Listings", "Fast Lead Survey Form", "Instant Zalo Touch"],
+    availablePages: ["Trang chủ Single Page Landing"],
+    modules: ["BrokerProfileHeroModule", "DiscountInventoryModule", "CustomSurveyFormModule", "SocialProofModule"],
+    benefits: ["Xây dựng niềm tin vững chắc với khách hàng mua nhà", "Khách tự động để lại thông tin nhu cầu & ngân sách", "Tăng 500% cuộc gọi và tin nhắn Zalo tư vấn"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#1D4ED8",
+      secondaryColor: "#0F172A",
+      accentColor: "#0284C7",
+      bgColor: "#F8FAFC",
+      cardBgColor: "#FFFFFF",
+      textColor: "#0F172A",
+      radiusToken: "16px",
+      shadowToken: "0 10px 25px -5px rgba(29,78,216,0.15)"
+    },
+    layoutConfig: {
+      heroStyle: "Professional Broker Profile Hero with Instant Request Form",
+      navigationStyle: "Personal Header with Avatar",
+      cardStyle: "Clean Property Card with Cut-loss Badge",
+      galleryStyle: "Exclusive Inventory Carousel",
+      ctaStyle: "Blue Royal Action Button",
+      spacingScale: "Clean Direct Spacing"
+    },
+    wireframe: ["BrokerHeader", "HeroProfileForm", "ExclusiveInventory", "ClientTestimonials", "FloatingContact"],
+    sectionConfig: {
+      sourceSlug: "lp-04",
+      heroTitle: "TƯ VẤN ĐẦU TƯ BĐS AN TOÀN & SINH LỜI CAO",
+      heroSubtitle: "Nắm giữ 150+ căn hộ & nhà phố độc quyền giá cắt lỗ 15% - 25% so với thị trường. Hỗ trợ pháp lý & xem nhà 24/7."
+    }
   }
 ];
 

@@ -55,10 +55,9 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
 
   const navLinks = [
     { label: 'Trang chủ', href: '/', exact: true },
-    { label: 'Mẫu Website', href: '/templates', anchor: '#templates' },
+    { label: 'Kho 24 Mẫu Website', href: '/templates', anchor: '#templates' },
+    { label: 'Kho Landing Page', href: '/landing-pages', exact: false, badge: 'HOT' },
     { label: 'Bảng giá', href: '/pricing', exact: false },
-    { label: 'Hướng dẫn CMS', href: '/guides/cms', exact: false },
-    { label: 'Hosting', href: '/guides/hosting', exact: false },
     { label: 'Vì sao chọn', href: '/why-choose', anchor: '#whychoose' },
     { label: 'Liên hệ', href: '/contact', anchor: '#footer' },
   ];
@@ -418,13 +417,18 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`transition-all duration-200 py-1.5 px-3 rounded-md text-xs xl:text-sm ${
+                  className={`transition-all duration-200 py-1.5 px-3 rounded-md text-xs xl:text-sm inline-flex items-center gap-1.5 ${
                     active
                       ? 'text-blue-600 font-bold bg-blue-50/80 shadow-xs'
                       : 'hover:text-blue-600 hover:bg-slate-50 font-medium'
                   }`}
                 >
-                  {item.label}
+                  <span>{item.label}</span>
+                  {(item as any).badge && (
+                    <span className="px-1.5 py-0.5 bg-gradient-to-r from-red-500 to-amber-500 text-white text-[9px] font-black rounded-full shadow-xs animate-pulse">
+                      {(item as any).badge}
+                    </span>
+                  )}
                 </Link>
               );
             })}
