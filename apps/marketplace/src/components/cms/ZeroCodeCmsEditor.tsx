@@ -38,13 +38,13 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
 
   // 1. Company Info State
   const [companyInfo, setCompanyInfo] = useState({
-    name: 'Sàn Giao Dịch Bất Động Sản Uy Tín',
+    name: 'Sàn Giao Dịch Bất Động Sản Cao Cấp',
     slogan: 'Nâng Tầm Không Gian Sống Thượng Lưu',
-    phone: '0905.56.xxxx',
-    zalo: '0905.56.xxxx',
-    email: 'contact@bds-realestate.vn',
-    address: '28 Liễu Giai, Ba Đình, Hà Nội',
-    facebook: 'https://facebook.com/bds-official',
+    phone: '0919 006 030',
+    zalo: '0919006030',
+    email: 'admin@templatesbds.com',
+    address: '180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội',
+    facebook: 'https://www.facebook.com/groups/847532091275214',
   });
 
   // 2. Projects / Properties State

@@ -1224,8 +1224,8 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
       <AIChatWidget
         websiteName={template.name}
         slogan={template.shortDescription || 'Nâng Tầm Không Gian Sống'}
-        hotline="0905.568.888"
-        zalo="0905.568.888"
+        hotline="0919 006 030"
+        zalo="0919 006 030"
         projects={[
           {
             title: template.sectionConfig?.heroTitle || template.name,

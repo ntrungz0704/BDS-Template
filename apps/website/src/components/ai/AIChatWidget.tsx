@@ -64,8 +64,8 @@ function getOrCreateGuestSessionId(): string {
 export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
   websiteName = 'Sàn Giao Dịch BĐS Uy Tín',
   slogan = 'Nâng Tầm Không Gian Sống',
-  hotline = '0905.568.888',
-  zalo = '0905.568.888',
+  hotline = '0919 006 030',
+  zalo = '0919 006 030',
   email = 'contact@bds-realestate.vn',
   address = 'TP. Hồ Chí Minh / Hà Nội',
   projects = [],

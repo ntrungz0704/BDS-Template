@@ -111,8 +111,8 @@ function buildDynamicCmsKnowledge(context?: AiWebsiteContext): string {
 THÔNG TIN SÀN BẤT ĐỘNG SẢN:
 - Tên thương hiệu: ${context.websiteName || 'Sàn Giao Dịch Bất Động Sản Uy Tín'}
 - Slogan: ${context.slogan || 'Nâng Tầm Không Gian Sống'}
-- Hotline tư vấn 24/7: ${context.hotline || '0905.568.888'}
-- Số Zalo tiếp nhận hồ sơ: ${context.zalo || '0905.568.888'}
+- Hotline tư vấn 24/7: ${context.hotline || '0919 006 030'}
+- Số Zalo tiếp nhận hồ sơ: ${context.zalo || '0919 006 030'}
 - Địa chỉ văn phòng: ${context.address || 'TP. Hồ Chí Minh / Hà Nội'}
 `;
 
@@ -151,7 +151,7 @@ export async function askGeminiAssistant(
   // Check rate limit (10 queries/day VN time)
   if (usage.remaining <= 0) {
     return {
-      text: `⚠️ **Bạn đã sử dụng hết 10 lượt hỏi AI miễn phí hôm nay** (Hệ thống tự động làm mới vào lúc 00:00 theo giờ Việt Nam).\n\nĐể nhận bảng giá, lịch xem nhà và chính sách chiết khấu ngay bây giờ, bạn vui lòng gọi trực tiếp Hotline: **${contextData?.hotline || '0905.568.888'}** hoặc bấm nút **Chat Zalo** góc màn hình nhé!`,
+      text: `⚠️ **Bạn đã sử dụng hết 10 lượt hỏi AI miễn phí hôm nay** (Hệ thống tự động làm mới vào lúc 00:00 theo giờ Việt Nam).\n\nĐể nhận bảng giá, lịch xem nhà và chính sách chiết khấu ngay bây giờ, bạn vui lòng gọi trực tiếp Hotline: **${contextData?.hotline || '0919 006 030'}** hoặc bấm nút **Chat Zalo** góc màn hình nhé!`,
       success: false,
       remainingQueries: 0,
     };
@@ -185,7 +185,7 @@ KIẾN THỨC CHUYÊN MÔN BẤT ĐỘNG SẢN VIỆT NAM (BẠN ĐÃ ĐƯỢC H
    - Luôn ưu tiên tra cứu trong GIỎ HÀNG THỰC TẾ ở trên để trả lời chính xác tên căn, giá, diện tích, vị trí và tiện ích của chủ sàn.
    - Nếu khách hỏi loại BĐS hoặc tầm giá có trong giỏ hàng: Giới thiệu ngay căn đó và nêu bật 2-3 điểm mạnh nhất.
    - Luôn trả lời bằng tiếng Việt lịch sự, thông minh, chuyên nghiệp, ngắn gọn (dưới 150 từ).
-   - Luôn khéo léo kết thúc bằng lời mời khách nhắn Zalo **${contextData?.zalo || contextData?.hotline || '0905.568.888'}** hoặc để lại SĐT để gửi bảng giá VIP và lịch đón xem nhà thực tế.`;
+   - Luôn khéo léo kết thúc bằng lời mời khách nhắn Zalo **${contextData?.zalo || contextData?.hotline || '0919 006 030'}** hoặc để lại SĐT để gửi bảng giá VIP và lịch đón xem nhà thực tế.`;
 
   try {
     if (apiKey && apiKey.trim().length > 15) {
@@ -251,10 +251,10 @@ KIẾN THỨC CHUYÊN MÔN BẤT ĐỘNG SẢN VIỆT NAM (BẠN ĐÃ ĐƯỢC H
   let responseText = '';
 
   if (matchedProject) {
-    responseText = `Dạ em chào anh/chị ạ! Về căn ${matchedProject.title}, đây là sản phẩm ${matchedProject.type || 'cao cấp'} với mức giá ${matchedProject.price || 'vô cùng ưu đãi'}, diện tích ${matchedProject.area || 'rộng rãi'} tại ${matchedProject.address || 'vị trí trung tâm'}. Căn này sở hữu các tiện ích nổi bật như ${matchedProject.amenities?.slice(0, 3).join(', ') || 'an ninh 24/7, khuôn viên xanh thoáng mát'}. Anh/chị có muốn em gửi trọn bộ mặt bằng và hỗ trợ đặt lịch xem nhà thực tế qua Zalo ${contextData?.zalo || '0905.568.888'} không ạ?`;
+    responseText = `Dạ em chào anh/chị ạ! Về căn ${matchedProject.title}, đây là sản phẩm ${matchedProject.type || 'cao cấp'} với mức giá ${matchedProject.price || 'vô cùng ưu đãi'}, diện tích ${matchedProject.area || 'rộng rãi'} tại ${matchedProject.address || 'vị trí trung tâm'}. Căn này sở hữu các tiện ích nổi bật như ${matchedProject.amenities?.slice(0, 3).join(', ') || 'an ninh 24/7, khuôn viên xanh thoáng mát'}. Anh/chị có muốn em gửi trọn bộ mặt bằng và hỗ trợ đặt lịch xem nhà thực tế qua Zalo ${contextData?.zalo || '0919 006 030'} không ạ?`;
   } else if (q.includes('giá') || q.includes('bao nhiêu') || q.includes('bảng giá') || q.includes('chiết khấu')) {
     const sample = projects[0];
-    responseText = `Dạ hiện tại bên em đang có các căn rất đẹp ${sample ? `như ${sample.title} với mức giá chỉ từ ${sample.price}` : ''} kèm chính sách chiết khấu đợt 1 và quà tặng hấp dẫn. Anh/chị vui lòng để lại Số Điện Thoại hoặc nhắn tin Zalo ${contextData?.zalo || '0905.568.888'} để chuyên viên bên em gửi bảng giá chi tiết từng căn ngay nhé!`;
+    responseText = `Dạ hiện tại bên em đang có các căn rất đẹp ${sample ? `như ${sample.title} với mức giá chỉ từ ${sample.price}` : ''} kèm chính sách chiết khấu đợt 1 và quà tặng hấp dẫn. Anh/chị vui lòng để lại Số Điện Thoại hoặc nhắn tin Zalo ${contextData?.zalo || '0919 006 030'} để chuyên viên bên em gửi bảng giá chi tiết từng căn ngay nhé!`;
   } else if (q.includes('vay') || q.includes('ngân hàng') || q.includes('lãi suất') || q.includes('trả góp')) {
     responseText = `Dạ đối tác ngân hàng (Techcombank, Vietcombank, MBBank) đang hỗ trợ gói vay ưu đãi tới 70% - 80% giá trị căn hộ, ân hạn nợ gốc và hỗ trợ lãi suất 0% trong 24 tháng. Anh/chị chỉ cần thanh toán trước 15% - 30% là có thể nhận nhà. Anh/chị muốn em tính toán lịch trả nợ cụ thể theo thu nhập gia đình không ạ?`;
   } else if (q.includes('phong thủy') || q.includes('hướng') || q.includes('tuổi') || q.includes('mệnh')) {
@@ -263,7 +263,7 @@ KIẾN THỨC CHUYÊN MÔN BẤT ĐỘNG SẢN VIỆT NAM (BẠN ĐÃ ĐƯỢC H
     responseText = `Dạ toàn bộ sản phẩm trên website đều cam kết pháp lý 1/500 minh bạch 100%, có giấy phép xây dựng và sẵn sàng bàn giao sổ hồng lâu dài cho khách hàng. Mọi thủ tục công chứng, sang tên đều được chuyên viên bên em hỗ trợ trọn gói miễn phí ạ!`;
   } else {
     const topProj = projects[0];
-    responseText = `Dạ em cảm ơn anh/chị đã ghé thăm ${cleanWebName}! Bên em đang phân phối nhiều căn vị trí đẹp ${topProj ? `như ${topProj.title}` : ''}. Anh/chị có thể liên hệ Hotline ${contextData?.hotline || '0905.568.888'} hoặc nhắn tin Zalo để em gửi thông tin giỏ hàng chi tiết ngay nhé!`;
+    responseText = `Dạ em cảm ơn anh/chị đã ghé thăm ${cleanWebName}! Bên em đang phân phối nhiều căn vị trí đẹp ${topProj ? `như ${topProj.title}` : ''}. Anh/chị có thể liên hệ Hotline ${contextData?.hotline || '0919 006 030'} hoặc nhắn tin Zalo để em gửi thông tin giỏ hàng chi tiết ngay nhé!`;
   }
 
   return { text: responseText.replace(/\*\*/g, '').replace(/\*/g, ''), success: true, remainingQueries: updatedUsage.remaining };

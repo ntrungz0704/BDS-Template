@@ -195,7 +195,7 @@ export class AiController {
         .replace(/\s*Launch Funnel/i, '')
         .trim();
 
-      const hotline = compInfo?.hotline || compInfo?.phone || '0905.568.888';
+      const hotline = compInfo?.hotline || compInfo?.phone || '0919 006 030';
       const zalo = compInfo?.zalo || hotline;
 
       // Xây dựng danh sách dự án cho RAG

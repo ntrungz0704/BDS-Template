@@ -514,6 +514,8 @@ export default function BDS06Template({
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [leadModalOpen, setLeadModalOpen] = useState(false);
+  const [leadModalTitle, setLeadModalTitle] = useState("TẢI TRỌN BỘ HỒ SƠ PHÁP LÝ & BẢNG GIÁ GỐC");
 
   // Mortgage Calculator State
   const [loanPercent, setLoanPercent] = useState<number>(70);
@@ -904,10 +906,7 @@ export default function BDS06Template({
 
             <div className="text-center pt-2">
               <button
-                onClick={() => {
-                  const el = document.getElementById('lead-form-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
+                onClick={() => { setLeadModalTitle('TẢI TRỌN BỘ HỒ SƠ PHÁP LÝ & BẢNG GIÁ GỐC'); setLeadModalOpen(true); }}
                 className="px-8 py-3.5 bg-[#D8232A] hover:bg-[#b91c1c] text-white text-xs sm:text-sm font-extrabold rounded-sm shadow-lg shadow-red-900/30 uppercase tracking-wider transition-all hover:scale-105"
               >
                 Tải Trọn Bộ Hồ Sơ Pháp Lý & Bảng Giá
@@ -2223,6 +2222,92 @@ export default function BDS06Template({
       <main className="flex-1 w-full">
         {renderMainContent()}
       </main>
+
+      
+      {/* Lead Form Modal */}
+      {leadModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-md p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-4 relative border border-slate-200 animate-in zoom-in-95 duration-200 text-slate-900">
+            <button 
+              onClick={() => setLeadModalOpen(false)}
+              className="absolute top-4 right-4 p-2 rounded-sm hover:bg-slate-100 text-slate-500"
+            >
+              <X size={18} />
+            </button>
+            <div className="text-center space-y-1">
+              <span className="text-xs font-black text-[#D8232A] uppercase tracking-wider">HỆ THỐNG PHÂN PHỐI TRỰC TIẾP</span>
+              <h3 className="text-lg sm:text-xl font-black text-slate-900">{leadModalTitle}</h3>
+              <p className="text-xs text-slate-500">Chuyên viên tư vấn sẽ gửi trọn bộ file PDF qua Zalo trong 3 phút.</p>
+            </div>
+            <form 
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (!leadForm.phone) {
+                  alert('Vui lòng nhập số điện thoại để nhận tài liệu!');
+                  return;
+                }
+                try {
+                  const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
+                  await fetch(`${API_URL}/api/marketplace/contact`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      fullName: leadForm.name.trim() || 'Khách nhận tài liệu BDS-06',
+                      phone: leadForm.phone.trim(),
+                      email: leadForm.email.trim(),
+                      selectedTemplate: 'bds-06',
+                      packageInterest: leadModalTitle,
+                      message: 'Yêu cầu tải: ' + leadModalTitle,
+                    }),
+                  });
+                } catch {}
+                setLeadModalOpen(false);
+                showToast(`🎉 Tiếp nhận yêu cầu của ${leadForm.name || 'Quý khách'} (${leadForm.phone}). Bảng giá & tài liệu sẽ gửi qua Zalo trong 3 phút!`);
+                setLeadForm({ name: '', phone: '', email: '', note: '', productType: 'Căn hộ 2 Phòng Ngủ' });
+              }} 
+              className="space-y-3 text-xs"
+            >
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Họ và tên của bạn</label>
+                <input
+                  type="text"
+                  placeholder="VD: Nguyễn Văn Nam"
+                  value={leadForm.name}
+                  onChange={e => setLeadForm(f => ({ ...f, name: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-sm border border-slate-200 focus:outline-none focus:border-red-500 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Số điện thoại / Zalo <span className="text-red-500">*</span></label>
+                <input
+                  type="tel"
+                  required
+                  placeholder="VD: 0919 006 030"
+                  value={leadForm.phone}
+                  onChange={e => setLeadForm(f => ({ ...f, phone: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-sm border border-slate-200 focus:outline-none focus:border-red-500 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Email nhận file PDF</label>
+                <input
+                  type="email"
+                  placeholder="VD: email@gmail.com"
+                  value={leadForm.email}
+                  onChange={e => setLeadForm(f => ({ ...f, email: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-sm border border-slate-200 focus:outline-none focus:border-red-500 bg-white"
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full py-3 bg-[#D8232A] hover:bg-[#b91c1c] text-white font-extrabold text-xs uppercase tracking-wider rounded-sm shadow-md transition"
+              >
+                Gửi Yêu Cầu & Tải Tài Liệu Ngay
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Universal Footer with TEMPLATESBDS Branding & Floating Buttons */}
       <UniversalTemplateFooter
