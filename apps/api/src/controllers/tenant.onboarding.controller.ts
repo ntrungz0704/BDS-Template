@@ -20,6 +20,7 @@ import { Request, Response, NextFunction } from 'express';
 import { prisma, Prisma } from '@repo/database';
 import { z } from 'zod';
 import { logger } from '../index';
+import { DEFAULT_SECTIONS as ONBOARDING_DEFAULT_SECTIONS } from '../services/onboarding.service';
 
 // ─── Validation Schemas ───────────────────────────────────────────────────────
 
@@ -172,7 +173,7 @@ export async function completeTenantOnboarding(req: Request, res: Response, next
       for (const page of DEFAULT_PAGES) {
         const exists = await tx.tenantPage.findFirst({ where: { tenantId, slug: page.slug } });
         if (!exists) {
-          await tx.tenantPage.create({
+          const createdPage = await tx.tenantPage.create({
             data: {
               tenantId,
               slug: page.slug,
@@ -183,6 +184,21 @@ export async function completeTenantOnboarding(req: Request, res: Response, next
               sortOrder: page.sortOrder,
             },
           });
+
+          for (const section of ONBOARDING_DEFAULT_SECTIONS[page.slug] || []) {
+            await tx.tenantSection.create({
+              data: {
+                tenantId,
+                pageId: createdPage.id,
+                sectionKey: section.sectionKey,
+                label: section.label,
+                sortOrder: section.sortOrder,
+                content: section.content,
+                settings: section.settings,
+                isVisible: true,
+              },
+            });
+          }
         }
       }
     });

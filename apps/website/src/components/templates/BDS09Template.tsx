@@ -545,7 +545,7 @@ export default function BDS09Template({
         {/* CTA & Mobile Hamburger */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
           <a
-            href="tel:0919006030"
+            href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`}
             className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-sm bg-amber-500/10 border border-amber-500/40 text-[#FDE047] text-xs font-black whitespace-nowrap shrink-0 hover:bg-amber-500/20 transition"
           >
             <Phone size={13} className="text-amber-400 animate-pulse shrink-0" />

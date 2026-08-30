@@ -28,9 +28,9 @@ export default function LP04Template({
   // Brand & Company info fallback from CMS
   const brandName = company?.name || 'VẠN PHÚC CITY / ROYAL PALACE ECO-TOWNSHIP';
   const companyGroup = 'TẬP ĐOÀN VẠN PHÚC GROUP';
-  const hotline = company?.phone || '0908.888.999';
+  const hotline = company?.phone || '0919 006 030';
   const zalo = company?.zalo || hotline;
-  const email = company?.email || 'sales@vanphuccity.vn';
+  const email = company?.email || 'admin@templatesbds.com';
   const address = company?.address || 'Bán Đảo Vạn Phúc, Quốc Lộ 13, TP. Thủ Đức, TP. Hồ Chí Minh & Hà Nội';
 
   // Hero Lead Form State

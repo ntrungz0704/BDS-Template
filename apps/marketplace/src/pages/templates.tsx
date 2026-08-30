@@ -78,7 +78,7 @@ export default function TemplatesPage() {
   return (
     <>
       <Head>
-        <title>Bộ Sưu Tập {templates.length} Mẫu Website Bất Động Sản Việt Nam | TEMPLATES BDS</title>
+        <title>{`Bộ Sưu Tập ${templates.length} Mẫu Website Bất Động Sản Việt Nam | TEMPLATES BDS`}</title>
         <meta name="description" content={`${templates.length} mẫu website BĐS đang được phát hành.`} />
       </Head>
 

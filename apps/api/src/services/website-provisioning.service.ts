@@ -439,21 +439,34 @@ export class WebsiteProvisioningService {
           name: 'Giới thiệu Doanh nghiệp',
           sections: [
             { id: 'hero', name: 'Hero Banner', content: { title: 'Về Chúng Tôi', subtitle: 'Hành trình kiến tạo không gian sống đỉnh cao cho mọi gia đình.' } },
-            { id: 'about', name: 'Câu Chuyện Doanh Nghiệp', content: { heading: 'Tầm Nhìn & Sứ Mệnh', description: 'Chúng tôi cam kết mang lại những giá trị bất động sản bền vững nhất.' } }
+            { id: 'about', name: 'Câu Chuyện Doanh Nghiệp', content: { heading: 'Tầm Nhìn & Sứ Mệnh', description: 'Chúng tôi cam kết mang lại những giá trị bất động sản bền vững nhất.' } },
+            { id: 'stats', name: 'Năng Lực Doanh Nghiệp', content: { items: [
+              { value: '15+', label: 'Năm kinh nghiệm' },
+              { value: '50+', label: 'Dự án đã triển khai' },
+              { value: '10.000+', label: 'Khách hàng tin tưởng' }
+            ] } }
           ]
         },
         {
           slug: 'projects',
           name: 'Dự án Bất động sản',
           sections: [
-            { id: 'featured_projects', name: 'Danh Sách Dự Án', content: { heading: 'Tất Cả Dự Án', maxItems: 12 } }
+            { id: 'hero', name: 'Hero Dự Án', content: { title: 'Danh Mục Dự Án', subtitle: 'Khám phá các sản phẩm đã được thẩm định về vị trí, pháp lý và tiềm năng.' } },
+            { id: 'featured_projects', name: 'Danh Sách Dự Án', content: { heading: 'Tất Cả Dự Án', maxItems: 12 } },
+            { id: 'cta', name: 'Tư Vấn Chọn Dự Án', content: { heading: 'Chưa biết nên chọn dự án nào?', subtitle: 'Chuyên viên sẽ phân tích theo ngân sách và mục tiêu đầu tư.', ctaText: 'Nhận tư vấn' } }
           ]
         },
         {
           slug: 'contact',
           name: 'Liên hệ & Bản đồ Vị trí',
           sections: [
-            { id: 'contact', name: 'Thông Tin Liên Hệ', content: { heading: 'Kết Nối Cùng Chuyên Viên Tư Vấn 24/7' } }
+            { id: 'hero', name: 'Hero Liên Hệ', content: { title: 'Kết Nối Cùng Chúng Tôi', subtitle: 'Nhận thông tin chính xác và lịch hẹn tham quan phù hợp.' } },
+            { id: 'contact', name: 'Thông Tin Liên Hệ', content: { heading: 'Kết Nối Cùng Chuyên Viên Tư Vấn 24/7' } },
+            { id: 'faq', name: 'Giải Đáp Trước Khi Liên Hệ', content: { items: [
+              { q: 'Tôi có thể đặt lịch xem nhà mẫu không?', a: 'Có. Chuyên viên sẽ xác nhận lịch hẹn phù hợp trong thời gian sớm nhất.' },
+              { q: 'Bảng giá có được cập nhật không?', a: 'Bảng giá và chính sách ưu đãi được đối chiếu theo đợt mở bán hiện hành.' },
+              { q: 'Thông tin của tôi được bảo mật thế nào?', a: 'Thông tin chỉ được dùng cho mục đích tư vấn và được quản lý trong CRM riêng của doanh nghiệp.' }
+            ] } }
           ]
         }
       ];
@@ -564,6 +577,37 @@ export class WebsiteProvisioningService {
         }
       }
 
+      // Every delivered website starts with enough real content to exercise
+      // cards, filters and detail navigation. Existing registry data is kept;
+      // generic records only fill a short catalog up to the minimum of three.
+      const seededProjectCount = await tx.project.count({ where: { tenantId: tenant.id } });
+      const projectFallbacks = [
+        { title: 'Căn Hộ Panorama Trung Tâm', type: 'APARTMENT', price: 'Từ 4,8 Tỷ VNĐ', area: '82m²', address: 'Trung tâm TP. Hồ Chí Minh', image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800' },
+        { title: 'Biệt Thự Compound Ven Sông', type: 'VILLA', price: 'Từ 18 Tỷ VNĐ', area: '320m²', address: 'TP. Thủ Đức', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800' },
+        { title: 'Shophouse Đại Lộ Thương Mại', type: 'SHOPHOUSE', price: 'Từ 12 Tỷ VNĐ', area: '150m²', address: 'Khu đô thị mới', image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800' },
+      ];
+      for (let k = seededProjectCount; k < 3; k++) {
+        const fallback = projectFallbacks[k];
+        await tx.project.create({
+          data: {
+            tenantId: tenant.id,
+            title: fallback.title,
+            slug: `${actualTemplateId}-project-default-${k + 1}`,
+            description: `${fallback.title} với pháp lý minh bạch, tiện ích đồng bộ và chính sách thanh toán linh hoạt.`,
+            shortDescription: 'Sản phẩm bất động sản tiêu biểu',
+            type: fallback.type as any,
+            status: 'SELLING',
+            price: fallback.price,
+            priceFrom: BigInt(0),
+            area: fallback.area,
+            address: fallback.address,
+            thumbnail: fallback.image,
+            published: true,
+            sortOrder: k,
+          },
+        });
+      }
+
       // h. Clone Default Posts
       // Seed content belongs to the immutable template package/registry, not
       // to provisioning code. A template may intentionally start with no posts.
@@ -582,6 +626,28 @@ export class WebsiteProvisioningService {
             published: true,
             publishedAt: new Date(),
           }
+        });
+      }
+
+      const seededPostCount = await tx.post.count({ where: { tenantId: tenant.id } });
+      const postFallbacks = [
+        ['Cập nhật thị trường bất động sản 2026', 'Phân tích nguồn cung, mặt bằng giá và cơ hội đầu tư đáng chú ý trong năm 2026.'],
+        ['Cẩm nang kiểm tra pháp lý trước khi xuống tiền', 'Danh sách hồ sơ và các bước thẩm định giúp người mua hạn chế rủi ro trong giao dịch.'],
+        ['Kinh nghiệm chọn sản phẩm phù hợp dòng tiền', 'Cách so sánh vị trí, tiện ích, tiến độ thanh toán và khả năng khai thác cho thuê.'],
+      ];
+      for (let k = seededPostCount; k < 3; k++) {
+        const [title, summary] = postFallbacks[k];
+        await tx.post.create({
+          data: {
+            tenantId: tenant.id,
+            title,
+            slug: `${actualTemplateId}-news-default-${k + 1}`,
+            summary,
+            content: `<p>${summary}</p><p>Liên hệ đội ngũ chuyên viên để nhận báo cáo chi tiết và dữ liệu cập nhật.</p>`,
+            thumbnail: projectFallbacks[k].image,
+            published: true,
+            publishedAt: new Date(),
+          },
         });
       }
 

@@ -79,7 +79,7 @@ export interface NewsItem {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BDS-13 MOCK DATA: ĐẠI PHÁT LAND - BẤT ĐỘNG SẢN THỦY NGUYÊN HẢI PHÒNG
+// BDS-13 MOCK DATA: {company?.name || 'TEMPLATESBDS'} - BẤT ĐỘNG SẢN THỦY NGUYÊN HẢI PHÒNG
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const BDS13_PROPERTIES: PropertyItem[] = [
@@ -445,7 +445,7 @@ export default function BDS13Template({
             </span>
           </div>
           <div className="text-amber-300 font-bold uppercase tracking-wider">
-            SÀN GIAO DỊCH BẤT ĐỘNG SẢN ĐẠI PHÁT LAND — THÀNH PHỐ THỦY NGUYÊN HẢI PHÒNG
+            SÀN GIAO DỊCH BẤT ĐỘNG SẢN {company?.name || 'TEMPLATESBDS'} — THÀNH PHỐ THỦY NGUYÊN HẢI PHÒNG
           </div>
         </div>
       </div>
@@ -526,7 +526,7 @@ export default function BDS13Template({
         {/* CTA */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
           <a
-            href="tel:0917858885"
+            href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`}
             className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-sm bg-orange-50 border border-orange-200 text-[#EA580C] text-xs font-black whitespace-nowrap shrink-0 hover:bg-orange-100 transition"
           >
             <Phone size={13} className="text-[#EA580C] animate-bounce shrink-0" />
@@ -811,7 +811,7 @@ export default function BDS13Template({
           </p>
         </div>
         <a
-          href="tel:0917858885"
+          href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`}
           className="px-6 py-3 bg-[#F97316] hover:bg-[#EA580C] text-white font-black text-xs uppercase tracking-wider rounded-sm shadow-lg transition hover:scale-105 shrink-0 whitespace-nowrap"
         >
           Hotline: 0917.85.88.85
@@ -875,7 +875,7 @@ export default function BDS13Template({
         {/* Heading */}
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <h2 className="text-2xl font-black uppercase text-amber-300 tracking-wider">
-            VÌ SAO CHỌN BĐS THỦY NGUYÊN — ĐẠI PHÁT LAND
+            VÌ SAO CHỌN BĐS THỦY NGUYÊN — {company?.name || 'TEMPLATESBDS'}
           </h2>
           <p className="text-xs text-slate-300">
             Chúng tôi cam kết mang lại giá trị bền vững và lợi nhuận tối đa cho mọi khách hàng và đối tác đầu tư.
@@ -952,7 +952,7 @@ export default function BDS13Template({
             </div>
             <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Hoang Huy Ad" className="w-full h-40 object-cover rounded-sm border border-white/20" />
             <a
-              href="tel:0917858885"
+              href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`}
               className="py-3 bg-[#F97316] hover:bg-[#EA580C] text-white font-black text-xs uppercase rounded-sm shadow transition"
             >
               HOTLINE: 0917.85.88.85
@@ -966,7 +966,7 @@ export default function BDS13Template({
   );
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 10. SECTION 7: FOOTER 5 CỘT ĐẠI PHÁT LAND
+  // 10. SECTION 7: FOOTER 5 CỘT {company?.name || 'TEMPLATESBDS'}
   // ─────────────────────────────────────────────────────────────────────────
   const renderDaiPhatFooter = () => (
     <section id="lien-he" className="py-14 bg-[#0B3056] text-slate-300 text-xs border-t border-white/10">

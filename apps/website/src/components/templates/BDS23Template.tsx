@@ -82,7 +82,7 @@ export interface NewsItem {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BDS-23 MOCK DATA: MINH KHAI APARTMENTS & VÀNH ĐAI 2 HÀ NỘI
+// BDS-23 MOCK DATA: {company?.name || 'TEMPLATESBDS'} & VÀNH ĐAI 2 HÀ NỘI
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const BDS23_PROJECTS: ProjectItem[] = [
@@ -512,7 +512,7 @@ export default function BDS23Template({
           </div>
           <div className="min-w-0 truncate">
             <span className="text-base sm:text-2xl font-serif font-black tracking-wider text-amber-300 block leading-none truncate">
-              MINH KHAI <span className="text-white">APARTMENTS</span>
+              {company?.name || 'TEMPLATESBDS'}
             </span>
             <span className="text-[7.5px] sm:text-[8.5px] font-bold text-amber-200/80 uppercase tracking-widest block mt-0.5 truncate">
               CỔNG THÔNG TIN CHUNG CƯ CAO CẤP VÀNH ĐAI 2

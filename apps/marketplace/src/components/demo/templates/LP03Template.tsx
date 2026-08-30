@@ -27,9 +27,9 @@ export default function LP03Template({
   // Brand & Company Info Fallback
   const brandName = company?.name || 'DỰ ÁN CĂN HỘ SIMPLE PAGE';
   const companyGroup = 'TẬP ĐOÀN ĐẦU TƯ BẤT ĐỘNG SẢN';
-  const hotline = company?.phone || '0905.888.666';
+  const hotline = company?.phone || '0919 006 030';
   const zalo = company?.zalo || hotline;
-  const email = company?.email || 'sales@simplepagebds.vn';
+  const email = company?.email || 'admin@templatesbds.com';
   const address = company?.address || 'Đại Lộ Trung Tâm Đô Thị Mới, Quận Nam Từ Liêm, Hà Nội / TP.HCM';
 
   // Hero Lead Form State

@@ -80,7 +80,7 @@ export interface NewsItem {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BDS-15 MOCK DATA: LUPUL GROUP REAL ESTATE (CLEAN SHARP & DYNAMIC CMS FILTERS)
+// BDS-15 MOCK DATA: {company?.name || 'TEMPLATESBDS'} REAL ESTATE (CLEAN SHARP & DYNAMIC CMS FILTERS)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const BDS15_PROPERTIES: PropertyItem[] = [
@@ -499,7 +499,7 @@ export default function BDS15Template({
           {/* Hotline Right */}
           <div className="flex items-center gap-3 shrink-0">
             <a
-              href="tel:0982078203"
+              href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`}
               className="flex items-center gap-1.5 px-4 py-1.5 bg-[#E11D48] text-white text-xs font-black shadow-sm"
             >
               <Phone size={13} className="animate-bounce" />
@@ -524,7 +524,7 @@ export default function BDS15Template({
             </div>
             <div className="min-w-0 truncate">
               <span className="text-base font-black text-white tracking-tight leading-none block truncate">
-                LUPUL GROUP
+                {company?.name || 'TEMPLATESBDS'}
               </span>
               <span className="text-[7.5px] font-bold text-teal-100 uppercase tracking-widest block mt-0.5 truncate">
                 REAL ESTATE PLATFORM
@@ -990,7 +990,7 @@ export default function BDS15Template({
   );
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 9. SECTION 7: FOOTER 4 CỘT LUPUL GROUP
+  // 9. SECTION 7: FOOTER 4 CỘT {company?.name || 'TEMPLATESBDS'}
   // ─────────────────────────────────────────────────────────────────────────
   const renderLupulFooter = () => (
     <section id="lien-he" className="py-14 bg-[#0F172A] text-slate-300 text-xs border-t border-slate-800">
@@ -998,7 +998,7 @@ export default function BDS15Template({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           
           <div className="space-y-3">
-            <span className="text-lg font-black text-white block">LUPUL GROUP REAL ESTATE</span>
+            <span className="text-lg font-black text-white block">{company?.name || 'TEMPLATESBDS'} REAL ESTATE</span>
             <p className="text-slate-400 leading-relaxed">
               Tập đoàn đầu tư và phân phối bất động sản nghỉ dưỡng sinh thái, căn hộ và nhà phố uy tín hàng đầu.
             </p>

@@ -83,7 +83,7 @@ export interface NewsItem {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BDS-20 MOCK DATA: MONA PARK VIEW (KHU ĐÔ THỊ CÔNG VIÊN XANH & HỒ ĐIỀU HÒA)
+// BDS-20 MOCK DATA: {company?.name || 'TEMPLATESBDS'} (KHU ĐÔ THỊ CÔNG VIÊN XANH & HỒ ĐIỀU HÒA)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const BDS20_UNITS: UnitItem[] = [
@@ -466,7 +466,7 @@ export default function BDS20Template({
           </div>
           <div className="min-w-0 truncate">
             <span className="text-base sm:text-2xl font-serif font-black tracking-wider text-amber-300 block leading-none truncate">
-              MONA PARK VIEW
+              {company?.name || 'TEMPLATESBDS'}
             </span>
             <span className="text-[7.5px] sm:text-[8.5px] font-bold text-amber-200/80 uppercase tracking-widest block mt-0.5 truncate">
               KHU ĐÔ THỊ CÔNG VIÊN & HỒ ĐIỀU HÒA SINH THÁI
@@ -549,7 +549,7 @@ export default function BDS20Template({
         </div>
 
         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-black uppercase text-amber-300 tracking-wider drop-shadow-2xl">
-          MONA PARK VIEW
+          {company?.name || 'TEMPLATESBDS'}
         </h1>
         <p className="text-xs sm:text-base text-slate-100 max-w-2xl mx-auto font-medium leading-relaxed">
           Chốn an cư lý tưởng giữa miền xanh thiên nhiên — Hưởng trọn tầm nhìn Panorama ôm trọn đại công viên 100ha và hồ cảnh quan sinh thái.
@@ -580,7 +580,7 @@ export default function BDS20Template({
   );
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 3. SECTION 1: GIỚI THIỆU MONA PARK VIEW (ECO CITY)
+  // 3. SECTION 1: GIỚI THIỆU {company?.name || 'TEMPLATESBDS'} (ECO CITY)
   // ─────────────────────────────────────────────────────────────────────────
   const renderOverviewSection = () => (
     <section id="tong-quan" className="py-16 bg-white text-slate-900 border-b border-slate-200">
@@ -973,7 +973,7 @@ export default function BDS20Template({
         
         <div className="flex items-center justify-between border-b-2 border-[#0B4635] pb-3">
           <h2 className="text-2xl font-serif font-black uppercase text-[#0B4635]">
-            TIN TỨC MONA PARK VIEW
+            TIN TỨC {company?.name || 'TEMPLATESBDS'}
           </h2>
           <button onClick={() => navigate('news')} className="text-xs font-bold text-emerald-800 hover:underline">
             Xem Tất Cả Tin Tức ›

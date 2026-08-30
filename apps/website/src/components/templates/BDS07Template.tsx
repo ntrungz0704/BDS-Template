@@ -602,7 +602,7 @@ export default function BDS07Template({
             <span className="opacity-80">★ SỔ ĐỎ THỔ CƯ CÔNG CHỨNG NGAY ★</span>
           </div>
           <div className="flex items-center gap-4">
-            <a href="tel:0919006030" className="flex items-center gap-1.5 hover:underline">
+            <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="flex items-center gap-1.5 hover:underline">
               <Phone size={13} className="animate-pulse text-amber-300" /> Hotline CĐT: <strong>0919 006 030</strong>
             </a>
             <span className="opacity-50">|</span>
@@ -623,7 +623,7 @@ export default function BDS07Template({
           </div>
           <div className="min-w-0 truncate">
             <span className="text-sm sm:text-base font-black tracking-tight block leading-tight text-white group-hover:text-emerald-300 transition-colors truncate">
-              PANNAMERA BẢO LỘC
+              {company?.name || 'TEMPLATESBDS'}
             </span>
             <span className="text-[7.5px] sm:text-[10px] tracking-widest text-emerald-300 block uppercase font-bold truncate">
               LÀNG SINH THÁI NGHỈ DƯỠNG
@@ -692,7 +692,7 @@ export default function BDS07Template({
         {/* CTA & Mobile Toggle */}
         <div className="flex items-center gap-2.5 shrink-0 ml-auto">
           <a
-            href="tel:0919006030"
+            href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`}
             className="hidden xl:flex items-center gap-1.5 px-3 py-2 rounded-sm bg-emerald-900/80 hover:bg-emerald-800 text-xs font-bold text-emerald-200 border border-emerald-700/60 transition-colors whitespace-nowrap shrink-0"
           >
             <Phone size={13} className="text-amber-400 animate-pulse shrink-0" />
@@ -734,7 +734,7 @@ export default function BDS07Template({
           </div>
           <div className="pt-2 border-t border-emerald-800 flex items-center justify-between text-xs">
             <span className="text-emerald-300">Hotline tư vấn 24/7:</span>
-            <a href="tel:0919006030" className="text-amber-400 font-extrabold">0919 006 030</a>
+            <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="text-amber-400 font-extrabold">0919 006 030</a>
           </div>
         </div>
       )}
@@ -959,7 +959,7 @@ export default function BDS07Template({
               />
               <div className="absolute inset-0 bg-emerald-950/60 flex flex-col justify-between p-6">
                 <div className="inline-block self-start px-3.5 py-1.5 rounded-lg bg-amber-500 text-slate-950 text-xs font-black shadow-md">
-                  📍 VỊ TRÍ PANNAMERA BẢO LỘC
+                  📍 VỊ TRÍ {company?.name || 'TEMPLATESBDS'}
                 </div>
                 <div className="bg-[#022C22]/90 backdrop-blur-md p-4 rounded-sm border border-emerald-700 text-xs space-y-1">
                   <strong className="text-amber-300 block font-black">TRỤC KẾT NỐI CAO TỐC LIÊN KHƯƠNG</strong>
@@ -1711,7 +1711,7 @@ export default function BDS07Template({
               </form>
 
               <div className="pt-3 border-t border-emerald-800 text-center">
-                <a href="tel:0919006030" className="text-xs font-bold text-amber-300 hover:underline flex items-center justify-center gap-1.5">
+                <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="text-xs font-bold text-amber-300 hover:underline flex items-center justify-center gap-1.5">
                   <Phone size={14} className="animate-pulse" /> Hotline 24/7: 0919 006 030
                 </a>
               </div>

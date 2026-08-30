@@ -12,7 +12,7 @@ import rateLimit from 'express-rate-limit';
 import path from 'path';
 import winston from 'winston';
 import { PrismaClient, Prisma } from '@repo/database';
-import { autoSeedDatabase } from './utils/auto-seed';
+import { autoSeedDatabase, syncCatalog } from './utils/auto-seed';
 import { csrfMiddleware } from './middlewares/csrf.middleware';
 
 export const logger = winston.createLogger({
@@ -208,11 +208,31 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 let server: any;
 if (process.env.NODE_ENV !== 'test' && !process.env.JEST_WORKER_ID) {
-  server = app.listen(PORT, () => {
-    logger.info('API Server đang chạy trên cổng ' + PORT + ' ở chế độ ' + process.env.NODE_ENV);
-    if (process.env.NODE_ENV !== 'production' && process.env.ALLOW_AUTO_SEED === 'true') {
-      autoSeedDatabase().catch((e) => logger.warn('AutoSeed warning: ' + (e as Error).message));
+  const startServer = async () => {
+    // Catalog data is a business invariant: 24 BDS products and 7 landing pages.
+    // Idempotent sync ensures production and local always reflect the clean catalog.
+    try {
+      const result = await syncCatalog();
+      logger.info(
+        `Catalog synchronized: ${result.websiteTemplates} BDS templates, ` +
+        `${result.landingPages} landing pages, ${result.retired} legacy rows retired.`
+      );
+    } catch (syncErr: any) {
+      logger.warn(`Catalog sync warning: ${syncErr.message}`);
     }
+
+    server = app.listen(PORT, () => {
+      logger.info('API Server đang chạy trên cổng ' + PORT + ' ở chế độ ' + process.env.NODE_ENV);
+      if (process.env.NODE_ENV !== 'production' && process.env.ALLOW_AUTO_SEED === 'true') {
+        autoSeedDatabase().catch((e) => logger.warn('AutoSeed warning: ' + (e as Error).message));
+      }
+    });
+  };
+
+  startServer().catch(async (error) => {
+    logger.error('Không thể khởi động API: ' + (error as Error).message);
+    await prisma.$disconnect().catch(() => undefined);
+    process.exitCode = 1;
   });
 }
 

@@ -84,7 +84,7 @@ export interface NewsItem {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BDS-19 MOCK DATA: SUNSHINE CITY SAIGON (CĂN HỘ 4.0 DÁT VÀNG BÊN SÔNG QUẬN 7)
+// BDS-19 MOCK DATA: {company?.name || 'TEMPLATESBDS'} (CĂN HỘ 4.0 DÁT VÀNG BÊN SÔNG QUẬN 7)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const BDS19_UNITS: UnitItem[] = [
@@ -551,7 +551,7 @@ export default function BDS19Template({
         </div>
         
         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-black uppercase text-amber-300 tracking-wider drop-shadow-2xl">
-          SUNSHINE CITY SAIGON
+          {company?.name || 'TEMPLATESBDS'}
         </h1>
         <p className="text-xs sm:text-base text-slate-200 max-w-2xl mx-auto font-medium">
           Nơi hội tụ tinh hoa đẳng cấp thượng lưu — Quần thể 9 tòa tháp căn hộ thông minh 4.0 dát vàng bên sông Cả Cấm Quận 7.
@@ -590,7 +590,7 @@ export default function BDS19Template({
         
         <div className="text-center space-y-2">
           <h2 className="text-2xl sm:text-4xl font-serif font-black uppercase text-[#0F1E36]">
-            TỔNG QUAN <span className="text-[#D4AF37]">SUNSHINE CITY SAIGON</span>
+            TỔNG QUAN <span className="text-[#D4AF37]">{company?.name || 'TEMPLATESBDS'}</span>
           </h2>
           <div className="w-20 h-1 bg-[#D4AF37] mx-auto"></div>
         </div>
@@ -731,7 +731,7 @@ export default function BDS19Template({
       <div className={`${MAX_W} mx-auto px-4 relative z-20`}>
         <div className="max-w-2xl space-y-4">
           <div className="inline-block px-4 py-1.5 bg-[#D4AF37] text-slate-950 text-xs font-black uppercase tracking-wider">
-            GIÁ TRỊ VÀNG CỦA SUNSHINE CITY SAIGON
+            GIÁ TRỊ VÀNG CỦA {company?.name || 'TEMPLATESBDS'}
           </div>
           <h2 className="text-2xl sm:text-4xl font-serif font-black uppercase text-white leading-tight">
             Nội Thất Mạ Vàng & Kính Low-E Tràn Viền Đẳng Cấp
@@ -966,7 +966,7 @@ export default function BDS19Template({
         
         <div className="flex items-center justify-between border-b-2 border-[#D4AF37] pb-3">
           <h2 className="text-2xl font-serif font-black uppercase text-[#0F1E36]">
-            TIN TỨC SUNSHINE CITY SAIGON
+            TIN TỨC {company?.name || 'TEMPLATESBDS'}
           </h2>
           <button onClick={() => navigate('news')} className="text-xs font-bold text-[#D4AF37] hover:underline">
             Xem Tất Cả Tin Tức ›

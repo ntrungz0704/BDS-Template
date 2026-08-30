@@ -48,6 +48,8 @@ const LP05Template = dynamic(() => import('./templates/LP05Template'), { loading
 const LP06Template = dynamic(() => import('./templates/LP06Template'), { loading: () => <LoadingSkeleton /> });
 const LP07Template = dynamic(() => import('./templates/LP07Template'), { loading: () => <LoadingSkeleton /> });
 import { AIChatWidget } from '../ai/AIChatWidget';
+import submitDemoContact from '../../utils/demoContactHelper';
+import { captureDemoLead } from '../../utils/demoLeadCapture';
 
 interface DemoRendererProps {
   template: Template;
@@ -1071,6 +1073,16 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
   const colSlug = template.collectionSlug?.toLowerCase() || '';
   const page = normalizePageSlug(initialPage);
 
+  const handleSubmitCapture = (event: React.FormEvent<HTMLDivElement>) => {
+    const form = event.target instanceof HTMLFormElement ? event.target : null;
+    if (!form) return;
+    const lead = captureDemoLead(form, slug);
+    if (!lead) return;
+    void submitDemoContact(lead).then((result) => {
+      if (!result.success) console.warn('[Demo lead] Không thể ghi nhận yêu cầu:', result.message);
+    });
+  };
+
   const renderContent = () => {
     // ─── SPECIALIZED HIGH-CONVERTING SALES LANDING PAGES (CHECK FIRST) ───
     // LP-01: Landing Page Căn Hộ Chung Cư Cao Cấp
@@ -1204,7 +1216,10 @@ export default function DemoRenderer({ template, viewport = 'desktop', initialPa
   };
 
   return (
-    <div className={`demo-viewport-wrapper demo-viewport-${viewport || 'desktop'} w-full relative`}>
+    <div
+      className={`demo-viewport-wrapper demo-viewport-${viewport || 'desktop'} w-full relative`}
+      onSubmitCapture={handleSubmitCapture}
+    >
       <div className="demo-core-content">{renderContent()}</div>
       <AIChatWidget
         websiteName={template.name}

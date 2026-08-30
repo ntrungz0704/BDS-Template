@@ -27,9 +27,9 @@ export default function LP05Template({
   // Brand & Company info fallback from CMS
   const brandName = company?.name || 'GOLDEN PARK TOWER CẦU GIẤY';
   const companyGroup = 'TẬP ĐOÀN ĐẦU TƯ & PHÁT TRIỂN ĐÔ THỊ TÂY ĐÔ';
-  const hotline = company?.phone || '0988.353.998';
+  const hotline = company?.phone || '0919 006 030';
   const zalo = company?.zalo || hotline;
-  const email = company?.email || 'sales@goldenparktower.vn';
+  const email = company?.email || 'admin@templatesbds.com';
   const address = company?.address || 'Ngã tư Dương Đình Nghệ & Phạm Văn Bạch, KĐT Cầu Giấy, Yên Hòa, Cầu Giấy, Hà Nội';
 
   // Hero Lead Form State

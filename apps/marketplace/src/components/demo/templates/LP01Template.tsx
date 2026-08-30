@@ -26,9 +26,9 @@ export default function LP01Template({
 }: LP01TemplateProps) {
   // Brand & Company info fallback from CMS
   const brandName = company?.name || template?.name || 'THE MATRIX ONE LUXURY';
-  const hotline = company?.phone || '0905.568.888';
+  const hotline = company?.phone || '0919 006 030';
   const zalo = company?.zalo || hotline;
-  const email = company?.email || 'contact@thematrixone.vn';
+  const email = company?.email || 'admin@templatesbds.com';
   const address = company?.address || 'Ngã tư Lê Quang Đạo - Mễ Trì, Quận Nam Từ Liêm, Hà Nội';
 
   // Lead Form States

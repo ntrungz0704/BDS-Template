@@ -28,9 +28,9 @@ export default function LP02Template({
   // Brand & Company info fallback from CMS
   const brandName = company?.name || 'BẤT ĐỘNG SẢN KIM TINH';
   const companyGroup = 'CÁT TƯỜNG LAND GROUP';
-  const hotline = company?.phone || '0919.006.030';
+  const hotline = company?.phone || '0919 006 030';
   const zalo = company?.zalo || hotline;
-  const email = company?.email || 'tuyendung@cattuonggroup.vn';
+  const email = company?.email || 'admin@templatesbds.com';
   const address = company?.address || 'Tòa nhà Cát Tường Building, 259 Trần Hưng Đạo, Quận 1, TP.HCM & Hà Nội';
 
   // Lead Form States (Hero Application Form)

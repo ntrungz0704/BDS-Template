@@ -469,7 +469,7 @@ export default function BDS22Template({
           </div>
           <div className="min-w-0 truncate">
             <span className="text-base sm:text-2xl font-serif font-black tracking-wider text-white block leading-none truncate">
-              HAPPYLAND <span className="text-amber-300">NHA TRANG</span>
+              {company?.name || 'TEMPLATESBDS'}
             </span>
             <span className="text-[7.5px] sm:text-[8.5px] font-bold text-cyan-200 uppercase tracking-widest block mt-0.5 truncate">
               TỔ HỢP RESORT & CONDOTEL QUỐC TẾ ZOHOTELS
@@ -916,7 +916,7 @@ export default function BDS22Template({
         
         <div className="flex items-center justify-between border-b-2 border-[#0E7490] pb-3">
           <h2 className="text-2xl font-serif font-black uppercase text-[#0E7490]">
-            TIN TỨC HAPPYLAND NHA TRANG
+            TIN TỨC {company?.name || 'TEMPLATESBDS'}
           </h2>
           <button onClick={() => navigate('news')} className="text-xs font-bold text-[#F97316] hover:underline">
             Xem Tất Cả Tin Tức ›

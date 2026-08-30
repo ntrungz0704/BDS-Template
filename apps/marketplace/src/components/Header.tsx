@@ -410,7 +410,7 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
           </div>
 
           {/* Navigation Menu */}
-          <nav className="hidden lg:flex items-center gap-1 text-sm font-medium text-slate-600 whitespace-nowrap">
+          <nav className="hidden xl:flex items-center gap-1 text-sm font-medium text-slate-600 whitespace-nowrap">
             {navLinks.map((item) => {
               const active = isLinkActive(item);
               return (
@@ -435,7 +435,7 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
           </nav>
 
           {/* CTA */}
-          <div className="hidden lg:block shrink-0">
+          <div className="hidden 2xl:block shrink-0">
             <button
               onClick={onOpenConsultation || (() => router.push('/contact'))}
               className="rounded-md bg-slate-900 hover:bg-slate-800 text-white px-4 xl:px-5 py-2 text-xs font-bold transition-all duration-200 whitespace-nowrap shadow-sm"
@@ -445,7 +445,7 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
           </div>
 
           {/* Mobile Hamburguer */}
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden text-[#0F172A] focus:outline-none">
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="xl:hidden text-[#0F172A] focus:outline-none">
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
@@ -456,7 +456,7 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden w-full bg-white border-b border-slate-100 px-6 py-4 flex flex-col gap-3 text-body font-medium text-slate-800 animate-fadeIn">
+        <div className="xl:hidden w-full bg-white border-b border-slate-100 px-6 py-4 flex flex-col gap-3 text-body font-medium text-slate-800 animate-fadeIn">
           {/* Mobile Search Box */}
           <form onSubmit={handleSearchSubmit} className="relative w-full">
             <input

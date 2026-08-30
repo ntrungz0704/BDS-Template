@@ -28,9 +28,9 @@ export default function LP06Template({
   // Brand & Company Info Fallback from CMS
   const brandName = company?.name || 'STELLA MEGA CITY';
   const companyGroup = 'TẬP ĐOÀN KITA GROUP';
-  const hotline = company?.phone || '0901.339.889';
+  const hotline = company?.phone || '0919 006 030';
   const zalo = company?.zalo || hotline;
-  const email = company?.email || 'sales@stellamegacity.vn';
+  const email = company?.email || 'admin@templatesbds.com';
   const address = company?.address || 'Đường Đặng Văn Dầy, P. Bình Thủy, Q. Bình Thủy, TP. Cần Thơ';
 
   // Hero Lead Form State

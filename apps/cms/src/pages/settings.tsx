@@ -50,6 +50,7 @@ interface CompanySettings {
   workingHours: string;
   facebookUrl: string;
   youtubeUrl: string;
+  tiktokUrl: string;
   zaloNumber: string;
   mapEmbedUrl: string;
   logo: string;
@@ -171,6 +172,7 @@ const DEFAULT_SETTINGS: CompanySettings = {
   workingHours: '8h00 - 18h00',
   facebookUrl: 'https://facebook.com/hoanggialand',
   youtubeUrl: 'https://youtube.com/@hoanggialand',
+  tiktokUrl: 'https://tiktok.com/@hoanggialand',
   zaloNumber: '0983312219',
   mapEmbedUrl: '',
   logo: '',
@@ -376,6 +378,7 @@ export default function SettingsPage() {
               </div>
               <SettingsInput label="Facebook URL" name="facebookUrl" value={settings.facebookUrl} onChange={handleChange} type="url" placeholder="https://facebook.com/..." />
               <SettingsInput label="YouTube URL" name="youtubeUrl" value={settings.youtubeUrl} onChange={handleChange} type="url" placeholder="https://youtube.com/@..." />
+              <SettingsInput label="TikTok URL" name="tiktokUrl" value={settings.tiktokUrl} onChange={handleChange} type="url" placeholder="https://tiktok.com/@..." />
             </SettingsSection>
           )}
 

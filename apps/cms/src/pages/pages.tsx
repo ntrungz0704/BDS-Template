@@ -292,6 +292,7 @@ const SECTION_NAMES: Record<string, { name: string; desc: string; icon: string }
   overview: { name: 'Tổng Quan & Loại Hình BĐS', desc: 'Phân loại biệt thự, căn hộ cao cấp, shophouse, đất nền', icon: '🏢' },
   projects: { name: 'Danh Mục Dự Án Bất Động Sản', desc: 'Danh sách thẻ dự án đang mở bán kèm giá và vị trí', icon: '💎' },
   featured_projects: { name: 'Dự Án Tiêu Biểu (VIP)', desc: 'Các dự án nổi bật nhất được ghim ngoài trang chủ', icon: '🔥' },
+  posts: { name: 'Tin Tức & Bài Viết', desc: 'Danh sách tin thị trường và bài viết tư vấn', icon: '📰' },
   about: { name: 'Giới Thiệu Doanh Nghiệp', desc: 'Về chúng tôi, tầm nhìn, sứ mệnh, cam kết chất lượng', icon: '📖' },
   intro: { name: 'Trích Dẫn & Lời Ngỏ', desc: 'Thông điệp chào mừng và lời mở đầu của chủ đầu tư', icon: '✍️' },
   amenities: { name: 'Tiện Ích Đặc Quyền', desc: 'Hồ bơi vô cực, công viên cây xanh, bến du thuyền, smart home', icon: '🏊' },
@@ -303,6 +304,7 @@ const SECTION_NAMES: Record<string, { name: string; desc: string; icon: string }
   partners: { name: 'Đối Tác & Ngân Hàng', desc: 'Logo các đối tác chiến lược và ngân hàng bảo lãnh', icon: '🤝' },
   faq: { name: 'Câu Hỏi Thường Gặp (FAQ)', desc: 'Giải đáp các thắc mắc về pháp lý, thủ tục và thanh toán', icon: '❓' },
   contact: { name: 'Form Liên Hệ & Nhận Tư Vấn', desc: 'Hotline, địa chỉ văn phòng, form nhận bảng giá và tài liệu', icon: '📞' },
+  map: { name: 'Bản Đồ & Chỉ Đường', desc: 'Bản đồ nhúng Google Maps và thông tin vị trí văn phòng', icon: '📍' },
   cta: { name: 'Banner Kêu Gọi Hành Động', desc: 'Khung thông điệp khẩn kích thích đăng ký nhận ưu đãi VIP', icon: '⚡' },
 };
 
@@ -341,6 +343,14 @@ const SECTION_SCHEMAS: Record<string, FieldDef[]> = {
       { name: 'value', type: 'text', label: 'Số lượng / Quy mô (VD: 24 Căn VIP)' },
       { name: 'desc', type: 'textarea', label: 'Mô tả ngắn' }
     ]}
+  ],
+  about: [
+    { name: 'heading', type: 'text', label: 'Tiêu đề giới thiệu' },
+    { name: 'headingAccent', type: 'text', label: 'Tiêu đề nổi bật' },
+    { name: 'description', type: 'textarea', label: 'Nội dung giới thiệu doanh nghiệp' },
+    { name: 'body', type: 'textarea', label: 'Nội dung chi tiết' },
+    { name: 'quote', type: 'text', label: 'Trích dẫn / Cam kết' },
+    { name: 'image', type: 'text', label: 'Ảnh giới thiệu (URL)' }
   ],
   amenities: [
     { name: 'heading', type: 'text', label: 'Tiêu đề tiện ích' },
@@ -434,9 +444,28 @@ const SECTION_SCHEMAS: Record<string, FieldDef[]> = {
     { name: 'sectionLabel', type: 'text', label: 'Nhãn khu vực' },
     { name: 'maxItems', type: 'number', label: 'Số dự án tối đa hiển thị' }
   ],
+  projects: [
+    { name: 'heading', type: 'text', label: 'Tiêu đề danh sách dự án' },
+    { name: 'headingAccent', type: 'text', label: 'Tiêu đề nổi bật' },
+    { name: 'description', type: 'textarea', label: 'Mô tả khu vực dự án' },
+    { name: 'limit', type: 'number', label: 'Số dự án tối đa hiển thị' }
+  ],
+  posts: [
+    { name: 'heading', type: 'text', label: 'Tiêu đề danh sách bài viết' },
+    { name: 'headingAccent', type: 'text', label: 'Tiêu đề nổi bật' },
+    { name: 'description', type: 'textarea', label: 'Mô tả khu vực tin tức' },
+    { name: 'limit', type: 'number', label: 'Số bài viết tối đa hiển thị' }
+  ],
   contact: [
     { name: 'heading', type: 'text', label: 'Tiêu đề liên hệ' },
-    { name: 'headingAccent', type: 'text', label: 'Tiêu đề nổi bật' }
+    { name: 'headingAccent', type: 'text', label: 'Tiêu đề nổi bật' },
+    { name: 'description', type: 'textarea', label: 'Mô tả / Hướng dẫn khách hàng' },
+    { name: 'submitText', type: 'text', label: 'Chữ trên nút gửi form' }
+  ],
+  map: [
+    { name: 'heading', type: 'text', label: 'Tiêu đề bản đồ' },
+    { name: 'address', type: 'text', label: 'Địa chỉ hiển thị' },
+    { name: 'embedUrl', type: 'text', label: 'Đường dẫn nhúng Google Maps' }
   ]
 };
 

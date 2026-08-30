@@ -82,7 +82,7 @@ export interface NewsItem {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BDS-21 MOCK DATA: HOMEO REALTY (CỔNG GIAO DỊCH BẤT ĐỘNG SẢN TOÀN DIỆN)
+// BDS-21 MOCK DATA: {company?.name || 'TEMPLATESBDS'} (CỔNG GIAO DỊCH BẤT ĐỘNG SẢN TOÀN DIỆN)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const BDS21_PROPERTIES: PropertyItem[] = [

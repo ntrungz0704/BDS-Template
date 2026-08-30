@@ -592,11 +592,13 @@ export default function BDS08Template({
       <div className="bg-[#48C0D8] text-white text-xs py-1.5 px-4 hidden md:block font-medium">
         <div className={`${MAX_W} mx-auto flex items-center justify-between`}>
           <div className="flex items-center gap-6">
-            <a href="mailto:admin@templatebds.com" className="flex items-center gap-1.5 hover:underline text-white">
-              <Mail size={13} /> admin@templatebds.com
+            <a href={`mailto:${company?.email || 'admin@templatesbds.com'}`} className="flex items-center gap-1.5 hover:underline text-white">
+              <Mail size={13} /> {company?.email || 'admin@templatesbds.com'}
             </a>
             <span className="opacity-70">|</span>
-            <span>Hotline 24/7: <strong>0919 006 030</strong></span>
+            <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="hover:underline text-white">
+              Hotline 24/7: <strong>{company?.phone || '0919 006 030'}</strong>
+            </a>
           </div>
           <div className="flex items-center gap-4">
             <button onClick={() => navigate('contact')} className="hover:underline cursor-pointer">Liên hệ</button>
@@ -620,14 +622,11 @@ export default function BDS08Template({
           <div className="min-w-0 truncate">
             <div className="flex items-center gap-1">
               <span className="text-base sm:text-xl font-black tracking-tight text-[#0284C7] group-hover:text-[#0369A1] transition truncate">
-                THEME
-              </span>
-              <span className="text-base sm:text-xl font-black tracking-tight text-[#E11D48] truncate">
-                WP
+                {company?.name || 'TEMPLATESBDS'}
               </span>
             </div>
             <span className="text-[7.5px] sm:text-[10px] tracking-widest text-[#15803D] block uppercase font-extrabold truncate">
-              SÀN PHÂN PHỐI BẤT ĐỘNG SẢN CAO CẤP
+              {company?.slogan || 'SÀN PHÂN PHỐI BẤT ĐỘNG SẢN CAO CẤP'}
             </span>
           </div>
         </div>
@@ -681,7 +680,7 @@ export default function BDS08Template({
         {/* CTA & Mobile Toggle */}
         <div className="flex items-center gap-2.5 shrink-0 ml-auto">
           <a
-            href="tel:0919006030"
+            href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`}
             className="hidden xl:flex items-center gap-1.5 px-3.5 py-2 rounded-sm bg-emerald-50 text-[#15803D] border border-emerald-200 text-xs font-black whitespace-nowrap shrink-0 hover:bg-emerald-100 transition"
           >
             <Phone size={13} className="text-[#16A34A] animate-pulse shrink-0" />
@@ -757,7 +756,7 @@ export default function BDS08Template({
 
           <div className="pt-2 flex justify-end">
             <a
-              href="tel:0919006030"
+              href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`}
               className="inline-flex items-center gap-2 px-5 py-3 rounded-sm bg-white text-slate-900 hover:bg-slate-100 transition shadow-2xl font-black text-sm sm:text-base border-2 border-emerald-500"
             >
               <Phone size={18} className="text-[#16A34A] animate-pulse" />
@@ -851,7 +850,7 @@ export default function BDS08Template({
             {/* Banner 3: Orange Hotline Box */}
             <div className="w-full p-4 rounded-sm bg-gradient-to-r from-[#F59E0B] to-[#EA580C] text-white text-center shadow-lg space-y-1">
               <span className="text-[11px] font-extrabold uppercase tracking-widest block opacity-90">TƯ VẤN 24/7</span>
-              <a href="tel:0919006030" className="text-xl sm:text-2xl font-black block tracking-tight hover:underline">
+              <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="text-xl sm:text-2xl font-black block tracking-tight hover:underline">
                 0919.006.030
               </a>
             </div>
@@ -911,7 +910,7 @@ export default function BDS08Template({
             <div>
               <h4 className="text-base font-black text-slate-900">Trần Thanh Phương</h4>
               <p className="text-xs text-slate-500 font-medium">Trưởng phòng kinh doanh</p>
-              <a href="tel:0919006030" className="text-xs font-black text-[#E11D48] hover:underline block mt-0.5">
+              <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="text-xs font-black text-[#E11D48] hover:underline block mt-0.5">
                 Hotline: 0919 006 030
               </a>
             </div>
@@ -1023,7 +1022,7 @@ export default function BDS08Template({
             
             <div className="pt-2 border-t border-slate-800 text-center">
               <span className="text-xs text-slate-400">HOTLINE: </span>
-              <a href="tel:0919006030" className="text-xs font-black text-amber-400 hover:underline">
+              <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="text-xs font-black text-amber-400 hover:underline">
                 0919 006 030
               </a>
             </div>
@@ -1107,7 +1106,7 @@ export default function BDS08Template({
             <div className="flex items-center gap-2.5 pt-2">
               <a href="https://facebook.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-blue-600 flex items-center justify-center text-xs font-bold transition">FB</a>
               <a href="https://zalo.me/0919006030" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-blue-600 flex items-center justify-center text-xs font-bold transition">ZL</a>
-              <a href="tel:0919006030" className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-emerald-700 flex items-center justify-center text-xs font-bold transition">📞</a>
+              <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-emerald-700 flex items-center justify-center text-xs font-bold transition">📞</a>
               <a href="https://youtube.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-red-600 flex items-center justify-center text-xs font-bold transition">YT</a>
             </div>
           </div>
@@ -1120,7 +1119,7 @@ export default function BDS08Template({
             <div className="space-y-2 text-emerald-100">
               <p>📍 VPĐD: 180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội</p>
               <p>📍 Trụ sở TP.HCM: Số 72 Nguyễn Thị Thập, Quận 7, TP.HCM</p>
-              <p>📞 Hotline: <a href="tel:0919006030" className="font-bold text-white hover:underline">0919 006 030</a></p>
+              <p>📞 Hotline: <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="font-bold text-white hover:underline">0919 006 030</a></p>
               <p>✉️ Email: admin@templatebds.com</p>
             </div>
           </div>
@@ -1396,7 +1395,7 @@ export default function BDS08Template({
           <Share2 size={13} /> Chat Facebook
         </a>
         <a
-          href="tel:0919006030"
+          href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`}
           className="px-3.5 py-1.5 rounded-sm bg-[#E11D48] hover:bg-[#BE123C] text-white text-xs font-black shadow-lg transition flex items-center gap-1.5 hover:scale-105"
         >
           <Phone size={13} className="animate-pulse" /> Hotline: 0919 006 030

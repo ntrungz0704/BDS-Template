@@ -637,7 +637,7 @@ export default function BDS06Template({
             <span className="opacity-80">★ TẶNG GÓI NỘI THẤT CAO CẤP 150 TRIỆU ★</span>
           </div>
           <div className="flex items-center gap-4">
-            <a href="tel:0919006030" className="flex items-center gap-1.5 hover:underline">
+            <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="flex items-center gap-1.5 hover:underline">
               <Phone size={13} className="animate-pulse" /> Hotline CĐT: <strong>0919 006 030</strong>
             </a>
             <span className="opacity-50">|</span>
@@ -658,7 +658,7 @@ export default function BDS06Template({
           </div>
           <div className="min-w-0 truncate">
             <span className="text-sm sm:text-base font-black tracking-tight block leading-tight text-white group-hover:text-red-400 transition-colors truncate">
-              GRAND RIVERSIDE PARK
+              {company?.name || 'TEMPLATESBDS'}
             </span>
             <span className="text-[7.5px] sm:text-[10px] tracking-widest text-amber-400 block uppercase font-bold truncate">
               ĐẠI ĐÔ THỊ SINH THÁI 120HA
@@ -733,7 +733,7 @@ export default function BDS06Template({
         {/* CTA & Mobile Toggle */}
         <div className="flex items-center gap-2.5 shrink-0 ml-auto">
           <a
-            href="tel:0919006030"
+            href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`}
             className="hidden xl:flex items-center gap-1.5 px-3 py-2 rounded-sm bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-slate-700 transition-colors whitespace-nowrap shrink-0"
           >
             <Phone size={13} className="text-red-400 animate-pulse shrink-0" />
@@ -776,7 +776,7 @@ export default function BDS06Template({
           </div>
           <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
             <span className="text-slate-400">Hotline tư vấn 24/7:</span>
-            <a href="tel:0919006030" className="text-red-400 font-extrabold">0919 006 030</a>
+            <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="text-red-400 font-extrabold">0919 006 030</a>
           </div>
         </div>
       )}
@@ -982,7 +982,7 @@ export default function BDS06Template({
               />
               <div className="absolute inset-0 bg-slate-900/50 flex flex-col justify-between p-6">
                 <div className="inline-block self-start px-3.5 py-1.5 rounded-lg bg-[#D8232A] text-white text-xs font-black shadow-md">
-                  📍 VỊ TRÍ GRAND RIVERSIDE PARK
+                  📍 VỊ TRÍ {company?.name || 'TEMPLATESBDS'}
                 </div>
                 <div className="bg-slate-950/90 backdrop-blur-md p-4 rounded-sm border border-slate-700 text-xs space-y-1">
                   <strong className="text-amber-300 block font-black">MẶT TIỀN ĐẠI LỘ GRAND BOULEVARD</strong>
@@ -1862,7 +1862,7 @@ export default function BDS06Template({
               </form>
 
               <div className="pt-3 border-t border-slate-800 text-center">
-                <a href="tel:0919006030" className="text-xs font-bold text-emerald-400 hover:underline flex items-center justify-center gap-1.5">
+                <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="text-xs font-bold text-emerald-400 hover:underline flex items-center justify-center gap-1.5">
                   <Phone size={14} className="animate-pulse" /> Hotline 24/7: 0919 006 030
                 </a>
               </div>

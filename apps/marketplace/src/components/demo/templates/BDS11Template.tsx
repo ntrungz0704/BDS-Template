@@ -79,7 +79,7 @@ export interface NewsItem {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BDS-11 MOCK DATA: NHÀ ĐẤT MIỀN TRUNG — LINKHOUSE MIỀN TRUNG
+// BDS-11 MOCK DATA: {company?.name || 'TEMPLATESBDS'} — LINKHOUSE MIỀN TRUNG
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const BDS11_PROPERTIES: PropertyItem[] = [
@@ -349,6 +349,37 @@ export const BDS11_NEWS: NewsItem[] = [
     ],
     views: 3850
   }
+,
+  {
+    id: 3,
+    title: 'Đà Nẵng Công Bố Quy Hoạch Cảng Biển Quốc Tế Liên Chiểu & Trục Giao Thông Vành Đai',
+    slug: 'da-nang-cong-bo-quy-hoach-cang-lien-chieu',
+    date: '25 Tháng Tám, 2026',
+    author: 'Ban Phân Tích',
+    category: 'Quy Hoạch',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
+    excerpt: 'Hạ tầng giao thông chiến lược tạo động lực bứt phá mạnh mẽ cho toàn bộ bất động sản khu vực Tây Bắc.',
+    content: [
+      'Cảng biển Liên Chiểu với tổng vốn đầu tư hàng chục nghìn tỷ đồng dự kiến sẽ trở thành cửa ngõ logistics quốc tế hàng đầu miền Trung.',
+      'Các khu đô thị lân cận đón đầu làn sóng dịch chuyển của chuyên gia và kỹ sư công nghệ.'
+    ],
+    views: 4120
+  },
+  {
+    id: 4,
+    title: 'Top 5 Lý Do Bất Động Sản Ven Biển Miền Trung Hút Dòng Tiền Nhà Đầu Tư Miền Bắc',
+    slug: 'top-5-ly-do-bds-ven-bien-mien-trung-hut-dong-tien',
+    date: '22 Tháng Tám, 2026',
+    author: 'Chuyên Gia BĐS',
+    category: 'Đầu Tư',
+    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+    excerpt: 'Khí hậu trong lành quanh năm, tiềm năng khai thác du lịch bền vững và mức giá còn nhiều dư địa tăng trưởng.',
+    content: [
+      'Pháp lý sở hữu lâu dài là bảo chứng an toàn nhất cho các tài sản tích lũy truyền đời.',
+      'Tỷ suất sinh lời từ khai thác cho thuê đạt 8 - 12%/năm nhờ lượng khách du lịch quốc tế tăng trưởng kỷ lục.'
+    ],
+    views: 5230
+  }
 ];
 
 export const resolvePageAndDetail = (p?: string) => {
@@ -503,7 +534,7 @@ export default function BDS11Template({
       {/* Main Logo & Sponsor Banner Row */}
       <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
         
-        {/* Brand Logo MT NHÀ ĐẤT MIỀN TRUNG */}
+        {/* Brand Logo MT {company?.name || 'TEMPLATESBDS'} */}
         <div 
           onClick={() => navigate('home')}
           className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
@@ -598,7 +629,7 @@ export default function BDS11Template({
           </div>
 
           <div className="flex items-center gap-2">
-            <a href="tel:0919006030" className="text-amber-300 font-extrabold text-xs flex items-center gap-1">
+            <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="text-amber-300 font-extrabold text-xs flex items-center gap-1">
               <Phone size={12} className="animate-pulse" /> 0919 006 030
             </a>
           </div>
@@ -985,7 +1016,7 @@ export default function BDS11Template({
   );
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 8. SECTION 6: FOOTER NHÀ ĐẤT MIỀN TRUNG (NAVY BLUE)
+  // 8. SECTION 6: FOOTER {company?.name || 'TEMPLATESBDS'} (NAVY BLUE)
   // ─────────────────────────────────────────────────────────────────────────
   const renderLinkhouseFooter = () => (
     <section className="py-12 bg-[#0F172A] text-slate-300 text-xs">
@@ -997,14 +1028,14 @@ export default function BDS11Template({
               <div className="w-8 h-8 bg-[#16A34A] rounded-lg flex items-center justify-center text-white font-black text-sm">
                 MT
               </div>
-              <span className="text-lg font-black text-white">NHÀ ĐẤT MIỀN TRUNG</span>
+              <span className="text-lg font-black text-white">{company?.name || 'TEMPLATESBDS'}</span>
             </div>
             <p className="text-slate-400">
               Công ty Cổ phần Bất động sản Linkhouse Miền Trung — Sàn giao dịch và phân phối bất động sản chuyên nghiệp tại Đà Nẵng, Quảng Nam, Quy Nhơn.
             </p>
             <div className="space-y-1 text-slate-400 pt-2">
               <p>📍 Trụ sở: 320 Đường 2/9, Q. Hải Châu, TP. Đà Nẵng</p>
-              <p>📞 Hotline: <a href="tel:0919006030" className="text-[#4ADE80] font-bold">0919 006 030 — 0981 142 307</a></p>
+              <p>📞 Hotline: <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="text-[#4ADE80] font-bold">0919 006 030 — 0981 142 307</a></p>
               <p>✉️ Email: info@templatebds.com</p>
               <p>🌐 Website: nhadatmientrung.vn</p>
             </div>

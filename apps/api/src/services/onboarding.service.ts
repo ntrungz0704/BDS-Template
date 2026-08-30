@@ -35,7 +35,7 @@ const DEFAULT_PAGES = [
   { slug: 'contact',  title: 'Liên hệ',      isSystem: true,  sortOrder: 5 },
 ];
 
-const DEFAULT_SECTIONS: Record<string, Array<{ sectionKey: string; label: string; sortOrder: number; content: object; settings: object }>> = {
+export const DEFAULT_SECTIONS: Record<string, Array<{ sectionKey: string; label: string; sortOrder: number; content: object; settings: object }>> = {
   home: [
     {
       sectionKey: 'hero',
@@ -84,7 +84,7 @@ const DEFAULT_SECTIONS: Record<string, Array<{ sectionKey: string; label: string
       settings: { paddingY: 'xl', backgroundColor: 'brand', textAlign: 'center' },
     },
     {
-      sectionKey: 'contact_form',
+      sectionKey: 'contact',
       label: 'Form liên hệ nhanh',
       sortOrder: 5,
       content: { heading: 'Nhận tư vấn miễn phí', fields: ['fullName', 'phone', 'email', 'message'] },
@@ -93,30 +93,87 @@ const DEFAULT_SECTIONS: Record<string, Array<{ sectionKey: string; label: string
   ],
   about: [
     {
-      sectionKey: 'about_hero',
+      sectionKey: 'hero',
       label: 'Tiêu đề trang giới thiệu',
       sortOrder: 1,
       content: { heading: 'Về chúng tôi', subheading: 'Đơn vị phát triển bất động sản uy tín hàng đầu' },
       settings: { paddingY: 'lg', backgroundColor: 'brand' },
     },
     {
-      sectionKey: 'about_content',
+      sectionKey: 'about',
       label: 'Nội dung giới thiệu',
       sortOrder: 2,
       content: { body: '<p>Chúng tôi là đơn vị phát triển bất động sản với hơn 15 năm kinh nghiệm trong ngành...</p>' },
       settings: { paddingY: 'xl', backgroundColor: 'white' },
     },
+    {
+      sectionKey: 'stats',
+      label: 'Năng lực doanh nghiệp',
+      sortOrder: 3,
+      content: { items: [
+        { value: '15+', label: 'Năm kinh nghiệm' },
+        { value: '50+', label: 'Dự án triển khai' },
+        { value: '10.000+', label: 'Khách hàng tin tưởng' },
+      ] },
+      settings: { paddingY: 'lg', backgroundColor: 'surface' },
+    },
+  ],
+  projects: [
+    {
+      sectionKey: 'hero',
+      label: 'Tiêu đề trang dự án',
+      sortOrder: 1,
+      content: { heading: 'Danh mục dự án', subheading: 'Các sản phẩm đã được thẩm định về vị trí, pháp lý và tiềm năng' },
+      settings: { paddingY: 'lg', backgroundColor: 'brand' },
+    },
+    {
+      sectionKey: 'projects',
+      label: 'Danh sách dự án',
+      sortOrder: 2,
+      content: { heading: 'Tất cả dự án', limit: 12 },
+      settings: { paddingY: 'xl', backgroundColor: 'white' },
+    },
+    {
+      sectionKey: 'cta',
+      label: 'Tư vấn chọn dự án',
+      sortOrder: 3,
+      content: { heading: 'Cần chuyên viên tư vấn?', subheading: 'Nhận phân tích phù hợp theo ngân sách và mục tiêu đầu tư', ctaText: 'Liên hệ ngay', ctaUrl: '/contact' },
+      settings: { paddingY: 'lg', backgroundColor: 'brand', textAlign: 'center' },
+    },
+  ],
+  blog: [
+    {
+      sectionKey: 'hero',
+      label: 'Tiêu đề trang tin tức',
+      sortOrder: 1,
+      content: { heading: 'Tin tức & kiến thức', subheading: 'Thông tin thị trường, pháp lý và kinh nghiệm đầu tư' },
+      settings: { paddingY: 'lg', backgroundColor: 'brand' },
+    },
+    {
+      sectionKey: 'posts',
+      label: 'Danh sách bài viết',
+      sortOrder: 2,
+      content: { heading: 'Bài viết mới nhất', limit: 9 },
+      settings: { paddingY: 'xl', backgroundColor: 'white' },
+    },
+    {
+      sectionKey: 'cta',
+      label: 'Đăng ký nhận bản tin',
+      sortOrder: 3,
+      content: { heading: 'Nhận bản tin thị trường', subheading: 'Cập nhật báo cáo và cơ hội mới mỗi tuần', ctaText: 'Đăng ký' },
+      settings: { paddingY: 'lg', backgroundColor: 'surface', textAlign: 'center' },
+    },
   ],
   contact: [
     {
-      sectionKey: 'contact_hero',
+      sectionKey: 'hero',
       label: 'Tiêu đề trang liên hệ',
       sortOrder: 1,
       content: { heading: 'Liên hệ với chúng tôi', subheading: 'Chúng tôi luôn sẵn sàng hỗ trợ bạn' },
       settings: { paddingY: 'lg', backgroundColor: 'brand' },
     },
     {
-      sectionKey: 'contact_form',
+      sectionKey: 'contact',
       label: 'Form liên hệ',
       sortOrder: 2,
       content: { heading: 'Gửi tin nhắn', fields: ['fullName', 'phone', 'email', 'message'] },

@@ -145,6 +145,7 @@ export default function TenantHome({ company, theme, pageContent, projects, post
         posts={posts} 
         initialPage={initialPage}
         pageContent={pageContent}
+        tenantSlug={tenantSlug}
       />
     </>
   );

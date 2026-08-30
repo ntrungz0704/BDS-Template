@@ -29,9 +29,9 @@ export default function LP07Template({
   // Brand & Company Info Fallback from CMS
   const brandName = company?.name || 'NOVAWORLD PHAN THIET';
   const companyGroup = 'TẬP ĐOÀN NOVALAND';
-  const hotline = company?.phone || '0933.868.888';
+  const hotline = company?.phone || '0919 006 030';
   const zalo = company?.zalo || hotline;
-  const email = company?.email || 'sales@novaworldphanthiet.vn';
+  const email = company?.email || 'admin@templatesbds.com';
   const address = company?.address || 'Tiến Thành, TP. Phan Thiết, Tỉnh Bình Thuận';
 
   // State for all Lead Forms

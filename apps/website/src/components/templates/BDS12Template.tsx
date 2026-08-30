@@ -84,7 +84,7 @@ export interface NewsItem {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BDS-12 MOCK DATA: SONASEA VÂN ĐỒN HARBOR CITY (CEO GROUP)
+// BDS-12 MOCK DATA: {company?.name || 'TEMPLATESBDS'} HARBOR CITY (CEO GROUP)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const BDS12_UNITS: UnitTypeItem[] = [
@@ -422,7 +422,7 @@ export default function BDS12Template({
         {/* Hotline & CTA */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
           <a
-            href="tel:0919006030"
+            href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`}
             className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-sm bg-blue-50 border border-blue-200 text-[#0284C7] text-xs font-black whitespace-nowrap shrink-0 hover:bg-blue-100 transition"
           >
             <Phone size={13} className="text-[#0284C7] animate-pulse shrink-0" />
@@ -528,7 +528,7 @@ export default function BDS12Template({
         {/* Section Heading */}
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <h2 className="text-2xl sm:text-3xl font-serif font-black text-[#FDE047] uppercase tracking-wider">
-            TỔNG QUAN DỰ ÁN SONASEA VÂN ĐỒN
+            TỔNG QUAN DỰ ÁN {company?.name || 'TEMPLATESBDS'}
           </h2>
           <div className="w-20 h-0.5 bg-[#D4AF37] mx-auto" />
           <p className="text-xs sm:text-sm text-slate-300">
@@ -693,7 +693,7 @@ export default function BDS12Template({
         {/* Heading */}
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <h2 className="text-2xl sm:text-3xl font-serif font-black text-[#0369A1] uppercase tracking-wider">
-            LÝ DO NÊN ĐẦU TƯ SONASEA VÂN ĐỒN
+            LÝ DO NÊN ĐẦU TƯ {company?.name || 'TEMPLATESBDS'}
           </h2>
           <div className="w-20 h-0.5 bg-[#D4AF37] mx-auto" />
         </div>
@@ -961,14 +961,14 @@ export default function BDS12Template({
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           
           <div className="md:col-span-5 space-y-3">
-            <span className="text-xl font-serif font-black text-white block">SONASEA VÂN ĐỒN HARBOR CITY</span>
+            <span className="text-xl font-serif font-black text-white block">{company?.name || 'TEMPLATESBDS'} HARBOR CITY</span>
             <p className="text-slate-400 leading-relaxed">
               Tổ hợp thương cảng quốc tế và đại đô thị nghỉ dưỡng giải trí 5 sao quy mô 358.5 ha do Tập đoàn CEO phát triển tại Vịnh Bái Tử Long.
             </p>
             <div className="space-y-1 text-slate-400 pt-2">
               <p>📍 Văn phòng dự án: Xã Hạ Long, Huyện Vân Đồn, Quảng Ninh</p>
               <p>🏢 Trụ sở CĐT: Tòa nhà CEO Tower, Phạm Hùng, Nam Từ Liêm, Hà Nội</p>
-              <p>📞 Hotline: <a href="tel:0919006030" className="text-[#FDE047] font-bold">0919 006 030</a></p>
+              <p>📞 Hotline: <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="text-[#FDE047] font-bold">0919 006 030</a></p>
               <p>✉️ Email: info@templatebds.com</p>
             </div>
           </div>

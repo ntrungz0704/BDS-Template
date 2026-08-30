@@ -211,13 +211,13 @@ export const BDS18_NEWS: NewsItem[] = [
     title: 'Xu Hướng Thiết Kế Kiến Trúc Mở Kết Nối Thiên Nhiên Dẫn Dắt Năm 2026',
     slug: 'xu-huong-thiet-ke-kien-truc-mo-2026',
     date: '28/08/2026',
-    author: 'Vixyo Design Studio',
+    author: 'TEMPLATESBDS Design Studio',
     category: 'Kiến Trúc',
     image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
     excerpt: 'Không gian sống xanh, tối giản và xóa nhòa ranh giới giữa nội thất và ngoại thất đang trở thành tiêu chuẩn vàng của giới thượng lưu.',
     content: [
       'Kiến trúc bền vững kết hợp vật liệu tự nhiên như gỗ tái sinh, đá nguyên khối và kính Low-E tràn viền giúp tối ưu hóa ánh sáng mặt trời.',
-      'Vixyo tự hào là đơn vị tiên phong ứng dụng ngôn ngữ thiết kế biophilic design vào các dự án dinh thự cao cấp.'
+      'TEMPLATESBDS tự hào là đơn vị tiên phong ứng dụng ngôn ngữ thiết kế biophilic design vào các dự án dinh thự cao cấp.'
     ],
     views: 5420
   },
@@ -226,7 +226,7 @@ export const BDS18_NEWS: NewsItem[] = [
     title: 'Bất Động Sản Hàng Hiệu Branded Residences — Kênh Tích Sản Kim Cương Của Giới Tỷ Phú',
     slug: 'bds-hang-hieu-branded-residences-kenh-tich-san',
     date: '26/08/2026',
-    author: 'Vixyo Investment Insight',
+    author: 'TEMPLATESBDS Investment Insight',
     category: 'Đầu Tư',
     image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
     excerpt: 'Sự bảo chứng từ các thương hiệu khách sạn huyền thoại thế giới mang lại giá trị gia tăng vô hạn và đẳng cấp sống vượt trội.',
@@ -235,6 +235,37 @@ export const BDS18_NEWS: NewsItem[] = [
       'Khách hàng không chỉ sở hữu một căn hộ hay biệt thự mà còn sở hữu một phong cách sống đặc quyền được quản lý bởi các tập đoàn 6 sao.'
     ],
     views: 4890
+  }
+,
+  {
+    id: 3,
+    title: 'Quy Hoạch Đại Lộ Ven Sông Sài Gòn & Cầu Thủ Thiêm 4 — Cú Hích Hạ Tầng Bất Động Sản',
+    slug: 'quy-hoach-dai-lo-ven-song-sai-gon-cau-thu-thiem-4',
+    date: '24/08/2026',
+    author: 'TEMPLATESBDS Insight',
+    category: 'Quy Hoạch',
+    image: 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=800&q=80',
+    excerpt: 'Hạ tầng kết nối đồng bộ giữa khu Đông và khu Nam Sài Gòn mở ra chu kỳ phát triển bùng nổ cho các quần thể đô thị sinh thái ven sông.',
+    content: [
+      'Tuyến đại lộ ven sông kết nối trung tâm Quận 1 tới Củ Chi và Tây Ninh giúp rút ngắn thời gian di chuyển đáng kể.',
+      'Các dự án sở hữu mặt tiền sông được săn đón đặc biệt nhờ quỹ đất khan hiếm và giá trị phong thủy đắc địa.'
+    ],
+    views: 6100
+  },
+  {
+    id: 4,
+    title: 'Cẩm Nang Chọn Hướng Nhà & Bố Trí Phong Thủy Tài Lộc Cho Biệt Thự Sân Vườn',
+    slug: 'cam-nang-phong-thuy-tai-loc-biet-thu-san-vuon',
+    date: '20/08/2026',
+    author: 'Chuyên Gia Phong Thủy',
+    category: 'Phong Thủy',
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+    excerpt: 'Tụ thủy sinh tài lộc — Những nguyên tắc vàng trong kiến tạo không gian sống hòa hợp ngũ hành.',
+    content: [
+      'Thế đất tả thanh long, hữu bạch hổ, tiền chu tước, hậu huyền vũ luôn là tiêu chí hàng đầu khi chọn lựa dinh thự.',
+      'Bố trí hồ cá koi hoặc thác nước tuần hoàn giúp kích hoạt cung tài lộc cho gia chủ.'
+    ],
+    views: 4570
   }
 ];
 
@@ -371,7 +402,7 @@ export default function BDS18Template({
       alert('Vui lòng nhập họ tên và số điện thoại liên hệ!');
       return;
     }
-    showToast(`🎉 Tiếp nhận yêu cầu tư vấn từ ${contactForm.name} (${contactForm.phone}). Giám đốc sáng tạo Vixyo sẽ liên hệ trong 15 phút!`);
+    showToast(`🎉 Tiếp nhận yêu cầu tư vấn từ ${contactForm.name} (${contactForm.phone}). Giám đốc sáng tạo TEMPLATESBDS sẽ liên hệ trong 15 phút!`);
     setContactForm({ name: '', phone: '', email: '', service: 'Tư Vấn Đầu Tư BĐS', note: '' });
   };
 
@@ -436,7 +467,7 @@ export default function BDS18Template({
     <header className="sticky top-0 z-40 bg-[#0A0A0A] text-white shadow-xl border-b border-white/10 backdrop-blur-md">
       <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4`}>
         
-        {/* Brand Logo Vixyo */}
+        {/* Brand Logo TEMPLATESBDS */}
         <div 
           onClick={() => navigate('home')}
           className="flex items-center gap-2 sm:gap-2.5 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
@@ -445,7 +476,7 @@ export default function BDS18Template({
             V
           </div>
           <span className="text-xl sm:text-2xl font-serif font-black tracking-tight text-white group-hover:text-amber-400 transition truncate">
-            Vixyo
+            TEMPLATESBDS
           </span>
         </div>
 
@@ -548,7 +579,7 @@ export default function BDS18Template({
     <section className="relative bg-[#0A0A0A] text-white min-h-[480px] sm:min-h-[580px] flex items-center overflow-hidden border-b border-white/10">
       <img
         src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80"
-        alt="Vixyo Luxury Architecture"
+        alt="TEMPLATESBDS Luxury Architecture"
         onError={handleImgError}
         className="absolute inset-0 w-full h-full object-cover opacity-35"
       />
@@ -569,7 +600,7 @@ export default function BDS18Template({
             </h1>
 
             <p className="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
-              Vixyo tự hào là đơn vị tổng thầu thiết kế kiến trúc, thi công nội thất và phân phối các bộ sưu tập bất động sản nghệ thuật độc bản hàng đầu Việt Nam.
+              TEMPLATESBDS tự hào là đơn vị tổng thầu thiết kế kiến trúc, thi công nội thất và phân phối các bộ sưu tập bất động sản nghệ thuật độc bản hàng đầu Việt Nam.
             </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-2">
@@ -625,7 +656,7 @@ export default function BDS18Template({
           <div className="lg:col-span-6 relative aspect-[4/3] overflow-hidden border border-slate-200 shadow-xl rounded-sm">
             <img
               src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80"
-              alt="Vixyo Architecture"
+              alt="TEMPLATESBDS Architecture"
               onError={handleImgError}
               className="w-full h-full object-cover"
             />
@@ -643,7 +674,7 @@ export default function BDS18Template({
               Phù Hợp Với Mọi Nhu Cầu & Khát Vọng An Cư
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Mỗi công trình do Vixyo kiến tạo là sự kết hợp hoàn hảo giữa công năng tối ưu, tính thẩm mỹ đỉnh cao và dấu ấn cá nhân độc bản của gia chủ.
+              Mỗi công trình do TEMPLATESBDS kiến tạo là sự kết hợp hoàn hảo giữa công năng tối ưu, tính thẩm mỹ đỉnh cao và dấu ấn cá nhân độc bản của gia chủ.
             </p>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               Chúng tôi sở hữu chuỗi cung ứng vật liệu nội thất cao cấp nhập khẩu trực tiếp từ Ý, Đức và Nhật Bản, đảm bảo chất lượng hoàn thiện chuẩn 6 sao.
@@ -750,9 +781,9 @@ export default function BDS18Template({
 
             <div className="space-y-3 pt-2 text-xs">
               {[
-                { q: 'Quy trình tư vấn và thiết kế kiến trúc tại Vixyo diễn ra như thế nào?', a: 'Quy trình gồm 5 bước tiêu chuẩn: Khảo sát thực địa -> Lên mặt bằng 2D -> Diễn họa 3D -> Dự toán chi tiết -> Triển khai thi công và giám sát tác giả.' },
-                { q: 'Vixyo có chính sách bảo hành công trình và nội thất như thế nào?', a: 'Chúng tôi bảo hành kết cấu công trình 10 năm, bảo hành nội thất 3 năm và bảo trì định kỳ 6 tháng một lần hoàn toàn miễn phí.' },
-                { q: 'Pháp lý các sản phẩm bất động sản do Vixyo phân phối ra sao?', a: '100% dự án và sản phẩm BĐS trong hệ sinh thái Vixyo đều có sổ hồng lâu dài, pháp lý hoàn chỉnh và được ngân hàng lớn bảo lãnh.' },
+                { q: 'Quy trình tư vấn và thiết kế kiến trúc tại TEMPLATESBDS diễn ra như thế nào?', a: 'Quy trình gồm 5 bước tiêu chuẩn: Khảo sát thực địa -> Lên mặt bằng 2D -> Diễn họa 3D -> Dự toán chi tiết -> Triển khai thi công và giám sát tác giả.' },
+                { q: 'TEMPLATESBDS có chính sách bảo hành công trình và nội thất như thế nào?', a: 'Chúng tôi bảo hành kết cấu công trình 10 năm, bảo hành nội thất 3 năm và bảo trì định kỳ 6 tháng một lần hoàn toàn miễn phí.' },
+                { q: 'Pháp lý các sản phẩm bất động sản do TEMPLATESBDS phân phối ra sao?', a: '100% dự án và sản phẩm BĐS trong hệ sinh thái TEMPLATESBDS đều có sổ hồng lâu dài, pháp lý hoàn chỉnh và được ngân hàng lớn bảo lãnh.' },
               ].map((item, idx) => (
                 <div key={idx} className="border border-slate-200 rounded-sm overflow-hidden">
                   <button
@@ -980,14 +1011,14 @@ export default function BDS18Template({
               Đánh Giá Tích Cực Từ Khách Hàng
             </h2>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Sự hài lòng và tin tưởng tuyệt đối của các chủ nhân danh giá chính là thước đo thành công cao nhất của Vixyo.
+              Sự hài lòng và tin tưởng tuyệt đối của các chủ nhân danh giá chính là thước đo thành công cao nhất của TEMPLATESBDS.
             </p>
           </div>
 
           <div className="lg:col-span-7 bg-[#18181B] p-8 border border-white/10 rounded-sm relative shadow-2xl">
             <Quote size={40} className="text-amber-500/20 absolute top-4 right-4" />
             <p className="text-xs sm:text-sm text-slate-200 leading-relaxed italic mb-4">
-              &quot;Tôi đã hợp tác cùng Vixyo để thiết kế dinh thự Riviera ven sông tại Quận 7. Đội ngũ kiến trúc sư đã mang lại một giải pháp vượt xa kỳ vọng ban đầu của gia đình tôi. Từng chi tiết đá Marble và hệ thống ánh sáng đều hoàn hảo đến kinh ngạc.&quot;
+              &quot;Tôi đã hợp tác cùng TEMPLATESBDS để thiết kế dinh thự Riviera ven sông tại Quận 7. Đội ngũ kiến trúc sư đã mang lại một giải pháp vượt xa kỳ vọng ban đầu của gia đình tôi. Từng chi tiết đá Marble và hệ thống ánh sáng đều hoàn hảo đến kinh ngạc.&quot;
             </p>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center font-bold text-slate-950">
@@ -1137,7 +1168,7 @@ export default function BDS18Template({
             Liên Hệ Tìm Hiểu Dịch Vụ
           </h2>
           <p className="text-xs text-slate-400">
-            Hãy để lại thông tin, các kiến trúc sư trưởng và chuyên viên đầu tư Vixyo sẽ liên hệ tư vấn chuyên sâu cho bạn.
+            Hãy để lại thông tin, các kiến trúc sư trưởng và chuyên viên đầu tư TEMPLATESBDS sẽ liên hệ tư vấn chuyên sâu cho bạn.
           </p>
         </div>
 
@@ -1335,7 +1366,7 @@ export default function BDS18Template({
       {/* Universal Footer & Copyright */}
       <UniversalTemplateFooter
         company={company}
-        templateName="BDS-18 (Vixyo Architecture & Luxury Real Estate)"
+        templateName="BDS-18 (TEMPLATESBDS Architecture & Luxury Real Estate)"
         onNavigate={page => navigate(page)}
       />
 

@@ -82,7 +82,7 @@ export interface NewsItem {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BDS-14 MOCK DATA: WINTLAND REAL ESTATE (WINTLAND.VN)
+// BDS-14 MOCK DATA: {company?.name || 'TEMPLATESBDS'} REAL ESTATE ({company?.name || 'TEMPLATESBDS'}.VN)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const BDS14_PROPERTIES: PropertyItem[] = [
@@ -461,7 +461,7 @@ export default function BDS14Template({
             </span>
           </div>
           <div className="text-lime-100 font-bold uppercase tracking-wider">
-            SÀN GIAO DỊCH VÀ PHÂN PHỐI BẤT ĐỘNG SẢN TOÀN QUỐC WINTLAND
+            SÀN GIAO DỊCH VÀ PHÂN PHỐI BẤT ĐỘNG SẢN TOÀN QUỐC {company?.name || 'TEMPLATESBDS'}
           </div>
         </div>
       </div>
@@ -746,7 +746,7 @@ export default function BDS14Template({
   );
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 4. SECTION 2: GIỚI THIỆU VỀ WINTLAND (4 PILLARS & VIDEO)
+  // 4. SECTION 2: GIỚI THIỆU VỀ {company?.name || 'TEMPLATESBDS'} (4 PILLARS & VIDEO)
   // ─────────────────────────────────────────────────────────────────────────
   const renderAboutWintland = () => (
     <section className="py-16 bg-[#F8FAFC] border-y border-slate-200">
@@ -757,7 +757,7 @@ export default function BDS14Template({
           {/* Left Intro Text + 4 Pillars */}
           <div className="lg:col-span-7 space-y-6">
             <div className="space-y-2">
-              <span className="text-xs font-black text-[#65A30D] uppercase tracking-wider block">CHÀO MỪNG ĐẾN VỚI WINTLAND</span>
+              <span className="text-xs font-black text-[#65A30D] uppercase tracking-wider block">CHÀO MỪNG ĐẾN VỚI {company?.name || 'TEMPLATESBDS'}</span>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 uppercase tracking-tight">
                 SÀN GIAO DỊCH BẤT ĐỘNG SẢN UY TÍN HÀNG ĐẦU
               </h2>
@@ -965,7 +965,7 @@ export default function BDS14Template({
   );
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 8. SECTION 6: FOOTER 4 CỘT WINTLAND
+  // 8. SECTION 6: FOOTER 4 CỘT {company?.name || 'TEMPLATESBDS'}
   // ─────────────────────────────────────────────────────────────────────────
   const renderWintlandFooter = () => (
     <section id="lien-he" className="bg-[#0F172A] text-slate-300 text-xs border-t border-slate-800">
@@ -989,7 +989,7 @@ export default function BDS14Template({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           
           <div className="space-y-3">
-            <span className="text-lg font-black text-white block">WINTLAND REAL ESTATE</span>
+            <span className="text-lg font-black text-white block">{company?.name || 'TEMPLATESBDS'} REAL ESTATE</span>
             <p className="text-slate-400 leading-relaxed">
               Nền tảng công nghệ môi giới bất động sản uy tín, đem đến trải nghiệm giao dịch an toàn và tối ưu lợi nhuận.
             </p>
@@ -1122,7 +1122,7 @@ export default function BDS14Template({
         {currentPage === 'post-listing' && (
           <main className="py-14 bg-slate-50">
             <div className={`${MAX_W} mx-auto px-4 max-w-2xl bg-white p-8 rounded-md border shadow-xl space-y-4`}>
-              <h1 className="text-xl font-black text-[#4D7C0F] uppercase text-center">ĐĂNG TIN BẤT ĐỘNG SẢN WINTLAND</h1>
+              <h1 className="text-xl font-black text-[#4D7C0F] uppercase text-center">ĐĂNG TIN BẤT ĐỘNG SẢN {company?.name || 'TEMPLATESBDS'}</h1>
               <form onSubmit={handlePostSubmit} className="space-y-3 text-xs">
                 <input type="text" placeholder="Họ và tên..." required value={postForm.name} onChange={e => setPostForm({ ...postForm, name: e.target.value })} className="w-full p-3 rounded-sm border bg-slate-50" />
                 <input type="tel" placeholder="Số điện thoại (*)..." required value={postForm.phone} onChange={e => setPostForm({ ...postForm, phone: e.target.value })} className="w-full p-3 rounded-sm border bg-slate-50 font-bold" />

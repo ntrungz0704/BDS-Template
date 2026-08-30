@@ -295,13 +295,13 @@ export default function MarketplaceHome() {
     }
     if (selectedCategory !== 'ALL') {
       const slug = tpl.slug;
-      if (selectedCategory === 'PORTAL_SAN' && !['portal-01', 'portal-02', 'portal-04', 'portal-05', 'portal-18', 'bds-17', 'bds-18', 'bds-19', 'bds-21', 'bds-24', 'portal-listing', 'vietnam-portal', 'bds123-portal', 'benthanh-portal', 'nhadatso-density', 'nhadatso-portal', 'hanoi-rental', 'realtybuild-tech'].includes(slug)) return false;
-      if (selectedCategory === 'CHUNG_CU' && !['portal-12', 'portal-15', 'portal-21', 'bds-02', 'bds-05', 'bds-20', 'minimal-white', 'urban-city', 'smart-urban', 'minhkhai-apartment'].includes(slug)) return false;
-      if (selectedCategory === 'BIET_THU' && !['portal-03', 'portal-11', 'portal-23', 'portal-24', 'bds-01', 'bds-07', 'bds-09', 'bds-12', 'luxury-gold', 'villa-premium', 'classic-elegant', 'mega-developer'].includes(slug)) return false;
-      if (selectedCategory === 'NGHI_DUONG' && !['portal-07', 'portal-19', 'portal-20', 'bds-04', 'bds-08', 'bds-22', 'resort-paradise', 'eco-green', 'happyland-resort'].includes(slug)) return false;
-      if (selectedCategory === 'CA_NHAN' && !['portal-09', 'portal-16', 'portal-17', 'portal-22', 'bds-11', 'bds-13', 'bds-16', 'bds-23', 'agency-onepage', 'auction-template', 'personal-agent', 'homeo-multithumb'].includes(slug)) return false;
-      if (selectedCategory === 'DAT_THUONG_MAI' && !['portal-06', 'portal-10', 'portal-13', 'portal-14', 'bds-03', 'bds-10', 'bds-14', 'bds-15', 'modern-corporate', 'investment-pro', 'retail-podium', 'landplot-template'].includes(slug)) return false;
-      if (selectedCategory === 'KCN_NHA_XUONG' && !['portal-08', 'bds-06', 'industrial-estate'].includes(slug)) return false;
+      if (selectedCategory === 'PORTAL_SAN' && !['bds-01', 'bds-02', 'bds-04', 'bds-05', 'bds-17', 'bds-18', 'bds-19', 'bds-21', 'bds-24', 'portal-01', 'portal-02', 'portal-04', 'portal-05', 'portal-18', 'portal-listing', 'vietnam-portal', 'bds123-portal', 'benthanh-portal', 'nhadatso-density', 'nhadatso-portal', 'hanoi-rental', 'realtybuild-tech'].includes(slug)) return false;
+      if (selectedCategory === 'CHUNG_CU' && !['bds-02', 'bds-05', 'bds-12', 'bds-15', 'bds-20', 'bds-21', 'portal-12', 'portal-15', 'portal-21', 'minimal-white', 'urban-city', 'smart-urban', 'minhkhai-apartment'].includes(slug)) return false;
+      if (selectedCategory === 'BIET_THU' && !['bds-01', 'bds-03', 'bds-07', 'bds-09', 'bds-11', 'bds-12', 'bds-23', 'bds-24', 'portal-03', 'portal-11', 'portal-23', 'portal-24', 'luxury-gold', 'villa-premium', 'classic-elegant', 'mega-developer'].includes(slug)) return false;
+      if (selectedCategory === 'NGHI_DUONG' && !['bds-04', 'bds-07', 'bds-08', 'bds-19', 'bds-20', 'bds-22', 'portal-07', 'portal-19', 'portal-20', 'resort-paradise', 'eco-green', 'happyland-resort'].includes(slug)) return false;
+      if (selectedCategory === 'CA_NHAN' && !['bds-09', 'bds-11', 'bds-13', 'bds-16', 'bds-17', 'bds-22', 'bds-23', 'portal-09', 'portal-16', 'portal-17', 'portal-22', 'agency-onepage', 'auction-template', 'personal-agent', 'homeo-multithumb'].includes(slug)) return false;
+      if (selectedCategory === 'DAT_THUONG_MAI' && !['bds-03', 'bds-06', 'bds-10', 'bds-13', 'bds-14', 'bds-15', 'portal-06', 'portal-10', 'portal-13', 'portal-14', 'modern-corporate', 'investment-pro', 'retail-podium', 'landplot-template'].includes(slug)) return false;
+      if (selectedCategory === 'KCN_NHA_XUONG' && !['bds-06', 'bds-08', 'portal-08', 'industrial-estate', 'industrial-logistics'].includes(slug)) return false;
     }
     return true;
   });

@@ -456,7 +456,7 @@ export default function BDS10Template({
           </div>
 
           <a
-            href="tel:0919006030"
+            href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`}
             className="hidden sm:flex px-3.5 py-2 rounded-sm bg-gradient-to-r from-[#0284C7] to-[#0369A1] hover:from-[#0369A1] text-white text-xs font-black whitespace-nowrap shrink-0 shadow-md transition items-center gap-1.5"
           >
             <Phone size={13} className="animate-pulse" />
@@ -956,7 +956,7 @@ export default function BDS10Template({
             </p>
             <div className="pt-2 text-slate-400 space-y-1">
               <p>📍 Trụ sở: 180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội</p>
-              <p>📞 Hotline: <a href="tel:0919006030" className="text-white font-bold hover:underline">0919 006 030</a></p>
+              <p>📞 Hotline: <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="text-white font-bold hover:underline">0919 006 030</a></p>
               <p>✉️ Email: info@templatebds.com</p>
             </div>
           </div>
@@ -1121,7 +1121,7 @@ export default function BDS10Template({
           <Share2 size={13} /> Chat Facebook
         </a>
         <a
-          href="tel:0919006030"
+          href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`}
           className="px-3.5 py-1.5 rounded-sm bg-[#E11D48] hover:bg-[#BE123C] text-white text-xs font-black shadow-lg transition flex items-center gap-1.5 hover:scale-105"
         >
           <Phone size={13} className="animate-pulse" /> Hotline: 0919 006 030

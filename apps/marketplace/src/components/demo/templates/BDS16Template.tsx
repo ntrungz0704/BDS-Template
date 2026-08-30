@@ -82,7 +82,7 @@ export interface NewsItem {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BDS-16 MOCK DATA: EGA LAND (TRAO BẠN CUỘC SỐNG MƠ ƯỚC)
+// BDS-16 MOCK DATA: {company?.name || 'TEMPLATESBDS'} (TRAO BẠN CUỘC SỐNG MƠ ƯỚC)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const BDS16_PROPERTIES: PropertyItem[] = [
@@ -642,7 +642,7 @@ export default function BDS16Template({
   };
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 1. TOP MICROBAR & HEADER EGA LAND (SHARP CORPORATE DESIGN)
+  // 1. TOP MICROBAR & HEADER {company?.name || 'TEMPLATESBDS'} (SHARP CORPORATE DESIGN)
   // ─────────────────────────────────────────────────────────────────────────
   const renderHeader = () => (
     <header className="sticky top-0 z-40 bg-[#071D2D] text-white shadow-md border-b border-slate-800">
@@ -668,7 +668,7 @@ export default function BDS16Template({
       {/* Main Header with Logo & Navigation */}
       <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between gap-2 sm:gap-4`}>
         
-        {/* Logo EGA LAND */}
+        {/* Logo {company?.name || 'TEMPLATESBDS'} */}
         <div 
           onClick={() => navigate('home')}
           className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
@@ -761,7 +761,7 @@ export default function BDS16Template({
       {/* Sub-banner Breadcrumb Bar with Tab indicator */}
       <div className="bg-[#0D3B66] text-white py-1.5 px-4 text-center border-t border-white/10">
         <span className="text-xs font-bold uppercase tracking-wider text-amber-300">
-          {currentPage === 'for-rent' ? 'Nhà Cho Thuê' : currentPage === 'for-sale' ? 'Nhà Bán' : currentPage === 'news' || currentPage === 'news-detail' ? 'Tin Tức' : currentPage === 'about' ? 'Giới Thiệu' : currentPage === 'guide' ? 'Hướng Dẫn' : 'EGA LAND — Bất Động Sản Toàn Quốc'}
+          {currentPage === 'for-rent' ? 'Nhà Cho Thuê' : currentPage === 'for-sale' ? 'Nhà Bán' : currentPage === 'news' || currentPage === 'news-detail' ? 'Tin Tức' : currentPage === 'about' ? 'Giới Thiệu' : currentPage === 'guide' ? 'Hướng Dẫn' : `${company?.name || 'TEMPLATESBDS'}— Bất Động Sản Toàn Quốc`}
         </span>
       </div>
     </header>
@@ -1343,7 +1343,7 @@ export default function BDS16Template({
                 {currentPage === 'about' && (
                   <div className="bg-white p-6 border border-slate-300 shadow-sm space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
                     <h1 className="text-xl font-serif font-black text-slate-900 uppercase border-b pb-2">
-                      GIỚI THIỆU TẬP ĐOÀN BẤT ĐỘNG SẢN EGA LAND
+                      GIỚI THIỆU TẬP ĐOÀN BẤT ĐỘNG SẢN {company?.name || 'TEMPLATESBDS'}
                     </h1>
                     <p>
                       EGA Land là một trong những thương hiệu tiên phong trong lĩnh vực đầu tư, phát triển và phân phối bất động sản nhà ở, căn hộ dịch vụ cao cấp và biệt thự nghỉ dưỡng sinh thái trên khắp cả nước.
@@ -1359,7 +1359,7 @@ export default function BDS16Template({
                 {currentPage === 'guide' && (
                   <div className="bg-white p-6 border border-slate-300 shadow-sm space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
                     <h1 className="text-xl font-serif font-black text-slate-900 uppercase border-b pb-2">
-                      HƯỚNG DẪN MUA BÁN & THUÊ NHÀ ĐẤT TẠI EGA LAND
+                      HƯỚNG DẪN MUA BÁN & THUÊ NHÀ ĐẤT TẠI {company?.name || 'TEMPLATESBDS'}
                     </h1>
                     <div className="space-y-3">
                       <div className="p-3 bg-slate-50 border border-slate-200">

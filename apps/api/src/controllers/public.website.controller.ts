@@ -5,7 +5,7 @@ import { logger } from '../index';
 
 const contactFormSchema = z.object({
   fullName: z.string().min(2, 'Họ và tên tối thiểu 2 ký tự.'),
-  email: z.string().email('Định dạng email không hợp lệ.'),
+  email: z.string().email('Định dạng email không hợp lệ.').optional().or(z.literal('')),
   phone: z.string().min(10, 'Số điện thoại tối thiểu 10 số.'),
   message: z.string().min(5, 'Lời nhắn tối thiểu từ 5 ký tự.'),
   source: z.string().optional(),

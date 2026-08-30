@@ -83,7 +83,7 @@ export interface NewsItem {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BDS-17 MOCK DATA: BEVERLY HILLS HẠ LONG (ĐỈNH CAO NGHỈ DƯỠNG THƯỢNG LƯU)
+// BDS-17 MOCK DATA: {company?.name || 'TEMPLATESBDS'} (ĐỈNH CAO NGHỈ DƯỠNG THƯỢNG LƯU)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const BDS17_UNITS: UnitItem[] = [
@@ -491,7 +491,7 @@ export default function BDS17Template({
         <div className="hidden md:flex items-center gap-4 shrink-0">
           <div className="text-right">
             <span className="text-[10px] uppercase font-bold text-slate-500 block">Hotline Phòng Kinh Doanh</span>
-            <a href="tel:0919006030" className="text-sm font-black text-[#E11D48] tracking-wider block">
+            <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="text-sm font-black text-[#E11D48] tracking-wider block">
               0919 006 030
             </a>
           </div>
@@ -630,7 +630,7 @@ export default function BDS17Template({
           TUYỆT TÁC NGHỈ DƯỠNG TRÊN ĐỈNH KỲ QUAN
         </span>
         <h1 className="text-3xl sm:text-6xl font-serif font-black uppercase text-white tracking-wider drop-shadow-2xl">
-          BEVERLY HILLS HẠ LONG
+          {company?.name || 'TEMPLATESBDS'}
         </h1>
         <p className="text-xs sm:text-base text-slate-200 max-w-2xl mx-auto font-medium">
           Dự án căn hộ khách sạn 5 sao & Dinh thự đồi Hải Quân Bãi Cháy ngắm trọn vẹn di sản thiên nhiên thế giới Vịnh Hạ Long.
@@ -669,7 +669,7 @@ export default function BDS17Template({
               KIẾN TRÚC ĐẲNG CẤP HOÀNG GIA
             </span>
             <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 uppercase">
-              TỔNG QUAN DỰ ÁN BEVERLY HILLS HẠ LONG
+              TỔNG QUAN DỰ ÁN {company?.name || 'TEMPLATESBDS'}
             </h2>
             <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
               Tọa lạc trên đỉnh đồi Hải Quân cao hơn 100m so với mực nước biển, Beverly Hills Hạ Long tự hào là quần thể nghỉ dưỡng thượng lưu có tầm nhìn Panorama đắt giá nhất Vịnh Bắc Bộ.
@@ -1147,7 +1147,7 @@ export default function BDS17Template({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           
           <div className="space-y-3">
-            <span className="text-lg font-serif font-black text-amber-200 block">BEVERLY HILLS HẠ LONG</span>
+            <span className="text-lg font-serif font-black text-amber-200 block">{company?.name || 'TEMPLATESBDS'}</span>
             <p className="text-slate-400 leading-relaxed">
               Quần thể căn hộ khách sạn và dinh thự đồi sang trọng bậc nhất Bãi Cháy, Quảng Ninh.
             </p>
