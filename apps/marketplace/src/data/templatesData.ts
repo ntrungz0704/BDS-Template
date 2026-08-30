@@ -1916,6 +1916,71 @@ export const LANDING_TEMPLATES: Template[] = [
       heroTitle: "GOLDEN PARK TOWER CẦU GIẤY",
       heroSubtitle: "Tổ hợp căn hộ cao cấp & khách sạn 5 sao 4 mặt tiền Cầu Giấy, chiết khấu 8.5%, hỗ trợ vay 70% 0% LS 18 tháng."
     }
+  },
+
+// ─── LP 06. LANDING PAGE STELLA MEGA CITY CẦN THƠ ───────────────────────────
+  {
+    id: "lp-06",
+    name: "LP #06 - Đại Đô Thị Sân Bay Stella Mega City Cần Thơ",
+    slug: "lp-06",
+    collectionSlug: "landing-page",
+    collectionName: "Kho Landing Page Sale BĐS",
+    badge: "LANDING PAGE #06",
+    badgeBg: "#071326",
+    badgeColor: "#FDE047",
+    accentColor: "#F59E0B",
+    description: "Landing Page Đại Đô Thị Sân Bay 150ha Stella Mega City Cần Thơ. Tối ưu chuyển đổi với Hero Lead Box màu đỏ nổi bật, 3 Cột Giá Trị Vàng, Vòng tròn 6 Tiện Ích Vệ Tinh, 4 Khối Cam Kết Đột Phá, Bảng 5 Lý Do Đầu Tư, Sơ đồ Vị trí sân bay 3 phút và Form nhận Bảng Giá Đợt 1 kèm ưu đãi 1 cây vàng 9999.",
+    shortDescription: "Landing Page 1 trang · Đại Đô Thị Sân Bay 150ha · Sổ Đỏ Trao Tay 100%",
+    thumbnail: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&auto=format&fit=crop&q=80",
+    screenshots: [
+      "https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80"
+    ],
+    features: [
+      "Tone màu Xanh Navy Hoàng Gia (#071326) phối Vàng Gold (#F59E0B) & Đỏ Phễu Thu Lead (#DC2626)",
+      "Thiết kế góc cạnh vuông vắn sắc nét theo chuẩn kiến trúc cao cấp, không bo tròn AI",
+      "Tính năng UX Auto-Select: Bấm chọn sản phẩm hoặc nhận ưu đãi sẽ tự động cuộn lên Form và chọn sẵn đúng sản phẩm",
+      "Vòng tròn vệ tinh 6 tiện ích đỉnh cao: Đền Hùng 4ha, Đại lộ ánh sáng, TT Hành chính, Zen Garden...",
+      "Bảng 5 lý do đầu tư & Phân tích tiềm năng tăng trưởng 25% - 35%/năm",
+      "Form nhận báo giá F0 trực tiếp từ KITA Group kèm quà tặng 1 cây vàng 9999"
+    ],
+    priceBuy: 399000,
+    priceBuySource: 1290000,
+    priceRentMonthly: 129000,
+    isActive: true,
+    sortOrder: 30,
+    targetAudience: ["Chủ đầu tư & Sàn phân phối đại đô thị ĐBSCL", "Đội nhóm sale F1 đánh Đất nền & Shophouse miền Tây", "Nhà đầu tư bất động sản đô thị sân bay"],
+    highlights: ["Airport Megacity Funnel", "Circular 6-Satellite Amenities", "Sổ Đỏ 100% Trao Tay", "Direct Kita Group Lead Form"],
+    availablePages: ["Trang chủ Single Page Landing"],
+    modules: ["RoyalNavyHeroModule", "ThreeValueCardsModule", "SatelliteAmenitiesModule", "FourPillarsModule", "VideoModule", "UrbanScaleModule", "FiveReasonsModule", "AirportLocationModule", "BottomLeadModule"],
+    benefits: ["Bùng nổ lượng đăng ký nhận vé mời tham quan thực địa", "Khách hàng hoàn toàn tin tưởng nhờ pháp lý sổ đỏ 100%", "Tự động phân loại nhu cầu Đất nền / Shophouse / Biệt thự"],
+    themeConfig: {
+      fontHeading: "'Inter', sans-serif",
+      fontBody: "'Inter', sans-serif",
+      primaryColor: "#071326",
+      secondaryColor: "#040C1A",
+      accentColor: "#F59E0B",
+      bgColor: "#071326",
+      cardBgColor: "#040C1A",
+      textColor: "#FFFFFF",
+      radiusToken: "0px",
+      shadowToken: "0 4px 6px -1px rgba(0, 0, 0, 0.2)"
+    },
+    layoutConfig: {
+      heroStyle: "Deep Royal Navy Hero with Red Funnel Box",
+      navigationStyle: "Architectural Navy Header with Gold Star",
+      cardStyle: "Crisp Bordered Architectural Card",
+      galleryStyle: "6-Satellite Amenities Grid",
+      ctaStyle: "Golden Gradient Action Button",
+      spacingScale: "Engineered Architectural Spacing"
+    },
+    wireframe: ["TopNav", "HeroForm", "ThreeValueCards", "SatelliteAmenities", "FourPillars", "VideoSection", "UrbanScale", "FiveReasons", "LocationMap", "BottomLeadForm", "Footer"],
+    sectionConfig: {
+      sourceSlug: "lp-06",
+      heroTitle: "STELLA MEGA CITY CẦN THƠ",
+      heroSubtitle: "Đại đô thị sân bay 150ha trung tâm Cần Thơ, sổ đỏ trao tay từng nền, chiết khấu 10% đợt 1, tặng 1 cây vàng 9999."
+    }
   }
 ];
 
