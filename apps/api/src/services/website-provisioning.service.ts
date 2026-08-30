@@ -167,6 +167,8 @@ export class WebsiteProvisioningService {
             tenantId: tenant.id,
             isActive: true,
             status: 'ACTIVE',
+            passwordHash,
+            emailVerified: new Date(),
           },
         });
       } else {
@@ -182,7 +184,7 @@ export class WebsiteProvisioningService {
               tenantId: tenant.id,
               isActive: true,
               status: 'ACTIVE',
-              passwordHash: existingUser.passwordHash || passwordHash,
+              passwordHash,
               emailVerified: existingUser.emailVerified || new Date(),
             },
           });
