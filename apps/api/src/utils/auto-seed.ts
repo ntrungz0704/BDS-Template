@@ -1,7 +1,9 @@
 import bcrypt from 'bcrypt';
 import { prisma, ProductType } from '@repo/database';
 
-const DEFAULT_TEMPLATES = [
+// Source records retained here only as the content source for the 24 approved
+// products. Public/product slugs must never use these historic aliases.
+const LEGACY_TEMPLATE_CONTENT = [
   {
     slug: 'luxury-gold',
     name: 'Luxury Gold Style',
@@ -284,21 +286,53 @@ const DEFAULT_TEMPLATE_CONFIG = {
   featureFlags: { enableBlog: true, enableMap: true, enableVirtualTour: true },
 };
 
+const CANONICAL_BDS_NAMES = [
+  'BĐS 01 — Biệt Thự Hoàng Gia',
+  'BĐS 02 — Căn Hộ Tối Giản',
+  'BĐS 03 — Sàn Giao Dịch Chuyên Nghiệp',
+  'BĐS 04 — Nghỉ Dưỡng Ven Biển',
+  'BĐS 05 — Đại Đô Thị Thông Minh',
+  'BĐS 06 — Khu Công Nghiệp Hiện Đại',
+  'BĐS 07 — Biệt Thự Compound 3D',
+  'BĐS 08 — Đô Thị Sinh Thái',
+  'BĐS 09 — Dinh Thự Di Sản',
+  'BĐS 10 — Đầu Tư Bất Động Sản',
+  'BĐS 11 — Landing Mở Bán',
+  'BĐS 12 — Cổng Thông Tin Dự Án',
+  'BĐS 13 — Sàn Đấu Giá Bất Động Sản',
+  'BĐS 14 — Đất Nền Quy Hoạch',
+  'BĐS 15 — Shophouse Thương Mại',
+  'BĐS 16 — Môi Giới Nhà Đất',
+  'BĐS 17 — Cổng Thông Tin Bất Động Sản Số 1',
+  'BĐS 18 — Sàn Giao Dịch & Đấu Giá Bến Thành',
+  'BĐS 19 — Sàn Niêm Yết Mật Độ Cao Nhà Đất Số',
+  'BĐS 20 — Chung Cư Minh Khai & Times City',
+  'BĐS 21 — Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội',
+  'BĐS 22 — ZoHotels & Happy Land Nha Trang',
+  'BĐS 23 — Sàn Giao Dịch Nhà Phố Homeo',
+  'BĐS 24 — RealtyBuild Trang Tin BĐS Số 1 Việt Nam',
+] as const;
+
+const WEBSITE_TEMPLATES = LEGACY_TEMPLATE_CONTENT.map((template, index) => ({
+  ...template,
+  slug: `bds-${String(index + 1).padStart(2, '0')}`,
+  name: CANONICAL_BDS_NAMES[index],
+  category: 'WEBSITE',
+  productType: ProductType.WEBSITE_TEMPLATE,
+}));
+
 const CATALOG_TEMPLATES = [
-  ...DEFAULT_TEMPLATES.map((template) => ({
-    ...template,
-    productType: template.slug === 'agency-onepage' ? ProductType.LANDING_PAGE : ProductType.WEBSITE_TEMPLATE,
-    category: template.slug === 'agency-onepage' ? 'LANDING_PAGE' : 'WEBSITE',
-  })),
+  ...WEBSITE_TEMPLATES,
   ...LANDING_PAGE_TEMPLATES.map((template) => ({ ...template, productType: ProductType.LANDING_PAGE })),
 ];
 
-export async function autoSeedDatabase() {
-  try {
-    console.log('🌱 Đang đồng bộ hóa dữ liệu 16+ Mẫu Templates & Super Admin...');
-
-    // 1. Đồng bộ catalog chuẩn. Không tự xóa template vì có thể đã gắn với đơn hàng/tenant.
-    for (const t of CATALOG_TEMPLATES) {
+/**
+ * Makes the sellable catalog an explicit business invariant: 24 BDS products
+ * and 7 landing pages. Old rows are retired (not deleted) so historical
+ * orders and tenants remain referentially intact.
+ */
+export async function syncCatalog() {
+  for (const t of CATALOG_TEMPLATES) {
       const template = await prisma.template.upsert({
         where: { slug: t.slug },
         update: {
@@ -364,7 +398,26 @@ export async function autoSeedDatabase() {
           status: 'PUBLISHED',
         },
       });
-    }
+  }
+
+  const canonicalSlugs = CATALOG_TEMPLATES.map((template) => template.slug);
+  const retired = await prisma.template.updateMany({
+    where: {
+      slug: { notIn: canonicalSlugs },
+      isActive: true,
+    },
+    data: { isActive: false },
+  });
+
+  return { websiteTemplates: WEBSITE_TEMPLATES.length, landingPages: LANDING_PAGE_TEMPLATES.length, retired: retired.count };
+}
+
+export async function autoSeedDatabase() {
+  try {
+    console.log('🌱 Đang đồng bộ catalog chuẩn: 24 BĐS + 7 Landing Page...');
+
+    // 1. Đồng bộ catalog chuẩn và ẩn an toàn mọi catalog legacy.
+    await syncCatalog();
 
     // 2. Bootstrap Super Admin chỉ khi chưa có; không bao giờ ghi đè mật khẩu hiện hữu.
     const adminEmail = 'admin@aireviewbds.com';

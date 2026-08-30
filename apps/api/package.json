@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "node -r ts-node/register/transpile-only src/index.ts",
     "lint": "tsc --noEmit",
+    "catalog:sync": "ts-node src/scripts/sync-catalog.ts",
     "test": "jest --runInBand --forceExit",
     "test:integration": "jest --runInBand --forceExit"
   },
