@@ -215,24 +215,49 @@ export default function AdminOrders() {
     return status === 'PENDING' || status === 'WAITING_CONFIRM' || status === 'PENDING_SUBDOMAIN_CONFLICT' || status === 'AWAITING_MANUAL_REVIEW';
   };
 
+  // Ticking Live Clock (Cập nhật liên tục mỗi 1 giây kèm Ngày Tháng Năm)
+  const [now, setNow] = useState<Date | null>(null);
+  useEffect(() => {
+    setNow(new Date());
+    const clockInterval = setInterval(() => {
+      setNow(new Date());
+    }, 1000);
+    return () => clearInterval(clockInterval);
+  }, []);
+
+  const formatFullDateTime = (date: Date) => {
+    const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+    const dayName = days[date.getDay()];
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const mins = String(date.getMinutes()).padStart(2, '0');
+    const secs = String(date.getSeconds()).padStart(2, '0');
+    return `${dayName}, ${day}/${month}/${year} - ${hours}:${mins}:${secs}`;
+  };
+
   return (
     <AdminLayout
       title="Duyệt Đơn Hàng & Kích Hoạt"
       subtitle="Quản lý và kích hoạt website tự động cho khách hàng. Hệ thống đồng bộ thời gian thực (Real-time)."
     >
-      {/* Live Polling Status Indicator */}
+      {/* Live Polling & Continuous Live Clock Indicator */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 bg-white p-4 rounded-2xl border border-slate-100 shadow-xs">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <span className="relative flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
           </span>
-          <span className="text-xs font-bold text-slate-700">
-            Realtime Live: Tự động cập nhật mỗi 3s
+          <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+            <span>Realtime Live:</span>
+            <span className="text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md font-mono font-extrabold border border-emerald-200 shadow-xs">
+              {now ? formatFullDateTime(now) : 'Đang đồng bộ...'}
+            </span>
           </span>
           {dataUpdatedAt && (
-            <span className="text-[11px] text-slate-400 font-mono">
-              (Lần cập nhật cuối: {new Date(dataUpdatedAt).toLocaleTimeString('vi-VN')})
+            <span className="text-[11px] text-slate-400 font-mono hidden md:inline">
+              (Đã fetch API: {new Date(dataUpdatedAt).toLocaleTimeString('vi-VN')})
             </span>
           )}
         </div>
