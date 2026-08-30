@@ -30,7 +30,7 @@ export default function TenantHome({ company, theme, pageContent, projects, post
   React.useEffect(() => {
     if (typeof globalThis !== 'undefined') {
       (globalThis as any).submitContactForm = async (formData: any) => {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
+        const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
         const response = await fetch(`${API_URL}/api/website/${tenantSlug}/contact`, {
           method: 'POST',
           headers: {
@@ -157,7 +157,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   try {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
+    const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
     const [compRes, themeRes, pageRes, projRes, postRes, statusRes] = await Promise.all([
       axios.get(`${API_URL}/api/website/${tenantSlug}/company-info`).catch(() => ({ data: { data: null } })),
       axios.get(`${API_URL}/api/website/${tenantSlug}/theme`).catch(() => ({ data: { data: null } })),

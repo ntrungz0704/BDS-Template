@@ -6,7 +6,7 @@ import axios from 'axios';
 
 // ─── Global Axios: Auto Token Refresh + 401 handler ──────────────────────────
 if (typeof window !== 'undefined') {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
+  const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
   axios.defaults.withCredentials = true;
   let isRefreshing = false;
   let refreshQueue: Array<(token: boolean) => void> = [];
