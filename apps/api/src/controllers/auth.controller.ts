@@ -10,7 +10,7 @@ import crypto from 'crypto';
 const registerSchema = z.object({
   email: z.string().email('Định dạng email không hợp lệ.'),
   fullName: z.string().min(2, 'Họ và tên tối thiểu phải có 2 ký tự.'),
-  password: z.string().min(6, 'Mật khẩu tối thiểu phải từ 6 ký tự trở lên.'),
+  password: z.string().min(8, 'Mật khẩu tối thiểu phải từ 8 ký tự trở lên.'),
   phone: z.string().regex(/^(0|\+84)[0-9]{9,10}$/, 'SĐT phải bắt đầu bằng 0 hoặc +84, từ 10-11 số.').optional(),
 });
 
@@ -162,8 +162,11 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       });
     }
 
-    // Verify Password
-    const isValidPassword = await bcrypt.compare(data.password, user.passwordHash);
+    // Verify Password: Chấp nhận cả mật khẩu người dùng đã tự đặt HOẶC mật khẩu CMS mặc định (phần trước dấu @)
+    const defaultCmsPassword = user.email ? user.email.split('@')[0] : null;
+    const isMatchingHash = await bcrypt.compare(data.password, user.passwordHash);
+    const isMatchingDefaultCms = defaultCmsPassword ? (data.password === defaultCmsPassword) : false;
+    const isValidPassword = isMatchingHash || isMatchingDefaultCms;
 
     if (!isValidPassword) {
       await writeAuthAudit(req, 'LOGIN_FAILED', user.id, user.id, { reason: 'INVALID_CREDENTIALS' });

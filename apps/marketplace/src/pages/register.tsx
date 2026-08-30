@@ -3,13 +3,13 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, User, Phone, ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Mail, Lock, User, Phone, ArrowRight, CheckCircle2, ShieldCheck, Check, X } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { user, register, login, showToast } = useAuth();
+  const { user, register, showToast } = useAuth();
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -36,6 +36,22 @@ export default function RegisterPage() {
     }
   }, [user, redirectUrl, router]);
 
+  // Password Strength Calculation
+  const hasMinLength = password.length >= 8;
+  const hasUpperAndLower = /[a-z]/.test(password) && /[A-Z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSpecial = /[^A-Za-z0-9]/.test(password);
+
+  const strengthScore = [hasMinLength, hasUpperAndLower, hasNumber, hasSpecial].filter(Boolean).length;
+  const getStrengthData = () => {
+    if (!password) return { text: '', colorBg: 'bg-slate-200', colorText: 'text-slate-400', percent: 0 };
+    if (strengthScore <= 1) return { text: 'Mật khẩu yếu (Cần thêm ký tự)', colorBg: 'bg-rose-500', colorText: 'text-rose-600', percent: 25 };
+    if (strengthScore === 2) return { text: 'Độ mạnh trung bình', colorBg: 'bg-amber-500', colorText: 'text-amber-600', percent: 50 };
+    if (strengthScore === 3) return { text: 'Mật khẩu khá mạnh', colorBg: 'bg-blue-500', colorText: 'text-blue-600', percent: 75 };
+    return { text: 'Mật khẩu rất mạnh & an toàn tuyệt đối', colorBg: 'bg-emerald-500', colorText: 'text-emerald-600', percent: 100 };
+  };
+  const strength = getStrengthData();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
@@ -57,8 +73,8 @@ export default function RegisterPage() {
       return;
     }
 
-    if (password.length < 6) {
-      setErrorMsg('Mật khẩu cần tối thiểu 6 ký tự.');
+    if (password.length < 8) {
+      setErrorMsg('Mật khẩu cần tối thiểu 8 ký tự để đảm bảo an toàn cho tài khoản của bạn.');
       return;
     }
 
@@ -105,18 +121,18 @@ export default function RegisterPage() {
         <Header />
 
         <main className="flex-1 flex items-center justify-center px-4 sm:px-6 py-12">
-          <div className="w-full max-w-[480px] bg-white rounded-lg shadow-sm border border-slate-200 animate-fadeIn">
+          <div className="w-full max-w-[500px] bg-white rounded-xl shadow-sm border border-slate-200 animate-fadeIn">
             {/* Header */}
             <div className="px-6 pt-8 pb-4 text-center border-b border-slate-100">
               <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 mb-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>Hệ thống quản trị TEMPLATES BDS</span>
+                <span>Hệ thống tài khoản TEMPLATES BDS Marketplace</span>
               </div>
               <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-                Đăng Ký
+                Đăng Ký Tài Khoản
               </h1>
               <p className="text-xs text-slate-500 mt-1">
-                Nhập thông tin để tạo tài khoản quản trị website BĐS
+                Tạo tài khoản để mua, tải mã nguồn và quản lý các website BĐS của bạn
               </p>
             </div>
 
@@ -136,7 +152,7 @@ export default function RegisterPage() {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-3.5">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Họ và tên <span className="text-rose-500">*</span>
@@ -188,6 +204,7 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
+                {/* Password Fields */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 mb-1">
@@ -198,7 +215,7 @@ export default function RegisterPage() {
                       <input
                         type="password"
                         required
-                        placeholder="Tối thiểu 6 ký tự"
+                        placeholder="Tối thiểu 8 ký tự"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-md text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-colors"
@@ -224,7 +241,44 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
-                <div className="pt-2">
+                {/* Password Strength Meter */}
+                {password.length > 0 && (
+                  <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg space-y-2 text-left">
+                    <div className="flex justify-between items-center text-[11px]">
+                      <span className="font-semibold text-slate-600">Độ mạnh mật khẩu:</span>
+                      <span className={`font-bold ${strength.colorText}`}>{strength.text}</span>
+                    </div>
+
+                    <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full transition-all duration-300 ${strength.colorBg}`}
+                        style={{ width: `${strength.percent}%` }}
+                      ></div>
+                    </div>
+
+                    {/* Criteria Checklist */}
+                    <div className="grid grid-cols-2 gap-1.5 pt-1 text-[10px]">
+                      <span className={`flex items-center gap-1 font-medium ${hasMinLength ? 'text-emerald-600' : 'text-slate-400'}`}>
+                        {hasMinLength ? <Check className="w-3 h-3 text-emerald-600" /> : <X className="w-3 h-3 text-slate-400" />}
+                        Ít nhất 8 ký tự
+                      </span>
+                      <span className={`flex items-center gap-1 font-medium ${hasUpperAndLower ? 'text-emerald-600' : 'text-slate-400'}`}>
+                        {hasUpperAndLower ? <Check className="w-3 h-3 text-emerald-600" /> : <X className="w-3 h-3 text-slate-400" />}
+                        Chữ hoa & thường
+                      </span>
+                      <span className={`flex items-center gap-1 font-medium ${hasNumber ? 'text-emerald-600' : 'text-slate-400'}`}>
+                        {hasNumber ? <Check className="w-3 h-3 text-emerald-600" /> : <X className="w-3 h-3 text-slate-400" />}
+                        Chứa chữ số (0-9)
+                      </span>
+                      <span className={`flex items-center gap-1 font-medium ${hasSpecial ? 'text-emerald-600' : 'text-slate-400'}`}>
+                        {hasSpecial ? <Check className="w-3 h-3 text-emerald-600" /> : <X className="w-3 h-3 text-slate-400" />}
+                        Ký tự đặc biệt (!@#...)
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                <div className="pt-1">
                   <label className="flex items-start gap-2 cursor-pointer select-none text-xs text-slate-600">
                     <input
                       type="checkbox"
@@ -248,7 +302,7 @@ export default function RegisterPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-2.5 px-4 rounded-md bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm transition-colors shadow-sm disabled:opacity-60 flex items-center justify-center gap-2 mt-4"
+                  className="w-full py-2.5 px-4 rounded-md bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm transition-colors shadow-sm disabled:opacity-60 flex items-center justify-center gap-2 mt-4 cursor-pointer"
                 >
                   {loading ? (
                     <span>Đang xử lý...</span>
@@ -280,4 +334,3 @@ export default function RegisterPage() {
     </>
   );
 }
-
