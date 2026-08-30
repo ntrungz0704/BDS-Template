@@ -3,8 +3,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import Link from 'next/link';
 import AdminLayout from '../components/AdminLayout';
+import { KeyRound, Copy, Check, ShieldAlert, Sparkles, RefreshCw, Lock } from 'lucide-react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
+const CMS_APP_URL = process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com';
+const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com';
 
 export default function CustomersPage() {
   const queryClient = useQueryClient();
@@ -12,6 +15,13 @@ export default function CustomersPage() {
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [createdCredentials, setCreatedCredentials] = useState<any>(null);
+
+  // Restore / Reset Password State
+  const [restoreUser, setRestoreUser] = useState<any>(null);
+  const [customPassword, setCustomPassword] = useState('');
+  const [useDefaultPassword, setUseDefaultPassword] = useState(true);
+  const [restoredResult, setRestoredResult] = useState<any>(null);
+  const [copied, setCopied] = useState(false);
 
   // Form states
   const [fullName, setFullName] = useState('');
@@ -54,7 +64,25 @@ export default function CustomersPage() {
     },
   });
 
-  // 3. Quick Action Mutations
+  // 3. Quick Action: Direct Reset / Restore Password
+  const directResetMutation = useMutation({
+    mutationFn: async ({ userId, newPassword }: { userId: string; newPassword?: string }) => {
+      const csrfToken = document.cookie.split('; ').find(r => r.startsWith('csrf_token='))?.split('=')[1];
+      const res = await axios.post(`${API_URL}/api/admin/customers/${userId}/direct-reset-password`, { newPassword }, {
+        headers: { 'X-CSRF-Token': csrfToken || '' },
+        withCredentials: true,
+      });
+      return res.data;
+    },
+    onSuccess: (res) => {
+      setRestoreUser(null);
+      setRestoredResult(res.data);
+      queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
+    },
+    onError: (err: any) => alert(err.response?.data?.error?.message || 'Lỗi khi khôi phục mật khẩu'),
+  });
+
+  // 4. Quick Action: Extend Trial
   const extendTrialMutation = useMutation({
     mutationFn: async ({ userId, days }: { userId: string; days: number }) => {
       const csrfToken = document.cookie.split('; ').find(r => r.startsWith('csrf_token='))?.split('=')[1];
@@ -71,21 +99,7 @@ export default function CustomersPage() {
     onError: (err: any) => alert(err.response?.data?.error?.message || 'Lỗi gia hạn dùng thử'),
   });
 
-  const resetPasswordMutation = useMutation({
-    mutationFn: async ({ userId }: { userId: string }) => {
-      const csrfToken = document.cookie.split('; ').find(r => r.startsWith('csrf_token='))?.split('=')[1];
-      const res = await axios.post(`${API_URL}/api/admin/customers/${userId}/reset-password`, {}, {
-        headers: { 'X-CSRF-Token': csrfToken || '' },
-        withCredentials: true,
-      });
-      return res.data;
-    },
-    onSuccess: (res) => {
-      alert(res.data?.message || 'Đã gửi liên kết đặt lại mật khẩu qua email.');
-    },
-    onError: (err: any) => alert(err.response?.data?.error?.message || 'Lỗi đặt lại mật khẩu'),
-  });
-
+  // 5. Quick Action: Delete User
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: string) => {
       const csrfToken = document.cookie.split('; ').find(r => r.startsWith('csrf_token='))?.split('=')[1];
@@ -118,6 +132,14 @@ export default function CustomersPage() {
     });
   };
 
+  const handleCopyText = (text: string) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }
+  };
+
   const users: any[] = usersRes?.data || [];
   const filteredUsers = users.filter((u) => {
     if (u.role === 'SUPER_ADMIN' || u.email === 'admin@aireviewbds.com') return false;
@@ -132,7 +154,10 @@ export default function CustomersPage() {
   });
 
   return (
-    <AdminLayout title="Quản lý Khách hàng" subtitle="Hồ sơ khách hàng, trạng thái dùng thử và kích hoạt website">
+    <AdminLayout 
+      title="Quản Lý Khách Hàng & Khôi Phục Mật Khẩu" 
+      subtitle="Hồ sơ khách hàng, khôi phục mật khẩu Marketplace/CMS tức thì, gia hạn và kích hoạt website."
+    >
       <div className="space-y-6">
         {/* Header Actions */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
@@ -186,7 +211,7 @@ export default function CustomersPage() {
                   <th className="py-3.5 px-4">Vai trò</th>
                   <th className="py-3.5 px-4">Trạng thái</th>
                   <th className="py-3.5 px-4">Ngày tạo</th>
-                  <th className="py-3.5 px-4 text-right">Thao tác</th>
+                  <th className="py-3.5 px-4 text-right">Khôi phục & Thao tác</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium">
@@ -203,97 +228,282 @@ export default function CustomersPage() {
                     </td>
                   </tr>
                 ) : (
-                  filteredUsers.map((u) => (
-                    <tr key={u.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-4 px-4">
-                        <div className="font-bold text-slate-900">{u.fullName || 'Chưa cập nhật'}</div>
-                        <div className="text-xs text-slate-400">{u.email}</div>
-                      </td>
-                      <td className="py-4 px-4 font-mono text-xs">{u.phone || '—'}</td>
-                      <td className="py-4 px-4">
-                        {u.tenant ? (
-                          <div>
-                            <div className="font-bold text-slate-800">{u.tenant.name}</div>
-                            <div className="text-xs font-mono text-indigo-600">{u.tenant.slug}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}</div>
+                  filteredUsers.map((u) => {
+                    const defaultPwd = u.email ? u.email.split('@')[0] : '123456';
+                    return (
+                      <tr key={u.id} className="hover:bg-slate-50/80 transition-colors">
+                        <td className="py-4 px-4">
+                          <div className="font-bold text-slate-900">{u.fullName || 'Chưa cập nhật'}</div>
+                          <div className="text-xs text-slate-400 font-mono">{u.email}</div>
+                        </td>
+                        <td className="py-4 px-4 font-mono text-xs">
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-bold text-slate-700">{u.phone || '—'}</span>
+                            {u.phone && (
+                              <a
+                                href={`https://zalo.me/${u.phone.replace(/[^0-9]/g, '')}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-1.5 py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold text-[10px] rounded border border-blue-200"
+                                title="Mở Zalo"
+                              >
+                                Zalo
+                              </a>
+                            )}
                           </div>
-                        ) : (
-                          <span className="text-slate-400 italic text-xs">Chưa gắn website</span>
-                        )}
-                      </td>
-                      <td className="py-4 px-4">
-                        <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-bold ${
-                          u.role === 'SUPER_ADMIN'
-                            ? 'bg-purple-100 text-purple-700'
-                            : u.role === 'TENANT_OWNER'
-                            ? 'bg-blue-100 text-blue-700'
-                            : 'bg-slate-100 text-slate-600'
-                        }`}>
-                          {u.role === 'TENANT_OWNER' ? 'CUSTOMER_OWNER' : u.role}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                          u.status === 'ACTIVE'
-                            ? 'bg-emerald-100 text-emerald-700'
-                            : 'bg-red-100 text-red-700'
-                        }`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${u.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-red-500'}`} />
-                          {u.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4 text-xs text-slate-500">
-                        {new Date(u.createdAt).toLocaleDateString('vi-VN')}
-                      </td>
-                      <td className="py-4 px-4 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <Link
-                            href={`/customers/${u.id}`}
-                            className="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-xs font-bold rounded-lg transition-colors"
-                          >
-                            Hồ sơ 360°
-                          </Link>
-                          {u.tenant?.trialStatus === 'ACTIVE' && (
-                            <button
-                              onClick={() => extendTrialMutation.mutate({ userId: u.id, days: 7 })}
-                              title="Gia hạn dùng thử +7 ngày"
-                              className="px-2 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-bold rounded-lg transition-colors"
-                            >
-                              +7 Ngày Trial
-                            </button>
+                        </td>
+                        <td className="py-4 px-4">
+                          {u.tenant ? (
+                            <div>
+                              <div className="font-bold text-slate-800">{u.tenant.name}</div>
+                              <div className="text-xs font-mono text-indigo-600">{u.tenant.slug}.{PLATFORM_DOMAIN}</div>
+                            </div>
+                          ) : (
+                            <span className="text-slate-400 italic text-xs">Chưa gắn website</span>
                           )}
-                          <button
-                            onClick={() => {
-                              if (confirm(`Đặt lại mật khẩu cho ${u.email}?`)) {
-                                resetPasswordMutation.mutate({ userId: u.id });
-                              }
-                            }}
-                            title="Đặt lại mật khẩu"
-                            className="px-2 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors"
-                          >
-                            Reset MK
-                          </button>
-                          {u.email !== 'admin@aireviewbds.com' && (
+                        </td>
+                        <td className="py-4 px-4">
+                          <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-bold ${
+                            u.role === 'SUPER_ADMIN'
+                              ? 'bg-purple-100 text-purple-700'
+                              : u.role === 'TENANT_OWNER'
+                              ? 'bg-blue-100 text-blue-700'
+                              : 'bg-slate-100 text-slate-600'
+                          }`}>
+                            {u.role === 'TENANT_OWNER' ? 'CUSTOMER_OWNER' : u.role}
+                          </span>
+                        </td>
+                        <td className="py-4 px-4">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                            u.status === 'ACTIVE'
+                              ? 'bg-emerald-100 text-emerald-700'
+                              : 'bg-red-100 text-red-700'
+                          }`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${u.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                            {u.status === 'ACTIVE' ? 'Hoạt động' : 'Đã khóa'}
+                          </span>
+                        </td>
+                        <td className="py-4 px-4 text-xs text-slate-500">
+                          {new Date(u.createdAt).toLocaleDateString('vi-VN')}
+                        </td>
+                        <td className="py-4 px-4 text-right">
+                          <div className="flex items-center justify-end gap-1.5">
+                            {/* Nút Khôi Phục Mật Khẩu Siêu Cấp Cho Admin */}
                             <button
                               onClick={() => {
-                                if (confirm(`Bạn có chắc chắn muốn XÓA vĩnh viễn tài khoản ${u.email}? Hành động này không thể hoàn tác!`)) {
-                                  deleteUserMutation.mutate(u.id);
-                                }
+                                setRestoreUser(u);
+                                setCustomPassword(defaultPwd);
+                                setUseDefaultPassword(true);
                               }}
-                              title="Xóa tài khoản"
-                              className="px-2 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold rounded-lg transition-colors"
+                              title="Khôi phục mật khẩu Marketplace & CMS ngay lập tức"
+                              className="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold rounded-lg transition-all flex items-center gap-1 shadow-2xs"
                             >
-                              Xóa
+                              <KeyRound className="w-3.5 h-3.5 text-amber-600" />
+                              <span>Khôi Phục MK</span>
                             </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+
+                            <Link
+                              href={`/customers/${u.id}`}
+                              className="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-xs font-bold rounded-lg transition-colors"
+                            >
+                              Hồ sơ 360°
+                            </Link>
+
+                            {u.tenant?.trialStatus === 'ACTIVE' && (
+                              <button
+                                onClick={() => extendTrialMutation.mutate({ userId: u.id, days: 7 })}
+                                title="Gia hạn dùng thử +7 ngày"
+                                className="px-2 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-lg transition-colors"
+                              >
+                                +7 Ngày Trial
+                              </button>
+                            )}
+
+                            {u.email !== 'admin@aireviewbds.com' && (
+                              <button
+                                onClick={() => {
+                                  if (confirm(`Bạn có chắc chắn muốn XÓA vĩnh viễn tài khoản ${u.email}? Hành động này không thể hoàn tác!`)) {
+                                    deleteUserMutation.mutate(u.id);
+                                  }
+                                }}
+                                title="Xóa tài khoản"
+                                className="px-2 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold rounded-lg transition-colors"
+                              >
+                                Xóa
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>
           </div>
         </div>
+
+        {/* ═══════════════════════════════════════════════════════════════════════
+            MODAL 1: KHÔI PHỤC MẬT KHẨU CHO KHÁCH (DIRECT RESET PASSWORD MODAL)
+            ═══════════════════════════════════════════════════════════════════════ */}
+        {restoreUser && (
+          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 border border-slate-200 animate-scale-in">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+                    <KeyRound className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-black text-slate-900">Khôi Phục Mật Khẩu Khách Hàng</h3>
+                    <p className="text-[11px] text-slate-400 font-mono">{restoreUser.email}</p>
+                  </div>
+                </div>
+                <button type="button" onClick={() => setRestoreUser(null)} className="text-slate-400 hover:text-slate-600 text-lg font-bold">
+                  ✕
+                </button>
+              </div>
+
+              <div className="my-5 space-y-4">
+                <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 text-xs text-amber-900">
+                  <p className="font-bold flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
+                    <span>Quyền Super Admin: Ghi đè & Khôi phục tức thì</span>
+                  </p>
+                  <p className="mt-1 text-amber-700 leading-relaxed">
+                    Khách có thể dùng mật khẩu này để đăng nhập ngay vào cả <strong>Sàn Marketplace (Port 3000)</strong> lẫn <strong>CMS Quản Trị Website Riêng (Port 3001)</strong> mà không lo bị kẹt mật khẩu cũ.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Lựa chọn mật khẩu cấp mới:
+                  </label>
+
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 hover:border-indigo-300 cursor-pointer bg-slate-50/50">
+                      <input
+                        type="radio"
+                        name="pwdOption"
+                        checked={useDefaultPassword}
+                        onChange={() => {
+                          setUseDefaultPassword(true);
+                          setCustomPassword(restoreUser.email ? restoreUser.email.split('@')[0] : '123456');
+                        }}
+                        className="accent-indigo-600 w-4 h-4"
+                      />
+                      <div>
+                        <span className="text-xs font-bold text-slate-800">Khôi phục về mật khẩu chuẩn (Theo đầu Email)</span>
+                        <p className="text-[11px] text-slate-500 font-mono mt-0.5">
+                          Mật khẩu: <strong className="text-emerald-700">{restoreUser.email ? restoreUser.email.split('@')[0] : '123456'}</strong>
+                        </p>
+                      </div>
+                    </label>
+
+                    <label className="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 hover:border-indigo-300 cursor-pointer bg-slate-50/50">
+                      <input
+                        type="radio"
+                        name="pwdOption"
+                        checked={!useDefaultPassword}
+                        onChange={() => setUseDefaultPassword(false)}
+                        className="accent-indigo-600 w-4 h-4"
+                      />
+                      <div className="w-full">
+                        <span className="text-xs font-bold text-slate-800">Tùy chỉnh mật khẩu mới theo ý Admin</span>
+                        {!useDefaultPassword && (
+                          <input
+                            type="text"
+                            value={customPassword}
+                            onChange={(e) => setCustomPassword(e.target.value)}
+                            placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)..."
+                            className="mt-2 w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-mono font-bold text-slate-800 focus:outline-none focus:border-indigo-500"
+                          />
+                        )}
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setRestoreUser(null)}
+                  className="px-4 py-2.5 border border-slate-300 text-slate-600 text-xs font-bold rounded-xl hover:bg-slate-50 transition-all"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="button"
+                  disabled={directResetMutation.isPending || (!useDefaultPassword && customPassword.trim().length < 6)}
+                  onClick={() => {
+                    const finalPwd = useDefaultPassword 
+                      ? (restoreUser.email ? restoreUser.email.split('@')[0] : '123456')
+                      : customPassword.trim();
+                    directResetMutation.mutate({
+                      userId: restoreUser.id,
+                      newPassword: finalPwd,
+                    });
+                  }}
+                  className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all shadow-md disabled:opacity-50 flex items-center gap-1.5"
+                >
+                  {directResetMutation.isPending ? 'Đang cập nhật...' : 'Xác Nhận Khôi Phục MK'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ═══════════════════════════════════════════════════════════════════════
+            MODAL 2: HIỂN THỊ KẾT QUẢ KHÔI PHỤC & SAO CHÉP GỬI ZALO
+            ═══════════════════════════════════════════════════════════════════════ */}
+        {restoredResult && (
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 border border-emerald-200 text-center animate-scale-in">
+              <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 border border-emerald-200">
+                <Check className="w-7 h-7" />
+              </div>
+
+              <h3 className="text-lg font-black text-slate-900">Mật Khẩu Đã Được Khôi Phục!</h3>
+              <p className="text-xs text-slate-500 mt-1">
+                Tài khoản khách hàng đã được cấp lại quyền truy cập thành công.
+              </p>
+
+              <div className="my-5 p-4 bg-slate-50 rounded-2xl border border-slate-200 text-left text-xs font-mono space-y-2 select-all">
+                <div><span className="text-slate-400 font-sans">Email:</span> <strong className="text-slate-800">{restoredResult.email}</strong></div>
+                <div><span className="text-slate-400 font-sans">Mật khẩu mới:</span> <strong className="text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-300 text-sm">{restoredResult.newPassword}</strong></div>
+                <div><span className="text-slate-400 font-sans">Đăng nhập Marketplace:</span> <span className="text-blue-600 font-bold">{process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'http://localhost:3000'}</span></div>
+                <div><span className="text-slate-400 font-sans">Đăng nhập CMS:</span> <span className="text-indigo-600 font-bold">{CMS_APP_URL}</span></div>
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const info = `🔐 THÔNG TIN KHÔI PHỤC MẬT KHẨU TÀI KHOẢN:\n\n` +
+                      `- Email: ${restoredResult.email}\n` +
+                      `- Mật khẩu mới: ${restoredResult.newPassword}\n` +
+                      `- Đăng nhập Sàn Mua Bán: ${process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'http://localhost:3000'}/login\n` +
+                      `- Đăng nhập Quản Trị Website CMS: ${CMS_APP_URL}/login\n\n` +
+                      `👉 Quý khách có thể đăng nhập ngay bằng mật khẩu trên!`;
+                    handleCopyText(info);
+                  }}
+                  className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                  <span>{copied ? '✓ Đã Sao Chép Toàn Bộ' : 'Sao Chép Gửi Zalo'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRestoredResult(null)}
+                  className="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all"
+                >
+                  Đóng
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Modal: Create Customer + Website */}
         {showCreateModal && (
@@ -312,8 +522,8 @@ export default function CustomersPage() {
                   </div>
 
                   <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs font-mono space-y-2 select-all">
-                    <div><strong>Website:</strong> {createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`}</div>
-                    <div><strong>Quản trị CMS:</strong> {createdCredentials.cmsUrl || process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}</div>
+                    <div><strong>Website:</strong> {createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${PLATFORM_DOMAIN}`}</div>
+                    <div><strong>Quản trị CMS:</strong> {createdCredentials.cmsUrl || CMS_APP_URL}</div>
                     <div><strong>Email:</strong> {createdCredentials.email}</div>
                     <div><strong>Mật khẩu tạm:</strong> {createdCredentials.password}</div>
                   </div>
@@ -321,13 +531,12 @@ export default function CustomersPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => {
-                        const info = `THÔNG TIN BÀN GIAO WEBSITE:\n- Website: ${createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`}\n- Quản trị CMS: ${createdCredentials.cmsUrl || process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}\n- Email: ${createdCredentials.email}\n- Mật khẩu: ${createdCredentials.password}`;
-                        navigator.clipboard.writeText(info);
-                        alert('Đã copy thông tin bàn giao vào clipboard!');
+                        const info = `THÔNG TIN BÀN GIAO WEBSITE:\n- Website: ${createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${PLATFORM_DOMAIN}`}\n- Quản trị CMS: ${createdCredentials.cmsUrl || CMS_APP_URL}\n- Email: ${createdCredentials.email}\n- Mật khẩu: ${createdCredentials.password}`;
+                        handleCopyText(info);
                       }}
                       className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all"
                     >
-                      Copy Gửi Zalo
+                      {copied ? '✓ Đã Copy' : 'Copy Gửi Zalo'}
                     </button>
                     <button
                       onClick={() => setShowCreateModal(false)}
@@ -350,93 +559,84 @@ export default function CustomersPage() {
                     <div>
                       <label className="block text-xs font-bold text-slate-700 mb-1">Họ và tên *</label>
                       <input
-                        required
                         type="text"
-                        placeholder="Nguyễn Văn A"
+                        required
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
+                        placeholder="Nguyễn Văn A"
                         className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500"
                       />
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-slate-700 mb-1">Số điện thoại *</label>
                       <input
+                        type="text"
                         required
-                        type="tel"
-                        placeholder="0983xxxxxx"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
+                        placeholder="0987654321"
                         className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Email tài khoản *</label>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Email đăng nhập *</label>
                     <input
-                      required
                       type="email"
-                      placeholder="khachhang@gmail.com"
+                      required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      placeholder="khachhang@gmail.com"
                       className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Subdomain mong muốn *</label>
-                    <input
-                      required
-                      type="text"
-                      placeholder="batdongsantrongoi"
-                      value={subdomain}
-                      onChange={(e) => setSubdomain(e.target.value.replace(/[^a-zA-Z0-9-]/g, '').toLowerCase())}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm font-mono focus:outline-none focus:border-indigo-500"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">Template Mẫu</label>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Subdomain Website *</label>
+                      <div className="flex items-center">
+                        <input
+                          type="text"
+                          required
+                          value={subdomain}
+                          onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                          placeholder="batdongsan-vip"
+                          className="w-full px-3 py-2 border border-slate-200 rounded-l-xl text-sm focus:outline-none focus:border-indigo-500"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Mẫu giao diện</label>
                       <select
                         value={templateId}
                         onChange={(e) => setTemplateId(e.target.value)}
                         className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500 bg-white"
                       >
-                        <option value="luxury-gold">Luxury Gold (Lumière)</option>
-                        <option value="minimal-dark">Minimalist (Dark/Modern)</option>
-                        <option value="eco-green">Eco-friendly (Green)</option>
-                        <option value="agency-modern">Real Estate Agency</option>
-                        <option value="apartment-sky">Apartment / Tower Page</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">Gói ban đầu</label>
-                      <select
-                        value={plan}
-                        onChange={(e) => setPlan(e.target.value)}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500 bg-white"
-                      >
-                        <option value="STARTER">Dùng thử 3 ngày (STARTER)</option>
-                        <option value="PRO">Thuê 1 năm (PRO)</option>
+                        <option value="luxury-gold">Luxury Gold (Vinhomes)</option>
+                        <option value="modern-green">Modern Green (Ecopark)</option>
+                        <option value="minimal-white">Minimal White (Masterise)</option>
+                        <option value="ocean-blue">Ocean Blue (Novaland)</option>
+                        <option value="urban-dark">Urban Dark (Keppel Land)</option>
+                        <option value="estate-pro">Estate Pro (Sun Group)</option>
                       </select>
                     </div>
                   </div>
 
-                  <div className="pt-3 flex gap-2">
+                  <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
                     <button
                       type="button"
                       onClick={() => setShowCreateModal(false)}
-                      className="flex-1 py-2.5 border border-slate-200 text-slate-600 text-xs font-bold rounded-xl hover:bg-slate-50 transition-colors"
+                      className="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-xl font-bold transition-colors"
                     >
-                      Hủy bỏ
+                      Hủy
                     </button>
                     <button
                       type="submit"
                       disabled={createCustomerMutation.isPending}
-                      className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-indigo-600/20 disabled:opacity-60"
+                      className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl transition-all shadow-md disabled:opacity-50"
                     >
-                      {createCustomerMutation.isPending ? 'Đang khởi tạo...' : 'Khởi Tạo & Kích Hoạt'}
+                      {createCustomerMutation.isPending ? 'Đang khởi tạo...' : 'Tạo Khách & Cấp Web'}
                     </button>
                   </div>
                 </form>
@@ -448,4 +648,3 @@ export default function CustomersPage() {
     </AdminLayout>
   );
 }
-

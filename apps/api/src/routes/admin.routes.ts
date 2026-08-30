@@ -27,6 +27,7 @@ import {
   getCustomerDetail,
   extendTrial,
   resetCustomerPassword,
+  directResetUserPassword,
   activateSubscription,
   suspendCustomer,
 } from '../controllers/admin.controller';
@@ -83,6 +84,8 @@ router.post('/repair/user-tenants', csrfMiddleware, repairUserTenants);
 router.get('/customers/:id', getCustomerDetail);
 router.post('/customers/:id/extend-trial', csrfMiddleware, extendTrial);
 router.post('/customers/:id/reset-password', csrfMiddleware, resetCustomerPassword);
+router.post('/customers/:id/direct-reset-password', csrfMiddleware, directResetUserPassword);
+router.post('/users/:id/direct-reset-password', csrfMiddleware, directResetUserPassword);
 router.post('/customers/:id/activate-subscription', csrfMiddleware, activateSubscription);
 router.post('/customers/:id/suspend', csrfMiddleware, suspendCustomer);
 

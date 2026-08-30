@@ -255,11 +255,6 @@ export default function AdminOrders() {
               {now ? formatFullDateTime(now) : 'Đang đồng bộ...'}
             </span>
           </span>
-          {dataUpdatedAt && (
-            <span className="text-[11px] text-slate-400 font-mono hidden md:inline">
-              (Đã fetch API: {new Date(dataUpdatedAt).toLocaleTimeString('vi-VN')})
-            </span>
-          )}
         </div>
 
         {pendingOrders.length > 0 && (

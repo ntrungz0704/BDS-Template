@@ -7,6 +7,7 @@ import { sendWelcomeEmail } from '../utils/mailer';
 import { BUSINESS_CONFIG } from '@repo/config';
 import { websiteProvisioningService } from '../services/website-provisioning.service';
 import crypto from 'crypto';
+import bcrypt from 'bcrypt';
 import { sendPasswordResetEmail } from '../utils/mailer';
 
 async function writeAdminAudit(
@@ -1499,6 +1500,67 @@ export async function resetCustomerPassword(req: Request, res: Response, next: N
       data: {
         email: user.email,
         expiresAt,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function directResetUserPassword(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params;
+    const { newPassword } = req.body;
+
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'NOT_FOUND', message: 'Không tìm thấy người dùng.' },
+      });
+    }
+
+    // Nếu không truyền newPassword, tự sinh theo email prefix hoặc mặc định
+    const assignedPassword = newPassword && newPassword.trim().length >= 6 
+      ? newPassword.trim() 
+      : (user.email ? user.email.split('@')[0] : 'Bds@123456');
+
+    const passwordHash = await bcrypt.hash(assignedPassword, 12);
+
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id },
+        data: {
+          passwordHash,
+          emailVerified: user.emailVerified || new Date(),
+        },
+      }),
+      prisma.refreshToken.updateMany({
+        where: { userId: id, revokedAt: null },
+        data: { revokedAt: new Date() },
+      }),
+      prisma.passwordResetToken.updateMany({
+        where: { userId: id, usedAt: null },
+        data: { usedAt: new Date() },
+      }),
+    ]);
+
+    await writeAdminAudit(req, 'DIRECT_PASSWORD_RESET', 'User', id, null, {
+      email: user.email,
+      assignedPassword,
+    });
+
+    return res.json({
+      success: true,
+      message: 'Khôi phục mật khẩu tài khoản thành công!',
+      data: {
+        userId: user.id,
+        email: user.email,
+        fullName: user.fullName,
+        newPassword: assignedPassword,
       },
     });
   } catch (error) {

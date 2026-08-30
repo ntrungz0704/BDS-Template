@@ -19,6 +19,12 @@ export default function CartPage() {
   const { cart, removeFromCart, clearCart, user, openAuthModal, showToast, isPurchased } = useAuth();
   const router = useRouter();
 
+  // Mounted guard to prevent SSR hydration mismatch / blank screen
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Form states
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -40,10 +46,15 @@ export default function CartPage() {
     }
   }, [user]);
 
-  // Pricing calculator helper (Tính theo NĂM - Không bán theo tháng)
+  // Safe cart array
+  const safeCart = (Array.isArray(cart) ? cart : []).filter((item: any) => item && (item.template || item.id));
+
+  // Pricing calculator helper
   const getItemPrice = (item: any) => {
-    let price = item.template?.priceBuy || 399000;
-    const id = item.template?.id || item.template?.slug;
+    if (!item) return 399000;
+    const tpl = item.template || item;
+    let price = Number(tpl.priceBuy) || Number(tpl.price) || 399000;
+    const id = tpl.id || tpl.slug || 'default';
     if (includeMaintenance[id]) {
       price += 299000; // Bảo trì website 299k/năm
     }
@@ -53,17 +64,19 @@ export default function CartPage() {
     return price;
   };
 
-  const originalTotal = cart.reduce((sum, item) => {
-    const buyPrice = item.template?.priceBuy || 399000;
-    const orig = buyPrice <= 399000 ? 799000 : 999000;
-    const id = item.template?.id || item.template?.slug;
+  const originalTotal = safeCart.reduce((sum: number, item: any) => {
+    const tpl = item?.template || item;
+    const buyPrice = Number(tpl?.priceBuy) || Number(tpl?.price) || 399000;
+    const orig = Number(tpl?.originalPrice) || (buyPrice <= 399000 ? 799000 : Math.round(buyPrice * 1.5));
+    const id = tpl?.id || tpl?.slug || 'default';
     let total = orig;
     if (includeMaintenance[id]) total += 299000;
     if (includeHosting[id]) total += 499000;
     return sum + total;
   }, 0);
-  const totalAmount = cart.reduce((sum, item) => sum + getItemPrice(item), 0);
-  const discountTotal = originalTotal - totalAmount;
+
+  const totalAmount = safeCart.reduce((sum: number, item: any) => sum + getItemPrice(item), 0);
+  const discountTotal = Math.max(0, originalTotal - totalAmount);
 
   // Mutator for creating orders
   const createOrderMutation = useMutation({
@@ -78,7 +91,7 @@ export default function CartPage() {
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (cart.length === 0) {
+    if (safeCart.length === 0) {
       showToast('Giỏ hàng của bạn đang trống!', 'info');
       return;
     }
@@ -109,19 +122,20 @@ export default function CartPage() {
       const createdOrders: any[] = [];
       
       // Submit orders in sequence with per-item notes
-      for (const item of cart) {
-        // Always prioritize template slug (e.g. "minimal-white") over internal mock id
-        const tplIdentifier = item.template?.slug || item.template?.id || 'luxury-gold';
+      for (const item of (safeCart as any[])) {
+        const tpl: any = item.template || item;
+        const tplIdentifier = tpl?.slug || tpl?.id || 'luxury-gold';
         const price = getItemPrice(item);
         let selectedAddons = [];
-        if (includeMaintenance[item.template?.id || item.template?.slug]) {
+        const itemId = tpl?.id || tpl?.slug;
+        if (includeMaintenance[itemId]) {
           selectedAddons.push("Gói Bảo trì website (+299.000đ/năm)");
         }
-        if (includeHosting[item.template?.id || item.template?.slug]) {
+        if (includeHosting[itemId]) {
           selectedAddons.push("Gói Hosting & Domain (+499.000đ/năm)");
         }
 
-        const itemSpecificNote = itemNotes[item.template?.id || item.template?.slug]?.trim();
+        const itemSpecificNote = itemNotes[itemId]?.trim();
         const addonNote = selectedAddons.length > 0 ? ` [Kèm thêm: ${selectedAddons.join(', ')}]` : '';
         
         let noteParts = [];
@@ -168,7 +182,6 @@ export default function CartPage() {
     }
   };
 
-
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(amount);
   };
@@ -180,6 +193,21 @@ export default function CartPage() {
   const toggleHosting = (id: string) => {
     setIncludeHosting(prev => ({ ...prev, [id]: !prev[id] }));
   };
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+        <Header />
+        <div className="flex-1 flex items-center justify-center p-12">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+            <span className="text-xs font-bold text-slate-400">Đang tải giỏ hàng...</span>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -228,7 +256,7 @@ export default function CartPage() {
             </div>
           )}
 
-          {cart.length === 0 ? (
+          {safeCart.length === 0 ? (
             <div className="bg-white border border-slate-200 rounded-2xl p-12 text-center flex flex-col items-center justify-center shadow-sm">
               <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-4">
                 <ShoppingBag className="w-8 h-8" />
@@ -246,13 +274,14 @@ export default function CartPage() {
               
               {/* LEFT COLUMN: LIST ITEMS */}
               <div className="lg:col-span-8 space-y-4">
-                {cart.map((item) => {
-                  const id = item.template?.id || item.template?.slug;
+                {(safeCart as any[]).map((item: any) => {
+                  const tpl = item?.template || item;
+                  const id = tpl?.id || tpl?.slug || 'item';
                   const itemPrice = getItemPrice(item);
-                  const owned = isPurchased(item.template?.slug || id);
+                  const owned = typeof isPurchased === 'function' ? isPurchased(tpl?.slug || id) : false;
 
                   return (
-                    <div key={item.template?.slug || id} className={`bg-white border ${owned ? 'border-emerald-300 ring-2 ring-emerald-500/20' : 'border-slate-200'} rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col gap-4 justify-between`}>
+                    <div key={tpl?.slug || id} className={`bg-white border ${owned ? 'border-emerald-300 ring-2 ring-emerald-500/20' : 'border-slate-200'} rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col gap-4 justify-between`}>
                       {owned && (
                         <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-emerald-800">
                           <div className="flex items-center gap-2 font-bold">
@@ -279,12 +308,12 @@ export default function CartPage() {
                       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between border-b border-slate-100 pb-4">
                         <div className="flex gap-3.5 items-center">
                           <img 
-                            src={item.template?.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'} 
-                            alt={item.template?.name} 
+                            src={tpl.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'} 
+                            alt={tpl.name || 'Mẫu Website'} 
                             className="w-24 h-16 rounded-xl object-cover border border-slate-100 shrink-0" 
                           />
                           <div>
-                            <h3 className="font-bold text-slate-900 text-sm">{item.template?.name}</h3>
+                            <h3 className="font-bold text-slate-900 text-sm">{tpl.name || 'Mẫu Website BĐS'}</h3>
                             <div className="flex items-center gap-2 mt-1">
                               <span className={`text-[10px] ${owned ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-blue-50 text-blue-600 border-blue-200'} font-bold px-2 py-0.5 rounded uppercase tracking-wider border`}>
                                 {owned ? 'ĐÃ SỞ HỮU TRỌN ĐỜI' : 'Bàn giao trọn gói / 1 Năm'}
@@ -489,7 +518,7 @@ export default function CartPage() {
 
                     <div className="space-y-2 text-xs">
                       <div className="flex justify-between text-slate-500 font-medium">
-                        <span>Giá gốc niêm yết ({cart.length} mẫu)</span>
+                        <span>Giá gốc niêm yết ({safeCart.length} mẫu)</span>
                         <span className="font-bold text-slate-400 line-through">{formatCurrency(originalTotal)}</span>
                       </div>
                       <div className="flex justify-between text-emerald-600 font-bold">
@@ -556,4 +585,3 @@ export default function CartPage() {
     </>
   );
 }
-

@@ -109,11 +109,6 @@ export default function AdminDashboard() {
               {now ? formatFullDateTime(now) : 'Đang đồng bộ...'}
             </span>
           </span>
-          {dataUpdatedAt && (
-            <span className="text-[11px] text-slate-400 font-mono hidden md:inline">
-              (Đã nạp số liệu: {new Date(dataUpdatedAt).toLocaleTimeString('vi-VN')})
-            </span>
-          )}
         </div>
 
         <div className="flex items-center gap-2">
