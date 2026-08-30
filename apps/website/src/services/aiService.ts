@@ -188,7 +188,7 @@ KIẾN THỨC CHUYÊN MÔN BẤT ĐỘNG SẢN VIỆT NAM (BẠN ĐÃ ĐƯỢC H
    - Luôn khéo léo kết thúc bằng lời mời khách nhắn Zalo **${contextData?.zalo || contextData?.hotline || '0905.568.888'}** hoặc để lại SĐT để gửi bảng giá VIP và lịch đón xem nhà thực tế.`;
 
   try {
-    if (apiKey && apiKey.startsWith('AIzaSy')) {
+    if (apiKey && apiKey.trim().length > 15) {
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
         {
@@ -278,7 +278,7 @@ Hãy trả về dưới định dạng JSON thuần túy như sau (không kèm m
   "amenities": ["Tiện ích 1", "Tiện ích 2", "Tiện ích 3", "Tiện ích 4", "Tiện ích 5"]
 }`;
 
-  if (apiKey && apiKey.startsWith('AIzaSy')) {
+  if (apiKey && apiKey.trim().length > 15) {
     try {
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
