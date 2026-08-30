@@ -12,6 +12,7 @@ import {
   getOrderStatus,
   simulatePayment,
   getMyOrders,
+  downloadTemplateSource,
 } from '../controllers/marketplace.controller';
 import { authMiddleware, optionalAuthMiddleware } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/role.middleware';
@@ -22,6 +23,7 @@ const router = Router();
 // Routes công khai cho Marketplace
 router.get('/templates', getTemplates);
 router.get('/templates/:slug', getTemplateDetail);
+router.get('/templates/:slug/download', authMiddleware, downloadTemplateSource);
 router.get('/check-subdomain', checkSubdomain);
 router.get('/stats', getMarketplaceStats);
 

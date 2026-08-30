@@ -410,14 +410,16 @@ export async function downloadTemplateSource(req: Request, res: Response, next: 
     const targetSlug = tpl?.slug || cleanSlug;
     const userEmail = req.user?.email;
 
+    const orderNumberQuery = (req.query.orderNumber as string || '').trim();
+    const cleanOrdNo = orderNumberQuery ? orderNumberQuery.replace(/\s+/g, '-') : '';
+
     const paidOrder = await prisma.order.findFirst({
       where: {
         OR: [
           ...(userId ? [{ userId }] : []),
           ...(userEmail ? [{ email: userEmail }] : []),
+          ...(cleanOrdNo ? [{ orderNumber: cleanOrdNo }, { orderNumber: orderNumberQuery }] : []),
         ],
-        ...(tpl ? { templateId: tpl.id } : {}),
-        type: { in: ['BUY', 'BUY_SOURCE'] },
         status: 'COMPLETED',
       },
       orderBy: { createdAt: 'desc' },

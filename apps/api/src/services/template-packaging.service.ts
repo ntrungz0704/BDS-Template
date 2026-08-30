@@ -178,6 +178,64 @@ export class TemplatePackagingService {
 
     const zip = new AdmZip();
 
+    // 0. Kiểm tra nếu đã có sẵn thư mục standalone-templates (3-in-1: HTML5 + PHP + Next.js)
+    let folderCode = 'bds-01';
+    const SLUG_TO_FOLDER: Record<string, string> = {
+      'luxury-gold': 'bds-01', 'minimal-white': 'bds-02', 'minimal-zen': 'bds-02',
+      'modern-corporate': 'bds-03', 'resort-paradise': 'bds-04', 'ocean-view': 'bds-04',
+      'urban-city': 'bds-05', 'smart-urban': 'bds-05', 'high-rise': 'bds-05',
+      'industrial-estate': 'bds-06', 'industrial-logistics': 'bds-06',
+      'villa-premium': 'bds-07', 'luxury-villa': 'bds-07', 'modern-villa': 'bds-07',
+      'eco-green': 'bds-08', 'eco-living': 'bds-08', 'green-eco': 'bds-08',
+      'classic-elegant': 'bds-09', 'classic-heritage': 'bds-09', 'heritage-classic': 'bds-09',
+      'investment-pro': 'bds-10', 'tech-hub': 'bds-10',
+      'agency-onepage': 'bds-11', 'suburban-family': 'bds-11',
+      'mega-developer': 'bds-12', 'listing-portal': 'bds-12', 'riverside-mansion': 'bds-12',
+      'auction-template': 'bds-13', 'auction-bds': 'bds-13', 'lake-sanctuary': 'bds-13',
+      'landplot-template': 'bds-14', 'land-plot': 'bds-14', 'mountain-retreat': 'bds-14',
+      'retail-podium': 'bds-15', 'retail-commercial': 'bds-15', 'commercial-plaza': 'bds-15',
+      'personal-agent': 'bds-16', 'golf-residences': 'bds-16',
+      'portal-listing': 'bds-17', 'vietnam-portal': 'bds-17',
+      'bds123-portal': 'bds-18', 'benthanh-portal': 'bds-18',
+      'nhadatso-density': 'bds-19', 'nhadatso-portal': 'bds-19',
+      'minhkhai-apartment': 'bds-20', 'minhkhai-luxury': 'bds-20',
+      'hanoi-rental': 'bds-21', 'chothue-hanoi': 'bds-21',
+      'happyland-resort': 'bds-22', 'zohotels-resort': 'bds-22',
+      'homeo-multithumb': 'bds-23', 'homeo-agency': 'bds-23',
+      'realtybuild-tech': 'bds-24', 'realtybuild-portal': 'bds-24',
+    };
+
+    if (SLUG_TO_FOLDER[slug]) {
+      folderCode = SLUG_TO_FOLDER[slug];
+    } else {
+      for (let i = 1; i <= 24; i++) {
+        const numStr = i < 10 ? `0${i}` : `${i}`;
+        if (slug.includes(`bds-${numStr}`) || slug.includes(`portal-${numStr}`) || slug === `bds-${i}`) {
+          folderCode = `bds-${numStr}`;
+          break;
+        }
+      }
+    }
+
+    const possibleStandaloneDirs = [
+      path.resolve(__dirname, '../../../standalone-templates', folderCode),
+      path.resolve(__dirname, '../../../../standalone-templates', folderCode),
+      path.resolve(process.cwd(), 'standalone-templates', folderCode),
+      path.resolve(process.cwd(), '../standalone-templates', folderCode),
+    ];
+    const standaloneDir = possibleStandaloneDirs.find((d) => fs.existsSync(d));
+
+    if (standaloneDir) {
+      zip.addLocalFolder(standaloneDir);
+      const zipBuffer = zip.toBuffer();
+      const downloadFileName = `PLATFORMBDS-${slug}-${orderNumber}.zip`;
+      logger.info(`[PackageService] Đã đóng gói từ standalone package ${folderCode} cho đơn ${orderNumber}`);
+      return {
+        buffer: zipBuffer,
+        fileName: downloadFileName,
+      };
+    }
+
     // 1. Tìm đường dẫn gốc của apps/website
     const possibleWebsiteDirs = [
       path.resolve(__dirname, '../../../website'),

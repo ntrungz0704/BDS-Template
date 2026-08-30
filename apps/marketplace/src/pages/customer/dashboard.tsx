@@ -20,7 +20,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onr
 export default function CustomerDashboard() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { user, orders, wishlists, isLoading, openAuthModal, logout, updateProfile, updatePassword, addToCart } = useAuth();
+  const { user, orders, wishlists, isLoading, openAuthModal, logout, updateProfile, updatePassword, addToCart, showToast } = useAuth();
   // Initialize activeTab from URL query if available
   const [activeTab, setActiveTab] = useState<'dashboard' | 'websites' | 'orders' | 'downloads' | 'wishlist' | 'settings'>('dashboard');
 
@@ -43,6 +43,39 @@ export default function CustomerDashboard() {
       undefined,
       { shallow: true }
     );
+  };
+
+  // Download ZIP state & handler
+  const [downloadingSlug, setDownloadingSlug] = useState<string | null>(null);
+
+  const handleDownloadZip = async (slug: string, orderNumber: string) => {
+    try {
+      setDownloadingSlug(slug);
+      showToast('Đang chuẩn bị gói mã nguồn ZIP Landing Page...', 'info');
+      const cleanOrdNo = orderNumber.replace(/\s+/g, '-');
+      const downloadUrl = `${API_URL}/api/marketplace/templates/${encodeURIComponent(slug)}/download?orderNumber=${encodeURIComponent(cleanOrdNo)}`;
+      
+      const res = await axios.get(downloadUrl, {
+        withCredentials: true,
+        responseType: 'blob',
+      });
+      
+      const blob = new Blob([res.data], { type: 'application/zip' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `PLATFORMBDS-${slug}-${cleanOrdNo}.zip`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      showToast('🎉 Tải xuống trọn bộ mã nguồn Landing Page thành công!', 'success');
+    } catch (err: any) {
+      console.error('Download error:', err);
+      showToast('Không thể tải file source code. Vui lòng liên hệ Admin để được hỗ trợ.', 'error');
+    } finally {
+      setDownloadingSlug(null);
+    }
   };
 
   // Payment proof modal states
@@ -612,8 +645,8 @@ export default function CustomerDashboard() {
               {activeTab === 'downloads' && (
                 <div className="space-y-6">
                   <div className="text-left">
-                    <h2 className="text-2xl md:text-[32px] font-bold text-slate-900 leading-[1.15]">Kho Tải File Source Code</h2>
-                    <p className="text-[14px] text-[#64748B] font-normal leading-[1.7] mt-1">Tải xuống trọn bộ mã nguồn (Next.js 15, Tailwind, Prisma) của các mẫu bạn đã sở hữu.</p>
+                    <h2 className="text-2xl md:text-[32px] font-bold text-slate-900 leading-[1.15]">Kho Tải File Source Code Landing Page</h2>
+                    <p className="text-[14px] text-[#64748B] font-normal leading-[1.7] mt-1">Tải xuống trọn bộ mã nguồn Landing Page (HTML5, CSS3, JavaScript, PHP & MySQL) của các mẫu bạn đã sở hữu.</p>
                   </div>
 
                   <div className="space-y-4">
@@ -622,34 +655,48 @@ export default function CustomerDashboard() {
                         Không có tệp tin tải xuống nào khả dụng. Vui lòng đặt mua hoặc thuê mẫu website và thanh toán để kích hoạt tải file ZIP.
                       </div>
                     ) : (
-                      orders.filter((o: any) => o.status === 'COMPLETED').map((ord: any) => (
-                        <div key={ord.id} className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:border-slate-300 transition-all flex flex-col md:flex-row justify-between items-start md:items-center text-slate-950 gap-4 text-left">
-                          <div className="space-y-1.5">
-                            <div className="flex items-center gap-2">
-                              <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                                MÃ NGUỒN ĐỘC LẬP
-                              </span>
-                              <span className="text-slate-400 text-xs font-mono font-bold">#{ord.orderNumber}</span>
+                      orders.filter((o: any) => o.status === 'COMPLETED').map((ord: any) => {
+                        const targetSlug = ord.template?.slug || ord.templateId || 'bds-01';
+                        const isDownloading = downloadingSlug === targetSlug;
+                        return (
+                          <div key={ord.id} className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:border-slate-300 transition-all flex flex-col md:flex-row justify-between items-start md:items-center text-slate-950 gap-4 text-left">
+                            <div className="space-y-1.5">
+                              <div className="flex items-center gap-2">
+                                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                                  MÃ NGUỒN LANDING PAGE
+                                </span>
+                                <span className="text-slate-400 text-xs font-mono font-bold">#{ord.orderNumber}</span>
+                              </div>
+                              <h4 className="text-base font-bold text-slate-900">
+                                {ord.template?.name || 'Mẫu Landing Page BĐS'} — Gói Source Code Độc Lập
+                              </h4>
+                              <p className="text-xs text-slate-500 font-medium">
+                                Định dạng: <span className="font-mono font-bold text-slate-700">ZIP</span> | Trọn bộ: <span className="font-bold text-slate-700">HTML5/CSS3/JS + PHP & MySQL + Next.js React</span>
+                              </p>
+                              <p className="text-[11px] text-blue-600 font-semibold">
+                                ✨ Mở file <code className="bg-blue-50 px-1 py-0.5 rounded text-blue-700">html/index.html</code> xem ngay hoặc upload hosting PHP có sẵn <code className="bg-blue-50 px-1 py-0.5 rounded text-blue-700">database.sql</code>.
+                              </p>
                             </div>
-                            <h4 className="text-base font-bold text-slate-900">
-                              {ord.template?.name || 'Mẫu Website BĐS'} — Gói Source Code Độc Lập
-                            </h4>
-                            <p className="text-xs text-slate-500 font-medium">
-                              Định dạng: <span className="font-mono font-bold text-slate-700">ZIP</span> | Công nghệ: <span className="font-bold text-slate-700">Next.js 15, React 19, Tailwind CSS</span>
-                            </p>
-                            <p className="text-[11px] text-blue-600 font-semibold">
-                              ✨ Kèm file <code className="bg-blue-50 px-1 py-0.5 rounded text-blue-700">website.config.ts</code> đổi chữ/hình trong 2 phút & file hướng dẫn <code className="bg-blue-50 px-1 py-0.5 rounded text-blue-700">HUONG_DAN_SUA_DOI.md</code> chi tiết.
-                            </p>
+                            <button 
+                              onClick={() => handleDownloadZip(targetSlug, ord.orderNumber)}
+                              disabled={isDownloading}
+                              className="h-[48px] bg-[#2563EB] hover:bg-[#1D4ED8] disabled:bg-blue-400 text-white text-xs font-bold uppercase tracking-wider px-6 rounded-xl flex items-center gap-2 transition-all shadow-md shrink-0 cursor-pointer"
+                            >
+                              {isDownloading ? (
+                                <>
+                                  <Loader2 className="w-4 h-4 text-white animate-spin" />
+                                  <span>Đang nén ZIP...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Download className="w-4 h-4 text-white" />
+                                  <span>Tải xuống ZIP</span>
+                                </>
+                              )}
+                            </button>
                           </div>
-                          <button 
-                            onClick={() => window.open(`${API_URL}/api/marketplace/templates/${ord.template?.slug || ord.templateId || 'luxury-gold'}/download`, '_blank')}
-                            className="h-[48px] bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold uppercase tracking-wider px-6 rounded-xl flex items-center gap-2 transition-all shadow-md shrink-0 cursor-pointer"
-                          >
-                            <Download className="w-4 h-4 text-white" />
-                            <span>Tải xuống ZIP</span>
-                          </button>
-                        </div>
-                      ))
+                        );
+                      })
                     )}
                   </div>
                 </div>

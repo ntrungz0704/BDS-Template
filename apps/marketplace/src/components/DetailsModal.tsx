@@ -829,12 +829,12 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
                   {techOpen && (
                     <div className="mt-3 space-y-1.5">
                       {[
-                        ['Framework', 'Next.js 15 + TypeScript'],
-                        ['Database', 'PostgreSQL + Prisma'],
-                        ['Styling', 'Tailwind CSS v3'],
-                        ['Hosting', 'VPS / Vercel / Docker'],
-                        ['Responsive', 'Mobile, Tablet, Desktop'],
-                        ['PageSpeed', '90+ / 100'],
+                        ['Định dạng', 'Landing Page BĐS Độc Lập'],
+                        ['Giao diện', 'HTML5, CSS3, JavaScript Thuần'],
+                        ['Backend & DB', 'PHP 8.x + MySQL Database'],
+                        ['Mã nguồn', 'Trọn bộ Full Source ZIP'],
+                        ['Hosting', 'cPanel / XAMPP / Vercel / GitHub'],
+                        ['Responsive', '100% Mobile, Tablet, Desktop'],
                       ].map(([k, v]) => (
                         <div key={k} className="flex justify-between text-[11px] py-1 border-b border-slate-50">
                           <span className="text-slate-400 font-semibold">{k}</span>
