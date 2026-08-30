@@ -657,15 +657,12 @@ export default function ProjectsManagerPage() {
     },
     staleTime: Infinity,
   });
-  const activeTenantId = domainData?.tenantId;
-  
   const { data, isLoading } = useQuery({
-    queryKey: ['projects', activeTenantId],
+    queryKey: ['projects'],
     queryFn: async () => {
       const res = await axios.get(`${API_URL}/api/cms/projects`, { withCredentials: true });
       return res.data.data;
     },
-    enabled: !!activeTenantId,
   });
 
   const [showModal, setShowModal] = useState(false);

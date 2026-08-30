@@ -289,16 +289,13 @@ export default function MediaLibraryPage() {
     },
     staleTime: Infinity,
   });
-  const activeTenantId = domainData?.tenantId;
-
   const { data: mediaData, isLoading } = useQuery({
-    queryKey: ['media', activeTenantId, selectedFolder],
+    queryKey: ['media', selectedFolder],
     queryFn: async () => {
       const params = selectedFolder ? `?folderId=${selectedFolder}` : '';
       const res = await axios.get(`${API_URL}/api/cms/media${params}`, { withCredentials: true });
       return res.data.data;
     },
-    enabled: !!activeTenantId,
   });
 
   const folders: MediaFolder[] = mediaData?.folders || [];

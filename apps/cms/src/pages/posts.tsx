@@ -392,15 +392,12 @@ export default function PostsManagerPage() {
     },
     staleTime: Infinity,
   });
-  const activeTenantId = domainData?.tenantId;
-
   const { data, isLoading } = useQuery({
-    queryKey: ['posts', activeTenantId],
+    queryKey: ['posts'],
     queryFn: async () => {
       const res = await axios.get(`${API_URL}/api/cms/posts`, { withCredentials: true });
       return res.data.data;
     },
-    enabled: !!activeTenantId,
   });
 
   const [showModal, setShowModal] = useState(false);

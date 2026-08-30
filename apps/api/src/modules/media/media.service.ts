@@ -28,69 +28,33 @@ export class MediaService {
     // Save buffer to temp file for worker to read
     await fs.promises.writeFile(tempFilePath, file.buffer);
 
-    // Create DB entry with PENDING status
-    // NOTE: Cast to any because processingStatus field was added to schema but
-    // prisma generate hasn't been run yet in dev — resolves after `prisma generate`
-    const asset = await prisma.mediaAsset.create({
-      data: {
-        tenantId,
-        folderId: folderId || null,
-        url: '', // Will be updated by worker
-        type: 'IMAGE',
-        size: file.size,
-        format: file.mimetype.split('/')[1] || 'unknown',
-        name: file.originalname,
-        alt: file.originalname.split('.')[0],
-        processingStatus: 'PENDING',
-      } as any,
-    });
+    try {
+      const processed = await processAndSaveImage(file.buffer, file.originalname, tenantId, options);
+      
+      const asset = await prisma.mediaAsset.create({
+        data: {
+          tenantId,
+          folderId: folderId || null,
+          url: processed.original.url,
+          thumbnailUrl: processed.thumbnail.url,
+          mediumUrl: processed.medium.url,
+          largeUrl: processed.large.url,
+          type: 'IMAGE',
+          size: processed.original.size,
+          format: processed.original.format,
+          width: processed.original.width,
+          height: processed.original.height,
+          name: file.originalname,
+          alt: file.originalname.split('.')[0],
+          processingStatus: 'COMPLETED',
+        } as any,
+      });
 
-    // Add Job to Queue
-    const jobResult = await imageProcessingQueue.add('process-image', {
-      tenantId,
-      mediaAssetId: asset.id,
-      originalFilePath: tempFilePath,
-      originalFileName: file.originalname,
-      options,
-    });
-
-    if (jobResult === null) {
-      // Redis is offline! Let's process the image synchronously right now!
-      try {
-        console.log(`[Media Service] Redis offline. Processing asset ${asset.id} synchronously...`);
-        const processed = await processAndSaveImage(file.buffer, file.originalname, tenantId, options);
-        
-        const finalAsset = await prisma.mediaAsset.update({
-          where: { id: asset.id },
-          data: {
-            url: processed.original.url,
-            thumbnailUrl: processed.thumbnail.url,
-            mediumUrl: processed.medium.url,
-            largeUrl: processed.large.url,
-            size: processed.original.size,
-            format: processed.original.format,
-            width: processed.original.width,
-            height: processed.original.height,
-            processingStatus: 'COMPLETED'
-          } as any
-        });
-
-        // Xóa file temp
-        if (fs.existsSync(tempFilePath)) {
-          fs.unlinkSync(tempFilePath);
-        }
-
-        return finalAsset;
-      } catch (syncErr) {
-        console.error('[Media Service] Sync processing failed:', syncErr);
-        await prisma.mediaAsset.update({
-          where: { id: asset.id },
-          data: { processingStatus: 'FAILED' } as any
-        });
-      }
+      return asset;
+    } catch (syncErr: any) {
+      console.error('[Media Service] Sync processing failed:', syncErr);
+      throw new Error(`Xử lý file thất bại: ${syncErr.message}`);
     }
-
-    return asset;
   }
 
   /**

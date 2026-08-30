@@ -536,11 +536,43 @@ export default function ThemeDesignerPage() {
   const [templateSlug, setTemplateSlug] = useState('luxury-gold');
 
   useEffect(() => {
+    const toValidHex = (val?: string, fallback: string = '#FFFFFF'): string => {
+      if (!val) return fallback;
+      const s = val.trim();
+      if (/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/.test(s)) return s;
+      const map: Record<string, string> = {
+        'bg-white': '#FFFFFF',
+        'bg-slate-900': '#0F172A',
+        'bg-slate-950': '#020617',
+        'bg-slate-50': '#F8FAFC',
+        'text-white': '#FFFFFF',
+        'text-slate-900': '#0F172A',
+        'text-slate-800': '#1E293B',
+        'text-slate-700': '#334155',
+        'text-slate-600': '#475569',
+        'text-slate-500': '#64748B',
+        'text-slate-400': '#94A3B8',
+      };
+      return map[s.toLowerCase()] || fallback;
+    };
+
     const fetchThemeAndData = async () => {
       try {
         const res = await axios.get(`${API_URL}/api/cms/builder/theme`, { withCredentials: true });
         if (res.data?.data) {
-          setTheme({ ...DEFAULT_THEME, ...res.data.data });
+          const raw = res.data.data;
+          setTheme({
+            ...DEFAULT_THEME,
+            ...raw,
+            primaryColor: toValidHex(raw.primaryColor, '#2563EB'),
+            secondaryColor: toValidHex(raw.secondaryColor, '#64748B'),
+            accentColor: toValidHex(raw.accentColor, '#F59E0B'),
+            backgroundColor: toValidHex(raw.backgroundColor, '#FFFFFF'),
+            surfaceColor: toValidHex(raw.surfaceColor, '#F8FAFC'),
+            textColor: toValidHex(raw.textColor, '#0F172A'),
+            textMutedColor: toValidHex(raw.textMutedColor, '#64748B'),
+            borderColor: toValidHex(raw.borderColor, '#E2E8F0'),
+          });
         }
         if (res.data?.templateSlug) {
           setTemplateSlug(res.data.templateSlug);

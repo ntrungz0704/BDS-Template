@@ -18,15 +18,35 @@ import dns from 'dns';
 
 // ─── Validation Schemas ───────────────────────────────────────────────────────
 
+const colorTransform = z.string().optional().transform((val) => {
+  if (!val) return val;
+  const s = val.trim();
+  if (/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/.test(s)) return s;
+  const map: Record<string, string> = {
+    'bg-white': '#FFFFFF',
+    'bg-slate-900': '#0F172A',
+    'bg-slate-950': '#020617',
+    'bg-slate-50': '#F8FAFC',
+    'text-white': '#FFFFFF',
+    'text-slate-900': '#0F172A',
+    'text-slate-800': '#1E293B',
+    'text-slate-700': '#334155',
+    'text-slate-600': '#475569',
+    'text-slate-500': '#64748B',
+    'text-slate-400': '#94A3B8',
+  };
+  return map[s.toLowerCase()] || '#2563EB';
+});
+
 const themeSchema = z.object({
-  primaryColor: z.string().regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/, 'Invalid hex color').optional(),
-  secondaryColor: z.string().regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/, 'Invalid hex color').optional(),
-  accentColor: z.string().regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/, 'Invalid hex color').optional(),
-  backgroundColor: z.string().regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/, 'Invalid hex color').optional(),
-  surfaceColor: z.string().regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/, 'Invalid hex color').optional(),
-  textColor: z.string().regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/, 'Invalid hex color').optional(),
-  textMutedColor: z.string().regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/, 'Invalid hex color').optional(),
-  borderColor: z.string().regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/, 'Invalid hex color').optional(),
+  primaryColor: colorTransform,
+  secondaryColor: colorTransform,
+  accentColor: colorTransform,
+  backgroundColor: colorTransform,
+  surfaceColor: colorTransform,
+  textColor: colorTransform,
+  textMutedColor: colorTransform,
+  borderColor: colorTransform,
   fontHeading: z.string().max(100).optional(),
   fontBody: z.string().max(100).optional(),
   fontSizeBase: z.string().max(10).optional(),

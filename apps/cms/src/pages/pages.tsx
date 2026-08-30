@@ -930,33 +930,66 @@ export default function PagesManagerPage() {
   const activeTenantId = domainData?.tenantId;
 
   const { data: fetchedPages, isLoading } = useQuery({
-    queryKey: ['cms_pages', activeTenantId],
+    queryKey: ['cms_pages'],
     queryFn: async () => {
       const res = await axios.get(`${API_URL}/api/cms/builder/pages`, { withCredentials: true });
       return res.data.data;
     },
-    enabled: !!activeTenantId,
   });
   
-  const TITLE_MAP: Record<string, string> = {
-    'home': 'Trang Chủ & Banner',
-    'projects': 'Dự Án Bất Động Sản',
-    'posts': 'Tin Tức / Thị Trường BĐS',
-    'contact': 'Liên Hệ & Bản Đồ Vị Trí',
-    'about': 'Giới Thiệu Doanh Nghiệp',
+  const TITLE_MAP: Record<string, { title: string; desc: string; iconBg: string; iconColor: string }> = {
+    'home': {
+      title: 'Trang Chủ & Banner',
+      desc: 'Banner chính, Dự án nổi bật, Giới thiệu, Đối tác, Form tư vấn & Đánh giá khách hàng',
+      iconBg: 'bg-blue-500/10 text-blue-600',
+      iconColor: 'text-blue-600'
+    },
+    'projects': {
+      title: 'Dự Án Bất Động Sản',
+      desc: 'Bộ lọc tìm kiếm thông minh, Danh mục căn hộ, Biệt thự, Shophouse & Bản đồ vị trí',
+      iconBg: 'bg-emerald-500/10 text-emerald-600',
+      iconColor: 'text-emerald-600'
+    },
+    'posts': {
+      title: 'Tin Tức / Blog BĐS',
+      desc: 'Tin thị trường, Phân tích đầu tư, Cẩm nang pháp lý & Báo cáo quy hoạch',
+      iconBg: 'bg-violet-500/10 text-violet-600',
+      iconColor: 'text-violet-600'
+    },
+    'about': {
+      title: 'Giới Thiệu Doanh Nghiệp',
+      desc: 'Hồ sơ năng lực, Tầm nhìn sứ mệnh, Đội ngũ chuyên viên & Giải thưởng uy tín',
+      iconBg: 'bg-amber-500/10 text-amber-600',
+      iconColor: 'text-amber-600'
+    },
+    'contact': {
+      title: 'Liên Hệ & Bản Đồ',
+      desc: 'Thông tin văn phòng, Hotline, Form gửi câu hỏi & Tích hợp Google Maps',
+      iconBg: 'bg-rose-500/10 text-rose-600',
+      iconColor: 'text-rose-600'
+    },
   };
 
-  const pages: SitePage[] = (fetchedPages || []).map((p: any) => ({
-    id: p.id,
-    slug: p.slug,
-    title: TITLE_MAP[p.slug] || p.title,
-    description: p.description || (p.slug === 'home' ? 'Trang chủ website chính' : p.slug === 'projects' ? 'Danh mục các dự án đang mở bán' : p.slug === 'posts' ? 'Tin tức & phân tích thị trường BĐS' : 'Thông tin liên hệ và form nhận tư vấn'),
-    isSystem: p.isSystem ?? true,
-    published: p.published ?? true,
-    sortOrder: p.sortOrder ?? 0,
-    sections: p._count?.sections ?? (typeof p.sections === 'number' ? p.sections : 1),
-  }));
+  const pages: SitePage[] = (fetchedPages || []).map((p: any) => {
+    const meta = TITLE_MAP[p.slug] || {
+      title: p.title,
+      desc: p.description || 'Trang nội dung website bất động sản',
+      iconBg: 'bg-slate-500/10 text-slate-600',
+      iconColor: 'text-slate-600'
+    };
+    return {
+      id: p.id,
+      slug: p.slug,
+      title: meta.title,
+      description: meta.desc,
+      isSystem: p.isSystem ?? true,
+      published: p.published ?? true,
+      sortOrder: p.sortOrder ?? 0,
+      sections: p._count?.sections ?? (typeof p.sections === 'number' ? p.sections : 1),
+    };
+  });
 
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [showModal, setShowModal] = useState(false);
   const [editingMetadataPage, setEditingMetadataPage] = useState<SitePage | null>(null);
   const [editingContentPage, setEditingContentPage] = useState<SitePage | null>(null);
@@ -1024,30 +1057,63 @@ export default function PagesManagerPage() {
 
   return (
     <CMSLayout
-      title="Quản Lý Trang Website"
+      title="Quản Lý Trang & Bố Cục"
       breadcrumbs={[
         { label: 'Dashboard', href: '/' },
-        { label: 'Quản lý Trang' },
-        ...(editingContentPage ? [{ label: `Nội dung: ${editingContentPage.title}` }] : [])
+        { label: 'Trang & Bố Cục' },
+        ...(editingContentPage ? [{ label: `Bố cục: ${editingContentPage.title}` }] : [])
       ]}
     >
       {editingContentPage ? (
         <PageSectionsEditor page={editingContentPage} onBack={() => setEditingContentPage(null)} />
       ) : (
         <>
-          <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
             <div>
-              <h1 className="text-xl font-black text-slate-900">Quản Lý Trang Website</h1>
-              <p className="text-sm text-slate-500 mt-0.5">
-                Quản lý các trang và bố cục hiển thị trên website bất động sản của bạn
+              <h1 className="text-xl font-black text-slate-900 flex items-center gap-2.5">
+                <LayoutTemplate className="w-6 h-6 text-blue-600" />
+                Quản Lý Trang & Bố Cục Website
+              </h1>
+              <p className="text-sm text-slate-500 mt-1">
+                Tùy biến trực quan thứ tự, nội dung các khu vực (Hero, Dự Án, Tin Tức, Form...) trên từng trang web
               </p>
             </div>
-            <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-sm font-bold text-white transition-all shadow-md shadow-blue-600/25">
-              <Plus className="w-4 h-4" />
-              Thêm Trang Mới
-            </button>
+
+            <div className="flex items-center gap-3">
+              {/* View toggle */}
+              <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    viewMode === 'grid' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                  title="Dạng thẻ trực quan (Khuyên dùng)"
+                >
+                  <Layers className="w-3.5 h-3.5" /> Dạng Thẻ
+                </button>
+                <button
+                  onClick={() => setViewMode('table')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    viewMode === 'table' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                  title="Dạng danh sách bảng"
+                >
+                  <FileText className="w-3.5 h-3.5" /> Dạng Bảng
+                </button>
+              </div>
+
+              <button
+                onClick={() => setShowModal(true)}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-sm font-bold text-white transition-all shadow-md shadow-blue-600/25 cursor-pointer"
+              >
+                <Plus className="w-4 h-4" />
+                Thêm Trang Mới
+              </button>
+            </div>
           </div>
 
+          {/* Stats Bar */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
             {[
               { label: 'Tổng Trang', value: pages.length, icon: <Layers className="w-4 h-4 text-blue-500" />, bg: 'bg-blue-50' },
@@ -1055,8 +1121,8 @@ export default function PagesManagerPage() {
               { label: 'Trang Chính', value: pages.filter((p) => p.isSystem).length, icon: <Settings className="w-4 h-4 text-indigo-500" />, bg: 'bg-indigo-50' },
               { label: 'Trang Tùy Chỉnh', value: pages.filter((p) => !p.isSystem).length, icon: <FileText className="w-4 h-4 text-amber-500" />, bg: 'bg-amber-50' },
             ].map((stat) => (
-              <div key={stat.label} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-xl ${stat.bg} flex items-center justify-center shrink-0`}>{stat.icon}</div>
+              <div key={stat.label} className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 flex items-center gap-3.5">
+                <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center shrink-0`}>{stat.icon}</div>
                 <div>
                   <div className="text-xl font-black text-slate-900">{stat.value}</div>
                   <div className="text-xs text-slate-500 font-medium">{stat.label}</div>
@@ -1065,91 +1131,170 @@ export default function PagesManagerPage() {
             ))}
           </div>
 
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-3.5 border-b border-slate-100 bg-slate-50/50">
-              <h3 className="text-sm font-bold text-slate-700">Danh Sách Trang</h3>
+          {/* Pages Presentation */}
+          {pages.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center justify-center py-20 px-4 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mb-4"><Layers className="w-7 h-7 text-slate-400" /></div>
+              <h3 className="text-base font-bold text-slate-700 mb-1">Chưa có trang nào</h3>
+              <p className="text-sm text-slate-500 mb-5 max-w-xs">Bắt đầu bằng cách thêm trang mới cho website của bạn.</p>
+              <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-sm font-bold text-white transition-all shadow-md shadow-blue-600/25">
+                <Plus className="w-4 h-4" /> Thêm Trang Đầu Tiên
+              </button>
             </div>
+          ) : viewMode === 'grid' ? (
+            /* ─── Modern Visual Cards Grid ────────────────────────── */
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+              {pages.map((page) => {
+                const meta = TITLE_MAP[page.slug] || {
+                  title: page.title,
+                  desc: page.description,
+                  iconBg: 'bg-slate-500/10 text-slate-600',
+                  iconColor: 'text-slate-600'
+                };
+                return (
+                  <div
+                    key={page.id}
+                    className="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md hover:border-blue-300 transition-all flex flex-col justify-between overflow-hidden group"
+                  >
+                    <div className="p-5">
+                      {/* Top Meta Bar */}
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 font-bold text-lg ${meta.iconBg}`}>
+                            {page.slug === 'home' ? '🏠' : page.slug === 'projects' ? '🏢' : page.slug === 'posts' ? '📰' : page.slug === 'about' ? '🌟' : '📍'}
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-slate-900 text-base leading-snug group-hover:text-blue-600 transition-colors">
+                              {page.title}
+                            </h3>
+                            <div className="flex items-center gap-2 mt-1">
+                              <code className="text-[11px] font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md">
+                                /{page.slug === 'home' ? '' : page.slug}
+                              </code>
+                              {page.isSystem ? (
+                                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100">
+                                  Hệ Thống
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">
+                                  Tùy Chỉnh
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
 
-            {pages.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
-                <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mb-4"><Layers className="w-7 h-7 text-slate-400" /></div>
-                <h3 className="text-base font-bold text-slate-700 mb-1">Chưa có trang nào</h3>
-                <p className="text-sm text-slate-500 mb-5 max-w-xs">Bắt đầu bằng cách thêm trang mới cho website của bạn.</p>
-                <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-sm font-bold text-white transition-all shadow-md shadow-blue-600/25">
-                  <Plus className="w-4 h-4" /> Thêm Trang Đầu Tiên
-                </button>
-              </div>
-            ) : (
+                        <PublishedBadge published={page.published} />
+                      </div>
+
+                      {/* Description */}
+                      <p className="text-xs text-slate-500 leading-relaxed min-h-[36px] line-clamp-2 mb-4">
+                        {page.description}
+                      </p>
+
+                      {/* Sections metric pill */}
+                      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-100 text-xs font-semibold text-slate-700 mb-2">
+                        <Layers className="w-3.5 h-3.5 text-blue-500" />
+                        <span>Bao gồm <strong className="text-slate-900 font-bold">{page.sections}</strong> khu vực bố cục</span>
+                      </div>
+                    </div>
+
+                    {/* Card Actions Footer */}
+                    <div className="px-5 py-3.5 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between gap-2">
+                      <button
+                        onClick={() => setEditingContentPage(page)}
+                        className="flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all shadow-sm hover:shadow shadow-blue-600/20 cursor-pointer"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                        Biên Tập Bố Cục
+                      </button>
+
+                      <button
+                        onClick={() => setEditingMetadataPage(page)}
+                        className="p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors"
+                        title="Chỉnh sửa SEO & Cài Đặt Trang"
+                      >
+                        <Settings className="w-4 h-4" />
+                      </button>
+
+                      <a
+                        href={domainData?.customDomain ? `https://${domainData.customDomain}/${page.slug === 'home' ? '' : page.slug}` : `https://${domainData?.subdomain || 'hoanggialand'}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}/${page.slug === 'home' ? '' : page.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors"
+                        title="Xem trang thực tế"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </a>
+
+                      {!page.isSystem && (
+                        <button
+                          onClick={() => handleDelete(page)}
+                          disabled={deletingId === page.id}
+                          className="p-2.5 rounded-xl border border-red-200 bg-white hover:bg-red-50 text-red-500 hover:text-red-700 transition-colors"
+                          title="Xóa trang tùy chỉnh này"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            /* ─── Compact Table View ────────────────────────────── */
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
                   <thead>
-                    <tr className="border-b border-slate-100">
-                      <th className="px-5 py-3 text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider">Trang</th>
-                      <th className="px-5 py-3 text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider">Đường Dẫn</th>
-                      <th className="px-5 py-3 text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider hidden sm:table-cell">Trạng Thái</th>
-                      <th className="px-5 py-3 text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider hidden md:table-cell">Nội Dung</th>
-                      <th className="px-5 py-3 text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider hidden lg:table-cell">Phân Loại</th>
-                      <th className="px-5 py-3 text-right text-[11px] font-bold text-slate-500 uppercase tracking-wider">Hành Động</th>
+                    <tr className="border-b border-slate-100 bg-slate-50/50">
+                      <th className="px-5 py-3.5 text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider">Trang</th>
+                      <th className="px-5 py-3.5 text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider">Đường Dẫn</th>
+                      <th className="px-5 py-3.5 text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider">Trạng Thái</th>
+                      <th className="px-5 py-3.5 text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider">Khu Vực</th>
+                      <th className="px-5 py-3.5 text-right text-[11px] font-bold text-slate-500 uppercase tracking-wider">Thao Tác</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
                     {pages.map((page) => (
-                      <tr key={page.id} className="group hover:bg-slate-50/70 transition-colors cursor-pointer" onClick={() => setEditingContentPage(page)}>
-                        <td className="px-5 py-3.5">
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center shrink-0">
-                              <FileText className="w-3.5 h-3.5 text-slate-500" />
-                            </div>
-                            <div>
-                              <div className="font-bold text-slate-900 text-sm">{page.title}</div>
-                              {page.description && <div className="text-xs text-slate-400 truncate max-w-[220px]">{page.description}</div>}
-                            </div>
-                          </div>
+                      <tr key={page.id} className="hover:bg-slate-50/80 transition-colors">
+                        <td className="px-5 py-4">
+                          <div className="font-bold text-slate-900 text-sm">{page.title}</div>
+                          <div className="text-xs text-slate-400 mt-0.5">{page.description}</div>
                         </td>
-                        <td className="px-5 py-3.5">
-                          <code className="text-xs font-mono text-indigo-600 font-bold bg-indigo-50 px-2 py-1 rounded-md">/{page.slug}</code>
+                        <td className="px-5 py-4">
+                          <code className="text-xs font-mono font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded-md">/{page.slug}</code>
                         </td>
-                        <td className="px-5 py-3.5 hidden sm:table-cell"><PublishedBadge published={page.published} /></td>
-                        <td className="px-5 py-3.5 hidden md:table-cell">
-                          <span className="text-sm font-bold text-slate-800">{page.sections}</span> <span className="text-xs text-slate-500 ml-1">khu vực</span>
+                        <td className="px-5 py-4">
+                          <PublishedBadge published={page.published} />
                         </td>
-                        <td className="px-5 py-3.5 hidden lg:table-cell">
-                          {page.isSystem ? <SystemBadge /> : <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-50 text-slate-600 border border-slate-200">Tùy Chỉnh</span>}
+                        <td className="px-5 py-4">
+                          <span className="text-sm font-bold text-slate-800">{page.sections}</span> <span className="text-xs text-slate-500">khu vực</span>
                         </td>
-                        <td className="px-5 py-3.5">
-                          <div className="flex items-center justify-end gap-1.5" onClick={e => e.stopPropagation()}>
+                        <td className="px-5 py-4 text-right">
+                          <div className="inline-flex items-center gap-2">
                             <button
                               onClick={() => setEditingContentPage(page)}
-                              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition-colors shadow-2xs"
-                              title="Chỉnh sửa nội dung các khu vực trong trang"
+                              className="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold transition-colors cursor-pointer"
                             >
-                              <Layers className="w-3.5 h-3.5" /> Biên Tập
+                              <Pencil className="w-3.5 h-3.5 inline mr-1" /> Biên Tập
                             </button>
                             <button
                               onClick={() => setEditingMetadataPage(page)}
-                              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors shadow-2xs"
-                              title="Chỉnh sửa Metadata"
+                              className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors"
                             >
-                              <Pencil className="w-3.5 h-3.5" /> Meta
+                              SEO
                             </button>
                             <a
                               href={domainData?.customDomain ? `https://${domainData.customDomain}/${page.slug === 'home' ? '' : page.slug}` : `https://${domainData?.subdomain || 'hoanggialand'}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}/${page.slug === 'home' ? '' : page.slug}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              title="Xem trang thực tế trên Website"
-                              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors"
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+                              title="Xem trực tiếp"
                             >
-                              <Eye className="w-3.5 h-3.5" /> Xem
+                              <Eye className="w-4 h-4" />
                             </a>
-                            {page.isSystem ? (
-                              <button disabled title="Trang hệ thống không thể xóa" className="p-1.5 rounded-lg text-slate-200 cursor-not-allowed">
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            ) : (
-                              <button onClick={() => handleDelete(page)} disabled={deletingId === page.id} title="Xóa trang" className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-40">
-                                {deletingId === page.id ? <span className="w-3.5 h-3.5 border-2 border-slate-300 border-t-red-400 rounded-full animate-spin block" /> : <Trash2 className="w-3.5 h-3.5" />}
-                              </button>
-                            )}
                           </div>
                         </td>
                       </tr>
@@ -1157,14 +1302,8 @@ export default function PagesManagerPage() {
                   </tbody>
                 </table>
               </div>
-            )}
-            {pages.length > 0 && (
-              <div className="px-5 py-3 border-t border-slate-100 bg-slate-50/30 flex items-center justify-between">
-                <span className="text-xs text-slate-400">{pages.length} trang · {pages.filter((p) => p.published).length} đã xuất bản</span>
-                <span className="text-xs text-slate-400">Trang hệ thống được bảo vệ và không thể xóa</span>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </>
       )}
 
