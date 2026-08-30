@@ -222,33 +222,38 @@ QUY TẮC TRẢ LỜI BẮT BUỘC (PHONG CÁCH NHẮN TIN TỰ NHIÊN NHƯ NGƯ
       let aiReply = '';
 
       if (activeApiKey) {
-        try {
-          const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${activeApiKey}`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                contents: [
-                  {
-                    role: 'user',
-                    parts: [{ text: `${systemPrompt}\n\nKhách hàng hỏi: "${question}"` }],
+        const candidateModels = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-2.5-flash-lite'];
+        for (const modelName of candidateModels) {
+          try {
+            const response = await fetch(
+              `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${activeApiKey}`,
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  contents: [
+                    {
+                      role: 'user',
+                      parts: [{ text: `${systemPrompt}\n\nKhách hàng hỏi: "${question}"` }],
+                    },
+                  ],
+                  generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 2048,
+                    thinkingConfig: { thinkingBudget: 0 },
                   },
-                ],
-                generationConfig: {
-                  temperature: 0.7,
-                  maxOutputTokens: 600,
-                },
-              }),
-            }
-          );
+                }),
+              }
+            );
 
-          if (response.ok) {
-            const data: any = await response.json();
-            aiReply = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            if (response.ok) {
+              const data: any = await response.json();
+              aiReply = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+              if (aiReply) break;
+            }
+          } catch (e: any) {
+            logger.warn(`[AiController] Gemini fetch error with ${modelName}: ` + e.message);
           }
-        } catch (e: any) {
-          logger.warn('[AiController] Gemini fetch error: ' + e.message);
         }
       }
 
