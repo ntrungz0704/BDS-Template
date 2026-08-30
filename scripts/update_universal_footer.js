@@ -1,4 +1,16 @@
-'use client';
+﻿const fs = require('fs');
+const path = require('path');
+
+const targetDirs = [
+  './apps/marketplace/src/components/demo',
+  './apps/website/src/components/templates'
+];
+
+for (const dir of targetDirs) {
+  const fullPath = path.join(dir, 'UniversalTemplateFooter.tsx');
+  if (!fs.existsSync(fullPath)) continue;
+
+  const content = `'use client';
 import React, { useState } from 'react';
 import { Send, Phone, ArrowUp, CheckCircle, MapPin, Mail, Clock, MessageSquare, MessageCircle, X } from 'lucide-react';
 import { MAX_W } from './design-system';
@@ -36,7 +48,7 @@ export default function UniversalTemplateFooter({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const phone = hotlinePhone || company?.phone || '0919 006 030';
-  const phoneDigits = phone.replace(/\D/g, '') || '0919006030';
+  const phoneDigits = phone.replace(/\\D/g, '') || '0919006030';
   const zalo = zaloPhone || company?.zalo || phoneDigits;
   const email = company?.email || 'admin@templatesbds.com';
   const address = company?.address || '180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội';
@@ -68,7 +80,7 @@ export default function UniversalTemplateFooter({
     setIsSubmitting(true);
     try {
       const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
-      await fetch(`${API_URL}/api/marketplace/contact`, {
+      await fetch(\`\${API_URL}/api/marketplace/contact\`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -159,7 +171,7 @@ export default function UniversalTemplateFooter({
 
       {/* ── 1. BLUE NEWSLETTER STRIP (100% Full Width) ── */}
       <div className="w-full bg-[#1E60B8] py-6 px-4 text-white">
-        <div className={`${MAX_W} mx-auto flex flex-col md:flex-row justify-between items-center gap-4`}>
+        <div className={\`\${MAX_W} mx-auto flex flex-col md:flex-row justify-between items-center gap-4\`}>
           <div>
             <h3 className="text-sm md:text-base font-black">Đăng ký nhận thông tin bảng giá & ưu đãi từ {brandName}</h3>
             <p className="text-xs text-blue-100">Chúng tôi sẽ gửi bạn những thông tin bất động sản và mẫu website mới nhất</p>
@@ -191,7 +203,7 @@ export default function UniversalTemplateFooter({
 
       {/* ── 2. 4-COLUMN FOOTER WITH TEMPLATESBDS ADMIN INFO ── */}
       <div className="w-full bg-[#07132B] text-slate-300 text-xs py-12 px-4 border-b border-slate-800">
-        <div className={`${MAX_W} mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10`}>
+        <div className={\`\${MAX_W} mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10\`}>
           
           {/* CỘT 1: THƯƠNG HIỆU & LIÊN HỆ ADMIN (md:col-span-5) */}
           <div className="md:col-span-5 space-y-4">
@@ -212,7 +224,7 @@ export default function UniversalTemplateFooter({
               </div>
               <div className="flex items-center gap-2">
                 <Phone size={13} className="text-blue-400 shrink-0" />
-                <span>Hotline 1: <a href={`tel:${phoneDigits}`} className="text-white font-bold font-mono hover:text-blue-400 transition">{phone}</a></span>
+                <span>Hotline 1: <a href={\`tel:\${phoneDigits}\`} className="text-white font-bold font-mono hover:text-blue-400 transition">{phone}</a></span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone size={13} className="text-emerald-400 shrink-0" />
@@ -220,7 +232,7 @@ export default function UniversalTemplateFooter({
               </div>
               <div className="flex items-center gap-2">
                 <Mail size={13} className="text-blue-400 shrink-0" />
-                <span>Email: <a href={`mailto:${email}`} className="text-white hover:text-blue-400 transition font-medium">{email}</a></span>
+                <span>Email: <a href={\`mailto:\${email}\`} className="text-white hover:text-blue-400 transition font-medium">{email}</a></span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-pink-400 shrink-0">⏰</span>
@@ -231,10 +243,10 @@ export default function UniversalTemplateFooter({
             {/* 4 Social Icons */}
             <div className="flex items-center gap-2.5 pt-2">
               <a
-                href={`https://zalo.me/${zalo}`}
+                href={\`https://zalo.me/\${zalo}\`}
                 target="_blank"
                 rel="noreferrer"
-                title={`Chat Zalo CSKH (${phone})`}
+                title={\`Chat Zalo CSKH (\${phone})\`}
                 className="w-10 h-10 rounded-2xl bg-[#0068FF] hover:bg-[#0052cc] text-white flex items-center justify-center font-black text-[11px] tracking-tight shadow-md hover:scale-105 transition"
               >
                 ZALO
@@ -345,7 +357,7 @@ export default function UniversalTemplateFooter({
 
       {/* ── 3. COPYRIGHT STRIP (100% Full Width — NO WHITE GAPS) ── */}
       <div className="w-full bg-[#050C1B] py-4 px-4 text-slate-400 text-[11px]">
-        <div className={`${MAX_W} mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-center sm:text-left`}>
+        <div className={\`\${MAX_W} mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-center sm:text-left\`}>
           <div>
             © 2026 Bản quyền thuộc về <strong className="text-white font-black">{brandName}</strong> — Nền tảng phân phối & Thiết kế Website Bất Động Sản Chuyên Nghiệp.
           </div>
@@ -359,7 +371,7 @@ export default function UniversalTemplateFooter({
       <div className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-200/80 p-2.5 flex items-center gap-2 shadow-[0_-4px_25px_rgba(0,0,0,0.15)]">
         {/* Nút Gọi Ngay (Xanh dương #0066FF) */}
         <a
-          href={`tel:${phoneDigits}`}
+          href={\`tel:\${phoneDigits}\`}
           className="flex-1 py-3 px-3 rounded-xl bg-[#0066FF] hover:bg-[#0052cc] active:scale-95 text-white font-black text-xs uppercase flex items-center justify-center gap-2 shadow-md transition-all text-center tracking-wider"
           title="Gọi Hotline Tư Vấn"
         >
@@ -369,7 +381,7 @@ export default function UniversalTemplateFooter({
 
         {/* Nút Chat Zalo (Xanh lá #008848) */}
         <a
-          href={`https://zalo.me/${zalo}`}
+          href={\`https://zalo.me/\${zalo}\`}
           target="_blank"
           rel="noreferrer"
           className="flex-1 py-3 px-3 rounded-xl bg-[#008848] hover:bg-[#007038] active:scale-95 text-white font-black text-xs uppercase flex items-center justify-center gap-2 shadow-md transition-all text-center tracking-wider"
@@ -384,20 +396,20 @@ export default function UniversalTemplateFooter({
       <div className="hidden sm:flex fixed bottom-6 right-6 z-40 flex-col items-center gap-3 select-none">
         {/* Zalo Button */}
         <a
-          href={`https://zalo.me/${zalo}`}
+          href={\`https://zalo.me/\${zalo}\`}
           target="_blank"
           rel="noopener noreferrer"
           className="w-12 h-12 rounded-full bg-[#0068FF] hover:bg-[#0052cc] text-white shadow-xl shadow-blue-600/40 flex items-center justify-center font-black text-xs border-2 border-white/80 hover:scale-110 active:scale-95 transition-all"
-          title={`Chat Zalo CSKH (${phone})`}
+          title={\`Chat Zalo CSKH (\${phone})\`}
         >
           ZALO
         </a>
 
         {/* Hotline Call Button */}
         <a
-          href={`tel:${phoneDigits}`}
+          href={\`tel:\${phoneDigits}\`}
           className="w-12 h-12 rounded-full bg-[#E11D48] hover:bg-[#be123c] text-white shadow-xl shadow-red-600/40 flex items-center justify-center border-2 border-white/80 hover:scale-110 active:scale-95 transition-all relative"
-          title={`Gọi Hotline (${phone})`}
+          title={\`Gọi Hotline (\${phone})\`}
         >
           <span className="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-40 -z-10"></span>
           <Phone className="w-5 h-5 fill-current" />
@@ -414,4 +426,9 @@ export default function UniversalTemplateFooter({
       </div>
     </footer>
   );
+}
+`;
+
+  fs.writeFileSync(fullPath, content, 'utf8');
+  console.log('Updated UniversalTemplateFooter in ' + dir);
 }

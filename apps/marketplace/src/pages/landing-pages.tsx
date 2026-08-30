@@ -11,7 +11,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/router';
-import { LANDING_PAGE_TEMPLATES } from '../data/templatesData';
+import { LANDING_TEMPLATES } from '../data/templatesData';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -19,7 +19,7 @@ export default function LandingPagesPage() {
   const router = useRouter();
   const { addToCart, showToast } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [landingTemplates, setLandingTemplates] = useState<any[]>(LANDING_PAGE_TEMPLATES);
+  const [landingTemplates, setLandingTemplates] = useState<any[]>(LANDING_TEMPLATES);
   const [isCatalogLoading, setIsCatalogLoading] = useState(false);
   const [catalogError, setCatalogError] = useState<string | null>(null);
 
@@ -34,7 +34,7 @@ export default function LandingPagesPage() {
         if (!response.data?.success || !Array.isArray(response.data?.data)) {
           throw new Error('Danh mục không hợp lệ.');
         }
-        const canonicalSlugs = new Set(LANDING_PAGE_TEMPLATES.map(l => l.slug));
+        const canonicalSlugs = new Set(LANDING_TEMPLATES.map(l => l.slug));
         const canonicalOnly = response.data.data.filter((tpl: any) => 
           canonicalSlugs.has(tpl.slug) || tpl.slug.startsWith('lp-')
         );
@@ -42,7 +42,7 @@ export default function LandingPagesPage() {
           setLandingTemplates(canonicalOnly);
         }
       } catch {
-        if (active) setLandingTemplates(LANDING_PAGE_TEMPLATES);
+        if (active) setLandingTemplates(LANDING_TEMPLATES);
       }
     };
     loadCatalog();
