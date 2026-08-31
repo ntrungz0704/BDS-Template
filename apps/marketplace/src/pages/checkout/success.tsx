@@ -214,7 +214,7 @@ export default function CheckoutSuccessPage() {
                   <span>Vào Quản Trị CMS Ngay</span>
                 </a>
                 <a
-                  href={typeof window !== 'undefined' && window.location.hostname === 'localhost' ? `http://localhost:3000/demo/${orderData.template?.slug || 'luxury-gold'}` : `https://${tenantSlug || orderData.subdomain || 'site'}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`}
+                  href={typeof window !== 'undefined' && window.location.hostname === 'localhost' ? `http://localhost:3000/site/${tenantSlug || orderData.subdomain || 'luxury-gold'}` : `https://${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}/site/${tenantSlug || orderData.subdomain || 'luxury-gold'}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="py-4 px-6 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl text-sm flex items-center justify-center gap-2 shadow-lg transition-all"

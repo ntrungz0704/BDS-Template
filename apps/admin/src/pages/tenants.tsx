@@ -449,7 +449,7 @@ export default function AdminTenants() {
 
             <button
               onClick={() => {
-                const text = `THÔNG TIN BÀN GIAO WEBSITE BĐS:\n- Địa chỉ Website: https://${createdCredentials.subdomain}.${PLATFORM_DOMAIN}\n- Trang quản trị CMS: ${process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}\n- Email đăng nhập: ${createdCredentials.email}\n- Mật khẩu tạm thời: ${createdCredentials.password}`;
+                const text = `THÔNG TIN BÀN GIAO WEBSITE BĐS:\n- Địa chỉ Website: https://${PLATFORM_DOMAIN}/site/${createdCredentials.subdomain}\n- Trang quản trị CMS: ${process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}\n- Email đăng nhập: ${createdCredentials.email}\n- Mật khẩu tạm thời: ${createdCredentials.password}`;
                 navigator.clipboard.writeText(text);
                 alert('Đã sao chép thông tin bàn giao vào Clipboard!');
                 setShowResultModal(false);
