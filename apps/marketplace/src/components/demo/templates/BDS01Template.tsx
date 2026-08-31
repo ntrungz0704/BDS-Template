@@ -1476,7 +1476,7 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
           </div>
 
           <div className="text-xs text-slate-500 border-b border-slate-200 pb-2 flex justify-between items-center">
-            <span>Hiển thị tất cả <strong>{allPropertyList.length}</strong> bất động sản phù hợp</span>
+            <span>Hiển thị tất cả <strong>{filteredPropertyList.length}</strong> bất động sản phù hợp</span>
             {(filterCity !== 'all' || filterPriceRange !== 'all') && (
               <button
                 onClick={() => { setFilterCity('all'); setFilterPriceRange('all'); setSearchKeyword(''); }}
@@ -1489,7 +1489,7 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
             <div className="lg:col-span-8">
-              {allPropertyList.length === 0 ? (
+              {filteredPropertyList.length === 0 ? (
                 <div className="bg-white p-12 rounded-sm text-center border border-slate-200 shadow-xs">
                   <p className="text-sm font-bold text-slate-600">Không tìm thấy bất động sản phù hợp với tiêu chí lọc.</p>
                   <button
@@ -1501,7 +1501,7 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-                  {allPropertyList.map(renderCard)}
+                  {filteredPropertyList.map(renderCard)}
                 </div>
               )}
             </div>

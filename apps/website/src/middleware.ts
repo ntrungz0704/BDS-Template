@@ -71,14 +71,15 @@ export async function middleware(request: NextRequest) {
     } else {
       const knownSuffixes = [
         `.${PLATFORM_DOMAIN}`,
+        '.templates.aireviewbds.com',
         '.aireviewbds.com',
         '.templatesbds.com',
         '.vercel.app',
-      ];
+      ].sort((a, b) => b.length - a.length);
       
       for (const suffix of knownSuffixes) {
         if (cleanHost.endsWith(suffix) && cleanHost !== suffix.slice(1)) {
-          const sub = cleanHost.slice(0, -suffix.length).split('.').pop();
+          const sub = cleanHost.slice(0, -suffix.length).split('.').filter(Boolean).pop();
           if (sub && sub !== 'www' && !RESERVED_SLUGS.includes(sub)) {
             tenantSlug = sub;
             break;
