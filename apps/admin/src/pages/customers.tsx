@@ -510,7 +510,7 @@ export default function CustomersPage() {
                   </div>
 
                   <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs font-mono space-y-2 select-all">
-                    <div><strong>Website:</strong> {createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${PLATFORM_DOMAIN}`}</div>
+                    <div><strong>Website:</strong> {createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${PLATFORM_DOMAIN}/?tenant=${createdCredentials.subdomain}`}</div>
                     <div><strong>Quản trị CMS:</strong> {createdCredentials.cmsUrl || CMS_APP_URL}</div>
                     <div><strong>Email:</strong> {createdCredentials.email}</div>
                     <div><strong>Mật khẩu tạm:</strong> {createdCredentials.password}</div>
@@ -519,7 +519,7 @@ export default function CustomersPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => {
-                        const info = `THÔNG TIN BÀN GIAO WEBSITE:\n- Website: ${createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${PLATFORM_DOMAIN}`}\n- Quản trị CMS: ${createdCredentials.cmsUrl || CMS_APP_URL}\n- Email: ${createdCredentials.email}\n- Mật khẩu: ${createdCredentials.password}`;
+                        const info = `THÔNG TIN BÀN GIAO WEBSITE:\n- Website: ${createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${PLATFORM_DOMAIN}/?tenant=${createdCredentials.subdomain}`}\n- Quản trị CMS: ${createdCredentials.cmsUrl || CMS_APP_URL}\n- Email: ${createdCredentials.email}\n- Mật khẩu: ${createdCredentials.password}`;
                         handleCopyText(info);
                       }}
                       className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all"

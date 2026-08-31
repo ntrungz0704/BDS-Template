@@ -619,7 +619,7 @@ function ProjectCard({
           Sửa
         </button>
         <a
-          href={`https://${domainSlug || 'hoanggialand'}.${(process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com')}`}
+          href={`https://${domainSlug || 'hoanggialand'}.${(process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com')}/?tenant=${domainSlug || 'hoanggialand'}`}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
