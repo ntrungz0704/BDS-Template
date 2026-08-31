@@ -366,17 +366,14 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
   }
 
   try {
-    // Truy vấn Refresh Token
     const dbToken = await prisma.refreshToken.findUnique({
       where: { token: refreshTokenString },
       include: { user: true },
     });
 
-    // PHÁT HIỆN TẤN CÔNG GIẢ MẠO REPLAY ATTACK (Refresh Token đã bị thu hồi trước đó)
     if (!dbToken || dbToken.revokedAt) {
       if (dbToken) {
         logger.error(`CẢNH BÁO BẢO MẬT: Phát hiện Replay Attack sử dụng Refresh Token cũ của User ${dbToken.userId}`);
-        // Xóa sạch mọi session đang hoạt động của user này để bảo vệ tài khoản
         await prisma.refreshToken.updateMany({
           where: { userId: dbToken.userId },
           data: { revokedAt: new Date() },
@@ -402,7 +399,6 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
       });
     }
 
-    // Kiểm tra hết hạn Refresh Token
     if (dbToken.expiresAt < new Date()) {
       return res.status(401).json({
         success: false,
@@ -413,12 +409,10 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
       });
     }
 
-    // THỰC HIỆN XOAY VÒNG TOKEN (Refresh Token Rotation)
     const newRefreshTokenString = generateRefreshToken();
     const newExpiresAt = new Date();
     newExpiresAt.setDate(newExpiresAt.getDate() + REFRESH_TOKEN_EXPIRY_DAYS);
 
-    // Cập nhật trạng thái thu hồi của token cũ và tạo mới token mới trong transaction
     await prisma.$transaction([
       prisma.refreshToken.update({
         where: { id: dbToken.id },
@@ -438,7 +432,6 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
       }),
     ]);
 
-    // Tạo Access Token mới
     const payload = {
       userId: dbToken.user.id,
       email: dbToken.user.email,
@@ -447,26 +440,33 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
     };
     const newAccessToken = generateAccessToken(payload);
 
-    // Gửi trả cookie mới đè cookie cũ
-    const isProdRefresh = process.env.NODE_ENV === 'production';
-    const sameSiteModeRefresh = isProdRefresh ? ('none' as const) : ('lax' as const);
-    const cookieDomainRefresh = process.env.COOKIE_DOMAIN || undefined;
+    const isProd = process.env.NODE_ENV === 'production';
+    const sameSiteMode = isProd ? ('none' as const) : ('lax' as const);
+    const cookieDomain = process.env.COOKIE_DOMAIN || undefined;
 
     res.cookie('access_token', newAccessToken, {
       httpOnly: true,
-      secure: isProdRefresh,
-      sameSite: sameSiteModeRefresh,
-      domain: cookieDomainRefresh,
+      secure: isProd,
+      sameSite: sameSiteMode,
+      domain: cookieDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.cookie('refresh_token', newRefreshTokenString, {
       httpOnly: true,
-      secure: isProdRefresh,
-      sameSite: sameSiteModeRefresh,
-      domain: cookieDomainRefresh,
+      secure: isProd,
+      sameSite: sameSiteMode,
+      domain: cookieDomain,
       path: '/api/auth',
       maxAge: REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000,
+    });
+
+    const newCsrfToken = crypto.randomBytes(32).toString('hex');
+    res.cookie('csrf_token', newCsrfToken, {
+      secure: isProd,
+      sameSite: sameSiteMode,
+      domain: cookieDomain,
+      maxAge: 12 * 60 * 60 * 1000,
     });
 
     res.status(200).json({ success: true, data: { refreshed: true } });
@@ -480,14 +480,12 @@ export async function logout(req: Request, res: Response, next: NextFunction) {
 
   try {
     if (refreshTokenString) {
-      // Thu hồi Refresh Token trong DB
       await prisma.refreshToken.update({
         where: { token: refreshTokenString },
         data: { revokedAt: new Date() },
-      }).catch(() => {}); // Bỏ qua lỗi nếu không tìm thấy bản ghi
+      }).catch(() => {});
     }
 
-    // Clear with the exact domain/path attributes used when cookies were set.
     const isProd = process.env.NODE_ENV === 'production';
     const cookieDomain = process.env.COOKIE_DOMAIN || undefined;
     const cookieOptions = {
