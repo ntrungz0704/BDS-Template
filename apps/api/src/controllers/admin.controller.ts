@@ -234,6 +234,7 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
     let tenantId: string | null = null;
     let isNewUser = false;
     let tempPassword = '';
+    let cmsPassword = '';
     let completedOrder: any = null;
 
     // Atomically claim approval before provisioning
@@ -247,6 +248,7 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
         version: { increment: 1 },
       },
     });
+
     if (claim.count !== 1 && !isUnprovisionedCompleted) {
       return res.status(409).json({
         success: false,
@@ -281,13 +283,29 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
         .replace(/^-|-$/g, '');
     };
 
+    const extractTplCode = (tplIdOrSlug: string) => {
+      const s = (tplIdOrSlug || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (s.startsWith('bds') || s.startsWith('lp')) return s.slice(0, 5);
+      return s.slice(0, 6) || 'bds01';
+    };
+
+    const phoneSuffix = (order.phone || '').replace(/\D/g, '').slice(-4) || Date.now().toString().slice(-4);
+    const tplCode = extractTplCode(order.templateId || (order as any).template?.slug || 'bds01');
+
     let candidateSubdomain = order.subdomain;
     if (!candidateSubdomain || candidateSubdomain.trim() === '') {
       const brandSlug = slugifyBrand(order.fullName || '');
-      candidateSubdomain = brandSlug ? `${brandSlug}-land` : `bds-${Date.now().toString().slice(-6)}`;
+      candidateSubdomain = brandSlug ? `${brandSlug}-${tplCode}-${phoneSuffix}` : `bds-${tplCode}-${phoneSuffix}`;
+    } else {
+      const cleanCustom = slugifyBrand(candidateSubdomain);
+      if (!cleanCustom.includes(tplCode)) {
+        candidateSubdomain = `${cleanCustom}-${tplCode}-${phoneSuffix}`;
+      } else {
+        candidateSubdomain = `${cleanCustom}-${phoneSuffix}`;
+      }
     }
 
-    const cleanSubdomain = candidateSubdomain.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 30);
+    const cleanSubdomain = candidateSubdomain.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 45);
     
     let finalSubdomain = cleanSubdomain;
     const existingSubdomain = await prisma.tenant.findUnique({ where: { slug: finalSubdomain } });
@@ -295,10 +313,6 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
       const crypto = require('crypto');
       finalSubdomain = `${cleanSubdomain}-${crypto.randomBytes(2).toString('hex').toLowerCase()}`;
     }
-
-    // Existing accounts keep their current password. A credential is returned
-    // only when provisioning actually creates a new account.
-    let cmsPassword = '';
 
     const existingUser = await prisma.user.findUnique({
       where: { email: order.email },
