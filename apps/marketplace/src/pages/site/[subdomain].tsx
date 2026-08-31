@@ -168,64 +168,103 @@ export default function TenantDirectSitePage() {
       </Head>
 
       <div className={`bg-slate-950 flex flex-col font-sans ${isFullscreen ? 'fixed inset-0 z-[99998]' : 'min-h-screen'}`}>
-        {/* Top Info Bar */}
-        <div className="bg-slate-900 border-b border-slate-800 px-4 py-2 flex items-center justify-between text-xs text-slate-300">
+        {/* Unified Sleek Top Control Bar */}
+        <header className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 px-4 py-2 flex items-center justify-between text-xs text-slate-300 shadow-lg">
           <div className="flex items-center gap-3">
-            <span className="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded font-mono font-bold text-[11px] border border-emerald-500/30 flex items-center gap-1">
+            <span className="bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-full font-mono font-bold text-[11px] border border-emerald-500/30 flex items-center gap-1.5 shadow-xs">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>Website Khách Hàng: {displayBrandName}</span>
+              <span>Website: {displayBrandName}</span>
             </span>
-            <span className="font-mono text-slate-400 hidden sm:inline">
-              Tên miền: <strong className="text-white">{rawSubdomain}</strong>
-            </span>
-            <span className="text-slate-500 hidden sm:inline">|</span>
-            <span className="text-slate-400">
+            <span className="text-slate-500 hidden md:inline">|</span>
+            <span className="text-slate-400 hidden md:inline">
               Mẫu: <strong className="text-blue-400">{template.name}</strong>
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* Viewport Switcher */}
+          <div className="flex items-center bg-slate-950 border border-slate-800 rounded-xl p-1 gap-1">
+            <button
+              onClick={() => setViewport('desktop')}
+              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                viewport === 'desktop'
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-850'
+              }`}
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <span className="hidden sm:inline">Desktop</span>
+            </button>
+            <button
+              onClick={() => setViewport('tablet')}
+              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                viewport === 'tablet'
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-850'
+              }`}
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              <span className="hidden sm:inline">Tablet</span>
+            </button>
+            <button
+              onClick={() => setViewport('mobile')}
+              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                viewport === 'mobile'
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-850'
+              }`}
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              <span className="hidden sm:inline">Mobile</span>
+            </button>
+          </div>
+
+          {/* Action Links */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsFullscreen(!isFullscreen)}
+              className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-all"
+              title={isFullscreen ? 'Thu nhỏ' : 'Toàn màn hình'}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {isFullscreen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9L4 4m0 0l5 0m-5 0l0 5m6 6l5 5m0 0l-5 0m5 0l0-5" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                )}
+              </svg>
+            </button>
             <a
               href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all text-xs"
+              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all text-xs shadow-md shadow-blue-600/20"
             >
               Vào CMS Quản Trị
             </a>
-            <Link
-              href="/templates"
-              className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-all text-xs"
-            >
-              Xem Kho Mẫu
-            </Link>
           </div>
-        </div>
-
-        {/* Viewport Toolbar */}
-        <PreviewToolbar
-          template={template}
-          viewport={viewport}
-          onViewportChange={setViewport}
-          isFullscreen={isFullscreen}
-          onFullscreenToggle={() => setIsFullscreen(!isFullscreen)}
-        />
+        </header>
 
         {/* Main Viewport Container */}
-        <div
-          className={`flex-1 overflow-y-auto bg-slate-950 flex justify-center ${
+        <main
+          className={`flex-1 bg-slate-950 flex justify-center overflow-y-auto ${
             viewport === 'desktop'
-              ? 'items-start'
-              : 'items-center py-6 px-3 sm:px-8'
+              ? 'p-0 items-start'
+              : 'p-4 sm:p-8 items-center'
           }`}
         >
           <div
-            className="transition-all duration-300 ease-in-out bg-slate-950 overflow-hidden platformbds-template w-full min-h-screen flex flex-col justify-between"
+            className="transition-all duration-300 ease-in-out bg-white overflow-x-hidden platformbds-template w-full shadow-2xl"
             style={getViewportStyle(viewport)}
           >
             <DemoRenderer template={template} viewport={viewport} initialPage={pageSlug} />
           </div>
-        </div>
+        </main>
       </div>
     </>
   );
