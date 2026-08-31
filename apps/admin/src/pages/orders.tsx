@@ -108,6 +108,7 @@ export default function AdminOrders() {
         cmsPassword: orderCreds?.cmsPassword || orderCreds?.password || '',
         subdomain: orderCreds?.subdomain || orderCreds?.tenantSlug || raw?.subdomain,
         tenantSlug: orderCreds?.subdomain || orderCreds?.tenantSlug || raw?.subdomain,
+        templateSlug: selectedOrder?.template?.slug || selectedOrder?.templateId || 'luxury-gold',
       };
 
       setApprovalResult(creds);
@@ -602,12 +603,12 @@ export default function AdminOrders() {
                         {getTenantUrl(selectedOrder.subdomain || selectedOrder.tenantId || 'website')}
                       </a>
                       <a
-                        href={`https://website.aireviewbds.com/?subdomain=${selectedOrder.subdomain || selectedOrder.tenantId || 'website'}`}
+                        href={`https://${PLATFORM_DOMAIN}/demo/${selectedOrder.template?.slug || selectedOrder.templateId || 'luxury-gold'}`}
                         target="_blank"
                         rel="noreferrer"
                         className="text-[11px] text-emerald-600 font-sans font-bold hover:underline block mt-0.5"
                       >
-                        👉 Xem trực tiếp tức thì (Instant Demo)
+                        👉 Xem trực tiếp mẫu giao diện tức thì
                       </a>
                     </div>
                   </div>
@@ -786,12 +787,12 @@ export default function AdminOrders() {
                   {getTenantUrl(approvalResult.subdomain || approvalResult.tenantSlug || 'website')}
                 </a>
                 <a
-                  href={`https://website.aireviewbds.com/?subdomain=${approvalResult.subdomain || approvalResult.tenantSlug || 'website'}`}
+                  href={`https://${PLATFORM_DOMAIN}/demo/${approvalResult.templateSlug || 'luxury-gold'}`}
                   target="_blank"
                   rel="noreferrer"
                   className="text-[11px] text-emerald-600 font-sans font-bold hover:underline block mt-0.5"
                 >
-                  👉 Xem trực tiếp tức thì (Instant Demo)
+                  👉 Xem trực tiếp mẫu giao diện tức thì
                 </a>
               </div>
 
