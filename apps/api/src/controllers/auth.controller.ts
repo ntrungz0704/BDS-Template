@@ -323,6 +323,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
           tenantId: activeTenantId,
           tenant: tenantInfo,
         },
+        csrfToken,
       },
     });
   } catch (error) {
@@ -457,7 +458,7 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
       maxAge: 12 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({ success: true, data: { refreshed: true } });
+    res.status(200).json({ success: true, data: { refreshed: true, csrfToken: newCsrfToken } });
   } catch (error) {
     next(error);
   }

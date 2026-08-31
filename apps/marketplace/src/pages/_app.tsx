@@ -14,14 +14,24 @@ export default function App({ Component, pageProps, router }: AppProps) {
   const isDemoPage = router.pathname.startsWith('/demo');
   React.useEffect(() => {
     axios.defaults.withCredentials = true;
-    const interceptor = axios.interceptors.request.use((config) => {
-      const csrfToken = document.cookie.match(new RegExp('(^| )csrf_token=([^;]+)'))?.[2];
+    const reqInterceptor = axios.interceptors.request.use((config) => {
+      const csrfToken = (localStorage.getItem('csrf_token') || '');
       if (csrfToken) {
         config.headers['x-csrf-token'] = decodeURIComponent(csrfToken);
       }
       return config;
     });
-    return () => axios.interceptors.request.eject(interceptor);
+    const resInterceptor = axios.interceptors.response.use((response) => {
+      const csrfToken = response.data?.data?.csrfToken;
+      if (csrfToken) {
+        localStorage.setItem('csrf_token', csrfToken);
+      }
+      return response;
+    });
+    return () => {
+      axios.interceptors.request.eject(reqInterceptor);
+      axios.interceptors.response.eject(resInterceptor);
+    };
   }, []);
 
   React.useEffect(() => {

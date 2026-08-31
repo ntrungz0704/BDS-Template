@@ -328,10 +328,7 @@ export default function CMSDashboard() {
 
   const applyUpdateMutation = useMutation({
     mutationFn: async () => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
+      const csrfToken = localStorage.getItem('csrf_token') || '';
 
       const res = await axios.post(
         `${API_URL}/api/cms/builder/upgrade/apply`,
@@ -354,10 +351,7 @@ export default function CMSDashboard() {
 
   const rollbackUpdateMutation = useMutation({
     mutationFn: async () => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
+      const csrfToken = localStorage.getItem('csrf_token') || '';
 
       const res = await axios.post(
         `${API_URL}/api/cms/builder/upgrade/rollback`,

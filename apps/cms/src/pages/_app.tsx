@@ -3,6 +3,15 @@ import type { AppProps } from 'next/app';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import axios from 'axios';
+import Head from 'next/head';
+
+// ─── CSRF helpers: use localStorage for cross-domain CSRF tokens ─────────────
+const getCsrfToken = (): string | null => {
+  try { return typeof window !== 'undefined' ? localStorage.getItem('csrf_token') : null; } catch { return null; }
+};
+const saveCsrfToken = (token: string) => {
+  try { if (typeof window !== 'undefined') localStorage.setItem('csrf_token', token); } catch { /* ignore */ }
+};
 
 // ─── Global Axios: Auto Token Refresh + 401 handler ──────────────────────────
 if (typeof window !== 'undefined') {
@@ -11,24 +20,52 @@ if (typeof window !== 'undefined') {
   let isRefreshing = false;
   let refreshQueue: Array<(token: boolean) => void> = [];
 
-  // Cookie authentication is HttpOnly; JavaScript only mirrors the CSRF token.
+  // Request interceptor: attach CSRF token from localStorage
   axios.interceptors.request.use((config) => {
-    const match = document.cookie.match(new RegExp('(^| )csrf_token=([^;]+)'));
-    if (match) {
-      config.headers['x-csrf-token'] = match[2];
+    const csrfToken = getCsrfToken();
+    if (csrfToken) {
+      config.headers['x-csrf-token'] = csrfToken;
     }
     return config;
   });
 
-  // Global 401 handler — auto-refresh token, then redirect if refresh fails
+  // Response interceptor: capture CSRF tokens + auto-refresh on 401 + CSRF recovery on 403
   axios.interceptors.response.use(
-    (response) => response,
+    (response) => {
+      // Capture CSRF token from login/refresh response body
+      const csrfToken = response.data?.data?.csrfToken;
+      if (csrfToken) {
+        saveCsrfToken(csrfToken);
+      }
+      return response;
+    },
     async (error) => {
       const originalRequest = error.config;
       const status = error?.response?.status;
       const errorCode = error?.response?.data?.error?.code;
 
-      // Nếu 401 và chưa retry và không phải đang gọi /refresh hay /login
+      // CSRF error recovery
+      if (
+        status === 403 &&
+        errorCode === 'CSRF_ERROR' &&
+        !originalRequest._csrfRetried
+      ) {
+        originalRequest._csrfRetried = true;
+        try {
+          const refreshRes = await axios.post(`${API_URL}/api/auth/refresh`, {}, { withCredentials: true });
+          const newCsrfToken = refreshRes.data?.data?.csrfToken;
+          if (newCsrfToken) {
+            saveCsrfToken(newCsrfToken);
+            originalRequest.headers['x-csrf-token'] = newCsrfToken;
+          }
+          return axios(originalRequest);
+        } catch {
+          window.location.href = '/login';
+          return Promise.reject(error);
+        }
+      }
+
+      // 401 auto-refresh
       if (
         status === 401 &&
         !originalRequest._retry &&
@@ -41,7 +78,6 @@ if (typeof window !== 'undefined') {
         }
 
         if (isRefreshing) {
-          // Đang refresh — xếp hàng request này lại
           return new Promise((resolve, reject) => {
             refreshQueue.push((success: boolean) => {
               if (success) {
@@ -57,15 +93,16 @@ if (typeof window !== 'undefined') {
         isRefreshing = true;
 
         try {
-          // Thử refresh token
-          await axios.post(`${API_URL}/api/auth/refresh`, {}, { withCredentials: true });
-          // Refresh thành công — retry tất cả requests đang đợi
+          const refreshRes = await axios.post(`${API_URL}/api/auth/refresh`, {}, { withCredentials: true });
+          const newCsrfToken = refreshRes.data?.data?.csrfToken;
+          if (newCsrfToken) {
+            saveCsrfToken(newCsrfToken);
+          }
           refreshQueue.forEach(cb => cb(true));
           refreshQueue = [];
           isRefreshing = false;
           return axios(originalRequest);
         } catch (refreshError) {
-          // Refresh thất bại — redirect về login
           refreshQueue.forEach(cb => cb(false));
           refreshQueue = [];
           isRefreshing = false;
@@ -85,12 +122,10 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       retry: (failureCount, error: any) => {
-        // Không retry khi bị 401 hoặc 403
         const status = error?.response?.status;
         if (status === 401 || status === 403) return false;
         return failureCount < 1;
       },
-      // Không throw error ra UI — để component tự handle qua isError
       throwOnError: false,
     },
     mutations: {
@@ -127,7 +162,6 @@ if (typeof window !== 'undefined') {
     (event) => {
       const reason = event.reason;
       const status = reason?.response?.status;
-      // Suppress 401, 403, and Axios errors from triggering Next.js dev overlay
       if (status === 401 || status === 403 || reason?.isAxiosError) {
         event.preventDefault();
         event.stopImmediatePropagation();
@@ -141,8 +175,6 @@ if (typeof window !== 'undefined') {
     true
   );
 }
-
-import Head from 'next/head';
 
 export default function App({ Component, pageProps }: AppProps) {
   React.useEffect(() => {
@@ -170,4 +202,3 @@ export default function App({ Component, pageProps }: AppProps) {
     </QueryClientProvider>
   );
 }
-

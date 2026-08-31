@@ -53,18 +53,43 @@ if (typeof window !== 'undefined') {
     true
   );
 
-  // Request interceptor: đính kèm CSRF token từ cookie vào header
+  // Helper: get CSRF token from localStorage (cross-domain safe)
+  const getCsrfToken = (): string | null => {
+    try {
+      return localStorage.getItem('csrf_token');
+    } catch {
+      return null;
+    }
+  };
+
+  // Helper: save CSRF token to localStorage
+  const saveCsrfToken = (token: string) => {
+    try {
+      localStorage.setItem('csrf_token', token);
+    } catch {
+      // ignore
+    }
+  };
+
+  // Request interceptor: attach CSRF token from localStorage
   axios.interceptors.request.use((config) => {
-    const match = document.cookie.match(new RegExp('(^| )csrf_token=([^;]+)'));
-    if (match) {
-      config.headers['x-csrf-token'] = match[2];
+    const csrfToken = getCsrfToken();
+    if (csrfToken) {
+      config.headers['x-csrf-token'] = csrfToken;
     }
     return config;
   });
 
-  // Response interceptor: tự động recovery khi CSRF token hết hạn hoặc thiếu
+  // Response interceptor: capture csrfToken from responses & auto-recovery on CSRF error
   axios.interceptors.response.use(
-    (response) => response,
+    (response) => {
+      // Capture CSRF token from login/refresh response body
+      const csrfToken = response.data?.data?.csrfToken;
+      if (csrfToken) {
+        saveCsrfToken(csrfToken);
+      }
+      return response;
+    },
     async (error) => {
       const originalRequest = error.config;
       if (
@@ -74,12 +99,12 @@ if (typeof window !== 'undefined') {
       ) {
         originalRequest._csrfRetried = true;
         try {
-          // Gọi /api/auth/me để API server set lại cookie csrf_token mới
-          await axios.get(`${API_URL}/api/auth/me`, { withCredentials: true });
-          // Đọc lại csrf token mới từ cookie
-          const match = document.cookie.match(new RegExp('(^| )csrf_token=([^;]+)'));
-          if (match) {
-            originalRequest.headers['x-csrf-token'] = match[2];
+          // Call refresh to get a new CSRF token in response body
+          const refreshRes = await axios.post(`${API_URL}/api/auth/refresh`, {}, { withCredentials: true });
+          const newCsrfToken = refreshRes.data?.data?.csrfToken;
+          if (newCsrfToken) {
+            saveCsrfToken(newCsrfToken);
+            originalRequest.headers['x-csrf-token'] = newCsrfToken;
           }
           return axios(originalRequest);
         } catch {

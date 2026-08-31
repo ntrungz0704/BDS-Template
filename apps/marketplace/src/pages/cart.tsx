@@ -82,7 +82,7 @@ export default function CartPage() {
   const createOrderMutation = useMutation({
     mutationFn: async (orderPayload: any) => {
       const csrfToken = typeof document !== 'undefined'
-        ? document.cookie.match(new RegExp('(^| )csrf_token=([^;]+)'))?.[2]
+        ? (localStorage.getItem('csrf_token') || '')
         : null;
       const res = await axios.post(`${API_URL}/api/marketplace/orders`, orderPayload, {
         withCredentials: true,

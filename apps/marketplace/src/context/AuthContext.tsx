@@ -270,6 +270,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(loggedUser);
         localStorage.setItem('platformbds_user_v3', JSON.stringify(loggedUser));
 
+        // Capture CSRF token from login response body (cross-domain safe)
+        const csrfToken = res.data?.data?.csrfToken;
+        if (csrfToken) {
+          localStorage.setItem('csrf_token', csrfToken);
+        }
+
         // Tự động đồng bộ lịch sử chat của khách vãng lai nếu có
         try {
           const guestSid = typeof window !== 'undefined' ? localStorage.getItem('AI_GUEST_SESSION_ID') : null;
@@ -317,7 +323,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (data: { fullName: string; email: string; phone?: string; password: string }): Promise<boolean> => {
     try {
-      const csrfToken = typeof document !== 'undefined' ? document.cookie.match(new RegExp('(^| )csrf_token=([^;]+)'))?.[2] : null;
+      const csrfToken = typeof document !== 'undefined' ? (localStorage.getItem('csrf_token') || '') : null;
       const res = await axios.post(`${API_URL}/api/auth/register`, data, {
         timeout: 10000,
         withCredentials: true,

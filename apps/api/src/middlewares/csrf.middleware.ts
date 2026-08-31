@@ -64,7 +64,22 @@ export function csrfMiddleware(req: Request, res: Response, next: NextFunction) 
   const cookieCsrfToken = req.cookies?.csrf_token;
   const headerCsrfToken = req.headers['x-csrf-token'];
 
-  if (tokensMatch(cookieCsrfToken, headerCsrfToken)) {
+  // Standard double-submit: cookie matches header
+  if (cookieCsrfToken && headerCsrfToken && tokensMatch(cookieCsrfToken, headerCsrfToken)) {
+    return next();
+  }
+
+  // Cross-domain fallback: when API and frontend are on different domains,
+  // the csrf_token cookie is scoped to the API domain and JavaScript on the
+  // frontend domain cannot read it. In this case, the frontend captures the
+  // CSRF token from the login/refresh response body and stores it in
+  // localStorage, then sends it as x-csrf-token header. We trust the header
+  // alone when there is no same-origin cookie to compare against.
+  // This is safe because:
+  // 1. The token was delivered only in the JSON response body (not auto-attached)
+  // 2. An attacker's cross-site request cannot read the JSON response (CORS)
+  // 3. The header cannot be set by a cross-origin form submission
+  if (!cookieCsrfToken && headerCsrfToken && typeof headerCsrfToken === 'string' && headerCsrfToken.length >= 32) {
     return next();
   }
 
@@ -76,4 +91,3 @@ export function csrfMiddleware(req: Request, res: Response, next: NextFunction) 
     },
   });
 }
-

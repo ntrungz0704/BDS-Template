@@ -63,10 +63,7 @@ export default function AdminDashboard() {
   // Approve Order Mutation
   const approveMutation = useMutation({
     mutationFn: async ({ id, version }: { id: string; version: number }) => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
+      const csrfToken = localStorage.getItem('csrf_token') || '';
 
       const res = await axios.put(
         `${API_URL}/api/admin/orders/${id}/approve`,
@@ -95,10 +92,7 @@ export default function AdminDashboard() {
   // Reject Order Mutation
   const rejectMutation = useMutation({
     mutationFn: async ({ id, version, notes }: { id: string; version: number; notes: string }) => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
+      const csrfToken = localStorage.getItem('csrf_token') || '';
 
       const res = await axios.put(
         `${API_URL}/api/admin/orders/${id}/reject`,
@@ -125,10 +119,7 @@ export default function AdminDashboard() {
   // Toggle Tenant Status Mutation
   const updateTenantStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
+      const csrfToken = localStorage.getItem('csrf_token') || '';
 
       const res = await axios.put(
         `${API_URL}/api/admin/tenants/${id}/status`,
@@ -151,10 +142,7 @@ export default function AdminDashboard() {
   // Create Tenant Manually Mutation
   const createTenantMutation = useMutation({
     mutationFn: async (data: any) => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
+      const csrfToken = localStorage.getItem('csrf_token') || '';
 
       const res = await axios.post(
         `${API_URL}/api/admin/tenants`,
