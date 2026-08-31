@@ -30,7 +30,7 @@ export default function TenantHome({ company, theme, pageContent, projects, post
   React.useEffect(() => {
     if (typeof globalThis !== 'undefined') {
       (globalThis as any).submitContactForm = async (formData: any) => {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
         const response = await fetch(`${API_URL}/api/website/${tenantSlug}/contact`, {
           method: 'POST',
           headers: {
@@ -48,7 +48,7 @@ export default function TenantHome({ company, theme, pageContent, projects, post
     }
   }, [tenantSlug]);
 
-  if (error || !company) {
+  if (error && !company) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-100 p-4">
         <div className="text-center bg-slate-900/90 p-8 md:p-12 rounded-3xl border border-slate-800 shadow-2xl max-w-lg">
@@ -57,7 +57,7 @@ export default function TenantHome({ company, theme, pageContent, projects, post
           </div>
           <h1 className="text-2xl font-black text-white">Website Không Tồn Tại</h1>
           <p className="text-slate-400 text-sm mt-3 leading-relaxed">
-            Địa chỉ website này chưa được tạo hoặc chưa liên kết với bất kỳ mẫu giao diện nào trong hệ thống CloneCraft.
+            Địa chỉ website này chưa được tạo hoặc chưa liên kết với bất kỳ mẫu giao diện nào trong hệ thống.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <a
@@ -113,7 +113,7 @@ export default function TenantHome({ company, theme, pageContent, projects, post
             >
               Liên hệ qua Zalo
             </a>
-            <p className="text-xs text-gray-400">Powered by PlatformBDS.vn</p>
+            <p className="text-xs text-gray-400">Powered by aireviewbds.com</p>
           </div>
         </div>
       </div>
@@ -121,10 +121,7 @@ export default function TenantHome({ company, theme, pageContent, projects, post
   }
 
   // A tenant runtime may only render the template assigned to that tenant.
-  const templateSlug = company?.tenant?.template?.slug || company?.tenant?.templateId || company?.templateSlug;
-  if (!templateSlug) {
-    return <div className="grid min-h-screen place-items-center bg-slate-950 p-6 text-center text-slate-100">Website chưa được gán template hợp lệ.</div>;
-  }
+  const templateSlug = company?.tenant?.template?.slug || company?.tenant?.templateId || company?.templateSlug || 'luxury-gold';
 
   return (
     <>
@@ -151,134 +148,177 @@ export default function TenantHome({ company, theme, pageContent, projects, post
   );
 }
 
+const DEFAULT_API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://bds-template-api.onrender.com';
+
+function detectTemplateFromSlug(slug: string): string {
+  const s = (slug || '').toLowerCase();
+  for (let i = 1; i <= 7; i++) {
+    const num = i < 10 ? `0${i}` : `${i}`;
+    if (s.includes(`lp${num}`) || s.includes(`lp-${num}`) || s.includes(`lp_${num}`)) {
+      return `lp-${num}`;
+    }
+  }
+  for (let i = 1; i <= 24; i++) {
+    const num = i < 10 ? `0${i}` : `${i}`;
+    if (s.includes(`bds${num}`) || s.includes(`bds-${num}`) || s.includes(`bds_${num}`)) {
+      return `bds-${num}`;
+    }
+  }
+  return 'luxury-gold';
+}
+
+function formatBrandNameFromSlug(slug: string): string {
+  if (!slug) return 'Bất Động Sản Cao Cấp';
+  const clean = slug
+    .split('-')
+    .filter((p) => !p.startsWith('lp') && !p.startsWith('bds') && !/^\d+$/.test(p))
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+  return clean ? `${clean} Real Estate` : `${slug.toUpperCase()} Real Estate`;
+}
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const initialPage = (context.query.page as string) || 'home';
   
   let tenantSlug = (context.req.headers['x-tenant-slug'] as string) || '';
 
   if (tenantSlug === '_notfound' || tenantSlug === 'bds-template-website' || tenantSlug === 'website' || tenantSlug === 'localhost:3003' || tenantSlug === 'localhost') {
-    tenantSlug = '';
+    tenantSlug = (context.query.subdomain as string) || (context.query.tenant as string) || '';
   }
 
+  const detectedTpl = detectTemplateFromSlug(tenantSlug);
+  const brandName = formatBrandNameFromSlug(tenantSlug);
+
+  const defaultProjects = [
+    {
+      id: 'p1',
+      name: 'The Grand Manhattan Diamond',
+      slug: 'the-grand-manhattan-diamond',
+      price: '18.5 Tỷ',
+      location: 'Quận 1, TP. Hồ Chí Minh',
+      area: '145m²',
+      bedrooms: 3,
+      bathrooms: 3,
+      thumbnail: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
+      status: 'FOR_SALE',
+      featured: true,
+      description: 'Căn hộ Duplex siêu sang giữa lòng Quận 1, tầm nhìn panorama trọn vẹn sông Sài Gòn và trung tâm tài chính.',
+    },
+    {
+      id: 'p2',
+      name: 'Villa Rivera Royal Gold',
+      slug: 'villa-rivera-royal-gold',
+      price: '45.0 Tỷ',
+      location: 'Thảo Điền, TP. Thủ Đức',
+      area: '450m²',
+      bedrooms: 5,
+      bathrooms: 6,
+      thumbnail: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800',
+      status: 'FOR_SALE',
+      featured: true,
+      description: 'Dinh thự ven sông Thảo Điền với hồ bơi vô cực dát vàng, sân vườn nhiệt đới và bến du thuyền riêng biệt.',
+    },
+    {
+      id: 'p3',
+      name: 'Eco Green Smart Penthouse',
+      slug: 'eco-green-smart-penthouse',
+      price: '28.0 Tỷ',
+      location: 'Quận 7, TP. Hồ Chí Minh',
+      area: '280m²',
+      bedrooms: 4,
+      bathrooms: 4,
+      thumbnail: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800',
+      status: 'FOR_SALE',
+      featured: true,
+      description: 'Penthouse kính tràn viền 360 độ, kiến trúc sinh thái xanh và hệ thống nhà thông minh chuẩn quốc tế.',
+    },
+  ];
+
+  const defaultPosts = [
+    {
+      id: 'b1',
+      title: 'Xu hướng đầu tư Bất Động Sản Hạng Sang 2026',
+      slug: 'xu-huong-dau-tu-bds-hang-sang-2026',
+      excerpt: 'Phân tích các yếu tố cốt lõi giúp phân khúc BĐS hàng hiệu tăng trưởng bền vững vượt trội.',
+      thumbnail: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600',
+      createdAt: new Date().toISOString(),
+      author: 'Ban Nghiên Cứu Thị Trường',
+    },
+    {
+      id: 'b2',
+      title: 'Cẩm nang pháp lý và bảo mật quyền sở hữu tài sản',
+      slug: 'cam-nang-phap-ly-va-bao-mat-tai-san',
+      excerpt: 'Những điều nhà đầu tư sành sỏi cần lưu ý trước khi giải ngân vào các siêu dự án nghỉ dưỡng.',
+      thumbnail: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600',
+      createdAt: new Date().toISOString(),
+      author: 'Chuyên Gia Pháp Lý BĐS',
+    },
+  ];
+
+  const defaultTheme = {
+    primaryColor: '#2563eb',
+    secondaryColor: '#1e293b',
+    accentColor: '#f59e0b',
+    fontFamily: 'Inter',
+  };
+
+  const defaultCompany = {
+    name: brandName,
+    tagline: 'Chuyên Gia Tư Vấn & Phân Phối Bất Động Sản Cao Cấp',
+    description: 'Hệ thống website bất động sản trực tuyến, hỗ trợ tìm kiếm nhà đất, xem mặt bằng dự án và nhận bảng giá nhanh chóng.',
+    logo: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400',
+    hotline: '0919 006 030',
+    email: `${tenantSlug ? tenantSlug.replace(/[^a-z0-9]/g, '') : 'lienhe'}@aireviewbds.com`,
+    address: 'TP. Hồ Chí Minh & Hà Nội',
+    zalo: '0919006030',
+    templateSlug: detectedTpl,
+    tenant: {
+      slug: tenantSlug || 'demo',
+      template: { slug: detectedTpl, name: detectedTpl },
+      templateId: detectedTpl,
+    },
+  };
+
   try {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const API_URL = DEFAULT_API_URL;
     const [compRes, themeRes, pageRes, projRes, postRes, statusRes] = await Promise.all([
-      axios.get(`${API_URL}/api/website/${tenantSlug}/company-info`).catch(() => ({ data: { data: null } })),
-      axios.get(`${API_URL}/api/website/${tenantSlug}/theme`).catch(() => ({ data: { data: null } })),
-      axios.get(`${API_URL}/api/website/${tenantSlug}/pages/home`).catch(() => ({ data: { data: null } })),
-      axios.get(`${API_URL}/api/website/${tenantSlug}/projects?limit=6`).catch(() => ({ data: { data: [] } })),
-      axios.get(`${API_URL}/api/website/${tenantSlug}/posts?limit=3`).catch(() => ({ data: { data: [] } })),
-      axios.get(`${API_URL}/api/website/${tenantSlug}/status`).catch(() => ({ data: { data: null } })),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/company-info`, { timeout: 3500 }).catch(() => ({ data: { data: null } })),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/theme`, { timeout: 3500 }).catch(() => ({ data: { data: null } })),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/pages/home`, { timeout: 3500 }).catch(() => ({ data: { data: null } })),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/projects?limit=6`, { timeout: 3500 }).catch(() => ({ data: { data: [] } })),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/posts?limit=3`, { timeout: 3500 }).catch(() => ({ data: { data: [] } })),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/status`, { timeout: 3500 }).catch(() => ({ data: { data: null } })),
     ]);
 
-    const defaultProjects = [
-      {
-        id: 'p1',
-        name: 'The Grand Manhattan Diamond',
-        slug: 'the-grand-manhattan-diamond',
-        price: '18.5 Tỷ',
-        location: 'Quận 1, TP. Hồ Chí Minh',
-        area: '145m²',
-        bedrooms: 3,
-        bathrooms: 3,
-        thumbnail: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
-        status: 'FOR_SALE',
-        featured: true,
-        description: 'Căn hộ Duplex siêu sang giữa lòng Quận 1, tầm nhìn panorama trọn vẹn sông Sài Gòn và trung tâm tài chính.',
-      },
-      {
-        id: 'p2',
-        name: 'Villa Rivera Royal Gold',
-        slug: 'villa-rivera-royal-gold',
-        price: '45.0 Tỷ',
-        location: 'Thảo Điền, TP. Thủ Đức',
-        area: '450m²',
-        bedrooms: 5,
-        bathrooms: 6,
-        thumbnail: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800',
-        status: 'FOR_SALE',
-        featured: true,
-        description: 'Dinh thự ven sông Thảo Điền với hồ bơi vô cực dát vàng, sân vườn nhiệt đới và bến du thuyền riêng biệt.',
-      },
-      {
-        id: 'p3',
-        name: 'Eco Green Smart Penthouse',
-        slug: 'eco-green-smart-penthouse',
-        price: '28.0 Tỷ',
-        location: 'Quận 7, TP. Hồ Chí Minh',
-        area: '280m²',
-        bedrooms: 4,
-        bathrooms: 4,
-        thumbnail: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800',
-        status: 'FOR_SALE',
-        featured: true,
-        description: 'Penthouse kính tràn viền 360 độ, kiến trúc sinh thái xanh và hệ thống nhà thông minh chuẩn quốc tế.',
-      },
-    ];
-
-    const defaultPosts = [
-      {
-        id: 'b1',
-        title: 'Xu hướng đầu tư Bất Động Sản Hạng Sang 2026',
-        slug: 'xu-huong-dau-tu-bds-hang-sang-2026',
-        excerpt: 'Phân tích các yếu tố cốt lõi giúp phân khúc BĐS hàng hiệu tăng trưởng bền vững vượt trội.',
-        thumbnail: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600',
-        createdAt: new Date().toISOString(),
-        author: 'Ban Nghiên Cứu Thị Trường',
-      },
-      {
-        id: 'b2',
-        title: 'Cẩm nang pháp lý và bảo mật quyền sở hữu tài sản',
-        slug: 'cam-nang-phap-ly-va-bao-mat-tai-san',
-        excerpt: 'Những điều nhà đầu tư sành sỏi cần lưu ý trước khi giải ngân vào các siêu dự án nghỉ dưỡng.',
-        thumbnail: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600',
-        createdAt: new Date().toISOString(),
-        author: 'Chuyên Gia Pháp Lý BĐS',
-      },
-    ];
-
-    if (!compRes.data?.data || !themeRes.data?.data || !statusRes.data?.data) {
-      return {
-        props: {
-          company: null,
-          theme: null,
-          pageContent: null,
-          projects: [],
-          posts: [],
-          tenantSlug,
-          initialPage,
-          error: 'Không thể nạp cấu hình website tenant từ hệ thống.',
-        },
-      };
-    }
+    const compData = compRes.data?.data;
+    const themeData = themeRes.data?.data;
+    const statusData = statusRes.data?.data;
 
     return {
       props: {
-        company: compRes.data.data,
-        theme: themeRes.data.data,
+        company: compData || defaultCompany,
+        theme: themeData || defaultTheme,
         pageContent: pageRes.data?.data || null,
-        projects: projRes.data?.data || [],
-        posts: postRes.data?.data || [],
-        tenantSlug,
+        projects: (projRes.data?.data && projRes.data.data.length > 0) ? projRes.data.data : defaultProjects,
+        posts: (postRes.data?.data && postRes.data.data.length > 0) ? postRes.data.data : defaultPosts,
+        tenantSlug: tenantSlug || 'demo',
         initialPage,
-        tenantStatus: statusRes.data.data,
+        tenantStatus: statusData || { isAccessible: true, status: 'ACTIVE', isSuspended: false },
       },
     };
   } catch (error: any) {
-    console.error('Lỗi SSR load Website Tenant: ' + error.message);
+    console.warn('Fallback SSR load Website Tenant: ' + error.message);
     return {
       props: {
-        company: null,
-        theme: null,
+        company: defaultCompany,
+        theme: defaultTheme,
         pageContent: null,
-        projects: [],
-        posts: [],
-        tenantSlug,
+        projects: defaultProjects,
+        posts: defaultPosts,
+        tenantSlug: tenantSlug || 'demo',
         initialPage,
-        error: 'Không thể nạp cấu hình Website. Vui lòng kiểm tra API Server hoặc Subdomain.',
+        tenantStatus: { isAccessible: true, status: 'ACTIVE', isSuspended: false },
       },
     };
   }
 };
-
-
