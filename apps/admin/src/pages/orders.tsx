@@ -6,9 +6,8 @@ import { formatVND } from '@repo/utils';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com';
-const BASE_DOMAIN = PLATFORM_DOMAIN.replace(/^templates\./, '');
 const CMS_APP_URL = process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com';
-const getTenantUrl = (subdomain: string) => `https://${subdomain}.${BASE_DOMAIN}`;
+const getTenantUrl = (subdomain: string) => `https://${subdomain}.${PLATFORM_DOMAIN}`;
 
 // Web Audio API beep chime for new orders
 function playOrderAlertSound() {
@@ -561,7 +560,7 @@ export default function AdminOrders() {
                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Subdomain Yêu Cầu</span>
                   <p className="font-mono font-bold text-slate-800 mt-0.5">
                     {selectedOrder.subdomain 
-                      ? `${selectedOrder.subdomain}.${BASE_DOMAIN}`
+                      ? `${selectedOrder.subdomain}.${PLATFORM_DOMAIN}`
                       : 'Tự động tạo từ tên khách hàng'}
                   </p>
                   {selectedOrder.status === 'COMPLETED' && selectedOrder.tenantId && (

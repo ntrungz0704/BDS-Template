@@ -8,7 +8,6 @@ import { KeyRound, Copy, Check, ShieldAlert, Sparkles, RefreshCw, Lock } from 'l
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 const CMS_APP_URL = process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com';
 const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com';
-const BASE_DOMAIN = PLATFORM_DOMAIN.replace(/^templates\./, '');
 
 export default function CustomersPage() {
   const queryClient = useQueryClient();
@@ -257,7 +256,7 @@ export default function CustomersPage() {
                           {u.tenant ? (
                             <div className="min-w-0">
                               <div className="font-bold text-slate-800 truncate">{u.tenant.name}</div>
-                              <div className="text-[10px] font-mono text-indigo-600 truncate">{u.tenant.slug}.{BASE_DOMAIN}</div>
+                              <div className="text-[10px] font-mono text-indigo-600 truncate">{u.tenant.slug}.{PLATFORM_DOMAIN}</div>
                             </div>
                           ) : (
                             <span className="text-slate-400 italic text-[11px]">Chưa gắn website</span>
@@ -511,7 +510,7 @@ export default function CustomersPage() {
                   </div>
 
                   <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs font-mono space-y-2 select-all">
-                    <div><strong>Website:</strong> {createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${BASE_DOMAIN}`}</div>
+                    <div><strong>Website:</strong> {createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${PLATFORM_DOMAIN}`}</div>
                     <div><strong>Quản trị CMS:</strong> {createdCredentials.cmsUrl || CMS_APP_URL}</div>
                     <div><strong>Email:</strong> {createdCredentials.email}</div>
                     <div><strong>Mật khẩu tạm:</strong> {createdCredentials.password}</div>
@@ -520,7 +519,7 @@ export default function CustomersPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => {
-                        const info = `THÔNG TIN BÀN GIAO WEBSITE:\n- Website: ${createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${BASE_DOMAIN}`}\n- Quản trị CMS: ${createdCredentials.cmsUrl || CMS_APP_URL}\n- Email: ${createdCredentials.email}\n- Mật khẩu: ${createdCredentials.password}`;
+                        const info = `THÔNG TIN BÀN GIAO WEBSITE:\n- Website: ${createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${PLATFORM_DOMAIN}`}\n- Quản trị CMS: ${createdCredentials.cmsUrl || CMS_APP_URL}\n- Email: ${createdCredentials.email}\n- Mật khẩu: ${createdCredentials.password}`;
                         handleCopyText(info);
                       }}
                       className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all"

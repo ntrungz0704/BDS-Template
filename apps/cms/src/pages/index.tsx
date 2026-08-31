@@ -457,7 +457,7 @@ export default function CMSDashboard() {
                 Thiết Kế
               </Link>
               <Link
-                href={`https://${dashboardStatus?.subdomain || 'hoanggialand'}.${(process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com').replace(/^templates\./, '')}`}
+                href={`https://${dashboardStatus?.subdomain || 'hoanggialand'}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-slate-900 text-sm font-bold hover:bg-slate-100 transition-colors shadow-md"
@@ -505,7 +505,7 @@ export default function CMSDashboard() {
               detail={dashboardStatus?.customDomain || 'Chưa thiết lập'}
             />
             <StatusItem label="Database" status="ok" detail="Kết nối ổn định" />
-            <StatusItem label="Subdomain" status="ok" detail={dashboardStatus?.subdomain ? `${dashboardStatus.subdomain}.${(process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com').replace(/^templates\./, '')}` : 'Chưa có'} />
+            <StatusItem label="Subdomain" status="ok" detail={dashboardStatus?.subdomain ? `${dashboardStatus.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}` : 'Chưa có'} />
           </div>
 
           {/* Plan Info */}
