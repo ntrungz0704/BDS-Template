@@ -287,7 +287,7 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
     if (domainData?.customDomain && domainData?.dnsVerified && domainData?.sslStatus === 'ACTIVE') {
       return `https://${domainData.customDomain}`;
     }
-    return `https://${tenantSlug}.${PLATFORM_DOMAIN}`;
+    return `https://${PLATFORM_DOMAIN}/site/${tenantSlug}`;
   };
 
   const websiteUrl = buildPublicUrl();
