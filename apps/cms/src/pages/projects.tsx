@@ -684,7 +684,9 @@ export default function ProjectsManagerPage() {
     status: p.published ? 'published' : 'draft',
     featured: p.featured || false,
     thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+    amenities: p.amenities || [],
     progress: p.progress,
+    version: p.version || 1,
   })) || [];
 
   const handleSave = useCallback(async (project: any) => {
@@ -696,7 +698,7 @@ export default function ProjectsManagerPage() {
         'Nghỉ dưỡng': 'COMMERCIAL',
       };
       
-      const payload = {
+      const payload: any = {
         title: project.name,
         slug: project.slug,
         type: typeMap[project.type] || 'APARTMENT',
@@ -708,8 +710,9 @@ export default function ProjectsManagerPage() {
         priceTo: project.priceTo ? Number(project.priceTo) : undefined,
         area: project.area,
         thumbnail: project.thumbnail,
+        amenities: project.amenities || [],
         published: project.status === 'published',
-        version: project.version || 1,
+        version: project.version || editingProject?.version || 1,
       };
 
       if (editingProject) {
@@ -717,11 +720,12 @@ export default function ProjectsManagerPage() {
       } else {
         await axios.post(`${API_URL}/api/cms/projects`, payload, { withCredentials: true });
       }
-      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      await queryClient.invalidateQueries({ queryKey: ['projects'] });
       setShowModal(false);
       setEditingProject(null);
-    } catch (error) {
-      alert('Lỗi lưu dự án');
+    } catch (error: any) {
+      const errMsg = error.response?.data?.error?.message || error.response?.data?.message || 'Lỗi lưu dự án';
+      alert(errMsg);
     }
   }, [queryClient, editingProject]);
 

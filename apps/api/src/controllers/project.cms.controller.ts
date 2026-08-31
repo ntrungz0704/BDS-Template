@@ -136,26 +136,21 @@ export async function createProject(req: Request, res: Response, next: NextFunct
   try {
     const data = projectSchema.parse(req.body);
 
-    // Kiểm tra trùng lặp slug trong cùng 1 Tenant
+    // Tự động điều chỉnh slug nếu bị trùng lặp trong cùng Tenant
+    let finalSlug = data.slug.toLowerCase().trim().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
     const existingProject = await prisma.project.findFirst({
-      where: { tenantId, slug: data.slug, deletedAt: null },
+      where: { tenantId, slug: finalSlug, deletedAt: null },
     });
 
     if (existingProject) {
-      return res.status(400).json({
-        success: false,
-        error: {
-          code: 'SLUG_DUPLICATED',
-          message: 'Đường dẫn slug này đã được sử dụng cho một dự án khác.',
-        },
-      });
+      finalSlug = `${finalSlug}-${Date.now().toString().slice(-4)}`;
     }
 
     const project = await prisma.project.create({
       data: {
         tenantId,
         title: data.title,
-        slug: data.slug,
+        slug: finalSlug,
         description: data.description,
         shortDescription: data.shortDescription,
         type: data.type,
@@ -218,17 +213,7 @@ export async function updateProject(req: Request, res: Response, next: NextFunct
 
   try {
     const data = projectSchema.parse(req.body);
-    const clientVersion = parseInt(req.body.version);
-
-    if (isNaN(clientVersion)) {
-      return res.status(400).json({
-        success: false,
-        error: {
-          code: 'MISSING_VERSION',
-          message: 'Yêu cầu tham số version để cập nhật dữ liệu (Optimistic Locking).',
-        },
-      });
-    }
+    const clientVersion = req.body.version !== undefined ? parseInt(req.body.version) : undefined;
 
     // 1. Kiểm tra sự tồn tại của dự án
     const project = await prisma.project.findFirst({
@@ -245,20 +230,20 @@ export async function updateProject(req: Request, res: Response, next: NextFunct
       });
     }
 
-    // 2. Kiểm tra xung đột version (Optimistic Locking)
-    if (project.version !== clientVersion) {
+    // 2. Kiểm tra xung đột version (chỉ check nếu client gửi version khác)
+    if (clientVersion !== undefined && !isNaN(clientVersion) && project.version !== clientVersion && clientVersion > 0) {
       return res.status(409).json({
         success: false,
         error: {
           code: 'DB_CONFLICT',
-          message: 'Dữ liệu đã được cập nhật bởi một Admin khác. Vui lòng tải lại trang.',
+          message: 'Dữ liệu đã được cập nhật bởi một phiên làm việc khác. Vui lòng tải lại trang.',
         },
       });
     }
 
     // 3. Thực hiện cập nhật tăng version lên 1 đơn vị
     const updatedProject = await prisma.project.update({
-      where: { id, version: project.version },
+      where: { id },
       data: {
         title: data.title,
         slug: data.slug,

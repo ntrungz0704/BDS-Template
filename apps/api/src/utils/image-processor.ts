@@ -34,9 +34,10 @@ export async function processAndSaveImage(
     fs.mkdirSync(tenantDir, { recursive: true });
   }
 
-  const baseFilename = path.parse(filename).name;
+  const baseFilename = path.parse(filename).name.replace(/[^a-zA-Z0-9_-]/g, '_');
+  const apiBase = (process.env.PUBLIC_API_URL || process.env.API_URL || 'https://bds-template-api.onrender.com').replace(/\/$/, '');
   const generatePath = (suffix: string) => path.join(tenantDir, `${baseFilename}-${suffix}.webp`);
-  const generateUrl = (suffix: string) => `/uploads/${tenantId}/${baseFilename}-${suffix}.webp`;
+  const generateUrl = (suffix: string) => `${apiBase}/uploads/${tenantId}/${baseFilename}-${suffix}.webp`;
 
   try {
     let pipeline = sharp(buffer);
