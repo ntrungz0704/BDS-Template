@@ -622,16 +622,63 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const tSlug = template?.slug || 'bds-01';
 
+  const allPropertyList: PropertyItem[] = useMemo(() => {
+    if (projects && projects.length > 0) {
+      return projects.map((p: any, idx: number): PropertyItem => ({
+        id: p.id || idx + 1,
+        title: p.title || p.name || `Dự án #${idx + 1}`,
+        slug: p.slug || `du-an-${p.id || idx + 1}`,
+        price: p.price || (p.priceFrom ? `${p.priceFrom} Tỷ` : 'Liên hệ'),
+        priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 8.5),
+        priceUnit: 'Tỷ',
+        pricePerM2: p.pricePerM2 || '85 tr/m²',
+        location: p.address || p.location || 'TP. Hồ Chí Minh',
+        ward: p.ward || 'Phường Bến Nghé',
+        district: p.district || 'Quận 1',
+        city: p.city || 'TP. Hồ Chí Minh',
+        bedrooms: p.bedrooms ? String(p.bedrooms).padStart(2, '0') : '03',
+        bathrooms: p.bathrooms ? String(p.bathrooms).padStart(2, '0') : '02',
+        area: p.area ? (typeof p.area === 'number' ? `${p.area} m²` : `${p.area}`) : '120 m²',
+        areaNum: typeof p.area === 'number' ? p.area : (parseFloat(p.area) || 120),
+        direction: p.direction || 'Đông Nam',
+        type: ((p.type === 'VILLA' || p.type === 'Biệt thự') ? 'Biệt thự' : (p.type === 'APARTMENT' || p.type === 'Căn hộ') ? 'Căn hộ' : 'Nhà phố') as PropertyItem['type'],
+        category: ((p.category === 'thue' || p.category === 'RENT') ? 'thue' : 'ban') as PropertyItem['category'],
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+        gallery: p.gallery && p.gallery.length > 0 ? p.gallery : [
+          p.thumbnail || p.image || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80',
+          'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80',
+          'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1200&q=80',
+          'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80',
+        ],
+        desc: p.description || p.shortDescription || 'Không gian sống đẳng cấp thượng lưu, vị trí đắc địa.',
+        detailedContent: p.detailedContent || p.description || 'Bất động sản cao cấp sở hữu vị trí vàng đắc địa, pháp lý minh bạch hoàn chỉnh, bàn giao full nội thất cao cấp.',
+        features: p.features || ['Hồ bơi riêng', 'Sân vườn', 'An ninh 24/7', 'Sổ hồng lâu dài', 'Gara ô tô', 'View sông thoáng đãng'],
+        legal: p.legal || 'Sổ hồng lâu dài',
+        furniture: p.furniture || 'Đầy đủ nội thất cao cấp',
+        handover: p.handover || 'Nhận nhà ngay',
+        mapEmbedUrl: p.mapEmbedUrl || 'https://maps.google.com/maps?q=Ho+Chi+Minh&t=&z=13&ie=UTF8&iwloc=&output=embed',
+        author: p.author || {
+          name: company?.name || 'Chuyên Viên BĐS',
+          phone: company?.phone || '0919 006 030',
+          zalo: company?.zalo || company?.phone || '0919006030',
+          avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=256&q=80',
+          role: 'Tư Vấn BĐS Cao Cấp',
+        },
+      }));
+    }
+    return [...INITIAL_PROPERTIES, ...RENT_PROPERTIES];
+  }, [projects, company]);
+
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
 
   const [selectedProperty, setSelectedProperty] = useState<PropertyItem>(() => {
     if (initialParsed.propSlug) {
-      const found = INITIAL_PROPERTIES.find(p => p.slug === initialParsed.propSlug) || RENT_PROPERTIES.find(p => p.slug === initialParsed.propSlug);
+      const found = allPropertyList.find(p => p.slug === initialParsed.propSlug);
       if (found) return found;
     }
-    return INITIAL_PROPERTIES[0];
+    return allPropertyList[0] || INITIAL_PROPERTIES[0];
   });
 
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
@@ -662,14 +709,16 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
     const res = resolvePageAndDetail(initialPage);
     setCurrentPageState(res.page);
     if (res.propSlug) {
-      const found = INITIAL_PROPERTIES.find(p => p.slug === res.propSlug) || RENT_PROPERTIES.find(p => p.slug === res.propSlug);
+      const found = allPropertyList.find(p => p.slug === res.propSlug);
       if (found) setSelectedProperty(found);
+    } else if (allPropertyList.length > 0) {
+      setSelectedProperty(allPropertyList[0]);
     }
     if (res.artSlug) {
       const found = NEWS_ARTICLES.find(a => a.slug === res.artSlug);
       if (found) setSelectedArticle(found);
     }
-  }, [initialPage]);
+  }, [initialPage, allPropertyList]);
 
   const navigate = (page: string, slug?: string) => {
     setCurrentPageState(page);
@@ -718,48 +767,8 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
     return () => window.removeEventListener('popstate', handlePopState);
   }, [tSlug]);
 
-  const allPropertyList = useMemo(() => {
-    let list = [...INITIAL_PROPERTIES, ...RENT_PROPERTIES];
-
-    if (projects && projects.length > 0) {
-      const dynamicList: PropertyItem[] = projects.map(p => ({
-        id: p.id,
-        title: p.title || p.name,
-        slug: p.slug || `du-an-${p.id}`,
-        price: p.price || 'Thỏa thuận',
-        priceNum: parseFloat(p.price) || 8.5,
-        priceUnit: 'Tỷ',
-        pricePerM2: '85 tr/m²',
-        location: p.location || p.address || 'Hà Nội',
-        ward: 'Trung tâm',
-        district: p.district || 'Cầu Giấy',
-        city: p.city || 'Hà Nội',
-        bedrooms: p.bedrooms || '02',
-        bathrooms: p.bathrooms || '02',
-        area: p.area || '90 m²',
-        areaNum: parseFloat(p.area) || 90,
-        direction: p.direction || 'Đông Nam',
-        type: (p.type as any) || 'Căn hộ',
-        category: 'ban',
-        image: p.image || p.thumbnail || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
-        gallery: [p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80'],
-        desc: p.description || 'Dự án bất động sản cao cấp vị trí đắc địa.',
-        detailedContent: p.description || 'Dự án sở hữu vị trí vàng cùng hệ thống tiện ích đẳng cấp quốc tế.',
-        features: ['Pháp lý minh bạch', 'Vị trí đắc địa', 'Tiện ích 5 sao'],
-        legal: 'Sổ hồng lâu dài',
-        furniture: 'Đầy đủ nội thất',
-        handover: 'Nhận nhà ngay',
-        mapEmbedUrl: 'https://maps.google.com/maps?q=Hanoi&t=&z=13&ie=UTF8&iwloc=&output=embed',
-        author: {
-          name: company?.name || 'Nguyễn Thanh Tùng',
-          phone: company?.phone || '0905.56.xxxx',
-          zalo: '0905560000',
-          avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=256&q=80',
-          role: 'Chuyên viên BĐS Cao Cấp',
-        }
-      }));
-      list = [...dynamicList, ...list];
-    }
+  const filteredPropertyList = useMemo(() => {
+    let list = allPropertyList;
 
     if (currentPage === 'can-ho') list = list.filter(p => p.type === 'Căn hộ');
     else if (currentPage === 'nha-pho') list = list.filter(p => p.type === 'Nhà phố');
