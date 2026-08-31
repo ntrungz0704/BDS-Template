@@ -102,7 +102,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     label: 'Thêm Dự Án Mới',
     description: 'Đăng tin dự án bất động sản',
     icon: <Building2 className="w-5 h-5" />,
-    href: '/projects/new',
+    href: '/projects',
     color: 'bg-blue-50 text-blue-600 border-blue-100',
   },
   {
@@ -124,7 +124,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     label: 'Gói Dịch Vụ',
     description: 'Gia hạn, nâng cấp gói',
     icon: <Zap className="w-5 h-5" />,
-    href: '/billing',
+    href: '/settings',
     color: 'bg-rose-50 text-rose-600 border-rose-100',
   },
   {
@@ -522,7 +522,7 @@ export default function CMSDashboard() {
                 : 'Chưa có gói đăng ký'}
             </p>
             <Link
-              href="/settings/billing"
+              href="/settings"
               className="block text-center text-xs font-bold py-2 px-4 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
             >
               Nâng Cấp Gói

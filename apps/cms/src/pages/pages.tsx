@@ -1000,17 +1000,17 @@ export default function PagesManagerPage() {
   };
 
   const pages: SitePage[] = (fetchedPages || []).map((p: any) => {
-    const meta = TITLE_MAP[p.slug] || {
-      title: p.title,
-      desc: p.description || 'Trang nội dung website bất động sản',
+    const metaFallback = TITLE_MAP[p.slug] || {
+      title: 'Trang',
+      desc: 'Trang nội dung website bất động sản',
       iconBg: 'bg-slate-500/10 text-slate-600',
       iconColor: 'text-slate-600'
     };
     return {
       id: p.id,
       slug: p.slug,
-      title: meta.title,
-      description: meta.desc,
+      title: p.title || metaFallback.title,
+      description: p.description || metaFallback.desc,
       isSystem: p.isSystem ?? true,
       published: p.published ?? true,
       sortOrder: p.sortOrder ?? 0,

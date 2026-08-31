@@ -261,6 +261,17 @@ export default function AdminTenants() {
                         </a>
                         <button
                           onClick={() => {
+                            if (confirm(`Bạn có chắc muốn ${tenant.status === 'ACTIVE' ? 'KHÓA' : 'MỞ KHÓA'} website ${tenant.name}?`)) {
+                              updateStatusMutation.mutate({ id: tenant.id, status: tenant.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE' });
+                            }
+                          }}
+                          className={`p-1 text-slate-400 rounded transition-all ${tenant.status === 'ACTIVE' ? 'hover:text-amber-600 hover:bg-amber-50' : 'hover:text-emerald-600 hover:bg-emerald-50'}`}
+                          title={tenant.status === 'ACTIVE' ? 'Khóa' : 'Mở khóa'}
+                        >
+                          {tenant.status === 'ACTIVE' ? '🔒' : '🔓'}
+                        </button>
+                        <button
+                          onClick={() => {
                             if (confirm(`Bạn có chắc muốn XÓA VĨNH VIỄN website ${tenant.name}?`)) {
                               deleteTenantMutation.mutate(tenant.id);
                             }

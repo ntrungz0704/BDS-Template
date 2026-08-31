@@ -95,6 +95,10 @@ export default function AdminOrders() {
       return res.data;
     },
     onSuccess: (res: any) => {
+      if (res?.meta?.conflict) {
+        alert(res.meta.message || 'Subdomain đã tồn tại hoặc có lỗi xung đột.');
+        return;
+      }
       setSelectedOrder(null);
       queryClient.invalidateQueries({ queryKey: ['adminOrders'] });
       queryClient.invalidateQueries({ queryKey: ['adminStats'] });

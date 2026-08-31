@@ -108,7 +108,7 @@ export default function AdminTemplates() {
   });
 
   return (
-    <AdminLayout title="Quản Lý Mẫu Giao Diện (16 Templates)" subtitle="Quản lý kho 16 mẫu template bất động sản cao cấp, cấu hình giá bán và tùy chỉnh nội dung.">
+    <AdminLayout title="Quản Lý Mẫu Giao Diện (31 Templates)" subtitle="Quản lý kho 31 mẫu template bất động sản cao cấp, cấu hình giá bán và tùy chỉnh nội dung.">
       {/* Search & Filter Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm mb-6">
         <div className="flex flex-wrap items-center gap-3">

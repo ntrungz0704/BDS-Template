@@ -315,7 +315,7 @@ function WritePostModal({
             {showAdvanced && (
               <div className="mt-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
                 <p className="text-slate-500">
-                  Đường dẫn bài viết tự động: <code className="font-mono text-indigo-600 font-bold bg-white px-2 py-0.5 rounded border">/tin-tuc/{finalSlug}</code>
+                  Đường dẫn bài viết tự động: <code className="font-mono text-indigo-600 font-bold bg-white px-2 py-0.5 rounded border">/blog/{finalSlug}</code>
                 </p>
                 <div>
                   <label className="block text-[11px] font-medium text-slate-600 mb-1">
@@ -428,6 +428,7 @@ export default function PostsManagerPage() {
       const payload = {
         title: post.title,
         slug: post.slug,
+        category: post.category || undefined,
         summary: post.excerpt,
         content: post.content,
         thumbnail: post.thumbnail,
@@ -726,7 +727,7 @@ export default function PostsManagerPage() {
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
                         <a
-                          href={domainData?.customDomain ? `https://${domainData.customDomain}/posts/${post.slug}` : `https://${domainData?.subdomain || 'hoanggialand'}.${(process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com')}/posts/${post.slug}?tenant=${domainData?.subdomain || 'hoanggialand'}`}
+                          href={domainData?.customDomain ? `https://${domainData.customDomain}/blog/${post.slug}` : `https://${domainData?.subdomain || 'hoanggialand'}.${(process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com')}/blog/${post.slug}?tenant=${domainData?.subdomain || 'hoanggialand'}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           title="Xem trên Website"

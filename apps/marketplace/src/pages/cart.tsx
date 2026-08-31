@@ -151,7 +151,7 @@ export default function CartPage() {
 
         const payload = {
           templateId: tplIdentifier,
-          type: 'BUY',
+          type: item.type || 'BUY',
           amount: price,
           fullName: fullName.trim(),
           email: email.trim(),

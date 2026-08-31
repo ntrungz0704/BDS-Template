@@ -10,7 +10,7 @@ import { Search, Sparkles, CheckCircle2, SlidersHorizontal, Grid } from 'lucide-
 import { useAuth } from '../context/AuthContext';
 import { WEBSITE_TEMPLATES } from '../data/templatesData';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com');
 
 export default function TemplatesPage() {
   const router = useRouter();
@@ -61,19 +61,22 @@ export default function TemplatesPage() {
 
   const categories = [
     { id: 'all', label: 'Tất cả', count: templates.length },
-    ...Array.from(new Set(templates.map((template) => template.category).filter(Boolean))).map((id: string) => ({
-      id,
-      label: id.replace(/_/g, ' '),
-      count: templates.filter((template) => template.category === id).length,
-    })),
+    ...Array.from(new Set(templates.map((t) => t.category || t.collectionSlug).filter(Boolean))).map((id: string) => {
+      const tplForLabel = templates.find(t => (t.category || t.collectionSlug) === id);
+      return {
+        id,
+        label: tplForLabel?.collectionName || id.replace(/_/g, ' '),
+        count: templates.filter((t) => (t.category || t.collectionSlug) === id).length,
+      };
+    }),
   ];
 
   const filteredTemplates = templates.filter((tpl) => {
-    const haystack = [tpl.name, tpl.description, tpl.shortDescription, tpl.category, tpl.slug]
+    const haystack = [tpl.name, tpl.description, tpl.shortDescription, tpl.category || tpl.collectionSlug, tpl.slug]
       .filter(Boolean).join(' ').toLocaleLowerCase('vi-VN');
     const matchSearch = haystack.includes(searchQuery.toLocaleLowerCase('vi-VN'));
     if (!matchSearch) return false;
-    return activeCategory === 'all' || tpl.category === activeCategory;
+    return activeCategory === 'all' || (tpl.category || tpl.collectionSlug) === activeCategory;
   }).sort((a, b) => {
     if (sortBy === 'price-asc') return (a.salePrice ?? a.priceBuy ?? 0) - (b.salePrice ?? b.priceBuy ?? 0);
     if (sortBy === 'price-desc') return (b.salePrice ?? b.priceBuy ?? 0) - (a.salePrice ?? a.priceBuy ?? 0);

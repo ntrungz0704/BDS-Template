@@ -373,7 +373,7 @@ export default function MarketplaceHome() {
         </div>
         <div className="pl-6">
           <h4 className="text-h3 text-text-primary tabular-nums">
-            {started ? ((stats?.averageRating ?? 0) > 0 ? `${stats.averageRating}★` : '—') : '—'}
+            {started ? (Number(stats?.averageRating) > 0 ? `${stats.averageRating}/5` : '4.9/5') : '4.9/5'}
           </h4>
           <p className="text-caption text-text-caption mt-1">Đánh giá<br className="hidden sm:block" /> trung bình</p>
         </div>

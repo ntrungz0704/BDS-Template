@@ -128,10 +128,10 @@ export class WebsiteProvisioningService {
       }
     }
 
-    // Cấp mật khẩu mặc định tự động từ phần trước @ của email khách hàng
+    // Cấp mật khẩu mặc định tự động từ phần trước @ của email khách hàng cho user mới
     const defaultPassword = customerEmail.split('@')[0] || '123456';
     const cmsPassword = defaultPassword;
-    const passwordHash = await bcrypt.hash(cmsPassword, 12);
+    const newPasswordHash = await bcrypt.hash(cmsPassword, 12);
 
     const result = await prisma.$transaction(async (tx: any) => {
       // a. Create Tenant
@@ -167,7 +167,6 @@ export class WebsiteProvisioningService {
             tenantId: tenant.id,
             isActive: true,
             status: 'ACTIVE',
-            passwordHash,
             emailVerified: new Date(),
           },
         });
@@ -184,7 +183,6 @@ export class WebsiteProvisioningService {
               tenantId: tenant.id,
               isActive: true,
               status: 'ACTIVE',
-              passwordHash,
               emailVerified: existingUser.emailVerified || new Date(),
             },
           });
@@ -193,7 +191,7 @@ export class WebsiteProvisioningService {
           user = await tx.user.create({
             data: {
               email: customerEmail,
-              passwordHash,
+              passwordHash: newPasswordHash,
               fullName: customerFullName,
               role: 'TENANT_OWNER',
               isActive: true,

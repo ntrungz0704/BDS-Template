@@ -228,7 +228,7 @@ export default function CustomerDetailPage() {
                 <div key={t.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
                   <div>
                     <div className="font-bold text-slate-900 text-sm">{t.name}</div>
-                    <div className="font-mono text-indigo-600 font-bold">{t.slug}.platformbds.vn</div>
+                    <div className="font-mono text-indigo-600 font-bold">{t.slug}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}</div>
                     <div className="text-slate-400 mt-1">Template: {t.templateId}</div>
                   </div>
                   <div>

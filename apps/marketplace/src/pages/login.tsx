@@ -39,7 +39,9 @@ export default function LoginPage() {
   // If already logged in, redirect based on role
   useEffect(() => {
     if (user) {
-      if ((user.role as any) === 'SUPER_ADMIN') {
+      if (requestedRedirect) {
+        router.replace(redirectUrl);
+      } else if ((user.role as any) === 'SUPER_ADMIN') {
         window.location.href = process.env.NEXT_PUBLIC_ADMIN_URL || 'https://admin.aireviewbds.com';
       } else if ((user.role as any) === 'TENANT_OWNER' || (user as any).role === 'CUSTOMER_OWNER' || (user as any).tenantId) {
         window.location.href = process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com';
@@ -47,7 +49,7 @@ export default function LoginPage() {
         router.replace(redirectUrl);
       }
     }
-  }, [user, redirectUrl, router]);
+  }, [user, redirectUrl, router, requestedRedirect]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
