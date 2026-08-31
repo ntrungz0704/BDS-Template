@@ -14,8 +14,8 @@ export default function ContactPage() {
     fullName: '',
     phone: '',
     email: '',
-    selectedTemplateSlug: 'luxury-gold',
-    packageInterest: 'ready',
+    selectedTemplateSlug: 'bds-01',
+    packageInterest: 'buy',
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
@@ -24,12 +24,12 @@ export default function ContactPage() {
 
   const getPackageName = (pkg: string) => {
     switch (pkg) {
-      case 'ready': return 'Thiết kế Website Chuyên Nghiệp (3.900.000đ)';
-      case 'saas': return 'Thuê Website SaaS (490.000đ / tháng)';
-      case 'sourcecode': return 'Mua Trọn Gói Source Code (14.900.000đ)';
-      case 'maintenance': return 'Dịch vụ Bảo trì Website (299.000đ / tháng)';
-      case 'hosting': return 'Hạ tầng Hosting & Domain (799.000đ / năm)';
-      default: return 'Tư vấn giải pháp riêng';
+      case 'buy': return 'Gói Mua Bản Quyền Website BĐS Trọn Đời (Từ 499.000đ)';
+      case 'rent': return 'Gói Thuê Website SaaS Vận Hành (199.000đ/tháng - 499.000đ/năm)';
+      case 'maintenance': return 'Gói Dịch Vụ Bảo Trì Website VIP (299.000đ / năm)';
+      case 'hosting': return 'Gói Hạ Tầng Hosting Cloud SSD & Domain (799.000đ / năm)';
+      case 'custom': return 'Gói Thiết Kế Theo Yêu Cầu Riêng (Báo giá chi tiết)';
+      default: return 'Tư vấn giải pháp website BĐS trọn gói';
     }
   };
 
@@ -77,7 +77,7 @@ export default function ContactPage() {
       const result = await res.json();
       if (res.ok && result.success) {
         setSubmitted(true);
-        showToast('Đã gửi yêu cầu tư vấn thành công! Đội ngũ sẽ liên hệ bạn sớm nhất.', 'success');
+        showToast('Đã gửi yêu cầu tư vấn thành công! Đội ngũ chuyên viên sẽ liên hệ Zalo ngay.', 'success');
         // Copy Zalo message to clipboard
         const templateName = getTemplateName(formData.selectedTemplateSlug);
         const packageName = getPackageName(formData.packageInterest);
@@ -103,45 +103,45 @@ export default function ContactPage() {
   return (
     <>
       <Head>
-        <title>Liên Hệ & Tư Vấn Kỹ Thuật Trực Tiếp | TEMPLATES BDS</title>
-        <meta name="description" content="Kết nối trực tiếp với đội ngũ chuyên gia của TEMPLATES BDS qua Hotline, Zalo VIP để được tư vấn chọn mẫu website phù hợp nhất." />
+        <title>Liên Hệ & Đăng Ký Tư Vấn Mẫu Website BĐS | TEMPLATES BDS</title>
+        <meta name="description" content="Kết nối trực tiếp với đội ngũ chuyên gia của TEMPLATES BDS qua Hotline, Zalo VIP để nhận demo và báo giá chính xác nhất." />
       </Head>
 
-      <div className="min-h-screen bg-slate-100/70 flex flex-col font-sans">
+      <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
         <Header />
 
         <main className="flex-1 max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-blue-50 border border-blue-200 text-xs font-semibold text-blue-700 uppercase tracking-wider mb-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-bold text-blue-700 uppercase tracking-wider mb-3">
               <Phone className="w-3.5 h-3.5 text-blue-600" /> Hỗ Trợ Khách Hàng 24/7
             </span>
             <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 mb-3">
-              Liên Hệ Đội Ngũ TEMPLATES BDS
+              Đăng Ký Tư Vấn & Chọn Mẫu Website BĐS
             </h1>
             <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-              Bạn cần tư vấn chọn mẫu website phù hợp với phân khúc dự án hoặc muốn triển khai giải pháp riêng? Hãy gửi yêu cầu cho chúng tôi hoặc gọi trực tiếp Hotline Zalo.
+              Bạn cần tư vấn chọn mẫu giao diện phù hợp với phân khúc dự án hoặc muốn triển khai tên miền riêng? Hãy gửi yêu cầu cho chúng tôi hoặc kết nối Zalo trực tiếp.
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
             {/* Contact Info Cards (5 cols) */}
             <div className="lg:col-span-5 space-y-4">
-              <div className="bg-slate-900 rounded-lg p-6 sm:p-8 text-white shadow-sm border border-slate-800">
+              <div className="bg-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-md border border-slate-800">
                 <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 mb-2">
                   <ShieldCheck className="w-4 h-4" />
                   <span>Kênh hỗ trợ chính thức</span>
                 </div>
                 <h2 className="text-xl font-bold mb-2">Hotline Kỹ Thuật & Sales VIP</h2>
                 <p className="text-slate-400 text-xs mb-6 leading-relaxed">
-                  Hỗ trợ cấu hình tên miền, hướng dẫn sử dụng CMS và xử lý sự cố trong vòng 5 phút.
+                  Hỗ trợ bàn giao website, cấu hình tên miền riêng, hướng dẫn sử dụng CMS và xử lý kỹ thuật trong vòng 5 phút.
                 </p>
                 
                 <a
                   href="tel:0919006030"
-                  className="flex items-center gap-3.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-md p-4 transition-colors mb-3"
+                  className="flex items-center gap-3.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-4 transition-colors mb-3"
                 >
-                  <div className="w-10 h-10 rounded-md bg-blue-600 text-white flex items-center justify-center font-bold shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold shrink-0">
                     <Phone className="w-5 h-5" />
                   </div>
                   <div>
@@ -151,15 +151,30 @@ export default function ContactPage() {
                 </a>
 
                 <a
-                  href="mailto:ntrungz0704@gmail.com"
-                  className="flex items-center gap-3.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-md p-4 transition-colors mb-4"
+                  href="https://zalo.me/0919006030"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-4 transition-colors mb-3"
                 >
-                  <div className="w-10 h-10 rounded-md bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-[#0068FF] text-white flex items-center justify-center font-bold shrink-0">
+                    <ZaloIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Chat Zalo Chuyên Viên</p>
+                    <p className="text-base font-bold tracking-wide font-mono">0919 006 030 (Zalo)</p>
+                  </div>
+                </a>
+
+                <a
+                  href="mailto:ntrungz0704@gmail.com"
+                  className="flex items-center gap-3.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-4 transition-colors mb-4"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0">
                     <Mail className="w-5 h-5" />
                   </div>
                   <div>
                     <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Email hỗ trợ</p>
-                    <p className="text-sm font-bold tracking-wide">ntrungz0704@gmail.com</p>
+                    <p className="text-xs font-bold tracking-wide">ntrungz0704@gmail.com</p>
                   </div>
                 </a>
 
@@ -170,38 +185,38 @@ export default function ContactPage() {
                   </div>
                   <div className="flex items-center gap-2.5">
                     <MapPin className="w-4 h-4 text-rose-400 shrink-0" />
-                    <span>Hệ sinh thái Bất Động Sản PlatformBDS (Hà Nội & TP. HCM)</span>
+                    <span>Hệ sinh thái Bất Động Sản TEMPLATES BDS (Hà Nội & TP. HCM)</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white border border-slate-200 rounded-lg p-5 shadow-sm">
+              <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
                 <h3 className="text-xs font-bold text-slate-900 mb-1.5 flex items-center gap-1.5">
                   <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                  Cam Kết Bảo Mật Thông Tin
+                  Cam Kết Bảo Mật Thông Tin 100%
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Thông tin liên hệ của bạn được mã hóa và bảo mật 100%. Chúng tôi cam kết không chia sẻ với bên thứ ba hoặc gọi điện làm phiền ngoài giờ hành chính.
+                  Thông tin của bạn được bảo mật tuyệt đối, chỉ phục vụ cho việc bàn giao tài liệu, báo giá và kết nối tư vấn chuyên nghiệp.
                 </p>
               </div>
             </div>
 
             {/* Consultation Form (7 cols) */}
-            <div className="lg:col-span-7 bg-white border border-slate-200 rounded-lg p-6 sm:p-8 shadow-sm">
+            <div className="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
               {submitted ? (
                 <div className="text-center py-8">
-                  <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-200">
-                    <CheckCircle2 className="w-7 h-7" />
+                  <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-200">
+                    <CheckCircle2 className="w-8 h-8" />
                   </div>
-                  <h2 className="text-xl font-bold text-slate-900 mb-2">Gửi Yêu Cầu Thành Công!</h2>
+                  <h2 className="text-xl font-extrabold text-slate-900 mb-2">Gửi Yêu Cầu Thành Công!</h2>
                   <p className="text-slate-600 text-xs sm:text-sm max-w-md mx-auto mb-5 leading-relaxed">
-                    Cảm ơn <span className="font-bold text-slate-900">{formData.fullName}</span> đã đăng ký tư vấn gói <span className="font-bold text-blue-600">{packageName}</span>.<br />
-                    Hệ thống đang mở cửa sổ kết nối trực tiếp đến Zalo CSKH <strong className="font-mono text-slate-900">0919 006 030</strong>...
+                    Cảm ơn <span className="font-bold text-slate-900">{formData.fullName}</span> đã đăng ký tư vấn <span className="font-bold text-blue-600">{packageName}</span>.<br />
+                    Hệ thống đang kết nối trực tiếp đến Zalo CSKH <strong className="font-mono text-slate-900">0919 006 030</strong>...
                   </p>
                   
-                  <div className="bg-slate-50 border border-slate-200 rounded-md p-3.5 mb-5 text-left max-w-md mx-auto">
+                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-5 text-left max-w-md mx-auto">
                     <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Nội dung tin nhắn:</p>
-                    <p className="text-xs text-slate-700 italic">"{zaloMsg}"</p>
+                    <p className="text-xs text-slate-700 italic leading-relaxed">"{zaloMsg}"</p>
                   </div>
 
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -209,14 +224,14 @@ export default function ContactPage() {
                       href="https://zalo.me/0919006030"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full sm:w-auto px-6 py-2.5 bg-[#0068FF] hover:bg-blue-600 text-white font-semibold rounded-md text-xs transition-colors flex items-center justify-center gap-2 shadow-sm"
+                      className="w-full sm:w-auto px-6 py-3 bg-[#0068FF] hover:bg-blue-600 text-white font-bold rounded-xl text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
                     >
                       <ZaloIcon className="w-4 h-4" />
                       <span>Mở Chat Zalo Ngay</span>
                     </a>
                     <button
                       onClick={() => setSubmitted(false)}
-                      className="w-full sm:w-auto px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-md text-xs transition-colors"
+                      className="w-full sm:w-auto px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-colors"
                     >
                       Gửi Yêu Cầu Khác
                     </button>
@@ -231,7 +246,7 @@ export default function ContactPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
                         Họ & tên của bạn <span className="text-rose-500">*</span>
                       </label>
                       <input
@@ -240,13 +255,13 @@ export default function ContactPage() {
                         placeholder="VD: Nguyễn Văn Tuấn"
                         value={formData.fullName}
                         onChange={(e) => { setFormData({ ...formData, fullName: e.target.value }); setErrors((prev) => ({ ...prev, fullName: '' })); }}
-                        className={`w-full px-3.5 py-2 bg-white border rounded-md text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 transition-colors ${errors.fullName ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-300' : 'border-slate-300 focus:border-slate-900 focus:ring-slate-900'}`}
+                        className={`w-full px-3.5 py-2.5 bg-slate-50 border rounded-xl text-xs sm:text-sm text-slate-900 font-semibold placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 transition-all ${errors.fullName ? 'border-rose-400 focus:ring-rose-200' : 'border-slate-200 focus:border-blue-500 focus:ring-blue-100'}`}
                       />
                       {errors.fullName && <p className="text-[11px] text-rose-500 mt-1 font-medium">{errors.fullName}</p>}
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
                         Số điện thoại / Zalo <span className="text-rose-500">*</span>
                       </label>
                       <input
@@ -255,7 +270,7 @@ export default function ContactPage() {
                         placeholder="VD: 0919 006 030"
                         value={formData.phone}
                         onChange={(e) => { setFormData({ ...formData, phone: e.target.value }); setErrors((prev) => ({ ...prev, phone: '' })); }}
-                        className={`w-full px-3.5 py-2 bg-white border rounded-md text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 transition-colors ${errors.phone ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-300' : 'border-slate-300 focus:border-slate-900 focus:ring-slate-900'}`}
+                        className={`w-full px-3.5 py-2.5 bg-slate-50 border rounded-xl text-xs sm:text-sm text-slate-900 font-semibold placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 transition-all ${errors.phone ? 'border-rose-400 focus:ring-rose-200' : 'border-slate-200 focus:border-blue-500 focus:ring-blue-100'}`}
                       />
                       {errors.phone && <p className="text-[11px] text-rose-500 mt-1 font-medium">{errors.phone}</p>}
                     </div>
@@ -263,13 +278,13 @@ export default function ContactPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
                         Mẫu giao diện quan tâm
                       </label>
                       <select
                         value={formData.selectedTemplateSlug}
                         onChange={(e) => setFormData({ ...formData, selectedTemplateSlug: e.target.value })}
-                        className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-md text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-colors"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 font-bold focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
                       >
                         {ALL_TEMPLATES.map((tpl) => (
                           <option key={tpl.slug} value={tpl.slug}>
@@ -280,43 +295,43 @@ export default function ContactPage() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-xs font-bold text-slate-700 mb-1">
                         Gói giải pháp dự kiến
                       </label>
                       <select
                         value={formData.packageInterest}
                         onChange={(e) => setFormData({ ...formData, packageInterest: e.target.value })}
-                        className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-md text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-colors"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 font-bold focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
                       >
-                        <option value="ready">Gói Thiết Kế Website Chuyên Nghiệp (3.900.000đ)</option>
-                        <option value="saas">Gói Thuê Website SaaS (490.000đ / tháng)</option>
-                        <option value="sourcecode">Gói Mua Full Source Code & Bản Quyền (14.900.000đ)</option>
-                        <option value="maintenance">Gói Dịch Vụ Bảo Trì Website (299.000đ / tháng)</option>
-                        <option value="hosting">Gói Hạ Tầng Hosting & Domain (799.000đ / năm)</option>
+                        <option value="buy">Gói Mua Bản Quyền Website BĐS Trọn Đời (Từ 499.000đ)</option>
+                        <option value="rent">Gói Thuê Website SaaS Vận Hành (199.000đ/tháng - 499.000đ/năm)</option>
+                        <option value="maintenance">Gói Dịch Vụ Bảo Trì Website VIP (299.000đ / năm)</option>
+                        <option value="hosting">Gói Hạ Tầng Hosting Cloud SSD & Domain (799.000đ / năm)</option>
+                        <option value="custom">Gói Thiết Kế Website Theo Yêu Cầu Riêng (Báo giá chi tiết)</option>
                       </select>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
                       Ghi chú / Yêu cầu thêm (nếu có)
                     </label>
                     <textarea
                       rows={3}
-                      placeholder="VD: Mình bán dự án biệt thự biển Vinhomes, cần tên miền riêng..."
+                      placeholder="VD: Mình bán dự án biệt thự biển Vinhomes, cần tên miền riêng hoanggialand.vn..."
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-md text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-colors resize-none"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 font-medium placeholder-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all resize-none"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm rounded-md transition-colors shadow-sm flex items-center justify-center gap-2 mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     <Send className="w-4 h-4" />
-                    <span>{loading ? 'Đang gửi...' : 'Gửi Yêu Cầu & Nhận Tư Vấn Ngay'}</span>
+                    <span>{loading ? 'Đang gửi yêu cầu...' : 'Gửi Yêu Cầu & Nhận Tư Vấn Ngay'}</span>
                   </button>
                 </form>
               )}

@@ -228,12 +228,12 @@ export default function AdminDashboard() {
         <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">System Admin</h1>
-              <p className="text-slate-500 mt-1">Quản lý toàn bộ hệ thống PlatformBDS</p>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Hệ Thống Quản Trị</h1>
+              <p className="text-slate-500 mt-1">Quản lý toàn bộ hệ thống TEMPLATES BDS</p>
             </div>
             {isOffline && (
               <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold animate-pulse">
-                <WifiOff className="w-3.5 h-3.5" /> Chế độ Demo
+                <WifiOff className="w-3.5 h-3.5" /> Chế độ Thử nghiệm
               </span>
             )}
           </div>
@@ -248,7 +248,7 @@ export default function AdminDashboard() {
                 <div className="overflow-hidden">
                   <h3 className="text-base font-bold text-slate-900 leading-tight truncate">{user.fullName}</h3>
                   <span className="bg-indigo-100 text-indigo-800 text-[9px] font-bold px-2 py-0.5 rounded uppercase mt-1 inline-block">
-                    SUPER ADMIN
+                    QUẢN TRỊ VIÊN CẤP CAO
                   </span>
                 </div>
               </div>
@@ -336,11 +336,11 @@ export default function AdminDashboard() {
                   }`}>
                     <Database className={`w-12 h-12 mb-4 ${isOffline ? 'text-amber-400' : 'text-indigo-400'}`} />
                     <h3 className="text-lg font-bold text-slate-800">
-                      {isOffline ? 'Database Offline (Demo Mode)' : 'Database Connected'}
+                      {isOffline ? 'Cơ Sở Dữ Liệu Đang Ngoại Tuyến (Chế Độ Thử Nghiệm)' : 'Cơ Sở Dữ Liệu Đã Kết Nối Trực Tuyến'}
                     </h3>
                     <p className="text-sm text-slate-500 mt-2 max-w-lg">
                       {isOffline 
-                        ? 'Không thể kết nối đến cơ sở dữ liệu PostgreSQL. Hệ thống tự động chuyển sang chế độ Mock Session để đảm bảo trải nghiệm giao diện không bị gián đoạn.' 
+                        ? 'Không thể kết nối đến cơ sở dữ liệu. Hệ thống tự động chuyển sang chế độ dữ liệu mẫu để đảm bảo trải nghiệm giao diện không bị gián đoạn.' 
                         : 'Hệ thống đang hoạt động trực tuyến. Mọi dữ liệu như Khách hàng, Đơn hàng và Doanh thu được đồng bộ thời gian thực từ cơ sở dữ liệu chính.'
                       }
                     </p>
@@ -378,19 +378,19 @@ export default function AdminDashboard() {
                                   <div>{order.fullName}</div>
                                   <div className="text-[10px] text-slate-400">{order.email}</div>
                                 </td>
-                                <td className="px-5 py-3.5 text-slate-600">
-                                  {order.type === 'BUY' ? 'Mua đứt' : 'Thuê tháng'}
+                                <td className="px-5 py-3.5 text-slate-600 font-semibold">
+                                  {order.type === 'BUY' || order.type === 'BUY_SOURCE' ? 'Mua đứt bản quyền' : 'Thuê website SaaS'}
                                 </td>
-                                <td className="px-5 py-3.5 font-bold text-slate-800">
+                                <td className="px-5 py-3.5 font-bold text-slate-800 font-mono">
                                   {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(order.amount)}
                                 </td>
                                 <td className="px-5 py-3.5">
                                   <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                                     order.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-800' :
-                                    order.status === 'WAITING_CONFIRM' ? 'bg-amber-100 text-amber-800' :
+                                    order.status === 'WAITING_CONFIRM' || order.status === 'PENDING' ? 'bg-amber-100 text-amber-800' :
                                     'bg-slate-100 text-slate-600'
                                   }`}>
-                                    {order.status}
+                                    {order.status === 'COMPLETED' ? 'Đã hoàn thành' : order.status === 'PENDING' || order.status === 'WAITING_CONFIRM' ? 'Chờ duyệt' : order.status}
                                   </span>
                                 </td>
                               </tr>
@@ -465,7 +465,7 @@ export default function AdminDashboard() {
                                       order.status === 'REJECTED' ? 'bg-rose-100 text-rose-800' :
                                       'bg-slate-100 text-slate-600'
                                     }`}>
-                                      {order.status === 'PENDING' ? 'Chờ duyệt Zalo' : order.status}
+                                      {order.status === 'PENDING' || order.status === 'WAITING_CONFIRM' ? 'Chờ duyệt kích hoạt' : order.status === 'COMPLETED' ? 'Đã kích hoạt' : order.status}
                                     </span>
                                   </td>
                                   <td className="px-5 py-4 font-mono text-slate-500">{order.transactionCode || 'Zalo Direct'}</td>

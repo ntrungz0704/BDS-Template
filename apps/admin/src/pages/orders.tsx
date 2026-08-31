@@ -252,7 +252,7 @@ export default function AdminOrders() {
             <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
           </span>
           <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-            <span>Realtime Live:</span>
+            <span>Trực Tuyến Thời Gian Thực:</span>
             <span className="text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md font-mono font-extrabold border border-emerald-200 shadow-xs">
               {now ? formatFullDateTime(now) : 'Đang đồng bộ...'}
             </span>
@@ -422,13 +422,13 @@ export default function AdminOrders() {
                       <td className="px-3 py-3">
                         {order.type === 'BUY_SOURCE' ? (
                           <div>
-                            <span className="font-bold text-slate-800 text-[11px] block">Mua Source</span>
-                            <span className="text-[9px] text-slate-400 italic">Mã nguồn ZIP</span>
+                            <span className="font-bold text-slate-800 text-[11px] block">Mua Mã Nguồn</span>
+                            <span className="text-[9px] text-slate-400 italic">File nén mã nguồn</span>
                           </div>
                         ) : order.subdomain ? (
                           <div>
                             <span className="font-mono font-bold text-indigo-700 text-[11px] truncate block">{order.subdomain}</span>
-                            <span className="text-[9px] text-slate-400 italic">Auto cấp domain</span>
+                            <span className="text-[9px] text-slate-400 italic">Cấp tên miền tự động</span>
                           </div>
                         ) : (
                           <span className="text-slate-400 italic text-[11px]">Chưa đặt</span>

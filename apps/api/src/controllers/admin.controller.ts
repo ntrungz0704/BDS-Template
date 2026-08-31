@@ -1825,7 +1825,7 @@ export async function getAdminLeads(req: Request, res: Response, next: NextFunct
         source: l.source,
         projectTitle: l.projectTitle || (l.tenant ? `Website: ${l.tenant.name}` : 'Mẫu BĐS'),
         tenant: l.tenant || null,
-        isMarketplace: !l.tenantId,
+        isMarketplace: l.source === 'MARKETPLACE_DEMO' || !l.tenantId,
         createdAt: l.createdAt,
         notes: l.notes || []
       });
@@ -1871,7 +1871,7 @@ export async function getAdminLeads(req: Request, res: Response, next: NextFunct
           source: s.source || 'WEBSITE_FORM',
           projectTitle: s.sourcePage || (s.tenant ? `Website: ${s.tenant.name}` : 'Mẫu BĐS Demo'),
           tenant: s.tenant || null,
-          isMarketplace: !s.tenantId,
+          isMarketplace: s.source === 'MARKETPLACE_DEMO' || !s.tenantId,
           createdAt: s.createdAt,
           notes: []
         });

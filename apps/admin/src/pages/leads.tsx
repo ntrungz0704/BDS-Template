@@ -378,7 +378,7 @@ export default function AdminLeadsPage() {
                         <td className="py-3 px-3">
                           <div className="space-y-0.5 min-w-0">
                             <span className={`inline-block text-[9px] font-black px-1.5 py-0.5 rounded-full border ${lead.isMarketplace ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'}`}>
-                              {lead.isMarketplace ? 'Demo' : 'Website'}
+                              {lead.isMarketplace ? 'Mẫu Demo' : 'Website Khách'}
                             </span>
                             <p className="font-bold text-slate-800 truncate">{lead.projectTitle || 'Bất động sản'}</p>
                           </div>
@@ -405,12 +405,12 @@ export default function AdminLeadsPage() {
                             onChange={(e) => updateStatusMutation.mutate({ id: lead.id, status: e.target.value as LeadStatus })}
                             className={`w-full text-[10px] font-extrabold px-1.5 py-1 rounded-lg border focus:outline-none cursor-pointer ${statusConf.badgeBg} ${statusConf.textCol} ${statusConf.borderCol}`}
                           >
-                            <option value="NEW">🔴 Mới</option>
-                            <option value="CONTACTED">🟡 Đã LH</option>
+                            <option value="NEW">🔴 Mới Nhận</option>
+                            <option value="CONTACTED">🟡 Đã Liên Hệ</option>
                             <option value="QUALIFIED">🟣 Tiềm Năng</option>
                             <option value="WON">🟢 Đã Chốt</option>
-                            <option value="LOST">⚪ Hủy</option>
-                            <option value="SPAM">⚫ Spam</option>
+                            <option value="LOST">⚪ Hủy/Không Mua</option>
+                            <option value="SPAM">⚫ Thư Rác/Spam</option>
                           </select>
                         </td>
 

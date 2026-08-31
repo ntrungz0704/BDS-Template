@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Link from 'next/link';
@@ -113,7 +113,7 @@ export default function AdminDashboard() {
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-xl border border-indigo-100 flex items-center gap-1">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Tự động cập nhật 5s</span>
+            <span>Tự động cập nhật mỗi 5 giây</span>
           </span>
         </div>
       </div>
@@ -167,7 +167,7 @@ export default function AdminDashboard() {
           </div>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="text-2xl font-black text-rose-600 tracking-tight font-mono">{leadsCounts.total}</span>
-            <span className="text-xs font-bold text-slate-400">lead ({leadsCounts.newCount} mới)</span>
+            <span className="text-xs font-bold text-slate-400">khách ({leadsCounts.newCount} mới)</span>
           </div>
           <p className="text-xs text-rose-600 font-semibold mt-2 flex items-center gap-1">
             <span>Điền form nhận bảng giá & tài liệu</span>
@@ -276,7 +276,7 @@ export default function AdminDashboard() {
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-xs text-slate-900 truncate">{lead.fullName || 'Khách vãng lai'}</span>
                           <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
-                            {lead.isMarketplace ? 'Demo' : 'Website'}
+                            {lead.isMarketplace ? 'Mẫu Demo' : 'Website Khách'}
                           </span>
                         </div>
                         <p className="text-xs text-slate-600 font-medium mt-1 truncate max-w-[220px]">

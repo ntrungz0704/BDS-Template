@@ -749,7 +749,7 @@ export default function MarketplaceHome() {
                       <h4 className="text-sm font-extrabold text-white mb-2">BẢO TRÌ WEBSITE</h4>
                       <div className="mb-4">
                         <span className="text-xl font-bold text-white">299.000đ</span>
-                        <span className="text-[9px] text-emerald-450 font-bold">/ tháng</span>
+                        <span className="text-[9px] text-emerald-400 font-bold">/ năm</span>
                       </div>
                       <ul className="space-y-2 text-[11px] text-slate-350 font-medium mb-5">
                         <li className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-emerald-500" /> Cập nhật, kiểm tra định kỳ</li>

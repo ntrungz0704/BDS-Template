@@ -1,14 +1,27 @@
 import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
 
-const EXEMPT_PUBLIC_AUTH_PATHS = new Set([
+const EXEMPT_PUBLIC_PATHS = new Set([
   '/api/auth/register',
   '/api/auth/login',
   '/api/auth/forgot-password',
   '/api/auth/reset-password',
   '/api/auth/verify-email',
   '/api/auth/resend-verification',
+  '/api/marketplace/orders',
+  '/api/marketplace/contact',
+  '/api/marketplace/webhook/sepay',
+  '/api/ai/sync-guest-history',
+  '/api/ai/chat',
 ]);
+
+function isExemptPath(path: string): boolean {
+  if (EXEMPT_PUBLIC_PATHS.has(path)) return true;
+  // Dynamic public contact paths like /api/website/:tenantSlug/contact or /api/cms/forms/submit
+  if (path.startsWith('/api/website/') && path.endsWith('/contact')) return true;
+  if (path === '/api/cms/forms/submit') return true;
+  return false;
+}
 
 function tokensMatch(cookieToken: unknown, headerToken: unknown): boolean {
   if (typeof cookieToken !== 'string' || typeof headerToken !== 'string') {
@@ -28,8 +41,11 @@ export function csrfMiddleware(req: Request, res: Response, next: NextFunction) 
     return next();
   }
 
-  // Public authentication endpoints do not act on an existing session.
-  if (EXEMPT_PUBLIC_AUTH_PATHS.has(req.path) || EXEMPT_PUBLIC_AUTH_PATHS.has(req.originalUrl.split('?')[0])) {
+  const rawPath = req.path || '';
+  const cleanUrl = req.originalUrl ? req.originalUrl.split('?')[0] : '';
+
+  // Public endpoints do not require CSRF token validation
+  if (isExemptPath(rawPath) || isExemptPath(cleanUrl)) {
     return next();
   }
 

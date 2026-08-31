@@ -820,8 +820,17 @@ export async function createContactSubmission(req: Request, res: Response, next:
     ].filter(Boolean).join(' | ') || (data.message || 'Khách đăng ký nhận tư vấn và bảng giá chi tiết');
 
     // Find default tenant or first tenant for record keeping
-    const firstTenant = await prisma.tenant.findFirst();
-    const tenantId = firstTenant?.id;
+    let firstTenant = await prisma.tenant.findFirst();
+    if (!firstTenant) {
+      firstTenant = await prisma.tenant.create({
+        data: {
+          name: 'TEMPLATES BDS Marketplace',
+          slug: 'marketplace-main',
+          status: 'ACTIVE',
+        }
+      });
+    }
+    const tenantId = firstTenant.id;
 
     if (tenantId) {
       // 1. Create in ContactFormSubmission
