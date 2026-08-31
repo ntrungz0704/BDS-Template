@@ -650,13 +650,13 @@ export default function BDS13Template({
             onChange={e => setFilterDistrict(e.target.value)}
             className="w-full bg-white text-slate-900 px-3 py-2.5 rounded-sm focus:outline-none font-medium"
           >
-            <option value="all">Khu Vực (Tất Cả)</option>
-            <option value="Tân Dương">Xã Tân Dương</option>
-            <option value="An Lư">Xã An Lư (Vsip)</option>
-            <option value="Dương Quan">Xã Dương Quan (Bắc Sông Cấm)</option>
-            <option value="Thủy Đường">Xã Thủy Đường</option>
-            <option value="Núi Đèo">Thị Trấn Núi Đèo</option>
-            <option value="Sở Dầu">Quận Hồng Bàng</option>
+            <option className="text-slate-900 bg-white font-medium" value="all">Khu Vực (Tất Cả)</option>
+            <option className="text-slate-900 bg-white font-medium" value="Tân Dương">Xã Tân Dương</option>
+            <option className="text-slate-900 bg-white font-medium" value="An Lư">Xã An Lư (Vsip)</option>
+            <option className="text-slate-900 bg-white font-medium" value="Dương Quan">Xã Dương Quan (Bắc Sông Cấm)</option>
+            <option className="text-slate-900 bg-white font-medium" value="Thủy Đường">Xã Thủy Đường</option>
+            <option className="text-slate-900 bg-white font-medium" value="Núi Đèo">Thị Trấn Núi Đèo</option>
+            <option className="text-slate-900 bg-white font-medium" value="Sở Dầu">Quận Hồng Bàng</option>
           </select>
 
           {/* Price Range */}
@@ -665,10 +665,10 @@ export default function BDS13Template({
             onChange={e => setFilterPrice(e.target.value)}
             className="w-full bg-white text-slate-900 px-3 py-2.5 rounded-sm focus:outline-none font-medium"
           >
-            <option value="all">Mức Giá (Tất Cả)</option>
-            <option value="under-3">Dưới 3 Tỷ</option>
-            <option value="3-5">3 - 5 Tỷ</option>
-            <option value="above-5">Trên 5 Tỷ</option>
+            <option className="text-slate-900 bg-white font-medium" value="all">Mức Giá (Tất Cả)</option>
+            <option className="text-slate-900 bg-white font-medium" value="under-3">Dưới 3 Tỷ</option>
+            <option className="text-slate-900 bg-white font-medium" value="3-5">3 - 5 Tỷ</option>
+            <option className="text-slate-900 bg-white font-medium" value="above-5">Trên 5 Tỷ</option>
           </select>
 
           {/* Search Action */}

@@ -653,7 +653,7 @@ export default function BDS23Template({
               onChange={e => setFilterDeveloper(e.target.value)}
               className="w-full sm:w-auto bg-slate-50 border border-slate-300 px-3 py-2 text-xs focus:outline-none"
             >
-              <option value="all">Chủ Đầu Tư (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Chủ Đầu Tư (Tất cả)</option>
               {availableDevelopers.filter(d => d !== 'all').map(d => (
                 <option key={d} value={d}>{d}</option>
               ))}
@@ -674,7 +674,7 @@ export default function BDS23Template({
             <div 
               key={proj.id}
               onClick={() => handleOpenProject(proj)}
-              className="bg-white border border-slate-300 shadow-sm hover:shadow-xl transition group overflow-hidden cursor-pointer flex flex-col justify-between"
+              className="bg-white text-slate-900 border border-slate-300 shadow-sm hover:shadow-xl transition group overflow-hidden cursor-pointer flex flex-col justify-between font-medium"
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-slate-950">
                 <img

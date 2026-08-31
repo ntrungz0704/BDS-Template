@@ -831,7 +831,7 @@ export default function BDS17Template({
               onChange={e => setFilterType(e.target.value)}
               className="bg-slate-50 border border-slate-300 px-3 py-1.5 focus:outline-none"
             >
-              <option value="all">Loại Căn Hộ (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Loại Căn Hộ (Tất cả)</option>
               {availableTypes.filter(t => t !== 'all').map(t => (
                 <option key={t} value={t}>{t}</option>
               ))}
@@ -842,10 +842,10 @@ export default function BDS17Template({
               onChange={e => setFilterPrice(e.target.value)}
               className="bg-slate-50 border border-slate-300 px-3 py-1.5 focus:outline-none"
             >
-              <option value="all">Mức Giá (Tất cả)</option>
-              <option value="under-3">Dưới 3 Tỷ</option>
-              <option value="3-6">3 - 6 Tỷ</option>
-              <option value="above-6">Trên 6 Tỷ</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Mức Giá (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="under-3">Dưới 3 Tỷ</option>
+              <option className="text-slate-900 bg-white font-medium" value="3-6">3 - 6 Tỷ</option>
+              <option className="text-slate-900 bg-white font-medium" value="above-6">Trên 6 Tỷ</option>
             </select>
 
             <button
@@ -877,7 +877,7 @@ export default function BDS17Template({
             {filteredUnits.map(unit => (
               <div 
                 key={unit.id}
-                className="bg-white border border-slate-300 shadow-sm hover:shadow-md transition flex flex-col justify-between group"
+                className="bg-white text-slate-900 border border-slate-300 shadow-sm hover:shadow-md transition flex flex-col justify-between group font-medium"
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-slate-900">
                   <img
@@ -1081,11 +1081,11 @@ export default function BDS17Template({
               onChange={e => setBookingForm({ ...bookingForm, unitType: e.target.value })}
               className="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none"
             >
-              <option value="Căn Hộ Studio">Căn Hộ Studio (42 m²)</option>
-              <option value="1 Phòng Ngủ">Căn Hộ 1 Phòng Ngủ (58 m²)</option>
-              <option value="2 Phòng Ngủ">Căn Hộ 2 Phòng Ngủ (82 m²)</option>
-              <option value="3 Phòng Ngủ">Căn Hộ 3 Phòng Ngủ (115 m²)</option>
-              <option value="Biệt Thự Đơn Lập">Dinh Thự Đồi Đơn Lập (320 m²)</option>
+              <option className="text-slate-900 bg-white font-medium" value="Căn Hộ Studio">Căn Hộ Studio (42 m²)</option>
+              <option className="text-slate-900 bg-white font-medium" value="1 Phòng Ngủ">Căn Hộ 1 Phòng Ngủ (58 m²)</option>
+              <option className="text-slate-900 bg-white font-medium" value="2 Phòng Ngủ">Căn Hộ 2 Phòng Ngủ (82 m²)</option>
+              <option className="text-slate-900 bg-white font-medium" value="3 Phòng Ngủ">Căn Hộ 3 Phòng Ngủ (115 m²)</option>
+              <option className="text-slate-900 bg-white font-medium" value="Biệt Thự Đơn Lập">Dinh Thự Đồi Đơn Lập (320 m²)</option>
             </select>
           </div>
 

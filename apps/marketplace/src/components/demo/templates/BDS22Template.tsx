@@ -755,7 +755,7 @@ export default function BDS22Template({
               onChange={e => setFilterZone(e.target.value)}
               className="bg-slate-50 border border-slate-300 px-3 py-2 focus:outline-none"
             >
-              <option value="all">Phân Khu (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Phân Khu (Tất cả)</option>
               {availableZones.filter(z => z !== 'all').map(z => (
                 <option key={z} value={z}>{z}</option>
               ))}
@@ -766,7 +766,7 @@ export default function BDS22Template({
               onChange={e => setFilterType(e.target.value)}
               className="bg-slate-50 border border-slate-300 px-3 py-2 focus:outline-none"
             >
-              <option value="all">Loại Hình (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Loại Hình (Tất cả)</option>
               {availableTypes.filter(t => t !== 'all').map(t => (
                 <option key={t} value={t}>{t}</option>
               ))}
@@ -800,7 +800,7 @@ export default function BDS22Template({
             {filteredUnits.map(unit => (
               <div 
                 key={unit.id}
-                className="bg-white border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden"
+                className="bg-white text-slate-900 border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden font-medium"
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-slate-950">
                   <img
@@ -996,10 +996,10 @@ export default function BDS22Template({
               onChange={e => setBookingForm({ ...bookingForm, zoneInterested: e.target.value })}
               className="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none font-bold"
             >
-              <option value="Phân Khu Biệt Thự Biển">Phân Khu Biệt Thự Biển (Sở Hữu Lâu Dài)</option>
-              <option value="Tháp Condotel ZoHotels">Tháp Condotel ZoHotels (Từ 2.35 Tỷ)</option>
-              <option value="Shophouse Bến Du Thuyền">Shophouse Bến Du Thuyền (Kinh Doanh Ngay)</option>
-              <option value="Sky Villa Đỉnh Đồi">Sky Villa Đỉnh Đồi (View 360 Độ Vịnh)</option>
+              <option className="text-slate-900 bg-white font-medium" value="Phân Khu Biệt Thự Biển">Phân Khu Biệt Thự Biển (Sở Hữu Lâu Dài)</option>
+              <option className="text-slate-900 bg-white font-medium" value="Tháp Condotel ZoHotels">Tháp Condotel ZoHotels (Từ 2.35 Tỷ)</option>
+              <option className="text-slate-900 bg-white font-medium" value="Shophouse Bến Du Thuyền">Shophouse Bến Du Thuyền (Kinh Doanh Ngay)</option>
+              <option className="text-slate-900 bg-white font-medium" value="Sky Villa Đỉnh Đồi">Sky Villa Đỉnh Đồi (View 360 Độ Vịnh)</option>
             </select>
           </div>
 

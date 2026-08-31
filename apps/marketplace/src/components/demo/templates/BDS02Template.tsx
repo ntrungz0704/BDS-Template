@@ -358,15 +358,49 @@ export const resolvePageAndDetail = (p?: string) => {
 
 export default function BDS02Template({ template, viewport = 'desktop', initialPage = 'home', company, theme, projects, posts }: TemplateProps) {
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
+
+  const activeProperties = useMemo<PropertyItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): PropertyItem => ({
+        id: p.id || idx + 1,
+        title: p.title || p.name || 'Bất động sản cao cấp',
+        slug: p.slug || `bds-${idx + 1}`,
+        category: p.category || p.type || 'nha-mat-tien',
+        type: p.type || p.category || 'Nhà mặt tiền',
+        price: p.price || (p.priceFrom ? `${p.priceFrom} Tỷ` : 'Liên hệ'),
+        priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 5.0),
+        area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '100 m²'),
+        areaNum: typeof p.area === 'number' ? p.area : (parseFloat(p.area) || 100),
+        location: p.location || p.address || 'Đà Nẵng & Toàn quốc',
+        district: p.district || p.location || 'Hải Châu',
+        city: p.city || 'Đà Nẵng',
+        bedrooms: p.bedrooms || 3,
+        bathrooms: p.bathrooms || 2,
+        direction: p.direction || 'Đông Nam',
+        legal: p.legal || 'Sổ hồng riêng',
+        image: p.image || p.thumbnail || p.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+        date: p.date || 'Hôm nay',
+        featured: Boolean(p.featured || idx < 3),
+        desc: p.description || p.desc || 'Vị trí đắc địa, giao thông thuận lợi, tiềm năng sinh lời cao.',
+        author: {
+          name: company?.name || 'Chuyên Viên Tư Vấn',
+          phone: company?.phone || '0919 006 030',
+          zalo: (company as any)?.zalo || company?.phone || '0919 006 030',
+          avatar: company?.logo || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80',
+        }
+      }));
+    }
+    return BDS02_PROPERTIES;
+  }, [projects, company]);
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [selectedProperty, setSelectedProperty] = useState<PropertyItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS02_PROPERTIES.find(p => p.slug === initialParsed.propSlug);
+      const found = activeProperties.find(p => p.slug === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS02_PROPERTIES[0];
+    return (activeProperties[0] || BDS02_PROPERTIES[0]);
   });
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
@@ -400,7 +434,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
     const res = resolvePageAndDetail(initialPage);
     setCurrentPageState(res.page);
     if (res.propSlug) {
-      const found = BDS02_PROPERTIES.find(p => p.slug === res.propSlug);
+      const found = activeProperties.find(p => p.slug === res.propSlug);
       if (found) setSelectedProperty(found);
     }
     if (res.artSlug) {
@@ -464,7 +498,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
   // Filtered Properties
   const filteredList = useMemo(() => {
-    return BDS02_PROPERTIES.filter(item => {
+    return activeProperties.filter(item => {
       if (currentPage !== 'home' && ['biet-thu', 'nha-mat-tien', 'nha-ngo-hem', 'phong-tro', 'can-ho'].includes(currentPage)) {
         if (item.category !== currentPage) return false;
       }
@@ -705,11 +739,11 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
               onChange={e => setFilterPropType(e.target.value)}
               className="bg-white text-slate-800 px-3 py-2 rounded-lg font-bold focus:outline-none cursor-pointer"
             >
-              <option value="all">Loại bất động sản</option>
-              <option value="biet-thu">Biệt thự</option>
-              <option value="nha-mat-tien">Nhà mặt tiền</option>
-              <option value="nha-ngo-hem">Nhà ngõ, hẻm</option>
-              <option value="phong-tro">Phòng trọ</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Loại bất động sản</option>
+              <option className="text-slate-900 bg-white font-medium" value="biet-thu">Biệt thự</option>
+              <option className="text-slate-900 bg-white font-medium" value="nha-mat-tien">Nhà mặt tiền</option>
+              <option className="text-slate-900 bg-white font-medium" value="nha-ngo-hem">Nhà ngõ, hẻm</option>
+              <option className="text-slate-900 bg-white font-medium" value="phong-tro">Phòng trọ</option>
             </select>
 
             <select
@@ -717,11 +751,11 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
               onChange={e => setFilterDistrict(e.target.value)}
               className="bg-white text-slate-800 px-3 py-2 rounded-lg font-bold focus:outline-none cursor-pointer"
             >
-              <option value="all">Quận/ huyện</option>
-              <option value="Thanh Khê">Quận Thanh Khê</option>
-              <option value="Hải Châu">Quận Hải Châu</option>
-              <option value="Sơn Trà">Quận Sơn Trà</option>
-              <option value="Ngũ Hành Sơn">Quận Ngũ Hành Sơn</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Quận/ huyện</option>
+              <option className="text-slate-900 bg-white font-medium" value="Thanh Khê">Quận Thanh Khê</option>
+              <option className="text-slate-900 bg-white font-medium" value="Hải Châu">Quận Hải Châu</option>
+              <option className="text-slate-900 bg-white font-medium" value="Sơn Trà">Quận Sơn Trà</option>
+              <option className="text-slate-900 bg-white font-medium" value="Ngũ Hành Sơn">Quận Ngũ Hành Sơn</option>
             </select>
 
             <select
@@ -729,10 +763,10 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
               onChange={e => setFilterArea(e.target.value)}
               className="bg-white text-slate-800 px-3 py-2 rounded-lg font-bold focus:outline-none cursor-pointer"
             >
-              <option value="all">Diện tích</option>
-              <option value="under-50">Dưới 50 m²</option>
-              <option value="50-100">50 - 100 m²</option>
-              <option value="above-100">Trên 100 m²</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Diện tích</option>
+              <option className="text-slate-900 bg-white font-medium" value="under-50">Dưới 50 m²</option>
+              <option className="text-slate-900 bg-white font-medium" value="50-100">50 - 100 m²</option>
+              <option className="text-slate-900 bg-white font-medium" value="above-100">Trên 100 m²</option>
             </select>
 
             <select
@@ -740,10 +774,10 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
               onChange={e => setFilterPrice(e.target.value)}
               className="bg-white text-slate-800 px-3 py-2 rounded-lg font-bold focus:outline-none cursor-pointer"
             >
-              <option value="all">Khoảng giá</option>
-              <option value="under-3">Dưới 3 Tỷ</option>
-              <option value="3-10">Từ 3 - 10 Tỷ</option>
-              <option value="above-10">Trên 10 Tỷ</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Khoảng giá</option>
+              <option className="text-slate-900 bg-white font-medium" value="under-3">Dưới 3 Tỷ</option>
+              <option className="text-slate-900 bg-white font-medium" value="3-10">Từ 3 - 10 Tỷ</option>
+              <option className="text-slate-900 bg-white font-medium" value="above-10">Trên 10 Tỷ</option>
             </select>
 
             <button
@@ -779,42 +813,42 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
             onChange={e => setFilterPropType(e.target.value)}
             className="w-full bg-white border border-slate-300 rounded-md px-2.5 py-1.5 text-xs font-bold cursor-pointer"
           >
-            <option value="all">Loại bất động sản</option>
-            <option value="biet-thu">Biệt thự</option>
-            <option value="nha-mat-tien">Nhà mặt tiền</option>
-            <option value="nha-ngo-hem">Nhà ngõ, hẻm</option>
-            <option value="phong-tro">Phòng trọ</option>
+            <option className="text-slate-900 bg-white font-medium" value="all">Loại bất động sản</option>
+            <option className="text-slate-900 bg-white font-medium" value="biet-thu">Biệt thự</option>
+            <option className="text-slate-900 bg-white font-medium" value="nha-mat-tien">Nhà mặt tiền</option>
+            <option className="text-slate-900 bg-white font-medium" value="nha-ngo-hem">Nhà ngõ, hẻm</option>
+            <option className="text-slate-900 bg-white font-medium" value="phong-tro">Phòng trọ</option>
           </select>
           <select
             value={filterDistrict}
             onChange={e => setFilterDistrict(e.target.value)}
             className="w-full bg-white border border-slate-300 rounded-md px-2.5 py-1.5 text-xs font-bold cursor-pointer"
           >
-            <option value="all">Quận/ huyện</option>
-            <option value="Thanh Khê">Quận Thanh Khê</option>
-            <option value="Hải Châu">Quận Hải Châu</option>
-            <option value="Sơn Trà">Quận Sơn Trà</option>
-            <option value="Ngũ Hành Sơn">Quận Ngũ Hành Sơn</option>
+            <option className="text-slate-900 bg-white font-medium" value="all">Quận/ huyện</option>
+            <option className="text-slate-900 bg-white font-medium" value="Thanh Khê">Quận Thanh Khê</option>
+            <option className="text-slate-900 bg-white font-medium" value="Hải Châu">Quận Hải Châu</option>
+            <option className="text-slate-900 bg-white font-medium" value="Sơn Trà">Quận Sơn Trà</option>
+            <option className="text-slate-900 bg-white font-medium" value="Ngũ Hành Sơn">Quận Ngũ Hành Sơn</option>
           </select>
           <select
             value={filterArea}
             onChange={e => setFilterArea(e.target.value)}
             className="w-full bg-white border border-slate-300 rounded-md px-2.5 py-1.5 text-xs font-bold cursor-pointer"
           >
-            <option value="all">Diện tích</option>
-            <option value="under-50">Dưới 50 m²</option>
-            <option value="50-100">50 - 100 m²</option>
-            <option value="above-100">Trên 100 m²</option>
+            <option className="text-slate-900 bg-white font-medium" value="all">Diện tích</option>
+            <option className="text-slate-900 bg-white font-medium" value="under-50">Dưới 50 m²</option>
+            <option className="text-slate-900 bg-white font-medium" value="50-100">50 - 100 m²</option>
+            <option className="text-slate-900 bg-white font-medium" value="above-100">Trên 100 m²</option>
           </select>
           <select
             value={filterPrice}
             onChange={e => setFilterPrice(e.target.value)}
             className="w-full bg-white border border-slate-300 rounded-md px-2.5 py-1.5 text-xs font-bold cursor-pointer"
           >
-            <option value="all">Khoảng giá</option>
-            <option value="under-3">Dưới 3 Tỷ</option>
-            <option value="3-10">Từ 3 - 10 Tỷ</option>
-            <option value="above-10">Trên 10 Tỷ</option>
+            <option className="text-slate-900 bg-white font-medium" value="all">Khoảng giá</option>
+            <option className="text-slate-900 bg-white font-medium" value="under-3">Dưới 3 Tỷ</option>
+            <option className="text-slate-900 bg-white font-medium" value="3-10">Từ 3 - 10 Tỷ</option>
+            <option className="text-slate-900 bg-white font-medium" value="above-10">Trên 10 Tỷ</option>
           </select>
           <button
             onClick={() => navigate('nha-mat-tien')}
@@ -973,9 +1007,9 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
   // ── HOMEPAGE RENDERER ──
   const renderHomePage = () => {
-    const featuredItems = BDS02_PROPERTIES.filter(p => p.featured);
-    const thanhKheItems = BDS02_PROPERTIES.filter(p => p.district === 'Thanh Khê');
-    const sonTraItems = BDS02_PROPERTIES.filter(p => p.district === 'Sơn Trà');
+    const featuredItems = activeProperties.filter(p => p.featured);
+    const thanhKheItems = activeProperties.filter(p => p.district === 'Thanh Khê');
+    const sonTraItems = activeProperties.filter(p => p.district === 'Sơn Trà');
 
     return (
       <div className="bg-[#F8FAFC] space-y-8 pb-12">
@@ -1345,9 +1379,9 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
                     onChange={e => setLoanPercent(Number(e.target.value))}
                     className="w-full border border-slate-300 rounded p-2 font-bold cursor-pointer"
                   >
-                    <option value={50}>50% giá trị nhà</option>
-                    <option value={70}>70% giá trị nhà</option>
-                    <option value={80}>80% giá trị nhà</option>
+                    <option className="text-slate-900 bg-white font-medium" value={50}>50% giá trị nhà</option>
+                    <option className="text-slate-900 bg-white font-medium" value={70}>70% giá trị nhà</option>
+                    <option className="text-slate-900 bg-white font-medium" value={80}>80% giá trị nhà</option>
                   </select>
                 </div>
                 <div>
@@ -1357,10 +1391,10 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
                     onChange={e => setLoanYears(Number(e.target.value))}
                     className="w-full border border-slate-300 rounded p-2 font-bold cursor-pointer"
                   >
-                    <option value={10}>10 năm (120 tháng)</option>
-                    <option value={15}>15 năm (180 tháng)</option>
-                    <option value={20}>20 năm (240 tháng)</option>
-                    <option value={25}>25 năm (300 tháng)</option>
+                    <option className="text-slate-900 bg-white font-medium" value={10}>10 năm (120 tháng)</option>
+                    <option className="text-slate-900 bg-white font-medium" value={15}>15 năm (180 tháng)</option>
+                    <option className="text-slate-900 bg-white font-medium" value={20}>20 năm (240 tháng)</option>
+                    <option className="text-slate-900 bg-white font-medium" value={25}>25 năm (300 tháng)</option>
                   </select>
                 </div>
                 <div>
@@ -1571,11 +1605,11 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
                   onChange={e => setConsignmentForm({ ...consignmentForm, propType: e.target.value })}
                   className="w-full border border-slate-300 rounded-lg p-2.5 bg-white font-bold"
                 >
-                  <option value="Nhà mặt tiền">Nhà mặt tiền</option>
-                  <option value="Biệt thự">Biệt thự</option>
-                  <option value="Nhà ngõ hẻm">Nhà ngõ, hẻm</option>
-                  <option value="Phòng trọ">Phòng trọ / Căn hộ dịch vụ</option>
-                  <option value="Đất nền">Đất nền dự án</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Nhà mặt tiền">Nhà mặt tiền</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Biệt thự">Biệt thự</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Nhà ngõ hẻm">Nhà ngõ, hẻm</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Phòng trọ">Phòng trọ / Căn hộ dịch vụ</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Đất nền">Đất nền dự án</option>
                 </select>
               </div>
               <div>

@@ -231,10 +231,10 @@ export default function LP06Template({
                       onChange={(e) => setHeroProductType(e.target.value)}
                       className="w-full px-3 py-2 bg-white text-slate-900 font-black border border-slate-300 outline-none"
                     >
-                      <option value="Đất Nền Nhà Phố Liền Kề (100m² - 120m²)">Đất Nền Nhà Phố Liền Kề (100m² - 120m²)</option>
-                      <option value="Shophouse Đại Lộ Ánh Sáng (110m² - 140m²)">Shophouse Đại Lộ Ánh Sáng (110m² - 140m²)</option>
-                      <option value="Biệt Thự Vườn Ven Hồ (200m² - 350m²)">Biệt Thự Vườn Ven Hồ (200m² - 350m²)</option>
-                      <option value="Dinh Thự Đảo Ngọc (500m² - 800m²)">Dinh Thự Đảo Ngọc (500m² - 800m²)</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Đất Nền Nhà Phố Liền Kề (100m² - 120m²)">Đất Nền Nhà Phố Liền Kề (100m² - 120m²)</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Shophouse Đại Lộ Ánh Sáng (110m² - 140m²)">Shophouse Đại Lộ Ánh Sáng (110m² - 140m²)</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Biệt Thự Vườn Ven Hồ (200m² - 350m²)">Biệt Thự Vườn Ven Hồ (200m² - 350m²)</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Dinh Thự Đảo Ngọc (500m² - 800m²)">Dinh Thự Đảo Ngọc (500m² - 800m²)</option>
                     </select>
 
                     <button
@@ -709,10 +709,10 @@ export default function LP06Template({
                   onChange={(e) => setBottomProduct(e.target.value)}
                   className="w-full px-3.5 py-2.5 bg-slate-50 text-slate-900 font-black border border-slate-300 outline-none"
                 >
-                  <option value="Đất Nền Nhà Phố Liền Kề (100m² - 120m²)">Đất Nền Nhà Phố Liền Kề (100m² - 120m²)</option>
-                  <option value="Shophouse Đại Lộ Ánh Sáng (110m² - 140m²)">Shophouse Đại Lộ Ánh Sáng (110m² - 140m²)</option>
-                  <option value="Biệt Thự Vườn Ven Hồ (200m² - 350m²)">Biệt Thự Vườn Ven Hồ (200m² - 350m²)</option>
-                  <option value="Dinh Thự Đảo Ngọc (500m² - 800m²)">Dinh Thự Đảo Ngọc (500m² - 800m²)</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Đất Nền Nhà Phố Liền Kề (100m² - 120m²)">Đất Nền Nhà Phố Liền Kề (100m² - 120m²)</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Shophouse Đại Lộ Ánh Sáng (110m² - 140m²)">Shophouse Đại Lộ Ánh Sáng (110m² - 140m²)</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Biệt Thự Vườn Ven Hồ (200m² - 350m²)">Biệt Thự Vườn Ven Hồ (200m² - 350m²)</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Dinh Thự Đảo Ngọc (500m² - 800m²)">Dinh Thự Đảo Ngọc (500m² - 800m²)</option>
                 </select>
 
                 <button

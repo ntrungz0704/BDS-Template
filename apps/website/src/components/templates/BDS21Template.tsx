@@ -626,9 +626,9 @@ export default function BDS21Template({
           <select
             value={filterCity}
             onChange={e => setFilterCity(e.target.value)}
-            className="bg-slate-50 border border-slate-200 px-3 py-2.5 focus:outline-none font-bold"
+            className="bg-white text-slate-900 border border-slate-200 px-3 py-2.5 focus:outline-none font-bold font-medium"
           >
-            <option value="all">Khu Vực (Tất cả)</option>
+            <option className="text-slate-900 bg-white font-medium" value="all">Khu Vực (Tất cả)</option>
             {availableCities.filter(c => c !== 'all').map(c => (
               <option key={c} value={c}>{c}</option>
             ))}
@@ -637,13 +637,13 @@ export default function BDS21Template({
           <select
             value={filterCategory}
             onChange={e => setFilterCategory(e.target.value)}
-            className="bg-slate-50 border border-slate-200 px-3 py-2.5 focus:outline-none font-bold"
+            className="bg-white text-slate-900 border border-slate-200 px-3 py-2.5 focus:outline-none font-bold font-medium"
           >
-            <option value="all">Hình thức (Tất cả)</option>
-            <option value="ban">BĐS Cần Bán</option>
-            <option value="thue">Cho Thuê</option>
-            <option value="du-an">Dự Án Mới</option>
-            <option value="nghi-duong">BĐS Nghỉ Dưỡng</option>
+            <option className="text-slate-900 bg-white font-medium" value="all">Hình thức (Tất cả)</option>
+            <option className="text-slate-900 bg-white font-medium" value="ban">BĐS Cần Bán</option>
+            <option className="text-slate-900 bg-white font-medium" value="thue">Cho Thuê</option>
+            <option className="text-slate-900 bg-white font-medium" value="du-an">Dự Án Mới</option>
+            <option className="text-slate-900 bg-white font-medium" value="nghi-duong">BĐS Nghỉ Dưỡng</option>
           </select>
 
           <button
@@ -664,7 +664,7 @@ export default function BDS21Template({
   const renderAboutSection = () => (
     <section id="gioi-thieu" className="py-16 bg-white text-slate-900 border-b border-slate-200">
       <div className={`${MAX_W} mx-auto px-4`}>
-        <div className="bg-slate-50 border border-slate-200 p-6 sm:p-10 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div className="bg-white text-slate-900 border border-slate-200 p-6 sm:p-10 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center font-medium">
           
           <div className="lg:col-span-6 relative aspect-[16/10] overflow-hidden border-2 border-[#1E40AF] shadow-md">
             <img
@@ -725,21 +725,21 @@ export default function BDS21Template({
             <select
               value={filterCategory}
               onChange={e => setFilterCategory(e.target.value)}
-              className="bg-white border border-slate-300 px-3 py-2 focus:outline-none"
+              className="bg-white text-slate-900 border border-slate-300 px-3 py-2 focus:outline-none font-medium"
             >
-              <option value="all">Hình thức (Tất cả)</option>
-              <option value="ban">BĐS Bán</option>
-              <option value="thue">Cho Thuê</option>
-              <option value="du-an">Dự Án</option>
-              <option value="nghi-duong">Nghỉ Dưỡng</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Hình thức (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="ban">BĐS Bán</option>
+              <option className="text-slate-900 bg-white font-medium" value="thue">Cho Thuê</option>
+              <option className="text-slate-900 bg-white font-medium" value="du-an">Dự Án</option>
+              <option className="text-slate-900 bg-white font-medium" value="nghi-duong">Nghỉ Dưỡng</option>
             </select>
 
             <select
               value={filterCity}
               onChange={e => setFilterCity(e.target.value)}
-              className="bg-white border border-slate-300 px-3 py-2 focus:outline-none"
+              className="bg-white text-slate-900 border border-slate-300 px-3 py-2 focus:outline-none font-medium"
             >
-              <option value="all">Tỉnh/Thành (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Tỉnh/Thành (Tất cả)</option>
               {availableCities.filter(c => c !== 'all').map(c => (
                 <option key={c} value={c}>{c}</option>
               ))}
@@ -774,7 +774,7 @@ export default function BDS21Template({
             {filteredProperties.map(p => (
               <div 
                 key={p.id}
-                className="bg-white border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden"
+                className="bg-white text-slate-900 border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden font-medium"
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-slate-950">
                   <img
@@ -1016,11 +1016,11 @@ export default function BDS21Template({
                 onChange={e => setPostForm({ ...postForm, city: e.target.value })}
                 className="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none font-bold"
               >
-                <option value="Hà Nội">Hà Nội</option>
-                <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
-                <option value="Đà Nẵng">Đà Nẵng</option>
-                <option value="Nha Trang">Nha Trang</option>
-                <option value="Phú Quốc">Phú Quốc</option>
+                <option className="text-slate-900 bg-white font-medium" value="Hà Nội">Hà Nội</option>
+                <option className="text-slate-900 bg-white font-medium" value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                <option className="text-slate-900 bg-white font-medium" value="Đà Nẵng">Đà Nẵng</option>
+                <option className="text-slate-900 bg-white font-medium" value="Nha Trang">Nha Trang</option>
+                <option className="text-slate-900 bg-white font-medium" value="Phú Quốc">Phú Quốc</option>
               </select>
             </div>
           </div>

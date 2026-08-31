@@ -1247,7 +1247,7 @@ export default function PagesManagerPage() {
                       </button>
 
                       <a
-                        href={domainData?.customDomain ? `https://${domainData.customDomain}/${page.slug === 'home' ? '' : page.slug}` : `https://${domainData?.subdomain || 'hoanggialand'}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}/${page.slug === 'home' ? '' : page.slug}`}
+                        href={domainData?.customDomain ? `https://${domainData.customDomain}/${page.slug === 'home' ? '' : page.slug}` : `https://${domainData?.subdomain || 'hoanggialand'}.${(process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com').replace(/^templates\./, '')}/${page.slug === 'home' ? '' : page.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors"
@@ -1316,7 +1316,7 @@ export default function PagesManagerPage() {
                               SEO
                             </button>
                             <a
-                              href={domainData?.customDomain ? `https://${domainData.customDomain}/${page.slug === 'home' ? '' : page.slug}` : `https://${domainData?.subdomain || 'hoanggialand'}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}/${page.slug === 'home' ? '' : page.slug}`}
+                              href={domainData?.customDomain ? `https://${domainData.customDomain}/${page.slug === 'home' ? '' : page.slug}` : `https://${domainData?.subdomain || 'hoanggialand'}.${(process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com').replace(/^templates\./, '')}/${page.slug === 'home' ? '' : page.slug}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"

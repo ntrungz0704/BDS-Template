@@ -71,10 +71,34 @@ class WebsiteTemplateRegistry {
     this.templates.set(def.id.toLowerCase(), def);
   }
 
-  public static get(idOrSlug: string): TemplateDefinition | undefined {
-    const rawKey = idOrSlug.toLowerCase();
+  public static get(idOrSlug?: string): TemplateDefinition | undefined {
+    if (!idOrSlug) return this.templates.get('bds-01') || this.templates.get('luxury-gold');
+    const rawKey = idOrSlug.toLowerCase().trim();
     const cleanKey = rawKey.replace(/^template-/, '');
-    return this.templates.get(rawKey) || this.templates.get(cleanKey);
+    
+    // Direct map lookup
+    const direct = this.templates.get(rawKey) || this.templates.get(cleanKey);
+    if (direct) return direct;
+
+    // Normalized lookup (e.g. lp02 -> lp-02, bds05 -> bds-05)
+    const normalizedHyphen = cleanKey.replace(/^([a-z]+)(\d+)$/, '$1-$2');
+    const normalizedNoHyphen = cleanKey.replace(/^([a-z]+)-(\d+)$/, '$1$2');
+    const normalizedPadded = cleanKey.replace(/^([a-z]+)-?(\d)$/, '$1-0$2');
+
+    const mapped = this.templates.get(normalizedHyphen) || 
+      this.templates.get(normalizedNoHyphen) || 
+      this.templates.get(normalizedPadded);
+    if (mapped) return mapped;
+
+    // Substring lookup
+    for (const [key, def] of this.templates.entries()) {
+      if (cleanKey.includes(key) || key.includes(cleanKey)) {
+        return def;
+      }
+    }
+
+    // Default fallback to prevent blank/crash
+    return this.templates.get('bds-01') || this.templates.get('luxury-gold');
   }
 
   public static list(): TemplateDefinition[] {
@@ -257,8 +281,39 @@ for (let index = 1; index <= 24; index += 1) {
       id: `portal-${number}`,
       slug: `portal-${number}`,
     });
+    WebsiteTemplateRegistry.register({
+      ...legacyDefinition,
+      id: `bds${number}`,
+      slug: `bds${number}`,
+    });
+    WebsiteTemplateRegistry.register({
+      ...legacyDefinition,
+      id: `portal${number}`,
+      slug: `portal${number}`,
+    });
+  }
+}
+
+for (let index = 1; index <= 7; index += 1) {
+  const number = String(index).padStart(2, '0');
+  const lpDef = WebsiteTemplateRegistry.get(`lp-${number}`);
+  if (lpDef) {
+    WebsiteTemplateRegistry.register({
+      ...lpDef,
+      id: `lp${number}`,
+      slug: `lp${number}`,
+    });
+    WebsiteTemplateRegistry.register({
+      ...lpDef,
+      id: `landing-${number}`,
+      slug: `landing-${number}`,
+    });
+    WebsiteTemplateRegistry.register({
+      ...lpDef,
+      id: `landing${number}`,
+      slug: `landing${number}`,
+    });
   }
 }
 
 export { WebsiteTemplateRegistry };
-

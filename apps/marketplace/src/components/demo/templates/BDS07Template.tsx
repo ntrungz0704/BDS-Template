@@ -1001,11 +1001,11 @@ export default function BDS07Template({
                 onChange={e => setLeadForm({ ...leadForm, productType: e.target.value })}
                 className="w-full px-4 py-3 rounded-sm bg-emerald-950 border border-emerald-700 text-emerald-200 text-xs focus:outline-none focus:border-amber-400"
               >
-                <option value="Đất Vườn Săn Mây 250m²">Đất Vườn Săn Mây 250m² (Từ 890Tr)</option>
-                <option value="Đất Vườn Suối 350m²">Đất Vườn View Suối 350m² (Từ 1.25 Tỷ)</option>
-                <option value="Bungalow Gỗ Hoàn Thiện">Bungalow Gỗ Xây Sẵn (1.45 Tỷ)</option>
-                <option value="Biệt Thự Đồi 500m²">Biệt Thự Đồi 500m² (1.85 Tỷ)</option>
-                <option value="Farmstay 1000m²">Farmstay Trồng Cây 1000m²</option>
+                <option className="text-slate-900 bg-white font-medium" value="Đất Vườn Săn Mây 250m²">Đất Vườn Săn Mây 250m² (Từ 890Tr)</option>
+                <option className="text-slate-900 bg-white font-medium" value="Đất Vườn Suối 350m²">Đất Vườn View Suối 350m² (Từ 1.25 Tỷ)</option>
+                <option className="text-slate-900 bg-white font-medium" value="Bungalow Gỗ Hoàn Thiện">Bungalow Gỗ Xây Sẵn (1.45 Tỷ)</option>
+                <option className="text-slate-900 bg-white font-medium" value="Biệt Thự Đồi 500m²">Biệt Thự Đồi 500m² (1.85 Tỷ)</option>
+                <option className="text-slate-900 bg-white font-medium" value="Farmstay 1000m²">Farmstay Trồng Cây 1000m²</option>
               </select>
             </div>
             <div className="sm:col-span-3">
@@ -1483,9 +1483,9 @@ export default function BDS07Template({
                     onChange={e => setLoanPercent(parseInt(e.target.value))}
                     className="w-full px-3.5 py-2.5 rounded-sm border border-slate-300 text-xs font-extrabold focus:outline-none focus:border-emerald-500"
                   >
-                    <option value={50}>50% Giá trị BĐS</option>
-                    <option value={60}>60% Giá trị BĐS (Chuẩn)</option>
-                    <option value={70}>70% Giá trị BĐS</option>
+                    <option className="text-slate-900 bg-white font-medium" value={50}>50% Giá trị BĐS</option>
+                    <option className="text-slate-900 bg-white font-medium" value={60}>60% Giá trị BĐS (Chuẩn)</option>
+                    <option className="text-slate-900 bg-white font-medium" value={70}>70% Giá trị BĐS</option>
                   </select>
                 </div>
 
@@ -1496,10 +1496,10 @@ export default function BDS07Template({
                     onChange={e => setLoanYears(parseInt(e.target.value))}
                     className="w-full px-3.5 py-2.5 rounded-sm border border-slate-300 text-xs font-extrabold focus:outline-none focus:border-emerald-500"
                   >
-                    <option value={5}>5 Năm (60 Tháng)</option>
-                    <option value={10}>10 Năm (120 Tháng)</option>
-                    <option value={15}>15 Năm (180 Tháng)</option>
-                    <option value={20}>20 Năm (240 Tháng)</option>
+                    <option className="text-slate-900 bg-white font-medium" value={5}>5 Năm (60 Tháng)</option>
+                    <option className="text-slate-900 bg-white font-medium" value={10}>10 Năm (120 Tháng)</option>
+                    <option className="text-slate-900 bg-white font-medium" value={15}>15 Năm (180 Tháng)</option>
+                    <option className="text-slate-900 bg-white font-medium" value={20}>20 Năm (240 Tháng)</option>
                   </select>
                 </div>
 
@@ -1831,10 +1831,10 @@ export default function BDS07Template({
                 onChange={e => setConsignForm({ ...consignForm, type: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-sm border border-slate-300 text-xs font-bold focus:outline-none"
               >
-                <option value="Đất vườn sinh thái">Đất vườn sinh thái</option>
-                <option value="Bungalow nghỉ dưỡng">Bungalow nghỉ dưỡng</option>
-                <option value="Biệt thự đồi">Biệt thự đồi</option>
-                <option value="Đất farmstay 1000m²">Đất farmstay 1000m²</option>
+                <option className="text-slate-900 bg-white font-medium" value="Đất vườn sinh thái">Đất vườn sinh thái</option>
+                <option className="text-slate-900 bg-white font-medium" value="Bungalow nghỉ dưỡng">Bungalow nghỉ dưỡng</option>
+                <option className="text-slate-900 bg-white font-medium" value="Biệt thự đồi">Biệt thự đồi</option>
+                <option className="text-slate-900 bg-white font-medium" value="Đất farmstay 1000m²">Đất farmstay 1000m²</option>
               </select>
             </div>
             <div>

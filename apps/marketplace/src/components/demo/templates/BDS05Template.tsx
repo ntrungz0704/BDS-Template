@@ -605,57 +605,57 @@ export default function BDS05Template({ template, viewport = 'desktop', initialP
             <select
               value={filterType}
               onChange={e => setFilterType(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-2 text-slate-700 font-medium focus:outline-none focus:border-[#0084FF] cursor-pointer"
+              className="bg-white text-slate-900 border border-slate-200 rounded-lg px-2.5 py-2 text-slate-700 font-medium focus:outline-none focus:border-[#0084FF] cursor-pointer font-medium"
             >
-              <option value="all">Chọn loại BĐS</option>
-              <option value="dat-du-an">Đất dự án</option>
-              <option value="dat-nen">Đất nền</option>
-              <option value="nha-o">Nhà ở</option>
-              <option value="nha-cho-thue">Nhà cho thuê</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Chọn loại BĐS</option>
+              <option className="text-slate-900 bg-white font-medium" value="dat-du-an">Đất dự án</option>
+              <option className="text-slate-900 bg-white font-medium" value="dat-nen">Đất nền</option>
+              <option className="text-slate-900 bg-white font-medium" value="nha-o">Nhà ở</option>
+              <option className="text-slate-900 bg-white font-medium" value="nha-cho-thue">Nhà cho thuê</option>
             </select>
 
             <select
               value={filterCity}
               onChange={e => setFilterCity(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-2 text-slate-700 font-medium focus:outline-none focus:border-[#0084FF] cursor-pointer"
+              className="bg-white text-slate-900 border border-slate-200 rounded-lg px-2.5 py-2 text-slate-700 font-medium focus:outline-none focus:border-[#0084FF] cursor-pointer font-medium"
             >
-              <option value="all">Vị trí / Thành phố</option>
-              <option value="Nha Trang">Nha Trang</option>
-              <option value="Phan Thiết">Phan Thiết</option>
-              <option value="Đà Lạt">Đà Lạt</option>
-              <option value="Đà Nẵng">Đà Nẵng</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Vị trí / Thành phố</option>
+              <option className="text-slate-900 bg-white font-medium" value="Nha Trang">Nha Trang</option>
+              <option className="text-slate-900 bg-white font-medium" value="Phan Thiết">Phan Thiết</option>
+              <option className="text-slate-900 bg-white font-medium" value="Đà Lạt">Đà Lạt</option>
+              <option className="text-slate-900 bg-white font-medium" value="Đà Nẵng">Đà Nẵng</option>
             </select>
 
             <select
               value={filterPrice}
               onChange={e => setFilterPrice(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-2 text-slate-700 font-medium focus:outline-none focus:border-[#0084FF] cursor-pointer"
+              className="bg-white text-slate-900 border border-slate-200 rounded-lg px-2.5 py-2 text-slate-700 font-medium focus:outline-none focus:border-[#0084FF] cursor-pointer font-medium"
             >
-              <option value="all">Khoảng giá</option>
-              <option value="under-2">Dưới 2 Tỷ</option>
-              <option value="2-5">Từ 2 - 5 Tỷ</option>
-              <option value="above-5">Trên 5 Tỷ</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Khoảng giá</option>
+              <option className="text-slate-900 bg-white font-medium" value="under-2">Dưới 2 Tỷ</option>
+              <option className="text-slate-900 bg-white font-medium" value="2-5">Từ 2 - 5 Tỷ</option>
+              <option className="text-slate-900 bg-white font-medium" value="above-5">Trên 5 Tỷ</option>
             </select>
 
             <select
               value={filterBedrooms}
               onChange={e => setFilterBedrooms(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-2 text-slate-700 font-medium focus:outline-none focus:border-[#0084FF] cursor-pointer"
+              className="bg-white text-slate-900 border border-slate-200 rounded-lg px-2.5 py-2 text-slate-700 font-medium focus:outline-none focus:border-[#0084FF] cursor-pointer font-medium"
             >
-              <option value="all">Số phòng ngủ</option>
-              <option value="3">3+ Phòng ngủ</option>
-              <option value="4">4+ Phòng ngủ</option>
-              <option value="5">5+ Phòng ngủ</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Số phòng ngủ</option>
+              <option className="text-slate-900 bg-white font-medium" value="3">3+ Phòng ngủ</option>
+              <option className="text-slate-900 bg-white font-medium" value="4">4+ Phòng ngủ</option>
+              <option className="text-slate-900 bg-white font-medium" value="5">5+ Phòng ngủ</option>
             </select>
 
             <select
               value={filterArea}
               onChange={e => setFilterArea(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-2 text-slate-700 font-medium focus:outline-none focus:border-[#0084FF] cursor-pointer"
+              className="bg-white text-slate-900 border border-slate-200 rounded-lg px-2.5 py-2 text-slate-700 font-medium focus:outline-none focus:border-[#0084FF] cursor-pointer font-medium"
             >
-              <option value="all">Diện tích</option>
-              <option value="under-300">Dưới 300 m²</option>
-              <option value="above-300">Trên 300 m²</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Diện tích</option>
+              <option className="text-slate-900 bg-white font-medium" value="under-300">Dưới 300 m²</option>
+              <option className="text-slate-900 bg-white font-medium" value="above-300">Trên 300 m²</option>
             </select>
 
             <button

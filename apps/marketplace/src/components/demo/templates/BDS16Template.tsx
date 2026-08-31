@@ -793,7 +793,7 @@ export default function BDS16Template({
             onChange={e => setFilterType(e.target.value)}
             className="w-full bg-slate-50 border border-slate-300 px-2.5 py-2 text-slate-800 focus:outline-none"
           >
-            <option value="all">Loại BĐS (Tất cả)</option>
+            <option className="text-slate-900 bg-white font-medium" value="all">Loại BĐS (Tất cả)</option>
             {availableTypes.filter(t => t !== 'all').map(type => (
               <option key={type} value={type}>{type}</option>
             ))}
@@ -805,7 +805,7 @@ export default function BDS16Template({
             onChange={e => setFilterDistrict(e.target.value)}
             className="w-full bg-slate-50 border border-slate-300 px-2.5 py-2 text-slate-800 focus:outline-none"
           >
-            <option value="all">Khu vực (Tất cả)</option>
+            <option className="text-slate-900 bg-white font-medium" value="all">Khu vực (Tất cả)</option>
             {availableDistricts.filter(d => d !== 'all').map(district => (
               <option key={district} value={district}>{district}</option>
             ))}
@@ -816,10 +816,10 @@ export default function BDS16Template({
             onChange={e => setFilterPrice(e.target.value)}
             className="w-full bg-slate-50 border border-slate-300 px-2.5 py-2 text-slate-800 focus:outline-none"
           >
-            <option value="all">Mức giá (Tất cả)</option>
-            <option value="under-3">Dưới 3 Tỷ (hoặc Dưới 5 Triệu)</option>
-            <option value="3-10">3 - 10 Tỷ (hoặc 5 - 10 Triệu)</option>
-            <option value="above-10">Trên 10 Tỷ (hoặc Trên 10 Triệu)</option>
+            <option className="text-slate-900 bg-white font-medium" value="all">Mức giá (Tất cả)</option>
+            <option className="text-slate-900 bg-white font-medium" value="under-3">Dưới 3 Tỷ (hoặc Dưới 5 Triệu)</option>
+            <option className="text-slate-900 bg-white font-medium" value="3-10">3 - 10 Tỷ (hoặc 5 - 10 Triệu)</option>
+            <option className="text-slate-900 bg-white font-medium" value="above-10">Trên 10 Tỷ (hoặc Trên 10 Triệu)</option>
           </select>
 
           <button
@@ -987,7 +987,7 @@ export default function BDS16Template({
           {filteredProperties.map(prop => (
             <div 
               key={prop.id}
-              className="bg-white border border-slate-300 p-3 shadow-sm hover:shadow-md transition flex flex-col justify-between"
+              className="bg-white text-slate-900 border border-slate-300 p-3 shadow-sm hover:shadow-md transition flex flex-col justify-between font-medium"
             >
               {/* Title Top */}
               <h3 
@@ -1292,9 +1292,9 @@ export default function BDS16Template({
                   onChange={e => setLoanForm({ ...loanForm, income: e.target.value })}
                   className="w-full border border-slate-300 p-2 focus:outline-none"
                 >
-                  <option value="15 Triệu/Tháng">Dưới 20 Triệu / Tháng</option>
-                  <option value="30 Triệu/Tháng">20 - 50 Triệu / Tháng</option>
-                  <option value="Trên 50 Triệu/Tháng">Trên 50 Triệu / Tháng</option>
+                  <option className="text-slate-900 bg-white font-medium" value="15 Triệu/Tháng">Dưới 20 Triệu / Tháng</option>
+                  <option className="text-slate-900 bg-white font-medium" value="30 Triệu/Tháng">20 - 50 Triệu / Tháng</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Trên 50 Triệu/Tháng">Trên 50 Triệu / Tháng</option>
                 </select>
               </div>
               <button

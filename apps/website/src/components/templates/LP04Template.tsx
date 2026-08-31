@@ -253,10 +253,10 @@ export default function LP04Template({
                   onChange={(e) => setHeroProductType(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl bg-white text-slate-900 font-black border border-amber-300/60 focus:ring-2 focus:ring-amber-400 outline-none transition-all duration-300"
                 >
-                  <option value="Biệt Thự Đơn Lập Ven Sông (350m² - 500m²)">Biệt Thự Đơn Lập Ven Sông (350m² - 500m²)</option>
-                  <option value="Biệt Thự Song Lập Vườn (200m² - 280m²)">Biệt Thự Song Lập Vườn (200m² - 280m²)</option>
-                  <option value="Shophouse Phố Đi Bộ Châu Âu (140m² - 220m²)">Shophouse Phố Đi Bộ Châu Âu (140m² - 220m²)</option>
-                  <option value="Dinh Thự Đảo Ngọc Ven Hồ (600m² - 1200m²)">Dinh Thự Đảo Ngọc Ven Hồ (600m² - 1200m²)</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Biệt Thự Đơn Lập Ven Sông (350m² - 500m²)">Biệt Thự Đơn Lập Ven Sông (350m² - 500m²)</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Biệt Thự Song Lập Vườn (200m² - 280m²)">Biệt Thự Song Lập Vườn (200m² - 280m²)</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Shophouse Phố Đi Bộ Châu Âu (140m² - 220m²)">Shophouse Phố Đi Bộ Châu Âu (140m² - 220m²)</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Dinh Thự Đảo Ngọc Ven Hồ (600m² - 1200m²)">Dinh Thự Đảo Ngọc Ven Hồ (600m² - 1200m²)</option>
                 </select>
               </div>
 
@@ -791,10 +791,10 @@ export default function LP04Template({
                   onChange={(e) => setVipProduct(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl bg-white text-slate-900 font-black border border-amber-300 outline-none"
                 >
-                  <option value="Biệt Thự Đơn Lập Ven Sông (350m² - 500m²)">Biệt Thự Đơn Lập Ven Sông (350m² - 500m²)</option>
-                  <option value="Biệt Thự Song Lập Vườn (200m² - 280m²)">Biệt Thự Song Lập Vườn (200m² - 280m²)</option>
-                  <option value="Shophouse Phố Đi Bộ Châu Âu (140m² - 220m²)">Shophouse Phố Đi Bộ Châu Âu (140m² - 220m²)</option>
-                  <option value="Dinh Thự Đảo Ngọc Ven Hồ (600m² - 1200m²)">Dinh Thự Đảo Ngọc Ven Hồ (600m² - 1200m²)</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Biệt Thự Đơn Lập Ven Sông (350m² - 500m²)">Biệt Thự Đơn Lập Ven Sông (350m² - 500m²)</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Biệt Thự Song Lập Vườn (200m² - 280m²)">Biệt Thự Song Lập Vườn (200m² - 280m²)</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Shophouse Phố Đi Bộ Châu Âu (140m² - 220m²)">Shophouse Phố Đi Bộ Châu Âu (140m² - 220m²)</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Dinh Thự Đảo Ngọc Ven Hồ (600m² - 1200m²)">Dinh Thự Đảo Ngọc Ven Hồ (600m² - 1200m²)</option>
                 </select>
 
                 <button

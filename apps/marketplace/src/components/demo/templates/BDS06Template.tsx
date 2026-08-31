@@ -879,7 +879,7 @@ export default function BDS06Template({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           {/* Left Table / Bullets */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="bg-slate-50 border border-slate-200 rounded-sm p-6 sm:p-8 space-y-3.5 shadow-sm">
+            <div className="bg-white text-slate-900 border border-slate-200 rounded-sm p-6 sm:p-8 space-y-3.5 shadow-sm font-medium">
               {[
                 { label: 'Tên Thương Mại', val: 'Khu Đô Thị Sinh Thái Grand Riverside Park' },
                 { label: 'Vị Trí Quy Hoạch', val: 'Mặt tiền Đại lộ ven sông & Tuyến Vành Đai huyết mạch' },
@@ -1489,12 +1489,12 @@ export default function BDS06Template({
                   onChange={e => setLeadForm({ ...leadForm, productType: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-sm bg-slate-800 border border-slate-700 text-white text-xs focus:outline-none focus:border-red-500"
                 >
-                  <option value="Căn hộ 1PN+1">Căn hộ 1 Phòng Ngủ (1PN + 1)</option>
-                  <option value="Căn hộ 2PN">Căn hộ 2 Phòng Ngủ Park View</option>
-                  <option value="Căn hộ 3PN Master">Căn hộ 3 Phòng Ngủ Master</option>
-                  <option value="Penthouse Sky Villa">Penthouse Sky Villa Duplex</option>
-                  <option value="Shophouse Đại Lộ">Shophouse Đại Lộ 30m</option>
-                  <option value="Biệt thự ven hồ">Biệt Thự Ven Hồ Sinh Thái</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Căn hộ 1PN+1">Căn hộ 1 Phòng Ngủ (1PN + 1)</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Căn hộ 2PN">Căn hộ 2 Phòng Ngủ Park View</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Căn hộ 3PN Master">Căn hộ 3 Phòng Ngủ Master</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Penthouse Sky Villa">Penthouse Sky Villa Duplex</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Shophouse Đại Lộ">Shophouse Đại Lộ 30m</option>
+                  <option className="text-slate-900 bg-white font-medium" value="Biệt thự ven hồ">Biệt Thự Ven Hồ Sinh Thái</option>
                 </select>
               </div>
 
@@ -1551,9 +1551,9 @@ export default function BDS06Template({
                     onChange={e => setLoanPercent(parseInt(e.target.value))}
                     className="w-full px-3.5 py-2.5 rounded-sm border border-slate-300 text-xs font-extrabold focus:outline-none focus:border-red-500"
                   >
-                    <option value={50}>50% Giá trị BĐS</option>
-                    <option value={70}>70% Giá trị BĐS (Chuẩn)</option>
-                    <option value={80}>80% Giá trị BĐS</option>
+                    <option className="text-slate-900 bg-white font-medium" value={50}>50% Giá trị BĐS</option>
+                    <option className="text-slate-900 bg-white font-medium" value={70}>70% Giá trị BĐS (Chuẩn)</option>
+                    <option className="text-slate-900 bg-white font-medium" value={80}>80% Giá trị BĐS</option>
                   </select>
                 </div>
 
@@ -1564,10 +1564,10 @@ export default function BDS06Template({
                     onChange={e => setLoanYears(parseInt(e.target.value))}
                     className="w-full px-3.5 py-2.5 rounded-sm border border-slate-300 text-xs font-extrabold focus:outline-none focus:border-red-500"
                   >
-                    <option value={10}>10 Năm (120 Tháng)</option>
-                    <option value={15}>15 Năm (180 Tháng)</option>
-                    <option value={20}>20 Năm (240 Tháng)</option>
-                    <option value={25}>25 Năm (300 Tháng)</option>
+                    <option className="text-slate-900 bg-white font-medium" value={10}>10 Năm (120 Tháng)</option>
+                    <option className="text-slate-900 bg-white font-medium" value={15}>15 Năm (180 Tháng)</option>
+                    <option className="text-slate-900 bg-white font-medium" value={20}>20 Năm (240 Tháng)</option>
+                    <option className="text-slate-900 bg-white font-medium" value={25}>25 Năm (300 Tháng)</option>
                   </select>
                 </div>
 
@@ -1992,10 +1992,10 @@ export default function BDS06Template({
                 onChange={e => setConsignForm({ ...consignForm, type: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-sm border border-slate-300 text-xs font-bold focus:outline-none"
               >
-                <option value="Căn hộ cao cấp">Căn hộ cao cấp</option>
-                <option value="Shophouse thương mại">Shophouse thương mại</option>
-                <option value="Nhà phố liền kề">Nhà phố liền kề</option>
-                <option value="Biệt thự sinh thái">Biệt thự sinh thái</option>
+                <option className="text-slate-900 bg-white font-medium" value="Căn hộ cao cấp">Căn hộ cao cấp</option>
+                <option className="text-slate-900 bg-white font-medium" value="Shophouse thương mại">Shophouse thương mại</option>
+                <option className="text-slate-900 bg-white font-medium" value="Nhà phố liền kề">Nhà phố liền kề</option>
+                <option className="text-slate-900 bg-white font-medium" value="Biệt thự sinh thái">Biệt thự sinh thái</option>
               </select>
             </div>
             <div>

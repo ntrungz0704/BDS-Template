@@ -754,7 +754,7 @@ export default function BDS20Template({
               onChange={e => setFilterBlock(e.target.value)}
               className="w-full sm:w-auto bg-slate-50 border border-slate-300 px-3 py-2 focus:outline-none"
             >
-              <option value="all">Tòa Block (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Tòa Block (Tất cả)</option>
               {availableBlocks.filter(b => b !== 'all').map(b => (
                 <option key={b} value={b}>{b}</option>
               ))}
@@ -765,7 +765,7 @@ export default function BDS20Template({
               onChange={e => setFilterType(e.target.value)}
               className="w-full sm:w-auto bg-slate-50 border border-slate-300 px-3 py-2 focus:outline-none"
             >
-              <option value="all">Loại Căn Hộ (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Loại Căn Hộ (Tất cả)</option>
               {availableTypes.filter(t => t !== 'all').map(t => (
                 <option key={t} value={t}>{t}</option>
               ))}
@@ -799,7 +799,7 @@ export default function BDS20Template({
             {filteredUnits.map(unit => (
               <div 
                 key={unit.id}
-                className="bg-white border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden"
+                className="bg-white text-slate-900 border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden font-medium"
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-slate-950">
                   <img
@@ -1053,10 +1053,10 @@ export default function BDS20Template({
               onChange={e => setContactForm({ ...contactForm, blockInterested: e.target.value })}
               className="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none"
             >
-              <option value="Block A - Park View">Block A - Park View (View Công Viên)</option>
-              <option value="Block B - Lake View">Block B - Lake View (View Hồ Sinh Thái)</option>
-              <option value="Block C - Garden View">Block C - Garden View (View Vườn Thiền)</option>
-              <option value="Block D - Sky Palace">Block D - Sky Palace (Duplex Đỉnh Cao)</option>
+              <option className="text-slate-900 bg-white font-medium" value="Block A - Park View">Block A - Park View (View Công Viên)</option>
+              <option className="text-slate-900 bg-white font-medium" value="Block B - Lake View">Block B - Lake View (View Hồ Sinh Thái)</option>
+              <option className="text-slate-900 bg-white font-medium" value="Block C - Garden View">Block C - Garden View (View Vườn Thiền)</option>
+              <option className="text-slate-900 bg-white font-medium" value="Block D - Sky Palace">Block D - Sky Palace (Duplex Đỉnh Cao)</option>
             </select>
           </div>
 

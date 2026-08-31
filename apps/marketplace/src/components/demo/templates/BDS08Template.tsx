@@ -856,7 +856,7 @@ export default function BDS08Template({
             </div>
 
             {/* Box: Có Thể Bạn Quan Tâm */}
-            <div className="bg-slate-50 border border-slate-200 rounded-sm p-4 space-y-3">
+            <div className="bg-white text-slate-900 border border-slate-200 rounded-sm p-4 space-y-3 font-medium">
               <h4 className="text-xs font-black uppercase text-[#15803D] tracking-wider border-b border-slate-200 pb-2">
                 CÓ THỂ BẠN QUAN TÂM
               </h4>

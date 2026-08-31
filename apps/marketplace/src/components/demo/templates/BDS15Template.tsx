@@ -669,7 +669,7 @@ export default function BDS15Template({
                 onChange={e => setFilterType(e.target.value)}
                 className="w-full bg-white p-2.5 border border-slate-300 focus:outline-none"
               >
-                <option value="all">Loại BĐS (Tất cả loại hình)</option>
+                <option className="text-slate-900 bg-white font-medium" value="all">Loại BĐS (Tất cả loại hình)</option>
                 {availableTypes.filter(t => t !== 'all').map(type => (
                   <option key={type} value={type}>{type}</option>
                 ))}
@@ -681,7 +681,7 @@ export default function BDS15Template({
                 onChange={e => setFilterDistrict(e.target.value)}
                 className="w-full bg-white p-2.5 border border-slate-300 focus:outline-none"
               >
-                <option value="all">Khu Vực (Tất cả địa điểm)</option>
+                <option className="text-slate-900 bg-white font-medium" value="all">Khu Vực (Tất cả địa điểm)</option>
                 {availableDistricts.filter(d => d !== 'all').map(district => (
                   <option key={district} value={district}>{district}</option>
                 ))}
@@ -692,10 +692,10 @@ export default function BDS15Template({
                 onChange={e => setFilterPrice(e.target.value)}
                 className="w-full bg-white p-2.5 border border-slate-300 focus:outline-none"
               >
-                <option value="all">Mức Giá (Tất cả mức giá)</option>
-                <option value="under-3">Dưới 3 Tỷ</option>
-                <option value="3-6">3 - 6 Tỷ</option>
-                <option value="above-6">Trên 6 Tỷ</option>
+                <option className="text-slate-900 bg-white font-medium" value="all">Mức Giá (Tất cả mức giá)</option>
+                <option className="text-slate-900 bg-white font-medium" value="under-3">Dưới 3 Tỷ</option>
+                <option className="text-slate-900 bg-white font-medium" value="3-6">3 - 6 Tỷ</option>
+                <option className="text-slate-900 bg-white font-medium" value="above-6">Trên 6 Tỷ</option>
               </select>
 
               <button

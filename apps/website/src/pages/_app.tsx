@@ -61,42 +61,38 @@ export default function App({ Component, pageProps }: AppProps) {
     return () => window.removeEventListener('error', handleError, true);
   }, []);
 
-  // Global High-Performance Scroll Reveal Animation Engine
+  // Safe Scroll Reveal Enhancer for all 24 Templates & 7 LPs (Never hides content)
   React.useEffect(() => {
     if (typeof window === 'undefined') return;
-    document.body.classList.add('bds-reveal-init');
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('bds-revealed');
-            observer.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.05, rootMargin: '0px 0px 50px 0px' }
     );
 
     const observeSections = () => {
       const targets = document.querySelectorAll(
         'section, [data-animate], .template-section, .bds-section'
       );
-      targets.forEach((el, index) => {
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.95 || index === 0) {
-          el.classList.add('bds-revealed');
-        } else {
-          observer.observe(el);
-        }
+      targets.forEach((el) => {
+        el.classList.add('bds-revealed');
+        observer.observe(el);
       });
     };
 
     observeSections();
-    const timer = setTimeout(observeSections, 600);
+    const timer = setTimeout(observeSections, 300);
+    const timer2 = setTimeout(observeSections, 1000);
 
     return () => {
       clearTimeout(timer);
+      clearTimeout(timer2);
       observer.disconnect();
     };
   }, []);

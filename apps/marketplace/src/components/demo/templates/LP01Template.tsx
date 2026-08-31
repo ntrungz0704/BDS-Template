@@ -344,10 +344,10 @@ export default function LP01Template({
                       onChange={(e) => setHeroUnitType(e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-900 font-bold border border-slate-300 focus:ring-2 focus:ring-amber-400 outline-none transition-all duration-300"
                     >
-                      <option value="Căn Hộ 1 Phòng Ngủ (52.8 m²)">Căn Hộ 1 Phòng Ngủ (52.8 m²)</option>
-                      <option value="Căn Hộ 2 Phòng Ngủ (74.2 m² - 86.5 m²)">Căn Hộ 2 Phòng Ngủ (74.2 m² - 86.5 m²)</option>
-                      <option value="Căn Hộ 3 Phòng Ngủ Master (112.4 m²)">Căn Hộ 3 Phòng Ngủ Master (112.4 m²)</option>
-                      <option value="Căn Hộ Dual Key & Sky Villa (149.0 m²)">Căn Hộ Dual Key & Sky Villa (149.0 m²)</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Căn Hộ 1 Phòng Ngủ (52.8 m²)">Căn Hộ 1 Phòng Ngủ (52.8 m²)</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Căn Hộ 2 Phòng Ngủ (74.2 m² - 86.5 m²)">Căn Hộ 2 Phòng Ngủ (74.2 m² - 86.5 m²)</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Căn Hộ 3 Phòng Ngủ Master (112.4 m²)">Căn Hộ 3 Phòng Ngủ Master (112.4 m²)</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Căn Hộ Dual Key & Sky Villa (149.0 m²)">Căn Hộ Dual Key & Sky Villa (149.0 m²)</option>
                     </select>
                   </div>
 

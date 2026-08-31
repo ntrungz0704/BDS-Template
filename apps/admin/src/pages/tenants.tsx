@@ -6,6 +6,7 @@ import AdminLayout from '../components/AdminLayout';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com';
+const BASE_DOMAIN = PLATFORM_DOMAIN.replace(/^templates\./, '');
 
 export default function AdminTenants() {
   const queryClient = useQueryClient();
@@ -199,12 +200,12 @@ export default function AdminTenants() {
                     </td>
                     <td className="px-3 py-3">
                       <a
-                        href={`https://${tenant.slug}.${PLATFORM_DOMAIN}`}
+                        href={`https://${tenant.slug}.${BASE_DOMAIN}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-indigo-600 hover:underline truncate max-w-full"
                       >
-                        <span className="truncate">{tenant.slug}.{PLATFORM_DOMAIN}</span>
+                        <span className="truncate">{tenant.slug}.{BASE_DOMAIN}</span>
                       </a>
                     </td>
                     <td className="px-3 py-3">
@@ -242,7 +243,7 @@ export default function AdminTenants() {
                     <td className="px-3 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <a
-                          href={`https://${tenant.slug}.${PLATFORM_DOMAIN}`}
+                          href={`https://${tenant.slug}.${BASE_DOMAIN}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold rounded transition-all"
@@ -343,7 +344,7 @@ export default function AdminTenants() {
                     className="flex-1 px-3.5 py-2.5 border border-slate-300 rounded-l-xl text-sm focus:border-indigo-500 focus:outline-none transition-all placeholder:text-slate-400"
                   />
                   <span className="bg-slate-100 border border-l-0 border-slate-300 px-4 py-2.5 rounded-r-xl text-sm font-mono text-slate-500">
-                    .{PLATFORM_DOMAIN}
+                    .{BASE_DOMAIN}
                   </span>
                 </div>
                 <p className="text-[10px] text-slate-400 mt-1.5 font-medium">Chỉ sử dụng chữ cái viết thường, chữ số và dấu gạch ngang (-).</p>
@@ -427,8 +428,8 @@ export default function AdminTenants() {
             <div className="w-full mt-6 p-4 bg-slate-50 rounded-2xl border border-slate-200/60 text-left text-xs space-y-3 font-semibold text-slate-700 shadow-inner">
               <div>
                 <span className="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Địa chỉ Website:</span>
-                <a href={`https://${createdCredentials.subdomain}.${PLATFORM_DOMAIN}`} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline font-mono">
-                  https://{createdCredentials.subdomain}.{PLATFORM_DOMAIN}
+                <a href={`https://${createdCredentials.subdomain}.${BASE_DOMAIN}`} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline font-mono">
+                  https://{createdCredentials.subdomain}.{BASE_DOMAIN}
                 </a>
               </div>
               <div>
@@ -449,7 +450,7 @@ export default function AdminTenants() {
 
             <button
               onClick={() => {
-                const text = `THÔNG TIN BÀN GIAO WEBSITE BĐS:\n- Địa chỉ Website: https://${PLATFORM_DOMAIN}/site/${createdCredentials.subdomain}\n- Trang quản trị CMS: ${process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}\n- Email đăng nhập: ${createdCredentials.email}\n- Mật khẩu tạm thời: ${createdCredentials.password}`;
+                const text = `THÔNG TIN BÀN GIAO WEBSITE BĐS:\n- Địa chỉ Website: https://${createdCredentials.subdomain}.${BASE_DOMAIN}\n- Trang quản trị CMS: ${process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}\n- Email đăng nhập: ${createdCredentials.email}\n- Mật khẩu tạm thời: ${createdCredentials.password}`;
                 navigator.clipboard.writeText(text);
                 alert('Đã sao chép thông tin bàn giao vào Clipboard!');
                 setShowResultModal(false);

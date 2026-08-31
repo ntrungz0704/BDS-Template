@@ -853,9 +853,9 @@ export default function BDS19Template({
             <select
               value={filterTower}
               onChange={e => setFilterTower(e.target.value)}
-              className="bg-white border border-slate-300 px-3 py-2 focus:outline-none"
+              className="bg-white text-slate-900 border border-slate-300 px-3 py-2 focus:outline-none font-medium"
             >
-              <option value="all">Tòa Tháp (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Tòa Tháp (Tất cả)</option>
               {availableTowers.filter(t => t !== 'all').map(t => (
                 <option key={t} value={t}>{t}</option>
               ))}
@@ -864,9 +864,9 @@ export default function BDS19Template({
             <select
               value={filterType}
               onChange={e => setFilterType(e.target.value)}
-              className="bg-white border border-slate-300 px-3 py-2 focus:outline-none"
+              className="bg-white text-slate-900 border border-slate-300 px-3 py-2 focus:outline-none font-medium"
             >
-              <option value="all">Loại Căn Hộ (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Loại Căn Hộ (Tất cả)</option>
               {availableTypes.filter(t => t !== 'all').map(t => (
                 <option key={t} value={t}>{t}</option>
               ))}
@@ -900,7 +900,7 @@ export default function BDS19Template({
             {filteredUnits.map(unit => (
               <div 
                 key={unit.id}
-                className="bg-white border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden"
+                className="bg-white text-slate-900 border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden font-medium"
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-slate-950">
                   <img
@@ -1058,11 +1058,11 @@ export default function BDS19Template({
                 onChange={e => setInquiryForm({ ...inquiryForm, towerInterested: e.target.value })}
                 className="w-full bg-[#0F1E36] border border-slate-700 p-2.5 text-white focus:outline-none focus:border-amber-400"
               >
-                <option value="Tòa S1 - Venus">Tòa S1 - Venus (Mở bán đợt 1)</option>
-                <option value="Tòa S2 - Mars">Tòa S2 - Mars (View hồ bơi)</option>
-                <option value="Tòa S4 - Mercury">Tòa S4 - Mercury (View Phú Mỹ Hưng)</option>
-                <option value="Tòa S7 - Jupiter">Tòa S7 - Jupiter (View sông Sài Gòn)</option>
-                <option value="Tòa S9 - King">Tòa S9 - King (Penthouse độc bản)</option>
+                <option className="text-slate-900 bg-white font-medium" value="Tòa S1 - Venus">Tòa S1 - Venus (Mở bán đợt 1)</option>
+                <option className="text-slate-900 bg-white font-medium" value="Tòa S2 - Mars">Tòa S2 - Mars (View hồ bơi)</option>
+                <option className="text-slate-900 bg-white font-medium" value="Tòa S4 - Mercury">Tòa S4 - Mercury (View Phú Mỹ Hưng)</option>
+                <option className="text-slate-900 bg-white font-medium" value="Tòa S7 - Jupiter">Tòa S7 - Jupiter (View sông Sài Gòn)</option>
+                <option className="text-slate-900 bg-white font-medium" value="Tòa S9 - King">Tòa S9 - King (Penthouse độc bản)</option>
               </select>
             </div>
 

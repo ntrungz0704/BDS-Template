@@ -632,7 +632,7 @@ export default function BDS14Template({
               onChange={e => setFilterType(e.target.value)}
               className="w-full bg-white text-slate-900 px-3.5 py-2.5 rounded-sm focus:outline-none font-medium shadow-sm"
             >
-              <option value="all">Loại Bất Động Sản (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Loại Bất Động Sản (Tất cả)</option>
               {availableTypes.filter(t => t !== 'all').map(t => (
                 <option key={t} value={t}>{t}</option>
               ))}
@@ -643,7 +643,7 @@ export default function BDS14Template({
               onChange={e => setFilterCity(e.target.value)}
               className="w-full bg-white text-slate-900 px-3.5 py-2.5 rounded-sm focus:outline-none font-medium shadow-sm"
             >
-              <option value="all">Tỉnh / Thành Phố (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Tỉnh / Thành Phố (Tất cả)</option>
               {availableCities.filter(c => c !== 'all').map(c => (
                 <option key={c} value={c}>{c}</option>
               ))}
@@ -654,10 +654,10 @@ export default function BDS14Template({
               onChange={e => setFilterPrice(e.target.value)}
               className="w-full bg-white text-slate-900 px-3.5 py-2.5 rounded-sm focus:outline-none font-medium shadow-sm"
             >
-              <option value="all">Mức Giá (Tất cả)</option>
-              <option value="under-4">Dưới 4 Tỷ</option>
-              <option value="4-8">4 - 8 Tỷ</option>
-              <option value="above-8">Trên 8 Tỷ</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Mức Giá (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="under-4">Dưới 4 Tỷ</option>
+              <option className="text-slate-900 bg-white font-medium" value="4-8">4 - 8 Tỷ</option>
+              <option className="text-slate-900 bg-white font-medium" value="above-8">Trên 8 Tỷ</option>
             </select>
 
             <select
@@ -665,10 +665,10 @@ export default function BDS14Template({
               onChange={e => setFilterArea(e.target.value)}
               className="w-full bg-white text-slate-900 px-3.5 py-2.5 rounded-sm focus:outline-none font-medium shadow-sm"
             >
-              <option value="all">Diện Tích (Tất cả)</option>
-              <option value="under-80">Dưới 80 m²</option>
-              <option value="80-150">80 - 150 m²</option>
-              <option value="above-150">Trên 150 m²</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Diện Tích (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="under-80">Dưới 80 m²</option>
+              <option className="text-slate-900 bg-white font-medium" value="80-150">80 - 150 m²</option>
+              <option className="text-slate-900 bg-white font-medium" value="above-150">Trên 150 m²</option>
             </select>
 
             <button

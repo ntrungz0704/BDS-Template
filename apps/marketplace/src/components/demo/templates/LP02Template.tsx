@@ -391,10 +391,10 @@ export default function LP02Template({
                       onChange={(e) => setHeroPosition(e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 text-slate-900 font-bold border border-slate-300 focus:ring-2 focus:ring-red-500 focus:bg-white outline-none transition-all duration-300"
                     >
-                      <option value="Chuyên Viên Kinh Doanh BĐS">Chuyên Viên Kinh Doanh BĐS (Toàn thời gian)</option>
-                      <option value="Trưởng Nhóm Kinh Doanh">Trưởng Nhóm / Trưởng Phòng Kinh Doanh</option>
-                      <option value="Chuyên Viên Pháp Lý & Định Giá">Chuyên Viên Pháp Lý & Thủ Tục BĐS</option>
-                      <option value="Cộng Tác Viên Bán Hàng Tự Do">Cộng Tác Viên Bán Hàng (Bán thời gian)</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Chuyên Viên Kinh Doanh BĐS">Chuyên Viên Kinh Doanh BĐS (Toàn thời gian)</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Trưởng Nhóm Kinh Doanh">Trưởng Nhóm / Trưởng Phòng Kinh Doanh</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Chuyên Viên Pháp Lý & Định Giá">Chuyên Viên Pháp Lý & Thủ Tục BĐS</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Cộng Tác Viên Bán Hàng Tự Do">Cộng Tác Viên Bán Hàng (Bán thời gian)</option>
                     </select>
                   </div>
 
@@ -405,10 +405,10 @@ export default function LP02Template({
                       onChange={(e) => setHeroExperience(e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 text-slate-900 font-medium border border-slate-300 focus:ring-2 focus:ring-red-500 focus:bg-white outline-none"
                     >
-                      <option value="Chưa có kinh nghiệm">Chưa có kinh nghiệm (Cần đào tạo 1 kèm 1)</option>
-                      <option value="Dưới 1 năm kinh nghiệm">Dưới 1 năm kinh nghiệm BĐS / Sales</option>
-                      <option value="Từ 1 - 3 năm kinh nghiệm">Từ 1 - 3 năm kinh nghiệm thực chiến</option>
-                      <option value="Trên 3 năm kinh nghiệm">Trên 3 năm kinh nghiệm (Ứng tuyển Quản lý)</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Chưa có kinh nghiệm">Chưa có kinh nghiệm (Cần đào tạo 1 kèm 1)</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Dưới 1 năm kinh nghiệm">Dưới 1 năm kinh nghiệm BĐS / Sales</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Từ 1 - 3 năm kinh nghiệm">Từ 1 - 3 năm kinh nghiệm thực chiến</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Trên 3 năm kinh nghiệm">Trên 3 năm kinh nghiệm (Ứng tuyển Quản lý)</option>
                     </select>
                   </div>
 

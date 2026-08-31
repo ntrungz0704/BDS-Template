@@ -556,28 +556,23 @@ nextjs-portal {
   transform: scale(1.05);
 }
 
-/* ─── Ultra-Smooth Scroll-Reveal Engine for 24 Templates & 7 LPs ─── */
+/* ─── Ultra-Smooth Scroll-Reveal Engine for 24 Templates & 7 LPs (Always Visible Safe Default) ─── */
+section,
+.template-section,
+.bds-section,
+.bds-animate,
+[data-animate] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 .bds-reveal-init section,
 .bds-reveal-init .bds-animate,
 .bds-reveal-init [data-animate],
 .bds-reveal-init .template-section,
 .bds-reveal-init .bds-section {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
-}
-
-.bds-reveal-init section.bds-revealed,
-.bds-reveal-init .bds-animate.bds-revealed,
-.bds-reveal-init [data-animate].bds-revealed,
-.bds-reveal-init .template-section.bds-revealed,
-.bds-reveal-init .bds-section.bds-revealed,
-.bds-reveal-init section:first-of-type,
-.bds-reveal-init .hero-section,
-.bds-reveal-init [data-hero] {
   opacity: 1 !important;
-  transform: translateY(0) scale(1) !important;
+  transform: none !important;
 }
 
 /* Staggered card reveals inside sections */
@@ -586,7 +581,30 @@ nextjs-portal {
 .bds-revealed .stagger-card:nth-child(3) { transition-delay: 0.20s; }
 .bds-revealed .stagger-card:nth-child(4) { transition-delay: 0.28s; }
 .bds-revealed .stagger-card:nth-child(5) { transition-delay: 0.36s; }
-.bds-revealed .stagger-card:nth-child(6) { transition-delay: 0.44s; }
+.bds-revealed .stagger-card:nth-child(6) { transition-delay: 0.40s; }
+
+/* ─── Universal High-Contrast Form Controls (Fixes White-on-White Dropdowns) ─── */
+select {
+  color: #0f172a;
+}
+
+select option {
+  color: #0f172a !important;
+  background-color: #ffffff !important;
+  font-weight: 500;
+}
+
+.dark select,
+[data-theme="dark"] select {
+  color: #f8fafc;
+}
+
+.dark select option,
+[data-theme="dark"] select option {
+  color: #0f172a !important;
+  background-color: #ffffff !important;
+  font-weight: 500;
+}
 
 /* Subtle pulse animation for CTA buttons */
 @keyframes bdsPulseGlow {

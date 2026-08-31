@@ -1055,11 +1055,11 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
               onChange={e => setSearchCategory(e.target.value)}
               className="bg-white text-slate-800 text-xs px-3 py-2.5 rounded-sm font-bold focus:outline-none cursor-pointer"
             >
-              <option value="all">Tất cả danh mục</option>
-              <option value="can-ho">Căn hộ</option>
-              <option value="biet-thu">Biệt thự</option>
-              <option value="chung-cu">Chung cư</option>
-              <option value="nha-pho">Nhà phố</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Tất cả danh mục</option>
+              <option className="text-slate-900 bg-white font-medium" value="can-ho">Căn hộ</option>
+              <option className="text-slate-900 bg-white font-medium" value="biet-thu">Biệt thự</option>
+              <option className="text-slate-900 bg-white font-medium" value="chung-cu">Chung cư</option>
+              <option className="text-slate-900 bg-white font-medium" value="nha-pho">Nhà phố</option>
             </select>
             <input
               type="text"
@@ -1445,10 +1445,10 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
                 onChange={e => setFilterCity(e.target.value)}
                 className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500/20 shadow-xs cursor-pointer"
               >
-                <option value="all">Toàn bộ Tỉnh / Thành Phố</option>
-                <option value="Hà Nội">TP. Hà Nội</option>
-                <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
-                <option value="Đà Nẵng">TP. Đà Nẵng</option>
+                <option className="text-slate-900 bg-white font-medium" value="all">Toàn bộ Tỉnh / Thành Phố</option>
+                <option className="text-slate-900 bg-white font-medium" value="Hà Nội">TP. Hà Nội</option>
+                <option className="text-slate-900 bg-white font-medium" value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                <option className="text-slate-900 bg-white font-medium" value="Đà Nẵng">TP. Đà Nẵng</option>
               </select>
 
               <select
@@ -1456,10 +1456,10 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
                 onChange={e => setFilterPriceRange(e.target.value)}
                 className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500/20 shadow-xs cursor-pointer"
               >
-                <option value="all">Tất cả khoảng giá</option>
-                <option value="under-5">Dưới 5 Tỷ VNĐ</option>
-                <option value="5-10">Từ 5 - 10 Tỷ VNĐ</option>
-                <option value="above-10">Trên 10 Tỷ VNĐ</option>
+                <option className="text-slate-900 bg-white font-medium" value="all">Tất cả khoảng giá</option>
+                <option className="text-slate-900 bg-white font-medium" value="under-5">Dưới 5 Tỷ VNĐ</option>
+                <option className="text-slate-900 bg-white font-medium" value="5-10">Từ 5 - 10 Tỷ VNĐ</option>
+                <option className="text-slate-900 bg-white font-medium" value="above-10">Trên 10 Tỷ VNĐ</option>
               </select>
 
               <select
@@ -1467,10 +1467,10 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
                 onChange={e => setSortBy(e.target.value)}
                 className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500/20 shadow-xs cursor-pointer"
               >
-                <option value="default">Thứ tự mặc định</option>
-                <option value="price-asc">Giá: Thấp đến Cao</option>
-                <option value="price-desc">Giá: Cao đến Thấp</option>
-                <option value="area-desc">Diện tích: Lớn đến Nhỏ</option>
+                <option className="text-slate-900 bg-white font-medium" value="default">Thứ tự mặc định</option>
+                <option className="text-slate-900 bg-white font-medium" value="price-asc">Giá: Thấp đến Cao</option>
+                <option className="text-slate-900 bg-white font-medium" value="price-desc">Giá: Cao đến Thấp</option>
+                <option className="text-slate-900 bg-white font-medium" value="area-desc">Diện tích: Lớn đến Nhỏ</option>
               </select>
             </div>
           </div>
@@ -1694,9 +1694,9 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
                       onChange={e => setLoanPercent(Number(e.target.value))}
                       className="w-full bg-white border border-slate-200 rounded p-2 text-xs font-bold text-slate-800"
                     >
-                      <option value={50}>50% ({((selectedProperty.priceNum * 0.5)).toFixed(1)} Tỷ)</option>
-                      <option value={70}>70% ({((selectedProperty.priceNum * 0.7)).toFixed(1)} Tỷ)</option>
-                      <option value={80}>80% ({((selectedProperty.priceNum * 0.8)).toFixed(1)} Tỷ)</option>
+                      <option className="text-slate-900 bg-white font-medium" value={50}>50% ({((selectedProperty.priceNum * 0.5)).toFixed(1)} Tỷ)</option>
+                      <option className="text-slate-900 bg-white font-medium" value={70}>70% ({((selectedProperty.priceNum * 0.7)).toFixed(1)} Tỷ)</option>
+                      <option className="text-slate-900 bg-white font-medium" value={80}>80% ({((selectedProperty.priceNum * 0.8)).toFixed(1)} Tỷ)</option>
                     </select>
                   </div>
 
@@ -1707,10 +1707,10 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
                       onChange={e => setLoanYears(Number(e.target.value))}
                       className="w-full bg-white border border-slate-200 rounded p-2 text-xs font-bold text-slate-800"
                     >
-                      <option value={10}>10 Năm (120 Tháng)</option>
-                      <option value={15}>15 Năm (180 Tháng)</option>
-                      <option value={20}>20 Năm (240 Tháng)</option>
-                      <option value={25}>25 Năm (300 Tháng)</option>
+                      <option className="text-slate-900 bg-white font-medium" value={10}>10 Năm (120 Tháng)</option>
+                      <option className="text-slate-900 bg-white font-medium" value={15}>15 Năm (180 Tháng)</option>
+                      <option className="text-slate-900 bg-white font-medium" value={20}>20 Năm (240 Tháng)</option>
+                      <option className="text-slate-900 bg-white font-medium" value={25}>25 Năm (300 Tháng)</option>
                     </select>
                   </div>
 
@@ -1952,11 +1952,11 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
                 onChange={e => setConsignmentForm({ ...consignmentForm, propType: e.target.value })}
                 className="w-full text-xs p-2.5 border border-slate-200 rounded focus:outline-none focus:border-blue-600 font-bold"
               >
-                <option value="Căn hộ">Căn hộ chung cư</option>
-                <option value="Nhà phố">Nhà phố / Nhà riêng</option>
-                <option value="Biệt thự">Biệt thự</option>
-                <option value="Đất nền">Đất nền thổ cư</option>
-                <option value="Văn phòng">Mặt bằng / Văn phòng</option>
+                <option className="text-slate-900 bg-white font-medium" value="Căn hộ">Căn hộ chung cư</option>
+                <option className="text-slate-900 bg-white font-medium" value="Nhà phố">Nhà phố / Nhà riêng</option>
+                <option className="text-slate-900 bg-white font-medium" value="Biệt thự">Biệt thự</option>
+                <option className="text-slate-900 bg-white font-medium" value="Đất nền">Đất nền thổ cư</option>
+                <option className="text-slate-900 bg-white font-medium" value="Văn phòng">Mặt bằng / Văn phòng</option>
               </select>
             </div>
             <div>

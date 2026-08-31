@@ -756,35 +756,35 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
           <select
             value={filterCategory}
             onChange={e => setFilterCategory(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-sm px-3 py-2.5 font-bold text-slate-700 focus:outline-none cursor-pointer"
+            className="bg-white text-slate-900 border border-slate-200 rounded-sm px-3 py-2.5 font-bold text-slate-700 focus:outline-none cursor-pointer font-medium"
           >
-            <option value="all">Tất cả loại BĐS</option>
-            <option value="dat-nen">Đất nền phân lô</option>
-            <option value="dat-vuon">Đất vườn nghỉ dưỡng</option>
-            <option value="biet-thu">Biệt thự đồi</option>
-            <option value="nha-pho">Nhà phố thương mại</option>
+            <option className="text-slate-900 bg-white font-medium" value="all">Tất cả loại BĐS</option>
+            <option className="text-slate-900 bg-white font-medium" value="dat-nen">Đất nền phân lô</option>
+            <option className="text-slate-900 bg-white font-medium" value="dat-vuon">Đất vườn nghỉ dưỡng</option>
+            <option className="text-slate-900 bg-white font-medium" value="biet-thu">Biệt thự đồi</option>
+            <option className="text-slate-900 bg-white font-medium" value="nha-pho">Nhà phố thương mại</option>
           </select>
 
           <select
             value={filterLocation}
             onChange={e => setFilterLocation(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-sm px-3 py-2.5 font-bold text-slate-700 focus:outline-none cursor-pointer"
+            className="bg-white text-slate-900 border border-slate-200 rounded-sm px-3 py-2.5 font-bold text-slate-700 focus:outline-none cursor-pointer font-medium"
           >
-            <option value="all">Tất cả khu vực</option>
-            <option value="Bảo Lộc">TP. Bảo Lộc</option>
-            <option value="Bảo Lâm">Huyện Bảo Lâm</option>
-            <option value="Di Linh">Huyện Di Linh</option>
+            <option className="text-slate-900 bg-white font-medium" value="all">Tất cả khu vực</option>
+            <option className="text-slate-900 bg-white font-medium" value="Bảo Lộc">TP. Bảo Lộc</option>
+            <option className="text-slate-900 bg-white font-medium" value="Bảo Lâm">Huyện Bảo Lâm</option>
+            <option className="text-slate-900 bg-white font-medium" value="Di Linh">Huyện Di Linh</option>
           </select>
 
           <select
             value={filterPrice}
             onChange={e => setFilterPrice(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-sm px-3 py-2.5 font-bold text-slate-700 focus:outline-none cursor-pointer"
+            className="bg-white text-slate-900 border border-slate-200 rounded-sm px-3 py-2.5 font-bold text-slate-700 focus:outline-none cursor-pointer font-medium"
           >
-            <option value="all">Khoảng giá</option>
-            <option value="under-1">Dưới 1 Tỷ</option>
-            <option value="1-3">Từ 1 - 3 Tỷ</option>
-            <option value="above-3">Trên 3 Tỷ</option>
+            <option className="text-slate-900 bg-white font-medium" value="all">Khoảng giá</option>
+            <option className="text-slate-900 bg-white font-medium" value="under-1">Dưới 1 Tỷ</option>
+            <option className="text-slate-900 bg-white font-medium" value="1-3">Từ 1 - 3 Tỷ</option>
+            <option className="text-slate-900 bg-white font-medium" value="above-3">Trên 3 Tỷ</option>
           </select>
 
           <button

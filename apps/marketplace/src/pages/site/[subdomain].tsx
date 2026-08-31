@@ -113,6 +113,16 @@ export default function TenantDirectSitePage() {
       .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(' ') || rawSubdomain.toUpperCase();
 
+  const companyData = {
+    name: displayBrandName,
+    phone: tenantInfo?.hotline || tenantInfo?.phone || '0919 006 030',
+    zalo: tenantInfo?.zalo || tenantInfo?.phone || '0919 006 030',
+    email: tenantInfo?.email || `${rawSubdomain.replace(/[^a-z0-9]/g, '')}@aireviewbds.com`,
+    address: tenantInfo?.address || 'TP. Hồ Chí Minh & Hà Nội',
+    logo: tenantInfo?.logo,
+    ...(tenantInfo?.company || {}),
+  };
+
   return (
     <>
       <Head>
@@ -121,7 +131,14 @@ export default function TenantDirectSitePage() {
       </Head>
 
       <div className="min-h-screen bg-white font-sans selection:bg-blue-600 selection:text-white platformbds-template w-full">
-        <DemoRenderer template={template} viewport="desktop" initialPage={pageSlug} />
+        <DemoRenderer 
+          template={template} 
+          viewport="desktop" 
+          initialPage={pageSlug}
+          company={companyData}
+          projects={tenantInfo?.projects}
+          posts={tenantInfo?.posts}
+        />
       </div>
     </>
   );

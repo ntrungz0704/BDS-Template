@@ -843,10 +843,10 @@ export default function BDS04Template({ template, viewport = 'desktop', initialP
               onChange={e => setVipForm({ ...vipForm, unitType: e.target.value })}
               className="w-full bg-[#0B1B3D] border border-white/20 rounded-sm p-3 text-white font-bold focus:outline-none cursor-pointer"
             >
-              <option value="Căn hộ 1 Phòng Ngủ">Căn hộ 1 Phòng Ngủ (52 m²)</option>
-              <option value="Căn hộ 2 Phòng Ngủ">Căn hộ 2 Phòng Ngủ (72.5 m²)</option>
-              <option value="Căn hộ 3 Phòng Ngủ">Căn hộ 3 Phòng Ngủ (108 m²)</option>
-              <option value="Sky Villa Penthouse">Sky Villa Penthouse (265 m²)</option>
+              <option className="text-slate-900 bg-white font-medium" value="Căn hộ 1 Phòng Ngủ">Căn hộ 1 Phòng Ngủ (52 m²)</option>
+              <option className="text-slate-900 bg-white font-medium" value="Căn hộ 2 Phòng Ngủ">Căn hộ 2 Phòng Ngủ (72.5 m²)</option>
+              <option className="text-slate-900 bg-white font-medium" value="Căn hộ 3 Phòng Ngủ">Căn hộ 3 Phòng Ngủ (108 m²)</option>
+              <option className="text-slate-900 bg-white font-medium" value="Sky Villa Penthouse">Sky Villa Penthouse (265 m²)</option>
             </select>
             <button
               type="submit"

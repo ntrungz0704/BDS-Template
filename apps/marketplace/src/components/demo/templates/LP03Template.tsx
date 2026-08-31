@@ -340,10 +340,10 @@ export default function LP03Template({
                       onChange={(e) => setHeroUnitType(e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 text-slate-900 font-bold border border-slate-300 focus:ring-2 focus:ring-[#9B1C1C] focus:bg-white outline-none transition-all duration-300"
                     >
-                      <option value="Căn Hộ 1 Phòng Ngủ (48.5 m²)">Căn Hộ 1 Phòng Ngủ (48.5 m²)</option>
-                      <option value="Căn Hộ 2 Phòng Ngủ (68m² - 75m²)">Căn Hộ 2 Phòng Ngủ (68.0 m² - 75.5 m²)</option>
-                      <option value="Căn Hộ 3 Phòng Ngủ Master (92m² - 110m²)">Căn Hộ 3 Phòng Ngủ Master (92.0 m² - 110.0 m²)</option>
-                      <option value="Penthouse & Sky Villa (145m²)">Penthouse & Sky Villa (145.0 m²)</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Căn Hộ 1 Phòng Ngủ (48.5 m²)">Căn Hộ 1 Phòng Ngủ (48.5 m²)</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Căn Hộ 2 Phòng Ngủ (68m² - 75m²)">Căn Hộ 2 Phòng Ngủ (68.0 m² - 75.5 m²)</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Căn Hộ 3 Phòng Ngủ Master (92m² - 110m²)">Căn Hộ 3 Phòng Ngủ Master (92.0 m² - 110.0 m²)</option>
+                      <option className="text-slate-900 bg-white font-medium" value="Penthouse & Sky Villa (145m²)">Penthouse & Sky Villa (145.0 m²)</option>
                     </select>
                   </div>
 
@@ -857,10 +857,10 @@ export default function LP03Template({
                     onChange={(e) => setViewUnit(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl bg-slate-50 text-slate-900 font-bold border border-slate-300 focus:ring-2 focus:ring-[#9B1C1C] outline-none"
                   >
-                    <option value="Căn Hộ 1 Phòng Ngủ (48.5 m²)">Căn Hộ 1 Phòng Ngủ (48.5 m²)</option>
-                    <option value="Căn Hộ 2 Phòng Ngủ (68m² - 75m²)">Căn Hộ 2 Phòng Ngủ (68.0 m² - 75.5 m²)</option>
-                    <option value="Căn Hộ 3 Phòng Ngủ Master (92m² - 110m²)">Căn Hộ 3 Phòng Ngủ Master (92.0 m² - 110.0 m²)</option>
-                    <option value="Penthouse & Sky Villa (145m²)">Penthouse & Sky Villa (145.0 m²)</option>
+                    <option className="text-slate-900 bg-white font-medium" value="Căn Hộ 1 Phòng Ngủ (48.5 m²)">Căn Hộ 1 Phòng Ngủ (48.5 m²)</option>
+                    <option className="text-slate-900 bg-white font-medium" value="Căn Hộ 2 Phòng Ngủ (68m² - 75m²)">Căn Hộ 2 Phòng Ngủ (68.0 m² - 75.5 m²)</option>
+                    <option className="text-slate-900 bg-white font-medium" value="Căn Hộ 3 Phòng Ngủ Master (92m² - 110m²)">Căn Hộ 3 Phòng Ngủ Master (92.0 m² - 110.0 m²)</option>
+                    <option className="text-slate-900 bg-white font-medium" value="Penthouse & Sky Villa (145m²)">Penthouse & Sky Villa (145.0 m²)</option>
                   </select>
                 </div>
                 <div>
@@ -870,10 +870,10 @@ export default function LP03Template({
                     onChange={(e) => setViewDate(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl bg-slate-50 text-slate-900 font-medium border border-slate-300 focus:ring-2 focus:ring-[#9B1C1C] outline-none"
                   >
-                    <option value="Thứ 7 tuần này (Sáng 09:00 - 11:30)">Thứ 7 tuần này (Sáng 09:00 - 11:30)</option>
-                    <option value="Thứ 7 tuần này (Chiều 14:30 - 17:00)">Thứ 7 tuần này (Chiều 14:30 - 17:00)</option>
-                    <option value="Chủ Nhật tuần này (Sáng 09:00 - 11:30)">Chủ Nhật tuần này (Sáng 09:00 - 11:30)</option>
-                    <option value="Chủ Nhật tuần này (Chiều 14:30 - 17:00)">Chủ Nhật tuần này (Chiều 14:30 - 17:00)</option>
+                    <option className="text-slate-900 bg-white font-medium" value="Thứ 7 tuần này (Sáng 09:00 - 11:30)">Thứ 7 tuần này (Sáng 09:00 - 11:30)</option>
+                    <option className="text-slate-900 bg-white font-medium" value="Thứ 7 tuần này (Chiều 14:30 - 17:00)">Thứ 7 tuần này (Chiều 14:30 - 17:00)</option>
+                    <option className="text-slate-900 bg-white font-medium" value="Chủ Nhật tuần này (Sáng 09:00 - 11:30)">Chủ Nhật tuần này (Sáng 09:00 - 11:30)</option>
+                    <option className="text-slate-900 bg-white font-medium" value="Chủ Nhật tuần này (Chiều 14:30 - 17:00)">Chủ Nhật tuần này (Chiều 14:30 - 17:00)</option>
                   </select>
                 </div>
               </div>

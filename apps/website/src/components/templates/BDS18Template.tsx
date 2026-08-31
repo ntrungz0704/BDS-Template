@@ -298,16 +298,42 @@ export default function BDS18Template({
   posts
 }: TemplateProps) {
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
+
+  const activeProjects = useMemo<ProjectItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): ProjectItem => ({
+        id: String(p.id || p.slug || `p-${idx + 1}`),
+        title: p.title || p.name || 'Dự án bất động sản',
+        slug: p.slug || `du-an-${idx + 1}`,
+        category: p.category || p.type || 'Biệt Thự',
+        location: p.location || p.address || 'TP. Hồ Chí Minh',
+        district: p.district || p.location || 'Quận 1',
+        city: p.city || 'Hồ Chí Minh',
+        price: p.price || (p.priceFrom ? `${p.priceFrom} Tỷ` : 'Liên hệ'),
+        priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 10.0),
+        area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '150 m²'),
+        areaNum: typeof p.area === 'number' ? p.area : (parseFloat(p.area) || 150),
+        image: p.image || p.thumbnail || p.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+        featured: Boolean(p.featured || idx < 3),
+        hot: Boolean(p.hot || idx === 0),
+        year: p.year || '2026',
+        style: p.style || 'Kiến trúc hiện đại',
+        description: p.description || 'Dự án bất động sản cao cấp với không gian sống chuẩn nghỉ dưỡng thượng lưu.',
+        specs: p.specs || p.features || p.amenities || ['Hồ bơi riêng', 'Sân vườn xanh mát', 'Nội thất nhập khẩu', 'An ninh 24/7']
+      }));
+    }
+    return BDS18_PROJECTS;
+  }, [projects, company]);
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedProject, setSelectedProject] = useState<ProjectItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS18_PROJECTS.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
+      const found = activeProjects.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS18_PROJECTS[0];
+    return activeProjects[0] || BDS18_PROJECTS[0];
   });
 
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
@@ -320,12 +346,12 @@ export default function BDS18Template({
 
   // Dynamic Options derived from Data for 100% CMS Resilience
   const availableCategories = useMemo(() => {
-    const set = new Set(BDS18_PROJECTS.map(p => p.category).filter(Boolean));
+    const set = new Set(activeProjects.map(p => p.category).filter(Boolean));
     return ['all', ...Array.from(set)];
   }, []);
 
   const availableDistricts = useMemo(() => {
-    const set = new Set(BDS18_PROJECTS.map(p => p.district).filter(Boolean));
+    const set = new Set(activeProjects.map(p => p.district).filter(Boolean));
     return ['all', ...Array.from(set)];
   }, []);
 
@@ -354,7 +380,7 @@ export default function BDS18Template({
     const res = resolvePageAndDetail(initialPage);
     setCurrentPageState(res.page);
     if (res.propSlug) {
-      const found = BDS18_PROJECTS.find(p => p.slug === res.propSlug || p.id === res.propSlug);
+      const found = activeProjects.find(p => p.slug === res.propSlug || p.id === res.propSlug);
       if (found) setSelectedProject(found);
     }
     if (res.artSlug) {
@@ -412,7 +438,7 @@ export default function BDS18Template({
 
   // Resilient Fuzzy & Dynamic Filter
   const filteredProjects = useMemo(() => {
-    return BDS18_PROJECTS.filter(p => {
+    return activeProjects.filter(p => {
       // Keyword
       if (searchKeyword.trim()) {
         const kw = searchKeyword.toLowerCase();
@@ -866,22 +892,22 @@ export default function BDS18Template({
             <select
               value={filterCategory}
               onChange={e => setFilterCategory(e.target.value)}
-              className="bg-white border border-slate-300 px-3 py-2 rounded-sm focus:outline-none"
+              className="bg-white text-slate-900 border border-slate-300 px-3 py-2 rounded-sm focus:outline-none font-medium"
             >
-              <option value="all">Loại BĐS / Kiến Trúc (Tất cả)</option>
+              <option value="all" className="text-slate-900 bg-white font-medium">Loại BĐS / Kiến Trúc (Tất cả)</option>
               {availableCategories.filter(c => c !== 'all').map(c => (
-                <option key={c} value={c}>{c}</option>
+                <option key={c} value={c} className="text-slate-900 bg-white font-medium">{c}</option>
               ))}
             </select>
 
             <select
               value={filterDistrict}
               onChange={e => setFilterDistrict(e.target.value)}
-              className="bg-white border border-slate-300 px-3 py-2 rounded-sm focus:outline-none"
+              className="bg-white text-slate-900 border border-slate-300 px-3 py-2 rounded-sm focus:outline-none font-medium"
             >
-              <option value="all">Khu Vực (Tất cả)</option>
+              <option value="all" className="text-slate-900 bg-white font-medium">Khu Vực (Tất cả)</option>
               {availableDistricts.filter(d => d !== 'all').map(d => (
-                <option key={d} value={d}>{d}</option>
+                <option key={d} value={d} className="text-slate-900 bg-white font-medium">{d}</option>
               ))}
             </select>
 

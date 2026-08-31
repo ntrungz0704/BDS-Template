@@ -482,9 +482,9 @@ export default function LP07Template({
                 onChange={(e) => setFormDoc(e.target.value)}
                 className="px-3 py-2.5 bg-white text-slate-900 font-medium border border-slate-300 outline-none"
               >
-                <option value="chinh-sach-uu-dai-moi-nhat.pdf">chinh-sach-uu-dai-moi-nhat.pdf</option>
-                <option value="bang-gia-tong-the-novaworld.xlsx">bang-gia-tong-the-novaworld.xlsx</option>
-                <option value="mat-bang-phan-khu-golf.pdf">mat-bang-phan-khu-golf.pdf</option>
+                <option className="text-slate-900 bg-white font-medium" value="chinh-sach-uu-dai-moi-nhat.pdf">chinh-sach-uu-dai-moi-nhat.pdf</option>
+                <option className="text-slate-900 bg-white font-medium" value="bang-gia-tong-the-novaworld.xlsx">bang-gia-tong-the-novaworld.xlsx</option>
+                <option className="text-slate-900 bg-white font-medium" value="mat-bang-phan-khu-golf.pdf">mat-bang-phan-khu-golf.pdf</option>
               </select>
               <input
                 type="tel"
@@ -620,8 +620,8 @@ export default function LP07Template({
                 onChange={(e) => setFormDoc(e.target.value)}
                 className="px-3 py-2.5 bg-white text-slate-900 font-medium border border-slate-300 outline-none"
               >
-                <option value="chinh-sach-uu-dai-moi-nhat.pdf">chinh-sach-uu-dai-moi-nhat.pdf</option>
-                <option value="bang-gia-tong-the-novaworld.xlsx">bang-gia-tong-the-novaworld.xlsx</option>
+                <option className="text-slate-900 bg-white font-medium" value="chinh-sach-uu-dai-moi-nhat.pdf">chinh-sach-uu-dai-moi-nhat.pdf</option>
+                <option className="text-slate-900 bg-white font-medium" value="bang-gia-tong-the-novaworld.xlsx">bang-gia-tong-the-novaworld.xlsx</option>
               </select>
               <input
                 type="tel"

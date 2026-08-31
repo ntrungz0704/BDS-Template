@@ -273,16 +273,41 @@ export default function BDS24Template({
   posts
 }: TemplateProps) {
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
+
+  const activeProjects = useMemo<SmartCityProject[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): SmartCityProject => ({
+        id: String(p.id || p.slug || `sc-${idx + 1}`),
+        title: p.title || p.name || 'Đại Đô Thị Thông Minh AI 4.0',
+        slug: p.slug || `du-an-${idx + 1}`,
+        address: p.address || p.location || 'Hà Nội & TP. Hồ Chí Minh',
+        city: p.city || 'Hà Nội',
+        priceRange: p.price || '2.5 - 8.5 Tỷ VNĐ',
+        priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 2.5),
+        areaRange: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '35 - 120 m²'),
+        developer: p.developer || company?.name || 'Tập Đoàn BĐS',
+        status: p.status || 'Đang Mở Bán',
+        techHighlights: p.features || p.techHighlights || ['Face ID thông minh', 'Camera AI an ninh 24/7', 'Smart Parking'],
+        image: p.image || p.thumbnail || p.images?.[0] || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        hot: Boolean(p.hot || idx === 0),
+        featured: Boolean(p.featured || idx < 4),
+        iotScore: p.iotScore || 98,
+        description: p.description || 'Dự án áp dụng công nghệ số và hệ thống quản trị năng lượng thông minh.',
+        amenities: p.amenities || ['Hồ bơi tràn viền', 'Sân thể thao', 'Công viên xanh', 'Bãi đỗ xe AI']
+      }));
+    }
+    return BDS24_PROJECTS;
+  }, [projects, company]);
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedProject, setSelectedProject] = useState<SmartCityProject>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS24_PROJECTS.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
+      const found = activeProjects.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS24_PROJECTS[0];
+    return (activeProjects[0] || BDS24_PROJECTS[0]);
   });
 
   const [selectedArticle, setSelectedArticle] = useState<TechNewsItem>(() => {
@@ -295,12 +320,12 @@ export default function BDS24Template({
 
   // Dynamic Options derived from Data for 100% CMS Resilience
   const availableCities = useMemo(() => {
-    const set = new Set(BDS24_PROJECTS.map(p => p.city).filter(Boolean));
+    const set = new Set(activeProjects.map(p => p.city).filter(Boolean));
     return ['all', ...Array.from(set)];
   }, []);
 
   const availableDevelopers = useMemo(() => {
-    const set = new Set(BDS24_PROJECTS.map(p => p.developer).filter(Boolean));
+    const set = new Set(activeProjects.map(p => p.developer).filter(Boolean));
     return ['all', ...Array.from(set)];
   }, []);
 
@@ -326,7 +351,7 @@ export default function BDS24Template({
     const res = resolvePageAndDetail(initialPage);
     setCurrentPageState(res.page);
     if (res.propSlug) {
-      const found = BDS24_PROJECTS.find(p => p.slug === res.propSlug || p.id === res.propSlug);
+      const found = activeProjects.find(p => p.slug === res.propSlug || p.id === res.propSlug);
       if (found) setSelectedProject(found);
     }
     if (res.artSlug) {
@@ -384,7 +409,7 @@ export default function BDS24Template({
 
   // Resilient Fuzzy & Dynamic Filter
   const filteredProjects = useMemo(() => {
-    return BDS24_PROJECTS.filter(p => {
+    return activeProjects.filter(p => {
       // City
       if (filterCity !== 'all' && p.city !== filterCity) return false;
 
@@ -570,9 +595,9 @@ export default function BDS24Template({
             <select
               value={filterCity}
               onChange={e => setFilterCity(e.target.value)}
-              className="bg-white border border-slate-300 px-3 py-2 focus:outline-none"
+              className="bg-white text-slate-900 border border-slate-300 px-3 py-2 focus:outline-none font-medium"
             >
-              <option value="all">Khu Vực (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Khu Vực (Tất cả)</option>
               {availableCities.filter(c => c !== 'all').map(c => (
                 <option key={c} value={c}>{c}</option>
               ))}
@@ -581,9 +606,9 @@ export default function BDS24Template({
             <select
               value={filterDeveloper}
               onChange={e => setFilterDeveloper(e.target.value)}
-              className="bg-white border border-slate-300 px-3 py-2 focus:outline-none"
+              className="bg-white text-slate-900 border border-slate-300 px-3 py-2 focus:outline-none font-medium"
             >
-              <option value="all">Chủ Đầu Tư (Tất cả)</option>
+              <option className="text-slate-900 bg-white font-medium" value="all">Chủ Đầu Tư (Tất cả)</option>
               {availableDevelopers.filter(d => d !== 'all').map(d => (
                 <option key={d} value={d}>{d}</option>
               ))}
@@ -602,7 +627,7 @@ export default function BDS24Template({
           {filteredProjects.map(proj => (
             <div 
               key={proj.id}
-              className="bg-white border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden"
+              className="bg-white text-slate-900 border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden font-medium"
             >
               <div className="relative aspect-[16/10] overflow-hidden bg-slate-950">
                 <img
@@ -787,7 +812,7 @@ export default function BDS24Template({
               onChange={e => setConsultForm({ ...consultForm, projectInterested: e.target.value })}
               className="w-full bg-slate-800 border border-slate-700 p-2.5 text-white focus:outline-none font-bold"
             >
-              {BDS24_PROJECTS.map(p => (
+              {activeProjects.map(p => (
                 <option key={p.id} value={p.title}>{p.title}</option>
               ))}
             </select>
