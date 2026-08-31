@@ -3294,6 +3294,50 @@ export const TEMPLATE_CONFIGS: Record<string, RealEstateConfig> = {
   },
 };
 
+// ─── BDS & LP Slug Aliases ──────────────────────────────────────────────────
+// Map bds-XX and lp-XX slugs to their corresponding legacy config keys
+// so the provisioning service finds the correct demo content for each template.
+const BDS_CONFIG_MAP: Record<string, string> = {
+  'bds-01': 'luxury-gold',
+  'bds-02': 'minimal-white',
+  'bds-03': 'modern-corporate',
+  'bds-04': 'resort-paradise',
+  'bds-05': 'urban-city',
+  'bds-06': 'industrial-estate',
+  'bds-07': 'villa-premium',
+  'bds-08': 'eco-green',
+  'bds-09': 'classic-heritage',
+  'bds-10': 'investment-pro',
+  'bds-11': 'landing-high-convert',
+  'bds-12': 'mega-portal',
+  'bds-13': 'auction-platform',
+  'bds-14': 'land-plot',
+  'bds-15': 'retail-shophouse',
+  'bds-16': 'personal-agent',
+  'bds-17': 'mega-portal',
+  'bds-18': 'mega-portal',
+  'bds-19': 'mega-portal',
+  'bds-20': 'luxury-gold',
+  'bds-21': 'mega-portal',
+  'bds-22': 'resort-paradise',
+  'bds-23': 'landing-high-convert',
+  'bds-24': 'mega-portal',
+  'lp-01': 'luxury-gold',
+  'lp-02': 'villa-premium',
+  'lp-03': 'land-plot',
+  'lp-04': 'personal-agent',
+  'lp-05': 'resort-paradise',
+  'lp-06': 'urban-city',
+  'lp-07': 'eco-green',
+};
+
+// Register BDS/LP aliases directly in TEMPLATE_CONFIGS
+for (const [bdsSlug, legacySlug] of Object.entries(BDS_CONFIG_MAP)) {
+  if (TEMPLATE_CONFIGS[legacySlug] && !TEMPLATE_CONFIGS[bdsSlug]) {
+    TEMPLATE_CONFIGS[bdsSlug] = TEMPLATE_CONFIGS[legacySlug];
+  }
+}
+
 export function getTemplateConfig(slug: string, template: any): RealEstateConfig {
   if (TEMPLATE_CONFIGS[slug]) return TEMPLATE_CONFIGS[slug];
 
