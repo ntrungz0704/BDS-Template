@@ -220,12 +220,15 @@ export default function LP02Template({
       </nav>
 
       {/* ════════════════ 3. HERO SECTION & APPLICATION LEAD FORM (Lưới lọc phễu số 1) ════════════════ */}
-      <section id="tong-quan" className="relative bg-gradient-to-b from-[#FFFDF9] to-[#F5EFE6] py-12 sm:py-16 px-4 sm:px-6 lg:px-8 border-b border-amber-900/10">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+      <section id="tong-quan" className="relative bg-gradient-to-b from-[#FFF9F2] via-[#FBF5ED] to-[#F3ECE0] py-10 sm:py-14 px-4 sm:px-6 lg:px-8 border-b border-amber-900/10 overflow-hidden">
+        {/* Subtle Luxury Pattern Backdrop */}
+        <div className="absolute inset-0 bg-[radial-gradient(#C1121F_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.03] pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start relative z-10">
           
-          {/* Left Column: Big Recruitment Headline Banner */}
-          <div className="lg:col-span-7 space-y-6 text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-100 border border-red-300 text-red-700 text-xs font-black uppercase tracking-wider">
+          {/* Left Column: Big Recruitment Headline Banner & Value Pillars */}
+          <div className="lg:col-span-7 space-y-5 text-left">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-100/90 border border-red-300 text-red-700 text-xs font-black uppercase tracking-wider shadow-xs">
               <Sparkles className="w-3.5 h-3.5 text-red-600 animate-pulse" />
               <span>ĐỢT TUYỂN DỤNG QUY MÔ LỚN NHẤT NĂM 2026</span>
             </div>
@@ -234,7 +237,7 @@ export default function LP02Template({
               <h2 className="text-amber-600 font-black text-2xl sm:text-3xl tracking-tight uppercase">
                 TUYỂN DỤNG
               </h2>
-              <h1 className="text-4xl sm:text-6xl font-black text-[#C1121F] tracking-tight leading-none uppercase">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#C1121F] tracking-tight leading-tight uppercase">
                 300 <span className="text-2xl sm:text-4xl text-slate-900 font-extrabold">CHUYÊN VIÊN</span> <br />
                 <span className="text-2xl sm:text-4xl text-[#C1121F]">KINH DOANH BẤT ĐỘNG SẢN</span>
               </h1>
@@ -245,28 +248,60 @@ export default function LP02Template({
             </p>
 
             {/* Quick 3 Value Pills */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs">
-              <div className="p-3 bg-white rounded-xl border border-red-200 shadow-xs flex items-center gap-2 font-bold text-slate-800">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-xs">
+              <div className="p-3 bg-white/90 backdrop-blur-xs rounded-xl border border-red-200 shadow-xs flex items-center gap-2 font-bold text-slate-800">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>Hoa hồng tới 70%</span>
               </div>
-              <div className="p-3 bg-white rounded-xl border border-red-200 shadow-xs flex items-center gap-2 font-bold text-slate-800">
+              <div className="p-3 bg-white/90 backdrop-blur-xs rounded-xl border border-red-200 shadow-xs flex items-center gap-2 font-bold text-slate-800">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>Không cần kinh nghiệm</span>
               </div>
-              <div className="p-3 bg-white rounded-xl border border-red-200 shadow-xs flex items-center gap-2 font-bold text-slate-800">
+              <div className="p-3 bg-white/90 backdrop-blur-xs rounded-xl border border-red-200 shadow-xs flex items-center gap-2 font-bold text-slate-800">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>Phỏng vấn đi làm ngay</span>
               </div>
             </div>
 
-            <div className="pt-2 flex items-center gap-4">
+            {/* 4 Impact Stat Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+              <div className="bg-white/90 backdrop-blur-xs p-3 rounded-2xl border border-amber-200/80 shadow-xs text-center">
+                <span className="text-xl sm:text-2xl font-black text-[#C1121F] block">500+</span>
+                <span className="text-[11px] text-slate-600 font-bold uppercase tracking-wider">Chiến Binh Sale</span>
+              </div>
+              <div className="bg-white/90 backdrop-blur-xs p-3 rounded-2xl border border-amber-200/80 shadow-xs text-center">
+                <span className="text-xl sm:text-2xl font-black text-amber-600 block">30-100Tr</span>
+                <span className="text-[11px] text-slate-600 font-bold uppercase tracking-wider">Thu Nhập/Tháng</span>
+              </div>
+              <div className="bg-white/90 backdrop-blur-xs p-3 rounded-2xl border border-amber-200/80 shadow-xs text-center">
+                <span className="text-xl sm:text-2xl font-black text-[#C1121F] block">10.000+</span>
+                <span className="text-[11px] text-slate-600 font-bold uppercase tracking-wider">Giỏ Hàng F1</span>
+              </div>
+              <div className="bg-white/90 backdrop-blur-xs p-3 rounded-2xl border border-amber-200/80 shadow-xs text-center">
+                <span className="text-xl sm:text-2xl font-black text-emerald-600 block">100%</span>
+                <span className="text-[11px] text-slate-600 font-bold uppercase tracking-wider">Kèm Cặp 1-1</span>
+              </div>
+            </div>
+
+            {/* Social Proof & Video Fast Link */}
+            <div className="pt-2 flex flex-wrap items-center justify-between gap-4 p-3.5 bg-white/80 backdrop-blur-xs rounded-2xl border border-amber-900/10">
+              <div className="flex items-center gap-2.5">
+                <div className="flex -space-x-2 overflow-hidden">
+                  <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="Sale 1" />
+                  <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="Sale 2" />
+                  <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover shadow-xs" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&q=80" alt="Sale 3" />
+                </div>
+                <p className="text-xs text-slate-700 font-medium">
+                  Hơn <strong>128 ứng viên</strong> vừa phỏng vấn và chốt deal trong tháng!
+                </p>
+              </div>
+
               <a
                 href="#clip-tuyen-dung"
-                className="inline-flex items-center gap-2 text-xs font-bold text-red-600 hover:text-red-800 underline decoration-red-400/60 underline-offset-4"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-red-800 underline decoration-red-400/60 underline-offset-4"
               >
-                <Play className="w-4 h-4 text-red-600 fill-current" />
-                <span>Xem Video Văn Hóa Doanh Nghiệp Cát Tường</span>
+                <Play className="w-3.5 h-3.5 text-red-600 fill-current" />
+                <span>Xem Video Văn Hóa</span>
               </a>
             </div>
           </div>
