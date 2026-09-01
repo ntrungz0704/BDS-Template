@@ -1,191 +1,566 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BĐS 22 — ZoHotels & Happy Land Nha Trang — Website Bất Động Sản Chuyên Nghiệp</title>
-  <meta name="description" content="Căn hộ nghỉ dưỡng biển · ZoHotels · Ưu đãi 50%">
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HappyLand Resort & Condotel</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Prevent FOUC and provide smooth scroll */
+    html { scroll-behavior: smooth; }
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+    
+    /* Animation for toast */
+    @keyframes bounce {
+      0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
+      50% { transform: translateY(0); animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+    }
+    .animate-bounce {
+      animation: bounce 1s infinite;
+    }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+<body class="w-full min-h-screen bg-white text-slate-900 font-sans flex flex-col justify-between selection:bg-[#0E7490] selection:text-white">
 
-  <!-- Header -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2 font-black text-xl text-blue-600">
-        <span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-xs">TB</span>
-        <span>TEMPLATES<strong class="text-slate-900">BDS</strong></span>
-      </a>
-      <nav class="hidden md:flex items-center gap-6 text-xs font-bold uppercase text-slate-700">
-        <a href="index.html" class="text-blue-600">Trang Chủ</a>
-        <a href="#san-pham" class="hover:text-blue-600">Sản Phẩm</a>
-        <a href="#du-an" class="hover:text-blue-600">Dự Án</a>
-        <a href="#tin-tuc" class="hover:text-blue-600">Tin Tức</a>
-        <a href="#lien-he" class="hover:text-blue-600">Liên Hệ</a>
-      </nav>
-      <div class="flex items-center gap-3">
-        <a href="tel:0919006030" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow transition">
-          📞 0919 006 030
-        </a>
-      </div>
-    </div>
-  </header>
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-24 right-6 z-50 bg-[#0E7490] text-white border border-amber-400 px-5 py-3 shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce hidden">
+    <i data-lucide="check-circle-2" class="text-amber-300 w-4 h-4"></i>
+    <span id="toast-message"></span>
+  </div>
 
-  <!-- Hero Section -->
-  <main class="flex-1 w-full space-y-12 pb-16">
-    <section class="relative py-20 px-4 bg-slate-900 text-white text-center">
-      <div class="max-w-4xl mx-auto space-y-4">
-        <span class="px-3.5 py-1 rounded-full bg-blue-600/30 text-blue-300 border border-blue-400/40 text-xs font-bold uppercase tracking-widest inline-block">
-          MẪU GIAO DIỆN BĐS 22 — ZOHOTELS & HAPPY LAND NHA TRANG
-        </span>
-        <h1 class="text-3xl sm:text-5xl font-black uppercase leading-tight font-serif">
-          BĐS 22 — ZoHotels & Happy Land Nha Trang
-        </h1>
-        <p class="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
-          Căn hộ nghỉ dưỡng biển · ZoHotels · Ưu đãi 50% — Giải pháp website bất động sản tối ưu chuẩn SEO, tải nhanh và dễ dàng sử dụng.
-        </p>
-        <div class="pt-4 flex justify-center gap-3">
-          <a href="#san-pham" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase rounded-full shadow">
-            Xem Sản Phẩm ›
-          </a>
-          <a href="#lien-he" class="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold text-xs uppercase rounded-full">
-            Đăng Ký Tư Vấn
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Danh Sách BĐS -->
-    <section id="san-pham" class="max-w-7xl mx-auto px-4 space-y-6">
-      <div class="text-center space-y-1">
-        <h2 class="text-2xl font-black text-slate-900 uppercase">SẢN PHẨM BẤT ĐỘNG SẢN NỔI BẬT</h2>
-        <div class="w-12 h-1 bg-blue-600 mx-auto rounded-full"></div>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="property-list">
-        <!-- Javascript renders cards here or static cards -->
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
-          <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80" alt="" class="w-full h-48 object-cover">
-          <div class="p-4 space-y-2">
-            <h3 class="font-bold text-sm text-slate-900">Biệt Thự Nghỉ Dưỡng Cao Cấp</h3>
-            <p class="text-xs text-slate-500">Vị trí đắc địa, sổ hồng riêng chính chủ</p>
-            <div class="flex justify-between items-center pt-2 border-t text-xs">
-              <span class="font-black text-blue-600 text-sm">4.5 Tỷ VNĐ</span>
-              <span class="text-slate-500">250 m²</span>
-            </div>
+  <div id="app-container">
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-[#0E7490] text-white shadow-xl border-b border-cyan-300/30">
+      <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4">
+        
+        <!-- Brand Logo -->
+        <div onclick="navigate('home')" class="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0">
+          <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#F97316] to-[#EA580C] flex items-center justify-center text-white font-black text-base sm:text-xl shadow shrink-0">
+            🌴
+          </div>
+          <div class="min-w-0 truncate">
+            <span class="text-base sm:text-2xl font-serif font-black tracking-wider text-white block leading-none truncate">
+              TEMPLATESBDS
+            </span>
+            <span class="text-[7.5px] sm:text-[8.5px] font-bold text-cyan-200 uppercase tracking-widest block mt-0.5 truncate">
+              TỔ HỢP RESORT & CONDOTEL QUỐC TẾ ZOHOTELS
+            </span>
           </div>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
-          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80" alt="" class="w-full h-48 object-cover">
-          <div class="p-4 space-y-2">
-            <h3 class="font-bold text-sm text-slate-900">Nhà Phố Mặt Tiền Thương Mại</h3>
-            <p class="text-xs text-slate-500">Thuận tiện kinh doanh showroom, văn phòng</p>
-            <div class="flex justify-between items-center pt-2 border-t text-xs">
-              <span class="font-black text-blue-600 text-sm">6.8 Tỷ VNĐ</span>
-              <span class="text-slate-500">120 m²</span>
-            </div>
-          </div>
-        </div>
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
-          <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="" class="w-full h-48 object-cover">
-          <div class="p-4 space-y-2">
-            <h3 class="font-bold text-sm text-slate-900">Đất Nền Phân Lô Sổ Đỏ Trao Tay</h3>
-            <p class="text-xs text-slate-500">Hạ tầng đồng bộ điện âm nước máy</p>
-            <div class="flex justify-between items-center pt-2 border-t text-xs">
-              <span class="font-black text-blue-600 text-sm">1.8 Tỷ VNĐ</span>
-              <span class="text-slate-500">100 m²</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- Form Liên Hệ -->
-    <section id="lien-he" class="max-w-4xl mx-auto px-4">
-      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-lg space-y-4">
-        <h3 class="text-xl font-black text-slate-900 text-center uppercase">LIÊN HỆ & TƯ VẤN BÁO GIÁ</h3>
-        <form id="contact-form" class="space-y-3 text-xs">
-          <input type="text" id="name" placeholder="Họ và tên của bạn (*)" required class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl">
-          <input type="tel" id="phone" placeholder="Số điện thoại / Zalo (*)" required class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl font-bold text-blue-600">
-          <textarea id="message" rows="3" placeholder="Nội dung cần tư vấn..." class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl"></textarea>
-          <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow transition">
-            GỬI YÊU CẦU TƯ VẤN
+        <!-- Navigation Menu -->
+        <nav class="hidden xl:flex items-center gap-0.5 text-xs font-bold uppercase tracking-wider text-white whitespace-nowrap" id="desktop-nav">
+          <button onclick="navigate('home')" data-page="home" class="nav-btn whitespace-nowrap px-3 py-2 transition-all bg-[#155E75] text-amber-300 font-extrabold hover:text-amber-300">Trang Chủ</button>
+          <button onclick="navigate('overview')" data-page="overview" class="nav-btn whitespace-nowrap px-3 py-2 transition-all hover:text-amber-300">Tổng Quan</button>
+          <button onclick="navigate('location')" data-page="location" class="nav-btn whitespace-nowrap px-3 py-2 transition-all hover:text-amber-300">Vị Trí</button>
+          <button onclick="navigate('amenities')" data-page="amenities" class="nav-btn whitespace-nowrap px-3 py-2 transition-all hover:text-amber-300">Tiện Ích</button>
+          <button onclick="navigate('villas')" data-page="villas" class="nav-btn whitespace-nowrap px-3 py-2 transition-all hover:text-amber-300">Biệt Thự Biển</button>
+          <button onclick="navigate('condos')" data-page="condos" class="nav-btn whitespace-nowrap px-3 py-2 transition-all hover:text-amber-300">Condotel</button>
+          <button onclick="navigate('policy')" data-page="policy" class="nav-btn whitespace-nowrap px-3 py-2 transition-all hover:text-amber-300">Chính Sách</button>
+          <button onclick="navigate('news')" data-page="news" class="nav-btn whitespace-nowrap px-3 py-2 transition-all hover:text-amber-300">Tin Tức</button>
+          <button onclick="navigate('contact')" data-page="contact" class="nav-btn whitespace-nowrap px-3 py-2 transition-all hover:text-amber-300">Liên Hệ</button>
+        </nav>
+
+        <!-- Right CTA -->
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
+          <button onclick="scrollToForm()" class="hidden md:inline-block px-4 py-2 bg-[#F97316] hover:bg-orange-600 text-white font-black text-xs uppercase tracking-wider shadow cursor-pointer">
+            Nhận Bảng Giá Gốc
           </button>
-        </form>
-      </div>
-    </section>
-  </main>
-
-    <!-- Footer HTML -->
-  <footer class="w-full bg-[#07132B] text-slate-300 text-xs pt-12 pb-6 border-t border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-white/10">
-      <!-- Cột 1: THÔNG TIN LIÊN HỆ ADMIN -->
-      <div class="md:col-span-5 space-y-3">
-        <h4 class="font-black text-sm text-white uppercase tracking-wider">
-          <span class="text-[#0084FF]">TEMPLATES</span><span class="text-white">BDS</span>
-        </h4>
-        <p class="text-slate-400 text-xs leading-relaxed max-w-sm">
-          Kho mẫu website bất động sản cao cấp số 1 Việt Nam. Tối ưu chuyển đổi, chuẩn SEO và tích hợp hệ thống CMS quản trị đa kênh.
-        </p>
-        <div class="space-y-1.5 text-xs text-slate-300 pt-1">
-          <div>📍 Địa chỉ: <strong class="text-white font-medium">180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội</strong></div>
-          <div>📞 Hotline 1: <a href="tel:0919006030" class="text-white font-bold font-mono hover:text-blue-400">0919 006 030</a></div>
-          <div>📞 Hotline 2: <a href="tel:0983312219" class="text-white font-bold font-mono hover:text-emerald-400">0983 312 219</a> (24/7)</div>
-          <div>✉️ Email: <a href="mailto:ntrungz0704@gmail.com" class="text-white hover:text-blue-400">ntrungz0704@gmail.com</a></div>
-          <div>⏰ Giờ làm việc: <strong class="text-white font-medium">8:00 - 20:00 (T2 - CN)</strong></div>
-        </div>
-
-        <!-- 4 Social Icons -->
-        <div class="flex items-center gap-2.5 pt-2">
-          <a href="https://zalo.me/0919006030" target="_blank" class="w-9 h-9 rounded-2xl bg-[#0068FF] text-white flex items-center justify-center font-black text-[10px]">ZALO</a>
-          <a href="https://www.facebook.com/groups/847532091275214" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1877F2] text-white flex items-center justify-center font-bold text-sm">f</a>
-          <a href="https://www.youtube.com/@tungchuofficial" target="_blank" class="w-9 h-9 rounded-2xl bg-[#E62117] text-white flex items-center justify-center text-xs">▶</a>
-          <a href="https://www.tiktok.com/@editnhadat" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1E293B] text-[#A78BFA] flex items-center justify-center text-xs">🎵</a>
+          <button onclick="toggleMobileMenu()" class="p-1.5 sm:p-2 text-white xl:hidden hover:bg-white/10 rounded-md shrink-0 flex items-center justify-center">
+            <i data-lucide="menu" id="menu-icon" class="w-5 h-5"></i>
+          </button>
         </div>
       </div>
 
-      <!-- Cột 2: VỀ CHÚNG TÔI -->
-      <div class="md:col-span-2 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">VỀ CHÚNG TÔI</h4>
-        <div class="space-y-2 text-slate-400">
-          <div><a href="index.html" class="hover:text-blue-400">Trang chủ</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Sản phẩm BĐS</a></div>
-          <div><a href="#du-an" class="hover:text-blue-400">Dự án mới</a></div>
-          <div><a href="#tin-tuc" class="hover:text-blue-400">Tin tức & Sự kiện</a></div>
-          <div><a href="#lien-he" class="hover:text-blue-400">Liên hệ tư vấn</a></div>
+      <!-- Mobile Drawer -->
+      <div id="mobile-menu" class="hidden xl:hidden bg-[#155E75] border-t border-cyan-300/30 px-6 py-4 space-y-2">
+        <div class="grid grid-cols-2 gap-2 text-xs font-bold uppercase">
+          <button onclick="navigate('home')" class="p-2.5 text-left bg-[#0E7490] hover:text-amber-300 text-white">Trang Chủ</button>
+          <button onclick="navigate('overview')" class="p-2.5 text-left bg-[#0E7490] hover:text-amber-300 text-white">Tổng Quan</button>
+          <button onclick="navigate('location')" class="p-2.5 text-left bg-[#0E7490] hover:text-amber-300 text-white">Vị Trí</button>
+          <button onclick="navigate('amenities')" class="p-2.5 text-left bg-[#0E7490] hover:text-amber-300 text-white">Tiện Ích</button>
+          <button onclick="navigate('villas')" class="p-2.5 text-left bg-[#0E7490] hover:text-amber-300 text-white">Biệt Thự Biển</button>
+          <button onclick="navigate('condos')" class="p-2.5 text-left bg-[#0E7490] hover:text-amber-300 text-white">Condotel</button>
+          <button onclick="navigate('policy')" class="p-2.5 text-left bg-[#0E7490] hover:text-amber-300 text-white">Chính Sách</button>
+          <button onclick="navigate('news')" class="p-2.5 text-left bg-[#0E7490] hover:text-amber-300 text-white">Tin Tức</button>
+          <button onclick="navigate('contact')" class="p-2.5 text-left bg-[#0E7490] hover:text-amber-300 text-white">Liên Hệ</button>
         </div>
       </div>
+    </header>
 
-      <!-- Cột 3: DANH MỤC BĐS -->
-      <div class="md:col-span-2 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">DANH MỤC</h4>
-        <div class="space-y-2 text-slate-400">
-          <div><a href="#san-pham" class="hover:text-blue-400">Đất dự án</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Đất nền phân lô</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Biệt thự view biển</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Nhà phố thương mại</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Nhà cho thuê</a></div>
+    <!-- Content Sections -->
+    <main id="main-content">
+      
+      <!-- HERO -->
+      <section id="sec-hero" class="relative bg-slate-950 text-white min-h-[460px] sm:min-h-[560px] flex items-center justify-center overflow-hidden border-b border-cyan-300/30">
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&q=80" alt="HappyLand Nha Trang Flycam" class="absolute inset-0 w-full h-full object-cover opacity-65" onerror="this.src='https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1600&q=80'" />
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0E7490] via-black/40 to-transparent"></div>
+        <div class="relative z-20 text-center space-y-4 max-w-4xl mx-auto px-4">
+          <div class="inline-block px-4 py-1.5 bg-[#0E7490]/90 border border-amber-300/40 text-amber-200 text-xs font-black uppercase tracking-widest">
+            THIÊN ĐƯỜNG NGHỈ DƯỠNG MẶT BIỂN VỊNH NHA TRANG
+          </div>
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-serif font-black uppercase text-amber-300 tracking-wider drop-shadow-2xl">
+            HAPPYLAND RESORT & CONDOTEL
+          </h1>
+          <p class="text-xs sm:text-base text-slate-100 max-w-2xl mx-auto font-medium leading-relaxed">
+            Tổ hợp nghỉ dưỡng 5 sao quốc tế vận hành bởi ZoHotels — Cam kết chia sẻ lợi nhuận 85/15 & 15 đêm nghỉ dưỡng thượng lưu mỗi năm.
+          </p>
+          <div class="pt-4 flex flex-wrap items-center justify-center gap-4">
+            <button onclick="scrollToInventory()" class="px-6 py-3 bg-[#F97316] hover:bg-orange-600 text-white font-black text-xs uppercase tracking-wider shadow-lg cursor-pointer">
+              Khám Phá Bảng Hàng ›
+            </button>
+            <button onclick="scrollToForm()" class="px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white font-bold text-xs uppercase tracking-wider border border-white/30 cursor-pointer">
+              Đăng Ký Tham Quan 3D
+            </button>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <!-- Cột 4: CHÍNH SÁCH -->
-      <div class="md:col-span-3 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">CHÍNH SÁCH</h4>
-        <div class="space-y-2 text-slate-400 text-xs">
-          <div>• Bàn giao 100% mã nguồn sạch</div>
-          <div>• Bảo hành & Hỗ trợ kỹ thuật trọn đời</div>
-          <div>• Hỗ trợ cài đặt lên Hosting cPanel / XAMPP</div>
+      <!-- OVERVIEW -->
+      <section id="sec-overview" class="py-16 bg-white text-slate-900 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div class="lg:col-span-6 space-y-4">
+              <span class="text-xs font-black uppercase text-[#F97316] tracking-widest block">QUẦN THỂ NGHỈ DƯỠNG ĐỈNH CAO</span>
+              <h2 class="text-2xl sm:text-4xl font-serif font-black uppercase text-[#0E7490] leading-tight">HappyLand Resort — Viên Ngọc Quý Của Vịnh Biển Nha Trang</h2>
+              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Trải dài trên 1.5km đường bờ biển tuyệt đẹp với bãi cát trắng mịn màng và làn nước biển trong vắt nhìn thấy đáy san hô, HappyLand Resort là điểm đến nghỉ dưỡng số 1 dành cho du khách quốc tế.</p>
+              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Dự án tích hợp hơn 60 tiện ích giải trí biển, bến du thuyền quốc tế và chuỗi nhà hàng ẩm thực Michelin bên bờ sóng.</p>
+              <div class="grid grid-cols-3 gap-3 pt-3 border-t border-slate-200 text-xs">
+                <div class="bg-slate-50 p-3 border border-slate-200">
+                  <span class="text-slate-500 block text-[10px]">TỔNG DIỆN TÍCH</span>
+                  <strong class="text-[#0E7490] text-sm font-black">28.5 Hecta</strong>
+                </div>
+                <div class="bg-slate-50 p-3 border border-slate-200">
+                  <span class="text-slate-500 block text-[10px]">QUẢN LÝ VẬN HÀNH</span>
+                  <strong class="text-[#0E7490] text-sm font-black">ZoHotels 5★</strong>
+                </div>
+                <div class="bg-slate-50 p-3 border border-slate-200">
+                  <span class="text-slate-500 block text-[10px]">HÌNH THỨC SỞ HỮU</span>
+                  <strong class="text-[#0E7490] text-sm font-black">Sổ Hồng Lâu Dài</strong>
+                </div>
+              </div>
+            </div>
+            <div class="lg:col-span-6 relative aspect-[4/3] overflow-hidden border border-slate-300 shadow-xl">
+              <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&q=80" alt="Hồ bơi resort" class="w-full h-full object-cover" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LOCATION -->
+      <section id="sec-location" class="py-16 bg-[#0E7490] text-white">
+        <div class="max-w-7xl mx-auto px-4 space-y-10">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div class="lg:col-span-6 relative aspect-[4/3] overflow-hidden border-2 border-cyan-200/40 shadow-2xl bg-slate-900">
+              <iframe src="https://maps.google.com/maps?q=Bai+Dai+Cam+Ranh+Nha+Trang&t=&z=13&ie=UTF8&iwloc=&output=embed" class="w-full h-full border-0" allowfullscreen loading="lazy"></iframe>
+            </div>
+            <div class="lg:col-span-6 space-y-4">
+              <span class="text-xs font-black uppercase text-amber-300 tracking-widest block">TỌA ĐỘ VÀNG NGHỈ DƯỠNG</span>
+              <h2 class="text-2xl sm:text-4xl font-serif font-black uppercase text-white leading-tight">MẶT TIỀN ĐẠI LỘ NGUYỄN TẤT THÀNH & BÃI DÀI NHA TRANG</h2>
+              <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">Vị trí độc tôn kết nối thẳng Sân bay Quốc tế Cam Ranh và trung tâm thành phố biển Nha Trang chỉ trong ít phút di chuyển:</p>
+              <ul class="space-y-2.5 text-xs text-slate-200">
+                <li class="flex items-center gap-2">📍 <strong>Sân bay Quốc tế Cam Ranh:</strong> Cách 10 phút di chuyển (9 km)</li>
+                <li class="flex items-center gap-2">📍 <strong>Trung tâm TP. Nha Trang / Tháp Trầm Hương:</strong> Cách 20 phút (18 km)</li>
+                <li class="flex items-center gap-2">📍 <strong>Sân Golf KN Golf Links 27 lỗ:</strong> Cách 5 phút (4 km)</li>
+                <li class="flex items-center gap-2">📍 <strong>Cảng Quốc tế Vinpearl & Cáp treo biển:</strong> Cách 15 phút</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AMENITIES -->
+      <section id="sec-amenities" class="py-16 bg-slate-50 text-slate-900 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 space-y-10">
+          <div class="text-center space-y-2 max-w-2xl mx-auto">
+            <span class="text-xs font-black uppercase text-[#F97316] tracking-widest">HỆ THỐNG ĐẶC QUYỀN THƯỢNG LƯU</span>
+            <h2 class="text-2xl sm:text-3xl font-serif font-black text-[#0E7490] uppercase">CHUỖI TIỆN ÍCH NGHỈ DƯỠNG CHUẨN QUỐC TẾ</h2>
+            <p class="text-xs text-slate-600">Tận hưởng kỳ nghỉ dưỡng thiên đường với dịch vụ quản gia cao cấp và bến du thuyền 5 sao riêng biệt.</p>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 text-center text-xs">
+            <div class="bg-white p-4 border border-slate-200 shadow-sm space-y-2"><div class="w-12 h-12 mx-auto bg-[#0E7490] text-amber-300 flex items-center justify-center text-xl font-bold">⚓</div><strong class="block text-slate-900 font-bold">Bến Du Thuyền 5★</strong><span class="text-[10px] text-slate-500">Sức chứa 50 du thuyền</span></div>
+            <div class="bg-white p-4 border border-slate-200 shadow-sm space-y-2"><div class="w-12 h-12 mx-auto bg-[#0E7490] text-amber-300 flex items-center justify-center text-xl font-bold">🏊</div><strong class="block text-slate-900 font-bold">Bể Bơi Vô Cực</strong><span class="text-[10px] text-slate-500">Tràn biển 2.500m²</span></div>
+            <div class="bg-white p-4 border border-slate-200 shadow-sm space-y-2"><div class="w-12 h-12 mx-auto bg-[#0E7490] text-amber-300 flex items-center justify-center text-xl font-bold">🍹</div><strong class="block text-slate-900 font-bold">Beach Club & Bar</strong><span class="text-[10px] text-slate-500">Âm nhạc biển sôi động</span></div>
+            <div class="bg-white p-4 border border-slate-200 shadow-sm space-y-2"><div class="w-12 h-12 mx-auto bg-[#0E7490] text-amber-300 flex items-center justify-center text-xl font-bold">💆</div><strong class="block text-slate-900 font-bold">Spa Khoáng Nóng</strong><span class="text-[10px] text-slate-500">Trị liệu Onsen Nhật Bản</span></div>
+            <div class="bg-white p-4 border border-slate-200 shadow-sm space-y-2"><div class="w-12 h-12 mx-auto bg-[#0E7490] text-amber-300 flex items-center justify-center text-xl font-bold">🍽</div><strong class="block text-slate-900 font-bold">Nhà Hàng Michelin</strong><span class="text-[10px] text-slate-500">Ẩm thực Á - Âu thượng hạng</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- INVENTORY -->
+      <section id="sec-inventory" class="py-16 bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 space-y-8">
+          <div class="flex flex-col md:flex-row md:items-end justify-between border-b-2 border-[#0E7490] pb-3 gap-4">
+            <div>
+              <span class="text-xs font-black uppercase text-[#F97316] tracking-widest block">BẢNG HÀNG NGOẠI GIAO TRỰC TIẾP CHỦ ĐẦU TƯ</span>
+              <h2 class="text-2xl sm:text-3xl font-serif font-black text-slate-900 uppercase">DANH SÁCH BĐS NGHỈ DƯỠNG (<span id="unit-count">6</span>)</h2>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 text-xs">
+              <select id="filterZone" class="bg-slate-50 border border-slate-300 px-3 py-2 focus:outline-none">
+                <option class="text-slate-900 bg-white font-medium" value="all">Phân Khu (Tất cả)</option>
+                <option value="Tháp Condotel ZoHotels">Tháp Condotel ZoHotels</option>
+                <option value="Phân Khu Biệt Thự Biển">Phân Khu Biệt Thự Biển</option>
+                <option value="Shophouse Bến Du Thuyền">Shophouse Bến Du Thuyền</option>
+                <option value="Sky Villa Đỉnh Đồi">Sky Villa Đỉnh Đồi</option>
+              </select>
+              <select id="filterType" class="bg-slate-50 border border-slate-300 px-3 py-2 focus:outline-none">
+                <option class="text-slate-900 bg-white font-medium" value="all">Loại Hình (Tất cả)</option>
+                <option value="Condotel Studio 1PN">Condotel Studio 1PN</option>
+                <option value="Biệt Thự Song Lập Biển">Biệt Thự Song Lập Biển</option>
+                <option value="Condotel 2PN">Condotel 2PN</option>
+                <option value="Biệt Thự Đơn Lập Ghềnh Đá">Biệt Thự Đơn Lập Ghềnh Đá</option>
+                <option value="Shophouse Bến Du Thuyền">Shophouse Bến Du Thuyền</option>
+                <option value="Sky Villa Hồ Bơi Vô Cực">Sky Villa Hồ Bơi Vô Cực</option>
+              </select>
+              <button onclick="renderUnits()" class="px-4 py-2 bg-[#0E7490] hover:bg-[#155E75] text-white font-bold uppercase shadow cursor-pointer">Lọc</button>
+            </div>
+          </div>
+          
+          <div id="unit-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Units will be rendered here by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- POLICY -->
+      <section id="sec-policy" class="py-16 bg-slate-50 text-slate-900 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 space-y-8">
+          <div class="text-center space-y-2 max-w-2xl mx-auto">
+            <span class="text-xs font-black uppercase text-[#F97316] tracking-widest">GIẢI PHÁP ĐẦU TƯ AN TOÀN & SINH LỜI BỀN VỮNG</span>
+            <h2 class="text-2xl sm:text-3xl font-serif font-black text-[#0E7490] uppercase">CHÍNH SÁCH BÁN HÀNG & CAM KẾT LỢI NHUẬN</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+            <div class="bg-white p-6 border border-slate-300 shadow-sm space-y-3"><span class="text-2xl font-black text-[#0E7490] block">01</span><h3 class="font-bold text-sm text-slate-900 uppercase">Cam Kết Lợi Nhuận 10-12%/Năm</h3><p class="text-slate-600 leading-relaxed">Chủ đầu tư và ngân hàng bảo lãnh chi trả lợi nhuận cố định định kỳ 6 tháng/lần trong 3-5 năm đầu tiên.</p></div>
+            <div class="bg-white p-6 border border-slate-300 shadow-sm space-y-3"><span class="text-2xl font-black text-[#F97316] block">02</span><h3 class="font-bold text-sm text-slate-900 uppercase">Chia Sẻ Doanh Thu 85/15</h3><p class="text-slate-600 leading-relaxed">Sau thời gian cam kết, chủ sở hữu nhận 85% lợi nhuận sau thuế từ chương trình cho thuê vận hành bởi ZoHotels.</p></div>
+            <div class="bg-white p-6 border border-slate-300 shadow-sm space-y-3"><span class="text-2xl font-black text-[#0E7490] block">03</span><h3 class="font-bold text-sm text-slate-900 uppercase">15 Đêm Nghỉ Dưỡng Miễn Phí</h3><p class="text-slate-600 leading-relaxed">Tận hưởng kỳ nghỉ 5 sao miễn phí cho cả gia đình hoặc trao đổi kỳ nghỉ trên hệ thống hơn 150 resort quốc tế.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NEWS -->
+      <section id="sec-news" class="py-16 bg-white text-slate-900 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 space-y-8">
+          <div class="flex items-center justify-between border-b-2 border-[#0E7490] pb-3">
+            <h2 class="text-2xl font-serif font-black uppercase text-[#0E7490]">TIN TỨC TEMPLATESBDS</h2>
+            <button onclick="navigate('news')" class="text-xs font-bold text-[#F97316] hover:underline">Xem Tất Cả Tin Tức ›</button>
+          </div>
+          <div id="news-list" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- News will be rendered here by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- BOOKING FORM -->
+      <section id="sec-booking" class="py-16 bg-[#0E7490] text-white text-center">
+        <div class="max-w-7xl mx-auto px-4 max-w-xl space-y-6">
+          <div class="space-y-2">
+            <span class="text-xs font-black uppercase text-amber-300 tracking-widest block">SUẤT NGOẠI GIAO ĐỢT 1</span>
+            <h2 class="text-2xl sm:text-4xl font-serif font-black uppercase text-white">ĐĂNG KÝ NHẬN BẢNG GIÁ GỐC CĐT</h2>
+            <p class="text-xs text-slate-200">Tặng ngay chuyến du lịch trải nghiệm 3 ngày 2 đêm tại Nha Trang và vé máy bay khứ hồi cho 2 người khi đặt cọc thành công!</p>
+          </div>
+          <form onsubmit="handleBookingSubmit(event)" action="api/contact.php" method="POST" class="bg-white text-slate-900 p-6 shadow-2xl text-left text-xs space-y-3">
+            <div>
+              <label class="block font-bold mb-1">Họ và tên quý khách *</label>
+              <input type="text" name="name" required id="book-name" placeholder="Nguyễn Văn A" class="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block font-bold mb-1">Số điện thoại *</label>
+              <input type="tel" name="phone" required id="book-phone" placeholder="0919 006 030" class="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block font-bold mb-1">Phân khu quan tâm</label>
+              <select name="zoneInterested" id="book-zone" class="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none font-bold">
+                <option class="text-slate-900 bg-white font-medium" value="Phân Khu Biệt Thự Biển">Phân Khu Biệt Thự Biển (Sở Hữu Lâu Dài)</option>
+                <option class="text-slate-900 bg-white font-medium" value="Tháp Condotel ZoHotels">Tháp Condotel ZoHotels (Từ 2.35 Tỷ)</option>
+                <option class="text-slate-900 bg-white font-medium" value="Shophouse Bến Du Thuyền">Shophouse Bến Du Thuyền (Kinh Doanh Ngay)</option>
+                <option class="text-slate-900 bg-white font-medium" value="Sky Villa Đỉnh Đồi">Sky Villa Đỉnh Đồi (View 360 Độ Vịnh)</option>
+              </select>
+            </div>
+            <button type="submit" class="w-full py-3 bg-[#F97316] hover:bg-orange-600 text-white font-black text-xs uppercase tracking-wider shadow cursor-pointer transition">
+              Gửi Yêu Cầu Nhận Bảng Giá Gốc CĐT
+            </button>
+          </form>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Property Detail View -->
+    <div id="view-property-detail" class="hidden py-12 bg-white min-h-screen">
+      <div class="max-w-7xl mx-auto px-4 space-y-6">
+        <button onclick="navigate('villas')" class="text-xs font-bold text-[#0E7490] hover:underline">‹ Quay lại bảng hàng nghỉ dưỡng</button>
+        <h1 id="pd-title" class="text-2xl sm:text-3xl font-serif font-black text-[#0E7490] uppercase"></h1>
+        <p id="pd-subtitle" class="text-sm font-black text-[#E11D48]"></p>
+        
+        <div class="relative w-full max-w-4xl mx-auto aspect-[16/9] bg-slate-100 overflow-hidden mb-6">
+          <img id="pd-image" src="" alt="" class="w-full h-full object-cover" />
+        </div>
+        
+        <p id="pd-desc" class="text-xs sm:text-sm text-slate-700 leading-relaxed"></p>
+        <div class="p-4 bg-[#0E7490] text-white space-y-2">
+          <h4 class="font-bold text-xs uppercase text-amber-300">Đặc quyền nghỉ dưỡng & tiện ích bàn giao:</h4>
+          <ul id="pd-amenities" class="grid grid-cols-2 gap-2 text-xs text-slate-200"></ul>
         </div>
       </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 pt-6 text-center text-[11px] text-slate-400">
-      <p>© 2026 Bản quyền thuộc về <strong class="text-white">TEMPLATEBDS</strong> — Mẫu Giao Diện: BĐS 22 — ZoHotels & Happy Land Nha Trang.</p>
+    <!-- News Detail View -->
+    <div id="view-news-detail" class="hidden py-12 bg-white min-h-screen">
+      <div class="max-w-7xl mx-auto px-4 space-y-6">
+        <button onclick="navigate('news')" class="text-xs font-bold text-[#0E7490] hover:underline">‹ Quay lại trang tin tức</button>
+        <h1 id="nd-title" class="text-2xl font-serif font-black text-[#0E7490] uppercase"></h1>
+        <div id="nd-meta" class="text-[11px] text-slate-400 border-b pb-2"></div>
+        <img id="nd-image" src="" alt="" class="w-full h-80 object-cover border" />
+        <div id="nd-content" class="space-y-3 text-xs sm:text-sm text-slate-700 leading-relaxed"></div>
+      </div>
     </div>
-  </footer>
 
-  <script src="js/main.js"></script>
-  <script>lucide.createIcons();</script>
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-300 py-12 text-sm border-t-4 border-[#0E7490]">
+      <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="space-y-4">
+          <h3 class="text-white font-serif font-black uppercase text-xl">TEMPLATESBDS</h3>
+          <p class="text-xs">Hệ thống phân phối bất động sản nghỉ dưỡng hàng đầu Việt Nam.</p>
+          <div class="flex gap-3">
+            <i data-lucide="facebook" class="w-5 h-5 hover:text-white cursor-pointer"></i>
+            <i data-lucide="youtube" class="w-5 h-5 hover:text-white cursor-pointer"></i>
+          </div>
+        </div>
+        <div class="space-y-4">
+          <h4 class="text-white font-bold uppercase text-xs">Liên Hệ</h4>
+          <ul class="space-y-2 text-xs">
+            <li class="flex gap-2 items-center"><i data-lucide="phone" class="w-4 h-4"></i> 0909.xxx.xxx</li>
+            <li class="flex gap-2 items-center"><i data-lucide="mail" class="w-4 h-4"></i> contact@templatesbds.com</li>
+            <li class="flex gap-2 items-center"><i data-lucide="map-pin" class="w-4 h-4"></i> Nha Trang, Khánh Hòa</li>
+          </ul>
+        </div>
+        <div class="space-y-4">
+          <h4 class="text-white font-bold uppercase text-xs">Phân Khu</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="javascript:navigate('villas')" class="hover:text-amber-300">Biệt Thự Biển</a></li>
+            <li><a href="javascript:navigate('condos')" class="hover:text-amber-300">Condotel ZoHotels</a></li>
+            <li><a href="javascript:navigate('villas')" class="hover:text-amber-300">Shophouse Bến Du Thuyền</a></li>
+          </ul>
+        </div>
+        <div class="space-y-4">
+          <h4 class="text-white font-bold uppercase text-xs">Chính Sách</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="javascript:navigate('policy')" class="hover:text-amber-300">Cam kết lợi nhuận</a></li>
+            <li><a href="javascript:navigate('policy')" class="hover:text-amber-300">Chia sẻ doanh thu</a></li>
+            <li><a href="javascript:navigate('policy')" class="hover:text-amber-300">Quyền lợi đêm nghỉ</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="max-w-7xl mx-auto px-4 mt-8 pt-4 border-t border-slate-800 text-center text-xs text-slate-500">
+        &copy; 2026 TEMPLATESBDS. Bản quyền thuộc về HappyLand Resort & Condotel Nha Trang.
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // Data
+    const BDS22_UNITS = [
+      { id: 'condotel-1pn-zohotels', title: 'Condotel Studio 1PN View Trực Diện Vịnh Biển Nha Trang', code: 'HLR-C0812', slug: 'condotel-studio-1pn-view-vinh-bien-nha-trang', zone: 'Tháp Condotel ZoHotels', type: 'Condotel Studio 1PN', floor: 'Tầng 08', price: '2.35 Tỷ VNĐ', area: '45 m²', beds: 1, baths: 1, view: 'Trực diện bãi biển cát trắng & Vịnh Nha Trang', direction: 'Hướng Đông', image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&q=80', hot: true, commitment: 'Cam kết lợi nhuận 10%/năm trong 5 năm đầu', description: 'Căn hộ khách sạn bàn giao full nội thất 5 sao chuẩn ZoHotels International, quyền lợi 15 đêm nghỉ dưỡng miễn phí mỗi năm.', amenities: ['Full nội thất chuẩn 5 sao', 'Bể bơi tràn bờ tầng mái', 'Dịch vụ buồng phòng 24/7', 'Tặng 15 đêm nghỉ/năm'] },
+      { id: 'biet-thu-bien-song-lap', title: 'Biệt Thự Biển Song Lập Vườn Dừa HappyLand Oceanfront', code: 'HLR-V05', slug: 'biet-thu-bien-song-lap-vuon-dua', zone: 'Phân Khu Biệt Thự Biển', type: 'Biệt Thự Song Lập Biển', floor: '2 Tầng + Sân Thượng', price: '16.8 Tỷ VNĐ', area: '240 m²', beds: 3, baths: 4, view: 'Cách mép nước biển 30m ngắm hoàng hôn', direction: 'Hướng Đông Nam', image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80', hot: true, commitment: 'Chia sẻ doanh thu cho thuê 85/15 trọn đời', description: 'Tuyệt tác biệt thự nghỉ dưỡng bước chân chạm cát trắng, hồ bơi điện phân muối riêng biệt và sân tắm nắng ngoài trời.', amenities: ['Hồ bơi riêng biệt', 'Sân vườn nhiệt đới', 'Bãi biển riêng tư', 'Sở hữu lâu dài'] },
+      { id: 'condotel-2pn-corner', title: 'Căn Hộ Condotel Góc 2PN ZoHotels Panorama Sea Suite', code: 'HLR-C1802', slug: 'condotel-goc-2pn-panorama-sea-suite', zone: 'Tháp Condotel ZoHotels', type: 'Condotel 2PN', floor: 'Tầng 18', price: '4.20 Tỷ VNĐ', area: '78 m²', beds: 2, baths: 2, view: 'View 2 mặt biển ngắm trọn vẹn bình minh & hoàng hôn', direction: 'Hướng Đông - Đông Nam', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80', hot: false, commitment: 'Cam kết lợi nhuận 12%/năm trong 3 năm', description: 'Căn góc 2 mặt thoáng với ban công kính bo tròn ôm trọn đường chân trời biển khơi trong xanh mát lành.', amenities: ['Bồn tắm kính view biển', 'Smart Keyless Check-in', 'Bữa sáng buffet chuẩn 5 sao', 'Chiết khấu thanh toán 8%'] },
+      { id: 'biet-thu-ghenh-da-vip', title: 'Biệt Thự Đơn Lập Ghềnh Đá Tuyệt Tác Độc Bản Cliffside Villa', code: 'HLR-CV01', slug: 'biet-thu-don-lap-ghenh-da-cliffside-villa', zone: 'Phân Khu Biệt Thự Biển', type: 'Biệt Thự Đơn Lập Ghềnh Đá', floor: '3 Tầng', price: '38.0 Tỷ VNĐ', area: '420 m²', beds: 5, baths: 6, view: 'Tọa độ ghềnh đá nhô ra biển 270 độ view vịnh', direction: 'Hướng Đông', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80', hot: true, commitment: 'Chính sách quản gia riêng 24/7 & Bến đỗ du thuyền', description: 'Dinh thự độc bản tọa lạc trên ghềnh đá tự nhiên, sở hữu lối đi riêng xuống bãi tắm san hô và hầm rượu ngầm.', amenities: ['Lối đi riêng bãi san hô', 'Bến đỗ du thuyền VIP', 'Hầm rượu vang nhiệt độ chuẩn', 'Quản gia cao cấp'] },
+      { id: 'shophouse-marina', title: 'Shophouse Bến Du Thuyền Mặt Tiền Đại Lộ Hoa Biển HappyLand', code: 'HLR-SH10', slug: 'shophouse-ben-du-thuyen-dai-lo-hoa-bien', zone: 'Shophouse Bến Du Thuyền', type: 'Shophouse Bến Du Thuyền', floor: '4 Tầng + Tum', price: '14.5 Tỷ VNĐ', area: '135 m²', beds: 4, baths: 5, view: 'Mặt tiền đại lộ du lịch & Bến du thuyền 5 sao', direction: 'Hướng Nam', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', hot: false, commitment: 'Hỗ trợ tiền thuê 50 Triệu/tháng trong 12 tháng đầu', description: 'Phù hợp khai thác chuỗi nhà hàng hải sản, quán cafe lounge ngắm du thuyền và spa trị liệu cao cấp.', amenities: ['Mặt tiền đường 24m', 'Kinh doanh ngay', 'Được phép lưu trú khách sạn', 'Sổ hồng từng căn'] },
+      { id: 'sky-villa-dinh-doi', title: 'Sky Villa Thông Tầng Đỉnh Đồi Vườn Treo View Vịnh Nha Trang', code: 'HLR-SV03', slug: 'sky-villa-thong-tang-dinh-doi-vuon-treo', zone: 'Sky Villa Đỉnh Đồi', type: 'Sky Villa Hồ Bơi Vô Cực', floor: 'Tầng 25 - 26', price: '22.0 Tỷ VNĐ', area: '280 m²', beds: 4, baths: 4, view: 'View 360 độ từ đỉnh đồi nhìn trọn vịnh Nha Trang', direction: 'Hướng Đông Nam', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80', hot: true, commitment: 'Tặng thẻ hội viên du thuyền & Golf 10 năm', description: 'Biệt thự trên không với trần cao 6.5m ngập tràn ánh nắng, hồ bơi đáy kính vươn ra không trung độc nhất vô nhị.', amenities: ['Hồ bơi đáy kính trên mây', 'Sân golf mini trên mái', 'Thang máy riêng biệt', 'Nội thất nhập khẩu Ý'] }
+    ];
+
+    const BDS22_NEWS = [
+      { id: 1, title: 'Ký Kết Hợp Tác Vận Hành Quốc Tế Giữa HappyLand & Tập Đoàn Khách Sạn ZoHotels', slug: 'ky-ket-hop-tac-van-hanh-zohotels-nha-trang', date: '28/08/2026', author: 'Ban Quản Lý HappyLand', category: 'Hợp Tác', image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&q=80', excerpt: 'Thương hiệu quản lý khách sạn danh tiếng ZoHotels chính thức tiếp quản vận hành tháp condotel và chuỗi biệt thự biển tại Nha Trang.', content: ['ZoHotels mang đến tiêu chuẩn quản lý 5 sao quốc tế và mạng lưới hội viên hơn 12 triệu khách du lịch toàn cầu.', 'Dự án đảm bảo tỷ lệ lấp đầy phòng luôn đạt trên 85% quanh năm nhờ liên kết tour du thuyền cao cấp.'], views: 5780 },
+      { id: 2, title: 'Khánh Thành Bến Du Thuyền Quốc Tế & Quảng Trường Ánh Sáng Vịnh Biển', slug: 'khanh-thanh-ben-du-thuyen-quoc-te-happyland', date: '26/08/2026', author: 'Sở Du Lịch Khánh Hòa', category: 'Sự Kiện', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80', excerpt: 'Bến du thuyền sức chứa hơn 50 du thuyền hạng sang chính thức đón những chuyến tàu du lịch đầu tiên cập bến.', content: ['Quảng trường ánh sáng tổ chức lễ hội âm nhạc biển hàng tuần thu hút hàng ngàn du khách thập phương.'], views: 4620 },
+      { id: 3, title: 'Chính Sách Chia Sẻ Lợi Nhuận 85/15 — Tặng 15 Đêm Nghỉ Dưỡng Thượng Lưu', slug: 'chinh-sach-chia-se-loi-nhuan-85-15-happyland', date: '24/08/2026', author: 'Phòng Đầu Tư BĐS Nghỉ Dưỡng', category: 'Chính Sách', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80', excerpt: 'Nhận ngay lợi nhuận cam kết 10-12%/năm được ngân hàng bảo lãnh thanh toán định kỳ mỗi 6 tháng.', content: ['Chủ sở hữu có thể trao đổi kỳ nghỉ trong hệ thống hơn 150 resort cao cấp liên kết toàn thế giới.'], views: 5120 }
+    ];
+
+    function renderUnits() {
+      const zoneFilter = document.getElementById('filterZone').value;
+      const typeFilter = document.getElementById('filterType').value;
+      
+      const filtered = BDS22_UNITS.filter(u => {
+        if (zoneFilter !== 'all' && u.zone !== zoneFilter) return false;
+        if (typeFilter !== 'all' && u.type !== typeFilter) return false;
+        return true;
+      });
+
+      document.getElementById('unit-count').innerText = filtered.length;
+      const list = document.getElementById('unit-list');
+      
+      if (filtered.length === 0) {
+        list.innerHTML = `<div class="col-span-3 p-12 text-center bg-slate-50 border border-slate-200 space-y-3">
+          <p class="text-sm font-bold text-slate-600">Không tìm thấy sản phẩm nào khớp với tiêu chí lọc.</p>
+          <button onclick="document.getElementById('filterZone').value='all'; document.getElementById('filterType').value='all'; renderUnits();" class="px-5 py-2 bg-[#F97316] text-white font-bold text-xs uppercase shadow">Xem Toàn Bộ Bảng Hàng</button>
+        </div>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(unit => `
+        <div class="bg-white text-slate-900 border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden font-medium">
+          <div class="relative aspect-[16/10] overflow-hidden bg-slate-950">
+            <img src="${unit.image}" alt="${unit.title}" onerror="this.src='https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&q=80'" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+            <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-[#0E7490] text-amber-300 text-[10px] font-black uppercase">${unit.code} • ${unit.zone}</span>
+            ${unit.hot ? `<span class="absolute top-2.5 right-2.5 px-2 py-0.5 bg-[#E11D48] text-white text-[9px] font-black uppercase">HOT</span>` : ''}
+          </div>
+          <div class="p-4 space-y-2">
+            <h3 onclick="openUnit('${unit.id}')" class="text-xs font-serif font-black text-slate-900 uppercase line-clamp-2 hover:text-[#0E7490] cursor-pointer min-h-[34px]">${unit.title}</h3>
+            <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-600 bg-slate-50 p-2.5 border border-slate-200">
+              <div>📐 Diện tích: <strong>${unit.area}</strong></div>
+              <div>🏢 Tầng: <strong>${unit.floor}</strong></div>
+              <div>🧭 Hướng: <strong>${unit.direction}</strong></div>
+              <div>🛏 Phòng: <strong>${unit.beds} PN • ${unit.baths} WC</strong></div>
+            </div>
+            <p class="text-[11px] text-cyan-800 font-medium truncate">🌊 ${unit.view}</p>
+            <p class="text-[10.5px] font-bold text-amber-700 bg-amber-50 p-1.5 border border-amber-200">💰 ${unit.commitment}</p>
+            <div class="pt-3 border-t flex items-center justify-between">
+              <span class="text-sm font-black text-[#E11D48]">${unit.price}</span>
+              <button onclick="openUnit('${unit.id}')" class="px-3 py-1.5 bg-[#0E7490] hover:bg-[#155E75] text-amber-300 font-bold text-xs uppercase transition cursor-pointer">Chi Tiết ›</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderNews() {
+      const list = document.getElementById('news-list');
+      list.innerHTML = BDS22_NEWS.map(n => `
+        <div class="bg-white border border-slate-200 shadow-sm flex flex-col justify-between group overflow-hidden">
+          <img src="${n.image}" alt="${n.title}" class="w-full h-44 object-cover group-hover:scale-105 transition duration-500" />
+          <div class="p-4 space-y-2">
+            <span class="text-[10px] font-bold text-[#F97316] uppercase">${n.category} • ${n.date}</span>
+            <h3 onclick="openNews(${n.id})" class="text-xs font-black text-slate-900 uppercase line-clamp-2 hover:text-[#0E7490] cursor-pointer">${n.title}</h3>
+            <p class="text-xs text-slate-600 line-clamp-2">${n.excerpt}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Navigation and Routing Logic
+    const pageConfig = {
+      'home': ['sec-hero', 'sec-overview', 'sec-location', 'sec-amenities', 'sec-inventory', 'sec-policy', 'sec-news', 'sec-booking'],
+      'overview': ['sec-overview', 'sec-amenities', 'sec-booking'],
+      'location': ['sec-location', 'sec-booking'],
+      'amenities': ['sec-amenities', 'sec-booking'],
+      'villas': ['sec-inventory', 'sec-policy', 'sec-booking'],
+      'condos': ['sec-inventory', 'sec-policy', 'sec-booking'],
+      'policy': ['sec-policy', 'sec-booking'],
+      'news': ['sec-news', 'sec-booking'],
+      'contact': ['sec-location', 'sec-booking']
+    };
+
+    function navigate(page) {
+      document.getElementById('mobile-menu').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      // Update Nav highlighting
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.dataset.page === page) {
+          btn.classList.add('bg-[#155E75]', 'text-amber-300', 'font-extrabold');
+        } else {
+          btn.classList.remove('bg-[#155E75]', 'text-amber-300', 'font-extrabold');
+        }
+      });
+
+      // Hide details views
+      document.getElementById('view-property-detail').classList.add('hidden');
+      document.getElementById('view-news-detail').classList.add('hidden');
+      
+      // Show main content and specific sections
+      document.getElementById('main-content').classList.remove('hidden');
+      const sections = ['sec-hero', 'sec-overview', 'sec-location', 'sec-amenities', 'sec-inventory', 'sec-policy', 'sec-news', 'sec-booking'];
+      const activeSections = pageConfig[page] || pageConfig['home'];
+      
+      sections.forEach(secId => {
+        const el = document.getElementById(secId);
+        if (activeSections.includes(secId)) el.style.display = 'block';
+        else el.style.display = 'none';
+      });
+    }
+
+    function openUnit(id) {
+      const unit = BDS22_UNITS.find(u => u.id === id);
+      if(!unit) return;
+      document.getElementById('main-content').classList.add('hidden');
+      document.getElementById('view-news-detail').classList.add('hidden');
+      document.getElementById('view-property-detail').classList.remove('hidden');
+      
+      document.getElementById('pd-title').innerText = `${unit.title} (${unit.code})`;
+      document.getElementById('pd-subtitle').innerText = `Giá bán: ${unit.price} — Phân khu: ${unit.zone} — Diện tích: ${unit.area}`;
+      document.getElementById('pd-image').src = unit.image;
+      document.getElementById('pd-desc').innerText = unit.description;
+      document.getElementById('pd-amenities').innerHTML = unit.amenities.map(a => `<li class="flex items-center gap-1.5">🌴 ${a}</li>`).join('');
+      window.scrollTo(0, 0);
+    }
+
+    function openNews(id) {
+      const news = BDS22_NEWS.find(n => n.id === id);
+      if(!news) return;
+      document.getElementById('main-content').classList.add('hidden');
+      document.getElementById('view-property-detail').classList.add('hidden');
+      document.getElementById('view-news-detail').classList.remove('hidden');
+      
+      document.getElementById('nd-title').innerText = news.title;
+      document.getElementById('nd-meta').innerText = `🕒 ${news.date} • Tác giả: ${news.author} • ${news.views} lượt xem`;
+      document.getElementById('nd-image').src = news.image;
+      document.getElementById('nd-content').innerHTML = news.content.map(p => `<p>${p}</p>`).join('');
+      window.scrollTo(0, 0);
+    }
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+
+    function scrollToForm() {
+      // Ensure booking section is visible if clicked from a page where it might be hidden
+      document.getElementById('sec-booking').style.display = 'block';
+      document.getElementById('sec-booking').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function scrollToInventory() {
+      navigate('home');
+      setTimeout(() => {
+        document.getElementById('sec-inventory').scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 4000);
+    }
+
+    function handleBookingSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('book-name').value;
+      const phone = document.getElementById('book-phone').value;
+      if (!name || !phone) {
+        alert('Vui lòng nhập họ tên và số điện thoại nhận bảng giá resort!');
+        return;
+      }
+      showToast(`🎉 Tiếp nhận yêu cầu tư vấn từ ${name} (${phone}). Giám đốc kinh doanh HappyLand Resort sẽ liên hệ trong 5 phút!`);
+      document.getElementById('book-name').value = '';
+      document.getElementById('book-phone').value = '';
+      
+      const form = e.target;
+      fetch(form.action, {
+        method: form.method,
+        body: new FormData(form),
+      }).catch(err => console.log(err));
+    }
+
+    // Init
+    renderUnits();
+    renderNews();
+    navigate('home');
+
+  </script>
 </body>
 </html>
