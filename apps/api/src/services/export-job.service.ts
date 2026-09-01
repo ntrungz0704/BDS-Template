@@ -41,11 +41,7 @@ export class ExportJobService {
       }
     }
 
-    // 3. RÀNG BUỘC NGHIỆP VỤ: Mua template (BUY/BUY_SOURCE) = mua luôn source code.
-    // Chỉ gói Thuê hàng tháng (RENT) mới không được tải mã nguồn.
-    if (order.type === 'RENT') {
-      throw new Error('Gói Thuê Cloud SaaS chỉ quản trị trực tiếp trên CMS. Hãy nâng cấp lên gói Mua Đứt để tải mã nguồn.');
-    }
+    // 3. Tất cả đơn hàng MUA đều được tải mã nguồn — không phân biệt loại.
 
     // 4. Chỉ cho phép khi đơn hàng đã hoàn tất duyệt (COMPLETED)
     if (order.status !== 'COMPLETED') {

@@ -407,7 +407,7 @@ export default function CustomerDashboard() {
                 >
                   <div className="flex items-center gap-3">
                     <Download className="w-4 h-4" />
-                    <span>Tải file Source</span>
+                    <span>Tải Source Code</span>
                   </div>
                   <ChevronRight className="w-3.5 h-3.5 opacity-50" />
                 </button>
@@ -490,7 +490,7 @@ export default function CustomerDashboard() {
                             <div className="flex-1">
                               <span className="font-bold text-slate-900">Đơn hàng #{ord.orderNumber}</span> ({ord.template?.name}) 
                               {ord.status === 'COMPLETED' 
-                                ? ` đã hoàn tất kích hoạt. ${(ord.type === 'BUY' || ord.type === 'BUY_SOURCE') ? 'Bạn có thể tải file nguồn ZIP ở mục Tải file Source.' : `Website của bạn đã sẵn sàng sử dụng.`}`
+                                ? ` đã hoàn tất kích hoạt. Bạn có thể tải source code ZIP ở mục Tải Source Code.`
                                 : ord.status === 'WAITING_CONFIRM' 
                                 ? ` đang chờ quản trị viên đối soát giao dịch chuyển khoản.`
                                 : ` đang chờ bạn gửi thông tin xác nhận chuyển khoản.`
@@ -574,17 +574,14 @@ export default function CustomerDashboard() {
                                 <span>Xem Website</span>
                               </a>
 
-                              {(ord.type === 'BUY' || ord.type === 'BUY_SOURCE') && (
-
-                                <button
+                              <button
                                   onClick={() => handleTabChange('downloads')}
                                   className="px-3 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-indigo-600 font-bold text-xs flex items-center gap-1.5 transition-colors"
-                                  title="Tải mã nguồn ZIP"
+                                  title="Tải source code ZIP"
                                 >
                                   <Download className="w-4 h-4" />
-                                  <span>Tải ZIP</span>
+                                  <span>Tải Source Code</span>
                                 </button>
-                              )}
                             </div>
                           </div>
                         );
@@ -714,66 +711,34 @@ export default function CustomerDashboard() {
                 </div>
               )}
 
-              {/* TAB 3: DOWNLOADS — SINGLE-TENANT EXPORT ENGINE */}
+              {/* TAB 3: DOWNLOADS */}
               {activeTab === 'downloads' && (
                 <div className="space-y-6">
                   <div className="text-left">
-                    <h2 className="text-2xl md:text-[32px] font-bold text-slate-900 leading-[1.15]">Bản Quyền & Tải Mã Nguồn Single-Tenant</h2>
+                    <h2 className="text-2xl md:text-[32px] font-bold text-slate-900 leading-[1.15]">Tải Mã Nguồn Website</h2>
                     <p className="text-[14px] text-[#64748B] font-normal leading-[1.7] mt-1">
-                      Đóng gói và tải xuống bộ mã nguồn độc lập (Next.js 15, Tailwind, Prisma, PostgreSQL + CMS Admin Panel) dành riêng cho các đơn hàng Mua Đứt.
+                      Đóng gói và tải xuống bộ mã nguồn hoàn chỉnh (HTML5, CSS3, JavaScript, PHP & MySQL + file database.sql) dành riêng cho đơn hàng của bạn.
                     </p>
                   </div>
 
                   <div className="space-y-4">
                     {!orders || orders.filter((o: any) => o.status === 'COMPLETED').length === 0 ? (
                       <div className="bg-slate-50 border border-dashed border-slate-200 p-10 rounded-2xl text-center text-slate-500 text-xs">
-                        Chưa có đơn hàng Mua Đứt nào hoàn tất. Hãy mua bản quyền template để kích hoạt đường ống đóng gói mã nguồn Single-Tenant độc quyền.
+                        Chưa có đơn hàng nào hoàn tất. Hãy mua template để tải mã nguồn.
                       </div>
                     ) : (
                       orders.filter((o: any) => o.status === 'COMPLETED').map((ord: any) => {
-                        const isBuyOut = ord.type === 'BUY' || ord.type === 'BUY_SOURCE';
                         const currentJob = exportJobs[ord.orderNumber];
                         const isProcessing = currentJob?.status === 'PROCESSING' || currentJob?.status === 'PENDING';
                         const isReady = currentJob?.status === 'READY' && currentJob?.downloadToken;
 
-                        if (!isBuyOut) {
-                          // Đơn hàng Thuê Cloud SaaS
-                          return (
-                            <div key={ord.id} className="bg-slate-50/80 border border-slate-200 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-left">
-                              <div className="space-y-1.5">
-                                <div className="flex items-center gap-2">
-                                  <span className="bg-amber-100 text-amber-900 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                                    GÓI THUÊ CLOUD SAAS
-                                  </span>
-                                  <span className="text-slate-400 text-xs font-mono font-bold">#{ord.orderNumber}</span>
-                                </div>
-                                <h4 className="text-base font-bold text-slate-800">
-                                  {ord.template?.name || 'Website BĐS'} — Vận Hành Trực Tiếp Trên Cloud
-                                </h4>
-                                <p className="text-xs text-slate-600">
-                                  Gói Thuê SaaS được lưu trữ và tối ưu trên hạ tầng Cloud Server của hệ thống. Bạn có toàn quyền truy cập CMS để quản lý tin tức, dự án và thu lead mà không cần cài đặt code.
-                                </p>
-                              </div>
-                              <a
-                                href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition shrink-0"
-                              >
-                                <LayoutDashboard className="w-4 h-4 text-teal-400" />
-                                <span>Quản Trị CMS</span>
-                              </a>
-                            </div>
-                          );
-                        }
-
-                        // Đơn hàng Mua Đứt Bản Quyền
+                        // Tất cả đơn hàng MUA đều tải được source
                         return (
                           <div key={ord.id} className="bg-white border-2 border-indigo-100 hover:border-indigo-300 p-6 rounded-2xl shadow-sm transition-all flex flex-col justify-between items-start text-slate-950 gap-5 text-left">
                             <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-2 border-b border-slate-100 pb-3">
                               <div className="flex items-center gap-2">
                                 <span className="bg-indigo-100 text-indigo-900 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
-                                  MUA ĐỨT BẢN QUYỀN (SINGLE-TENANT)
+                                  MUA TRỌN BỘ MÃ NGUỒN
                                 </span>
                                 <span className="text-slate-400 text-xs font-mono font-bold">#{ord.orderNumber}</span>
                               </div>
@@ -786,36 +751,36 @@ export default function CustomerDashboard() {
 
                             <div className="space-y-2">
                               <h4 className="text-lg font-black text-slate-900">
-                                {ord.template?.name || 'Website BĐS'} — Gói Mã Nguồn Single-Tenant Next.js Độc Lập
+                                {ord.template?.name || 'Website BĐS'} — Trọn Bộ Mã Nguồn
                               </h4>
                               <p className="text-xs text-slate-600 font-medium">
-                                Bản xuất sạch 100% được bóc tách từ CloneCraft, tích hợp sẵn cả Website công khai và CMS Admin Panel (<code className="bg-slate-100 text-indigo-700 px-1 py-0.5 rounded">/admin</code>).
+                                Bộ source code hoàn chỉnh, sẵn sàng triển khai trên Hosting cPanel / XAMPP / VPS.
                               </p>
                               
                               {/* Feature Checklist */}
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 text-xs text-slate-700 font-medium">
                                 <div className="flex items-center gap-1.5 text-slate-800">
                                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                                  <span>Next.js 15 + React 19 + Tailwind CSS (Bỏ multi-tenant)</span>
+                                  <span>HTML5 + CSS3 + JavaScript (Responsive)</span>
                                 </div>
                                 <div className="flex items-center gap-1.5 text-slate-800">
                                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                                  <span>Prisma Schema độc lập + PostgreSQL</span>
+                                  <span>PHP & MySQL + file database.sql</span>
                                 </div>
                                 <div className="flex items-center gap-1.5 text-slate-800">
                                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                                  <span>Seed script chứa 100% dữ liệu dự án & liên hệ của bạn</span>
+                                  <span>Dữ liệu dự án & liên hệ của bạn đã được nạp sẵn</span>
                                 </div>
                                 <div className="flex items-center gap-1.5 text-slate-800">
                                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                                  <span>Sổ tay README.md tiếng Việt hướng dẫn chạy Local & Deploy</span>
+                                  <span>Hướng dẫn cài đặt tiếng Việt chi tiết</span>
                                 </div>
                               </div>
                             </div>
 
                             <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-3 border-t border-slate-100">
                               <p className="text-[11px] text-slate-500 italic">
-                                * Mã nguồn sẽ được nén thành file ZIP bảo mật và lưu trữ trong 7 ngày.
+                                * File ZIP sẽ được lưu trữ trong 7 ngày.
                               </p>
 
                               {isReady ? (
@@ -835,12 +800,12 @@ export default function CustomerDashboard() {
                                   {isProcessing ? (
                                     <>
                                       <Loader2 className="w-4 h-4 text-white animate-spin" />
-                                      <span>Đang bóc tách & nạp seed data...</span>
+                                      <span>Đang đóng gói...</span>
                                     </>
                                   ) : (
                                     <>
-                                      <Sparkles className="w-4 h-4 text-amber-300" />
-                                      <span>Đóng Gói Mã Nguồn Single-Tenant</span>
+                                      <Download className="w-4 h-4" />
+                                      <span>Đóng Gói & Tải Source Code</span>
                                     </>
                                   )}
                                 </button>
