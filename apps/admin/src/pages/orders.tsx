@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import AdminLayout from '../components/AdminLayout';
-import { formatVND } from '@repo/utils';
+import { formatVND, formatTemplateDisplayName } from '@repo/utils';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com';
@@ -401,7 +401,7 @@ export default function AdminOrders() {
                       {/* Mẫu Website */}
                       <td className="px-3 py-3">
                         <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60 truncate max-w-full">
-                          {order.template?.name || order.templateId || 'Mẫu Mặc Định'}
+                          {formatTemplateDisplayName(order)}
                         </span>
                       </td>
 
@@ -534,7 +534,7 @@ export default function AdminOrders() {
                 <div>
                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Mẫu Website Đã Chọn</span>
                   <p className="font-extrabold text-indigo-700 text-sm mt-0.5">
-                    {selectedOrder.template?.name || selectedOrder.templateId || 'Luxury Gold'}
+                    {formatTemplateDisplayName(selectedOrder)}
                   </p>
                 </div>
                 <div>

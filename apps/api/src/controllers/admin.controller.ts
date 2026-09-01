@@ -149,6 +149,7 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
     // 1. Kiểm tra đơn hàng tồn tại
     const order = await prisma.order.findUnique({
       where: { id },
+      include: { template: true },
     });
 
     if (!order) {
@@ -302,19 +303,20 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
         'investment-pro': 'bds-10', 'agency-onepage': 'bds-11', 'mega-developer': 'bds-12',
         'auction-template': 'bds-13', 'landplot-template': 'bds-14', 'retail-podium': 'bds-15',
         'personal-agent': 'bds-16', 'portal-listing': 'bds-17', 'benthanh-portal': 'bds-18',
-        'nhadatso-density': 'bds-19', 'minhkhai-apartment': 'bds-20', 'hanoi-rental': 'bds-21',
-        'happyland-resort': 'bds-22', 'homeo-agency': 'bds-23', 'realtybuild-tech': 'bds-24',
+        'bds123-portal': 'bds-18', 'nhadatso-density': 'bds-19', 'minhkhai-apartment': 'bds-20',
+        'hanoi-rental': 'bds-21', 'happyland-resort': 'bds-22', 'homeo-multithumb': 'bds-23',
+        'homeo-agency': 'bds-23', 'realtybuild-tech': 'bds-24',
       };
       for (const [k, v] of Object.entries(aliasMap)) {
         if (s.includes(k)) return v;
       }
-      const clean = s.replace(/[^a-z0-9]/g, '');
-      return clean.slice(0, 8) || 'bds-01';
+      return 'bds-01';
     };
 
     const cleanPhone = (order.phone || '').replace(/\D/g, '');
     const phoneSuffix = cleanPhone.length >= 4 ? cleanPhone.slice(-4) : (cleanPhone || Date.now().toString().slice(-4));
-    const tplCode = extractTplCode(order.templateId || (order as any).template?.slug || 'bds-01');
+    const templateSlug = (order as any).template?.slug || (order.productSnapshot as any)?.slug || order.templateId || 'bds-01';
+    const tplCode = extractTplCode(templateSlug);
 
     let candidateSubdomain = order.subdomain;
     if (!candidateSubdomain || candidateSubdomain.trim() === '') {

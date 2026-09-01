@@ -14,7 +14,7 @@ import {
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import ZeroCodeCmsEditor from '../../components/cms/ZeroCodeCmsEditor';
-import { getProvinces, getDistricts, getWards, parseAddress, formatAddress } from '@repo/utils';
+import { getProvinces, getDistricts, getWards, parseAddress, formatAddress, formatTemplateDisplayName } from '@repo/utils';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 
@@ -488,7 +488,7 @@ export default function CustomerDashboard() {
                           <div key={ord.id} className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
                             <span className={`w-2 h-2 rounded-full shrink-0 mt-1.5 ${ord.status === 'COMPLETED' ? 'bg-green-500' : 'bg-amber-500'}`} />
                             <div className="flex-1">
-                              <span className="font-bold text-slate-900">Đơn hàng #{ord.orderNumber}</span> ({ord.template?.name}) 
+                              <span className="font-bold text-slate-900">Đơn hàng #{ord.orderNumber}</span> ({formatTemplateDisplayName(ord)}) 
                               {ord.status === 'COMPLETED' 
                                 ? ` đã hoàn tất kích hoạt. Bạn có thể tải source code ZIP ở mục Tải Source Code.`
                                 : ord.status === 'WAITING_CONFIRM' 
@@ -532,7 +532,7 @@ export default function CustomerDashboard() {
                     ) : (
                       orders.filter((o: any) => o.status === 'COMPLETED').map((ord: any, idx: number) => {
                         const siteSlug = ord.subdomain || ord.tenant?.slug || `bds-${ord.template?.slug || 'site'}`;
-                        const siteName = ord.template?.name || 'Website Bất Động Sản';
+                        const siteName = formatTemplateDisplayName(ord);
                         const siteUrl = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
                           ? `http://localhost:3000/site/${siteSlug}`
                           : `https://templates.aireviewbds.com/site/${siteSlug}`;
@@ -630,7 +630,7 @@ export default function CustomerDashboard() {
                             <tr key={ord.id} className="text-slate-750 hover:bg-slate-50/60 transition-colors">
                               <td className="py-4 px-4 font-mono font-bold text-slate-950">{ord.orderNumber}</td>
                               <td className="py-4 px-4 font-bold text-slate-850">
-                                {ord.template?.name || 'N/A'}
+                                {formatTemplateDisplayName(ord)}
                                 {ord.subdomain && (
                                   <a 
                                     href={typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? `http://localhost:3000/site/${ord.subdomain}` : `https://templates.aireviewbds.com/site/${ord.subdomain}`} 
@@ -764,7 +764,7 @@ export default function CustomerDashboard() {
 
                             <div className="space-y-2">
                               <h4 className="text-lg font-black text-slate-900">
-                                {ord.template?.name || 'Website BĐS'} — Trọn Bộ Mã Nguồn
+                                {formatTemplateDisplayName(ord)} — Trọn Bộ Mã Nguồn
                               </h4>
                               <p className="text-xs text-slate-600 font-medium">
                                 Bộ source code hoàn chỉnh, sẵn sàng triển khai trên Hosting cPanel / XAMPP / VPS.

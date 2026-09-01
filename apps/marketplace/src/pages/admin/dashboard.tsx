@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import { formatTemplateDisplayName } from '@repo/utils';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 
@@ -432,8 +433,8 @@ export default function AdminDashboard() {
                                 <tr key={order.id} className="hover:bg-slate-50/50">
                                   <td className="px-5 py-4 font-mono font-bold text-slate-800">{order.orderNumber}</td>
                                   <td className="px-5 py-4">
-                                    <span className="inline-block px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-[10px] font-bold truncate max-w-[140px]" title={order.template?.name}>
-                                      {order.template?.name || 'N/A'}
+                                    <span className="inline-block px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-[10px] font-bold truncate max-w-[140px]" title={formatTemplateDisplayName(order)}>
+                                      {formatTemplateDisplayName(order)}
                                     </span>
                                   </td>
                                   <td className="px-5 py-4">
@@ -602,7 +603,7 @@ export default function AdminDashboard() {
             <div className="space-y-3.5 text-xs text-slate-600 mb-6">
               <div className="p-3.5 bg-blue-50/60 rounded-2xl border border-blue-100">
                 <span className="text-[10px] text-blue-600 font-bold uppercase tracking-wider block">Mẫu Template Khách Chọn:</span>
-                <span className="font-extrabold text-slate-900 text-sm">{selectedOrder.template?.name || selectedOrder.templateId || 'Bất động sản'}</span>
+                <span className="font-extrabold text-slate-900 text-sm">{formatTemplateDisplayName(selectedOrder)}</span>
               </div>
 
               <div className="grid grid-cols-2 gap-3">

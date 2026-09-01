@@ -12,6 +12,7 @@ import {
   saveActiveGeminiApiKey, 
   getDailyAiUsage 
 } from '../../services/aiService';
+import { formatTemplateDisplayName } from '@repo/utils';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 
@@ -292,7 +293,7 @@ export const ZeroCodeCmsEditor: React.FC<ZeroCodeCmsEditorProps> = ({
                 <span className="text-xs font-mono text-slate-400">#{order.orderNumber}</span>
               </div>
               <h2 className="text-base font-bold text-white mt-0.5">
-                Chỉnh Sửa Website: <span className="text-amber-400">{order.template?.name || 'Mẫu BĐS'}</span>
+                Chỉnh Sửa Website: <span className="text-amber-400">{formatTemplateDisplayName(order)}</span>
               </h2>
             </div>
           </div>
