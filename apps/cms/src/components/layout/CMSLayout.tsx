@@ -287,9 +287,7 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
     if (domainData?.customDomain && domainData?.dnsVerified && domainData?.sslStatus === 'ACTIVE') {
       return `https://${domainData.customDomain}`;
     }
-    // Subdomain routing on Vercel: slug.templates.aireviewbds.com
-    // ?tenant= fallback ensures middleware always resolves correctly
-    return `https://${tenantSlug}.${PLATFORM_DOMAIN}/?tenant=${tenantSlug}`;
+    return `https://${PLATFORM_DOMAIN}/site/${tenantSlug}`;
   };
 
   const websiteUrl = buildPublicUrl();

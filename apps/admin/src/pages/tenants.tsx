@@ -414,8 +414,8 @@ export default function AdminTenants() {
             <div className="w-full mt-6 p-4 bg-slate-50 rounded-2xl border border-slate-200/60 text-left text-xs space-y-3 font-semibold text-slate-700 shadow-inner">
               <div>
                 <span className="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Địa chỉ Website:</span>
-                <a href={`https://${createdCredentials.subdomain}.${PLATFORM_DOMAIN}/?tenant=${createdCredentials.subdomain}`} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline font-mono">
-                  https://{createdCredentials.subdomain}.{PLATFORM_DOMAIN}
+                <a href={`https://${PLATFORM_DOMAIN}/site/${createdCredentials.subdomain}`} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline font-mono">
+                  https://{PLATFORM_DOMAIN}/site/{createdCredentials.subdomain}
                 </a>
               </div>
               <div>
@@ -436,7 +436,7 @@ export default function AdminTenants() {
 
             <button
               onClick={() => {
-                const text = `THÔNG TIN BÀN GIAO WEBSITE BĐS:\n- Địa chỉ Website: https://${createdCredentials.subdomain}.${PLATFORM_DOMAIN}/?tenant=${createdCredentials.subdomain}\n- Trang quản trị CMS: ${process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}\n- Email đăng nhập: ${createdCredentials.email}\n- Mật khẩu tạm thời: ${createdCredentials.password}`;
+                const text = `THÔNG TIN BÀN GIAO WEBSITE BĐS:\n- Địa chỉ Website: https://${PLATFORM_DOMAIN}/site/${createdCredentials.subdomain}\n- Trang quản trị CMS: ${process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}\n- Email đăng nhập: ${createdCredentials.email}\n- Mật khẩu tạm thời: ${createdCredentials.password}`;
                 navigator.clipboard.writeText(text);
                 alert('Đã sao chép thông tin bàn giao vào Clipboard!');
                 setShowResultModal(false);

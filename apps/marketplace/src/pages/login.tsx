@@ -22,7 +22,7 @@ export default function LoginPage() {
     && requestedRedirect.startsWith('/')
     && !requestedRedirect.startsWith('//')
     ? requestedRedirect
-    : '/customer/dashboard';
+    : '/';
 
   // Handle registered query or email pre-fill
   useEffect(() => {
@@ -43,8 +43,6 @@ export default function LoginPage() {
         router.replace(redirectUrl);
       } else if ((user.role as any) === 'SUPER_ADMIN') {
         window.location.href = process.env.NEXT_PUBLIC_ADMIN_URL || 'https://admin.aireviewbds.com';
-      } else if ((user.role as any) === 'TENANT_OWNER' || (user as any).role === 'CUSTOMER_OWNER' || (user as any).tenantId) {
-        window.location.href = process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com';
       } else {
         router.replace(redirectUrl);
       }

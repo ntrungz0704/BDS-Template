@@ -688,7 +688,9 @@ export default function CustomerDashboard() {
                                       </a>
                                       {ord.subdomain && (
                                         <a
-                                          href={`https://${ord.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`}
+                                          href={typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+                                            ? `http://localhost:3000/site/${ord.subdomain}`
+                                            : `https://templates.aireviewbds.com/site/${ord.subdomain}`}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all text-[10px]"

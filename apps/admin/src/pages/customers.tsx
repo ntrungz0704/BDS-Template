@@ -507,7 +507,7 @@ export default function CustomersPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => {
-                        const info = `THÔNG TIN BÀN GIAO WEBSITE:\n- Website: ${createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${PLATFORM_DOMAIN}/?tenant=${createdCredentials.subdomain}`}\n- Quản trị CMS: ${createdCredentials.cmsUrl || CMS_APP_URL}\n- Email: ${createdCredentials.email}\n- Mật khẩu: ${createdCredentials.password}`;
+                        const info = `THÔNG TIN BÀN GIAO WEBSITE:\n- Website: ${createdCredentials.websiteUrl || `https://${PLATFORM_DOMAIN}/site/${createdCredentials.subdomain}`}\n- Quản trị CMS: ${createdCredentials.cmsUrl || CMS_APP_URL}\n- Email: ${createdCredentials.email}\n- Mật khẩu: ${createdCredentials.password}`;
                         handleCopyText(info);
                       }}
                       className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all"

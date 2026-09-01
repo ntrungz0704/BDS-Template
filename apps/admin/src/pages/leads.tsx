@@ -35,6 +35,27 @@ const STATUS_CONFIG: Record<LeadStatus, { label: string; badgeBg: string; textCo
   SPAM: { label: 'Spam', badgeBg: 'bg-slate-100', textCol: 'text-slate-500', borderCol: 'border-slate-200' },
 };
 
+const isTerminalStatus = (status: LeadStatus) => ['WON', 'LOST', 'SPAM'].includes(status);
+
+const getAllowedNextStatuses = (current: LeadStatus): LeadStatus[] => {
+  switch (current) {
+    case 'NEW':
+      return ['NEW', 'CONTACTED', 'LOST', 'SPAM'];
+    case 'CONTACTED':
+      return ['CONTACTED', 'QUALIFIED', 'WON', 'LOST', 'SPAM'];
+    case 'QUALIFIED':
+      return ['QUALIFIED', 'CONTACTED', 'WON', 'LOST', 'SPAM'];
+    case 'WON':
+      return ['WON'];
+    case 'LOST':
+      return ['LOST'];
+    case 'SPAM':
+      return ['SPAM'];
+    default:
+      return ['NEW', 'CONTACTED', 'QUALIFIED', 'WON', 'LOST', 'SPAM'];
+  }
+};
+
 function parseDossier(rawMessage: string) {
   const parts = (rawMessage || '')
     .replace(/\[LIÊN HỆ TƯ VẤN\]/g, '')
@@ -124,10 +145,28 @@ export default function AdminLeadsPage() {
       queryClient.invalidateQueries({ queryKey: ['adminLayoutLeads'] });
       showToast('✓ Cập nhật trạng thái khách hàng thành công!');
     },
-    onError: () => {
-      showToast('❌ Lỗi khi cập nhật trạng thái.');
+    onError: (err: any) => {
+      showToast(err?.response?.data?.error?.message || '❌ Lỗi khi cập nhật trạng thái.');
     },
   });
+
+  const handleStatusChange = (lead: LeadItem, nextStatus: LeadStatus) => {
+    if (nextStatus === lead.status) return;
+    if (isTerminalStatus(lead.status)) {
+      alert('Hồ sơ này đã ở trạng thái kết thúc (Đã chốt / Hủy / Spam) và đã được khóa, không thể chỉnh sửa tiếp.');
+      return;
+    }
+    if (isTerminalStatus(nextStatus)) {
+      const label = STATUS_CONFIG[nextStatus]?.label || nextStatus;
+      if (!confirm(`Xác nhận chuyển trạng thái sang "${label}"?\n\n⚠️ Lưu ý: Sau khi chọn "${label}", hồ sơ sẽ được khóa vĩnh viễn và không thể thay đổi lại trạng thái khác!`)) {
+        return;
+      }
+    }
+    updateStatusMutation.mutate({ id: lead.id, status: nextStatus });
+    if (selectedLead && selectedLead.id === lead.id) {
+      setSelectedLead({ ...selectedLead, status: nextStatus });
+    }
+  };
 
   // 3. Mutation delete lead
   const deleteLeadMutation = useMutation({
@@ -400,18 +439,32 @@ export default function AdminLeadsPage() {
 
                         {/* Trạng Thái CRM */}
                         <td className="py-3 px-3">
-                          <select
-                            value={lead.status}
-                            onChange={(e) => updateStatusMutation.mutate({ id: lead.id, status: e.target.value as LeadStatus })}
-                            className={`w-full text-[10px] font-extrabold px-1.5 py-1 rounded-lg border focus:outline-none cursor-pointer ${statusConf.badgeBg} ${statusConf.textCol} ${statusConf.borderCol}`}
-                          >
-                            <option value="NEW">🔴 Mới Nhận</option>
-                            <option value="CONTACTED">🟡 Đã Liên Hệ</option>
-                            <option value="QUALIFIED">🟣 Tiềm Năng</option>
-                            <option value="WON">🟢 Đã Chốt</option>
-                            <option value="LOST">⚪ Hủy/Không Mua</option>
-                            <option value="SPAM">⚫ Thư Rác/Spam</option>
-                          </select>
+                          {(() => {
+                            const isLocked = isTerminalStatus(lead.status);
+                            const allowed = getAllowedNextStatuses(lead.status);
+                            return (
+                              <div className="relative">
+                                <select
+                                  value={lead.status}
+                                  disabled={isLocked}
+                                  onChange={(e) => handleStatusChange(lead, e.target.value as LeadStatus)}
+                                  className={`w-full text-[10px] font-extrabold px-1.5 py-1 rounded-lg border focus:outline-none transition-all ${
+                                    isLocked
+                                      ? 'cursor-not-allowed opacity-90 font-black shadow-none bg-slate-100 text-slate-700 border-slate-300'
+                                      : 'cursor-pointer hover:shadow-xs'
+                                  } ${!isLocked ? `${statusConf.badgeBg} ${statusConf.textCol} ${statusConf.borderCol}` : ''}`}
+                                  title={isLocked ? 'Trạng thái đã đóng/khóa, không thể chỉnh sửa tiếp' : 'Thay đổi trạng thái xử lý'}
+                                >
+                                  {allowed.includes('NEW') && <option value="NEW">🔴 Mới Nhận</option>}
+                                  {allowed.includes('CONTACTED') && <option value="CONTACTED">🟡 Đã Liên Hệ</option>}
+                                  {allowed.includes('QUALIFIED') && <option value="QUALIFIED">🟣 Tiềm Năng</option>}
+                                  {allowed.includes('WON') && <option value="WON">🟢 Đã Chốt (Khóa)</option>}
+                                  {allowed.includes('LOST') && <option value="LOST">⚪ Hủy/Không Mua (Khóa)</option>}
+                                  {allowed.includes('SPAM') && <option value="SPAM">⚫ Thư Rác/Spam (Khóa)</option>}
+                                </select>
+                              </div>
+                            );
+                          })()}
                         </td>
 
                         {/* Thời Gian Gửi */}
@@ -523,6 +576,42 @@ export default function AdminLeadsPage() {
                   >
                     💬 Chat Zalo
                   </a>
+                </div>
+              </div>
+
+              {/* Status Bar in Modal */}
+              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                <div>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Trạng thái xử lý Lead:</span>
+                  <span className="font-extrabold text-slate-800 text-xs">
+                    {STATUS_CONFIG[selectedLead.status]?.label || selectedLead.status}
+                  </span>
+                </div>
+                <div className="w-full sm:w-56">
+                  {(() => {
+                    const isLocked = isTerminalStatus(selectedLead.status);
+                    const allowed = getAllowedNextStatuses(selectedLead.status);
+                    const statusConf = STATUS_CONFIG[selectedLead.status] || STATUS_CONFIG.NEW;
+                    return (
+                      <select
+                        value={selectedLead.status}
+                        disabled={isLocked}
+                        onChange={(e) => handleStatusChange(selectedLead, e.target.value as LeadStatus)}
+                        className={`w-full text-xs font-bold px-3 py-1.5 rounded-lg border focus:outline-none transition-all ${
+                          isLocked
+                            ? 'cursor-not-allowed opacity-90 bg-slate-100 text-slate-600 border-slate-300'
+                            : 'cursor-pointer'
+                        } ${!isLocked ? `${statusConf.badgeBg} ${statusConf.textCol} ${statusConf.borderCol}` : ''}`}
+                      >
+                        {allowed.includes('NEW') && <option value="NEW">🔴 Mới Nhận</option>}
+                        {allowed.includes('CONTACTED') && <option value="CONTACTED">🟡 Đã Liên Hệ</option>}
+                        {allowed.includes('QUALIFIED') && <option value="QUALIFIED">🟣 Tiềm Năng</option>}
+                        {allowed.includes('WON') && <option value="WON">🟢 Đã Chốt (Khóa)</option>}
+                        {allowed.includes('LOST') && <option value="LOST">⚪ Hủy/Không Mua (Khóa)</option>}
+                        {allowed.includes('SPAM') && <option value="SPAM">⚫ Thư Rác/Spam (Khóa)</option>}
+                      </select>
+                    );
+                  })()}
                 </div>
               </div>
 

@@ -52,10 +52,31 @@ const COLUMNS: KanbanColumn[] = [
   { status: 'NEW',       label: 'Mới Nhận',    color: 'text-blue-700',   badgeBg: 'bg-blue-100 text-blue-800',   headerBg: 'bg-blue-50/70',   borderColor: 'border-blue-200',   count: 0 },
   { status: 'CONTACTED', label: 'Đã Liên Hệ', color: 'text-amber-700',  badgeBg: 'bg-amber-100 text-amber-800', headerBg: 'bg-amber-50/70',  borderColor: 'border-amber-200',  count: 0 },
   { status: 'QUALIFIED', label: 'Tiềm Năng',   color: 'text-purple-700', badgeBg: 'bg-purple-100 text-purple-800', headerBg: 'bg-purple-50/70', borderColor: 'border-purple-200', count: 0 },
-  { status: 'WON',       label: 'Thành Công',  color: 'text-emerald-700',badgeBg: 'bg-emerald-100 text-emerald-800', headerBg: 'bg-emerald-50/70', borderColor: 'border-emerald-200', count: 0 },
-  { status: 'LOST',      label: 'Không Mua',   color: 'text-rose-700',   badgeBg: 'bg-rose-100 text-rose-800',   headerBg: 'bg-rose-50/70',   borderColor: 'border-rose-200',   count: 0 },
+  { status: 'WON',       label: 'Đã Chốt',     color: 'text-emerald-700',badgeBg: 'bg-emerald-100 text-emerald-800', headerBg: 'bg-emerald-50/70', borderColor: 'border-emerald-200', count: 0 },
+  { status: 'LOST',      label: 'Hủy/Không Mua',color: 'text-rose-700',   badgeBg: 'bg-rose-100 text-rose-800',   headerBg: 'bg-rose-50/70',   borderColor: 'border-rose-200',   count: 0 },
   { status: 'SPAM',      label: 'Spam',        color: 'text-slate-600',  badgeBg: 'bg-slate-100 text-slate-700',  headerBg: 'bg-slate-50/70',  borderColor: 'border-slate-200',  count: 0 },
 ];
+
+export const isTerminalStatus = (status: LeadStatus) => ['WON', 'LOST', 'SPAM'].includes(status);
+
+export const getAllowedStatuses = (current: LeadStatus): LeadStatus[] => {
+  switch (current) {
+    case 'NEW':
+      return ['NEW', 'CONTACTED', 'LOST', 'SPAM'];
+    case 'CONTACTED':
+      return ['CONTACTED', 'QUALIFIED', 'WON', 'LOST', 'SPAM'];
+    case 'QUALIFIED':
+      return ['QUALIFIED', 'CONTACTED', 'WON', 'LOST', 'SPAM'];
+    case 'WON':
+      return ['WON'];
+    case 'LOST':
+      return ['LOST'];
+    case 'SPAM':
+      return ['SPAM'];
+    default:
+      return ['NEW', 'CONTACTED', 'QUALIFIED', 'WON', 'LOST', 'SPAM'];
+  }
+};
 
 // ─── API Helper ────────────────────────────────────────────────────────────
 
@@ -146,10 +167,11 @@ function LeadCard({ lead, onSelect, onStatusChange }: {
 
 // ─── Lead Detail Drawer ────────────────────────────────────────────────────
 
-function LeadDrawer({ lead, onClose, onUpdate }: {
+function LeadDrawer({ lead, onClose, onUpdate, onStatusChange }: {
   lead: Lead | null;
   onClose: () => void;
   onUpdate: () => void;
+  onStatusChange: (leadId: string, status: LeadStatus) => void;
 }) {
   const [notes, setNotes] = useState<any[]>([]);
   const [activities, setActivities] = useState<any[]>([]);
@@ -208,6 +230,9 @@ function LeadDrawer({ lead, onClose, onUpdate }: {
     STATUS_CHANGE: <ArrowRight className="w-3.5 h-3.5 text-slate-500" /> 
   };
 
+  const isLocked = isTerminalStatus(lead.status);
+  const allowed = getAllowedStatuses(lead.status);
+
   return (
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
       <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-xs animate-fade-in" />
@@ -216,12 +241,29 @@ function LeadDrawer({ lead, onClose, onUpdate }: {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-start justify-between">
-          <div>
-            <div className="flex items-center gap-2">
+          <div className="flex-1 pr-4">
+            <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-xl font-bold text-slate-900">{lead.fullName}</h2>
-              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800">
-                {lead.status}
-              </span>
+              <div className="relative">
+                <select
+                  value={lead.status}
+                  disabled={isLocked}
+                  onChange={(e) => onStatusChange(lead.id, e.target.value as LeadStatus)}
+                  className={`text-xs font-bold px-2.5 py-1 rounded-full border transition-all ${
+                    isLocked
+                      ? 'bg-slate-100 text-slate-600 border-slate-300 cursor-not-allowed'
+                      : 'bg-blue-50 text-blue-800 border-blue-200 cursor-pointer'
+                  }`}
+                  title={isLocked ? 'Trạng thái đã đóng/khóa vĩnh viễn' : 'Chuyển trạng thái xử lý'}
+                >
+                  {allowed.includes('NEW') && <option value="NEW">🔴 Mới Nhận</option>}
+                  {allowed.includes('CONTACTED') && <option value="CONTACTED">🟡 Đã Liên Hệ</option>}
+                  {allowed.includes('QUALIFIED') && <option value="QUALIFIED">🟣 Tiềm Năng</option>}
+                  {allowed.includes('WON') && <option value="WON">🟢 Đã Chốt (Khóa)</option>}
+                  {allowed.includes('LOST') && <option value="LOST">⚪ Hủy/Không Mua (Khóa)</option>}
+                  {allowed.includes('SPAM') && <option value="SPAM">⚫ Thư Rác/Spam (Khóa)</option>}
+                </select>
+              </div>
             </div>
             <div className="flex items-center gap-3 mt-2 text-sm text-slate-600">
               <a href={`tel:${lead.phone}`} className="flex items-center gap-1 text-blue-600 font-semibold hover:underline">
@@ -236,7 +278,7 @@ function LeadDrawer({ lead, onClose, onUpdate }: {
           </div>
           <button 
             onClick={onClose} 
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
@@ -409,13 +451,31 @@ export default function LeadCRMPage() {
   useEffect(() => { fetchLeads(); }, [fetchLeads]);
 
   const handleStatusChange = async (leadId: string, status: LeadStatus) => {
+    const currentLead = leads.find((l) => l.id === leadId) || selectedLead;
+    if (currentLead && isTerminalStatus(currentLead.status)) {
+      alert('Hồ sơ khách hàng này đã ở trạng thái kết thúc (Đã chốt / Hủy / Spam), không thể chỉnh sửa lại.');
+      return;
+    }
+    if (isTerminalStatus(status)) {
+      const col = COLUMNS.find((c) => c.status === status);
+      const label = col?.label || status;
+      if (!confirm(`Xác nhận chuyển trạng thái sang "${label}"?\n\n⚠️ Lưu ý: Sau khi chọn "${label}", hồ sơ sẽ được khóa vĩnh viễn và không thể thay đổi lại trạng thái khác!`)) {
+        return;
+      }
+    }
     try {
       await apiFetch(`/api/cms/leads/${leadId}/status`, {
         method: 'PATCH',
         body: JSON.stringify({ status }),
       });
+      if (selectedLead && selectedLead.id === leadId) {
+        setSelectedLead({ ...selectedLead, status });
+      }
       fetchLeads();
-    } catch (err) { console.error(err); }
+    } catch (err: any) {
+      alert(err.message || 'Lỗi khi cập nhật trạng thái.');
+      console.error(err);
+    }
   };
 
   const handleCreate = async () => {
@@ -645,6 +705,7 @@ export default function LeadCRMPage() {
             lead={selectedLead}
             onClose={() => setSelectedLead(null)}
             onUpdate={fetchLeads}
+            onStatusChange={handleStatusChange}
           />
         )}
       </CMSLayout>

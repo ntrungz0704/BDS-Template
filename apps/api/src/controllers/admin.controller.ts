@@ -1984,6 +1984,8 @@ export async function updateAdminLeadStatus(req: Request, res: Response, next: N
     const { id } = req.params;
     const { status, note } = req.body;
 
+    const terminalStatuses = ['WON', 'LOST', 'SPAM'];
+
     if (id.startsWith('sub_')) {
       const subId = id.replace('sub_', '');
       await prisma.contactFormSubmission.update({
@@ -1992,6 +1994,17 @@ export async function updateAdminLeadStatus(req: Request, res: Response, next: N
       });
     } else if (id.startsWith('ord_')) {
       const ordId = id.replace('ord_', '');
+      const existingOrder = await prisma.order.findUnique({ where: { id: ordId } });
+      if (existingOrder && (existingOrder.status === 'COMPLETED' || existingOrder.status === 'REJECTED')) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            code: 'ORDER_STATUS_LOCKED',
+            message: 'Đơn tư vấn đã ở trạng thái kết thúc, không thể thay đổi nữa.'
+          }
+        });
+      }
+
       let orderStatus: any = 'PENDING';
       if (status === 'WON') orderStatus = 'COMPLETED';
       else if (status === 'LOST' || status === 'SPAM') orderStatus = 'REJECTED';
@@ -2000,12 +2013,43 @@ export async function updateAdminLeadStatus(req: Request, res: Response, next: N
         data: { status: orderStatus, adminNotes: note || undefined }
       });
     } else {
+      const existingLead = await prisma.lead.findUnique({ where: { id } });
+      if (!existingLead) {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'LEAD_NOT_FOUND', message: 'Không tìm thấy thông tin khách hàng.' }
+        });
+      }
+
+      if (terminalStatuses.includes(existingLead.status)) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            code: 'LEAD_STATUS_LOCKED',
+            message: 'Hồ sơ khách hàng đã ở trạng thái kết thúc (Đã chốt / Hủy / Spam), không thể thay đổi lại.'
+          }
+        });
+      }
+
+      if (existingLead.status === 'NEW' && (status === 'QUALIFIED' || status === 'WON')) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            code: 'INVALID_STATUS_TRANSITION',
+            message: 'Khách hàng mới nhận phải chuyển sang "Đã liên hệ" trước khi đánh giá Tiềm năng hoặc Chốt.'
+          }
+        });
+      }
+
+      const now = new Date();
       await prisma.lead.update({
         where: { id },
         data: {
           status: status as any,
           note: note !== undefined ? note : undefined,
-          lastActivityAt: new Date()
+          wonAt: status === 'WON' ? now : existingLead.wonAt,
+          lostAt: status === 'LOST' ? now : existingLead.lostAt,
+          lastActivityAt: now
         }
       });
     }

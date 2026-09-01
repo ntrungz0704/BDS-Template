@@ -206,6 +206,14 @@ export class LeadService {
     });
     if (!existing) throw new Error('LEAD_NOT_FOUND');
 
+    const terminalStatuses = ['WON', 'LOST', 'SPAM'];
+    if (terminalStatuses.includes(existing.status)) {
+      throw new Error('LEAD_STATUS_LOCKED');
+    }
+    if (existing.status === 'NEW' && (data.status === 'QUALIFIED' || data.status === 'WON')) {
+      throw new Error('INVALID_STATUS_TRANSITION');
+    }
+
     const previousStatus = existing.status;
     const now = new Date();
 
