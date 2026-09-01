@@ -1,91 +1,871 @@
 <?php
 require_once 'config/db.php';
-$companyName = 'LP #06 - Khu Đô Thị Công Nghiệp & Dịch Vụ VSIP';
-$hotline = '0919 006 030';
-if (isset($pdo)) {
+
+// Fallback values
+$company = [
+    'name' => 'STELLA MEGA CITY',
+    'phone' => '0919 006 030',
+    'email' => 'admin@templatesbds.com',
+    'address' => 'Đường Đặng Văn Dầy, P. Bình Thủy, Q. Bình Thủy, TP. Cần Thơ',
+    'slogan' => 'ĐẠI ĐÔ THỊ TRUNG TÂM THỦ PHỦ MIỀN TÂY',
+    'zalo' => 'https://zalo.me/0919006030'
+];
+
+$projects = [
+    ['title' => '01. Đền Thờ Vua Hùng', 'description' => 'Biểu tượng văn hóa tâm linh 4ha lớn nhất ĐBSCL', 'image' => 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80', 'badge_text' => '01'],
+    ['title' => '02. Đại Lộ Ánh Sáng', 'description' => 'Tuyến phố đi bộ sầm uất & nhạc nước nghệ thuật', 'image' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80', 'badge_text' => '02'],
+    ['title' => '03. Trung Tâm Hành Chính', 'description' => 'Tọa lạc ngay trong lòng dự án, an ninh tuyệt đối', 'image' => 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80', 'badge_text' => '03'],
+    ['title' => '04. Công Viên Zen Garden', 'description' => 'Không gian thiền tịnh phong cách Nhật Bản', 'image' => 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80', 'badge_text' => '04'],
+    ['title' => '05. Trường Học Liên Cấp', 'description' => 'Hệ thống giáo dục chuẩn quốc tế Cambridge', 'image' => 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80', 'badge_text' => '05'],
+    ['title' => '06. TTTM & Khách Sạn 5 Sao', 'description' => 'Tổ hợp thương mại khối đế sầm uất bậc nhất', 'image' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', 'badge_text' => '06']
+];
+
+if (isset($pdo) && $pdo) {
     try {
         $stmt = $pdo->query("SELECT * FROM company_info LIMIT 1");
-        $info = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($info) {
-            $companyName = $info['name'];
-            $hotline = $info['phone'];
+        if ($row = $stmt->fetch()) {
+            $company = $row;
         }
-    } catch(Exception $e) {}
+
+        $stmt = $pdo->query("SELECT * FROM projects");
+        $db_projects = $stmt->fetchAll();
+        if ($db_projects) {
+            $projects = $db_projects;
+        }
+    } catch (PDOException $e) {
+        // use fallback
+    }
 }
 ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?php echo htmlspecialchars($companyName); ?></title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= htmlspecialchars($company['name']) ?> - <?= htmlspecialchars($company['slogan']) ?></title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 antialiased min-h-screen flex flex-col justify-between">
+<body class="min-h-screen bg-[#061426] text-slate-100 font-sans selection:bg-[#E5A824] selection:text-slate-950">
 
-  <header class="w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 py-3.5 px-4 sm:px-8">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <a href="index.php" class="flex items-center gap-2 font-black text-lg text-white">
-        <span class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-white text-sm">LP</span>
-        <span><?php echo htmlspecialchars($companyName); ?></span>
-      </a>
-      <div class="flex items-center gap-3">
-        <a href="tel:<?php echo preg_replace('/\s+/', '', $hotline); ?>" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase rounded-xl shadow">
-          📞 <?php echo htmlspecialchars($hotline); ?>
-        </a>
-      </div>
-    </div>
-  </header>
+    <!-- ════════════════ 1. TOP HEADER (BRAND & HOTLINE) ════════════════ -->
+    <header class="bg-[#030B17]/95 border-b border-amber-500/20 px-4 sm:px-8 py-2.5 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs">
+            
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 bg-gradient-to-tr from-amber-500 to-yellow-300 text-slate-950 flex items-center justify-center font-black text-xs">
+                    ★
+                </div>
+                <span class="font-black text-sm text-amber-400 uppercase tracking-wider">
+                    <?= htmlspecialchars($company['name']) ?>
+                </span>
+            </div>
 
-  <main class="flex-1 w-full space-y-16 pb-20">
-    <section class="relative py-24 px-4 text-center border-b border-slate-800">
-      <div class="max-w-5xl mx-auto space-y-6">
-        <span class="px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-400/30 text-blue-400 text-xs font-black uppercase tracking-widest inline-block">
-          HẠ TẦNG XANH ESG — CHUẨN QUỐC TẾ
-        </span>
-        <h1 class="text-3xl sm:text-5xl font-black text-white leading-tight uppercase">
-          KHU ĐÔ THỊ CÔNG NGHIỆP & LOGISTICS XANH THÔNG MINH
-        </h1>
-        <p class="text-slate-300 text-sm sm:text-base max-w-3xl mx-auto">
-          Hệ sinh thái công nghiệp công nghệ cao, trạm điện 110kV độc lập, kết nối trực tiếp cao tốc và cảng nước sâu, chính sách ưu đãi thuế FDI tối đa.
-        </p>
-      </div>
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-slate-200">
+                <a href="#tong-quan" class="hover:text-amber-400 transition">Tổng Quan</a>
+                <a href="#anh-du-an" class="hover:text-amber-400 transition">Ảnh Dự Án</a>
+                <a href="#video-du-an" class="hover:text-amber-400 transition">Video</a>
+                <a href="#quy-mo" class="hover:text-amber-400 transition">Quy Mô</a>
+                <a href="#ly-do" class="hover:text-amber-400 transition">Lý Do Đầu Tư</a>
+                <a href="#vi-tri" class="hover:text-amber-400 transition">Vị Trí</a>
+            </nav>
+
+            <!-- Contact Fast -->
+            <div class="flex items-center gap-3">
+                <a href="tel:<?= htmlspecialchars(str_replace(' ', '', $company['phone'])) ?>" class="flex items-center gap-1 font-bold text-amber-400 hover:text-white transition">
+                    <i data-lucide="phone" class="w-3.5 h-3.5"></i>
+                    <span><?= htmlspecialchars($company['phone']) ?></span>
+                </a>
+                <a
+                    href="#hero-lead-form-box"
+                    class="px-3 py-1 bg-[#D92D20] hover:bg-red-700 text-white font-bold text-[11px] uppercase tracking-wider"
+                >
+                    Đăng Ký
+                </a>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- ════════════════ 2. HERO SECTION & FLOATING RED LEAD BANNER ════════════════ -->
+    <section class="relative pt-8 pb-16 px-4 sm:px-6 lg:px-8 border-b-2 border-amber-500/30 overflow-hidden bg-gradient-to-b from-[#030B17] via-[#061426] to-[#081B33]">
+        
+        <!-- Background Urban Aerial Image -->
+        <div class="absolute inset-0 z-0">
+            <img
+                src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1800&q=80"
+                alt="Stella Mega City Panoramic Night"
+                class="w-full h-full object-cover opacity-25"
+            />
+            <div class="absolute inset-0 bg-gradient-to-b from-[#030B17]/80 via-[#061426]/70 to-[#061426]"></div>
+        </div>
+
+        <div class="relative z-10 max-w-5xl mx-auto space-y-6 text-center">
+            
+            <!-- Main Title -->
+            <div class="space-y-1">
+                <p class="text-amber-400 font-bold text-xs uppercase tracking-widest">
+                    <?= htmlspecialchars($company['slogan']) ?>
+                </p>
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight uppercase drop-shadow-md">
+                    <?= htmlspecialchars($company['name']) ?>
+                </h1>
+            </div>
+
+            <!-- Floating Red Lead Gift Box -->
+            <div id="hero-lead-form-box" class="bg-[#D92D20] border-2 border-amber-300 shadow-2xl p-6 sm:p-8 max-w-3xl mx-auto text-left">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                    
+                    <!-- Left Column: Gift Visual & Special Promo -->
+                    <div class="md:col-span-5 text-center md:text-left space-y-2 border-b md:border-b-0 md:border-r border-red-400/50 pb-4 md:pb-0 md:pr-4">
+                        <div class="w-16 h-16 bg-white/10 border border-white/30 flex items-center justify-center mx-auto md:mx-0">
+                            <i data-lucide="gift" class="w-8 h-8 text-amber-300 animate-bounce"></i>
+                        </div>
+                        <h3 class="text-base font-black text-white uppercase leading-tight">
+                            TRI ÂN KHÁCH HÀNG — CƠ HỘI ĐẦU TƯ F0
+                        </h3>
+                        <p class="text-[11px] text-amber-200 leading-relaxed">
+                            ✓ Chiết khấu trực tiếp <strong>10%</strong> giá trị hợp đồng.
+                            <br />✓ Tặng ngay <strong>1 cây vàng 9999</strong> khi đặt cọc.
+                            <br />✓ Ân hạn nợ gốc & lãi suất 0% trong 12 tháng.
+                        </p>
+                    </div>
+
+                    <!-- Right Column: Lead Form Input -->
+                    <div class="md:col-span-7">
+                        <div class="text-center mb-3">
+                            <h4 class="text-sm font-black text-amber-300 uppercase">
+                                ĐĂNG KÝ NHẬN BÁO GIÁ ĐỢT 1
+                            </h4>
+                            <p class="text-[10px] text-white">Ưu đãi trực tiếp từ Chủ đầu tư KITA Group</p>
+                        </div>
+
+                        <!-- Success Message (Hidden by default) -->
+                        <div id="hero-success-msg" class="hidden bg-white text-slate-900 p-4 text-center space-y-1.5 border-2 border-amber-400">
+                            <i data-lucide="check" class="w-6 h-6 text-emerald-600 mx-auto"></i>
+                            <h5 class="font-bold text-xs text-[#061426]">ĐÃ TIẾP NHẬN YÊU CẦU!</h5>
+                            <p class="text-[11px] text-slate-600">
+                                Chuyên viên sẽ liên hệ lại qua số <strong id="hero-success-phone"></strong> và gửi file PDF qua Zalo trong 3 phút.
+                            </p>
+                        </div>
+
+                        <!-- Form -->
+                        <form id="hero-form" onsubmit="handleHeroSubmit(event)" class="space-y-2.5 text-xs">
+                            <input
+                                type="text"
+                                name="name"
+                                required
+                                placeholder="Họ và tên Quý Khách *"
+                                class="w-full px-3 py-2 bg-white text-slate-900 font-bold border border-slate-300 outline-none"
+                            />
+
+                            <input
+                                type="tel"
+                                name="phone"
+                                id="hero-phone-input"
+                                required
+                                placeholder="Số điện thoại nhận bảng giá (Zalo) *"
+                                class="w-full px-3 py-2 bg-white text-slate-900 font-black border border-slate-300 outline-none"
+                            />
+
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="Email nhận hồ sơ pháp lý"
+                                class="w-full px-3 py-2 bg-white text-slate-900 font-medium border border-slate-300 outline-none"
+                            />
+
+                            <select
+                                id="hero-product-select"
+                                name="product"
+                                class="w-full px-3 py-2 bg-white text-slate-900 font-black border border-slate-300 outline-none"
+                            >
+                                <option class="text-slate-900 bg-white font-medium" value="Đất Nền Nhà Phố Liền Kề (100m² - 120m²)">Đất Nền Nhà Phố Liền Kề (100m² - 120m²)</option>
+                                <option class="text-slate-900 bg-white font-medium" value="Shophouse Đại Lộ Ánh Sáng (110m² - 140m²)">Shophouse Đại Lộ Ánh Sáng (110m² - 140m²)</option>
+                                <option class="text-slate-900 bg-white font-medium" value="Biệt Thự Vườn Ven Hồ (200m² - 350m²)">Biệt Thự Vườn Ven Hồ (200m² - 350m²)</option>
+                                <option class="text-slate-900 bg-white font-medium" value="Dinh Thự Đảo Ngọc (500m² - 800m²)">Dinh Thự Đảo Ngọc (500m² - 800m²)</option>
+                            </select>
+
+                            <button
+                                type="submit"
+                                class="w-full py-2.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider transition shadow-md cursor-pointer"
+                            >
+                                ĐĂNG KÝ NHẬN BÁO GIÁ
+                            </button>
+
+                            <div class="flex items-center justify-center gap-3 pt-1 text-white text-xs">
+                                <a href="<?= htmlspecialchars($company['zalo']) ?>" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 hover:text-amber-300">
+                                    <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> Zalo
+                                </a>
+                                <span>•</span>
+                                <a href="tel:<?= htmlspecialchars(str_replace(' ', '', $company['phone'])) ?>" class="flex items-center gap-1 hover:text-amber-300">
+                                    <i data-lucide="phone" class="w-3.5 h-3.5"></i> Hotline: <?= htmlspecialchars($company['phone']) ?>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
     </section>
 
-    <!-- Form -->
-    <section class="max-w-3xl mx-auto px-4">
-      <div class="bg-slate-800 border border-slate-700 rounded-3xl p-8 text-center space-y-6">
-        <h2 class="text-2xl font-black text-white uppercase">ĐĂNG KÝ NHẬN BÁO GIÁ & XEM NHÀ MẪU</h2>
-        <form action="api/contact.php" method="POST" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
-          <div>
-            <label class="text-[11px] font-bold text-slate-300 uppercase">Họ và tên *</label>
-            <input type="text" name="name" required placeholder="Nguyễn Văn A" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-xs font-semibold text-white">
-          </div>
-          <div>
-            <label class="text-[11px] font-bold text-slate-300 uppercase">Số điện thoại *</label>
-            <input type="tel" name="phone" required placeholder="0983xxxxxx" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-xs font-semibold text-white">
-          </div>
-          <div class="sm:col-span-2">
-            <label class="text-[11px] font-bold text-slate-300 uppercase">Ghi chú yêu cầu</label>
-            <textarea name="message" rows="2" placeholder="Ghi chú thêm..." class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-xs font-semibold text-white"></textarea>
-          </div>
-          <div class="sm:col-span-2">
-            <button type="submit" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-sm uppercase rounded-2xl shadow">
-              Gửi Thông Tin Ngay
+    <!-- ════════════════ 3. 3 CỘT GIÁ TRỊ CỐT LÕI (WHITE & HIGHLIGHT YELLOW CARD) ════════════════ -->
+    <section id="tong-quan" class="py-14 px-4 sm:px-6 lg:px-8 bg-[#040D1A] border-b border-amber-500/20">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Card 1: White Card -->
+            <div class="bg-white text-slate-900 border-2 border-slate-300 p-6 space-y-3 shadow-md text-left">
+                <div class="w-10 h-10 bg-[#061426] text-amber-400 flex items-center justify-center font-bold">
+                    <i data-lucide="building" class="w-5 h-5"></i>
+                </div>
+                <h3 class="text-sm font-black text-[#061426] uppercase border-b border-slate-200 pb-2">
+                    ĐẠI ĐÔ THỊ SÂN BAY ĐẲNG CẤP
+                </h3>
+                <ul class="space-y-1.5 text-xs text-slate-700 leading-relaxed font-medium">
+                    <li>• Tọa lạc tại trung tâm quận Bình Thủy, TP. Cần Thơ.</li>
+                    <li>• Chỉ cách sân bay Cần Thơ 3 phút di chuyển.</li>
+                    <li>• Liền kề Trung tâm hành chính quận và Công an quận.</li>
+                    <li>• Quy mô 150ha đẳng cấp bậc nhất miền Tây.</li>
+                </ul>
+            </div>
+
+            <!-- Card 2: Highlight Yellow/Gold Card -->
+            <div class="bg-[#FFF8E6] text-slate-900 border-2 border-[#E5A824] p-6 space-y-3 shadow-lg text-left relative">
+                <div class="absolute -top-3 right-3 px-2 py-0.5 bg-[#D92D20] text-white text-[10px] font-black uppercase">
+                    TIÊU CHUẨN A+
+                </div>
+                <div class="w-10 h-10 bg-[#E5A824] text-slate-950 flex items-center justify-center font-bold">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                </div>
+                <h3 class="text-sm font-black text-[#061426] uppercase border-b border-amber-300 pb-2">
+                    TIỆN ÍCH ĐẲNG CẤP QUỐC TẾ
+                </h3>
+                <ul class="space-y-1.5 text-xs text-slate-800 leading-relaxed font-medium">
+                    <li>• Hơn 10.000 cây xanh rợp bóng mát quanh năm.</li>
+                    <li>• Đền thờ Vua Hùng biểu tượng tâm linh 4ha.</li>
+                    <li>• Đại lộ ánh sáng, nhạc nước nghệ thuật đẳng cấp.</li>
+                    <li>• Hệ thống trường học quốc tế, bệnh viện 5 sao.</li>
+                </ul>
+            </div>
+
+            <!-- Card 3: White Card -->
+            <div class="bg-white text-slate-900 border-2 border-slate-300 p-6 space-y-3 shadow-md text-left">
+                <div class="w-10 h-10 bg-[#061426] text-amber-400 flex items-center justify-center font-bold">
+                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                </div>
+                <h3 class="text-sm font-black text-[#061426] uppercase border-b border-slate-200 pb-2">
+                    PHÁP LÝ MINH BẠCH SỔ ĐỎ TRAO TAY
+                </h3>
+                <ul class="space-y-1.5 text-xs text-slate-700 leading-relaxed font-medium">
+                    <li>• 100% Sổ đỏ từng nền trao tay ngay khi thanh toán.</li>
+                    <li>• Hạ tầng hoàn thiện 100% điện âm, nước máy.</li>
+                    <li>• Ngân hàng VPBank tài trợ 70% hạn mức.</li>
+                    <li>• Chính sách thanh toán linh hoạt chỉ từ 1%/tháng.</li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ════════════════ 4. ẢNH DỰ ÁN — VÒNG TRÒN 6 TIỆN ÍCH VỆ TINH ════════════════ -->
+    <section id="anh-du-an" class="py-16 px-4 sm:px-6 lg:px-8 bg-[#061426] border-b border-amber-500/20 text-center">
+        <div class="max-w-6xl mx-auto space-y-10">
+            
+            <div class="space-y-1">
+                <h2 class="text-2xl sm:text-4xl font-black text-amber-400 uppercase">
+                    ẢNH DỰ ÁN
+                </h2>
+                <p class="text-xs font-bold text-slate-300 uppercase tracking-widest">
+                    <?= htmlspecialchars($company['name']) ?> — HỆ THỐNG TIỆN ÍCH 6 CÁNH VỆ TINH
+                </p>
+            </div>
+
+            <!-- Central Circular Infographic Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 text-left">
+                <?php foreach ($projects as $project): ?>
+                <div
+                    onclick="openZoom('<?= htmlspecialchars($project['image']) ?>')"
+                    class="bg-[#030B17] border border-slate-700 hover:border-amber-400 transition-all p-3 space-y-3 cursor-pointer group shadow-sm"
+                >
+                    <div class="relative aspect-[16/10] overflow-hidden bg-slate-900 border border-slate-800">
+                        <img
+                            src="<?= htmlspecialchars($project['image']) ?>"
+                            alt="<?= htmlspecialchars($project['title']) ?>"
+                            class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                        />
+                        <div class="absolute top-2 left-2 px-2 py-0.5 bg-[#D92D20] text-white font-bold text-[10px]">
+                            <?= htmlspecialchars($project['badge_text']) ?>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/80 text-amber-300 px-2 py-0.5 text-[10px] font-bold flex items-center gap-1 border border-amber-400/40">
+                            <i data-lucide="zoom-in" class="w-3 h-3"></i> Phóng to
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <h4 class="font-black text-sm text-white group-hover:text-amber-400 transition-colors">
+                            <?= htmlspecialchars($project['title']) ?>
+                        </h4>
+                        <p class="text-xs text-slate-400 leading-relaxed font-medium">
+                            <?= htmlspecialchars($project['description']) ?>
+                        </p>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ════════════════ 5. 4 KHỐI CAM KẾT ĐỘT PHÁ (2x2 GRID & CTA BUTTON) ════════════════ -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-[#040D1A] border-b border-amber-500/20 text-center">
+        <div class="max-w-5xl mx-auto space-y-8">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                
+                <!-- Box 1: White -->
+                <div class="bg-white text-slate-900 border border-slate-300 p-4 flex gap-4 items-center">
+                    <div 
+                        class="w-28 h-20 bg-slate-900 shrink-0 overflow-hidden cursor-pointer border border-slate-200"
+                        onclick="openZoom('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80')"
+                    >
+                        <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=400&q=80" alt="Chủ đầu tư" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="space-y-1">
+                        <h4 class="font-black text-xs text-[#061426] uppercase">CHỦ ĐẦU TƯ UY TÍN</h4>
+                        <p class="text-[11px] text-slate-600 leading-tight">Tập đoàn KITA Group tiềm lực tài chính vững mạnh hàng đầu Việt Nam.</p>
+                    </div>
+                </div>
+
+                <!-- Box 2: Yellow Highlight -->
+                <div class="bg-[#FFF8E6] text-slate-900 border-2 border-[#E5A824] p-4 flex gap-4 items-center">
+                    <div 
+                        class="w-28 h-20 bg-slate-900 shrink-0 overflow-hidden cursor-pointer border border-amber-300"
+                        onclick="openZoom('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80')"
+                    >
+                        <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80" alt="Pháp lý sổ đỏ" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="space-y-1">
+                        <h4 class="font-black text-xs text-[#D92D20] uppercase">PHÁP LÝ SỔ ĐỎ 100%</h4>
+                        <p class="text-[11px] text-slate-800 leading-tight">Đã có sổ đỏ từng nền, sang tên công chứng ngay khi thanh toán.</p>
+                    </div>
+                </div>
+
+                <!-- Box 3: White -->
+                <div class="bg-white text-slate-900 border border-slate-300 p-4 flex gap-4 items-center">
+                    <div 
+                        class="w-28 h-20 bg-slate-900 shrink-0 overflow-hidden cursor-pointer border border-slate-200"
+                        onclick="openZoom('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&q=80')"
+                    >
+                        <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80" alt="Thanh toán" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="space-y-1">
+                        <h4 class="font-black text-xs text-[#061426] uppercase">THANH TOÁN LINH HOẠT</h4>
+                        <p class="text-[11px] text-slate-600 leading-tight">Tiến độ thanh toán dài hạn, ngân hàng hỗ trợ vay 70% ân hạn gốc lãi.</p>
+                    </div>
+                </div>
+
+                <!-- Box 4: White -->
+                <div class="bg-white text-slate-900 border border-slate-300 p-4 flex gap-4 items-center">
+                    <div 
+                        class="w-28 h-20 bg-slate-900 shrink-0 overflow-hidden cursor-pointer border border-slate-200"
+                        onclick="openZoom('https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80')"
+                    >
+                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&q=80" alt="Hạ tầng" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="space-y-1">
+                        <h4 class="font-black text-xs text-[#061426] uppercase">HẠ TẦNG HOÀN THIỆN 100%</h4>
+                        <p class="text-[11px] text-slate-600 leading-tight">Điện âm, nước máy, vỉa hè lát đá hoa cương và cây xanh rợp mát.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Yellow Action Pill Button -->
+            <div>
+                <a
+                    href="#hero-lead-form-box"
+                    class="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg"
+                >
+                    <span>ĐĂNG KÝ XEM THỰC ĐỊA DỰ ÁN</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ════════════════ 6. VIDEO THÔNG TIN DỰ ÁN ════════════════ -->
+    <section id="video-du-an" class="py-16 px-4 sm:px-6 lg:px-8 bg-[#061426] border-b border-amber-500/20 text-center">
+        <div class="max-w-4xl mx-auto space-y-6">
+            
+            <div class="space-y-1">
+                <h2 class="text-2xl sm:text-3xl font-black text-amber-400 uppercase">
+                    VIDEO THÔNG TIN DỰ ÁN
+                </h2>
+                <p class="text-xs text-slate-300">Phóng sự trải nghiệm thực tế đại đô thị <?= htmlspecialchars($company['name']) ?></p>
+            </div>
+
+            <div class="relative border-4 border-white bg-slate-950 aspect-video group overflow-hidden shadow-2xl">
+                <img
+                    src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1400&q=80"
+                    alt="Video Poster Stella Mega City"
+                    class="w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-700"
+                />
+                <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
+                    <button
+                        onclick="openZoom('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1400&q=80')"
+                        class="w-16 h-16 bg-[#D92D20] text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition cursor-pointer"
+                    >
+                        <i data-lucide="play" class="w-8 h-8 fill-current ml-1"></i>
+                    </button>
+                    <span class="mt-3 text-xs font-bold uppercase tracking-wider bg-black/80 px-3 py-1 border border-white/20">
+                        Xem Video Giới Thiệu Dự Án Official
+                    </span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ════════════════ 7. QUY MÔ DỰ ÁN (SPLIT LAYOUT) ════════════════ -->
+    <section id="quy-mo" class="py-16 px-4 sm:px-6 lg:px-8 bg-[#040D1A] border-b border-amber-500/20">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <!-- Left Column: Specs Box -->
+            <div class="lg:col-span-5 bg-[#061426] border-2 border-amber-400/40 p-6 space-y-3 text-left">
+                <h2 class="text-xl font-black text-amber-400 uppercase border-b border-amber-500/30 pb-2">
+                    QUY MÔ DỰ ÁN
+                </h2>
+
+                <div class="space-y-2 text-xs text-slate-200 leading-relaxed font-medium">
+                    <p>• <strong>Tên dự án:</strong> <?= htmlspecialchars($company['name']) ?></p>
+                    <p>• <strong>Chủ đầu tư:</strong> TẬP ĐOÀN KITA GROUP</p>
+                    <p>• <strong>Vị trí:</strong> <?= htmlspecialchars($company['address']) ?></p>
+                    <p>• <strong>Tổng diện tích:</strong> 150 hécta</p>
+                    <p>• <strong>Tổng vốn đầu tư:</strong> Hơn 8.000 tỷ đồng</p>
+                    <p>• <strong>Loại hình:</strong> Đất nền, Shophouse, Biệt thự</p>
+                    <p>• <strong>Pháp lý:</strong> Sổ đỏ từng nền lâu dài vĩnh viễn</p>
+                </div>
+            </div>
+
+            <!-- Right Column: Boulevard Photo -->
+            <div class="lg:col-span-7">
+                <div 
+                    class="border-2 border-slate-600 aspect-[16/10] bg-slate-900 group cursor-pointer overflow-hidden shadow-md"
+                    onclick="openZoom('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80')"
+                >
+                    <img
+                        src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80"
+                        alt="Phối cảnh Shophouse Stella Mega City"
+                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                    />
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ════════════════ 8. LÝ DO ĐẦU TƯ DỰ ÁN ════════════════ -->
+    <section id="ly-do" class="py-16 px-4 sm:px-6 lg:px-8 bg-[#061426] border-b border-amber-500/20 text-center">
+        <div class="max-w-5xl mx-auto space-y-10">
+            
+            <div class="space-y-1">
+                <h2 class="text-2xl sm:text-3xl font-black text-amber-400 uppercase">
+                    LÝ DO ĐẦU TƯ DỰ ÁN
+                </h2>
+                <p class="text-xs text-slate-300">5 lý do bảo chứng tiềm năng sinh lời vượt trội</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-left">
+                
+                <div class="bg-[#030B17] border border-amber-400/40 p-4 space-y-2">
+                    <div class="w-8 h-8 bg-amber-400 text-slate-950 flex items-center justify-center font-black text-xs">
+                        01
+                    </div>
+                    <h4 class="font-bold text-xs text-white uppercase">Vị Trí Kim Cương</h4>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">Trung tâm hành chính quận Bình Thủy, liền kề Sân bay Quốc Tế Cần Thơ.</p>
+                </div>
+
+                <div class="bg-[#030B17] border border-amber-400/40 p-4 space-y-2">
+                    <div class="w-8 h-8 bg-amber-400 text-slate-950 flex items-center justify-center font-black text-xs">
+                        02
+                    </div>
+                    <h4 class="font-bold text-xs text-white uppercase">Đô Thị Sân Bay Đẳng Cấp</h4>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">Hưởng lợi trực tiếp từ lượng khách du lịch và chuyên gia hàng không.</p>
+                </div>
+
+                <div class="bg-[#030B17] border border-amber-400/40 p-4 space-y-2">
+                    <div class="w-8 h-8 bg-amber-400 text-slate-950 flex items-center justify-center font-black text-xs">
+                        03
+                    </div>
+                    <h4 class="font-bold text-xs text-white uppercase">Pháp Lý Sổ Đỏ 100%</h4>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">Sở hữu lâu dài vĩnh viễn, công chứng sang tên ngay trong ngày.</p>
+                </div>
+
+                <div class="bg-[#030B17] border border-amber-400/40 p-4 space-y-2">
+                    <div class="w-8 h-8 bg-amber-400 text-slate-950 flex items-center justify-center font-black text-xs">
+                        04
+                    </div>
+                    <h4 class="font-bold text-xs text-white uppercase">Đón Sóng Cao Tốc</h4>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">Hưởng lợi trực tiếp từ tuyến cao tốc Trung Lương - Mỹ Thuận - Cần Thơ.</p>
+                </div>
+
+                <div class="bg-[#030B17] border border-amber-400/40 p-4 space-y-2">
+                    <div class="w-8 h-8 bg-amber-400 text-slate-950 flex items-center justify-center font-black text-xs">
+                        05
+                    </div>
+                    <h4 class="font-bold text-xs text-white uppercase">Thanh Khoản Sinh Lời</h4>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">Tiềm năng gia tăng giá trị kỳ vọng đạt từ 25% – 35%/năm.</p>
+                </div>
+
+                <div class="bg-[#D92D20] p-4 flex flex-col justify-between text-left">
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-black text-amber-300 uppercase">ƯU ĐÃI THÁNG</span>
+                        <h4 class="font-black text-xs text-white uppercase">TẶNG 1 CÂY VÀNG 9999</h4>
+                        <p class="text-[11px] text-slate-100">Áp dụng cho 20 khách hàng đầu tiên đặt cọc trong tuần.</p>
+                    </div>
+                    <button
+                        type="button"
+                        onclick="handleSelectProduct('Đất Nền Nhà Phố Liền Kề (100m² - 120m²)')"
+                        class="mt-2 py-2 bg-white text-[#D92D20] font-black text-[11px] uppercase tracking-wider hover:bg-amber-300 hover:text-slate-950 transition cursor-pointer"
+                    >
+                        NHẬN ƯU ĐÃI NGAY
+                    </button>
+                </div>
+
+            </div>
+
+            <div>
+                <a
+                    href="#hero-lead-form-box"
+                    class="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg"
+                >
+                    <span>NHẬN BÁO CÁO PHÂN TÍCH ĐẦU TƯ</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ════════════════ 9. VỊ TRÍ DỰ ÁN ════════════════ -->
+    <section id="vi-tri" class="py-16 px-4 sm:px-6 lg:px-8 bg-[#040D1A] border-b border-amber-500/20">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <!-- Left: Map Graphic -->
+            <div class="lg:col-span-7">
+                <div 
+                    class="border-2 border-slate-600 aspect-[16/10] bg-slate-900 group cursor-pointer overflow-hidden shadow-md"
+                    onclick="openZoom('https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1600&q=80')"
+                >
+                    <img
+                        src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1400&q=80"
+                        alt="Bản đồ vị trí Stella Mega City"
+                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                    />
+                </div>
+            </div>
+
+            <!-- Right: Location Bullet Points -->
+            <div class="lg:col-span-5 space-y-4 text-left">
+                <h2 class="text-2xl font-black text-amber-400 uppercase">
+                    VỊ TRÍ DỰ ÁN
+                </h2>
+                
+                <div class="space-y-2 text-xs text-slate-200 leading-relaxed font-medium">
+                    <p class="p-2.5 bg-[#061426] border border-slate-700">• Tọa lạc mặt tiền đại lộ Đặng Văn Dầy & Võ Văn Kiệt.</p>
+                    <p class="p-2.5 bg-[#061426] border border-slate-700">• <strong>3 Phút:</strong> Sân bay Quốc Tế Cần Thơ.</p>
+                    <p class="p-2.5 bg-[#061426] border border-slate-700">• <strong>5 Phút:</strong> Trung tâm Hành chính quận Bình Thủy.</p>
+                    <p class="p-2.5 bg-[#061426] border border-slate-700">• <strong>10 Phút:</strong> Bến Ninh Kiều & Chợ nổi Cái Răng.</p>
+                    <p class="p-2.5 bg-[#061426] border border-slate-700">• <strong>15 Phút:</strong> Cầu Cần Thơ và Tuyến cao tốc liên vùng.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ════════════════ 10. FORM ĐĂNG KÝ NHẬN BẢNG GIÁ CUỐI TRANG ════════════════ -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-[#061426] border-t-2 border-amber-400">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <!-- Left Column: Photo -->
+            <div class="lg:col-span-6">
+                <div 
+                    class="border-2 border-slate-600 aspect-[16/11] bg-slate-900 group cursor-pointer overflow-hidden shadow-md"
+                    onclick="openZoom('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80')"
+                >
+                    <img
+                        src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80"
+                        alt="Toàn cảnh Stella Mega City"
+                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                    />
+                </div>
+            </div>
+
+            <!-- Right Column: White Lead Form -->
+            <div class="lg:col-span-6 bg-white text-slate-900 border-2 border-amber-400 p-6 sm:p-8 text-left shadow-2xl">
+                <div class="text-center mb-4 pb-2 border-b border-slate-200">
+                    <span class="text-[11px] font-black text-[#D92D20] uppercase tracking-widest block mb-0.5">
+                        LIÊN HỆ PHÒNG KINH DOANH DỰ ÁN
+                    </span>
+                    <h3 class="text-base font-black text-[#061426] uppercase">
+                        ĐĂNG KÝ TƯ VẤN & NHẬN BẢNG GIÁ ĐỢT 1
+                    </h3>
+                </div>
+
+                <!-- Success Message -->
+                <div id="bottom-success-msg" class="hidden bg-[#FFF8E6] text-slate-900 p-5 text-center space-y-1.5 border border-amber-400">
+                    <i data-lucide="check" class="w-6 h-6 text-emerald-600 mx-auto"></i>
+                    <h4 class="font-bold text-xs text-[#061426]">GỬI THÔNG TIN THÀNH CÔNG!</h4>
+                    <p class="text-[11px] text-slate-600">
+                        Chuyên viên sẽ liên hệ lại qua số <strong id="bottom-success-phone"></strong> trong vòng 3 phút.
+                    </p>
+                </div>
+
+                <!-- Form -->
+                <form id="bottom-form" onsubmit="handleBottomSubmit(event)" class="space-y-3 text-xs">
+                    <input
+                        type="text"
+                        name="name"
+                        required
+                        placeholder="Họ và tên Quý Khách *"
+                        class="w-full px-3.5 py-2.5 bg-slate-50 text-slate-900 font-bold border border-slate-300 outline-none"
+                    />
+
+                    <input
+                        type="tel"
+                        name="phone"
+                        id="bottom-phone-input"
+                        required
+                        placeholder="Số điện thoại nhận bảng giá (Zalo) *"
+                        class="w-full px-3.5 py-2.5 bg-slate-50 text-slate-900 font-black border border-slate-300 outline-none"
+                    />
+
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Email nhận tài liệu"
+                        class="w-full px-3.5 py-2.5 bg-slate-50 text-slate-900 font-medium border border-slate-300 outline-none"
+                    />
+
+                    <select
+                        id="bottom-product-select"
+                        name="product"
+                        class="w-full px-3.5 py-2.5 bg-slate-50 text-slate-900 font-black border border-slate-300 outline-none"
+                    >
+                        <option class="text-slate-900 bg-white font-medium" value="Đất Nền Nhà Phố Liền Kề (100m² - 120m²)">Đất Nền Nhà Phố Liền Kề (100m² - 120m²)</option>
+                        <option class="text-slate-900 bg-white font-medium" value="Shophouse Đại Lộ Ánh Sáng (110m² - 140m²)">Shophouse Đại Lộ Ánh Sáng (110m² - 140m²)</option>
+                        <option class="text-slate-900 bg-white font-medium" value="Biệt Thự Vườn Ven Hồ (200m² - 350m²)">Biệt Thự Vườn Ven Hồ (200m² - 350m²)</option>
+                        <option class="text-slate-900 bg-white font-medium" value="Dinh Thự Đảo Ngọc (500m² - 800m²)">Dinh Thự Đảo Ngọc (500m² - 800m²)</option>
+                    </select>
+
+                    <button
+                        type="submit"
+                        class="w-full py-3 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider transition shadow-md cursor-pointer mt-1"
+                    >
+                        GỬI YÊU CẦU NGAY
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ════════════════ 11. FOOTER ════════════════ -->
+    <footer class="bg-[#020710] text-white py-10 px-4 sm:px-6 lg:px-8 text-xs border-t border-slate-800 text-center space-y-3">
+        <div class="max-w-4xl mx-auto space-y-2">
+            <h4 class="font-black text-amber-400 uppercase text-xs">
+                VĂN PHÒNG BÁN HÀNG DỰ ÁN <?= htmlspecialchars($company['name']) ?>
+            </h4>
+            <p class="text-slate-400 text-[11px]">
+                Địa chỉ: <?= htmlspecialchars($company['address']) ?>
+            </p>
+            <p class="text-slate-300 text-[11px]">
+                Hotline VIP 24/7: <strong class="text-amber-400"><?= htmlspecialchars($company['phone']) ?></strong> | Email: <?= htmlspecialchars($company['email']) ?>
+            </p>
+            <p class="text-slate-500 text-[10px] pt-2">
+                © <?= date('Y') ?> <?= htmlspecialchars($company['name']) ?>. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- ════════════════ 12. LIGHTBOX ZOOM MODAL ════════════════ -->
+    <div 
+        id="zoom-modal"
+        class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn"
+        onclick="closeZoom()"
+    >
+        <div class="relative max-w-5xl max-h-[90vh] w-full flex flex-col items-center">
+            <button
+                onclick="closeZoom()"
+                class="absolute -top-10 right-0 p-2 text-white hover:text-amber-400 transition"
+                title="Đóng (Esc)"
+            >
+                <i data-lucide="x" class="w-6 h-6"></i>
             </button>
-          </div>
-        </form>
-      </div>
-    </section>
-  </main>
+            <img
+                id="zoom-image"
+                src=""
+                alt="Phóng to chi tiết"
+                class="max-w-full max-h-[85vh] object-contain border border-amber-400"
+                onclick="event.stopPropagation()"
+            />
+        </div>
+    </div>
 
-  <footer class="w-full bg-slate-950 border-t border-slate-800 py-8 px-4 text-center text-xs text-slate-500">
-    <p>© <?php echo date('Y'); ?> <?php echo htmlspecialchars($companyName); ?>. Powered by PlatformBDS.vn</p>
-  </footer>
+    <!-- ════════════════ 13. FLOATING CONTACT BUTTONS ════════════════ -->
+    <div class="fixed bottom-4 left-4 z-40 flex items-center gap-2">
+        <a
+            href="tel:<?= htmlspecialchars(str_replace(' ', '', $company['phone'])) ?>"
+            class="px-4 py-2 bg-[#D92D20] hover:bg-red-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-2xl transition"
+        >
+            <i data-lucide="phone" class="w-3.5 h-3.5 animate-bounce text-amber-300"></i>
+            <span class="hidden sm:inline">Hotline: <?= htmlspecialchars($company['phone']) ?></span>
+            <span class="sm:hidden">Gọi Ngay</span>
+        </a>
 
+        <a
+            href="<?= htmlspecialchars($company['zalo']) ?>"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-2xl transition"
+        >
+            <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+            <span>Chat Zalo</span>
+        </a>
+    </div>
+
+    <!-- Script for interactivity -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Zoom Modal Logic
+        const zoomModal = document.getElementById('zoom-modal');
+        const zoomImage = document.getElementById('zoom-image');
+
+        function openZoom(src) {
+            zoomImage.src = src;
+            zoomModal.classList.remove('hidden');
+        }
+
+        function closeZoom() {
+            zoomModal.classList.add('hidden');
+            zoomImage.src = '';
+        }
+
+        // Close zoom on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeZoom();
+            }
+        });
+
+        // Seamless UX Auto-Select Function
+        function handleSelectProduct(productTitle) {
+            const heroSelect = document.getElementById('hero-product-select');
+            const bottomSelect = document.getElementById('bottom-product-select');
+            
+            if (heroSelect) heroSelect.value = productTitle;
+            if (bottomSelect) bottomSelect.value = productTitle;
+            
+            const element = document.getElementById('hero-lead-form-box');
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+                setTimeout(() => {
+                    if (heroSelect) {
+                        heroSelect.focus();
+                        heroSelect.classList.add('ring-2', 'ring-amber-400', 'border-amber-400');
+                        setTimeout(() => heroSelect.classList.remove('ring-2', 'ring-amber-400', 'border-amber-400'), 2000);
+                    }
+                }, 350);
+            }
+        }
+
+        // Form Submit Handlers
+        async function handleHeroSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const phone = document.getElementById('hero-phone-input').value;
+            if (!phone.trim()) return;
+
+            // Submit to API
+            try {
+                await fetch('api/contact.php', {
+                    method: 'POST',
+                    body: new FormData(form)
+                });
+            } catch (error) {
+                console.error("Form submission error:", error);
+            }
+
+            // UI State change
+            form.classList.add('hidden');
+            const successMsg = document.getElementById('hero-success-msg');
+            document.getElementById('hero-success-phone').textContent = phone;
+            successMsg.classList.remove('hidden');
+
+            setTimeout(() => {
+                successMsg.classList.add('hidden');
+                form.classList.remove('hidden');
+                form.reset();
+            }, 6000);
+        }
+
+        async function handleBottomSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const phone = document.getElementById('bottom-phone-input').value;
+            if (!phone.trim()) return;
+
+            // Submit to API
+            try {
+                await fetch('api/contact.php', {
+                    method: 'POST',
+                    body: new FormData(form)
+                });
+            } catch (error) {
+                console.error("Form submission error:", error);
+            }
+
+            // UI State change
+            form.classList.add('hidden');
+            const successMsg = document.getElementById('bottom-success-msg');
+            document.getElementById('bottom-success-phone').textContent = phone;
+            successMsg.classList.remove('hidden');
+
+            setTimeout(() => {
+                successMsg.classList.add('hidden');
+                form.classList.remove('hidden');
+                form.reset();
+            }, 6000);
+        }
+    </script>
 </body>
 </html>

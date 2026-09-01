@@ -1,36 +1,52 @@
--- ========================================================
--- DATABASE SCHEMA CHO TEMPLATE SÀN ĐẤU GIÁ BĐS (BDS-13)
--- Tạo database: bds_auction_platform
--- ========================================================
+CREATE DATABASE IF NOT EXISTS bds_13 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE bds_13;
 
-CREATE DATABASE IF NOT EXISTS `bds_auction_platform` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `bds_auction_platform`;
+CREATE TABLE IF NOT EXISTS company_info (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    company_name VARCHAR(255),
+    slogan VARCHAR(255),
+    phone VARCHAR(50),
+    secondary_phone VARCHAR(50),
+    email VARCHAR(255),
+    address VARCHAR(255),
+    zalo VARCHAR(50)
+);
 
--- Bảng lưu danh sách Bất Động Sản
-CREATE TABLE IF NOT EXISTS `properties` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `title` VARCHAR(255) NOT NULL,
-  `slug` VARCHAR(255) NOT NULL UNIQUE,
-  `price` VARCHAR(100) NOT NULL,
-  `area` VARCHAR(50) NOT NULL,
-  `location` VARCHAR(255) NOT NULL,
-  `image` TEXT NOT NULL,
-  `description` TEXT,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO company_info (company_name, slogan, phone, secondary_phone, email, address, zalo) VALUES 
+('ĐẠI PHÁT LAND', 'BẤT ĐỘNG SẢN THỦY NGUYÊN HẢI PHÒNG', '0917.85.88.85', '0919 006 030', 'info@templatebds.com', 'THÀNH PHỐ THỦY NGUYÊN HẢI PHÒNG', '0917858885')
+ON DUPLICATE KEY UPDATE company_name=VALUES(company_name);
 
--- Thêm dữ liệu mẫu
-INSERT INTO `properties` (`title`, `slug`, `price`, `area`, `location`, `image`, `description`) VALUES
-('Biệt thự sang trọng view thoáng mát', 'biet-thu-view-thoang-mat', '5.5 Tỷ VNĐ', '300 m²', 'Khu Đô Thị Mới', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80', 'Biệt thự thiết kế hiện đại sang trọng, đầy đủ tiện nghi.'),
-('Nhà phố mặt tiền thương mại kinh doanh', 'nha-pho-mat-tien-kinh-doanh', '8.2 Tỷ VNĐ', '140 m²', 'Trung tâm thành phố', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', 'Thuận tiện mở văn phòng, spa hoặc showroom kinh doanh.'),
-('Đất nền phân lô sổ đỏ sẵn sàng công chứng', 'dat-nen-phan-lo-so-do', '1.9 Tỷ VNĐ', '120 m²', 'Khu dân cư hiện hữu', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80', 'Hạ tầng hoàn thiện điện âm nước máy, xây dựng tự do.');
+CREATE TABLE IF NOT EXISTS projects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255),
+    image VARCHAR(255),
+    is_featured BOOLEAN DEFAULT FALSE,
+    is_hot BOOLEAN DEFAULT FALSE,
+    category VARCHAR(100),
+    description TEXT,
+    price VARCHAR(100),
+    location VARCHAR(255),
+    badge VARCHAR(100)
+);
 
--- Bảng lưu thông tin khách hàng gửi từ Form liên hệ
-CREATE TABLE IF NOT EXISTS `contacts` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `name` VARCHAR(255) NOT NULL,
-  `phone` VARCHAR(50) NOT NULL,
-  `email` VARCHAR(100),
-  `message` TEXT,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO projects (title, image, is_featured, is_hot, category, description, price, location, badge) VALUES
+('ĐẠI ĐÔ THỊ HOÀNG HUY NEW CITY BẮC SÔNG CẤM', 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1000&q=80', TRUE, FALSE, 'DỰ ÁN NỔI BẬT', 'Quy mô 65ha liền kề Trung tâm chính trị - hành chính mới Hải Phòng.', '', '', 'DỰ ÁN TIÊU BIỂU'),
+('KHU ĐÔ THỊ BELHOMES VSIP HẢI PHÒNG', 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1000&q=80', TRUE, FALSE, 'DỰ ÁN NỔI BẬT', 'Khu đô thị sinh thái xanh chuẩn Singapore công viên ven sông 6ha.', '', '', 'DỰ ÁN XANH SINGAPORE'),
+('Khu Đô Thị Hoàng Huy New City Bắc Sông Cấm Thủy Nguyên', 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80', FALSE, TRUE, 'DỰ ÁN NỔI BẬT', '', '3.85 Tỷ / Lô', 'Xã Tân Dương, TP. Thủy Nguyên, Hải Phòng', 'Khu Đô Thị Kiểu Mẫu'),
+('Khu Đô Thị Belhomes Vsip Thủy Nguyên Hải Phòng', 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80', FALSE, TRUE, 'DỰ ÁN NỔI BẬT', '', '3.20 Tỷ / Căn', 'Đô thị Vsip Hải Phòng, Xã An Lư, Thủy Nguyên', 'Nhà Phố Xanh Singapore'),
+('Nhà Phố Thương Mại Shophouse Hoàng Huy Grand Tower', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', FALSE, TRUE, 'DỰ ÁN NỔI BẬT', '', '4.80 Tỷ / Căn', 'Đại lộ Hùng Vương, Sở Dầu, Hồng Bàng', 'Shophouse Khối Đế'),
+('Khu Đô Thị Hoàng Huy New City Bắc Sông Cấm Thủy Nguyên', 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80', FALSE, FALSE, 'NHÀ ĐẤT BÁN', '', '3.85 Tỷ / Lô', 'Xã Tân Dương, TP. Thủy Nguyên, Hải Phòng', 'Khu Đô Thị Kiểu Mẫu'),
+('Khu Đô Thị Belhomes Vsip Thủy Nguyên Hải Phòng', 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80', FALSE, FALSE, 'NHÀ ĐẤT BÁN', '', '3.20 Tỷ / Căn', 'Đô thị Vsip Hải Phòng, Xã An Lư, Thủy Nguyên', 'Nhà Phố Xanh Singapore'),
+('Nhà Phố Thương Mại Shophouse Hoàng Huy Grand Tower', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', FALSE, FALSE, 'NHÀ ĐẤT BÁN', '', '4.80 Tỷ / Căn', 'Đại lộ Hùng Vương, Sở Dầu, Hồng Bàng', 'Shophouse Khối Đế'),
+('Đất Tái Định Cư Bắc Sông Cấm Phân Lô Sổ Đỏ', 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80', FALSE, FALSE, 'NHÀ ĐẤT BÁN', '', '2.85 Tỷ / Lô', 'Khu TĐC Bắc Sông Cấm, Xã Dương Quan, Thủy Nguyên', 'Đất Nền Tái Định Cư');
+
+CREATE TABLE IF NOT EXISTS contacts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(50) NOT NULL,
+    email VARCHAR(255),
+    message TEXT,
+    product_type VARCHAR(255),
+    source VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

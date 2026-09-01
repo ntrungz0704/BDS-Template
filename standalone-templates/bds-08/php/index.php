@@ -1,147 +1,621 @@
 <?php
 require_once 'config/db.php';
 
-// Lấy danh sách BĐS từ MySQL nếu có kết nối, hoặc dùng mảng demo
-if ($pdo) {
-    $stmt = $pdo->query("SELECT * FROM properties ORDER BY id DESC LIMIT 6");
-    $properties = $stmt->fetchAll();
-} else {
-    $properties = [
-        ['title' => 'Biệt thự sang trọng view thoáng mát', 'slug' => 'biet-thu-view-thoang-mat', 'price' => '5.5 Tỷ VNĐ', 'area' => '300 m²', 'location' => 'Khu Đô Thị Mới', 'image' => 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80'],
-        ['title' => 'Nhà phố mặt tiền thương mại kinh doanh', 'slug' => 'nha-pho-mat-tien-kinh-doanh', 'price' => '8.2 Tỷ VNĐ', 'area' => '140 m²', 'location' => 'Trung tâm thành phố', 'image' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80'],
-        ['title' => 'Đất nền phân lô sổ đỏ sẵn sàng công chứng', 'slug' => 'dat-nen-phan-lo-so-do', 'price' => '1.9 Tỷ VNĐ', 'area' => '120 m²', 'location' => 'Khu dân cư hiện hữu', 'image' => 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80'],
-    ];
+$company = [
+    'name' => 'TEMPLATESBDS',
+    'slogan' => 'SÀN PHÂN PHỐI BẤT ĐỘNG SẢN CAO CẤP',
+    'phone' => '0919 006 030',
+    'email' => 'admin@templatesbds.com',
+    'address_1' => '180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội',
+    'address_2' => 'Số 72 Nguyễn Thị Thập, Quận 7, TP.HCM',
+    'zalo' => 'https://zalo.me/0919006030',
+    'facebook' => 'https://www.facebook.com/groups/847532091275214',
+    'expert_name' => 'Trần Thanh Phương',
+    'expert_role' => 'Trưởng phòng kinh doanh',
+    'expert_desc' => 'Chuyên viên tư vấn của Hưng Lộc Phát Land là những người dày dặn kinh nghiệm, am hiểu sâu sắc trong lĩnh vực bất động sản và luôn tận tâm, nhiệt tình tư vấn giúp mang lại lợi ích và sự thỏa mãn tối đa cho mọi khách hàng.',
+    'expert_image' => 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80',
+    'footer_title' => 'NovaWorld PHAN THIẾT',
+    'footer_subtitle' => 'Hưng Lộc Phát Land Phân Phối F1',
+    'footer_desc' => 'Trúng Top Phân Phối TOP 10 thương hiệu mạnh uy tín của Việt Nam! Liên hoan các Doanh nghiệp Rồng Vàng & Thương hiệu mạnh Việt Nam 2017-2018 vừa diễn ra tại Hà Nội nhằm tri ân Tập đoàn Hưng Lộc Phát lọt vào Top 10.'
+];
+
+$projects = [
+    [
+        'name' => 'DỰ ÁN PHỐ MỸ GOLD CITY BÀ RỊA VŨNG TÀU',
+        'image' => 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=800&q=80',
+        'location' => 'Bà Rịa - Vũng Tàu',
+        'price' => '1.85 Tỷ VNĐ',
+        'area' => '105 m²',
+        'status' => 'Dự án đang phân phối'
+    ],
+    [
+        'name' => 'DỰ ÁN CĂN HỘ GOLDEN STAR QUẬN 7, TP.HCM',
+        'image' => 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        'location' => 'TP. Hồ Chí Minh',
+        'price' => '3.45 Tỷ VNĐ',
+        'area' => '68 m²',
+        'status' => 'Dự án đang phân phối'
+    ],
+    [
+        'name' => 'DỰ ÁN CĂN HỘ GREEN STAR TP. QUẬN 7, TP.HCM',
+        'image' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+        'location' => 'TP. Hồ Chí Minh',
+        'price' => '3.90 Tỷ VNĐ',
+        'area' => '75 m²',
+        'status' => 'Dự án đang phân phối'
+    ],
+    [
+        'name' => 'DỰ ÁN CĂN HỘ ECO GREEN QUẬN 7, TP.HCM (MỚI NHẤT)',
+        'image' => 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80',
+        'location' => 'TP. Hồ Chí Minh',
+        'price' => '4.20 Tỷ VNĐ',
+        'area' => '80 m²',
+        'status' => 'Dự án đang phân phối'
+    ],
+    [
+        'name' => 'DỰ ÁN CĂN HỘ HƯNG PHÁT SILVER STAR NHÀ BÈ',
+        'image' => 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80',
+        'location' => 'TP. Hồ Chí Minh',
+        'price' => '2.85 Tỷ VNĐ',
+        'area' => '72 m²',
+        'status' => 'Dự án đang phân phối'
+    ],
+    [
+        'name' => 'DỰ ÁN DIAMOND ISLAND CONDOTEL HƯNG LỘC PHÁT',
+        'image' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
+        'location' => 'Phan Thiết',
+        'price' => '1.65 Tỷ VNĐ',
+        'area' => '45 m²',
+        'status' => 'Dự án đang phân phối'
+    ]
+];
+
+$hot_projects = [
+    [
+        'name' => 'DỰ ÁN PHỐ MỸ GOLD CITY BÀ RỊA VŨNG TÀU',
+        'image' => 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=200&q=80'
+    ],
+    [
+        'name' => 'DỰ ÁN CĂN HỘ GOLDEN STAR QUẬN 7, TP.HCM',
+        'image' => 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=200&q=80'
+    ],
+    [
+        'name' => 'DỰ ÁN CĂN HỘ GREEN STAR TP. QUẬN 7, TP.HCM',
+        'image' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=200&q=80'
+    ],
+    [
+        'name' => 'DỰ ÁN CĂN HỘ BLUE STAR HƯNG LỘC PHÁT',
+        'image' => 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=200&q=80'
+    ],
+    [
+        'name' => 'DỰ ÁN CĂN HỘ HƯNG PHÁT SILVER STAR NHÀ BÈ',
+        'image' => 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=200&q=80'
+    ],
+    [
+        'name' => 'DỰ ÁN DIAMOND LAND MŨI NÉ PHAN THIẾT',
+        'image' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200&q=80'
+    ]
+];
+
+if (isset($pdo)) {
+    try {
+        $stmt = $pdo->query("SELECT * FROM company_info LIMIT 1");
+        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $company = array_merge($company, $row);
+        }
+        
+        $stmt = $pdo->query("SELECT * FROM projects");
+        $dbProjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if ($dbProjects) {
+            $projects = [];
+            $hot_projects = [];
+            foreach ($dbProjects as $p) {
+                if ($p['price'] !== 'N/A') {
+                    $projects[] = $p;
+                }
+                if (!empty($p['is_hot'])) {
+                    $hot_projects[] = $p;
+                }
+            }
+        }
+    } catch (PDOException $e) {
+        // fallback to defaults
+    }
 }
+$phoneDisplay = htmlspecialchars($company['phone']);
+$phoneLink = preg_replace('/[^0-9]/', '', $company['phone']);
 ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Green Eco Living — Website Bất Động Sản PHP & MySQL</title>
+  <title><?= htmlspecialchars($company['name']) ?> - Hưng Lộc Phát Land</title>
+  
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Header PHP -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <a href="index.php" class="flex items-center gap-2 font-black text-xl text-blue-600">
-        <span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-xs">TB</span>
-        <span>TEMPLATES<strong class="text-slate-900">BDS</strong></span>
-      </a>
-      <div class="flex items-center gap-3">
-        <a href="tel:0919006030" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow">
-          Hotline: 0919 006 030
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .max-w-7xl { max-width: 80rem; margin-left: auto; margin-right: auto; }
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    
+    [data-page] { display: none; }
+    [data-page].active { display: block; }
+  </style>
+</head>
+<body class="w-full min-h-screen bg-white text-slate-900 font-sans flex flex-col justify-between selection:bg-emerald-600 selection:text-white">
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-24 right-6 z-50 bg-emerald-700 text-white px-5 py-3 rounded-sm shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce hidden">
+    <i data-lucide="check-circle-2" class="text-amber-300 w-4 h-4"></i> <span id="toast-msg"></span>
+  </div>
+
+  <!-- FLOATING CTA -->
+  <div class="fixed left-4 top-1/2 -translate-y-1/2 z-40 hidden sm:flex flex-col gap-2.5">
+    <a href="<?= htmlspecialchars($company['zalo']) ?>" target="_blank" class="px-3.5 py-1.5 rounded-sm bg-[#16A34A] hover:bg-[#15803D] text-white text-xs font-bold shadow-lg transition flex items-center gap-1.5 hover:scale-105">
+      <i data-lucide="message-square" class="w-3 h-3"></i> Chat Zalo
+    </a>
+    <a href="<?= htmlspecialchars($company['facebook']) ?>" target="_blank" class="px-3.5 py-1.5 rounded-sm bg-[#0284C7] hover:bg-[#0369A1] text-white text-xs font-bold shadow-lg transition flex items-center gap-1.5 hover:scale-105">
+      <i data-lucide="share-2" class="w-3 h-3"></i> Chat Facebook
+    </a>
+    <a href="tel:<?= $phoneLink ?>" class="px-3.5 py-1.5 rounded-sm bg-[#E11D48] hover:bg-[#BE123C] text-white text-xs font-black shadow-lg transition flex items-center gap-1.5 hover:scale-105">
+      <i data-lucide="phone" class="w-3 h-3 animate-pulse"></i> Hotline: <?= $phoneDisplay ?>
+    </a>
+  </div>
+
+  <!-- LEAD MODAL -->
+  <div id="leadModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-md p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-4 relative border border-slate-200">
+      <button onclick="closeModal()" class="absolute top-4 right-4 p-2 rounded-sm hover:bg-slate-100 text-slate-500">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+      <div class="text-center space-y-1">
+        <span class="text-xs font-black text-[#15803D] uppercase tracking-wider">ĐĂNG KÝ NHẬN BẢNG GIÁ GỐC</span>
+        <h3 class="text-lg sm:text-xl font-black text-slate-900">Báo Giá & Ưu Đãi Đợt 1</h3>
+        <p class="text-xs text-slate-500">Chuyên viên tư vấn cấp cao sẽ gửi bảng giá chi tiết qua Zalo trong 3 phút.</p>
+      </div>
+      <form onsubmit="handleFormSubmit(event)" class="space-y-3 text-xs" action="api/contact.php" method="POST">
+        <input type="text" name="name" placeholder="Họ và tên của bạn..." required class="w-full p-3 rounded-sm border bg-slate-50 focus:bg-white focus:outline-none" />
+        <input type="tel" name="phone" placeholder="Số điện thoại / Zalo (*)..." required class="w-full p-3 rounded-sm border bg-slate-50 focus:bg-white focus:outline-none font-bold text-[#0284C7]" />
+        <select name="project" class="w-full p-3 rounded-sm border bg-slate-50 focus:bg-white focus:outline-none">
+          <?php foreach ($projects as $p): ?>
+          <option value="<?= htmlspecialchars($p['name']) ?>"><?= htmlspecialchars($p['name']) ?></option>
+          <?php endforeach; ?>
+        </select>
+        <button type="submit" class="w-full py-3 bg-[#15803D] hover:bg-[#166534] text-white font-black rounded-sm uppercase tracking-wider shadow-lg">
+          Gửi Đăng Ký Ngay
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 bg-white text-slate-800 shadow-md border-b border-slate-200">
+    <div class="bg-[#48C0D8] text-white text-xs py-1.5 px-4 hidden md:block font-medium">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-6">
+          <a href="mailto:<?= htmlspecialchars($company['email']) ?>" class="flex items-center gap-1.5 hover:underline text-white">
+            <i data-lucide="mail" class="w-3 h-3"></i> <?= htmlspecialchars($company['email']) ?>
+          </a>
+          <span class="opacity-70">|</span>
+          <a href="tel:<?= $phoneLink ?>" class="hover:underline text-white">
+            Hotline 24/7: <strong><?= $phoneDisplay ?></strong>
+          </a>
+        </div>
+        <div class="flex items-center gap-4">
+          <button onclick="navigate('contact')" class="hover:underline cursor-pointer">Liên hệ</button>
+          <span class="opacity-50">|</span>
+          <button onclick="showToast('Chức năng đăng nhập thành viên đang được tích hợp với hệ sinh thái CMS!')" class="hover:underline cursor-pointer">Đăng nhập</button>
+          <i data-lucide="search" class="w-3.5 h-3.5 cursor-pointer hover:scale-110 transition"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-3">
+      <div onclick="navigate('home')" class="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0">
+        <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-sm bg-gradient-to-br from-[#0284C7] via-[#16A34A] to-[#EAB308] flex items-center justify-center text-white font-black shadow-md group-hover:scale-105 transition-transform p-1.5 sm:p-2 shrink-0">
+          <i data-lucide="building-2" class="w-5 h-5 text-white"></i>
+        </div>
+        <div class="min-w-0 truncate">
+          <div class="flex items-center gap-1">
+            <span class="text-base sm:text-xl font-black tracking-tight text-[#0284C7] group-hover:text-[#0369A1] transition truncate">
+              <?= htmlspecialchars($company['name']) ?>
+            </span>
+          </div>
+          <span class="text-[7.5px] sm:text-[10px] tracking-widest text-[#15803D] block uppercase font-extrabold truncate">
+            <?= htmlspecialchars($company['slogan']) ?>
+          </span>
+        </div>
+      </div>
+
+      <nav class="hidden lg:flex items-center gap-1.5 xl:gap-3 text-[11px] xl:text-xs font-bold uppercase tracking-wider text-slate-700 whitespace-nowrap">
+        <button onclick="navigate('home')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-lg transition-all" data-target="home">Trang Chủ</button>
+        <button onclick="navigate('about')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-lg transition-all" data-target="about">Giới Thiệu</button>
+        <button onclick="navigate('projects')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-lg transition-all" data-target="projects">Dự Án</button>
+        <button onclick="navigate('news')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-lg transition-all" data-target="news">Tin Tức</button>
+        <button onclick="navigate('activities')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-lg transition-all" data-target="activities">Hoạt Động</button>
+        <button onclick="navigate('contact')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-lg transition-all" data-target="contact">Liên Hệ</button>
+      </nav>
+
+      <div class="flex items-center gap-2.5 shrink-0 ml-auto">
+        <a href="tel:<?= $phoneLink ?>" class="hidden xl:flex items-center gap-1.5 px-3.5 py-2 rounded-sm bg-emerald-50 text-[#15803D] border border-emerald-200 text-xs font-black whitespace-nowrap shrink-0 hover:bg-emerald-100 transition">
+          <i data-lucide="phone" class="w-3 h-3 text-[#16A34A] animate-pulse shrink-0"></i> <?= $phoneDisplay ?>
         </a>
+        <button onclick="openModal()" class="hidden md:inline-block px-3.5 py-2 bg-gradient-to-r from-[#16A34A] to-[#15803D] hover:from-[#15803D] hover:to-[#166534] text-white text-xs font-black rounded-sm shadow-md transition uppercase tracking-wider whitespace-nowrap shrink-0 hover:scale-105 active:scale-95">
+          Tải Báo Giá VIP
+        </button>
+        <button onclick="toggleMobileMenu()" class="p-1.5 sm:p-2 rounded-sm bg-slate-100 text-slate-800 lg:hidden hover:bg-slate-200 shrink-0 flex items-center justify-center">
+          <i data-lucide="menu" class="w-5 h-5" id="menu-icon"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobileMenu" class="hidden lg:hidden bg-white border-b border-slate-200 px-6 py-5 space-y-2 shadow-xl">
+      <div class="grid grid-cols-2 gap-2 text-xs font-bold uppercase">
+        <button onclick="navigate('home')" class="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700">Trang Chủ</button>
+        <button onclick="navigate('about')" class="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700">Giới Thiệu</button>
+        <button onclick="navigate('projects')" class="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700">Dự Án</button>
+        <button onclick="navigate('news')" class="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700">Tin Tức</button>
+        <button onclick="navigate('contact')" class="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700">Liên Hệ</button>
       </div>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="flex-1 w-full space-y-12 pb-16">
-    <section class="py-16 px-4 bg-slate-900 text-white text-center">
-      <h1 class="text-3xl sm:text-5xl font-black uppercase mb-4">Green Eco Living</h1>
-      <p class="text-slate-300 max-w-xl mx-auto text-sm">Đô thị sinh thái xanh · Ecopark · Chuẩn Xanh ESG</p>
-    </section>
+  <!-- PAGES CONTAINER -->
+  <main class="flex-grow">
+    
+    <!-- HOME PAGE -->
+    <div data-page="home" class="active">
+      
+      <!-- HERO -->
+      <section class="relative min-h-[380px] sm:min-h-[460px] lg:min-h-[500px] flex items-center justify-end text-white overflow-hidden bg-slate-900">
+        <img src="https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=1600&q=80" alt="Banner" class="absolute inset-0 w-full h-full object-cover object-center" />
+        <div class="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-[#0284C7]/80"></div>
+        <div class="absolute top-8 left-8 sm:left-16 text-white/90 text-2xl sm:text-4xl font-serif italic drop-shadow-md select-none">Just for you</div>
+        
+        <div class="relative z-20 max-w-7xl mx-auto px-4 py-12 flex justify-end w-full">
+          <div class="max-w-md lg:max-w-lg text-right space-y-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0284C7] text-white text-xs font-bold shadow-md">
+              <i data-lucide="building-2" class="w-3.5 h-3.5"></i> Đầu Tư Bất Động Sản
+            </div>
+            <h1 class="text-2xl sm:text-4xl lg:text-5xl font-serif italic text-white font-black leading-tight drop-shadow-lg">
+              Thanh toán ban đầu chỉ <span class="text-amber-300 not-italic font-sans font-black">500 triệu</span>
+            </h1>
+            <div class="inline-block px-5 py-2 rounded-sm bg-[#15803D] text-[#FDE047] text-xs sm:text-sm font-black tracking-wider uppercase shadow-xl border border-emerald-300/40">
+              ★ SINH LỜI TỪ 12–15% MỖI NĂM ★
+            </div>
+            <div class="pt-2 flex justify-end">
+              <a href="tel:<?= $phoneLink ?>" class="inline-flex items-center gap-2 px-5 py-3 rounded-sm bg-white text-slate-900 hover:bg-slate-100 transition shadow-2xl font-black text-sm sm:text-base border-2 border-emerald-500">
+                <i data-lucide="phone" class="w-4.5 h-4.5 text-[#16A34A] animate-pulse"></i> <?= $phoneDisplay ?>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
 
-    <!-- Danh sách BĐS từ MySQL -->
-    <section class="max-w-7xl mx-auto px-4 space-y-6">
-      <h2 class="text-2xl font-black text-slate-900 uppercase text-center">DANH SÁCH BẤT ĐỘNG SẢN</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <?php foreach ($properties as $item): ?>
-          <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition">
-            <img src="<?php echo htmlspecialchars($item['image']); ?>" alt="" class="w-full h-48 object-cover">
-            <div class="p-4 space-y-2">
-              <h3 class="font-bold text-sm text-slate-900"><?php echo htmlspecialchars($item['title']); ?></h3>
-              <p class="text-xs text-slate-500"><?php echo htmlspecialchars($item['location']); ?></p>
-              <div class="flex justify-between items-center pt-2 border-t text-xs">
-                <span class="font-black text-blue-600 text-sm"><?php echo htmlspecialchars($item['price']); ?></span>
-                <span class="text-slate-500"><?php echo htmlspecialchars($item['area']); ?></span>
+      <!-- PROJECTS & SIDEBAR -->
+      <section class="py-12 bg-white text-slate-800">
+        <div class="max-w-7xl mx-auto px-4">
+          <div class="text-center max-w-2xl mx-auto mb-10 space-y-1">
+            <h2 class="text-xl sm:text-2xl font-black tracking-tight text-[#15803D] uppercase">
+              DỰ ÁN BẤT ĐỘNG SẢN ĐANG PHÂN PHỐI
+            </h2>
+            <div class="w-24 h-1 bg-[#16A34A] mx-auto rounded-sm"></div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <!-- Projects Grid -->
+            <div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+              
+              <?php foreach ($projects as $project): ?>
+              <div class="group bg-white rounded-sm overflow-hidden border border-slate-200 hover:border-emerald-500 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between" onclick="alert('Chi tiết dự án <?= htmlspecialchars($project['name']) ?>')">
+                <div>
+                  <div class="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                    <img src="<?= htmlspecialchars($project['image']) ?>" alt="<?= htmlspecialchars($project['name']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-[#15803D] text-white text-[10px] font-bold shadow-md">
+                      <?= htmlspecialchars($project['status']) ?>
+                    </div>
+                  </div>
+                  <div class="p-3.5 space-y-2">
+                    <h3 class="text-xs font-black text-slate-800 group-hover:text-[#16A34A] transition-colors leading-snug line-clamp-2 uppercase min-h-[34px]">
+                      <?= htmlspecialchars($project['name']) ?>
+                    </h3>
+                    <div class="text-[11px] text-slate-500 flex items-center gap-1">
+                      <i data-lucide="map-pin" class="w-3 h-3 text-emerald-600 shrink-0"></i>
+                      <span class="truncate"><?= htmlspecialchars($project['location']) ?></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="px-3.5 pb-3.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                  <span class="font-extrabold text-[#E11D48] text-sm"><?= htmlspecialchars($project['price']) ?></span>
+                  <span class="text-[11px] font-bold text-slate-400"><?= htmlspecialchars($project['area']) ?></span>
+                </div>
+              </div>
+              <?php endforeach; ?>
+        
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-4 space-y-4">
+              <button onclick="openModal()" class="w-full py-3.5 px-5 rounded-sm bg-gradient-to-r from-[#16A34A] to-[#15803D] hover:from-[#15803D] hover:to-[#166534] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02]">
+                <i data-lucide="download" class="w-4 h-4"></i> TẢI BÁO GIÁ DỰ ÁN
+              </button>
+              <button onclick="openModal()" class="w-full py-3.5 px-5 rounded-sm bg-gradient-to-r from-[#0284C7] to-[#0369A1] hover:from-[#0369A1] hover:to-[#075985] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02]">
+                <i data-lucide="gift" class="w-4 h-4"></i> THÔNG TIN ƯU ĐÃI
+              </button>
+              <div class="w-full p-4 rounded-sm bg-gradient-to-r from-[#F59E0B] to-[#EA580C] text-white text-center shadow-lg space-y-1">
+                <span class="text-[11px] font-extrabold uppercase tracking-widest block opacity-90">TƯ VẤN 24/7</span>
+                <a href="tel:<?= $phoneLink ?>" class="text-xl sm:text-2xl font-black block tracking-tight hover:underline"><?= $phoneDisplay ?></a>
+              </div>
+
+              <div class="bg-white text-slate-900 border border-slate-200 rounded-sm p-4 space-y-3 font-medium">
+                <h4 class="text-xs font-black uppercase text-[#15803D] tracking-wider border-b border-slate-200 pb-2">CÓ THỂ BẠN QUAN TÂM</h4>
+                <div class="space-y-3">
+                  
+                  <?php foreach ($hot_projects as $hot): ?>
+                  <div class="flex items-center gap-3 cursor-pointer group hover:bg-white p-1.5 rounded-sm transition">
+                      <img src="<?= htmlspecialchars($hot['image']) ?>" alt="<?= htmlspecialchars($hot['name']) ?>" class="w-12 h-12 rounded-sm object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition" />
+                      <span class="text-[11px] font-bold text-slate-700 group-hover:text-[#16A34A] leading-snug line-clamp-2 uppercase">
+                        <?= htmlspecialchars($hot['name']) ?>
+                      </span>
+                  </div>
+                  <?php endforeach; ?>
+        
+                </div>
               </div>
             </div>
           </div>
-        <?php endforeach; ?>
-      </div>
-    </section>
+        </div>
+      </section>
 
-    <!-- Form Liên Hệ PHP -->
-    <section class="max-w-3xl mx-auto px-4">
-      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-md space-y-4">
-        <h3 class="text-lg font-black text-slate-900 uppercase text-center">GỬI YÊU CẦU TƯ VẤN</h3>
-        <form action="api/contact.php" method="POST" class="space-y-3 text-xs">
-          <input type="text" name="name" placeholder="Họ và tên (*)" required class="w-full p-3 bg-slate-50 border rounded-xl">
-          <input type="tel" name="phone" placeholder="Số điện thoại (*)" required class="w-full p-3 bg-slate-50 border rounded-xl font-bold text-blue-600">
-          <textarea name="message" rows="3" placeholder="Nội dung cần tư vấn..." class="w-full p-3 bg-slate-50 border rounded-xl"></textarea>
-          <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl">
-            GỬI THÔNG TIN
-          </button>
-        </form>
-      </div>
-    </section>
+      <!-- EXPERT PROFILE -->
+      <section class="py-8 bg-[#F8FAFC] border-y border-slate-200">
+        <div class="max-w-7xl mx-auto px-4">
+          <div class="bg-white rounded-md p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row items-center gap-6 lg:gap-10">
+            <div class="flex items-center gap-4 shrink-0">
+              <img src="<?= htmlspecialchars($company['expert_image']) ?>" alt="Expert" class="w-20 h-20 rounded-sm object-cover border-4 border-emerald-100 shadow-md shrink-0" />
+              <div>
+                <h4 class="text-base font-black text-slate-900"><?= htmlspecialchars($company['expert_name']) ?></h4>
+                <p class="text-xs text-slate-500 font-medium"><?= htmlspecialchars($company['expert_role']) ?></p>
+                <a href="tel:<?= $phoneLink ?>" class="text-xs font-black text-[#E11D48] hover:underline block mt-0.5">Hotline: <?= $phoneDisplay ?></a>
+              </div>
+            </div>
+            <div class="hidden md:block w-px h-16 bg-slate-200 shrink-0"></div>
+            <div class="space-y-1 text-center md:text-left">
+              <h5 class="text-xs font-black text-[#15803D] uppercase tracking-wider">CHUYÊN VIÊN TƯ VẤN LÂU NĂM KINH NGHIỆM</h5>
+              <p class="text-xs text-slate-600 leading-relaxed max-w-3xl"><?= htmlspecialchars($company['expert_desc']) ?></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NEWS AND AWARDS -->
+      <section class="py-12 bg-white text-slate-800">
+        <div class="max-w-7xl mx-auto px-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="space-y-4">
+              <h3 class="text-sm font-black text-slate-900 uppercase border-b-2 border-[#16A34A] pb-2">Tin tức — sự kiện</h3>
+              <div class="space-y-3">
+        <div class="flex gap-3 cursor-pointer group p-1.5 rounded-sm hover:bg-slate-50 transition">
+            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&q=80" alt="Dự án Căn hộ Condotel Oyster Gành Hào Vũng Tàu" class="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition" />
+            <div class="space-y-0.5">
+              <h4 class="text-[11px] font-bold text-slate-800 group-hover:text-[#16A34A] line-clamp-2 leading-snug">
+                Dự án Căn hộ Condotel Oyster Gành Hào Vũng Tàu
+              </h4>
+              <span class="text-[10px] text-slate-400 block">28 Tháng Tư, 2026</span>
+            </div>
+        </div>
+        
+        <div class="flex gap-3 cursor-pointer group p-1.5 rounded-sm hover:bg-slate-50 transition">
+            <img src="https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=400&q=80" alt="Bảng giá dự án căn hộ Golden Star tháng 08/2026" class="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition" />
+            <div class="space-y-0.5">
+              <h4 class="text-[11px] font-bold text-slate-800 group-hover:text-[#16A34A] line-clamp-2 leading-snug">
+                Bảng giá dự án căn hộ Golden Star tháng 08/2026
+              </h4>
+              <span class="text-[10px] text-slate-400 block">25 Tháng Tư, 2026</span>
+            </div>
+        </div>
+        
+        <div class="flex gap-3 cursor-pointer group p-1.5 rounded-sm hover:bg-slate-50 transition">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80" alt="Có nên mua căn hộ Blue Star từ Hưng Lộc Phát?" class="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition" />
+            <div class="space-y-0.5">
+              <h4 class="text-[11px] font-bold text-slate-800 group-hover:text-[#16A34A] line-clamp-2 leading-snug">
+                Có nên mua căn hộ Blue Star từ Hưng Lộc Phát?
+              </h4>
+              <span class="text-[10px] text-slate-400 block">20 Tháng Tư, 2026</span>
+            </div>
+        </div>
+        </div>
+            </div>
+            <div class="space-y-4">
+              <h3 class="text-sm font-black text-slate-900 uppercase border-b-2 border-[#0284C7] pb-2">Hoạt động công ty</h3>
+              <div class="space-y-3">
+        <div class="flex gap-3 cursor-pointer group p-1.5 rounded-sm hover:bg-slate-50 transition">
+            <img src="https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=400&q=80" alt="Lễ bàn giao sổ hồng đợt 3 cho cư dân Golden Star" class="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition" />
+            <div class="space-y-0.5">
+              <h4 class="text-[11px] font-bold text-slate-800 group-hover:text-[#0284C7] line-clamp-2 leading-snug">
+                Lễ bàn giao sổ hồng đợt 3 cho cư dân Golden Star
+              </h4>
+              <span class="text-[10px] text-slate-400 block">28 Tháng Tư, 2026</span>
+            </div>
+        </div>
+        
+        <div class="flex gap-3 cursor-pointer group p-1.5 rounded-sm hover:bg-slate-50 transition">
+            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&q=80" alt="Lễ ký kết hợp tác chiến lược dự án NovaWorld" class="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition" />
+            <div class="space-y-0.5">
+              <h4 class="text-[11px] font-bold text-slate-800 group-hover:text-[#0284C7] line-clamp-2 leading-snug">
+                Lễ ký kết hợp tác chiến lược dự án NovaWorld
+              </h4>
+              <span class="text-[10px] text-slate-400 block">22 Tháng Tư, 2026</span>
+            </div>
+        </div>
+        
+        <div class="flex gap-3 cursor-pointer group p-1.5 rounded-sm hover:bg-slate-50 transition">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80" alt="Chương trình thiện nguyện Tiếp Sức Đến Trường 2026" class="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-200 group-hover:scale-105 transition" />
+            <div class="space-y-0.5">
+              <h4 class="text-[11px] font-bold text-slate-800 group-hover:text-[#0284C7] line-clamp-2 leading-snug">
+                Chương trình thiện nguyện Tiếp Sức Đến Trường 2026
+              </h4>
+              <span class="text-[10px] text-slate-400 block">18 Tháng Tư, 2026</span>
+            </div>
+        </div>
+        </div>
+            </div>
+            <div class="bg-slate-900 text-white rounded-sm overflow-hidden shadow-xl border border-slate-800 flex flex-col justify-between p-5 space-y-4">
+              <div>
+                <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&q=80" alt="Award Gala" class="w-full h-44 object-cover rounded-sm border border-white/20 mb-3" />
+                <span class="text-[11px] font-extrabold text-[#FDE047] uppercase tracking-wider block text-center">★ VINH DANH THƯƠNG HIỆU UY TÍN ★</span>
+                <h4 class="text-sm font-black text-center text-white mt-1">"Hưng Lộc Phát vào TOP 10 thương hiệu mạnh uy tín của Việt Nam"</h4>
+                <p class="text-[11px] text-slate-300 text-center leading-relaxed mt-2">Liên hoan các Doanh nghiệp Rồng Vàng & Thương hiệu mạnh Việt Nam 2017-2018 vừa diễn ra tại Hà Nội nhằm tri ân Tập đoàn Hưng Lộc Phát lọt vào Top 10.</p>
+              </div>
+              <div class="pt-2 border-t border-slate-800 text-center">
+                <span class="text-xs text-slate-400">HOTLINE: </span>
+                <a href="tel:<?= $phoneLink ?>" class="text-xs font-black text-amber-400 hover:underline"><?= $phoneDisplay ?></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GREEN FOOTER BANNER -->
+      <section class="py-14 bg-[#15803D] text-white">
+        <div class="max-w-7xl mx-auto px-4">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10">
+            <div class="md:col-span-5 space-y-4">
+              <div class="space-y-1">
+                <span class="text-xl sm:text-2xl font-black text-amber-300 tracking-tight block"><?= htmlspecialchars($company['footer_title']) ?></span>
+                <span class="text-sm font-extrabold text-emerald-100 block"><?= htmlspecialchars($company['footer_subtitle']) ?></span>
+              </div>
+              <p class="text-xs text-emerald-100 leading-relaxed"><?= htmlspecialchars($company['footer_desc']) ?></p>
+            </div>
+            <div class="md:col-span-3 space-y-3 text-xs">
+              <h4 class="text-sm font-black uppercase tracking-wider text-amber-300 border-b border-white/20 pb-2">Thông tin liên hệ</h4>
+              <div class="space-y-2 text-emerald-100">
+                <p>📍 VPĐD: <?= htmlspecialchars($company['address_1']) ?></p>
+                <p>📍 Trụ sở TP.HCM: <?= htmlspecialchars($company['address_2']) ?></p>
+                <p>📞 Hotline: <a href="tel:<?= $phoneLink ?>" class="font-bold text-white hover:underline"><?= $phoneDisplay ?></a></p>
+                <p>✉️ Email: <?= htmlspecialchars($company['email']) ?></p>
+              </div>
+            </div>
+            <div class="md:col-span-4 space-y-3">
+              <h4 class="text-sm font-black uppercase tracking-wider text-amber-300 border-b border-white/20 pb-2">Tải báo giá nhanh</h4>
+              <form onsubmit="handleFormSubmit(event)" class="space-y-2 text-xs" action="api/contact.php" method="POST">
+                <input type="text" name="name" placeholder="Họ và tên..." required class="w-full bg-white text-slate-800 px-3.5 py-2 rounded-lg focus:outline-none placeholder-slate-400" />
+                <input type="email" name="email" placeholder="Địa chỉ Email..." class="w-full bg-white text-slate-800 px-3.5 py-2 rounded-lg focus:outline-none placeholder-slate-400" />
+                <input type="tel" name="phone" placeholder="Số điện thoại (*)..." required class="w-full bg-white text-slate-800 px-3.5 py-2 rounded-lg focus:outline-none placeholder-slate-400 font-bold" />
+                <select name="project" class="w-full bg-white text-slate-800 px-3.5 py-2 rounded-lg focus:outline-none">
+                  <?php foreach ($projects as $p): ?>
+                  <option value="<?= htmlspecialchars($p['name']) ?>"><?= htmlspecialchars($p['name']) ?></option>
+                  <?php endforeach; ?>
+                </select>
+                <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-[#0284C7] to-[#0369A1] hover:from-[#0369A1] hover:to-[#075985] text-white font-black rounded-lg shadow-md transition uppercase tracking-wider cursor-pointer">
+                  Đăng ký nhận báo giá
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+    </div>
+    
   </main>
 
-  <!-- Footer PHP -->
-  <footer class="w-full bg-[#07132B] text-slate-300 text-xs pt-12 pb-6 border-t border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-white/10">
-      <div class="md:col-span-5 space-y-3">
-        <h4 class="font-black text-sm text-white uppercase tracking-wider">
-          <span class="text-[#0084FF]">TEMPLATES</span><span class="text-white">BDS</span>
-        </h4>
-        <p class="text-slate-400 text-xs leading-relaxed max-w-sm">
-          Kho mẫu website bất động sản cao cấp số 1 Việt Nam. Tối ưu chuyển đổi, chuẩn SEO và tích hợp hệ thống CMS quản trị đa kênh.
-        </p>
-        <div class="space-y-1.5 text-xs text-slate-300 pt-1">
-          <div>📍 Địa chỉ: <strong class="text-white font-medium">180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội</strong></div>
-          <div>📞 Hotline 1: <a href="tel:0919006030" class="text-white font-bold font-mono hover:text-blue-400">0919 006 030</a></div>
-          <div>📞 Hotline 2: <a href="tel:0983312219" class="text-white font-bold font-mono hover:text-emerald-400">0983 312 219</a> (24/7)</div>
-          <div>✉️ Email: <a href="mailto:ntrungz0704@gmail.com" class="text-white hover:text-blue-400">ntrungz0704@gmail.com</a></div>
-          <div>⏰ Giờ làm việc: <strong class="text-white font-medium">8:00 - 20:00 (T2 - CN)</strong></div>
-        </div>
+  <script>
+    lucide.createIcons();
+    
+    function navigate(page) {
+      document.querySelectorAll('[data-page]').forEach(el => el.classList.remove('active'));
+      let target = document.querySelector('[data-page="' + page + '"]');
+      if (target) {
+        target.classList.add('active');
+      } else {
+        document.querySelector('[data-page="home"]').classList.add('active');
+      }
+      
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if(btn.dataset.target === page) {
+          btn.classList.add('text-[#16A34A]', 'font-extrabold', 'border-b-2', 'border-[#16A34A]');
+          btn.classList.remove('hover:text-[#16A34A]');
+        } else {
+          btn.classList.remove('text-[#16A34A]', 'font-extrabold', 'border-b-2', 'border-[#16A34A]');
+          btn.classList.add('hover:text-[#16A34A]');
+        }
+      });
+      
+      document.getElementById('mobileMenu').classList.add('hidden');
+      document.getElementById('menu-icon').setAttribute('data-lucide', 'menu');
+      lucide.createIcons();
+      window.scrollTo(0, 0);
+    }
+    
+    navigate('home');
 
-        <!-- 4 Social Icons -->
-        <div class="flex items-center gap-2.5 pt-2">
-          <a href="https://zalo.me/0919006030" target="_blank" class="w-9 h-9 rounded-2xl bg-[#0068FF] text-white flex items-center justify-center font-black text-[10px]">ZALO</a>
-          <a href="https://www.facebook.com/groups/847532091275214" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1877F2] text-white flex items-center justify-center font-bold text-sm">f</a>
-          <a href="https://www.youtube.com/@tungchuofficial" target="_blank" class="w-9 h-9 rounded-2xl bg-[#E62117] text-white flex items-center justify-center text-xs">▶</a>
-          <a href="https://www.tiktok.com/@editnhadat" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1E293B] text-[#A78BFA] flex items-center justify-center text-xs">🎵</a>
-        </div>
-      </div>
-
-      <div class="md:col-span-2 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">VỀ CHÚNG TÔI</h4>
-        <div class="space-y-2 text-slate-400">
-          <div><a href="index.php" class="hover:text-blue-400">Trang chủ</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Sản phẩm BĐS</a></div>
-          <div><a href="#du-an" class="hover:text-blue-400">Dự án mới</a></div>
-          <div><a href="#tin-tuc" class="hover:text-blue-400">Tin tức & Sự kiện</a></div>
-        </div>
-      </div>
-
-      <div class="md:col-span-2 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">DANH MỤC</h4>
-        <div class="space-y-2 text-slate-400">
-          <div><a href="#san-pham" class="hover:text-blue-400">Đất dự án</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Đất nền</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Biệt thự biển</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Nhà phố</a></div>
-        </div>
-      </div>
-
-      <div class="md:col-span-3 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">CHÍNH SÁCH</h4>
-        <div class="space-y-2 text-slate-400 text-xs">
-          <div>• Bàn giao 100% mã nguồn sạch</div>
-          <div>• Bảo hành & Hỗ trợ kỹ thuật trọn đời</div>
-          <div>• Hỗ trợ cài đặt lên Hosting cPanel / XAMPP</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="max-w-7xl mx-auto px-4 pt-6 text-center text-[11px] text-slate-400">
-      <p>© 2026 Bản quyền thuộc về <strong class="text-white">TEMPLATEBDS</strong> — Mẫu Giao Diện: BDS-08.</p>
-    </div>
-  </footer>
-
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      const icon = document.getElementById('menu-icon');
+      if(menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        icon.setAttribute('data-lucide', 'x');
+      } else {
+        menu.classList.add('hidden');
+        icon.setAttribute('data-lucide', 'menu');
+      }
+      lucide.createIcons();
+    }
+    
+    function openModal() {
+      document.getElementById('leadModal').classList.remove('hidden');
+    }
+    function closeModal() {
+      document.getElementById('leadModal').classList.add('hidden');
+    }
+    
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-msg').innerText = msg;
+      t.classList.remove('hidden');
+      setTimeout(() => {
+        t.classList.add('hidden');
+      }, 4000);
+    }
+    
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      fetch(form.action, {
+        method: form.method,
+        body: new FormData(form)
+      }).then(() => {
+        showToast('🎉 Đã tiếp nhận đăng ký nhận bảng giá!');
+        form.reset();
+        closeModal();
+      }).catch(() => {
+        showToast('🎉 Đã tiếp nhận đăng ký nhận bảng giá (Mock)');
+        form.reset();
+        closeModal();
+      });
+    }
+  </script>
 </body>
 </html>

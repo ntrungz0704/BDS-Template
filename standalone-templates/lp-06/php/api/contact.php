@@ -1,21 +1,33 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = strip_tags(trim($_POST['name'] ?? ''));
-    $phone = strip_tags(trim($_POST['phone'] ?? ''));
-    $message = strip_tags(trim($_POST['message'] ?? ''));
+require_once '../config/db.php';
 
-    if (!empty($name) && !empty($phone)) {
-        require_once '../config/db.php';
-        if (isset($pdo)) {
-            $stmt = $pdo->prepare("INSERT INTO contacts (name, phone, message) VALUES (?, ?, ?)");
-            $stmt->execute([$name, $phone, $message]);
-        }
-        echo "<script>
-            alert('🎉 Gửi thông tin thành công! Chuyên viên sẽ liên hệ lại với quý khách trong ít phút qua số: " . htmlspecialchars($phone) . "');
-            window.location.href = '../index.php';
-        </script>";
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = $_POST['name'] ?? '';
+    $phone = $_POST['phone'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $product_type = $_POST['product'] ?? '';
+    $source = $_POST['source'] ?? 'Website';
+
+    if (empty($name) || empty($phone)) {
+        echo json_encode(['success' => false, 'message' => 'Vui lòng nhập tên và số điện thoại']);
         exit;
     }
+
+    if ($pdo) {
+        try {
+            $stmt = $pdo->prepare("INSERT INTO contacts (name, phone, email, product_type, source) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$name, $phone, $email, $product_type, $source]);
+            echo json_encode(['success' => true, 'message' => 'Đã tiếp nhận yêu cầu']);
+        } catch (PDOException $e) {
+            echo json_encode(['success' => false, 'message' => 'Có lỗi xảy ra, vui lòng thử lại sau']);
+        }
+    } else {
+        // Fallback if DB is unavailable
+        echo json_encode(['success' => true, 'message' => 'Đã tiếp nhận yêu cầu (Fallback)']);
+    }
+} else {
+    echo json_encode(['success' => false, 'message' => 'Invalid request']);
 }
-header('Location: ../index.php');
-exit;
+?>

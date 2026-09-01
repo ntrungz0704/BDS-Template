@@ -1,16 +1,15 @@
 <?php
-// Cấu hình kết nối MySQL Database cho Mega Developer Portal
-$db_host = 'localhost';
-$db_user = 'root';
-$db_pass = '';
-$db_name = 'bds_mega_developer_portal';
+$host = 'localhost';
+$dbname = 'bds_12';
+$username = 'root';
+$password = '';
 
 try {
-    $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8mb4", $db_user, $db_pass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    ]);
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    // Nếu chưa tạo database MySQL thì chạy dữ liệu demo mẫu
+    // Fail silently or handle error in production
     $pdo = null;
 }
+?>

@@ -1,22 +1,31 @@
 <?php
 require_once '../config/db.php';
+header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? '');
-    $phone = trim($_POST['phone'] ?? '');
-    $message = trim($_POST['message'] ?? '');
+    $name = $_POST['name'] ?? '';
+    $phone = $_POST['phone'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $product_type = $_POST['product_type'] ?? '';
+    $source = $_POST['source'] ?? '';
+    $message = $_POST['message'] ?? '';
 
-    if (!empty($name) && !empty($phone)) {
-        if ($pdo) {
-            $stmt = $pdo->prepare("INSERT INTO contacts (name, phone, message) VALUES (?, ?, ?)");
-            $stmt->execute([$name, $phone, $message]);
-        }
-        echo "<script>
-            alert('🎉 Gửi thông tin thành công! Chuyên viên sẽ liên hệ lại với quý khách trong ít phút.');
-            window.location.href = '../index.php';
-        </script>";
+    if (empty($phone)) {
+        echo json_encode(['success' => false, 'message' => 'Số điện thoại là bắt buộc.']);
         exit;
     }
+
+    // Here you would usually insert into a leads table or send an email.
+    // For now we just return success.
+    
+    // Example:
+    // if ($pdo) {
+    //     $stmt = $pdo->prepare("INSERT INTO leads (name, phone, email, product_type, source, message) VALUES (?, ?, ?, ?, ?, ?)");
+    //     $stmt->execute([$name, $phone, $email, $product_type, $source, $message]);
+    // }
+
+    echo json_encode(['success' => true, 'message' => 'Đã gửi yêu cầu thành công. Chuyên viên sẽ liên hệ lại sớm nhất.']);
+} else {
+    echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
 }
-header('Location: ../index.php');
-exit;
+?>

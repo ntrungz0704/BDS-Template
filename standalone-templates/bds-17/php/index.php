@@ -1,16 +1,59 @@
 <?php
 require_once 'config/db.php';
 
-// Lấy danh sách BĐS từ MySQL nếu có kết nối, hoặc dùng mảng demo
-if ($pdo) {
-    $stmt = $pdo->query("SELECT * FROM properties ORDER BY id DESC LIMIT 6");
-    $properties = $stmt->fetchAll();
+// Fetch company info
+$company = [
+    'name' => 'BEVERLY HILLS HẠ LONG',
+    'phone' => '<?= htmlspecialchars($company[\'phone\']) ?>',
+    'email' => 'contact@beverlyhills.com',
+    'address' => '<?= htmlspecialchars($company[\'address\']) ?>',
+    'slogan' => '<?= htmlspecialchars($company[\'slogan\']) ?>',
+    'zalo' => '<?= htmlspecialchars($company[\'phone\']) ?>'
+];
+
+if (isset($pdo)) {
+    try {
+        $stmt = $pdo->query("SELECT * FROM company_info LIMIT 1");
+        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $company = array_merge($company, $row);
+        }
+    } catch (PDOException $e) {}
+}
+
+// Fetch projects
+$projects = [];
+if (isset($pdo)) {
+    try {
+        $stmt = $pdo->query("SELECT * FROM projects");
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $row['priceNum'] = (float)$row['priceNum'];
+            $row['areaNum'] = (float)$row['areaNum'];
+            $row['beds'] = (int)$row['beds'];
+            $row['baths'] = (int)$row['baths'];
+            $row['hot'] = $row['hot'] ? true : false;
+            $row['featured'] = $row['featured'] ? true : false;
+            if (!empty($row['specs'])) {
+                $row['specs'] = json_decode($row['specs'], true);
+            } else {
+                $row['specs'] = [];
+            }
+            $row['id'] = $row['id_string'];
+            $projects[] = $row;
+        }
+    } catch (PDOException $e) {}
+}
+
+$projects_json = empty($projects) ? '[]' : json_encode($projects, JSON_UNESCAPED_UNICODE);
+
+$name = $company['name'];
+$name_parts = explode(' ', $name);
+if (count($name_parts) >= 3) {
+    $last_two = array_splice($name_parts, -2);
+    $first_part = htmlspecialchars(implode(' ', $name_parts));
+    $second_part = htmlspecialchars(implode(' ', $last_two));
+    $formatted_name = $first_part . ' <span class="text-slate-900">' . $second_part . '</span>';
 } else {
-    $properties = [
-        ['title' => 'Biệt thự sang trọng view thoáng mát', 'slug' => 'biet-thu-view-thoang-mat', 'price' => '5.5 Tỷ VNĐ', 'area' => '300 m²', 'location' => 'Khu Đô Thị Mới', 'image' => 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80'],
-        ['title' => 'Nhà phố mặt tiền thương mại kinh doanh', 'slug' => 'nha-pho-mat-tien-kinh-doanh', 'price' => '8.2 Tỷ VNĐ', 'area' => '140 m²', 'location' => 'Trung tâm thành phố', 'image' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80'],
-        ['title' => 'Đất nền phân lô sổ đỏ sẵn sàng công chứng', 'slug' => 'dat-nen-phan-lo-so-do', 'price' => '1.9 Tỷ VNĐ', 'area' => '120 m²', 'location' => 'Khu dân cư hiện hữu', 'image' => 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80'],
-    ];
+    $formatted_name = htmlspecialchars($name);
 }
 ?>
 <!DOCTYPE html>
@@ -18,130 +61,862 @@ if ($pdo) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BĐS 17 — Cổng Thông Tin Bất Động Sản Số 1 — Website Bất Động Sản PHP & MySQL</title>
+  <title><?= htmlspecialchars(['name']) ?> - <?= htmlspecialchars(['slogan']) ?></title>
+  
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Prevent body scroll when modal is open */
+    body.modal-open {
+      overflow: hidden;
+    }
+  </style>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          colors: {
+            brand: {
+              gold: '#C5A880',
+              bronze: '#9A7B4F',
+              dark: '#855828',
+              accent: '#E11D48',
+            }
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+<body class="w-full min-h-screen bg-white text-slate-900 font-sans flex flex-col justify-between selection:bg-[#9A7B4F] selection:text-white">
 
-  <!-- Header PHP -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <a href="index.php" class="flex items-center gap-2 font-black text-xl text-blue-600">
-        <span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-xs">TB</span>
-        <span>TEMPLATES<strong class="text-slate-900">BDS</strong></span>
-      </a>
-      <div class="flex items-center gap-3">
-        <a href="tel:0919006030" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow">
-          Hotline: 0919 006 030
-        </a>
-      </div>
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-24 right-6 z-50 bg-[#1A1612] text-white border border-[#9A7B4F] px-5 py-3 shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce hidden">
+    <i data-lucide="check-circle-2" class="text-amber-300 w-4 h-4"></i> <span id="toastMessage"></span>
+  </div>
+
+  <!-- Video Modal -->
+  <div id="videoModal" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden">
+    <div class="bg-black overflow-hidden max-w-3xl w-full aspect-video relative shadow-2xl border border-amber-300/30">
+      <button onclick="closeVideo()" class="absolute top-3 right-3 z-10 p-2 bg-white/20 text-white hover:bg-white/40">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+      <iframe id="videoIframe" class="w-full h-full" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
-  </header>
+  </div>
 
-  <!-- Main Content -->
-  <main class="flex-1 w-full space-y-12 pb-16">
-    <section class="py-16 px-4 bg-slate-900 text-white text-center">
-      <h1 class="text-3xl sm:text-5xl font-black uppercase mb-4">BĐS 17 — Cổng Thông Tin Bất Động Sản Số 1</h1>
-      <p class="text-slate-300 max-w-xl mx-auto text-sm">Cổng tin BĐS số 1 · Mua bán & Cho thuê · Tính lãi vay</p>
-    </section>
+  <div id="app">
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-white shadow-md border-b border-[#C5A880]/30">
+      <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4">
+        
+        <div onclick="navigate('home')" class="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0">
+          <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#C5A880] via-[#9A7B4F] to-[#855828] flex items-center justify-center text-white font-serif font-black text-base sm:text-xl shadow-md border border-amber-200 shrink-0">
+            👑
+          </div>
+          <div class="min-w-0 truncate">
+            <span class="text-base sm:text-2xl font-serif font-black text-[#855828] tracking-wider block leading-none truncate">
+              <?= $formatted_name ?>
+            </span>
+            <span class="text-[7px] sm:text-[8.5px] font-bold text-amber-700 uppercase tracking-widest block mt-0.5 truncate">
+              <?= htmlspecialchars($company[\'slogan\']) ?>
+            </span>
+          </div>
+        </div>
 
-    <!-- Danh sách BĐS từ MySQL -->
-    <section class="max-w-7xl mx-auto px-4 space-y-6">
-      <h2 class="text-2xl font-black text-slate-900 uppercase text-center">DANH SÁCH BẤT ĐỘNG SẢN</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <?php foreach ($properties as $item): ?>
-          <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition">
-            <img src="<?php echo htmlspecialchars($item['image']); ?>" alt="" class="w-full h-48 object-cover">
+        <div class="hidden md:flex items-center gap-4 shrink-0">
+          <div class="text-right">
+            <span class="text-[10px] uppercase font-bold text-slate-500 block">Hotline Phòng Kinh Doanh</span>
+            <a href="tel:<?= htmlspecialchars($company[\'phone\']) ?>" class="text-sm font-black text-[#E11D48] tracking-wider block">
+              <?= htmlspecialchars($company[\'phone\']) ?>
+            </a>
+          </div>
+          <button onclick="document.getElementById('dang-ky-bang-gia').scrollIntoView({ behavior: 'smooth' });" class="px-4 py-2 bg-gradient-to-r from-[#C5A880] to-[#9A7B4F] hover:from-[#9A7B4F] text-white text-xs font-black uppercase tracking-wider shadow cursor-pointer">
+            Nhận Bảng Giá Ngoại Giao
+          </button>
+        </div>
+
+        <button onclick="toggleMobileMenu()" class="p-1.5 sm:p-2 text-slate-800 xl:hidden hover:bg-slate-100 shrink-0 flex items-center justify-center ml-auto" aria-label="Toggle navigation menu">
+          <i data-lucide="menu" id="menuIcon" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="bg-[#9A7B4F] text-white border-t border-amber-200/20">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+          <nav class="hidden xl:flex items-center gap-0 text-xs font-bold uppercase tracking-wider whitespace-nowrap overflow-x-auto" id="desktopNav">
+            <!-- Rendered by JS -->
+          </nav>
+        </div>
+      </div>
+
+      <!-- Mobile Drawer -->
+      <div id="mobileMenu" class="xl:hidden bg-white border-b border-slate-200 px-6 py-4 shadow-xl hidden">
+        <div class="grid grid-cols-2 gap-2 text-xs font-bold uppercase" id="mobileNav">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </header>
+
+    <main id="mainContent">
+      <!-- Dynamic Pages Rendered Here -->
+    </main>
+
+  </div>
+
+  <script>
+    const MAX_W = 'max-w-7xl';
+    const FALLBACK_UNITS = [
+      {
+        id: 'can-studio-view-vinh',
+        title: 'Căn Hộ Studio Nghỉ Dưỡng View Trực Diện Vịnh Hạ Long',
+        code: 'BH-ST08',
+        slug: 'can-ho-studio-nghi-duong-view-vinh-ha-long',
+        type: 'Căn Hộ Studio',
+        floor: 'Tầng 08 - 12',
+        price: '1.65 Tỷ VNĐ',
+        priceNum: 1.65,
+        area: '42 m²',
+        areaNum: 42,
+        beds: 1,
+        baths: 1,
+        view: 'View Vịnh Hạ Long & Cầu Bãi Cháy',
+        direction: 'Hướng Đông Nam',
+        image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        planImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+        hot: true,
+        featured: true,
+        description: 'Căn hộ khách sạn Condotel đầy đủ nội thất 5 sao, ban công kính tràn ngắm trọn vẹn cảnh bình minh trên Vịnh di sản thế giới.',
+        specs: ['Bàn giao full nội thất 5 sao', 'Cam kết thuê lại 12%/năm', 'Sở hữu lâu dài', 'Tặng 15 đêm nghỉ dưỡng/năm']
+      },
+      {
+        id: 'can-1pn-view-sunwheel',
+        title: 'Căn Hộ 1 Phòng Ngủ View Vòng Quay Mặt Trời Sun Wheel',
+        code: 'BH-1P15',
+        slug: 'can-ho-1-phong-ngu-view-vong-quay-mat-troi',
+        type: '1 Phòng Ngủ',
+        floor: 'Tầng 14 - 18',
+        price: '2.35 Tỷ VNĐ',
+        priceNum: 2.35,
+        area: '58 m²',
+        areaNum: 58,
+        beds: 1,
+        baths: 1,
+        view: 'View Sun Wheel & Công Viên Rồng',
+        direction: 'Hướng Đông Bắc',
+        image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80',
+        planImage: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+        hot: false,
+        featured: true,
+        description: 'Thiết kế thông minh tối ưu công năng, phòng khách liên thông bếp hiện đại, ngắm pháo hoa lễ hội rực rỡ quanh năm.',
+        specs: ['Nội thất gỗ óc chó cao cấp', 'Kính Low-E cách âm cách nhiệt', 'Khóa từ vân tay Hafele', 'Hỗ trợ vay 70%']
+      },
+      {
+        id: 'can-2pn-panorama-goc',
+        title: 'Căn Hộ Góc 2 Phòng Ngủ Panorama 2 Mặt Thoáng Hướng Biển',
+        code: 'BH-2P09',
+        slug: 'can-ho-goc-2-phong-ngu-panorama-huong-bien',
+        type: '2 Phòng Ngủ',
+        floor: 'Tầng 09 - 16',
+        price: '3.60 Tỷ VNĐ',
+        priceNum: 3.6,
+        area: '82 m²',
+        areaNum: 82,
+        beds: 2,
+        baths: 2,
+        view: 'View Panorama 270 độ Vịnh Hạ Long',
+        direction: 'Hướng Nam - Đông Nam',
+        image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+        planImage: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        hot: true,
+        featured: true,
+        description: 'Căn hộ góc đẳng cấp với 2 ban công rộng lớn, phòng ngủ Master có bồn tắm kính ngắm vịnh biển thơ mộng.',
+        specs: ['Căn góc 2 mặt thoáng', 'Bồn tắm view biển Master', 'Miễn phí quản lý 2 năm', 'Sổ đỏ trao tay']
+      },
+      {
+        id: 'can-3pn-tong-thong',
+        title: 'Căn Hộ 3 Phòng Ngủ Hoàng Gia Suite Tầng Cao VIP',
+        code: 'BH-3P19',
+        slug: 'can-ho-3-phong-ngu-hoang-gia-suite-tang-cao',
+        type: '3 Phòng Ngủ',
+        floor: 'Tầng 18 - 19',
+        price: '5.20 Tỷ VNĐ',
+        priceNum: 5.2,
+        area: '115 m²',
+        areaNum: 115,
+        beds: 3,
+        baths: 3,
+        view: 'Trọn vẹn Vịnh Kỳ Quan & Cảng Tàu Quốc Tế',
+        direction: 'Hướng Đông Nam',
+        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+        planImage: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80',
+        hot: false,
+        featured: true,
+        description: 'Dành riêng cho những chủ nhân danh giá, không gian sinh hoạt chung rộng hơn 50m² cùng tiêu chuẩn hoàn thiện siêu sang.',
+        specs: ['Thang máy riêng bảo mật', 'Trần cao 3.6m', 'Hệ thống Smart Home Kohler', 'Tặng voucher nội thất 200 Tr']
+      },
+      {
+        id: 'biet-thu-doi-beverly-hills',
+        title: 'Dinh Thự Đồi Beverly Hills Đơn Lập Có Bể Bơi Riêng Biệt',
+        code: 'BH-VILLA03',
+        slug: 'dinh-thu-doi-beverly-hills-don-lap-be-boi-rieng',
+        type: 'Biệt Thự Đơn Lập',
+        floor: 'Khu Dinh Thự Đồi',
+        price: '18.5 Tỷ VNĐ',
+        priceNum: 18.5,
+        area: '320 m²',
+        areaNum: 320,
+        beds: 5,
+        baths: 6,
+        view: 'Tọa sơn hướng hải ngắm toàn cảnh Vịnh',
+        direction: 'Hướng Nam',
+        image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
+        planImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+        hot: true,
+        featured: true,
+        description: 'Biệt thự đơn lập 3 tầng theo phong cách Địa Trung Hải quý phái, khuôn viên sân vườn 150m² và hồ bơi vô cực view biển.',
+        specs: ['Bể bơi vô cực riêng', 'Gara 2 ô tô', 'Sân vườn nhiệt đới', 'Sổ hồng vĩnh viễn']
+      },
+      {
+        id: 'penthouse-duplex-dinh-thap',
+        title: 'Penthouse Duplex Đỉnh Tháp Beverly Hills Sky Palace',
+        code: 'BH-PH01',
+        slug: 'penthouse-duplex-dinh-thap-beverly-hills-sky-palace',
+        type: 'Penthouse Duplex',
+        floor: 'Tầng 19 - 20',
+        price: '9.80 Tỷ VNĐ',
+        priceNum: 9.8,
+        area: '210 m²',
+        areaNum: 210,
+        beds: 4,
+        baths: 4,
+        view: 'Đỉnh cao ngắm Vịnh 360 độ',
+        direction: 'Hướng Đông Nam',
+        image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
+        planImage: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        hot: true,
+        featured: true,
+        description: 'Tuyệt tác thông tầng xa hoa bậc nhất Quảng Ninh với sân vườn Sky Garden và bể sục Jacuzzi ngoài trời.',
+        specs: ['Thông tầng cao 7m', 'Bể Jacuzzi ngoài trời', 'Sky Garden ngắm sao', 'Dịch vụ quản gia Butler 24/7']
+      }
+    ];
+    const DB_UNITS = <?= $projects_json ?>;
+    const UNITS = DB_UNITS.length > 0 ? DB_UNITS : FALLBACK_UNITS;
+
+
+    const NEWS = [
+      {
+        id: 1,
+        title: 'Bất Động Sản Nghỉ Dưỡng Bãi Cháy Bứt Phá Mạnh Mẽ Nhờ Hạ Tầng Cao Tốc',
+        slug: 'bds-nghi-duong-bai-chay-but-pha-manh-me',
+        date: '28/08/2026',
+        author: 'Beverly Hills Research',
+        category: 'Thị Trường',
+        image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        excerpt: 'Tuyến cao tốc Vân Đồn - Móng Cái và Cảng hàng không quốc tế kéo lượng lớn du khách thượng lưu về với thủ phủ du lịch Hạ Long.',
+        content: [
+          'Hạ Long đang vươn mình trở thành trung tâm du lịch 4 mùa hàng đầu khu vực Đông Nam Á với hàng loạt siêu dự án nghỉ dưỡng.',
+          'Beverly Hills Hạ Long là dự án hiếm hoi tọa lạc tại đồi Hải Quân với vị thế phong thủy tọa sơn hướng hải đắc địa bậc nhất.'
+        ],
+        views: 4520
+      },
+      {
+        id: 2,
+        title: 'Lễ Trao Sổ Đỏ Từng Căn Cho Những Cư Dân Đầu Tiên Tại Beverly Hills',
+        slug: 'le-trao-so-do-cu-dan-beverly-hills',
+        date: '26/08/2026',
+        author: 'Đức Dương Group',
+        category: 'Pháp Lý',
+        image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80',
+        excerpt: 'Chủ đầu tư Đức Dương Group chính thức bàn giao giấy chứng nhận quyền sở hữu nhà ở lâu dài cho các chủ nhân danh giá.',
+        content: [
+          'Pháp lý hoàn thiện và sổ đỏ trao tay là bảo chứng vàng cho giá trị gia tăng bền vững của dự án Beverly Hills Hạ Long.'
+        ],
+        views: 3890
+      },
+      {
+        id: 3,
+        title: 'Khám Phá Chuỗi Tiện Ích Đỉnh Cao: Sky Bar Tầng 19 & Bể Bơi Vô Cực Ngắm Vịnh',
+        slug: 'kham-pha-chuoi-tien-ich-sky-bar-be-boi-vo-cuc',
+        date: '24/08/2026',
+        author: 'Ban Quản Lý Dự Án',
+        category: 'Tiện Ích',
+        image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
+        excerpt: 'Không gian ẩm thực quốc tế 5 sao và bể bơi nước mặn vô cực lưng chừng đồi mang lại trải nghiệm nghỉ dưỡng xứng tầm tỷ phú.',
+        content: [
+          'Cư dân và khách lưu trú được tận hưởng trọn vẹn những dịch vụ đẳng cấp nhất như Casino, Sân tập Golf và Spa thư giãn.'
+        ],
+        views: 5120
+      }
+    ];
+
+    let currentPage = 'home';
+    let selectedUnit = null;
+    let selectedArticle = null;
+    
+    let filterType = 'all';
+    let filterPrice = 'all';
+
+    const NAV_ITEMS = [
+      { id: 'home', label: 'Trang Chủ' },
+      { id: 'overview', label: 'Tổng Quan' },
+      { id: 'location', label: 'Vị Trí' },
+      { id: 'amenities', label: 'Tiện Ích' },
+      { id: 'floor-plans', label: 'Mặt Bằng' },
+      { id: 'showroom', label: 'Căn Hộ Mẫu' },
+      { id: 'policy', label: 'Chính Sách' },
+      { id: 'progress', label: 'Tiến Độ' },
+      { id: 'video', label: 'Video / Media' },
+      { id: 'news', label: 'Tin Tức' },
+      { id: 'contact', label: 'Liên Hệ' }
+    ];
+
+    function renderNav() {
+      const deskNav = document.getElementById('desktopNav');
+      const mobNav = document.getElementById('mobileNav');
+      
+      deskNav.innerHTML = NAV_ITEMS.map(item => `
+        <button onclick="navigate('${item.id}')" class="whitespace-nowrap px-4 py-3 transition-all ${
+          (currentPage === item.id || (currentPage === 'property-detail' && item.id === 'floor-plans') || (currentPage === 'news-detail' && item.id === 'news')) 
+          ? 'bg-[#855828] text-amber-200 font-extrabold shadow-inner' 
+          : 'hover:bg-[#855828]'
+        }">
+          ${item.label}
+        </button>
+      `).join('');
+
+      mobNav.innerHTML = NAV_ITEMS.map(item => `
+        <button onclick="navigate('${item.id}')" class="p-2.5 text-left bg-slate-50 hover:bg-amber-50">${item.label}</button>
+      `).join('');
+    }
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      const icon = document.getElementById('menuIcon');
+      if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        lucide.createIcons();
+      } else {
+        menu.classList.add('hidden');
+        lucide.createIcons();
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastMessage').innerText = msg;
+      t.classList.remove('hidden');
+      setTimeout(() => {
+        t.classList.add('hidden');
+      }, 4000);
+    }
+
+    function openVideo(url) {
+      document.getElementById('videoIframe').src = url;
+      document.getElementById('videoModal').classList.remove('hidden');
+    }
+    function closeVideo() {
+      document.getElementById('videoIframe').src = '';
+      document.getElementById('videoModal').classList.add('hidden');
+    }
+
+    function navigate(page, slug) {
+      currentPage = page;
+      document.getElementById('mobileMenu').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      if (page === 'property-detail') {
+        selectedUnit = UNITS.find(u => u.slug === slug || u.id === slug);
+      } else if (page === 'news-detail') {
+        selectedArticle = NEWS.find(n => n.slug === slug || n.id == slug);
+      }
+      
+      renderNav();
+      renderPage();
+      lucide.createIcons();
+    }
+
+    function handleSearchSubmit() {
+      if (currentPage !== 'home' && currentPage !== 'floor-plans') {
+        navigate('home');
+      }
+      const resultsElem = document.getElementById('bang-hang-can-ho');
+      if (resultsElem) {
+        resultsElem.scrollIntoView({ behavior: 'smooth' });
+      }
+      renderFilteredUnits();
+    }
+
+    function handleBookingSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const name = form.querySelector('[name="name"]').value;
+      const phone = form.querySelector('[name="phone"]').value;
+      
+      if (!name || !phone) {
+        alert('Vui lòng nhập họ tên và số điện thoại!');
+        return;
+      }
+      
+      const formData = new FormData(form);
+      fetch('api/contact.php', {
+        method: 'POST',
+        body: formData
+      }).catch(err => console.log(err));
+
+      showToast(`🎉 Tiếp nhận yêu cầu nhận bảng giá & voucher 100Tr từ ${name} (${phone}). Giám đốc dự án Beverly Hills sẽ liên hệ ngay!`);
+      form.reset();
+    }
+
+    function renderFilteredUnits() {
+      const container = document.getElementById('unitsGrid');
+      if (!container) return;
+
+      let filtered = UNITS.filter(p => {
+        if (filterType !== 'all') {
+          if (p.type !== filterType) return false;
+        }
+        if (filterPrice === 'under-3' && p.priceNum >= 3) return false;
+        if (filterPrice === '3-6' && (p.priceNum < 3 || p.priceNum > 6)) return false;
+        if (filterPrice === 'above-6' && p.priceNum <= 6) return false;
+        return true;
+      });
+
+      const h2 = document.getElementById('inventoryTitle');
+      if (h2) h2.innerText = `DANH SÁCH CĂN HỘ & BIỆT THỰ ĐANG MỞ BÁN (${filtered.length})`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-1 md:col-span-2 lg:col-span-3 p-12 text-center bg-slate-50 border border-slate-200 space-y-3">
+            <p class="text-sm font-bold text-slate-600">Không tìm thấy căn hộ nào khớp hoàn toàn với tiêu chí này.</p>
+            <button onclick="filterType='all'; filterPrice='all'; renderFilteredUnits(); document.getElementById('filterTypeSelect').value='all'; document.getElementById('filterPriceSelect').value='all';" class="px-5 py-2 bg-[#9A7B4F] text-white font-bold text-xs uppercase shadow">
+              Xem Toàn Bộ Bảng Hàng
+            </button>
+          </div>
+        `;
+      } else {
+        container.innerHTML = filtered.map(unit => `
+          <div class="bg-white text-slate-900 border border-slate-300 shadow-sm hover:shadow-md transition flex flex-col justify-between group font-medium">
+            <div class="relative aspect-[16/10] overflow-hidden bg-slate-900">
+              <img src="${unit.image}" onerror="this.src='https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80'" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              <span class="absolute top-2 left-2 px-2 py-0.5 bg-[#9A7B4F] text-white text-[9px] font-black uppercase">${unit.code}</span>
+              ${unit.hot ? `<span class="absolute top-2 right-2 px-2 py-0.5 bg-[#E11D48] text-white text-[9px] font-black uppercase">HOT</span>` : ''}
+            </div>
             <div class="p-4 space-y-2">
-              <h3 class="font-bold text-sm text-slate-900"><?php echo htmlspecialchars($item['title']); ?></h3>
-              <p class="text-xs text-slate-500"><?php echo htmlspecialchars($item['location']); ?></p>
-              <div class="flex justify-between items-center pt-2 border-t text-xs">
-                <span class="font-black text-blue-600 text-sm"><?php echo htmlspecialchars($item['price']); ?></span>
-                <span class="text-slate-500"><?php echo htmlspecialchars($item['area']); ?></span>
+              <h3 onclick="navigate('property-detail', '${unit.slug}')" class="text-xs font-black text-slate-900 uppercase line-clamp-2 hover:text-[#9A7B4F] cursor-pointer min-h-[34px]">
+                ${unit.title}
+              </h3>
+              <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-600 bg-slate-50 p-2.5 border border-slate-200">
+                <div>📐 Diện tích: <strong>${unit.area}</strong></div>
+                <div>🏢 Tầng: <strong>${unit.floor}</strong></div>
+                <div>🧭 Hướng: <strong>${unit.direction}</strong></div>
+                <div>🛏 Phòng: <strong>${unit.beds} PN • ${unit.baths} WC</strong></div>
+              </div>
+              <p class="text-[11px] text-amber-800 font-medium truncate">🌊 ${unit.view}</p>
+              <div class="pt-3 border-t flex items-center justify-between">
+                <span class="text-sm font-black text-[#E11D48]">${unit.price}</span>
+                <button onclick="navigate('property-detail', '${unit.slug}')" class="px-3 py-1 bg-[#9A7B4F] hover:bg-[#855828] text-white font-bold text-xs uppercase transition cursor-pointer">
+                  Chi Tiết ›
+                </button>
               </div>
             </div>
           </div>
-        <?php endforeach; ?>
-      </div>
-    </section>
+        `).join('');
+      }
+    }
 
-    <!-- Form Liên Hệ PHP -->
-    <section class="max-w-3xl mx-auto px-4">
-      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-md space-y-4">
-        <h3 class="text-lg font-black text-slate-900 uppercase text-center">GỬI YÊU CẦU TƯ VẤN</h3>
-        <form action="api/contact.php" method="POST" class="space-y-3 text-xs">
-          <input type="text" name="name" placeholder="Họ và tên (*)" required class="w-full p-3 bg-slate-50 border rounded-xl">
-          <input type="tel" name="phone" placeholder="Số điện thoại (*)" required class="w-full p-3 bg-slate-50 border rounded-xl font-bold text-blue-600">
-          <textarea name="message" rows="3" placeholder="Nội dung cần tư vấn..." class="w-full p-3 bg-slate-50 border rounded-xl"></textarea>
-          <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl">
-            GỬI THÔNG TIN
-          </button>
-        </form>
-      </div>
-    </section>
-  </main>
+    const SECTIONS = {
+      hero: `
+        <section class="relative bg-slate-950 text-white min-h-[420px] sm:min-h-[520px] flex items-center justify-center overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&q=80" class="absolute inset-0 w-full h-full object-cover scale-105" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/40"></div>
+          <div class="relative z-20 text-center space-y-4 max-w-3xl mx-auto px-4">
+            <span class="px-4 py-1.5 bg-[#9A7B4F]/90 text-amber-200 text-xs font-bold uppercase tracking-widest inline-block border border-amber-200/40">
+              TUYỆT TÁC NGHỈ DƯỠNG TRÊN ĐỈNH KỲ QUAN
+            </span>
+            <h1 class="text-3xl sm:text-6xl font-serif font-black uppercase text-white tracking-wider drop-shadow-2xl">
+              TEMPLATESBDS
+            </h1>
+            <p class="text-xs sm:text-base text-slate-200 max-w-2xl mx-auto font-medium">
+              Dự án căn hộ khách sạn 5 sao & Dinh thự đồi Hải Quân Bãi Cháy ngắm trọn vẹn di sản thiên nhiên thế giới Vịnh Hạ Long.
+            </p>
+            <div class="pt-4 flex flex-wrap items-center justify-center gap-4">
+              <button onclick="document.getElementById('dang-ky-bang-gia').scrollIntoView({ behavior: 'smooth' });" class="px-6 py-3 bg-[#9A7B4F] hover:bg-[#855828] text-white font-black text-xs uppercase tracking-wider shadow-lg cursor-pointer">
+                Đăng Ký Tham Quan Căn Hộ Mẫu ›
+              </button>
+              <button onclick="openVideo('https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')" class="px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white font-black text-xs uppercase tracking-wider border border-white/40 flex items-center gap-2 cursor-pointer">
+                <i data-lucide="play" class="fill-white w-4 h-4"></i> Xem Video Flycam
+              </button>
+            </div>
+          </div>
+        </section>
+      `,
+      overview: `
+        <section id="tong-quan" class="py-14 bg-white border-b border-slate-200">
+          <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+              <div class="lg:col-span-7 space-y-4">
+                <span class="text-xs font-black uppercase text-[#9A7B4F] tracking-widest block">
+                  KIẾN TRÚC ĐẲNG CẤP HOÀNG GIA
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-serif font-black text-slate-900 uppercase">
+                  TỔNG QUAN DỰ ÁN TEMPLATESBDS
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  Tọa lạc trên đỉnh đồi Hải Quân cao hơn 100m so với mực nước biển, Beverly Hills Hạ Long tự hào là quần thể nghỉ dưỡng thượng lưu có tầm nhìn Panorama đắt giá nhất Vịnh Bắc Bộ.
+                </p>
+                <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  Dự án bao gồm 1 tòa tháp căn hộ khách sạn 19 tầng tiêu chuẩn 5 sao quốc tế và 138 căn biệt thự đơn lập, song lập lưng tựa núi, mặt hướng biển, đón trọn luồng sinh khí thịnh vượng.
+                </p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-3 border-t border-slate-200 text-xs">
+                  <div class="bg-slate-50 p-3 border border-slate-200">
+                    <span class="text-slate-500 block text-[10px]">TỔNG DIỆN TÍCH</span>
+                    <strong class="text-slate-900 text-sm font-black">10.8 Hecta</strong>
+                  </div>
+                  <div class="bg-slate-50 p-3 border border-slate-200">
+                    <span class="text-slate-500 block text-[10px]">QUY MÔ THÁP</span>
+                    <strong class="text-slate-900 text-sm font-black">19 Tầng Nổi</strong>
+                  </div>
+                  <div class="bg-slate-50 p-3 border border-slate-200">
+                    <span class="text-slate-500 block text-[10px]">PHÁP LÝ</span>
+                    <strong class="text-slate-900 text-sm font-black">Sổ Đỏ Lâu Dài</strong>
+                  </div>
+                </div>
+              </div>
+              <div class="lg:col-span-5 relative aspect-[4/3] overflow-hidden border border-slate-300 shadow-xl">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" class="w-full h-full object-cover" />
+              </div>
+            </div>
+          </div>
+        </section>
+      `,
+      location: `
+        <section id="vi-tri" class="py-14 bg-[#9A7B4F] text-white">
+          <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div class="lg:col-span-6 relative aspect-[4/3] overflow-hidden border-2 border-white/40 shadow-2xl bg-slate-900">
+                <iframe src="https://maps.google.com/maps?q=Bai+Chay+Ha+Long&t=&z=13&ie=UTF8&iwloc=&output=embed" class="w-full h-full border-0" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="lg:col-span-6 space-y-4">
+                <span class="text-xs font-black uppercase text-amber-200 tracking-widest block">TÂM ĐIỂM KẾT NỐI VÀNG</span>
+                <h2 class="text-2xl sm:text-3xl font-serif font-black uppercase tracking-wide text-white">VỊ TRÍ KIM CƯƠNG TRÊN ĐỒI HẢI QUÂN BÃI CHÁY</h2>
+                <p class="text-xs sm:text-sm text-amber-100 leading-relaxed">
+                  Tọa lạc tại vị trí đắc địa nhất khu du lịch Bãi Cháy, Beverly Hills sở hữu khả năng siêu kết nối tới tất cả các địa danh giải trí và thắng cảnh biểu tượng của Quảng Ninh:
+                </p>
+                <ul class="space-y-2.5 text-xs text-white">
+                  <li class="flex items-center gap-2">📍 <strong>Cầu Bãi Cháy & Vòng quay Sun Wheel:</strong> Cách 1.0 km (3 phút di chuyển)</li>
+                  <li class="flex items-center gap-2">📍 <strong>Cáp treo Nữ Hoàng & Công viên Sun World:</strong> Cách 1.5 km (4 phút)</li>
+                  <li class="flex items-center gap-2">📍 <strong>Bãi tắm Bãi Cháy & Phố cổ Hạ Long:</strong> Cách 2.0 km (5 phút)</li>
+                  <li class="flex items-center gap-2">📍 <strong>Cảng tàu khách quốc tế Tuần Châu:</strong> Cách 9.0 km (10 phút)</li>
+                  <li class="flex items-center gap-2">📍 <strong>Sân bay quốc tế Vân Đồn:</strong> Cách 45 km (35 phút theo cao tốc)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      `,
+      amenities: `
+        <section id="tien-ich" class="py-14 bg-slate-50 border-b border-slate-200">
+          <div class="max-w-7xl mx-auto px-4 space-y-8">
+            <div class="text-center space-y-2 max-w-2xl mx-auto">
+              <span class="text-xs font-black uppercase text-[#9A7B4F] tracking-widest">HỆ SINH THÁI ĐẶC QUYỀN</span>
+              <h2 class="text-2xl sm:text-3xl font-serif font-black text-slate-900 uppercase">TIỆN ÍCH ĐẲNG CẤP NGHỈ DƯỠNG 5 SAO</h2>
+              <p class="text-xs text-slate-600">Hơn 30 tiện ích nội khu chuẩn quốc tế phục vụ trọn vẹn nhu cầu nghỉ dưỡng và tái tạo năng lượng của cộng đồng cư dân thượng lưu.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="bg-white p-6 border border-slate-200 shadow-sm space-y-3">
+                <div class="w-12 h-12 bg-[#9A7B4F] text-white flex items-center justify-center text-xl font-bold">🏊</div>
+                <h3 class="font-bold text-sm text-slate-900 uppercase">Bể Bơi Vô Cực View Vịnh</h3>
+                <p class="text-xs text-slate-600 leading-relaxed break-words">Bể bơi tràn bờ trên lưng chừng đồi nước mặn bốn mùa, mang lại cảm giác bơi lội giữa không trung ngắm trọn kỳ quan.</p>
+              </div>
+              <div class="bg-white p-6 border border-slate-200 shadow-sm space-y-3">
+                <div class="w-12 h-12 bg-[#9A7B4F] text-white flex items-center justify-center text-xl font-bold">🍸</div>
+                <h3 class="font-bold text-sm text-slate-900 uppercase">Sky Bar & Lounge Tầng 19</h3>
+                <p class="text-xs text-slate-600 leading-relaxed break-words">Điểm hẹn thượng lưu ngắm hoàng hôn buông xuống Vịnh Hạ Long, thưởng thức cocktail tinh tế và âm nhạc acoustic lãng mạn.</p>
+              </div>
+              <div class="bg-white p-6 border border-slate-200 shadow-sm space-y-3">
+                <div class="w-12 h-12 bg-[#9A7B4F] text-white flex items-center justify-center text-xl font-bold">⛳</div>
+                <h3 class="font-bold text-sm text-slate-900 uppercase">Sân Tập Golf & Casino Quốc Tế</h3>
+                <p class="text-xs text-slate-600 leading-relaxed break-words">Trải nghiệm các bộ môn thể thao quý tộc và câu lạc bộ giải trí có thưởng chuẩn quốc tế ngay trong khuôn viên dự án.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      `,
+      floorPlans: `
+        <section id="bang-hang-can-ho" class="py-14 bg-white border-b border-slate-200">
+          <div class="max-w-7xl mx-auto px-4 space-y-8">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between border-b-2 border-[#9A7B4F] pb-3 gap-4">
+              <div>
+                <span class="text-xs font-black uppercase text-[#9A7B4F] tracking-widest block">MẶT BẰNG TẦNG ĐIỂN HÌNH & BẢNG HÀNG</span>
+                <h2 id="inventoryTitle" class="text-2xl font-serif font-black text-slate-900 uppercase">DANH SÁCH CĂN HỘ & BIỆT THỰ ĐANG MỞ BÁN</h2>
+              </div>
+              <div class="flex flex-wrap items-center gap-2 text-xs">
+                <select id="filterTypeSelect" onchange="filterType = this.value;" class="bg-slate-50 border border-slate-300 px-3 py-1.5 focus:outline-none">
+                  <option class="text-slate-900 bg-white font-medium" value="all">Loại Căn Hộ (Tất cả)</option>
+                  <option class="text-slate-900 bg-white font-medium" value="Căn Hộ Studio">Căn Hộ Studio</option>
+                  <option class="text-slate-900 bg-white font-medium" value="1 Phòng Ngủ">1 Phòng Ngủ</option>
+                  <option class="text-slate-900 bg-white font-medium" value="2 Phòng Ngủ">2 Phòng Ngủ</option>
+                  <option class="text-slate-900 bg-white font-medium" value="3 Phòng Ngủ">3 Phòng Ngủ</option>
+                  <option class="text-slate-900 bg-white font-medium" value="Biệt Thự Đơn Lập">Biệt Thự Đơn Lập</option>
+                  <option class="text-slate-900 bg-white font-medium" value="Penthouse Duplex">Penthouse Duplex</option>
+                </select>
+                <select id="filterPriceSelect" onchange="filterPrice = this.value;" class="bg-slate-50 border border-slate-300 px-3 py-1.5 focus:outline-none">
+                  <option class="text-slate-900 bg-white font-medium" value="all">Mức Giá (Tất cả)</option>
+                  <option class="text-slate-900 bg-white font-medium" value="under-3">Dưới 3 Tỷ</option>
+                  <option class="text-slate-900 bg-white font-medium" value="3-6">3 - 6 Tỷ</option>
+                  <option class="text-slate-900 bg-white font-medium" value="above-6">Trên 6 Tỷ</option>
+                </select>
+                <button onclick="handleSearchSubmit()" class="px-4 py-1.5 bg-[#9A7B4F] hover:bg-[#855828] text-white font-bold uppercase shadow cursor-pointer">Lọc</button>
+              </div>
+            </div>
+            <div id="unitsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </section>
+      `,
+      showroom: `
+        <section id="can-ho-mau" class="py-14 bg-slate-50 border-b border-slate-200">
+          <div class="max-w-7xl mx-auto px-4 space-y-6">
+            <div class="text-center space-y-2 max-w-2xl mx-auto">
+              <span class="text-xs font-black uppercase text-[#9A7B4F] tracking-widest">TRẢI NGHIỆM KHÔNG GIAN THỰC TẾ</span>
+              <h2 class="text-2xl sm:text-3xl font-serif font-black text-slate-900 uppercase">HÌNH ẢNH CĂN HỘ MẪU HOÀN THIỆN</h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              <div class="relative aspect-[4/3] overflow-hidden border border-slate-300 group shadow-sm">
+                <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                <div class="absolute inset-0 bg-black/40 flex items-end p-3"><span class="text-xs font-bold text-white drop-shadow">Phòng Tắm Đá Hoa Cương VIP</span></div>
+              </div>
+              <div class="relative aspect-[4/3] overflow-hidden border border-slate-300 group shadow-sm">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                <div class="absolute inset-0 bg-black/40 flex items-end p-3"><span class="text-xs font-bold text-white drop-shadow">Phòng Khách Ban Công Kính Tràn</span></div>
+              </div>
+              <div class="relative aspect-[4/3] overflow-hidden border border-slate-300 group shadow-sm">
+                <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                <div class="absolute inset-0 bg-black/40 flex items-end p-3"><span class="text-xs font-bold text-white drop-shadow">Phòng Ngủ Master View Vịnh</span></div>
+              </div>
+              <div class="relative aspect-[4/3] overflow-hidden border border-slate-300 group shadow-sm">
+                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                <div class="absolute inset-0 bg-black/40 flex items-end p-3"><span class="text-xs font-bold text-white drop-shadow">Phòng Ngủ Trẻ Em Thông Minh</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      `,
+      video: `
+        <section id="video" class="py-14 bg-white border-b border-slate-200">
+          <div class="max-w-7xl mx-auto px-4 space-y-8">
+            <div class="text-center space-y-2 max-w-2xl mx-auto">
+              <span class="text-xs font-black uppercase text-[#9A7B4F] tracking-widest">MEDIA & TRUYỀN HÌNH</span>
+              <h2 class="text-2xl sm:text-3xl font-serif font-black text-slate-900 uppercase">VIDEO GIỚI THIỆU & PHIM DỰ ÁN</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div onclick="openVideo('https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')" class="relative aspect-video overflow-hidden border-2 border-[#9A7B4F] shadow-xl group cursor-pointer bg-slate-900">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-85" />
+                <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                  <div class="w-16 h-16 bg-[#E11D48] text-white flex items-center justify-center shadow-2xl">
+                    <i data-lucide="play" class="ml-1 fill-white w-6 h-6"></i>
+                  </div>
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 bg-black/80 p-3 text-xs font-bold text-white text-center">
+                  ▶ TVC Giới Thiệu Không Gian Sống Thượng Lưu Tại Beverly Hills Hạ Long
+                </div>
+              </div>
+              <div onclick="openVideo('https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1')" class="relative aspect-video overflow-hidden border-2 border-[#9A7B4F] shadow-xl group cursor-pointer bg-slate-900">
+                <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-85" />
+                <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                  <div class="w-16 h-16 bg-[#E11D48] text-white flex items-center justify-center shadow-2xl">
+                    <i data-lucide="play" class="ml-1 fill-white w-6 h-6"></i>
+                  </div>
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 bg-black/80 p-3 text-xs font-bold text-white text-center">
+                  ▶ Lễ Ký Kết Hợp Tác Quản Lý Vận Hành Quốc Tế 5 Sao
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      `,
+      booking: `
+        <section id="dang-ky-bang-gia" class="relative py-16 bg-slate-950 text-white overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&q=80" class="absolute inset-0 w-full h-full object-cover opacity-30" />
+          <div class="relative z-20 max-w-7xl mx-auto px-4 max-w-xl text-center space-y-6">
+            <div class="space-y-2">
+              <span class="text-xs font-black uppercase text-amber-300 tracking-widest block">CHƯƠNG TRÌNH TRI ÂN ĐẶC BIỆT</span>
+              <h2 class="text-2xl sm:text-3xl font-serif font-black uppercase text-white">ĐĂNG KÝ NHẬN BẢNG GIÁ & VOUCHER 100 TRIỆU</h2>
+              <p class="text-xs text-slate-300">Tặng ngay chuyến du lịch Dubai 5 ngày 4 đêm và chiết khấu lên đến 8% cho 10 khách hàng đặt cọc sớm nhất trong tháng.</p>
+            </div>
+            <form onsubmit="handleBookingSubmit(event)" class="bg-white/95 backdrop-blur-md p-6 border border-amber-200 text-slate-900 space-y-3 text-xs shadow-2xl text-left">
+              <div>
+                <label class="block font-bold text-slate-800 mb-1">Họ và tên quý khách *</label>
+                <input type="text" name="name" required placeholder="Nguyễn Văn A" class="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-800 mb-1">Số điện thoại nhận bảng giá *</label>
+                <input type="tel" name="phone" required placeholder="<?= htmlspecialchars($company[\'phone\']) ?>" class="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-800 mb-1">Loại hình quan tâm</label>
+                <select name="unitType" class="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none">
+                  <option value="Căn Hộ Studio">Căn Hộ Studio (42 m²)</option>
+                  <option value="1 Phòng Ngủ">Căn Hộ 1 Phòng Ngủ (58 m²)</option>
+                  <option value="2 Phòng Ngủ">Căn Hộ 2 Phòng Ngủ (82 m²)</option>
+                  <option value="3 Phòng Ngủ">Căn Hộ 3 Phòng Ngủ (115 m²)</option>
+                  <option value="Biệt Thự Đơn Lập">Dinh Thự Đồi Đơn Lập (320 m²)</option>
+                </select>
+              </div>
+              <button type="submit" class="w-full py-3 bg-[#9A7B4F] hover:bg-[#855828] text-white font-black text-xs uppercase tracking-wider shadow cursor-pointer transition">
+                Gửi Yêu Cầu Nhận Bảng Giá Gốc CĐT
+              </button>
+            </form>
+          </div>
+        </section>
+      `,
+      news: `
+        <section id="tin-tuc" class="py-14 bg-slate-50 border-b border-slate-200">
+          <div class="max-w-7xl mx-auto px-4 space-y-8">
+            <div class="border-b-2 border-[#9A7B4F] pb-2 flex items-center justify-between">
+              <h2 class="text-xl font-serif font-black text-slate-900 uppercase">TIN TỨC & TIẾN ĐỘ DỰ ÁN</h2>
+              <button onclick="navigate('news')" class="text-xs font-bold text-[#9A7B4F] hover:underline">Xem Tất Cả Tin Tức ›</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              ${NEWS.map(n => `
+                <div class="bg-white border border-slate-200 shadow-sm flex flex-col justify-between group">
+                  <img src="${n.image}" class="w-full h-40 object-cover group-hover:scale-105 transition" />
+                  <div class="p-4 space-y-2">
+                    <span class="text-[10px] font-bold text-[#9A7B4F] uppercase">${n.category} • ${n.date}</span>
+                    <h3 onclick="navigate('news-detail', '${n.slug}')" class="text-xs font-black text-slate-900 uppercase line-clamp-2 hover:text-[#9A7B4F] cursor-pointer">${n.title}</h3>
+                    <p class="text-xs text-slate-600 line-clamp-2">${n.excerpt}</p>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </section>
+      `,
+      footer: `
+        <footer id="lien-he" class="bg-[#1A1612] text-slate-300 text-xs border-t border-amber-900/40">
+          <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div class="space-y-3">
+                <span class="text-lg font-serif font-black text-amber-200 block">TEMPLATESBDS</span>
+                <p class="text-slate-400 leading-relaxed">Quần thể căn hộ khách sạn và dinh thự đồi sang trọng bậc nhất Bãi Cháy, Quảng Ninh.</p>
+                <p>Văn phòng: <strong class="text-white"><?= htmlspecialchars($company[\'address\']) ?></strong></p>
+                <p>Hotline: <strong class="text-[#E11D48]"><?= htmlspecialchars($company[\'phone\']) ?></strong></p>
+              </div>
+              <div class="space-y-2">
+                <h4 class="font-bold text-white uppercase tracking-wider border-b border-amber-900/60 pb-2">DANH MỤC DỰ ÁN</h4>
+                <ul class="space-y-1.5 text-slate-400">
+                  <li><button onclick="navigate('overview')" class="hover:text-amber-200">Tổng quan dự án</button></li>
+                  <li><button onclick="navigate('location')" class="hover:text-amber-200">Vị trí kết nối</button></li>
+                  <li><button onclick="navigate('amenities')" class="hover:text-amber-200">Tiện ích 5 sao</button></li>
+                  <li><button onclick="navigate('floor-plans')" class="hover:text-amber-200">Mặt bằng căn hộ</button></li>
+                </ul>
+              </div>
+              <div class="space-y-2">
+                <h4 class="font-bold text-white uppercase tracking-wider border-b border-amber-900/60 pb-2">HỖ TRỢ KHÁCH HÀNG</h4>
+                <ul class="space-y-1.5 text-slate-400">
+                  <li>Chính sách bán hàng</li>
+                  <li>Hợp đồng mua bán mẫu</li>
+                  <li>Tiến độ thi công thực tế</li>
+                  <li>Đăng ký lái thử du thuyền</li>
+                </ul>
+              </div>
+              <div class="space-y-3">
+                <h4 class="font-bold text-white uppercase tracking-wider border-b border-amber-900/60 pb-2">CHỦ ĐẦU TƯ</h4>
+                <p class="text-slate-400">TẬP ĐOÀN ĐỨC DƯƠNG (DUC DUONG GROUP)</p>
+                <p class="text-slate-400">Đơn vị quản lý vận hành tiêu chuẩn 5 sao quốc tế.</p>
+              </div>
+            </div>
+          </div>
+          <div class="border-t border-amber-900/40 py-4 text-center text-slate-500">
+            &copy; 2026 BDS-17 (Beverly Hills Hạ Long — Đỉnh Cao Nghỉ Dưỡng Thượng Lưu). All rights reserved.
+          </div>
+        </footer>
+      `
+    };
 
-  <!-- Footer PHP -->
-  <footer class="w-full bg-[#07132B] text-slate-300 text-xs pt-12 pb-6 border-t border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-white/10">
-      <div class="md:col-span-5 space-y-3">
-        <h4 class="font-black text-sm text-white uppercase tracking-wider">
-          <span class="text-[#0084FF]">TEMPLATES</span><span class="text-white">BDS</span>
-        </h4>
-        <p class="text-slate-400 text-xs leading-relaxed max-w-sm">
-          Kho mẫu website bất động sản cao cấp số 1 Việt Nam. Tối ưu chuyển đổi, chuẩn SEO và tích hợp hệ thống CMS quản trị đa kênh.
-        </p>
-        <div class="space-y-1.5 text-xs text-slate-300 pt-1">
-          <div>📍 Địa chỉ: <strong class="text-white font-medium">180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội</strong></div>
-          <div>📞 Hotline 1: <a href="tel:0919006030" class="text-white font-bold font-mono hover:text-blue-400">0919 006 030</a></div>
-          <div>📞 Hotline 2: <a href="tel:0983312219" class="text-white font-bold font-mono hover:text-emerald-400">0983 312 219</a> (24/7)</div>
-          <div>✉️ Email: <a href="mailto:ntrungz0704@gmail.com" class="text-white hover:text-blue-400">ntrungz0704@gmail.com</a></div>
-          <div>⏰ Giờ làm việc: <strong class="text-white font-medium">8:00 - 20:00 (T2 - CN)</strong></div>
-        </div>
+    function renderPage() {
+      const main = document.getElementById('mainContent');
+      let html = '';
 
-        <!-- 4 Social Icons -->
-        <div class="flex items-center gap-2.5 pt-2">
-          <a href="https://zalo.me/0919006030" target="_blank" class="w-9 h-9 rounded-2xl bg-[#0068FF] text-white flex items-center justify-center font-black text-[10px]">ZALO</a>
-          <a href="https://www.facebook.com/groups/847532091275214" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1877F2] text-white flex items-center justify-center font-bold text-sm">f</a>
-          <a href="https://www.youtube.com/@tungchuofficial" target="_blank" class="w-9 h-9 rounded-2xl bg-[#E62117] text-white flex items-center justify-center text-xs">▶</a>
-          <a href="https://www.tiktok.com/@editnhadat" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1E293B] text-[#A78BFA] flex items-center justify-center text-xs">🎵</a>
-        </div>
-      </div>
+      if (currentPage === 'home') {
+        html = SECTIONS.hero + SECTIONS.overview + SECTIONS.location + SECTIONS.amenities + SECTIONS.floorPlans + SECTIONS.showroom + SECTIONS.video + SECTIONS.booking + SECTIONS.news + SECTIONS.footer;
+      } else if (currentPage === 'overview') {
+        html = SECTIONS.overview + SECTIONS.amenities + SECTIONS.footer;
+      } else if (currentPage === 'location') {
+        html = SECTIONS.location + SECTIONS.footer;
+      } else if (currentPage === 'amenities') {
+        html = SECTIONS.amenities + SECTIONS.showroom + SECTIONS.footer;
+      } else if (currentPage === 'floor-plans') {
+        html = SECTIONS.floorPlans + SECTIONS.booking + SECTIONS.footer;
+      } else if (currentPage === 'showroom') {
+        html = SECTIONS.showroom + SECTIONS.footer;
+      } else if (currentPage === 'policy') {
+        html = SECTIONS.booking + SECTIONS.footer;
+      } else if (currentPage === 'progress') {
+        html = SECTIONS.news + SECTIONS.video + SECTIONS.footer;
+      } else if (currentPage === 'video') {
+        html = SECTIONS.video + SECTIONS.footer;
+      } else if (currentPage === 'news') {
+        html = SECTIONS.news + SECTIONS.footer;
+      } else if (currentPage === 'contact') {
+        html = SECTIONS.location + SECTIONS.booking + SECTIONS.footer;
+      } else if (currentPage === 'property-detail' && selectedUnit) {
+        html = `
+          <div class="py-12 bg-white min-h-screen">
+            <div class="max-w-7xl mx-auto px-4 space-y-6">
+              <button onclick="navigate('floor-plans')" class="text-xs font-bold text-amber-800">‹ Quay lại bảng hàng</button>
+              <h1 class="text-2xl font-serif font-black text-slate-900 uppercase">${selectedUnit.title} (${selectedUnit.code})</h1>
+              <p class="text-sm font-black text-[#E11D48]">Giá bán: ${selectedUnit.price} — Diện tích: ${selectedUnit.area} — Tầng: ${selectedUnit.floor}</p>
+              <div class="w-full aspect-[2/1] bg-slate-900 relative">
+                <img src="${selectedUnit.image}" class="w-full h-full object-cover opacity-90" />
+              </div>
+              <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${selectedUnit.description}</p>
+            </div>
+          </div>
+          ${SECTIONS.footer}
+        `;
+      } else if (currentPage === 'news-detail' && selectedArticle) {
+        html = `
+          <div class="py-12 bg-white min-h-screen">
+            <div class="max-w-7xl mx-auto px-4 space-y-6">
+              <button onclick="navigate('news')" class="text-xs font-bold text-amber-800">‹ Quay lại trang tin tức</button>
+              <h1 class="text-2xl font-serif font-black text-slate-900 uppercase">${selectedArticle.title}</h1>
+              <div class="text-[11px] text-slate-400 border-b pb-2">
+                🕒 ${selectedArticle.date} • Tác giả: ${selectedArticle.author} • ${selectedArticle.views} lượt xem
+              </div>
+              <img src="${selectedArticle.image}" alt="" class="w-full h-80 object-cover border" />
+              <div class="space-y-3 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                ${selectedArticle.content.map(p => `<p>${p}</p>`).join('')}
+              </div>
+            </div>
+          </div>
+          ${SECTIONS.footer}
+        `;
+      }
 
-      <div class="md:col-span-2 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">VỀ CHÚNG TÔI</h4>
-        <div class="space-y-2 text-slate-400">
-          <div><a href="index.php" class="hover:text-blue-400">Trang chủ</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Sản phẩm BĐS</a></div>
-          <div><a href="#du-an" class="hover:text-blue-400">Dự án mới</a></div>
-          <div><a href="#tin-tuc" class="hover:text-blue-400">Tin tức & Sự kiện</a></div>
-        </div>
-      </div>
+      main.innerHTML = html;
+      
+      if (['home', 'floor-plans'].includes(currentPage)) {
+        renderFilteredUnits();
+      }
+      lucide.createIcons();
+    }
 
-      <div class="md:col-span-2 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">DANH MỤC</h4>
-        <div class="space-y-2 text-slate-400">
-          <div><a href="#san-pham" class="hover:text-blue-400">Đất dự án</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Đất nền</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Biệt thự biển</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Nhà phố</a></div>
-        </div>
-      </div>
+    // Initialize
+    renderNav();
+    renderPage();
 
-      <div class="md:col-span-3 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">CHÍNH SÁCH</h4>
-        <div class="space-y-2 text-slate-400 text-xs">
-          <div>• Bàn giao 100% mã nguồn sạch</div>
-          <div>• Bảo hành & Hỗ trợ kỹ thuật trọn đời</div>
-          <div>• Hỗ trợ cài đặt lên Hosting cPanel / XAMPP</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="max-w-7xl mx-auto px-4 pt-6 text-center text-[11px] text-slate-400">
-      <p>© 2026 Bản quyền thuộc về <strong class="text-white">TEMPLATEBDS</strong> — Mẫu Giao Diện: BDS-17.</p>
-    </div>
-  </footer>
-
+  </script>
 </body>
 </html>

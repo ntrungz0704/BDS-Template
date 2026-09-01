@@ -1,22 +1,24 @@
 <?php
-require_once '../config/db.php';
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Headers: Content-Type");
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? '');
-    $phone = trim($_POST['phone'] ?? '');
-    $message = trim($_POST['message'] ?? '');
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $fullName = isset($_POST['fullName']) ? htmlspecialchars($_POST['fullName']) : '';
+    $phone = isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : '';
+    $email = isset($_POST['email']) ? htmlspecialchars($_POST['email']) : '';
+    $message = isset($_POST['message']) ? htmlspecialchars($_POST['message']) : '';
+    $product_type = isset($_POST['product_type']) ? htmlspecialchars($_POST['product_type']) : '';
+    $source = isset($_POST['source']) ? htmlspecialchars($_POST['source']) : '';
 
-    if (!empty($name) && !empty($phone)) {
-        if ($pdo) {
-            $stmt = $pdo->prepare("INSERT INTO contacts (name, phone, message) VALUES (?, ?, ?)");
-            $stmt->execute([$name, $phone, $message]);
-        }
-        echo "<script>
-            alert('🎉 Gửi thông tin thành công! Chuyên viên sẽ liên hệ lại với quý khách trong ít phút.');
-            window.location.href = '../index.php';
-        </script>";
+    if (empty($fullName) || empty($phone)) {
+        http_response_code(400);
+        echo json_encode(["status" => "error", "message" => "Name and phone are required"]);
         exit;
     }
+
+    echo json_encode(["status" => "success", "message" => "Cảm ơn $fullName! Chúng tôi sẽ liên hệ lại sớm nhất."]);
+} else {
+    http_response_code(405);
+    echo json_encode(["status" => "error", "message" => "Method not allowed"]);
 }
-header('Location: ../index.php');
-exit;

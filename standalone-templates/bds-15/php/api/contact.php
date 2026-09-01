@@ -1,22 +1,24 @@
 <?php
+header('Content-Type: application/json');
 require_once '../config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? '');
-    $phone = trim($_POST['phone'] ?? '');
-    $message = trim($_POST['message'] ?? '');
+    $email = $_POST['email'] ?? '';
+    $product_type = $_POST['product_type'] ?? '';
+    $source = $_POST['source'] ?? 'website';
 
-    if (!empty($name) && !empty($phone)) {
-        if ($pdo) {
-            $stmt = $pdo->prepare("INSERT INTO contacts (name, phone, message) VALUES (?, ?, ?)");
-            $stmt->execute([$name, $phone, $message]);
-        }
-        echo "<script>
-            alert('🎉 Gửi thông tin thành công! Chuyên viên sẽ liên hệ lại với quý khách trong ít phút.');
-            window.location.href = '../index.php';
-        </script>";
+    if (empty($email)) {
+        echo json_encode(['success' => false, 'message' => 'Email is required']);
         exit;
     }
+
+    try {
+        $stmt = $pdo->prepare("INSERT INTO contacts (email, product_type, source) VALUES (?, ?, ?)");
+        $stmt->execute([$email, $product_type, $source]);
+        echo json_encode(['success' => true, 'message' => 'Contact saved successfully']);
+    } catch (PDOException $e) {
+        echo json_encode(['success' => false, 'message' => 'Database error']);
+    }
+} else {
+    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
-header('Location: ../index.php');
-exit;

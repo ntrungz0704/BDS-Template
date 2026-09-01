@@ -1,22 +1,31 @@
 <?php
 require_once '../config/db.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? '');
-    $phone = trim($_POST['phone'] ?? '');
-    $message = trim($_POST['message'] ?? '');
+header('Content-Type: application/json');
 
-    if (!empty($name) && !empty($phone)) {
-        if ($pdo) {
-            $stmt = $pdo->prepare("INSERT INTO contacts (name, phone, message) VALUES (?, ?, ?)");
-            $stmt->execute([$name, $phone, $message]);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = $_POST['name'] ?? null;
+    $phone = $_POST['phone'] ?? null;
+    $title = $_POST['title'] ?? null;
+    $price = $_POST['price'] ?? null;
+    $area = $_POST['area'] ?? null;
+    $email = $_POST['email'] ?? null;
+    
+    // Determine if it's a contact form or newsletter form
+    $type = !empty($email) && empty($name) ? 'newsletter' : 'contact';
+    
+    if (isset($pdo)) {
+        try {
+            $stmt = $pdo->prepare("INSERT INTO contacts (name, phone, title, price, area, email, type) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$name, $phone, $title, $price, $area, $email, $type]);
+            echo json_encode(['status' => 'success', 'message' => 'Your request has been submitted successfully.']);
+        } catch (PDOException $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
         }
-        echo "<script>
-            alert('🎉 Gửi thông tin thành công! Chuyên viên sẽ liên hệ lại với quý khách trong ít phút.');
-            window.location.href = '../index.php';
-        </script>";
-        exit;
+    } else {
+        // Fallback if no DB
+        echo json_encode(['status' => 'success', 'message' => 'Your request has been received (offline mode).']);
     }
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
 }
-header('Location: ../index.php');
-exit;

@@ -1,36 +1,55 @@
--- ========================================================
--- DATABASE SCHEMA CHO TEMPLATE PANNAMERA ECO-VILLAGE BẢO LỘC (BDS-07)
--- Tạo database: bds_villa_royal_garden
--- ========================================================
+CREATE DATABASE IF NOT EXISTS bds_07_cms CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE bds_07_cms;
 
-CREATE DATABASE IF NOT EXISTS `bds_villa_royal_garden` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `bds_villa_royal_garden`;
+CREATE TABLE IF NOT EXISTS company_info (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(50) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    address TEXT NOT NULL,
+    slogan VARCHAR(255) NOT NULL,
+    zalo VARCHAR(50) NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 
--- Bảng lưu danh sách Bất Động Sản
-CREATE TABLE IF NOT EXISTS `properties` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `title` VARCHAR(255) NOT NULL,
-  `slug` VARCHAR(255) NOT NULL UNIQUE,
-  `price` VARCHAR(100) NOT NULL,
-  `area` VARCHAR(50) NOT NULL,
-  `location` VARCHAR(255) NOT NULL,
-  `image` TEXT NOT NULL,
-  `description` TEXT,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO company_info (name, phone, email, address, slogan, zalo)
+VALUES (
+    'TEMPLATESBDS',
+    '0919 006 030',
+    'info@templatesbds.com',
+    'Làng Sinh Thái Pannamera, Xã Lộc Tân, TP. Bảo Lộc, Lâm Đồng',
+    'LÀNG SINH THÁI NGHỈ DƯỠNG',
+    '0919006030'
+) ON DUPLICATE KEY UPDATE name=VALUES(name);
 
--- Thêm dữ liệu mẫu
-INSERT INTO `properties` (`title`, `slug`, `price`, `area`, `location`, `image`, `description`) VALUES
-('Biệt thự sang trọng view thoáng mát', 'biet-thu-view-thoang-mat', '5.5 Tỷ VNĐ', '300 m²', 'Khu Đô Thị Mới', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80', 'Biệt thự thiết kế hiện đại sang trọng, đầy đủ tiện nghi.'),
-('Nhà phố mặt tiền thương mại kinh doanh', 'nha-pho-mat-tien-kinh-doanh', '8.2 Tỷ VNĐ', '140 m²', 'Trung tâm thành phố', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', 'Thuận tiện mở văn phòng, spa hoặc showroom kinh doanh.'),
-('Đất nền phân lô sổ đỏ sẵn sàng công chứng', 'dat-nen-phan-lo-so-do', '1.9 Tỷ VNĐ', '120 m²', 'Khu dân cư hiện hữu', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80', 'Hạ tầng hoàn thiện điện âm nước máy, xây dựng tự do.');
+CREATE TABLE IF NOT EXISTS projects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    type VARCHAR(255) NOT NULL,
+    area VARCHAR(100) NOT NULL,
+    direction VARCHAR(100) NOT NULL,
+    price VARCHAR(100) NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
+    badge_text VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
--- Bảng lưu thông tin khách hàng gửi từ Form liên hệ
-CREATE TABLE IF NOT EXISTS `contacts` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `name` VARCHAR(255) NOT NULL,
-  `phone` VARCHAR(50) NOT NULL,
-  `email` VARCHAR(100),
-  `message` TEXT,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO projects (name, type, area, direction, price, image_url, badge_text)
+VALUES
+('Lô Đất Vườn Nghỉ Dưỡng Săn Mây View Đồi Thông Tuyệt Mỹ', 'Đất Vườn Săn Mây • Phân Khu Săn Mây A1', '250.0 m²', 'Đông Nam', '890 Triệu VNĐ', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&q=80', 'SUẤT NGOẠI GIAO'),
+('Lô Góc 2 Mặt Tiền Suối Tự Nhiên & Đồi Chè Xanh Bát Ngát', 'Đất Vườn Sinh Thái • Phân Khu Ven Suối B2', '350.0 m²', 'Nam - Đông Nam', '1.25 Tỷ VNĐ', 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&q=80', 'VIEW SUỐI HIẾM'),
+('Nhà Vườn Bungalow Gỗ Mẫu Hoàn Thiện Full Sân Vườn', 'Bungalow Nghỉ Dưỡng • Phân Khu Trung Tâm C1', '300.0 m²', 'Đông', '1.45 Tỷ VNĐ', 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800&q=80', 'XÂY SẴN CHÌA KHÓA TRAO TAY'),
+('Biệt Thự Vườn Sinh Thái Panorama View 360 Độ Đồi Chè', 'Biệt Thự Đồi • Phân Khu Sunset Villa', '500.0 m²', 'Đông Bắc', '1.85 Tỷ VNĐ', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', 'VIEW PANORAMA 360');
+
+CREATE TABLE IF NOT EXISTS contacts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(50) NOT NULL,
+    email VARCHAR(255),
+    product_type VARCHAR(255),
+    price_expected VARCHAR(100),
+    address TEXT,
+    note TEXT,
+    source VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

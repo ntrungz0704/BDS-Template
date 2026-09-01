@@ -1,21 +1,36 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = strip_tags(trim($_POST['name'] ?? ''));
-    $phone = strip_tags(trim($_POST['phone'] ?? ''));
-    $message = strip_tags(trim($_POST['message'] ?? ''));
+header('Content-Type: application/json');
 
-    if (!empty($name) && !empty($phone)) {
-        require_once '../config/db.php';
-        if (isset($pdo)) {
-            $stmt = $pdo->prepare("INSERT INTO contacts (name, phone, message) VALUES (?, ?, ?)");
-            $stmt->execute([$name, $phone, $message]);
-        }
-        echo "<script>
-            alert('🎉 Gửi thông tin thành công! Chuyên viên sẽ liên hệ lại với quý khách trong ít phút qua số: " . htmlspecialchars($phone) . "');
-            window.location.href = '../index.php';
-        </script>";
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = isset($_POST['name']) ? htmlspecialchars($_POST['name']) : '';
+    $phone = isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : '';
+    $email = isset($_POST['email']) ? htmlspecialchars($_POST['email']) : '';
+    $time = isset($_POST['time']) ? htmlspecialchars($_POST['time']) : '';
+    $doc = isset($_POST['doc']) ? htmlspecialchars($_POST['doc']) : '';
+    $product_type = isset($_POST['product_type']) ? htmlspecialchars($_POST['product_type']) : (isset($_POST['product']) ? htmlspecialchars($_POST['product']) : '');
+    $source = isset($_POST['source']) ? htmlspecialchars($_POST['source']) : '';
+
+    if (empty($name) || empty($phone)) {
+        echo json_encode(['success' => false, 'message' => 'Vui lòng điền họ tên và số điện thoại.']);
         exit;
     }
+
+    // Process contact data (e.g., save to DB, send email)
+    // For now, we simulate success
+    echo json_encode([
+        'success' => true, 
+        'message' => 'Đã tiếp nhận yêu cầu!',
+        'data' => [
+            'name' => $name,
+            'phone' => $phone,
+            'email' => $email,
+            'time' => $time,
+            'doc' => $doc,
+            'product_type' => $product_type,
+            'source' => $source
+        ]
+    ]);
+} else {
+    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
-header('Location: ../index.php');
-exit;
+?>

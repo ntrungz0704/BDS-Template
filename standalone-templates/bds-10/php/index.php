@@ -1,147 +1,741 @@
 <?php
 require_once 'config/db.php';
 
-// Lấy danh sách BĐS từ MySQL nếu có kết nối, hoặc dùng mảng demo
-if ($pdo) {
-    $stmt = $pdo->query("SELECT * FROM properties ORDER BY id DESC LIMIT 6");
-    $properties = $stmt->fetchAll();
-} else {
-    $properties = [
-        ['title' => 'Biệt thự sang trọng view thoáng mát', 'slug' => 'biet-thu-view-thoang-mat', 'price' => '5.5 Tỷ VNĐ', 'area' => '300 m²', 'location' => 'Khu Đô Thị Mới', 'image' => 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80'],
-        ['title' => 'Nhà phố mặt tiền thương mại kinh doanh', 'slug' => 'nha-pho-mat-tien-kinh-doanh', 'price' => '8.2 Tỷ VNĐ', 'area' => '140 m²', 'location' => 'Trung tâm thành phố', 'image' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80'],
-        ['title' => 'Đất nền phân lô sổ đỏ sẵn sàng công chứng', 'slug' => 'dat-nen-phan-lo-so-do', 'price' => '1.9 Tỷ VNĐ', 'area' => '120 m²', 'location' => 'Khu dân cư hiện hữu', 'image' => 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80'],
+// Fetch company info
+$stmt = $pdo->query("SELECT * FROM company_info LIMIT 1");
+$company = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$company) {
+    $company = [
+        'company_name' => 'Công ty Cổ phần Bất động sản Danh Khôi',
+        'short_name' => 'DKRP',
+        'address' => '180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội',
+        'phone' => '0919006030',
+        'phone2' => '0983312219',
+        'email' => 'info@templatebds.com',
+        'email2' => 'admin@templatesbds.com',
+        'zalo' => 'https://zalo.me/0919006030',
+        'facebook' => 'https://www.facebook.com/groups/847532091275214',
+        'youtube' => 'https://www.youtube.com/@tungchuofficial',
+        'tiktok' => 'https://www.tiktok.com/@editnhadat',
+        'working_hours' => '8:00 - 20:00 (T2 - CN)',
+        'slogan' => 'Danh Khôi (DKRP) đồng hành kiến tạo không gian sống đỉnh cao và thịnh vượng bền vững cho mọi gia đình Việt.'
     ];
 }
+
+function formatPhone($phone) {
+    return substr($phone, 0, 4) . ' ' . substr($phone, 4, 3) . ' ' . substr($phone, 7);
+}
+
+// Fetch projects
+$projectsStmt = $pdo->query("SELECT * FROM projects");
+$projects = $projectsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$projectsJson = json_encode(array_map(function($p) {
+    return [
+        'id' => (int)$p['id'],
+        'title' => $p['title'],
+        'slug' => $p['slug'],
+        'subtitle' => $p['subtitle'],
+        'statusBadge' => $p['statusBadge'],
+        'price' => $p['price'],
+        'city' => $p['city'],
+        'image' => $p['image'],
+        'desc' => $p['description'],
+        'location' => $p['location'],
+        'details' => json_decode($p['details'], true) ?: []
+    ];
+}, $projects));
+
+// Fetch news
+$newsStmt = $pdo->query("SELECT * FROM news");
+$news = $newsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$newsJson = json_encode(array_map(function($n) {
+    return [
+        'id' => (int)$n['id'],
+        'category' => $n['category'],
+        'title' => $n['title'],
+        'date' => $n['date'],
+        'image' => $n['image']
+    ];
+}, $news));
 ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Investment Pro Hub — Website Bất Động Sản PHP & MySQL</title>
+  <title>BDS-10 Template - Danh Khôi Real Estate</title>
+  
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .max-w-screen-xl { max-width: 1280px; }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+<body class="w-full min-h-screen bg-white text-slate-900 font-sans flex flex-col justify-between selection:bg-[#0284C7] selection:text-white">
 
-  <!-- Header PHP -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <a href="index.php" class="flex items-center gap-2 font-black text-xl text-blue-600">
-        <span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-xs">TB</span>
-        <span>TEMPLATES<strong class="text-slate-900">BDS</strong></span>
-      </a>
-      <div class="flex items-center gap-3">
-        <a href="tel:0919006030" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow">
-          Hotline: 0919 006 030
-        </a>
+  <!-- Toast Popup -->
+  <div id="toastPopup" class="fixed bottom-24 right-6 z-50 bg-[#0B1A30] text-white border border-blue-400 px-5 py-3 rounded-sm shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce hidden">
+    <i data-lucide="check-circle-2" class="text-emerald-400 w-4 h-4"></i> <span id="toastMessage"></span>
+  </div>
+
+  <!-- LEFT FLOATING ACTION PILLS -->
+  <div class="fixed left-4 top-1/2 -translate-y-1/2 z-40 hidden sm:flex flex-col gap-2.5">
+    <a href="https://zalo.me/<?php echo htmlspecialchars($company['phone']); ?>" target="_blank" rel="noreferrer" class="px-3.5 py-1.5 rounded-sm bg-[#16A34A] hover:bg-[#15803D] text-white text-xs font-bold shadow-lg transition flex items-center gap-1.5 hover:scale-105">
+      <i data-lucide="message-square" class="w-3.5 h-3.5"></i> Chat Zalo
+    </a>
+    <a href="<?php echo htmlspecialchars($company['facebook']); ?>" target="_blank" rel="noreferrer" class="px-3.5 py-1.5 rounded-sm bg-[#0284C7] hover:bg-[#0369A1] text-white text-xs font-bold shadow-lg transition flex items-center gap-1.5 hover:scale-105">
+      <i data-lucide="share-2" class="w-3.5 h-3.5"></i> Chat Facebook
+    </a>
+    <a href="tel:<?php echo htmlspecialchars($company['phone']); ?>" class="px-3.5 py-1.5 rounded-sm bg-[#E11D48] hover:bg-[#BE123C] text-white text-xs font-black shadow-lg transition flex items-center gap-1.5 hover:scale-105">
+      <i data-lucide="phone" class="w-3.5 h-3.5 animate-pulse"></i> Hotline: <?php echo formatPhone(htmlspecialchars($company['phone'])); ?>
+    </a>
+  </div>
+
+  <div id="appContainer">
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-white text-slate-800 shadow-md border-b border-slate-200">
+      <div class="bg-[#0B1A30] text-slate-300 text-xs py-1.5 px-4 hidden md:block font-medium">
+        <div class="max-w-screen-xl mx-auto flex items-center justify-between">
+          <div class="flex items-center gap-6">
+            <span class="flex items-center gap-1.5 text-slate-300">
+              <i data-lucide="map-pin" class="text-[#0284C7] w-3 h-3"></i> <?php echo htmlspecialchars($company['address']); ?>
+            </span>
+            <span class="opacity-40">|</span>
+            <span class="flex items-center gap-1.5 text-slate-300">
+              <i data-lucide="mail" class="text-[#0284C7] w-3 h-3"></i> <?php echo htmlspecialchars($company['email']); ?>
+            </span>
+          </div>
+          <div class="flex items-center gap-4 text-xs font-bold text-[#FDE047]">
+            <span>Hotline 24/7: <strong><?php echo formatPhone(htmlspecialchars($company['phone'])); ?></strong></span>
+          </div>
+        </div>
       </div>
-    </div>
-  </header>
 
-  <!-- Main Content -->
-  <main class="flex-1 w-full space-y-12 pb-16">
-    <section class="py-16 px-4 bg-slate-900 text-white text-center">
-      <h1 class="text-3xl sm:text-5xl font-black uppercase mb-4">Investment Pro Hub</h1>
-      <p class="text-slate-300 max-w-xl mx-auto text-sm">Phân tích tài chính BĐS · Biểu đồ giá · Máy tính ROI</p>
-    </section>
-
-    <!-- Danh sách BĐS từ MySQL -->
-    <section class="max-w-7xl mx-auto px-4 space-y-6">
-      <h2 class="text-2xl font-black text-slate-900 uppercase text-center">DANH SÁCH BẤT ĐỘNG SẢN</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <?php foreach ($properties as $item): ?>
-          <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition">
-            <img src="<?php echo htmlspecialchars($item['image']); ?>" alt="" class="w-full h-48 object-cover">
-            <div class="p-4 space-y-2">
-              <h3 class="font-bold text-sm text-slate-900"><?php echo htmlspecialchars($item['title']); ?></h3>
-              <p class="text-xs text-slate-500"><?php echo htmlspecialchars($item['location']); ?></p>
-              <div class="flex justify-between items-center pt-2 border-t text-xs">
-                <span class="font-black text-blue-600 text-sm"><?php echo htmlspecialchars($item['price']); ?></span>
-                <span class="text-slate-500"><?php echo htmlspecialchars($item['area']); ?></span>
-              </div>
+      <div class="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+        <div onclick="navigate('home')" class="flex items-center gap-3 cursor-pointer group shrink-0">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl sm:text-3xl font-black tracking-tighter text-[#0284C7] group-hover:text-[#0369A1] transition font-sans">
+              DKRP
+            </span>
+            <div class="hidden sm:block border-l-2 border-slate-300 pl-2">
+              <span class="text-[10px] font-black uppercase text-slate-800 tracking-wider block leading-tight">DANH KHÔI</span>
+              <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest block leading-tight">REAL ESTATE</span>
             </div>
           </div>
-        <?php endforeach; ?>
-      </div>
-    </section>
+        </div>
 
-    <!-- Form Liên Hệ PHP -->
-    <section class="max-w-3xl mx-auto px-4">
-      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-md space-y-4">
-        <h3 class="text-lg font-black text-slate-900 uppercase text-center">GỬI YÊU CẦU TƯ VẤN</h3>
-        <form action="api/contact.php" method="POST" class="space-y-3 text-xs">
-          <input type="text" name="name" placeholder="Họ và tên (*)" required class="w-full p-3 bg-slate-50 border rounded-xl">
-          <input type="tel" name="phone" placeholder="Số điện thoại (*)" required class="w-full p-3 bg-slate-50 border rounded-xl font-bold text-blue-600">
-          <textarea name="message" rows="3" placeholder="Nội dung cần tư vấn..." class="w-full p-3 bg-slate-50 border rounded-xl"></textarea>
-          <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl">
-            GỬI THÔNG TIN
+        <nav class="hidden lg:flex items-center gap-2 xl:gap-4 text-xs font-bold uppercase tracking-wider text-slate-700 whitespace-nowrap">
+          <button onclick="navigate('home')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg transition-all text-[#0284C7] font-extrabold border-b-2 border-[#0284C7]" data-page="home">Trang Chủ</button>
+          <button onclick="navigate('about')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg transition-all hover:text-[#0284C7]" data-page="about">Giới Thiệu</button>
+          <button onclick="navigate('projects')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg transition-all hover:text-[#0284C7]" data-page="projects">Dự Án</button>
+          <button onclick="navigate('news')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg transition-all hover:text-[#0284C7]" data-page="news">Tin Tức</button>
+          <button onclick="navigate('contact')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg transition-all hover:text-[#0284C7]" data-page="contact">Liên Hệ</button>
+        </nav>
+
+        <div class="flex items-center gap-3 shrink-0">
+          <div class="hidden xl:flex items-center bg-slate-100 rounded-sm px-3 py-1.5 border border-slate-200">
+            <input type="text" placeholder="Tìm kiếm dự án..." class="bg-transparent text-xs text-slate-800 placeholder-slate-400 focus:outline-none w-32 focus:w-44 transition-all" />
+            <i data-lucide="search" class="text-slate-400 cursor-pointer w-3.5 h-3.5"></i>
+          </div>
+          <a href="tel:<?php echo htmlspecialchars($company['phone']); ?>" class="hidden sm:flex px-3.5 py-2 rounded-sm bg-gradient-to-r from-[#0284C7] to-[#0369A1] hover:from-[#0369A1] text-white text-xs font-black whitespace-nowrap shrink-0 shadow-md transition items-center gap-1.5">
+            <i data-lucide="phone" class="w-3.5 h-3.5 animate-pulse"></i> <span><?php echo formatPhone(htmlspecialchars($company['phone'])); ?></span>
+          </a>
+          <button onclick="toggleMobileMenu()" class="p-1.5 sm:p-2 rounded-sm bg-slate-100 text-slate-800 lg:hidden hover:bg-slate-200 shrink-0 flex items-center justify-center">
+            <i data-lucide="menu" id="menuIcon" class="w-5 h-5"></i>
           </button>
-        </form>
-      </div>
-    </section>
-  </main>
-
-  <!-- Footer PHP -->
-  <footer class="w-full bg-[#07132B] text-slate-300 text-xs pt-12 pb-6 border-t border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-white/10">
-      <div class="md:col-span-5 space-y-3">
-        <h4 class="font-black text-sm text-white uppercase tracking-wider">
-          <span class="text-[#0084FF]">TEMPLATES</span><span class="text-white">BDS</span>
-        </h4>
-        <p class="text-slate-400 text-xs leading-relaxed max-w-sm">
-          Kho mẫu website bất động sản cao cấp số 1 Việt Nam. Tối ưu chuyển đổi, chuẩn SEO và tích hợp hệ thống CMS quản trị đa kênh.
-        </p>
-        <div class="space-y-1.5 text-xs text-slate-300 pt-1">
-          <div>📍 Địa chỉ: <strong class="text-white font-medium">180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội</strong></div>
-          <div>📞 Hotline 1: <a href="tel:0919006030" class="text-white font-bold font-mono hover:text-blue-400">0919 006 030</a></div>
-          <div>📞 Hotline 2: <a href="tel:0983312219" class="text-white font-bold font-mono hover:text-emerald-400">0983 312 219</a> (24/7)</div>
-          <div>✉️ Email: <a href="mailto:ntrungz0704@gmail.com" class="text-white hover:text-blue-400">ntrungz0704@gmail.com</a></div>
-          <div>⏰ Giờ làm việc: <strong class="text-white font-medium">8:00 - 20:00 (T2 - CN)</strong></div>
-        </div>
-
-        <!-- 4 Social Icons -->
-        <div class="flex items-center gap-2.5 pt-2">
-          <a href="https://zalo.me/0919006030" target="_blank" class="w-9 h-9 rounded-2xl bg-[#0068FF] text-white flex items-center justify-center font-black text-[10px]">ZALO</a>
-          <a href="https://www.facebook.com/groups/847532091275214" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1877F2] text-white flex items-center justify-center font-bold text-sm">f</a>
-          <a href="https://www.youtube.com/@tungchuofficial" target="_blank" class="w-9 h-9 rounded-2xl bg-[#E62117] text-white flex items-center justify-center text-xs">▶</a>
-          <a href="https://www.tiktok.com/@editnhadat" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1E293B] text-[#A78BFA] flex items-center justify-center text-xs">🎵</a>
         </div>
       </div>
 
-      <div class="md:col-span-2 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">VỀ CHÚNG TÔI</h4>
-        <div class="space-y-2 text-slate-400">
-          <div><a href="index.php" class="hover:text-blue-400">Trang chủ</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Sản phẩm BĐS</a></div>
-          <div><a href="#du-an" class="hover:text-blue-400">Dự án mới</a></div>
-          <div><a href="#tin-tuc" class="hover:text-blue-400">Tin tức & Sự kiện</a></div>
+      <div id="mobileMenu" class="hidden lg:hidden bg-white border-b border-slate-200 px-6 py-5 space-y-2 shadow-2xl">
+        <div class="grid grid-cols-2 gap-2 text-xs font-bold uppercase">
+          <button onclick="navigate('home')" class="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-blue-50 hover:text-blue-700">Trang Chủ</button>
+          <button onclick="navigate('about')" class="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-blue-50 hover:text-blue-700">Giới Thiệu</button>
+          <button onclick="navigate('projects')" class="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-blue-50 hover:text-blue-700">Dự Án</button>
+          <button onclick="navigate('news')" class="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-blue-50 hover:text-blue-700">Tin Tức</button>
+          <button onclick="navigate('contact')" class="p-2.5 rounded-lg text-left bg-slate-50 hover:bg-blue-50 hover:text-blue-700">Liên Hệ</button>
         </div>
       </div>
+    </header>
 
-      <div class="md:col-span-2 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">DANH MỤC</h4>
-        <div class="space-y-2 text-slate-400">
-          <div><a href="#san-pham" class="hover:text-blue-400">Đất dự án</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Đất nền</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Biệt thự biển</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Nhà phố</a></div>
+    <main id="mainContent">
+      <!-- Sections will be toggled by JS -->
+      
+      <!-- HERO -->
+      <section id="sec-hero" class="relative min-h-[420px] sm:min-h-[520px] lg:min-h-[600px] flex items-center justify-center text-white overflow-hidden bg-slate-950">
+        <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80" alt="Hero Skyscraper" class="absolute inset-0 w-full h-full object-cover object-center scale-105" onerror="this.src='https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80'" />
+        <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent"></div>
+        <div class="relative z-20 max-w-screen-xl mx-auto px-4 py-16 text-center space-y-5 max-w-3xl">
+          <span class="inline-block px-3.5 py-1 rounded-sm bg-[#16A34A] text-white text-[11px] font-black uppercase tracking-widest shadow-md">DKRP REALTY</span>
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white uppercase tracking-wider leading-tight drop-shadow-2xl">NHÀ MỚI CỦA BẠN</h1>
+          <p class="text-sm sm:text-base text-slate-200 font-medium leading-relaxed max-w-xl mx-auto drop-shadow-md"><?php echo htmlspecialchars($company['slogan']); ?></p>
+          <div class="pt-3 flex justify-center">
+            <button onclick="navigate('projects')" class="px-8 py-3.5 bg-white text-slate-900 hover:bg-slate-100 font-black text-xs sm:text-sm uppercase tracking-wider rounded-sm shadow-2xl transition hover:scale-105 cursor-pointer flex items-center gap-2">
+              XEM THÊM <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="sec-about" class="py-16 bg-white text-slate-800">
+        <div class="max-w-screen-xl mx-auto px-4">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div class="lg:col-span-6 space-y-4">
+              <span class="inline-block px-3 py-1 rounded-sm bg-[#16A34A] text-white text-[10px] font-black uppercase tracking-wider">GIỚI THIỆU</span>
+              <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Về chúng tôi</h2>
+              <div class="space-y-3 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <p>Công ty Cổ phần Bất động sản Danh Khôi (DKRP) là một trong những đơn vị phát triển và phân phối bất động sản uy tín hàng đầu tại Việt Nam.</p>
+                <p>Với hơn 15 năm hình thành và phát triển, DKRP không ngừng mở rộng quy mô, kiến tạo hàng loạt dự án đại đô thị, khu phức hợp căn hộ cao cấp và bất động sản nghỉ dưỡng trải dài khắp cả nước.</p>
+              </div>
+              <div class="pt-2">
+                <button onclick="navigate('about')" class="px-6 py-2.5 rounded-sm bg-[#0284C7] hover:bg-[#0369A1] text-white text-xs font-black uppercase tracking-wider shadow-md transition hover:scale-105">XEM THÊM ›</button>
+              </div>
+            </div>
+            <div class="lg:col-span-6 grid grid-cols-3 gap-3 items-center">
+              <div class="col-span-2 rounded-sm overflow-hidden shadow-md">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80" alt="DKRP Project" class="w-full h-44 sm:h-52 object-cover" />
+              </div>
+              <div class="col-span-1 space-y-3">
+                <div class="h-20 bg-[#84CC16] rounded-sm flex items-center justify-center text-white font-black text-xs shadow-sm">15+ NĂM</div>
+                <div class="rounded-sm overflow-hidden shadow-md">
+                  <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400&q=80" alt="Villa" class="w-full h-24 sm:h-28 object-cover" />
+                </div>
+              </div>
+              <div class="col-span-2 rounded-sm overflow-hidden shadow-md">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Apartment" class="w-full h-32 sm:h-36 object-cover" />
+              </div>
+              <div class="col-span-1 h-32 sm:h-36 bg-[#0284C7] rounded-sm flex items-center justify-center text-white font-black text-center p-3 text-xs shadow-sm">UY TÍN HÀNG ĐẦU</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section id="sec-projects" class="py-16 bg-[#F8FAFC] text-slate-800 border-t border-slate-200">
+        <div class="max-w-screen-xl mx-auto px-4 space-y-10">
+          <div class="text-center max-w-xl mx-auto space-y-2">
+            <span class="inline-block px-3 py-1 rounded-sm bg-[#16A34A] text-white text-[10px] font-black uppercase tracking-wider">DỰ ÁN</span>
+            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight uppercase">DỰ ÁN NỔI BẬT</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="projectsGrid">
+            <!-- JS populated -->
+          </div>
+        </div>
+      </section>
+
+      <!-- WHY CHOOSE US & LEAD -->
+      <section id="sec-whyus" class="relative py-20 bg-slate-950 text-white overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1600&q=80" alt="Panorama Background" class="absolute inset-0 w-full h-full object-cover opacity-30" />
+        <div class="absolute inset-0 bg-black/60"></div>
+        <div class="relative z-20 max-w-screen-xl mx-auto px-4">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch max-w-5xl mx-auto">
+            <div class="lg:col-span-6 bg-black/70 backdrop-blur-md p-8 sm:p-10 rounded-md border border-white/20 flex flex-col justify-between space-y-6">
+              <div>
+                <h3 class="text-lg sm:text-xl font-black text-amber-300 uppercase tracking-wider text-center border-b border-white/20 pb-3 mb-6">TẠI SAO CHỌN CHÚNG TÔI</h3>
+                <div class="grid grid-cols-2 gap-4 text-center">
+                  <div class="space-y-1.5 p-3 rounded-sm bg-white/5 border border-white/10">
+                    <span class="text-2xl">🏆</span><p class="text-xs font-bold text-white">15+ Năm Kinh Nghiệm</p><span class="text-[10px] text-slate-400">Uy tín thị trường</span>
+                  </div>
+                  <div class="space-y-1.5 p-3 rounded-sm bg-white/5 border border-white/10">
+                    <span class="text-2xl">🤝</span><p class="text-xs font-bold text-white">Đội Ngũ Tận Tâm</p><span class="text-[10px] text-slate-400">Tư vấn chuyên sâu</span>
+                  </div>
+                  <div class="space-y-1.5 p-3 rounded-sm bg-white/5 border border-white/10">
+                    <span class="text-2xl">🏢</span><p class="text-xs font-bold text-white">Hệ Thống Đa Dạng</p><span class="text-[10px] text-slate-400">Dự án toàn quốc</span>
+                  </div>
+                  <div class="space-y-1.5 p-3 rounded-sm bg-white/5 border border-white/10">
+                    <span class="text-2xl">⚖️</span><p class="text-xs font-bold text-white">Pháp Lý Minh Bạch</p><span class="text-[10px] text-slate-400">Bàn giao chuẩn hẹn</span>
+                  </div>
+                </div>
+              </div>
+              <div class="text-center pt-2">
+                <button onclick="navigate('contact')" class="px-6 py-2.5 rounded-sm bg-[#0284C7] hover:bg-[#0369A1] text-white text-xs font-black uppercase tracking-wider transition">LIÊN HỆ ›</button>
+              </div>
+            </div>
+            <div class="lg:col-span-6 bg-white text-slate-900 p-8 sm:p-10 rounded-md shadow-2xl flex flex-col justify-between space-y-4">
+              <div class="text-center space-y-1">
+                <span class="text-[10px] font-black text-[#0284C7] uppercase tracking-wider block">BÁO GIÁ DỰ ÁN</span>
+                <h3 class="text-base sm:text-lg font-black text-slate-900 uppercase">GỬI YÊU CẦU NHẬN BÁO GIÁ MỚI NHẤT</h3>
+              </div>
+              <form onsubmit="handleLeadSubmit(event)" action="api/contact.php" method="POST" class="space-y-3 text-xs">
+                <input type="text" name="name" id="leadName" placeholder="Họ và tên..." required class="w-full bg-slate-50 px-4 py-3 rounded-sm border focus:bg-white focus:outline-none" />
+                <input type="email" name="email" id="leadEmail" placeholder="Địa chỉ Email..." class="w-full bg-slate-50 px-4 py-3 rounded-sm border focus:bg-white focus:outline-none" />
+                <input type="tel" name="phone" id="leadPhone" placeholder="Số điện thoại (*)..." required class="w-full bg-slate-50 px-4 py-3 rounded-sm border focus:bg-white focus:outline-none font-bold" />
+                <select name="project" id="leadProject" class="w-full bg-slate-50 px-4 py-3 rounded-sm border focus:bg-white focus:outline-none">
+                  <option value="DỰ ÁN PHỨC HỢP CĂN HỘ ASTRAL CITY BÌNH DƯƠNG">DỰ ÁN PHỨC HỢP CĂN HỘ ASTRAL CITY BÌNH DƯƠNG</option>
+                  <option value="DỰ ÁN ARIA ĐÀ NẴNG HOTEL & RESORT">DỰ ÁN ARIA ĐÀ NẴNG HOTEL & RESORT</option>
+                  <option value="DỰ ÁN KHU ĐÔ THỊ BARYA CITI BÀ RỊA VŨNG TÀU">DỰ ÁN KHU ĐÔ THỊ BARYA CITI BÀ RỊA VŨNG TÀU</option>
+                </select>
+                <button type="submit" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-black uppercase tracking-wider rounded-sm shadow-md transition cursor-pointer">ĐĂNG KÝ</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DEVELOPER PROFILE -->
+      <section id="sec-dev" class="py-12 bg-white text-slate-800 border-b border-slate-200">
+        <div class="max-w-screen-xl mx-auto px-4 text-center space-y-6 max-w-2xl">
+          <span class="inline-block px-3 py-1 rounded-sm bg-[#16A34A] text-white text-[10px] font-black uppercase tracking-wider">CHUYÊN NGHIỆP</span>
+          <h2 class="text-xl sm:text-2xl font-black text-slate-900 uppercase">NHÀ PHÁT TRIỂN DỰ ÁN</h2>
+          <div class="p-6 rounded-md bg-slate-50 border border-slate-200 space-y-3">
+            <div class="text-3xl font-black tracking-tighter text-[#0284C7]">DKRP</div>
+            <h4 class="text-sm font-black text-slate-900 uppercase">TẬP ĐOÀN BẤT ĐỘNG SẢN DANH KHÔI</h4>
+            <p class="text-xs text-slate-500">Trụ sở chính: TP. Hồ Chí Minh & Chi nhánh Hà Nội</p>
+            <p class="text-xs font-bold text-[#E11D48]">Hotline tư vấn dự án: <?php echo formatPhone(htmlspecialchars($company['phone'])); ?></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- NEWS -->
+      <section id="sec-news" class="py-16 bg-[#F8FAFC] text-slate-800">
+        <div class="max-w-screen-xl mx-auto px-4 space-y-10">
+          <div class="text-center max-w-xl mx-auto space-y-2">
+            <span class="inline-block px-3 py-1 rounded-sm bg-[#16A34A] text-white text-[10px] font-black uppercase tracking-wider">TIN TỨC</span>
+            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight uppercase">ĐỌC NHỮNG TIN TỨC MỚI NHẤT</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="newsGrid">
+            <!-- JS populated -->
+          </div>
+        </div>
+      </section>
+
+      <!-- QUICK CONTACT STRIP -->
+      <section id="sec-quickcontact" class="py-10 bg-[#0B1A30] text-white">
+        <div class="max-w-screen-xl mx-auto px-4 text-center space-y-4">
+          <h3 class="text-base sm:text-lg font-black uppercase tracking-wider">Liên hệ ngay để được tư vấn!</h3>
+          <form onsubmit="handleQuickContactSubmit(event)" action="api/contact.php" method="POST" class="flex flex-wrap items-center justify-center gap-3 max-w-3xl mx-auto text-xs">
+            <input type="text" name="name" id="qcName" placeholder="Họ và tên..." required class="px-4 py-2.5 rounded-sm bg-white text-slate-900 placeholder-slate-400 focus:outline-none w-full sm:w-48" />
+            <input type="email" name="email" id="qcEmail" placeholder="Email..." class="px-4 py-2.5 rounded-sm bg-white text-slate-900 placeholder-slate-400 focus:outline-none w-full sm:w-48" />
+            <input type="tel" name="phone" id="qcPhone" placeholder="Số điện thoại (*)..." required class="px-4 py-2.5 rounded-sm bg-white text-slate-900 placeholder-slate-400 focus:outline-none w-full sm:w-48 font-bold" />
+            <button type="submit" class="px-6 py-2.5 rounded-sm bg-[#0284C7] hover:bg-[#0369A1] text-white font-black uppercase tracking-wider transition shadow-md cursor-pointer">GỬI ĐI</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- PARTNERS SLIDER -->
+      <section id="sec-partners" class="py-10 bg-white border-b border-slate-200">
+        <div class="max-w-screen-xl mx-auto px-4">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 items-center text-center">
+            <div class="p-4 rounded-sm border border-slate-200 shadow-sm font-black text-slate-800 text-sm">AKA FURNITURE</div>
+            <div class="p-4 rounded-sm border border-slate-200 shadow-sm font-black text-[#0284C7] text-sm">CBRE VIETNAM</div>
+            <div class="p-4 rounded-sm border border-slate-200 shadow-sm font-black text-slate-800 text-sm">CENTRAL CONS</div>
+            <div class="p-4 rounded-sm border border-slate-200 shadow-sm font-black text-[#0284C7] text-sm">RITAVO KOHLER</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SPLIT CTA -->
+      <section id="sec-splitcta" class="py-12 bg-[#F8FAFC]">
+        <div class="max-w-screen-xl mx-auto px-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 rounded-md overflow-hidden shadow-xl">
+            <div class="bg-[#38BDF8] text-slate-900 p-8 sm:p-10 text-center space-y-3 flex flex-col justify-between items-center">
+              <div class="space-y-2">
+                <h4 class="text-base sm:text-lg font-black uppercase">VỀ MUA NHÀ</h4>
+                <p class="text-xs leading-relaxed max-w-sm">Bạn đang tìm kiếm ngôi nhà mơ ước? Hãy cùng chúng tôi khám phá những dự án mới nhất với giá gốc CĐT.</p>
+              </div>
+              <button onclick="navigate('projects')" class="px-6 py-2.5 rounded-sm bg-white text-slate-900 font-black text-xs uppercase tracking-wider hover:bg-slate-100 transition shadow">MUA NHÀ NGAY</button>
+            </div>
+            <div class="bg-[#0284C7] text-white p-8 sm:p-10 text-center space-y-3 flex flex-col justify-between items-center">
+              <div class="space-y-2">
+                <h4 class="text-base sm:text-lg font-black uppercase">KÝ GỬI & BÁN NHÀ</h4>
+                <p class="text-xs text-blue-100 leading-relaxed max-w-sm">Bạn có bất động sản cần bán hoặc cho thuê? Đăng tin ký gửi ngay để tiếp cận hàng triệu khách hàng nét.</p>
+              </div>
+              <button onclick="navigate('consignment')" class="px-6 py-2.5 rounded-sm bg-slate-900 text-white font-black text-xs uppercase tracking-wider hover:bg-slate-800 transition shadow">KÝ GỬI NGAY</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DKRP FOOTER -->
+      <section id="sec-dkrpfooter" class="py-14 bg-[#0B1A30] text-slate-300 text-xs">
+        <div class="max-w-screen-xl mx-auto px-4">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10">
+            <div class="md:col-span-5 space-y-3">
+              <span class="text-2xl font-black text-[#38BDF8] tracking-tight block">DKRP</span>
+              <p class="text-slate-400 leading-relaxed">Công ty Cổ phần Bất động sản Danh Khôi — Đơn vị phát triển và phân phối bất động sản uy tín hàng đầu tại Việt Nam.</p>
+              <div class="pt-2 text-slate-400 space-y-1">
+                <p>📍 Trụ sở: <?php echo htmlspecialchars($company['address']); ?></p>
+                <p>📞 Hotline: <a href="tel:<?php echo htmlspecialchars($company['phone']); ?>" class="text-white font-bold hover:underline"><?php echo formatPhone(htmlspecialchars($company['phone'])); ?></a></p>
+                <p>✉️ Email: <?php echo htmlspecialchars($company['email']); ?></p>
+              </div>
+            </div>
+            <div class="md:col-span-3 space-y-3">
+              <h4 class="font-bold text-white uppercase tracking-wider border-b border-white/10 pb-2">VỀ CHÚNG TÔI</h4>
+              <ul class="space-y-2 text-slate-400">
+                <li><button onclick="navigate('about')" class="hover:text-blue-400">Giới thiệu Danh Khôi</button></li>
+                <li><button onclick="navigate('projects')" class="hover:text-blue-400">Dự án đang phân phối</button></li>
+                <li><button onclick="navigate('news')" class="hover:text-blue-400">Tin tức thị trường</button></li>
+                <li><button onclick="navigate('contact')" class="hover:text-blue-400">Liên hệ hợp tác</button></li>
+              </ul>
+            </div>
+            <div class="md:col-span-4 space-y-3">
+              <h4 class="font-bold text-white uppercase tracking-wider border-b border-white/10 pb-2">ĐĂNG KÝ TƯ VẤN</h4>
+              <form onsubmit="handleLeadSubmit(event)" action="api/contact.php" method="POST" class="space-y-2">
+                <input type="text" name="name" placeholder="Họ và tên..." required class="w-full bg-slate-900 border border-slate-700 px-3.5 py-2 rounded-lg text-white focus:outline-none" />
+                <input type="tel" name="phone" placeholder="Số điện thoại (*)..." required class="w-full bg-slate-900 border border-slate-700 px-3.5 py-2 rounded-lg text-white focus:outline-none" />
+                <button type="submit" class="w-full py-2 bg-[#0284C7] hover:bg-[#0369A1] text-white font-bold rounded-lg uppercase tracking-wider">ĐĂNG KÝ</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONSIGNMENT PAGE (Hidden by default) -->
+      <section id="sec-consignment" class="py-12 bg-white text-slate-900 min-h-screen hidden">
+        <div class="max-w-screen-xl mx-auto px-4 max-w-2xl space-y-8">
+          <div class="text-center space-y-2">
+            <span class="inline-block px-3 py-1 rounded-sm bg-[#16A34A] text-white text-[10px] font-black uppercase tracking-wider">KÝ GỬI</span>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 uppercase">KÝ GỬI NHÀ ĐẤT NHANH CHÓNG</h1>
+            <p class="text-xs sm:text-sm text-slate-600">Tiếp cận hơn 50.000 khách hàng tiềm năng qua mạng lưới phân phối của Danh Khôi DKRP</p>
+          </div>
+          <form onsubmit="handleConsignmentSubmit(event)" action="api/contact.php" method="POST" class="bg-slate-50 p-8 rounded-md border border-slate-200 space-y-4 text-xs">
+            <input type="text" name="name" placeholder="Họ và tên chủ sở hữu..." required class="w-full p-3.5 rounded-sm border bg-white focus:outline-none" />
+            <input type="tel" name="phone" placeholder="Số điện thoại liên hệ (*)..." required class="w-full p-3.5 rounded-sm border bg-white focus:outline-none font-bold" />
+            <input type="text" name="address" placeholder="Địa chỉ bất động sản..." required class="w-full p-3.5 rounded-sm border bg-white focus:outline-none" />
+            <input type="text" name="price" placeholder="Giá mong muốn bán hoặc cho thuê..." required class="w-full p-3.5 rounded-sm border bg-white focus:outline-none font-bold text-emerald-700" />
+            <textarea name="desc" rows="4" placeholder="Mô tả thông số diện tích, pháp lý..." class="w-full p-3.5 rounded-sm border bg-white focus:outline-none"></textarea>
+            <button type="submit" class="w-full py-4 bg-[#0284C7] hover:bg-[#0369A1] text-white font-black uppercase tracking-wider rounded-sm shadow-lg">GỬI THÔNG TIN KÝ GỬI</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- PROPERTY DETAIL PAGE (Hidden by default) -->
+      <section id="sec-property-detail" class="py-12 bg-white text-slate-900 min-h-screen hidden">
+        <div class="max-w-screen-xl mx-auto px-4 space-y-8">
+          <div class="flex items-center gap-2 text-xs text-slate-500 font-medium">
+            <button onclick="navigate('home')" class="hover:text-blue-600">Trang chủ</button><span>/</span>
+            <button onclick="navigate('projects')" class="hover:text-blue-600">Dự án</button><span>/</span>
+            <span class="text-slate-800 font-bold truncate" id="pdTitleBreadcrumb">Tên dự án</span>
+          </div>
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-6">
+            <div>
+              <div class="inline-block px-3 py-1 rounded-md bg-[#0284C7] text-white text-xs font-bold mb-2" id="pdBadge">Badge</div>
+              <h1 class="text-2xl sm:text-3xl font-black text-slate-900 uppercase" id="pdTitle">Tên dự án</h1>
+              <p class="text-xs sm:text-sm text-slate-500 flex items-center gap-1.5 mt-1"><i data-lucide="map-pin" class="text-[#0284C7] w-3.5 h-3.5"></i> <span id="pdLocation">Location</span></p>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-slate-400 block font-bold">Giá bán tham khảo:</span>
+              <span class="text-2xl sm:text-3xl font-black text-[#E11D48]" id="pdPrice">Giá</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-8 space-y-6">
+              <div class="w-full rounded-md overflow-hidden bg-slate-100">
+                <img id="pdImage" src="" alt="Property" class="w-full h-auto object-cover aspect-[16/9]" onerror="this.src='https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80'" />
+              </div>
+              <div class="bg-slate-50 p-6 rounded-md border space-y-4">
+                <h3 class="text-base font-black text-[#0284C7] uppercase">Thông Tin Chi Tiết Dự Án</h3>
+                <p class="text-xs sm:text-sm text-slate-700 leading-relaxed" id="pdDesc">Mô tả</p>
+                <ul class="space-y-2 text-xs sm:text-sm text-slate-600" id="pdDetailsList">
+                </ul>
+              </div>
+            </div>
+            <div class="lg:col-span-4 bg-[#F8FAFC] p-6 rounded-md border border-slate-200 space-y-4">
+              <h3 class="text-base font-black text-slate-900 uppercase">Tải Báo Giá Dự Án Này</h3>
+              <form onsubmit="handleLeadSubmit(event)" action="api/contact.php" method="POST" class="space-y-3 text-xs">
+                <input type="text" name="name" placeholder="Họ và tên..." required class="w-full p-3 rounded-sm border bg-white focus:outline-none" />
+                <input type="tel" name="phone" placeholder="Số điện thoại (*)..." required class="w-full p-3 rounded-sm border bg-white focus:outline-none font-bold" />
+                <button type="submit" class="w-full py-3 bg-[#0284C7] hover:bg-[#0369A1] text-white font-black rounded-sm uppercase tracking-wider shadow">Gửi Đăng Ký Ngay</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- UNIVERSAL FOOTER -->
+    <footer class="w-full relative bg-[#07132B] text-white font-sans">
+      <div class="w-full bg-[#1E60B8] py-6 px-4 text-white">
+        <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+          <div>
+            <h3 class="text-sm md:text-base font-black">Đăng ký nhận thông tin bảng giá & ưu đãi từ TEMPLATESBDS</h3>
+            <p class="text-xs text-blue-100">Chúng tôi sẽ gửi bạn những thông tin bất động sản và mẫu website mới nhất</p>
+          </div>
+          <div class="flex w-full md:w-auto gap-2">
+            <input type="email" id="newsletterEmail" placeholder="Nhập địa chỉ Email của bạn..." class="bg-white text-slate-800 text-xs px-4 py-2.5 rounded-xl w-full md:w-72 focus:outline-none" />
+            <button onclick="submitNewsletter()" class="bg-blue-900 hover:bg-blue-950 text-white font-bold text-xs px-5 py-2.5 rounded-xl whitespace-nowrap transition flex items-center gap-1 cursor-pointer">
+              <i data-lucide="send" class="w-3 h-3"></i> Đăng ký ngay
+            </button>
+          </div>
         </div>
       </div>
-
-      <div class="md:col-span-3 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">CHÍNH SÁCH</h4>
-        <div class="space-y-2 text-slate-400 text-xs">
-          <div>• Bàn giao 100% mã nguồn sạch</div>
-          <div>• Bảo hành & Hỗ trợ kỹ thuật trọn đời</div>
-          <div>• Hỗ trợ cài đặt lên Hosting cPanel / XAMPP</div>
+      <div class="w-full bg-[#07132B] text-slate-300 text-xs py-12 px-4 border-b border-slate-800">
+        <div class="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10">
+          <div class="md:col-span-5 space-y-4">
+            <div>
+              <span class="text-2xl font-black tracking-tight"><span class="text-[#0084FF]">TEMPLATESBDS</span></span>
+              <p class="mt-2 text-xs text-slate-400 leading-relaxed max-w-md">Kho mẫu website bất động sản cao cấp số 1 Việt Nam. Tối ưu chuyển đổi, chuẩn SEO và tích hợp hệ thống CMS quản trị đa kênh.</p>
+            </div>
+            <div class="space-y-2 text-xs text-slate-300 pt-1">
+              <div class="flex items-start gap-2"><span class="text-red-400 shrink-0 mt-0.5">📍</span><span>Địa chỉ: <strong class="text-white font-medium"><?php echo htmlspecialchars($company['address']); ?></strong></span></div>
+              <div class="flex items-center gap-2"><i data-lucide="phone" class="text-blue-400 w-3 h-3 shrink-0"></i><span>Hotline 1: <a href="tel:<?php echo htmlspecialchars($company['phone']); ?>" class="text-white font-bold font-mono hover:text-blue-400 transition"><?php echo formatPhone(htmlspecialchars($company['phone'])); ?></a></span></div>
+              <div class="flex items-center gap-2"><i data-lucide="phone" class="text-emerald-400 w-3 h-3 shrink-0"></i><span>Hotline 2: <a href="tel:0983312219" class="text-white font-bold font-mono hover:text-emerald-400 transition"><?php echo formatPhone(htmlspecialchars($company['phone2'])); ?></a> <span class="text-slate-400">(24/7)</span></span></div>
+              <div class="flex items-center gap-2"><i data-lucide="mail" class="text-blue-400 w-3 h-3 shrink-0"></i><span>Email: <a href="mailto:<?php echo htmlspecialchars($company['email2']); ?>" class="text-white hover:text-blue-400 transition font-medium"><?php echo htmlspecialchars($company['email2']); ?></a></span></div>
+              <div class="flex items-center gap-2"><span class="text-pink-400 shrink-0">⏰</span><span>Giờ làm việc: <strong class="text-white font-medium"><?php echo htmlspecialchars($company['working_hours']); ?></strong></span></div>
+            </div>
+            <div class="flex items-center gap-2.5 pt-2">
+              <a href="https://zalo.me/<?php echo htmlspecialchars($company['phone']); ?>" target="_blank" rel="noreferrer" class="w-10 h-10 rounded-2xl bg-[#0068FF] hover:bg-[#0052cc] text-white flex items-center justify-center font-black text-[11px] tracking-tight shadow-md hover:scale-105 transition">ZALO</a>
+              <a href="<?php echo htmlspecialchars($company['facebook']); ?>" target="_blank" rel="noreferrer" class="w-10 h-10 rounded-2xl bg-[#1877F2] hover:bg-[#1565c0] text-white flex items-center justify-center font-black text-base shadow-md hover:scale-105 transition">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96C15.9164 21.5878 18.0622 20.3855 19.6099 18.57C21.1576 16.7546 22.0054 14.4456 22 12.06C22 6.53 17.5 2.04 12 2.04Z"/></svg>
+              </a>
+              <a href="<?php echo htmlspecialchars($company['youtube']); ?>" target="_blank" rel="noreferrer" class="w-10 h-10 rounded-2xl bg-[#E62117] hover:bg-[#c61810] text-white flex items-center justify-center shadow-md hover:scale-105 transition">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              </a>
+              <a href="<?php echo htmlspecialchars($company['tiktok']); ?>" target="_blank" rel="noreferrer" class="w-10 h-10 rounded-2xl bg-[#1E293B] hover:bg-[#0f172a] text-[#A78BFA] flex items-center justify-center shadow-md hover:scale-105 transition">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.86 4.43V12.9a8.16 8.16 0 0 0 5.73 2.29V11.7a4.83 4.83 0 0 1-3.77-4.25z"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="md:col-span-2 space-y-3">
+            <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">VỀ CHÚNG TÔI</h4>
+            <ul class="space-y-2 text-slate-400">
+              <li><div onclick="navigate('home')" class="hover:text-blue-400 cursor-pointer transition text-xs flex items-center gap-1.5"><span class="text-blue-500">•</span> Trang chủ</div></li>
+              <li><div onclick="navigate('about')" class="hover:text-blue-400 cursor-pointer transition text-xs flex items-center gap-1.5"><span class="text-blue-500">•</span> Giới thiệu sàn BĐS</div></li>
+              <li><div onclick="navigate('news')" class="hover:text-blue-400 cursor-pointer transition text-xs flex items-center gap-1.5"><span class="text-blue-500">•</span> Tin tức & Cẩm nang</div></li>
+              <li><div onclick="navigate('consignment')" class="hover:text-blue-400 cursor-pointer transition text-xs flex items-center gap-1.5"><span class="text-blue-500">•</span> Ký gửi nhà đất</div></li>
+              <li><div onclick="navigate('contact')" class="hover:text-blue-400 cursor-pointer transition text-xs flex items-center gap-1.5"><span class="text-blue-500">•</span> Liên hệ tư vấn</div></li>
+            </ul>
+          </div>
+          <div class="md:col-span-2 space-y-3">
+            <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">DANH MỤC DỰ ÁN</h4>
+            <ul class="space-y-2 text-slate-400">
+              <li><div onclick="navigate('projects')" class="hover:text-blue-400 cursor-pointer transition text-xs flex items-center gap-1.5"><span class="text-blue-500">•</span> Căn hộ chung cư</div></li>
+              <li><div onclick="navigate('projects')" class="hover:text-blue-400 cursor-pointer transition text-xs flex items-center gap-1.5"><span class="text-blue-500">•</span> Biệt thự nghỉ dưỡng</div></li>
+              <li><div onclick="navigate('projects')" class="hover:text-blue-400 cursor-pointer transition text-xs flex items-center gap-1.5"><span class="text-blue-500">•</span> Đất nền sổ đỏ</div></li>
+              <li><div onclick="navigate('projects')" class="hover:text-blue-400 cursor-pointer transition text-xs flex items-center gap-1.5"><span class="text-blue-500">•</span> Shophouse thương mại</div></li>
+            </ul>
+          </div>
+          <div class="md:col-span-3 space-y-3">
+            <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">CHÍNH SÁCH BÁN HÀNG</h4>
+            <ul class="space-y-2 text-slate-400 text-xs">
+              <li class="hover:text-blue-400 cursor-pointer transition flex items-center gap-1.5"><span class="text-blue-500">•</span> Bàn giao 100% mã nguồn sạch</li>
+              <li class="hover:text-blue-400 cursor-pointer transition flex items-center gap-1.5"><span class="text-blue-500">•</span> Bảo hành & Hỗ trợ kỹ thuật trọn đời</li>
+              <li class="hover:text-blue-400 cursor-pointer transition flex items-center gap-1.5"><span class="text-blue-500">•</span> Tích hợp CMS quản trị tiếng Việt</li>
+              <li class="hover:text-blue-400 cursor-pointer transition flex items-center gap-1.5"><span class="text-blue-500">•</span> Hỗ trợ cài đặt lên Hosting cPanel / XAMPP</li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
+      <div class="w-full bg-[#050C1B] py-4 px-4 text-slate-400 text-[11px]">
+        <div class="max-w-screen-xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-center sm:text-left">
+          <div>© 2026 Bản quyền thuộc về <strong class="text-white font-black">TEMPLATESBDS</strong> — Nền tảng phân phối & Thiết kế Website Bất Động Sản Chuyên Nghiệp.</div>
+          <div class="text-[10px] text-slate-500">Mẫu Giao Diện: <strong>BDS-10 (Danh Khôi Real Estate — DKRP)</strong></div>
+        </div>
+      </div>
+      <div class="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-200/80 p-2.5 flex items-center gap-2 shadow-[0_-4px_25px_rgba(0,0,0,0.15)]">
+        <a href="tel:<?php echo htmlspecialchars($company['phone']); ?>" class="flex-1 py-3 px-3 rounded-xl bg-[#0066FF] hover:bg-[#0052cc] active:scale-95 text-white font-black text-xs uppercase flex items-center justify-center gap-2 shadow-md transition-all text-center tracking-wider">
+          <i data-lucide="phone" class="w-4 h-4 animate-pulse"></i><span>GỌI NGAY</span>
+        </a>
+        <a href="https://zalo.me/<?php echo htmlspecialchars($company['phone']); ?>" target="_blank" rel="noreferrer" class="flex-1 py-3 px-3 rounded-xl bg-[#008848] hover:bg-[#007038] active:scale-95 text-white font-black text-xs uppercase flex items-center justify-center gap-2 shadow-md transition-all text-center tracking-wider">
+          <i data-lucide="message-circle" class="w-4 h-4"></i><span>CHAT ZALO</span>
+        </a>
+      </div>
+      <div class="hidden sm:flex fixed bottom-6 right-6 z-40 flex-col items-center gap-3 select-none">
+        <a href="https://zalo.me/<?php echo htmlspecialchars($company['phone']); ?>" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-full bg-[#0068FF] hover:bg-[#0052cc] text-white shadow-xl shadow-blue-600/40 flex items-center justify-center font-black text-xs border-2 border-white/80 hover:scale-110 active:scale-95 transition-all">ZALO</a>
+        <a href="tel:<?php echo htmlspecialchars($company['phone']); ?>" class="w-12 h-12 rounded-full bg-[#E11D48] hover:bg-[#be123c] text-white shadow-xl shadow-red-600/40 flex items-center justify-center border-2 border-white/80 hover:scale-110 active:scale-95 transition-all relative">
+          <span class="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-40 -z-10"></span>
+          <i data-lucide="phone" class="w-5 h-5 fill-current"></i>
+        </a>
+        <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" class="w-10 h-10 rounded-full bg-[#0F172A] hover:bg-slate-800 text-white shadow-lg flex items-center justify-center border border-slate-700/50 hover:scale-110 active:scale-95 transition-all">
+          <i data-lucide="arrow-up" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </footer>
+  </div>
 
-    <div class="max-w-7xl mx-auto px-4 pt-6 text-center text-[11px] text-slate-400">
-      <p>© 2026 Bản quyền thuộc về <strong class="text-white">TEMPLATEBDS</strong> — Mẫu Giao Diện: BDS-10.</p>
-    </div>
-  </footer>
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
 
+    const PROJECTS = <?php echo $projectsJson; ?>;
+
+    const NEWS = <?php echo $newsJson; ?>;
+
+    function renderProjects() {
+      const grid = document.getElementById('projectsGrid');
+      grid.innerHTML = PROJECTS.map(p => `
+        <div onclick="openProperty(${p.id})" class="bg-white rounded-sm overflow-hidden border border-slate-200 hover:border-[#0284C7] shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col justify-between group">
+          <div>
+            <div class="relative aspect-[16/10] overflow-hidden bg-slate-900">
+              <img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-[#0284C7] text-white text-[10px] font-bold shadow">${p.statusBadge}</div>
+            </div>
+            <div class="p-4 space-y-2">
+              <h3 class="text-xs sm:text-sm font-black text-slate-900 group-hover:text-[#0284C7] transition-colors leading-snug line-clamp-2 uppercase min-h-[38px]">${p.title}</h3>
+              <p class="text-[11px] text-slate-500 line-clamp-1">${p.subtitle}</p>
+            </div>
+          </div>
+          <div class="px-4 pb-4 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="font-extrabold text-[#E11D48] text-sm">${p.price}</span>
+            <span class="text-[11px] font-bold text-slate-400">${p.city}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderNews() {
+      const grid = document.getElementById('newsGrid');
+      grid.innerHTML = NEWS.map(n => `
+        <div class="relative rounded-sm overflow-hidden shadow-lg group cursor-pointer aspect-[4/3] bg-slate-900">
+          <img src="${n.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex flex-col justify-end p-5 space-y-2 text-white">
+            <span class="text-[10px] font-bold text-[#FDE047] uppercase tracking-wider">${n.category}</span>
+            <h3 class="text-xs sm:text-sm font-black group-hover:text-amber-300 transition leading-snug line-clamp-2">${n.title}</h3>
+            <span class="text-[10px] text-slate-400">${n.date}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    renderProjects();
+    renderNews();
+
+    // Navigation Logic
+    const sections = {
+      home: ['sec-hero', 'sec-about', 'sec-projects', 'sec-whyus', 'sec-dev', 'sec-news', 'sec-quickcontact', 'sec-partners', 'sec-splitcta', 'sec-dkrpfooter'],
+      about: ['sec-about', 'sec-dev', 'sec-partners', 'sec-dkrpfooter'],
+      projects: ['sec-projects', 'sec-whyus', 'sec-dkrpfooter'],
+      news: ['sec-news', 'sec-dkrpfooter'],
+      consignment: ['sec-consignment', 'sec-dkrpfooter'],
+      contact: ['sec-whyus', 'sec-quickcontact', 'sec-dkrpfooter'],
+      'property-detail': ['sec-property-detail']
+    };
+
+    function navigate(page) {
+      // Hide all sections first
+      document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+      
+      // Show needed sections
+      if (sections[page]) {
+        sections[page].forEach(secId => {
+          document.getElementById(secId).classList.remove('hidden');
+        });
+      }
+
+      // Update Nav highlighting
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.dataset.page === page || (page === 'property-detail' && btn.dataset.page === 'projects')) {
+          btn.classList.add('text-[#0284C7]', 'font-extrabold', 'border-b-2', 'border-[#0284C7]');
+          btn.classList.remove('hover:text-[#0284C7]');
+        } else {
+          btn.classList.remove('text-[#0284C7]', 'font-extrabold', 'border-b-2', 'border-[#0284C7]');
+          btn.classList.add('hover:text-[#0284C7]');
+        }
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('mobileMenu').classList.add('hidden');
+    }
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    }
+
+    function openProperty(id) {
+      const p = PROJECTS.find(x => x.id === id);
+      if (p) {
+        document.getElementById('pdTitleBreadcrumb').innerText = p.title;
+        document.getElementById('pdBadge').innerText = p.statusBadge;
+        document.getElementById('pdTitle').innerText = p.title;
+        document.getElementById('pdLocation').innerText = p.location;
+        document.getElementById('pdPrice').innerText = p.price;
+        document.getElementById('pdImage').src = p.image;
+        document.getElementById('pdDesc').innerText = p.desc;
+        document.getElementById('pdDetailsList').innerHTML = p.details.map(d => `
+          <li class="flex items-center gap-2">
+            <i data-lucide="check-circle-2" class="text-emerald-600 shrink-0 w-4 h-4"></i>
+            <span>${d}</span>
+          </li>
+        `).join('');
+        lucide.createIcons(); // Re-render icons in list
+        navigate('property-detail');
+      }
+    }
+
+    function showToastMsg(msg) {
+      const toast = document.getElementById('toastPopup');
+      document.getElementById('toastMessage').innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 4000);
+    }
+
+    function handleLeadSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const name = formData.get('name');
+      const phone = formData.get('phone');
+      
+      if (!name || !phone) {
+        alert('Vui lòng điền họ tên và số điện thoại!');
+        return;
+      }
+
+      fetch('api/contact.php', { method: 'POST', body: formData }).catch(()=>{});
+      
+      showToastMsg(`🎉 Cảm ơn ${name} (${phone}). Đăng ký thành công!`);
+      form.reset();
+    }
+
+    function handleQuickContactSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const name = formData.get('name');
+      const phone = formData.get('phone');
+      
+      if (!name || !phone) {
+        alert('Vui lòng điền họ tên và số điện thoại!');
+        return;
+      }
+      
+      fetch('api/contact.php', { method: 'POST', body: formData }).catch(()=>{});
+      showToastMsg(`🎉 Tiếp nhận yêu cầu tư vấn thành công! Chuyên viên sẽ liên hệ với ${name} trong 5 phút.`);
+      form.reset();
+    }
+
+    function handleConsignmentSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      fetch('api/contact.php', { method: 'POST', body: new FormData(form) }).catch(()=>{});
+      showToastMsg('🎉 Tiếp nhận thông tin ký gửi thành công! Chuyên viên sẽ liên hệ thẩm định trong 24h.');
+      form.reset();
+    }
+
+    function submitNewsletter() {
+      const email = document.getElementById('newsletterEmail').value;
+      if (!email.trim()) {
+        alert('Vui lòng nhập địa chỉ email!');
+        return;
+      }
+      showToastMsg('✓ Đăng ký email nhận bảng tin BĐS thành công!');
+      document.getElementById('newsletterEmail').value = '';
+    }
+
+    // Default init
+    navigate('home');
+
+  </script>
 </body>
 </html>

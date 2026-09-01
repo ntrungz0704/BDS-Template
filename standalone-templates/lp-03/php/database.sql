@@ -1,40 +1,45 @@
--- CƠ SỞ DỮ LIỆU BẤT ĐỘNG SẢN: LP #03 - Đất Nền Phân Lô F0 Sổ Đỏ Trao Tay
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
+-- Database Schema for LP-03
+CREATE DATABASE IF NOT EXISTS bds_lp03 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE bds_lp03;
 
 CREATE TABLE IF NOT EXISTS `company_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `phone` varchar(50) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL,
-  `slogan` varchar(255) DEFAULT NULL,
+  `phone` varchar(50) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `slogan` text NOT NULL,
+  `zalo` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `company_info` (`id`, `name`, `phone`, `email`, `address`, `slogan`, `zalo`) VALUES
+(1, 'SIMPLE PAGE', '0919 006 030', 'admin@templatesbds.com', 'Đại Lộ Trung Tâm Đô Thị Mới, Quận Nam Từ Liêm, Hà Nội / TP.HCM', '"Đẳng Cấp Không Gian Sống — Khẳng Định Vị Thế Thượng Lưu"', 'https://zalo.me/0919006030');
+
+CREATE TABLE IF NOT EXISTS `projects` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `area_label` varchar(50) NOT NULL,
+  `price` varchar(50) NOT NULL,
+  `perk` varchar(255) NOT NULL,
+  `full_name` varchar(255) NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `projects` (`id`, `title`, `area_label`, `price`, `perk`, `full_name`, `image_url`) VALUES
+(1, 'Căn 1 Phòng Ngủ', '48.5 m²', '1.85 Tỷ', '✓ Chiết khấu ngay 5% + Tặng 2 chỉ vàng', 'Căn Hộ 1 Phòng Ngủ (48.5 m²)', 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80'),
+(2, 'Căn 2 Phòng Ngủ', '68.0 m²', '2.65 Tỷ', '✓ Tặng gói hoàn thiện nội thất 50 triệu', 'Căn Hộ 2 Phòng Ngủ (68.0 m² - 75.5 m²)', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80'),
+(3, 'Căn 3 Phòng Ngủ', '95.0 m²', '3.55 Tỷ', '✓ Hỗ trợ vay 70% lãi suất 0% trong 24 tháng', 'Căn Hộ 3 Phòng Ngủ Master (92.0 m² - 110.0 m²)', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80'),
+(4, 'Sky Villa & Penthouse', '145.0 m²', '6.80 Tỷ', '✓ Tặng chuyến du lịch Châu Âu 5 sao 2 người', 'Penthouse & Sky Villa (145.0 m²)', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80');
 
 CREATE TABLE IF NOT EXISTS `contacts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `phone` varchar(50) NOT NULL,
-  `message` text DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `product_type` varchar(255) DEFAULT NULL,
+  `source` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `projects` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL,
-  `price` varchar(100) DEFAULT NULL,
-  `area` varchar(100) DEFAULT NULL,
-  `type` varchar(100) DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL,
-  `image` varchar(500) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `company_info` (`name`, `phone`, `email`, `address`, `slogan`) VALUES
-("LP #03 - Đất Nền Phân Lô F0 Sổ Đỏ Trao Tay", '0919 006 030', 'contact@platformbds.vn', 'TP. Hồ Chí Minh & Hà Nội', "ĐẤT NỀN ĐÔ THỊ TRỌNG ĐIỂM GIÁ GỐC F0");
-
-INSERT INTO `projects` (`title`, `price`, `area`, `type`, `address`, `image`) VALUES ("Lô A1-A12 Mặt Tiền Đại Lộ 24m (100m²)", "1.25 Tỷ", "100m²", 'CAN_HO', 'TP. Hồ Chí Minh', "https://images.unsplash.com/photo-1524813686514-a57563d77d61?w=800");
-INSERT INTO `projects` (`title`, `price`, `area`, `type`, `address`, `image`) VALUES ("Lô B5-B20 Liền Kề Công Viên Xanh (85m²)", "890 Triệu", "85m²", 'CAN_HO', 'TP. Hồ Chí Minh', "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800");
-INSERT INTO `projects` (`title`, `price`, `area`, `type`, `address`, `image`) VALUES ("Lô Góc Thương Mại 2 Mặt Tiền (145m²)", "1.95 Tỷ", "145m²", 'CAN_HO', 'TP. Hồ Chí Minh', "https://images.unsplash.com/photo-1448630360428-65456885c650?w=800");
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

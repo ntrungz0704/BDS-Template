@@ -1,21 +1,27 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = strip_tags(trim($_POST['name'] ?? ''));
-    $phone = strip_tags(trim($_POST['phone'] ?? ''));
-    $message = strip_tags(trim($_POST['message'] ?? ''));
+require_once '../config/db.php';
 
-    if (!empty($name) && !empty($phone)) {
-        require_once '../config/db.php';
-        if (isset($pdo)) {
-            $stmt = $pdo->prepare("INSERT INTO contacts (name, phone, message) VALUES (?, ?, ?)");
-            $stmt->execute([$name, $phone, $message]);
-        }
-        echo "<script>
-            alert('🎉 Gửi thông tin thành công! Chuyên viên sẽ liên hệ lại với quý khách trong ít phút qua số: " . htmlspecialchars($phone) . "');
-            window.location.href = '../index.php';
-        </script>";
+header('Content-Type: application/json; charset=utf-8');
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = $_POST['name'] ?? '';
+    $phone = $_POST['phone'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $product_type = $_POST['unit_type'] ?? '';
+    $source = $_POST['source'] ?? 'Website';
+
+    if (empty($name) || empty($phone)) {
+        echo json_encode(['status' => 'error', 'message' => 'Vui lòng nhập tên và số điện thoại']);
         exit;
     }
+
+    try {
+        $stmt = $pdo->prepare("INSERT INTO contacts (name, phone, email, product_type, source) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$name, $phone, $email, $product_type, $source]);
+        echo json_encode(['status' => 'success', 'message' => 'Đăng ký thành công']);
+    } catch (PDOException $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Lỗi kết nối cơ sở dữ liệu: ' . $e->getMessage()]);
+    }
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
 }
-header('Location: ../index.php');
-exit;
