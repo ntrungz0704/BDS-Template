@@ -38,7 +38,7 @@ router.post('/contact', createContactSubmission);
 router.get('/orders/my-orders', authMiddleware, getMyOrders);
 
 // API kiểm tra trạng thái đơn hàng realtime (polling)
-router.get('/orders/:orderNumber/status', authMiddleware, getOrderStatus);
+router.get('/orders/:orderNumber/status', optionalAuthMiddleware, getOrderStatus);
 
 // Webhook SePay. Controller bắt buộc kiểm tra webhook secret trong production.
 router.post('/webhook/sepay', handleSepayWebhook);
@@ -61,6 +61,6 @@ router.post(
 // Single-Tenant Export Engine (Dành riêng cho đơn hàng Mua Đứt)
 router.post('/orders/:orderNumber/request-export', authMiddleware, requestExportPackage);
 router.get('/orders/:orderNumber/export-status', authMiddleware, getExportPackageStatus);
-router.get('/exports/download/:token', authMiddleware, downloadExportByToken);
+router.get('/exports/download/:token', optionalAuthMiddleware, downloadExportByToken);
 
 export default router;

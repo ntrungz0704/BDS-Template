@@ -607,9 +607,9 @@ export async function getOrderStatus(req: Request, res: Response, next: NextFunc
     const cleanOrd = decodeURIComponent(rawOrderNo).trim().replace(/\s+/g, '-');
     const userId = req.user?.userId;
 
-    if (!userId && req.user?.role !== 'SUPER_ADMIN') {
-      return res.status(401).json({ success: false, error: { code: 'UNAUTHENTICATED', message: 'Vui lòng đăng nhập để xem trạng thái đơn hàng.' } });
-    }
+    // Guest users (optionalAuthMiddleware) are allowed to view order status
+    // by orderNumber — this supports the checkout success page polling.
+    // Logged-in users can only see their own orders.
 
     let order = await prisma.order.findFirst({
       where: {
@@ -637,12 +637,12 @@ export async function getOrderStatus(req: Request, res: Response, next: NextFunc
       logger.info(`[OrderRepair] Đã gắn lại đơn ${order.orderNumber} cho tài khoản ${req.user?.email}`);
     }
 
-    // Orders must always be owned by the authenticated user. A legacy order
-    // can only be repaired after an exact email match; every other order is
-    // indistinguishable from a missing one.
-    if (req.user?.role !== 'SUPER_ADMIN' && order.userId !== userId) {
+    // Ownership check: logged-in users can only see their own orders.
+    // Guest orders (no userId on order) are visible to anyone with the orderNumber.
+    if (userId && req.user?.role !== 'SUPER_ADMIN' && order.userId && order.userId !== userId) {
       return res.status(404).json({ success: false, error: { code: 'ORDER_NOT_FOUND', message: 'Không tìm thấy đơn hàng' } });
     }
+
 
     let tenant = null;
     if (order.status === 'COMPLETED') {

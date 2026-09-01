@@ -574,7 +574,8 @@ export default function CustomerDashboard() {
                                 <span>Xem Website</span>
                               </a>
 
-                              {(ord.type === 'BUY' || ord.type === 'BUY_SOURCE') && (
+                              {ord.type === 'BUY_SOURCE' && (
+
                                 <button
                                   onClick={() => handleTabChange('downloads')}
                                   className="px-3 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-indigo-600 font-bold text-xs flex items-center gap-1.5 transition-colors"
@@ -730,7 +731,7 @@ export default function CustomerDashboard() {
                       </div>
                     ) : (
                       orders.filter((o: any) => o.status === 'COMPLETED').map((ord: any) => {
-                        const isBuyOut = ord.type === 'BUY' || ord.type === 'BUY_SOURCE';
+                        const isBuyOut = ord.type === 'BUY_SOURCE';
                         const currentJob = exportJobs[ord.orderNumber];
                         const isProcessing = currentJob?.status === 'PROCESSING' || currentJob?.status === 'PENDING';
                         const isReady = currentJob?.status === 'READY' && currentJob?.downloadToken;
