@@ -87,29 +87,93 @@ export function formatTemplateDisplayName(ordOrTemplate: any): string {
   return name || 'Website Bất Động Sản';
 }
 
+export function extractTemplateCode(ordOrTemplate: any): string {
+  if (!ordOrTemplate) return 'bds-01';
+  
+  const template = ordOrTemplate.template || (ordOrTemplate.name ? ordOrTemplate : null);
+  const name = template?.name || ordOrTemplate?.productSnapshot?.name || ordOrTemplate?.name || '';
+  const slug = template?.slug || ordOrTemplate?.productSnapshot?.slug || ordOrTemplate?.templateId || ordOrTemplate?.slug || '';
+  const subdomain = ordOrTemplate?.subdomain || ordOrTemplate?.tenant?.slug || '';
+
+  const combined = (name + ' ' + slug + ' ' + subdomain).toLowerCase();
+
+  // 1. Landing Pages (LP 01 -> LP 07)
+  const lpMatch = combined.match(/(?:lp|landing)[-_#\s]*0?([1-7])\b/i);
+  if (lpMatch) {
+    const num = lpMatch[1].padStart(2, '0');
+    return `lp-${num}`;
+  }
+
+  // 2. BĐS Templates (BĐS 01 -> BĐS 24)
+  const bdsMatch = combined.match(/(?:bds|template|portal)[-_#\s]*0?([1-9]|1[0-9]|2[0-4])\b/i);
+  if (bdsMatch) {
+    const num = bdsMatch[1].padStart(2, '0');
+    return `bds-${num}`;
+  }
+
+  // 3. Legacy Aliases Mapping
+  const legacyAliases: Record<string, string> = {
+    'luxury-gold': 'bds-01',
+    'minimal-white': 'bds-02',
+    'modern-corporate': 'bds-03',
+    'resort-paradise': 'bds-04',
+    'urban-city': 'bds-05',
+    'industrial-estate': 'bds-06',
+    'villa-premium': 'bds-07',
+    'eco-green': 'bds-08',
+    'classic-elegant': 'bds-09',
+    'investment-pro': 'bds-10',
+    'agency-onepage': 'bds-11',
+    'mega-developer': 'bds-12',
+    'auction-template': 'bds-13',
+    'landplot-template': 'bds-14',
+    'retail-podium': 'bds-15',
+    'personal-agent': 'bds-16',
+    'portal-listing': 'bds-17',
+    'benthanh-portal': 'bds-18',
+    'bds123-portal': 'bds-18',
+    'nhadatso-density': 'bds-19',
+    'minhkhai-apartment': 'bds-20',
+    'hanoi-rental': 'bds-21',
+    'happyland-resort': 'bds-22',
+    'homeo-multithumb': 'bds-23',
+    'homeo-agency': 'bds-23',
+    'realtybuild-tech': 'bds-24',
+  };
+
+  for (const [key, val] of Object.entries(legacyAliases)) {
+    if (combined.includes(key) || combined.includes(key.replace('-', ' '))) {
+      return val;
+    }
+  }
+
+  return 'bds-01';
+}
+
 export function formatSiteSlug(ord: any): string {
   if (!ord) return 'site-demo';
-  const rawSub = ord.subdomain || ord.tenant?.slug || '';
+  const rawSub = (ord.subdomain || ord.tenant?.slug || '').toLowerCase();
   
-  if (!rawSub || /cmt[a-z0-9]+/i.test(rawSub) || (!rawSub.includes('bds-') && !rawSub.includes('lp-') && !rawSub.includes('bds') && !rawSub.includes('lp'))) {
-    const brand = (ord.fullName || 'bds')
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/đ/g, 'd')
-      .replace(/Đ/g, 'd')
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '') || 'bds';
-    const cleanPhone = (ord.phone || '').replace(/\D/g, '');
-    const phoneSuffix = cleanPhone.length >= 4 ? cleanPhone.slice(-4) : '9876';
-    const tplSlug = (ord.template?.slug || ord.productSnapshot?.slug || ord.templateId || 'bds-01').toLowerCase();
-    const lpMatch = tplSlug.match(/(?:lp|landing)[-_]?0?([1-7])/i);
-    const bdsMatch = tplSlug.match(/(?:bds|portal|template)[-_]?0?([1-9]|1[0-9]|2[0-4])/i);
-    const code = lpMatch ? `lp-${lpMatch[1].padStart(2, '0')}` : bdsMatch ? `bds-${bdsMatch[1].padStart(2, '0')}` : 'bds-01';
-    return `${brand}-${code}-${phoneSuffix}`.toLowerCase();
+  const brand = (ord.fullName || 'bds')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'd')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '') || 'bds';
+  const cleanPhone = (ord.phone || '').replace(/\D/g, '');
+  const phoneSuffix = cleanPhone.length >= 4 ? cleanPhone.slice(-4) : '9876';
+
+  const tplCode = extractTemplateCode(ord);
+
+  // If rawSub is missing, contains CUID (cmt...), or doesn't match the current order's template code:
+  if (!rawSub || /cmt[a-z0-9]+/i.test(rawSub) || !rawSub.includes(tplCode)) {
+    return `${brand}-${tplCode}-${phoneSuffix}`.toLowerCase();
   }
-  return rawSub.toLowerCase();
+
+  return rawSub;
 }
 
 export * from './template-configs';

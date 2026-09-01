@@ -284,18 +284,20 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
         .replace(/^-|-$/g, '');
     };
 
-    const extractTplCode = (tplIdOrSlug: string) => {
-      const s = (tplIdOrSlug || '').toLowerCase().trim();
-      const lpMatch = s.match(/(?:lp|landing)[-_]?0?([1-7])/i);
-      if (lpMatch) {
-        const num = lpMatch[1].padStart(2, '0');
-        return `lp-${num}`;
-      }
-      const bdsMatch = s.match(/(?:bds|portal|template)[-_]?0?([1-9]|1[0-9]|2[0-4])/i);
-      if (bdsMatch) {
-        const num = bdsMatch[1].padStart(2, '0');
-        return `bds-${num}`;
-      }
+    const extractTplCode = (ordOrTemplate: any) => {
+      if (!ordOrTemplate) return 'bds-01';
+      const template = ordOrTemplate.template || (ordOrTemplate.name ? ordOrTemplate : null);
+      const name = template?.name || ordOrTemplate?.productSnapshot?.name || ordOrTemplate?.name || '';
+      const slug = template?.slug || ordOrTemplate?.productSnapshot?.slug || ordOrTemplate?.templateId || ordOrTemplate?.slug || '';
+      const sub = ordOrTemplate?.subdomain || ordOrTemplate?.tenant?.slug || '';
+      const combined = (name + ' ' + slug + ' ' + sub).toLowerCase();
+
+      const lpMatch = combined.match(/(?:lp|landing)[-_#\s]*0?([1-7])\b/i);
+      if (lpMatch) return `lp-${lpMatch[1].padStart(2, '0')}`;
+
+      const bdsMatch = combined.match(/(?:bds|template|portal)[-_#\s]*0?([1-9]|1[0-9]|2[0-4])\b/i);
+      if (bdsMatch) return `bds-${bdsMatch[1].padStart(2, '0')}`;
+
       const aliasMap: Record<string, string> = {
         'luxury-gold': 'bds-01', 'minimal-white': 'bds-02', 'modern-corporate': 'bds-03',
         'resort-paradise': 'bds-04', 'urban-city': 'bds-05', 'industrial-estate': 'bds-06',
@@ -308,15 +310,14 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
         'homeo-agency': 'bds-23', 'realtybuild-tech': 'bds-24',
       };
       for (const [k, v] of Object.entries(aliasMap)) {
-        if (s.includes(k)) return v;
+        if (combined.includes(k) || combined.includes(k.replace('-', ' '))) return v;
       }
       return 'bds-01';
     };
 
     const cleanPhone = (order.phone || '').replace(/\D/g, '');
     const phoneSuffix = cleanPhone.length >= 4 ? cleanPhone.slice(-4) : (cleanPhone || Date.now().toString().slice(-4));
-    const templateSlug = (order as any).template?.slug || (order.productSnapshot as any)?.slug || order.templateId || 'bds-01';
-    const tplCode = extractTplCode(templateSlug);
+    const tplCode = extractTplCode(order);
 
     let candidateSubdomain = order.subdomain;
     if (!candidateSubdomain || candidateSubdomain.trim() === '') {

@@ -468,18 +468,20 @@ export async function sanitizeExistingTenantAndOrderSlugs() {
         .replace(/^-|-$/g, '');
     };
 
-    const extractTplCode = (tplIdOrSlug: string) => {
-      const s = (tplIdOrSlug || '').toLowerCase().trim();
-      const lpMatch = s.match(/(?:lp|landing)[-_]?0?([1-7])/i);
-      if (lpMatch) {
-        const num = lpMatch[1].padStart(2, '0');
-        return `lp-${num}`;
-      }
-      const bdsMatch = s.match(/(?:bds|portal|template)[-_]?0?([1-9]|1[0-9]|2[0-4])/i);
-      if (bdsMatch) {
-        const num = bdsMatch[1].padStart(2, '0');
-        return `bds-${num}`;
-      }
+    const extractTplCode = (ordOrTemplate: any) => {
+      if (!ordOrTemplate) return 'bds-01';
+      const template = ordOrTemplate.template || (ordOrTemplate.name ? ordOrTemplate : null);
+      const name = template?.name || ordOrTemplate?.productSnapshot?.name || ordOrTemplate?.name || '';
+      const slug = template?.slug || ordOrTemplate?.productSnapshot?.slug || ordOrTemplate?.templateId || ordOrTemplate?.slug || '';
+      const sub = ordOrTemplate?.subdomain || ordOrTemplate?.tenant?.slug || '';
+      const combined = (name + ' ' + slug + ' ' + sub).toLowerCase();
+
+      const lpMatch = combined.match(/(?:lp|landing)[-_#\s]*0?([1-7])\b/i);
+      if (lpMatch) return `lp-${lpMatch[1].padStart(2, '0')}`;
+
+      const bdsMatch = combined.match(/(?:bds|template|portal)[-_#\s]*0?([1-9]|1[0-9]|2[0-4])\b/i);
+      if (bdsMatch) return `bds-${bdsMatch[1].padStart(2, '0')}`;
+
       const aliasMap: Record<string, string> = {
         'luxury-gold': 'bds-01', 'minimal-white': 'bds-02', 'modern-corporate': 'bds-03',
         'resort-paradise': 'bds-04', 'urban-city': 'bds-05', 'industrial-estate': 'bds-06',
@@ -492,7 +494,7 @@ export async function sanitizeExistingTenantAndOrderSlugs() {
         'homeo-agency': 'bds-23', 'realtybuild-tech': 'bds-24',
       };
       for (const [k, v] of Object.entries(aliasMap)) {
-        if (s.includes(k)) return v;
+        if (combined.includes(k) || combined.includes(k.replace('-', ' '))) return v;
       }
       return 'bds-01';
     };
@@ -502,30 +504,25 @@ export async function sanitizeExistingTenantAndOrderSlugs() {
     });
 
     for (const order of orders) {
-      const currentSub = order.subdomain || order.tenant?.slug || '';
-      const hasCuidPattern = /cmt[a-z0-9]+/i.test(currentSub);
-      const isMissingStandardPrefix = currentSub && !currentSub.includes('bds-') && !currentSub.includes('lp-') && !currentSub.includes('bds') && !currentSub.includes('lp');
+      const currentSub = (order.subdomain || order.tenant?.slug || '').toLowerCase();
+      const tplCode = extractTplCode(order);
+      const brand = slugifyBrand(order.fullName) || 'bds';
+      const cleanPhone = (order.phone || '').replace(/\D/g, '');
+      const phoneSuffix = cleanPhone.length >= 4 ? cleanPhone.slice(-4) : (cleanPhone || '9876');
+      const standardSlug = `${brand}-${tplCode}-${phoneSuffix}`.toLowerCase();
 
-      if (hasCuidPattern || isMissingStandardPrefix) {
-        const brand = slugifyBrand(order.fullName) || 'bds';
-        const cleanPhone = (order.phone || '').replace(/\D/g, '');
-        const phoneSuffix = cleanPhone.length >= 4 ? cleanPhone.slice(-4) : (cleanPhone || '9876');
-        const templateSlug = order.template?.slug || (order.productSnapshot as any)?.slug || order.templateId || 'bds-01';
-        const tplCode = extractTplCode(templateSlug);
-
-        const newCleanSlug = `${brand}-${tplCode}-${phoneSuffix}`.toLowerCase();
-
+      if (!currentSub || /cmt[a-z0-9]+/i.test(currentSub) || !currentSub.includes(tplCode) || currentSub !== standardSlug) {
         // Cập nhật Order
         await prisma.order.update({
           where: { id: order.id },
-          data: { subdomain: newCleanSlug },
+          data: { subdomain: standardSlug },
         });
 
         // Cập nhật Tenant nếu có
         if (order.tenantId) {
           await prisma.tenant.update({
             where: { id: order.tenantId },
-            data: { slug: newCleanSlug },
+            data: { slug: standardSlug },
           });
         }
       }
@@ -537,15 +534,15 @@ export async function sanitizeExistingTenantAndOrderSlugs() {
     });
 
     for (const tenant of tenants) {
-      if (/cmt[a-z0-9]+/i.test(tenant.slug)) {
-        const tplCode = extractTplCode(tenant.template?.slug || tenant.templateId || 'bds-01');
-        const cleanBrand = tenant.slug.split('-cmt')[0] || 'bds';
-        const phoneSuffix = tenant.slug.split('-').pop() || '9876';
-        const newSlug = `${cleanBrand}-${tplCode}-${phoneSuffix}`.toLowerCase();
+      const tplCode = extractTplCode(tenant);
+      const cleanBrand = tenant.slug.split('-cmt')[0]?.split('-bds')[0]?.split('-lp')[0] || 'bds';
+      const phoneSuffix = tenant.slug.split('-').pop() || '9876';
+      const standardSlug = `${cleanBrand}-${tplCode}-${phoneSuffix}`.toLowerCase();
 
+      if (/cmt[a-z0-9]+/i.test(tenant.slug) || !tenant.slug.includes(tplCode)) {
         await prisma.tenant.update({
           where: { id: tenant.id },
-          data: { slug: newSlug },
+          data: { slug: standardSlug },
         });
       }
     }
