@@ -16,6 +16,8 @@ import {
   requestExportPackage,
   getExportPackageStatus,
   downloadExportByToken,
+  getUserCart,
+  syncUserCart,
 } from '../controllers/marketplace.controller';
 import { authMiddleware, optionalAuthMiddleware } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/role.middleware';
@@ -30,9 +32,14 @@ router.get('/templates/:slug/download', authMiddleware, downloadTemplateSource);
 router.get('/check-subdomain', checkSubdomain);
 router.get('/stats', getMarketplaceStats);
 
+// Giỏ hàng đồng bộ đa thiết bị
+router.get('/cart', optionalAuthMiddleware, getUserCart);
+router.put('/cart', authMiddleware, syncUserCart);
+
 // Checkout hỗ trợ cả khách vãng lai và tài khoản đã đăng nhập
 router.post('/orders', optionalAuthMiddleware, createOrder);
 router.post('/contact', createContactSubmission);
+
 
 // API lịch sử đơn hàng của khách (yêu cầu đăng nhập)
 router.get('/orders/my-orders', authMiddleware, getMyOrders);

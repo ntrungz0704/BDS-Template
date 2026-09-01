@@ -169,6 +169,9 @@ export const TEMPLATE_SLUG_MAP: Record<string, { componentName: string; fileName
   'lp-02': { componentName: 'LP02Template', fileName: 'LP02Template.tsx', templateName: 'LP #02 - Biệt Thự & Nghỉ Dưỡng Hoàng Gia VIP' },
   'lp-03': { componentName: 'LP03Template', fileName: 'LP03Template.tsx', templateName: 'LP #03 - Đất Nền Phân Lô F0 Sổ Đỏ Trao Tay' },
   'lp-04': { componentName: 'LP04Template', fileName: 'LP04Template.tsx', templateName: 'LP #04 - Sale Môi Giới BĐS Triệu Đô Authority' },
+  'lp-05': { componentName: 'LP05Template', fileName: 'LP05Template.tsx', templateName: 'LP #05 - Tổ Hợp Căn Hộ Khách Sạn 5 Sao Golden Park' },
+  'lp-06': { componentName: 'LP06Template', fileName: 'LP06Template.tsx', templateName: 'LP #06 - Khu Đô Thị Công Nghiệp & Dịch Vụ VSIP' },
+  'lp-07': { componentName: 'LP07Template', fileName: 'LP07Template.tsx', templateName: 'LP #07 - Dinh Thự Đảo Sinh Thái Nghỉ Dưỡng Ven Sông' },
 };
 
 export class TemplatePackagingService {
@@ -178,51 +181,90 @@ export class TemplatePackagingService {
   public static async generateStandalonePackage(options: PackageOptions): Promise<{ buffer: Buffer; fileName: string }> {
     const { slug, orderNumber = 'ORD', customerName = 'Khách Hàng', customerPhone = '', customerEmail = '', tenantId } = options;
 
-    // Never substitute another template when a source package has not been
-    // built for the exact product/version. In particular, LP packages are not
-    // yet present under standalone-templates, so serving a BDS fallback would
-    // be a commercial misdelivery.
-    if (slug.toLowerCase().startsWith('lp-')) {
-      throw new Error(`SOURCE_PACKAGE_UNAVAILABLE:${slug}`);
-    }
-
     const zip = new AdmZip();
 
     // 0. Kiểm tra nếu đã có sẵn thư mục standalone-templates (HTML5 + PHP)
     let folderCode: string | undefined;
     const SLUG_TO_FOLDER: Record<string, string> = {
-      'luxury-gold': 'bds-01', 'minimal-white': 'bds-02', 'minimal-zen': 'bds-02',
-      'modern-corporate': 'bds-03', 'resort-paradise': 'bds-04', 'ocean-view': 'bds-04',
-      'urban-city': 'bds-05', 'smart-urban': 'bds-05', 'high-rise': 'bds-05',
-      'industrial-estate': 'bds-06', 'industrial-logistics': 'bds-06',
-      'villa-premium': 'bds-07', 'luxury-villa': 'bds-07', 'modern-villa': 'bds-07',
-      'eco-green': 'bds-08', 'eco-living': 'bds-08', 'green-eco': 'bds-08',
-      'classic-elegant': 'bds-09', 'classic-heritage': 'bds-09', 'heritage-classic': 'bds-09',
-      'investment-pro': 'bds-10', 'tech-hub': 'bds-10',
-      'agency-onepage': 'bds-11', 'suburban-family': 'bds-11',
-      'mega-developer': 'bds-12', 'listing-portal': 'bds-12', 'riverside-mansion': 'bds-12',
-      'auction-template': 'bds-13', 'auction-bds': 'bds-13', 'lake-sanctuary': 'bds-13',
-      'landplot-template': 'bds-14', 'land-plot': 'bds-14', 'mountain-retreat': 'bds-14',
-      'retail-podium': 'bds-15', 'retail-commercial': 'bds-15', 'commercial-plaza': 'bds-15',
-      'personal-agent': 'bds-16', 'golf-residences': 'bds-16',
-      'portal-listing': 'bds-17', 'vietnam-portal': 'bds-17',
-      'bds123-portal': 'bds-18', 'benthanh-portal': 'bds-18',
-      'nhadatso-density': 'bds-19', 'nhadatso-portal': 'bds-19',
-      'minhkhai-apartment': 'bds-20', 'minhkhai-luxury': 'bds-20',
-      'hanoi-rental': 'bds-21', 'chothue-hanoi': 'bds-21',
-      'happyland-resort': 'bds-22', 'zohotels-resort': 'bds-22',
-      'homeo-multithumb': 'bds-23', 'homeo-agency': 'bds-23',
-      'realtybuild-tech': 'bds-24', 'realtybuild-portal': 'bds-24',
+      // 1. Luxury Gold
+      'bds-01': 'bds-01', 'portal-01': 'bds-01', 'luxury-gold': 'bds-01',
+      // 2. Minimal White
+      'bds-02': 'bds-02', 'portal-02': 'bds-02', 'minimal-white': 'bds-02', 'minimal-zen': 'bds-02',
+      // 3. Modern Corporate
+      'bds-03': 'bds-03', 'portal-03': 'bds-03', 'modern-corporate': 'bds-03',
+      // 4. Resort Paradise
+      'bds-04': 'bds-04', 'portal-04': 'bds-04', 'resort-paradise': 'bds-04', 'ocean-view': 'bds-04',
+      // 5. Urban City
+      'bds-05': 'bds-05', 'portal-05': 'bds-05', 'urban-city': 'bds-05', 'smart-urban': 'bds-05', 'high-rise': 'bds-05',
+      // 6. Industrial Estate
+      'bds-06': 'bds-06', 'portal-06': 'bds-06', 'industrial-estate': 'bds-06', 'industrial-logistics': 'bds-06',
+      // 7. Villa Premium
+      'bds-07': 'bds-07', 'portal-07': 'bds-07', 'villa-premium': 'bds-07', 'luxury-villa': 'bds-07', 'modern-villa': 'bds-07',
+      // 8. Eco Green
+      'bds-08': 'bds-08', 'portal-08': 'bds-08', 'eco-green': 'bds-08', 'eco-living': 'bds-08', 'green-eco': 'bds-08',
+      // 9. Classic Elegant
+      'bds-09': 'bds-09', 'portal-09': 'bds-09', 'classic-elegant': 'bds-09', 'classic-heritage': 'bds-09', 'heritage-classic': 'bds-09',
+      // 10. Investment Pro
+      'bds-10': 'bds-10', 'portal-10': 'bds-10', 'investment-pro': 'bds-10', 'tech-hub': 'bds-10',
+      // 11. Agency Onepage
+      'bds-11': 'bds-11', 'portal-11': 'bds-11', 'agency-onepage': 'bds-11', 'suburban-family': 'bds-11',
+      // 12. Mega Developer Portal
+      'bds-12': 'bds-12', 'portal-12': 'bds-12', 'mega-developer': 'bds-12', 'listing-portal': 'bds-12', 'riverside-mansion': 'bds-12',
+      // 13. Sàn Đấu Giá BĐS
+      'bds-13': 'bds-13', 'portal-13': 'bds-13', 'auction-template': 'bds-13', 'auction-bds': 'bds-13', 'lake-sanctuary': 'bds-13',
+      // 14. Dự Án Đất Nền Phân Lô
+      'bds-14': 'bds-14', 'portal-14': 'bds-14', 'landplot-template': 'bds-14', 'land-plot': 'bds-14', 'mountain-retreat': 'bds-14',
+      // 15. Retail Podium / Shophouse
+      'bds-15': 'bds-15', 'portal-15': 'bds-15', 'retail-podium': 'bds-15', 'retail-commercial': 'bds-15', 'commercial-plaza': 'bds-15',
+      // 16. Personal Agent
+      'bds-16': 'bds-16', 'portal-16': 'bds-16', 'personal-agent': 'bds-16', 'golf-residences': 'bds-16',
+      // 17. Cổng Thông Tin Bất Động Sản Số 1
+      'bds-17': 'bds-17', 'portal-17': 'bds-17', 'portal-listing': 'bds-17', 'vietnam-portal': 'bds-17',
+      // 18. Sàn Giao Dịch & Đấu Giá Bến Thành
+      'bds-18': 'bds-18', 'portal-18': 'bds-18', 'bds123-portal': 'bds-18', 'benthanh-portal': 'bds-18',
+      // 19. Sàn Niêm Yết Mật Độ Cao Nhà Đất Số
+      'bds-19': 'bds-19', 'portal-19': 'bds-19', 'nhadatso-density': 'bds-19', 'nhadatso-portal': 'bds-19',
+      // 20. Chung Cư Minh Khai & Times City
+      'bds-20': 'bds-20', 'portal-20': 'bds-20', 'minhkhai-apartment': 'bds-20', 'minhkhai-luxury': 'bds-20',
+      // 21. Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội
+      'bds-21': 'bds-21', 'portal-21': 'bds-21', 'hanoi-rental': 'bds-21', 'chothue-hanoi': 'bds-21',
+      // 22. ZoHotels & Happy Land Nha Trang
+      'bds-22': 'bds-22', 'portal-22': 'bds-22', 'happyland-resort': 'bds-22', 'zohotels-resort': 'bds-22',
+      // 23. Sàn Giao Dịch Nhà Phố Homeo
+      'bds-23': 'bds-23', 'portal-23': 'bds-23', 'homeo-multithumb': 'bds-23', 'homeo-agency': 'bds-23',
+      // 24. RealtyBuild Trang Tin BĐS Số 1 Việt Nam
+      'bds-24': 'bds-24', 'portal-24': 'bds-24', 'realtybuild-tech': 'bds-24', 'realtybuild-portal': 'bds-24',
+      // Landing Pages
+      'lp-01': 'lp-01', 'landing-01': 'lp-01', 'lp01': 'lp-01', 'bds-lp-01': 'lp-01',
+      'lp-02': 'lp-02', 'landing-02': 'lp-02', 'lp02': 'lp-02', 'bds-lp-02': 'lp-02',
+      'lp-03': 'lp-03', 'landing-03': 'lp-03', 'lp03': 'lp-03', 'bds-lp-03': 'lp-03',
+      'lp-04': 'lp-04', 'landing-04': 'lp-04', 'lp04': 'lp-04', 'bds-lp-04': 'lp-04',
+      'lp-05': 'lp-05', 'landing-05': 'lp-05', 'lp05': 'lp-05', 'bds-lp-05': 'lp-05',
+      'lp-06': 'lp-06', 'landing-06': 'lp-06', 'lp06': 'lp-06', 'bds-lp-06': 'lp-06',
+      'lp-07': 'lp-07', 'landing-07': 'lp-07', 'lp07': 'lp-07', 'bds-lp-07': 'lp-07',
     };
 
-    if (SLUG_TO_FOLDER[slug]) {
-      folderCode = SLUG_TO_FOLDER[slug];
+    const s = slug.toLowerCase().trim();
+    if (SLUG_TO_FOLDER[s]) {
+      folderCode = SLUG_TO_FOLDER[s];
     } else {
-      for (let i = 1; i <= 24; i++) {
-        const numStr = i < 10 ? `0${i}` : `${i}`;
-        if (slug.includes(`bds-${numStr}`) || slug.includes(`portal-${numStr}`) || slug === `bds-${i}`) {
-          folderCode = `bds-${numStr}`;
+      // Check LP pattern (lp-01 to lp-07)
+      for (let i = 1; i <= 7; i++) {
+        const numStr = `0${i}`;
+        if (s.includes(`lp-${numStr}`) || s.includes(`lp${numStr}`) || s.includes(`landing-${numStr}`) || s === `lp-${i}`) {
+          folderCode = `lp-${numStr}`;
           break;
+        }
+      }
+
+      // Check BDS pattern (bds-01 to bds-24)
+      if (!folderCode) {
+        for (let i = 1; i <= 24; i++) {
+          const numStr = i < 10 ? `0${i}` : `${i}`;
+          if (s.includes(`bds-${numStr}`) || s.includes(`portal-${numStr}`) || s === `bds-${i}`) {
+            folderCode = `bds-${numStr}`;
+            break;
+          }
         }
       }
     }
@@ -235,9 +277,12 @@ export class TemplatePackagingService {
       path.resolve(__dirname, '../../../standalone-templates', folderCode),
       path.resolve(__dirname, '../../../../standalone-templates', folderCode),
       path.resolve(__dirname, '../../standalone-templates', folderCode),
+      path.resolve(__dirname, '../standalone-templates', folderCode),
+      path.resolve(__dirname, './standalone-templates', folderCode),
       path.resolve(process.cwd(), 'standalone-templates', folderCode),
       path.resolve(process.cwd(), '../standalone-templates', folderCode),
       path.resolve(process.cwd(), '../../standalone-templates', folderCode),
+      `/usr/src/app/standalone-templates/${folderCode}`,
     ];
     const standaloneDir = possibleStandaloneDirs.find((d) => fs.existsSync(d));
 

@@ -531,11 +531,13 @@ export default function CustomerDashboard() {
                       </div>
                     ) : (
                       orders.filter((o: any) => o.status === 'COMPLETED').map((ord: any, idx: number) => {
-                        const siteName = ord.template?.name || 'Mẫu Bất Động Sản';
-                        const siteSlug = ord.subdomain || `website-${ord.orderNumber.toLowerCase()}`;
-                        const siteUrl = `https://${siteSlug}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`;
+                        const siteSlug = ord.subdomain || ord.tenant?.slug || `bds-${ord.template?.slug || 'site'}`;
+                        const siteName = ord.template?.name || 'Website Bất Động Sản';
+                        const siteUrl = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+                          ? `http://localhost:3000/site/${siteSlug}`
+                          : `https://templates.aireviewbds.com/site/${siteSlug}`;
                         return (
-                          <div key={ord.id} className="bg-white border border-slate-200 hover:border-blue-300 p-6 rounded-2xl shadow-xs transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
+                          <div key={ord.id} className="bg-white border-2 border-slate-100 hover:border-blue-200 p-5 sm:p-6 rounded-2xl shadow-sm transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-left">
                             <div className="flex items-start gap-4">
                               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-black text-lg shadow-md shrink-0">
                                 #{idx + 1}
@@ -550,7 +552,7 @@ export default function CustomerDashboard() {
                                 <h3 className="text-base font-bold text-slate-900">{siteName}</h3>
                                 <div className="text-xs text-slate-500 flex items-center gap-1.5 font-mono">
                                   <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                                  <span className="text-blue-600 font-semibold">{siteSlug}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}</span>
+                                  <a href={siteUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-semibold">templates.aireviewbds.com/site/{siteSlug}</a>
                                 </div>
                               </div>
                             </div>
@@ -629,7 +631,16 @@ export default function CustomerDashboard() {
                               <td className="py-4 px-4 font-mono font-bold text-slate-950">{ord.orderNumber}</td>
                               <td className="py-4 px-4 font-bold text-slate-850">
                                 {ord.template?.name || 'N/A'}
-                                {ord.subdomain && <span className="block text-[10px] text-slate-400 font-normal font-mono">Domain: {ord.subdomain}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}</span>}
+                                {ord.subdomain && (
+                                  <a 
+                                    href={typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? `http://localhost:3000/site/${ord.subdomain}` : `https://templates.aireviewbds.com/site/${ord.subdomain}`} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer" 
+                                    className="block text-[10px] text-blue-600 hover:underline font-mono"
+                                  >
+                                    Link: templates.aireviewbds.com/site/{ord.subdomain}
+                                  </a>
+                                )}
                               </td>
                               <td className="py-4 px-4 text-slate-500 font-mono">
                                 {new Date(ord.createdAt).toLocaleDateString('vi-VN')}

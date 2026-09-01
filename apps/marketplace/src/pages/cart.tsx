@@ -480,7 +480,7 @@ export default function CartPage() {
 
                     <div>
                       <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center justify-between">
-                        <span>Tên miền phụ thương hiệu (Subdomain)</span>
+                        <span>Đường dẫn định danh website (Subdomain / Slug)</span>
                         <span className="text-slate-400 font-normal lowercase">(miễn phí)</span>
                       </label>
                       <div className="relative rounded-lg shadow-sm">
@@ -492,17 +492,14 @@ export default function CartPage() {
                           placeholder="Ví dụ: thanhtrung-land, hoanggia, villas-saigon..."
                           value={desiredSubdomain}
                           onChange={(e) => setDesiredSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                          className="w-full pl-9 pr-32 py-2 border border-slate-300 rounded-xl text-xs font-semibold focus:border-blue-500 focus:outline-none font-mono"
+                          className="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-xl text-xs font-semibold focus:border-blue-500 focus:outline-none font-mono"
                         />
-                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400 text-[11px] font-bold font-mono">
-                          .aireviewbds.com
-                        </div>
                       </div>
                       <p className="text-[10px] text-slate-500 mt-1">
                         {desiredSubdomain ? (
-                          <>Đường dẫn website: <strong className="text-blue-600 font-mono">https://{desiredSubdomain}.aireviewbds.com</strong></>
+                          <>Đường dẫn xem website: <strong className="text-blue-600 font-mono">https://templates.aireviewbds.com/site/{desiredSubdomain}</strong></>
                         ) : (
-                          <>Để trống hệ thống sẽ tự sinh tên sang trọng từ Họ tên của bạn (VD: <span className="font-mono text-slate-700">thanhtrung-land.aireviewbds.com</span>)</>
+                          <>Để trống hệ thống sẽ tự sinh tên chuẩn từ Họ tên + Mã mẫu + SĐT của bạn (VD: <span className="font-mono text-slate-700">templates.aireviewbds.com/site/thay-cuong-lp-04-9876</span>)</>
                         )}
                       </p>
                     </div>

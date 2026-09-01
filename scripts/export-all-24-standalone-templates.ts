@@ -26,6 +26,15 @@ const TEMPLATES = [
   { num: '22', slug: 'happyland-zohotels-nhatrang', name: 'BĐS 22 — ZoHotels & Happy Land Nha Trang', compFile: 'BDS22Template.tsx', desc: 'Căn hộ nghỉ dưỡng biển · ZoHotels · Ưu đãi 50%' },
   { num: '23', slug: 'homeo-agency-multithumb', name: 'BĐS 23 — Sàn Giao Dịch Nhà Phố Homeo', compFile: 'BDS23Template.tsx', desc: 'Sàn nhà phố Homeo · Card đa ảnh · Cẩm nang người mua' },
   { num: '24', slug: 'realtybuild-tech-portal', name: 'BĐS 24 — RealtyBuild Trang Tin BĐS Số 1 Việt Nam', compFile: 'BDS24Template.tsx', desc: 'RealtyBuild Tech Portal · Icon Pills · 6 Thành phố lớn' },
+
+  // ─── 7 LANDING PAGE SALE BĐS ───
+  { num: '01', folder: 'lp-01', slug: 'lp-01', name: 'LP #01 — Căn Hộ Chung Cư Cao Cấp Launch Funnel', compFile: 'LP01Template.tsx', desc: 'Landing Page mở bán chung cư cao cấp · Tối ưu chuyển đổi Ads · Đồng hồ Countdown' },
+  { num: '02', folder: 'lp-02', slug: 'lp-02', name: 'LP #02 — Biệt Thự & Nghỉ Dưỡng Hoàng Gia VIP', compFile: 'LP02Template.tsx', desc: 'Landing Page biệt thự & dinh thự nghỉ dưỡng 5 sao · 3D Tour · Nhận vé VIP tham quan' },
+  { num: '03', folder: 'lp-03', slug: 'lp-03', name: 'LP #03 — Đất Nền Phân Lô F0 Sổ Đỏ Trao Tay', compFile: 'LP03Template.tsx', desc: 'Landing Page đất nền phân lô sổ đỏ trao tay · Sơ đồ phân lô 1/500 tương tác · Bảng giá F0' },
+  { num: '04', folder: 'lp-04', slug: 'lp-04', name: 'LP #04 — Sale Môi Giới BĐS Triệu Đô Authority', compFile: 'LP04Template.tsx', desc: 'Landing Page định vị thương hiệu Chuyên viên môi giới BĐS uy tín · Hồ sơ năng lực · Giỏ hàng cắt lỗ' },
+  { num: '05', folder: 'lp-05', slug: 'lp-05', name: 'LP #05 — Tổ Hợp Căn Hộ Khách Sạn 5 Sao Golden Park', compFile: 'LP05Template.tsx', desc: 'Landing Page tổ hợp căn hộ khách sạn 5 sao · Cam kết lợi nhuận 12%/năm · Chia sẻ doanh thu' },
+  { num: '06', folder: 'lp-06', slug: 'lp-06', name: 'LP #06 — Khu Đô Thị Công Nghiệp & Dịch Vụ VSIP', compFile: 'LP06Template.tsx', desc: 'Landing Page KCN & Đô thị dịch vụ · Cho thuê nhà xưởng & đất công nghiệp B2B · Tải hồ sơ FDI' },
+  { num: '07', folder: 'lp-07', slug: 'lp-07', name: 'LP #07 — Dinh Thự Đảo Sinh Thái Nghỉ Dưỡng Ven Sông', compFile: 'LP07Template.tsx', desc: 'Landing Page dinh thự đảo sinh thái ven sông · Bến du thuyền · Đặc quyền thượng lưu 100%' },
 ];
 
 function findRepoRoot(): string {
@@ -45,14 +54,14 @@ const SOURCE_COMP_DIR = path.join(ROOT_DIR, 'apps/marketplace/src/components/dem
 const DESIGN_SYSTEM_PATH = path.join(ROOT_DIR, 'apps/marketplace/src/components/demo/design-system.ts');
 
 async function exportAll() {
-  console.log('🚀 Bắt đầu xuất 24 templates thành các gói độc lập: HTML5/CSS3/JS + PHP & MySQL...');
+  console.log('🚀 Bắt đầu xuất 24 templates + 7 Landing Pages thành các gói độc lập: HTML5/CSS3/JS + PHP & MySQL...');
 
   fs.mkdirSync(OUTPUT_BASE, { recursive: true });
 
   for (const t of TEMPLATES) {
-    const folderName = `bds-${t.num}`;
+    const folderName = (t as any).folder || `bds-${t.num}`;
     const targetFolder = path.join(OUTPUT_BASE, folderName);
-    console.log(`📁 Đang xuất [${t.num}/24]: ${folderName} (${t.name})...`);
+    console.log(`📁 Đang xuất: ${folderName} (${t.name})...`);
 
     // HTML5 & PHP subfolders
     const htmlDir = path.join(targetFolder, 'html');

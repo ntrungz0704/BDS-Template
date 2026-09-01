@@ -1,0 +1,1 @@
+console.log('LP #04 - Sale Môi Giới BĐS Triệu Đô Authority initialized');

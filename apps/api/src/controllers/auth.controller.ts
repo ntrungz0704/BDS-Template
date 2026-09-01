@@ -523,6 +523,27 @@ export async function getMe(req: Request, res: Response, next: NextFunction) {
         isActive: true,
         status: true,
         customerProfile: true,
+        cart: {
+          include: {
+            items: {
+              include: {
+                template: {
+                  select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    shortDescription: true,
+                    thumbnail: true,
+                    priceBuy: true,
+                    priceRentMonthly: true,
+                    priceBuySource: true,
+                  },
+                },
+              },
+              orderBy: { createdAt: 'desc' },
+            },
+          },
+        },
         wishlists: {
           include: {
             template: {

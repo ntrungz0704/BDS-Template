@@ -35,6 +35,8 @@ COPY --from=builder /usr/src/app/apps/api/package.json ./apps/api/
 COPY --from=builder /usr/src/app/apps/api/dist ./apps/api/dist
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/packages/database/src/index.ts ./packages/database/src/index.ts
+COPY --from=builder /usr/src/app/standalone-templates ./standalone-templates
+COPY --from=builder /usr/src/app/HUONG-DAN-LAY-KEY-GEMINI-AI.md ./HUONG-DAN-LAY-KEY-GEMINI-AI.md
 COPY --from=builder /usr/src/app/docker/entrypoint.sh ./docker/entrypoint.sh
 RUN chmod +x ./docker/entrypoint.sh
 

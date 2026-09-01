@@ -1,0 +1,1 @@
+console.log('LP #05 - Tổ Hợp Căn Hộ Khách Sạn 5 Sao Golden Park initialized');

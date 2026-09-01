@@ -147,82 +147,96 @@ export default function CheckoutSuccessPage() {
               </p>
 
               {/* Information Cards */}
-              <div className="w-full mt-8 p-6 bg-slate-50 rounded-2xl border border-slate-200/80 text-left text-xs space-y-4 font-semibold text-slate-700">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                  <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Website Công Khai Của Bạn:</span>
-                  <a
-                    href={tenantSlug || orderData.subdomain ? `https://${tenantSlug || orderData.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}` : '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline font-mono font-bold flex items-center gap-1 text-sm"
-                  >
-                    {tenantSlug || orderData.subdomain ? `${tenantSlug || orderData.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}` : 'Đang chuẩn bị...'}
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                </div>
+              {(() => {
+                const siteSub = tenantSlug || orderData.subdomain || '';
+                const liveSiteUrl = siteSub 
+                  ? (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
+                      ? `http://localhost:3000/site/${siteSub}` 
+                      : `https://templates.aireviewbds.com/site/${siteSub}`)
+                  : '#';
+                const displayUrl = siteSub ? `templates.aireviewbds.com/site/${siteSub}` : 'Đang chuẩn bị...';
 
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-slate-200/60 pt-3">
-                  <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Link Xem Demo Trực Tiếp:</span>
-                  <a
-                    href={tenantSlug || orderData.subdomain ? `https://website.aireviewbds.com/?subdomain=${tenantSlug || orderData.subdomain}` : '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-emerald-600 hover:underline font-mono font-bold flex items-center gap-1 text-sm"
-                  >
-                    {tenantSlug || orderData.subdomain ? `https://website.aireviewbds.com/?subdomain=${tenantSlug || orderData.subdomain}` : 'Đang chuẩn bị...'}
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                </div>
+                return (
+                  <>
+                    <div className="w-full mt-8 p-6 bg-slate-50 rounded-2xl border border-slate-200/80 text-left text-xs space-y-4 font-semibold text-slate-700">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                        <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Website Công Khai Của Bạn:</span>
+                        <a
+                          href={liveSiteUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline font-mono font-bold flex items-center gap-1 text-sm"
+                        >
+                          <span>{displayUrl}</span>
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-slate-200/60 pt-3">
-                  <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Trang Quản Trị Website (CMS):</span>
-                  <a
-                    href={process.env.NEXT_PUBLIC_CMS_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://cms.aireviewbds.com')}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-indigo-600 hover:underline font-mono font-bold flex items-center gap-1 text-sm"
-                  >
-                    {process.env.NEXT_PUBLIC_CMS_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://cms.aireviewbds.com')}
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                </div>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-slate-200/60 pt-3">
+                        <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Link Xem Demo Trực Tiếp:</span>
+                        <a
+                          href={liveSiteUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-emerald-600 hover:underline font-mono font-bold flex items-center gap-1 text-sm"
+                        >
+                          <span>{displayUrl}</span>
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-slate-200/60 pt-3">
-                  <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Tài Khoản Đăng Nhập CMS:</span>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-slate-900 text-sm font-bold">{orderData.email}</span>
-                    <button
-                      onClick={() => handleCopy(orderData.email, 'Email')}
-                      className="p-1 hover:bg-slate-200 rounded text-slate-500 transition-all text-[11px] flex items-center gap-1 border border-slate-200 bg-white px-2"
-                    >
-                      <Copy className="w-3 h-3" />
-                      <span>{copiedField === 'Email' ? 'Đã chép!' : 'Copy'}</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-slate-200/60 pt-3">
+                        <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Trang Quản Trị Website (CMS):</span>
+                        <a
+                          href={process.env.NEXT_PUBLIC_CMS_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://cms.aireviewbds.com')}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-indigo-600 hover:underline font-mono font-bold flex items-center gap-1 text-sm"
+                        >
+                          {process.env.NEXT_PUBLIC_CMS_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://cms.aireviewbds.com')}
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      </div>
 
-              {/* Action Buttons */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mt-8">
-                <a
-                  href={process.env.NEXT_PUBLIC_CMS_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://cms.aireviewbds.com')}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl text-sm flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  <span>Vào Quản Trị CMS Ngay</span>
-                </a>
-                <a
-                  href={tenantSlug || orderData.subdomain ? (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? `http://localhost:3000/site/${tenantSlug || orderData.subdomain}` : `https://${tenantSlug || orderData.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}/?tenant=${tenantSlug || orderData.subdomain}`) : '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="py-4 px-6 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl text-sm flex items-center justify-center gap-2 shadow-lg transition-all"
-                >
-                  <Globe className="w-4 h-4" />
-                  <span>Xem Website Thực Tế</span>
-                </a>
-              </div>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-slate-200/60 pt-3">
+                        <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Tài Khoản Đăng Nhập CMS:</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-slate-900 text-sm font-bold">{orderData.email}</span>
+                          <button
+                            onClick={() => handleCopy(orderData.email, 'Email')}
+                            className="p-1 hover:bg-slate-200 rounded text-slate-500 transition-all text-[11px] flex items-center gap-1 border border-slate-200 bg-white px-2"
+                          >
+                            <Copy className="w-3 h-3" />
+                            <span>{copiedField === 'Email' ? 'Đã chép!' : 'Copy'}</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mt-8">
+                      <a
+                        href={process.env.NEXT_PUBLIC_CMS_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://cms.aireviewbds.com')}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl text-sm flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all"
+                      >
+                        <Sparkles className="w-4 h-4" />
+                        <span>Vào Quản Trị CMS Ngay</span>
+                      </a>
+                      <a
+                        href={liveSiteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="py-4 px-6 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl text-sm flex items-center justify-center gap-2 shadow-lg transition-all"
+                      >
+                        <Globe className="w-4 h-4" />
+                        <span>Xem Website Thực Tế</span>
+                      </a>
+                    </div>
+                  </>
+                );
+              })()}
 
               {/* Secondary Navigation Links */}
               <div className="flex flex-wrap items-center justify-center gap-4 mt-6 pt-6 border-t border-slate-100 text-xs font-bold text-slate-600">

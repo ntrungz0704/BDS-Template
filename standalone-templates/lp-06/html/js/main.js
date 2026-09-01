@@ -1,0 +1,1 @@
+console.log('LP #06 - Khu Đô Thị Công Nghiệp & Dịch Vụ VSIP initialized');

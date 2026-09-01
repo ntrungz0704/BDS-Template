@@ -284,18 +284,42 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
     };
 
     const extractTplCode = (tplIdOrSlug: string) => {
-      const s = (tplIdOrSlug || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-      if (s.startsWith('bds') || s.startsWith('lp')) return s.slice(0, 5);
-      return s.slice(0, 6) || 'bds01';
+      const s = (tplIdOrSlug || '').toLowerCase().trim();
+      const lpMatch = s.match(/(?:lp|landing)[-_]?0?([1-7])/i);
+      if (lpMatch) {
+        const num = lpMatch[1].padStart(2, '0');
+        return `lp-${num}`;
+      }
+      const bdsMatch = s.match(/(?:bds|portal|template)[-_]?0?([1-9]|1[0-9]|2[0-4])/i);
+      if (bdsMatch) {
+        const num = bdsMatch[1].padStart(2, '0');
+        return `bds-${num}`;
+      }
+      const aliasMap: Record<string, string> = {
+        'luxury-gold': 'bds-01', 'minimal-white': 'bds-02', 'modern-corporate': 'bds-03',
+        'resort-paradise': 'bds-04', 'urban-city': 'bds-05', 'industrial-estate': 'bds-06',
+        'villa-premium': 'bds-07', 'eco-green': 'bds-08', 'classic-elegant': 'bds-09',
+        'investment-pro': 'bds-10', 'agency-onepage': 'bds-11', 'mega-developer': 'bds-12',
+        'auction-template': 'bds-13', 'landplot-template': 'bds-14', 'retail-podium': 'bds-15',
+        'personal-agent': 'bds-16', 'portal-listing': 'bds-17', 'benthanh-portal': 'bds-18',
+        'nhadatso-density': 'bds-19', 'minhkhai-apartment': 'bds-20', 'hanoi-rental': 'bds-21',
+        'happyland-resort': 'bds-22', 'homeo-agency': 'bds-23', 'realtybuild-tech': 'bds-24',
+      };
+      for (const [k, v] of Object.entries(aliasMap)) {
+        if (s.includes(k)) return v;
+      }
+      const clean = s.replace(/[^a-z0-9]/g, '');
+      return clean.slice(0, 8) || 'bds-01';
     };
 
-    const phoneSuffix = (order.phone || '').replace(/\D/g, '').slice(-4) || Date.now().toString().slice(-4);
-    const tplCode = extractTplCode(order.templateId || (order as any).template?.slug || 'bds01');
+    const cleanPhone = (order.phone || '').replace(/\D/g, '');
+    const phoneSuffix = cleanPhone.length >= 4 ? cleanPhone.slice(-4) : (cleanPhone || Date.now().toString().slice(-4));
+    const tplCode = extractTplCode(order.templateId || (order as any).template?.slug || 'bds-01');
 
     let candidateSubdomain = order.subdomain;
     if (!candidateSubdomain || candidateSubdomain.trim() === '') {
-      const brandSlug = slugifyBrand(order.fullName || '');
-      candidateSubdomain = brandSlug ? `${brandSlug}-${tplCode}-${phoneSuffix}` : `bds-${tplCode}-${phoneSuffix}`;
+      const brandSlug = slugifyBrand(order.fullName || '') || 'bds';
+      candidateSubdomain = `${brandSlug}-${tplCode}-${phoneSuffix}`;
     } else {
       const cleanCustom = slugifyBrand(candidateSubdomain);
       if (!cleanCustom.includes(tplCode)) {

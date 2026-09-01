@@ -1,0 +1,1 @@
+console.log('LP #02 - Biệt Thự & Nghỉ Dưỡng Hoàng Gia VIP initialized');

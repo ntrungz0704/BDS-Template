@@ -128,6 +128,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToast(null);
   };
 
+  const syncCartToBackend = async (cartItems: CartItem[]) => {
+    try {
+      const csrfToken = typeof document !== 'undefined' ? (localStorage.getItem('csrf_token') || '') : null;
+      await axios.put(`${API_URL}/api/marketplace/cart`, { items: cartItems }, {
+        withCredentials: true,
+        headers: csrfToken ? { 'x-csrf-token': decodeURIComponent(csrfToken) } : {},
+      });
+    } catch (e) {
+      // silently ignore network errors during background sync
+    }
+  };
+
   useEffect(() => {
     const initAuth = async () => {
       setIsLoading(true);
@@ -137,9 +149,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const savedWishlist = localStorage.getItem('platformbds_wishlist_v3');
         const savedCart = localStorage.getItem('platformbds_cart_v3');
 
+        let initialCart: CartItem[] = [];
+        if (savedCart) {
+          try {
+            initialCart = JSON.parse(savedCart);
+            setCart(initialCart);
+          } catch (e) {
+            console.error('Failed to parse saved cart', e);
+          }
+        }
+
         if (savedUser) {
           try {
-            setUser(JSON.parse(savedUser));
+            const parsedUser = JSON.parse(savedUser);
+            setUser(parsedUser);
+            // Also try to read user-scoped cart cache
+            const userCartKey = `platformbds_user_cart_${parsedUser.id}`;
+            const userScopedCart = localStorage.getItem(userCartKey);
+            if (userScopedCart && (!initialCart || initialCart.length === 0)) {
+              try {
+                initialCart = JSON.parse(userScopedCart);
+                setCart(initialCart);
+              } catch (_) {}
+            }
           } catch (e) {
             console.error('Failed to parse saved user', e);
             setUser(null);
@@ -164,14 +196,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setWishlists(JSON.parse(savedWishlist));
           } catch (e) {
             console.error('Failed to parse saved wishlist', e);
-          }
-        }
-
-        if (savedCart) {
-          try {
-            setCart(JSON.parse(savedCart));
-          } catch (e) {
-            console.error('Failed to parse saved cart', e);
           }
         }
 
@@ -213,13 +237,48 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const apiOrders = meRes.data.data.orders || [];
             const apiWishlists = meRes.data.data.user?.wishlists || [];
 
+            // Extract cart items from backend database
+            const serverCartItems: CartItem[] = (apiUser.cart?.items || [])
+              .filter((it: any) => it.template)
+              .map((it: any) => ({
+                template: {
+                  id: it.template.id,
+                  name: it.template.name,
+                  slug: it.template.slug,
+                  thumbnail: it.template.thumbnail || '',
+                  priceBuy: it.template.priceBuy || 499000,
+                  priceRentMonthly: it.template.priceRentMonthly || 199000,
+                },
+                type: 'BUY' as const,
+                subdomain: '',
+                note: '',
+              }));
+
+            // Merge server cart with initial local cart (preserving any added items)
+            const mergedCartMap = new Map<string, CartItem>();
+            serverCartItems.forEach((item) => mergedCartMap.set(item.template.slug || item.template.id, item));
+            initialCart.forEach((item) => {
+              const key = item.template?.slug || item.template?.id;
+              if (key && !mergedCartMap.has(key)) {
+                mergedCartMap.set(key, item);
+              }
+            });
+            const mergedCart = Array.from(mergedCartMap.values());
+
             setUser(apiUser);
             setOrders(apiOrders);
             setWishlists(apiWishlists);
+            setCart(mergedCart);
 
             localStorage.setItem('platformbds_user_v3', JSON.stringify(apiUser));
             localStorage.setItem('platformbds_orders_v3', JSON.stringify(apiOrders));
             localStorage.setItem('platformbds_wishlist_v3', JSON.stringify(apiWishlists));
+            localStorage.setItem('platformbds_cart_v3', JSON.stringify(mergedCart));
+            localStorage.setItem(`platformbds_user_cart_${apiUser.id}`, JSON.stringify(mergedCart));
+
+            if (mergedCart.length > serverCartItems.length) {
+              axios.put(`${API_URL}/api/marketplace/cart`, { items: mergedCart }, { withCredentials: true }).catch(() => {});
+            }
           }
         } catch (err: any) {
           // If explicitly unauthorized by backend (401), session is genuinely dead
@@ -287,24 +346,58 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         } catch (e) {}
 
-        // Fetch fresh user profile & orders for this exact user
+        // Fetch fresh user profile, orders & cart for this user
         try {
           const meRes = await axios.get(`${API_URL}/api/auth/me`, {
             withCredentials: true,
-            timeout: 3000,
+            timeout: 4000,
           });
           if (meRes?.data?.data?.user) {
             const freshUser = meRes.data.data.user;
             const freshOrders = meRes.data.data.orders || [];
             const freshWishlists = meRes.data.data.user?.wishlists || [];
 
+            const serverCartItems: CartItem[] = (freshUser.cart?.items || [])
+              .filter((it: any) => it.template)
+              .map((it: any) => ({
+                template: {
+                  id: it.template.id,
+                  name: it.template.name,
+                  slug: it.template.slug,
+                  thumbnail: it.template.thumbnail || '',
+                  priceBuy: it.template.priceBuy || 499000,
+                  priceRentMonthly: it.template.priceRentMonthly || 199000,
+                },
+                type: 'BUY' as const,
+                subdomain: '',
+                note: '',
+              }));
+
+            // Merge server cart with current in-memory cart
+            const mergedCartMap = new Map<string, CartItem>();
+            serverCartItems.forEach((item) => mergedCartMap.set(item.template.slug || item.template.id, item));
+            cart.forEach((item) => {
+              const key = item.template?.slug || item.template?.id;
+              if (key && !mergedCartMap.has(key)) {
+                mergedCartMap.set(key, item);
+              }
+            });
+            const mergedCart = Array.from(mergedCartMap.values());
+
             setUser(freshUser);
             setOrders(freshOrders);
             setWishlists(freshWishlists);
+            setCart(mergedCart);
 
             localStorage.setItem('platformbds_user_v3', JSON.stringify(freshUser));
             localStorage.setItem('platformbds_orders_v3', JSON.stringify(freshOrders));
             localStorage.setItem('platformbds_wishlist_v3', JSON.stringify(freshWishlists));
+            localStorage.setItem('platformbds_cart_v3', JSON.stringify(mergedCart));
+            localStorage.setItem(`platformbds_user_cart_${freshUser.id}`, JSON.stringify(mergedCart));
+
+            if (mergedCart.length > serverCartItems.length) {
+              axios.put(`${API_URL}/api/marketplace/cart`, { items: mergedCart }, { withCredentials: true }).catch(() => {});
+            }
           }
         } catch (e) {
           setOrders([]);
@@ -358,6 +451,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
     } catch (e) {}
 
+    // When logging out, clear local session state from memory
+    // Note: Cart on the database is kept completely intact so when the user logs back in
+    // on this or any other browser, it will be restored automatically!
     setUser(null);
     setOrders([]);
     setWishlists([]);
@@ -513,6 +609,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setCart(newCart);
     if (typeof window !== 'undefined') {
       localStorage.setItem('platformbds_cart_v3', JSON.stringify(newCart));
+      if (user?.id) {
+        localStorage.setItem(`platformbds_user_cart_${user.id}`, JSON.stringify(newCart));
+      }
+    }
+    if (user) {
+      syncCartToBackend(newCart);
     }
 
     showToast(`Đã thêm "${template.name}" vào giỏ hàng!`, 'success', {
@@ -528,6 +630,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setCart(newCart);
     if (typeof window !== 'undefined') {
       localStorage.setItem('platformbds_cart_v3', JSON.stringify(newCart));
+      if (user?.id) {
+        localStorage.setItem(`platformbds_user_cart_${user.id}`, JSON.stringify(newCart));
+      }
+    }
+    if (user) {
+      syncCartToBackend(newCart);
     }
     showToast('Đã xóa mẫu khỏi giỏ hàng', 'info');
   };
@@ -542,6 +650,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setCart(newCart);
     if (typeof window !== 'undefined') {
       localStorage.setItem('platformbds_cart_v3', JSON.stringify(newCart));
+      if (user?.id) {
+        localStorage.setItem(`platformbds_user_cart_${user.id}`, JSON.stringify(newCart));
+      }
+    }
+    if (user) {
+      syncCartToBackend(newCart);
     }
   };
 
@@ -549,6 +663,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setCart([]);
     if (typeof window !== 'undefined') {
       localStorage.setItem('platformbds_cart_v3', JSON.stringify([]));
+      if (user?.id) {
+        localStorage.setItem(`platformbds_user_cart_${user.id}`, JSON.stringify([]));
+      }
+    }
+    if (user) {
+      syncCartToBackend([]);
     }
   };
 

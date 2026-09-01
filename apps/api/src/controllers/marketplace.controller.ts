@@ -998,3 +998,177 @@ export async function downloadExportByToken(req: Request, res: Response, next: N
     });
   }
 }
+
+/**
+ * Lấy giỏ hàng đã lưu của người dùng đăng nhập
+ */
+export async function getUserCart(req: Request, res: Response, next: NextFunction) {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(200).json({ success: true, data: [] });
+    }
+
+    const cart = await prisma.cart.findUnique({
+      where: { userId },
+      include: {
+        items: {
+          include: {
+            template: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+                thumbnail: true,
+                priceBuy: true,
+                priceRentMonthly: true,
+                priceBuySource: true,
+                shortDescription: true,
+              },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+    });
+
+    if (!cart || !cart.items || cart.items.length === 0) {
+      return res.status(200).json({ success: true, data: [] });
+    }
+
+    const formattedItems = cart.items
+      .filter((item: any) => item.template)
+      .map((item: any) => ({
+        template: {
+          id: item.template.id,
+          name: item.template.name,
+          slug: item.template.slug,
+          thumbnail: item.template.thumbnail || '',
+          priceBuy: item.template.priceBuy || 499000,
+          priceRentMonthly: item.template.priceRentMonthly || 199000,
+          priceBuySource: item.template.priceBuySource || 1290000,
+          shortDescription: item.template.shortDescription || '',
+        },
+        type: 'BUY' as const,
+        subdomain: '',
+        note: '',
+      }));
+
+    return res.status(200).json({ success: true, data: formattedItems });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Đồng bộ / lưu giỏ hàng của người dùng vào database
+ */
+export async function syncUserCart(req: Request, res: Response, next: NextFunction) {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: { code: 'UNAUTHENTICATED', message: 'Vui lòng đăng nhập để đồng bộ giỏ hàng.' },
+      });
+    }
+
+    const items = Array.isArray(req.body.items) ? req.body.items : [];
+
+    const cart = await prisma.cart.upsert({
+      where: { userId },
+      create: { userId },
+      update: {},
+    });
+
+    // Delete existing items in cart
+    await prisma.cartItem.deleteMany({
+      where: { cartId: cart.id },
+    });
+
+    const validTemplateIds: string[] = [];
+
+    for (const item of items) {
+      const rawId = item?.template?.id || item?.template?.slug || item?.templateId || item?.slug || item?.id;
+      if (!rawId) continue;
+
+      const cleanSlug = String(rawId).replace(/^template-/, '').toLowerCase();
+      const resolvedSlug = resolveTemplateAlias(rawId);
+
+      const template = await prisma.template.findFirst({
+        where: {
+          OR: [
+            { id: rawId },
+            { id: `template-${cleanSlug}` },
+            { id: `template-${resolvedSlug}` },
+            { slug: rawId },
+            { slug: cleanSlug },
+            { slug: resolvedSlug },
+          ],
+        },
+        select: { id: true },
+      });
+
+      if (template && !validTemplateIds.includes(template.id)) {
+        validTemplateIds.push(template.id);
+      }
+    }
+
+    if (validTemplateIds.length > 0) {
+      await prisma.cartItem.createMany({
+        data: validTemplateIds.map((templateId) => ({
+          cartId: cart.id,
+          templateId,
+        })),
+        skipDuplicates: true,
+      });
+    }
+
+    // Return fresh updated items
+    const updatedCart = await prisma.cart.findUnique({
+      where: { id: cart.id },
+      include: {
+        items: {
+          include: {
+            template: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+                thumbnail: true,
+                priceBuy: true,
+                priceRentMonthly: true,
+                priceBuySource: true,
+                shortDescription: true,
+              },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+    });
+
+    const formattedItems = (updatedCart?.items || [])
+      .filter((item: any) => item.template)
+      .map((item: any) => ({
+        template: {
+          id: item.template.id,
+          name: item.template.name,
+          slug: item.template.slug,
+          thumbnail: item.template.thumbnail || '',
+          priceBuy: item.template.priceBuy || 499000,
+          priceRentMonthly: item.template.priceRentMonthly || 199000,
+          priceBuySource: item.template.priceBuySource || 1290000,
+          shortDescription: item.template.shortDescription || '',
+        },
+        type: 'BUY' as const,
+        subdomain: '',
+        note: '',
+      }));
+
+    return res.status(200).json({ success: true, data: formattedItems });
+  } catch (error) {
+    next(error);
+  }
+}
+
