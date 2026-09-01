@@ -490,14 +490,57 @@ export default function BDS08Template({
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
+  const activeProjects = useMemo<ProjectCardItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): ProjectCardItem => {
+        const cat = (p.type?.toLowerCase().includes('đất') || p.type === 'LAND')
+          ? 'dat-nen'
+          : (p.type?.toLowerCase().includes('biệt') || p.type === 'VILLA')
+          ? 'biet-thu'
+          : (p.type?.toLowerCase().includes('shophouse') || p.type === 'SHOPHOUSE')
+          ? 'shophouse'
+          : (p.type?.toLowerCase().includes('condotel') || p.type === 'CONDOTEL')
+          ? 'condotel'
+          : 'can-ho';
+        const catLabel = cat === 'dat-nen' ? 'Đất Nền' : (cat === 'biet-thu' ? 'Biệt Thự' : (cat === 'shophouse' ? 'Shophouse' : (cat === 'condotel' ? 'Condotel' : 'Căn Hộ')));
+
+        return {
+          id: p.id || idx + 1,
+          title: p.title || p.name || 'Dự án bất động sản quy mô',
+          slug: p.slug || `du-an-${idx + 1}`,
+          category: cat,
+          categoryLabel: catLabel,
+          statusBadge: p.status || (idx === 0 ? 'Đang mở bán' : 'Sắp ra mắt'),
+          price: p.price || (p.priceFrom ? `${p.priceFrom} Tỷ` : 'Liên hệ'),
+          priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 3.0),
+          area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '100 m²'),
+          areaNum: typeof p.area === 'number' ? p.area : 100,
+          location: p.address || p.location || 'Vị trí chiến lược trung tâm',
+          city: p.city || 'Bà Rịa - Vũng Tàu',
+          bedrooms: p.bedrooms || 2,
+          bathrooms: p.bathrooms || 2,
+          image: p.thumbnail || p.image || p.images?.[0] || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+          gallery: p.gallery || [p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80'],
+          featured: Boolean(p.featured || idx < 4),
+          desc: p.description || p.desc || 'Đại đô thị thông minh tiêu chuẩn quốc tế.',
+          details: Array.isArray(p.details) ? p.details : ['Pháp lý minh bạch', 'Chủ đầu tư uy tín', 'Sinh lời cao'],
+          investor: p.investor || company?.name || 'Tập đoàn BĐS',
+          legal: p.legal || 'Sổ hồng riêng',
+          handover: p.handover || 'Năm 2026',
+        };
+      });
+    }
+    return BDS08_PROJECTS;
+  }, [projects, company]);
+
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedProperty, setSelectedProperty] = useState<ProjectCardItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS08_PROJECTS.find(p => p.slug === initialParsed.propSlug);
+      const found = activeProjects.find(p => p.slug === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS08_PROJECTS[0];
+    return activeProjects[0] || BDS08_PROJECTS[0];
   });
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
@@ -527,7 +570,7 @@ export default function BDS08Template({
     const res = resolvePageAndDetail(initialPage);
     setCurrentPageState(res.page);
     if (res.propSlug) {
-      const found = BDS08_PROJECTS.find(p => p.slug === res.propSlug);
+      const found = activeProjects.find(p => p.slug === res.propSlug);
       if (found) setSelectedProperty(found);
     }
     if (res.artSlug) {

@@ -297,34 +297,86 @@ export default function BDS15Template({
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
+  const activeProperties = useMemo<PropertyItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): PropertyItem => {
+        const cat = (p.category === 'thue' || p.category === 'cho-thue')
+          ? 'thue'
+          : (p.category === 'du-an' || p.type?.toLowerCase().includes('dự án'))
+          ? 'du-an'
+          : 'ban';
+
+        return {
+          id: p.slug || `prop-${idx + 1}`,
+          title: p.title || p.name || 'Bất động sản trung tâm phố cổ',
+          slug: p.slug || `bds-${idx + 1}`,
+          type: p.type || 'Nhà Mặt Phố',
+          category: cat,
+          price: p.price || (p.priceFrom ? `${p.priceFrom} Tỷ` : 'Liên hệ'),
+          priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 20.0),
+          area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '100 m²'),
+          areaNum: typeof p.area === 'number' ? p.area : 100,
+          beds: p.beds || p.bedrooms || 4,
+          baths: p.baths || p.bathrooms || 4,
+          location: p.address || p.location || 'Vị trí mặt phố kinh doanh đắc địa',
+          district: p.district || 'Hoàn Kiếm',
+          image: p.thumbnail || p.image || p.images?.[0] || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+          hot: Boolean(idx === 0),
+          featured: Boolean(idx < 4),
+          description: p.description || p.desc || 'Vị trí kim cương trung tâm phố lớn, dòng tiền cho thuê khủng.',
+          specs: Array.isArray(p.specs) ? p.specs : ['Sổ đỏ chính chủ', 'Mặt tiền rộng', 'Dòng tiền sẵn'],
+        };
+      });
+    }
+    return BDS15_PROPERTIES;
+  }, [projects]);
+
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức bất động sản phố cổ',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || company?.name || 'Ban Biên Tập',
+        category: p.category || 'Thị Trường',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        excerpt: p.summary || p.excerpt || 'Cập nhật tin tức thị trường BĐS mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+    }
+    return BDS15_NEWS;
+  }, [posts, company]);
+
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedProperty, setSelectedProperty] = useState<PropertyItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS15_PROPERTIES.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
+      const found = activeProperties.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS15_PROPERTIES[0];
+    return activeProperties[0] || BDS15_PROPERTIES[0];
   });
 
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = BDS15_NEWS.find(n => n.slug === initialParsed.artSlug || n.id.toString() === initialParsed.artSlug);
+      const found = activeNews.find(n => n.slug === initialParsed.artSlug || n.id.toString() === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS15_NEWS[0];
+    return activeNews[0] || BDS15_NEWS[0];
   });
 
   // Dynamic Options derived from Data for 100% CMS Resilience
   const availableTypes = useMemo(() => {
-    const set = new Set(BDS15_PROPERTIES.map(p => p.type).filter(Boolean));
+    const set = new Set(activeProperties.map(p => p.type).filter(Boolean));
     return ['all', ...Array.from(set)];
-  }, []);
+  }, [activeProperties]);
 
   const availableDistricts = useMemo(() => {
-    const set = new Set(BDS15_PROPERTIES.map(p => p.district).filter(Boolean));
+    const set = new Set(activeProperties.map(p => p.district).filter(Boolean));
     return ['all', ...Array.from(set)];
-  }, []);
+  }, [activeProperties]);
 
   // Filter States
   const [filterType, setFilterType] = useState('all');
@@ -414,7 +466,7 @@ export default function BDS15Template({
 
   // Resilient Fuzzy & Dynamic Filter
   const filteredProperties = useMemo(() => {
-    return BDS15_PROPERTIES.filter(p => {
+    return activeProperties.filter(p => {
       // Type matching: fuzzy match
       if (filterType !== 'all') {
         const f = filterType.toLowerCase();

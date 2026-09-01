@@ -25,7 +25,8 @@ export default function LP01Template({
   projects,
 }: LP01TemplateProps) {
   // Brand & Company info fallback from CMS
-  const brandName = company?.name || template?.name || 'THE MATRIX ONE LUXURY';
+  const firstProject = (projects && Array.isArray(projects) && projects.length > 0) ? projects[0] : null;
+  const brandName = firstProject?.title || firstProject?.name || company?.name || template?.name || 'DỰ ÁN BẤT ĐỘNG SẢN CAO CẤP';
   const hotline = company?.phone || '0919 006 030';
   const zalo = company?.zalo || hotline;
   const email = company?.email || 'admin@templatesbds.com';

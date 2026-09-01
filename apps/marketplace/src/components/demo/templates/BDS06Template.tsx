@@ -489,21 +489,80 @@ export default function BDS06Template({
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
+  const activeProperties = useMemo<PropertyItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): PropertyItem => {
+        const cat = (p.type?.toLowerCase().includes('biệt') || p.type === 'VILLA')
+          ? 'biet-thu'
+          : (p.type?.toLowerCase().includes('shophouse') || p.type === 'SHOPHOUSE')
+          ? 'shophouse'
+          : (p.type?.toLowerCase().includes('căn') || p.type === 'APARTMENT')
+          ? 'can-ho'
+          : 'nha-pho';
+        const catLabel = cat === 'biet-thu' ? 'Biệt Thự Sinh Thái' : (cat === 'shophouse' ? 'Shophouse Thương Mại' : (cat === 'can-ho' ? 'Căn Hộ Nghỉ Dưỡng' : 'Nhà Phố Liền Kề'));
+
+        return {
+          id: p.id || idx + 1,
+          title: p.title || p.name || 'Bất động sản sinh thái cao cấp',
+          slug: p.slug || `bds-${idx + 1}`,
+          category: cat,
+          categoryLabel: catLabel,
+          price: p.price || (p.priceFrom ? `${p.priceFrom} Tỷ` : 'Liên hệ'),
+          priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 5.0),
+          area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '100 m²'),
+          areaNum: typeof p.area === 'number' ? p.area : 100,
+          bedrooms: p.bedrooms || 3,
+          bathrooms: p.bathrooms || 2,
+          direction: p.direction || 'Đông Nam',
+          location: p.address || p.location || 'Vị trí đắc địa, cảnh quan sông nước',
+          zone: p.zone || 'Phân Khu Cao Cấp',
+          floor: p.floor || '3 Tầng',
+          badge: p.badge || (idx === 0 ? 'MỞ BÁN ĐỢT 1' : 'SUẤT NGOẠI GIAO'),
+          image: p.thumbnail || p.image || p.images?.[0] || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+          gallery: p.gallery || [p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80'],
+          specs: Array.isArray(p.specs) ? p.specs : ['Sổ hồng riêng lâu dài', 'Mặt tiền đường lớn', 'Bàn giao hoàn thiện cao cấp'],
+          amenities: Array.isArray(p.amenities) ? p.amenities : ['Hồ bơi vô cực', 'Công viên ven sông', 'An ninh 24/7'],
+          desc: p.description || p.desc || 'Không gian sống xanh chuẩn resort 5 sao, pháp lý chuẩn chỉnh.',
+          highlight: p.highlight || 'Chiết khấu đặc biệt đến 8% cho khách hàng thanh toán sớm',
+        };
+      });
+    }
+    return BDS06_PROPERTIES;
+  }, [projects]);
+
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức bất động sản sinh thái',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || company?.name || 'Ban Biên Tập',
+        category: p.category || 'Tin Tức',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        excerpt: p.summary || p.excerpt || 'Cập nhật tiến độ và thị trường mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+    }
+    return BDS06_NEWS;
+  }, [posts, company]);
+
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedProperty, setSelectedProperty] = useState<PropertyItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS06_PROPERTIES.find(p => p.slug === initialParsed.propSlug);
+      const found = activeProperties.find(p => p.slug === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS06_PROPERTIES[0];
+    return activeProperties[0] || BDS06_PROPERTIES[0];
   });
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = BDS06_NEWS.find(a => a.slug === initialParsed.artSlug);
+      const found = activeNews.find(a => a.slug === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS06_NEWS[0];
+    return activeNews[0] || BDS06_NEWS[0];
   });
 
   // UI Interactive States
@@ -536,11 +595,11 @@ export default function BDS06Template({
     const res = resolvePageAndDetail(initialPage);
     setCurrentPageState(res.page);
     if (res.propSlug) {
-      const found = BDS06_PROPERTIES.find(p => p.slug === res.propSlug);
+      const found = activeProperties.find(p => p.slug === res.propSlug);
       if (found) setSelectedProperty(found);
     }
     if (res.artSlug) {
-      const found = BDS06_NEWS.find(a => a.slug === res.artSlug);
+      const found = activeNews.find(a => a.slug === res.artSlug);
       if (found) setSelectedArticle(found);
     }
   }, [initialPage]);
@@ -618,7 +677,7 @@ export default function BDS06Template({
   // Filtered Properties for catalog
   const filteredCatalog = useMemo(() => {
     if (activeZoneTab === 'all') return BDS06_PROPERTIES;
-    return BDS06_PROPERTIES.filter(p => p.category === activeZoneTab);
+    return activeProperties.filter(p => p.category === activeZoneTab);
   }, [activeZoneTab]);
 
   // Safe Image Fallback
@@ -1037,7 +1096,7 @@ export default function BDS06Template({
   // 5. SECTION 3: MẶT BẰNG TỔNG THỂ & CATALOG CĂN HỘ (MATCHING MOCKUP)
   // ─────────────────────────────────────────────────────────────────────────
   const renderMasterplanSection = () => {
-    const apartmentList = BDS06_PROPERTIES.filter(p => p.category === 'can-ho');
+    const apartmentList = activeProperties.filter(p => p.category === 'can-ho');
 
     return (
       <section id="masterplan-section" className="py-20 bg-slate-50 text-slate-900">
@@ -1222,7 +1281,7 @@ export default function BDS06Template({
   // 6. SECTION 4: PHÂN KHU NHÀ PHỐ & SHOPHOUSE (MATCHING MOCKUP)
   // ─────────────────────────────────────────────────────────────────────────
   const renderLowRiseSection = () => {
-    const lowRiseList = BDS06_PROPERTIES.filter(p => ['shophouse', 'nha-pho', 'biet-thu'].includes(p.category));
+    const lowRiseList = activeProperties.filter(p => ['shophouse', 'nha-pho', 'biet-thu'].includes(p.category));
 
     return (
       <section id="lowrise-section" className="py-20 bg-white text-slate-900">

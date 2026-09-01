@@ -301,34 +301,80 @@ export default function BDS19Template({
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
+  const activeUnits = useMemo<UnitItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): UnitItem => ({
+        id: p.slug || `unit-${idx + 1}`,
+        title: p.title || p.name || 'Căn hộ chung cư cao cấp 4.0',
+        code: `U-${(idx + 1).toString().padStart(2, '0')}`,
+        slug: p.slug || `can-ho-${idx + 1}`,
+        tower: p.tower || 'Tòa S1 - Venus',
+        type: p.type || '2 Phòng Ngủ',
+        floor: p.floor || 'Tầng 15',
+        price: p.price || (p.priceFrom ? `Từ ${p.priceFrom} Tỷ` : 'Liên hệ'),
+        priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 3.8),
+        area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '72 m²'),
+        areaNum: typeof p.area === 'number' ? p.area : 72,
+        beds: p.beds || p.bedrooms || 2,
+        baths: p.baths || p.bathrooms || 2,
+        view: p.view || 'View Sông & Công Viên',
+        direction: p.direction || 'Đông Nam',
+        image: p.thumbnail || p.image || p.images?.[0] || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        hot: Boolean(idx === 0),
+        featured: Boolean(idx < 4),
+        description: p.description || p.desc || 'Không gian sống công nghệ 4.0 bên sông Sài Gòn.',
+        smartFeatures: Array.isArray(p.smartFeatures) ? p.smartFeatures : ['Điều khiển FaceID', 'Kính Low-E cản nhiệt', 'Nội thất dát vàng'],
+      }));
+    }
+    return BDS19_UNITS;
+  }, [projects]);
+
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức dự án căn hộ',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || company?.name || 'Ban Biên Tập',
+        category: p.category || 'Thị Trường',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        excerpt: p.summary || p.excerpt || 'Cập nhật tin tức thị trường BĐS mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+    }
+    return BDS19_NEWS;
+  }, [posts, company]);
+
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [selectedUnit, setSelectedUnit] = useState<UnitItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS19_UNITS.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
+      const found = activeUnits.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS19_UNITS[0];
+    return activeUnits[0] || BDS19_UNITS[0];
   });
 
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = BDS19_NEWS.find(n => n.slug === initialParsed.artSlug || n.id.toString() === initialParsed.artSlug);
+      const found = activeNews.find(n => n.slug === initialParsed.artSlug || n.id.toString() === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS19_NEWS[0];
+    return activeNews[0] || BDS19_NEWS[0];
   });
 
   // Dynamic Options derived from Data for 100% CMS Resilience
   const availableTowers = useMemo(() => {
-    const set = new Set(BDS19_UNITS.map(p => p.tower).filter(Boolean));
+    const set = new Set(activeUnits.map(p => p.tower).filter(Boolean));
     return ['all', ...Array.from(set)];
-  }, []);
+  }, [activeUnits]);
 
   const availableTypes = useMemo(() => {
-    const set = new Set(BDS19_UNITS.map(p => p.type).filter(Boolean));
+    const set = new Set(activeUnits.map(p => p.type).filter(Boolean));
     return ['all', ...Array.from(set)];
-  }, []);
+  }, [activeUnits]);
 
   // Filter States
   const [filterTower, setFilterTower] = useState('all');
@@ -412,7 +458,7 @@ export default function BDS19Template({
 
   // Resilient Fuzzy & Dynamic Filter
   const filteredUnits = useMemo(() => {
-    return BDS19_UNITS.filter(p => {
+    return activeUnits.filter(p => {
       // Tower
       if (filterTower !== 'all' && p.tower !== filterTower) return false;
 

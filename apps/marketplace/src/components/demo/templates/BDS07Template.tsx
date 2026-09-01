@@ -459,21 +459,77 @@ export default function BDS07Template({
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
+  const activeProperties = useMemo<PropertyItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): PropertyItem => {
+        const cat = (p.type?.toLowerCase().includes('biệt') || p.type === 'VILLA')
+          ? 'biet-thu'
+          : (p.type?.toLowerCase().includes('bungalow') || p.type === 'BUNGALOW')
+          ? 'bungalow'
+          : (p.type?.toLowerCase().includes('farm') || p.type === 'FARMSTAY')
+          ? 'farmstay'
+          : 'dat-vuon';
+        const catLabel = cat === 'biet-thu' ? 'Biệt Thự Vườn' : (cat === 'bungalow' ? 'Bungalow Gỗ' : (cat === 'farmstay' ? 'Farmstay Nghỉ Dưỡng' : 'Đất Vườn Sinh Thái'));
+
+        return {
+          id: p.id || idx + 1,
+          title: p.title || p.name || 'Đất vườn sinh thái nghỉ dưỡng',
+          slug: p.slug || `bds-${idx + 1}`,
+          category: cat,
+          categoryLabel: catLabel,
+          price: p.price || (p.priceFrom ? `${p.priceFrom} Tỷ` : 'Liên hệ'),
+          priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 1.5),
+          area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '200 m²'),
+          areaNum: typeof p.area === 'number' ? p.area : 200,
+          direction: p.direction || 'Đông Nam',
+          location: p.address || p.location || 'TP. Bảo Lộc, Lâm Đồng',
+          zone: p.zone || 'Phân Khu Đồi Thông',
+          badge: p.badge || (idx === 0 ? 'SỔ SẴN' : 'VIEW ĐỒI'),
+          image: p.thumbnail || p.image || p.images?.[0] || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+          gallery: p.gallery || [p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80'],
+          specs: Array.isArray(p.specs) ? p.specs : ['Sổ hồng công chứng ngay', 'Đường ô tô tránh nhau', 'View mây ngắm hoàng hôn'],
+          amenities: Array.isArray(p.amenities) ? p.amenities : ['Vườn sầu riêng', 'Đường điện nước tận nơi', 'Suối tự nhiên'],
+          desc: p.description || p.desc || 'Thiên đường nghỉ dưỡng săn mây trong lành, pháp lý minh bạch.',
+          highlight: p.highlight || 'Tặng vườn cây ăn trái và hệ thống tưới tự động',
+        };
+      });
+    }
+    return BDS07_PROPERTIES;
+  }, [projects]);
+
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức thị trường đất vườn nghỉ dưỡng',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || company?.name || 'Ban Biên Tập',
+        category: p.category || 'Thị Trường',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        excerpt: p.summary || p.excerpt || 'Cập nhật tin tức nghỉ dưỡng mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+    }
+    return BDS07_NEWS;
+  }, [posts, company]);
+
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedProperty, setSelectedProperty] = useState<PropertyItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS07_PROPERTIES.find(p => p.slug === initialParsed.propSlug);
+      const found = activeProperties.find(p => p.slug === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS07_PROPERTIES[0];
+    return activeProperties[0] || BDS07_PROPERTIES[0];
   });
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = BDS07_NEWS.find(a => a.slug === initialParsed.artSlug);
+      const found = activeNews.find(a => a.slug === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS07_NEWS[0];
+    return activeNews[0] || BDS07_NEWS[0];
   });
 
   // UI Interactive States
@@ -503,11 +559,11 @@ export default function BDS07Template({
     const res = resolvePageAndDetail(initialPage);
     setCurrentPageState(res.page);
     if (res.propSlug) {
-      const found = BDS07_PROPERTIES.find(p => p.slug === res.propSlug);
+      const found = activeProperties.find(p => p.slug === res.propSlug);
       if (found) setSelectedProperty(found);
     }
     if (res.artSlug) {
-      const found = BDS07_NEWS.find(a => a.slug === res.artSlug);
+      const found = activeNews.find(a => a.slug === res.artSlug);
       if (found) setSelectedArticle(found);
     }
   }, [initialPage]);
@@ -582,7 +638,7 @@ export default function BDS07Template({
   // Filtered Properties
   const filteredProperties = useMemo(() => {
     if (activeTab === 'all') return BDS07_PROPERTIES;
-    return BDS07_PROPERTIES.filter(p => p.category === activeTab);
+    return activeProperties.filter(p => p.category === activeTab);
   }, [activeTab]);
 
   const handleImgError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {

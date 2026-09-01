@@ -263,13 +263,38 @@ export default function BDS04Template({ template, viewport = 'desktop', initialP
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
+  const activeUnits = useMemo<UnitItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): UnitItem => ({
+        id: p.id || idx + 1,
+        title: p.title || p.name || 'Căn hộ Smart Home cao cấp',
+        slug: p.slug || `can-ho-${idx + 1}`,
+        type: p.type || 'Căn Hộ',
+        price: p.price || (p.priceFrom ? `Từ ${p.priceFrom} Tỷ` : 'Liên hệ'),
+        priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 4.2),
+        area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '78 m²'),
+        areaNum: typeof p.area === 'number' ? p.area : 78,
+        tower: p.tower || 'Tòa Landmark',
+        floor: p.floor || 'Tầng 18',
+        bedrooms: p.bedrooms || 2,
+        bathrooms: p.bathrooms || 2,
+        view: p.view || 'View Công Viên & Hồ Cảnh Quan',
+        badge: p.badge || (idx === 0 ? 'MỞ BÁN' : 'HOT'),
+        image: p.thumbnail || p.image || p.images?.[0] || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        specs: Array.isArray(p.specs) ? p.specs : ['Smart Home toàn diện', 'Khóa vân tay FaceID', 'Điều hòa âm trần'],
+        desc: p.description || p.desc || 'Trải nghiệm phong cách sống công nghệ thông minh đỉnh cao.',
+      }));
+    }
+    return BDS04_UNITS;
+  }, [projects]);
+
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [selectedUnit, setSelectedUnit] = useState<UnitItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS04_UNITS.find(u => u.slug === initialParsed.propSlug);
+      const found = activeUnits.find(u => u.slug === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS04_UNITS[0];
+    return activeUnits[0] || BDS04_UNITS[0];
   });
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
@@ -289,7 +314,7 @@ export default function BDS04Template({ template, viewport = 'desktop', initialP
     const res = resolvePageAndDetail(initialPage);
     setCurrentPageState(res.page);
     if (res.propSlug) {
-      const found = BDS04_UNITS.find(u => u.slug === res.propSlug);
+      const found = activeUnits.find(u => u.slug === res.propSlug);
       if (found) setSelectedUnit(found);
     }
     if (res.artSlug) {
@@ -677,7 +702,7 @@ export default function BDS04Template({ template, viewport = 'desktop', initialP
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {BDS04_UNITS.map(unit => (
+          {activeUnits.map(unit => (
             <div
               key={unit.id}
               onClick={() => handleOpenUnit(unit)}
@@ -876,7 +901,7 @@ export default function BDS04Template({ template, viewport = 'desktop', initialP
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {BDS04_UNITS.map(unit => (
+          {activeUnits.map(unit => (
             <div
               key={unit.id}
               onClick={() => handleOpenUnit(unit)}

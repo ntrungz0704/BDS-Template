@@ -261,21 +261,83 @@ export default function BDS10Template({
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
+  const activeProjects = useMemo<ProjectCardItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): ProjectCardItem => {
+        const cat = (p.type?.toLowerCase().includes('căn') || p.type === 'APARTMENT')
+          ? 'can-ho'
+          : (p.type?.toLowerCase().includes('đất') || p.type === 'LAND')
+          ? 'dat-nen'
+          : (p.type?.toLowerCase().includes('nghỉ') || p.type === 'RESORT')
+          ? 'nghi-duong'
+          : (p.type?.toLowerCase().includes('đô thị') || p.type === 'URBAN')
+          ? 'do-thi'
+          : 'shophouse';
+        const catLabel = cat === 'can-ho' ? 'Căn Hộ' : (cat === 'dat-nen' ? 'Đất Nền' : (cat === 'nghi-duong' ? 'Nghỉ Dưỡng' : (cat === 'do-thi' ? 'Đại Đô Thị' : 'Shophouse')));
+
+        return {
+          id: p.id || idx + 1,
+          title: p.title || p.name || 'Dự án căn hộ & bất động sản cao cấp',
+          slug: p.slug || `du-an-${idx + 1}`,
+          subtitle: p.subtitle || p.slogan || 'Biểu tượng phong cách sống thượng lưu',
+          category: cat,
+          categoryLabel: catLabel,
+          statusBadge: p.status || (idx === 0 ? 'ĐANG MỞ BÁN' : 'SẮP RA MẮT'),
+          price: p.price || (p.priceFrom ? `Từ ${p.priceFrom} Tỷ` : 'Liên hệ'),
+          priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 3.2),
+          area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '80 m²'),
+          areaNum: typeof p.area === 'number' ? p.area : 80,
+          location: p.address || p.location || 'Vị trí đắc địa trung tâm',
+          city: p.city || 'TP. Hồ Chí Minh',
+          bedrooms: p.bedrooms || 2,
+          bathrooms: p.bathrooms || 2,
+          image: p.thumbnail || p.image || p.images?.[0] || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+          gallery: p.gallery || [p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80'],
+          featured: Boolean(p.featured || idx < 4),
+          desc: p.description || p.desc || 'Quy mô hiện đại, tiện ích chuẩn quốc tế, cơ hội đầu tư sinh lời vượt trội.',
+          details: Array.isArray(p.details) ? p.details : ['Pháp lý hoàn chỉnh', 'Chủ đầu tư uy tín', 'Ngân hàng hỗ trợ 70%'],
+          investor: p.investor || company?.name || 'Danh Khôi Real Estate',
+          legal: p.legal || 'Sổ hồng lâu dài',
+          handover: p.handover || 'Năm 2026',
+        };
+      });
+    }
+    return BDS10_PROJECTS;
+  }, [projects, company]);
+
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức thị trường bất động sản',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || company?.name || 'Ban Biên Tập',
+        category: p.category || 'Thị Trường',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        excerpt: p.summary || p.excerpt || 'Cập nhật tin tức thị trường BĐS mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+    }
+    return BDS10_NEWS_ARTICLES;
+  }, [posts, company]);
+
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedProperty, setSelectedProperty] = useState<ProjectCardItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS10_PROJECTS.find(p => p.slug === initialParsed.propSlug);
+      const found = activeProjects.find(p => p.slug === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS10_PROJECTS[0];
+    return activeProjects[0] || BDS10_PROJECTS[0];
   });
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = BDS10_NEWS_ARTICLES.find(a => a.slug === initialParsed.artSlug);
+      const found = activeNews.find(a => a.slug === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS10_NEWS_ARTICLES[0];
+    return activeNews[0] || BDS10_NEWS_ARTICLES[0];
   });
 
   // UI Interactive States
@@ -299,11 +361,11 @@ export default function BDS10Template({
     const res = resolvePageAndDetail(initialPage);
     setCurrentPageState(res.page);
     if (res.propSlug) {
-      const found = BDS10_PROJECTS.find(p => p.slug === res.propSlug);
+      const found = activeProjects.find(p => p.slug === res.propSlug);
       if (found) setSelectedProperty(found);
     }
     if (res.artSlug) {
-      const found = BDS10_NEWS_ARTICLES.find(a => a.slug === res.artSlug);
+      const found = activeNews.find(a => a.slug === res.artSlug);
       if (found) setSelectedArticle(found);
     }
   }, [initialPage]);
@@ -606,7 +668,7 @@ export default function BDS10Template({
 
         {/* 3 Project Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {BDS10_PROJECTS.map(proj => (
+          {activeProjects.map(proj => (
             <div
               key={proj.id}
               onClick={() => handleOpenProperty(proj)}
@@ -739,7 +801,7 @@ export default function BDS10Template({
                 onChange={e => setLeadForm({ ...leadForm, project: e.target.value })}
                 className="w-full bg-slate-50 px-4 py-3 rounded-sm border focus:bg-white focus:outline-none"
               >
-                {BDS10_PROJECTS.map(p => (
+                {activeProjects.map(p => (
                   <option key={p.id} value={p.title}>{p.title}</option>
                 ))}
               </select>

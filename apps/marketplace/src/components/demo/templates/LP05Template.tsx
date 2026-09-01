@@ -25,7 +25,8 @@ export default function LP05Template({
   projects,
 }: LP05TemplateProps) {
   // Brand & Company info fallback from CMS
-  const brandName = company?.name || 'GOLDEN PARK TOWER CẦU GIẤY';
+  const firstProject = (projects && Array.isArray(projects) && projects.length > 0) ? projects[0] : null;
+  const brandName = firstProject?.title || firstProject?.name || company?.name || template?.name || 'DỰ ÁN BẤT ĐỘNG SẢN CAO CẤP';
   const companyGroup = 'TẬP ĐOÀN ĐẦU TƯ & PHÁT TRIỂN ĐÔ THỊ TÂY ĐÔ';
   const hotline = company?.phone || '0919 006 030';
   const zalo = company?.zalo || hotline;

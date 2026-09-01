@@ -355,22 +355,77 @@ export default function BDS21Template({
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
+  const activeProperties = useMemo<PropertyItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): PropertyItem => {
+        const cat = (p.category === 'thue' || p.category === 'cho-thue')
+          ? 'thue'
+          : (p.category === 'nghi-duong' || p.type?.toLowerCase().includes('nghỉ'))
+          ? 'nghi-duong'
+          : (p.category === 'du-an' || p.type?.toLowerCase().includes('dự án'))
+          ? 'du-an'
+          : 'ban';
+
+        return {
+          id: p.slug || `prop-${idx + 1}`,
+          title: p.title || p.name || 'Bất động sản nghỉ dưỡng & đô thị',
+          slug: p.slug || `bds-${idx + 1}`,
+          category: cat,
+          type: p.type || 'Biệt Thự Đơn Lập',
+          location: p.address || p.location || 'Vị trí đắc địa trung tâm',
+          city: p.city || 'TP. Hồ Chí Minh',
+          price: p.price || (p.priceFrom ? `${p.priceFrom} Tỷ` : 'Liên hệ'),
+          priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 4.5),
+          priceUnit: 'Tỷ',
+          area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '120 m²'),
+          areaNum: typeof p.area === 'number' ? p.area : 120,
+          beds: p.beds || p.bedrooms || 3,
+          baths: p.baths || p.bathrooms || 2,
+          image: p.thumbnail || p.image || p.images?.[0] || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+          hot: Boolean(idx === 0),
+          statusTag: p.statusTag || (idx === 0 ? 'Đang Mở Bán' : 'Giá Tốt'),
+          description: p.description || p.desc || 'Không gian sống nghỉ dưỡng thượng lưu kết hợp đầu tư sinh lời vượt trội.',
+          features: Array.isArray(p.features) ? p.features : ['Sổ hồng chính chủ', 'Vị trí đắc địa', 'Tiện ích cao cấp'],
+        };
+      });
+    }
+    return BDS21_PROPERTIES;
+  }, [projects]);
+
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức thị trường bất động sản',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || company?.name || 'Ban Biên Tập',
+        category: p.category || 'Thị Trường',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        excerpt: p.summary || p.excerpt || 'Cập nhật tin tức thị trường BĐS mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+    }
+    return BDS21_NEWS;
+  }, [posts, company]);
+
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedProperty, setSelectedProperty] = useState<PropertyItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS21_PROPERTIES.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
+      const found = activeProperties.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS21_PROPERTIES[0];
+    return activeProperties[0] || BDS21_PROPERTIES[0];
   });
 
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = BDS21_NEWS.find(n => n.slug === initialParsed.artSlug || n.id.toString() === initialParsed.artSlug);
+      const found = activeNews.find(n => n.slug === initialParsed.artSlug || n.id.toString() === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS21_NEWS[0];
+    return activeNews[0] || BDS21_NEWS[0];
   });
 
   // Dynamic Search States
@@ -383,14 +438,14 @@ export default function BDS21Template({
 
   // Dynamic Options derived from Data for 100% CMS Resilience
   const availableCities = useMemo(() => {
-    const set = new Set(BDS21_PROPERTIES.map(p => p.city).filter(Boolean));
+    const set = new Set(activeProperties.map(p => p.city).filter(Boolean));
     return ['all', ...Array.from(set)];
-  }, []);
+  }, [activeProperties]);
 
   const availableTypes = useMemo(() => {
-    const set = new Set(BDS21_PROPERTIES.map(p => p.type).filter(Boolean));
+    const set = new Set(activeProperties.map(p => p.type).filter(Boolean));
     return ['all', ...Array.from(set)];
-  }, []);
+  }, [activeProperties]);
 
   // Forms
   const [postForm, setPostForm] = useState({ name: '', phone: '', title: '', city: 'Hà Nội', price: '', note: '' });
@@ -466,7 +521,7 @@ export default function BDS21Template({
 
   // Resilient Fuzzy & Dynamic Filter
   const filteredProperties = useMemo(() => {
-    return BDS21_PROPERTIES.filter(p => {
+    return activeProperties.filter(p => {
       // Category
       if (filterCategory !== 'all' && p.category !== filterCategory) return false;
 

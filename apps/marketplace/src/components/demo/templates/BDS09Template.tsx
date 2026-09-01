@@ -349,21 +349,64 @@ export default function BDS09Template({
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
+  const activeUnits = useMemo<UnitTypeItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): UnitTypeItem => ({
+        id: p.slug || `unit-${idx + 1}`,
+        type: p.type || 'Căn Hộ 2 Phòng Ngủ',
+        category: (p.type?.toLowerCase().includes('sky') || p.type?.toLowerCase().includes('penthouse') || p.type === 'SKYVILLA')
+          ? 'skyvilla'
+          : (p.type?.toLowerCase().includes('3') ? '3pn' : (p.type?.toLowerCase().includes('1') ? '1pn' : '2pn')),
+        name: p.title || p.name || 'Căn Hộ Biển Cao Cấp',
+        area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '75 m²'),
+        areaNum: typeof p.area === 'number' ? p.area : 75,
+        bedrooms: p.bedrooms || 2,
+        bathrooms: p.bathrooms || 2,
+        price: p.price || (p.priceFrom ? `Từ ${p.priceFrom} Tỷ` : 'Liên hệ'),
+        view: p.view || 'View Sông Hàn & Thành Phố',
+        handover: p.handover || 'Năm 2026',
+        image: p.thumbnail || p.image || p.images?.[0] || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        specs: Array.isArray(p.specs) ? p.specs : ['Thiết kế thông minh', 'Ban công rộng thoáng', 'Full nội thất cao cấp'],
+        description: p.description || p.desc || 'Không gian sống chuẩn mực dành cho gia đình hiện đại.',
+        highlights: Array.isArray(p.highlights) ? p.highlights : ['Vị trí kim cương', 'Tiện ích 5 sao'],
+      }));
+    }
+    return BDS09_UNITS;
+  }, [projects]);
+
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức thị trường bất động sản',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || company?.name || 'Ban Biên Tập',
+        category: p.category || 'Thị Trường',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        excerpt: p.summary || p.excerpt || 'Cập nhật tin tức thị trường BĐS mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+    }
+    return BDS09_NEWS_LIST;
+  }, [posts, company]);
+
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [selectedUnit, setSelectedUnit] = useState<UnitTypeItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS09_UNITS.find(u => u.id === initialParsed.propSlug);
+      const found = activeUnits.find(u => u.id === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS09_UNITS[0];
+    return activeUnits[0] || BDS09_UNITS[0];
   });
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = BDS09_NEWS_LIST.find(a => a.slug === initialParsed.artSlug);
+      const found = activeNews.find(a => a.slug === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS09_NEWS_LIST[0];
+    return activeNews[0] || BDS09_NEWS_LIST[0];
   });
 
   // UI Interactive States
@@ -392,7 +435,7 @@ export default function BDS09Template({
       if (found) setSelectedUnit(found);
     }
     if (res.artSlug) {
-      const found = BDS09_NEWS_LIST.find(a => a.slug === res.artSlug);
+      const found = activeNews.find(a => a.slug === res.artSlug);
       if (found) setSelectedArticle(found);
     }
   }, [initialPage]);
@@ -449,7 +492,7 @@ export default function BDS09Template({
 
   const filteredUnits = useMemo(() => {
     if (activeTab === 'all') return BDS09_UNITS;
-    return BDS09_UNITS.filter(u => u.category === activeTab);
+    return activeUnits.filter(u => u.category === activeTab);
   }, [activeTab]);
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -1126,7 +1169,7 @@ export default function BDS09Template({
               onChange={e => setLeadForm({ ...leadForm, unitType: e.target.value })}
               className="w-full bg-slate-50 text-slate-900 px-4 py-3 rounded-sm border border-slate-300 focus:bg-white focus:outline-none focus:border-amber-500 font-medium"
             >
-              {BDS09_UNITS.map(u => (
+              {activeUnits.map(u => (
                 <option key={u.id} value={u.name}>{u.type} ({u.area} - {u.price})</option>
               ))}
             </select>
@@ -1331,7 +1374,7 @@ export default function BDS09Template({
                 onChange={e => setLeadForm({ ...leadForm, unitType: e.target.value })}
                 className="w-full p-3 rounded-sm border bg-slate-50 focus:bg-white focus:outline-none font-medium"
               >
-                {BDS09_UNITS.map(u => (
+                {activeUnits.map(u => (
                   <option key={u.id} value={u.name}>{u.type} ({u.price})</option>
                 ))}
               </select>

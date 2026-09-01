@@ -250,14 +250,38 @@ export default function BDS12Template({
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
+  const activeUnits = useMemo<UnitTypeItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): UnitTypeItem => ({
+        id: p.slug || `unit-${idx + 1}`,
+        type: p.type || 'Shophouse & Villa',
+        category: (p.type?.toLowerCase().includes('villa') ? 'villa' : (p.type?.toLowerCase().includes('wyndham') ? 'wyndham' : 'shophouse')),
+        name: p.title || p.name || 'Shophouse Thương Mại Biển',
+        area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '120 m²'),
+        landArea: p.landArea || (typeof p.area === 'number' ? `${p.area} m²` : '120 m²'),
+        constructionArea: p.constructionArea || '350 m²',
+        frontage: p.frontage || '6.0 m',
+        floors: p.floors || '4 tầng + 1 tum',
+        price: p.price || (p.priceFrom ? `Từ ${p.priceFrom} Tỷ` : 'Liên hệ'),
+        view: p.view || 'View Biển & Đại Lộ Thương Mại',
+        handover: p.handover || 'Bàn giao hoàn thiện mặt ngoài',
+        image: p.thumbnail || p.image || p.images?.[0] || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        specs: Array.isArray(p.specs) ? p.specs : ['Sổ hồng sở hữu lâu dài', 'Mặt tiền kinh doanh', 'Bàn giao cao cấp'],
+        description: p.description || p.desc || 'Thiết kế tối ưu cho cả mục đích an cư lẫn kinh doanh sinh lời.',
+        highlights: Array.isArray(p.highlights) ? p.highlights : ['Vị trí đắc địa ven biển', 'Tiềm năng tăng giá mạnh mẽ'],
+      }));
+    }
+    return BDS12_UNITS;
+  }, [projects]);
+
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [selectedUnit, setSelectedUnit] = useState<UnitTypeItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS12_UNITS.find(u => u.id === initialParsed.propSlug);
+      const found = activeUnits.find(u => u.id === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS12_UNITS[0];
+    return activeUnits[0] || BDS12_UNITS[0];
   });
 
   // UI Interactive States
@@ -282,10 +306,10 @@ export default function BDS12Template({
     const res = resolvePageAndDetail(initialPage);
     setCurrentPageState(res.page);
     if (res.propSlug) {
-      const found = BDS12_UNITS.find(u => u.id === res.propSlug);
+      const found = activeUnits.find(u => u.id === res.propSlug);
       if (found) setSelectedUnit(found);
     }
-  }, [initialPage]);
+  }, [initialPage, activeUnits]);
 
   const navigate = (page: string, slug?: string) => {
     setCurrentPageState(page);
@@ -339,8 +363,8 @@ export default function BDS12Template({
   };
 
   const currentTabUnit = useMemo(() => {
-    return BDS12_UNITS.find(u => u.category === activeFloorplanTab) || BDS12_UNITS[0];
-  }, [activeFloorplanTab]);
+    return activeUnits.find(u => u.category === activeFloorplanTab) || activeUnits[0] || BDS12_UNITS[0];
+  }, [activeFloorplanTab, activeUnits]);
 
   // ─────────────────────────────────────────────────────────────────────────
   // 1. TOP HEADER & NAVBAR

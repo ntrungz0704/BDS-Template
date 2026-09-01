@@ -350,20 +350,78 @@ export default function BDS05Template({ template, viewport = 'desktop', initialP
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
+  const activeProperties = useMemo<PropertyItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): PropertyItem => {
+        const cat = (p.type?.toLowerCase().includes('đất') || p.type === 'LAND')
+          ? 'dat-nen'
+          : (p.type?.toLowerCase().includes('thuê') || p.type === 'RENT')
+          ? 'nha-cho-thue'
+          : (p.type?.toLowerCase().includes('dự án') || p.type === 'PROJECT')
+          ? 'dat-du-an'
+          : 'nha-o';
+        const catLabel = cat === 'dat-nen' ? 'Đất Nền' : (cat === 'nha-cho-thue' ? 'Nhà Cho Thuê' : (cat === 'dat-du-an' ? 'Đất Dự Án' : 'Nhà Ở / Biệt Thự'));
+
+        return {
+          id: p.id || idx + 1,
+          title: p.title || p.name || 'Bất động sản cao cấp Nha Trang',
+          slug: p.slug || `bds-${idx + 1}`,
+          category: cat,
+          categoryLabel: catLabel,
+          price: p.price || (p.priceFrom ? `${p.priceFrom} Tỷ` : 'Liên hệ'),
+          priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 5.0),
+          area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '100 m²'),
+          areaNum: typeof p.area === 'number' ? p.area : 100,
+          bedrooms: p.bedrooms || 3,
+          bathrooms: p.bathrooms || 2,
+          direction: p.direction || 'Đông Nam',
+          location: p.address || p.location || 'TP. Nha Trang, Khánh Hòa',
+          city: p.city || 'Nha Trang',
+          badge: p.badge || (idx === 0 ? 'MỚI' : 'HOT'),
+          image: p.thumbnail || p.image || p.images?.[0] || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+          gallery: p.gallery || [p.thumbnail || p.image || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80'],
+          featured: Boolean(p.featured || idx < 4),
+          bestseller: Boolean(idx === 1 || idx === 2),
+          desc: p.description || p.desc || 'Vị trí đắc địa view biển tuyệt đẹp, pháp lý hoàn chỉnh.',
+          date: p.date || 'Hôm nay',
+        };
+      });
+    }
+    return BDS05_PROPERTIES;
+  }, [projects]);
+
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức thị trường bất động sản Nha Trang',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        dateTag: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN', { day: 'numeric', month: 'short' }) : '13 Th2',
+        fullDate: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        category: p.category || 'Thị Trường',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+        excerpt: p.summary || p.excerpt || 'Cập nhật diễn biến bất động sản mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+    }
+    return BDS05_NEWS;
+  }, [posts]);
+
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [selectedProperty, setSelectedProperty] = useState<PropertyItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS05_PROPERTIES.find(p => p.slug === initialParsed.propSlug);
+      const found = activeProperties.find(p => p.slug === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS05_PROPERTIES[0];
+    return activeProperties[0] || BDS05_PROPERTIES[0];
   });
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = BDS05_NEWS.find(a => a.slug === initialParsed.artSlug);
+      const found = activeNews.find(a => a.slug === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS05_NEWS[0];
+    return activeNews[0] || BDS05_NEWS[0];
   });
 
   // Filter State
@@ -383,11 +441,11 @@ export default function BDS05Template({ template, viewport = 'desktop', initialP
     const res = resolvePageAndDetail(initialPage);
     setCurrentPageState(res.page);
     if (res.propSlug) {
-      const found = BDS05_PROPERTIES.find(p => p.slug === res.propSlug);
+      const found = activeProperties.find(p => p.slug === res.propSlug);
       if (found) setSelectedProperty(found);
     }
     if (res.artSlug) {
-      const found = BDS05_NEWS.find(a => a.slug === res.artSlug);
+      const found = activeNews.find(a => a.slug === res.artSlug);
       if (found) setSelectedArticle(found);
     }
   }, [initialPage]);
@@ -436,7 +494,7 @@ export default function BDS05Template({ template, viewport = 'desktop', initialP
 
   // Filtered Properties
   const filteredProperties = useMemo(() => {
-    return BDS05_PROPERTIES.filter(item => {
+    return activeProperties.filter(item => {
       if (['dat-du-an', 'dat-nen', 'nha-o', 'nha-cho-thue'].includes(currentPage)) {
         if (item.category !== currentPage) return false;
       }
@@ -746,7 +804,7 @@ export default function BDS05Template({ template, viewport = 'desktop', initialP
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {BDS05_PROPERTIES.slice(0, 6).map(renderPropertyCard)}
+          {activeProperties.slice(0, 6).map(renderPropertyCard)}
         </div>
       </section>
 
@@ -760,7 +818,7 @@ export default function BDS05Template({ template, viewport = 'desktop', initialP
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {BDS05_PROPERTIES.slice(0, 6).map(renderPropertyCard)}
+          {activeProperties.slice(0, 6).map(renderPropertyCard)}
         </div>
       </section>
 

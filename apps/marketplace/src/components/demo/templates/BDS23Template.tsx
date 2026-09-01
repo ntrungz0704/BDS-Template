@@ -341,29 +341,70 @@ export default function BDS23Template({
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
+  const activeProjects = useMemo<ProjectItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): ProjectItem => ({
+        id: p.slug || `du-an-${idx + 1}`,
+        title: p.title || p.name || 'Dự án bất động sản chiến lược',
+        slug: p.slug || `du-an-${idx + 1}`,
+        address: p.address || p.location || 'Vị trí trọng điểm Hà Nội',
+        priceRange: p.price || (p.priceFrom ? `Từ ${p.priceFrom} Tỷ` : 'Liên hệ'),
+        priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 4.5),
+        areaRange: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '60m² - 140m²'),
+        developer: p.developer || company?.name || 'Tập đoàn BĐS',
+        status: p.status || (idx === 0 ? 'Đang Mở Bán' : 'Sắp Bàn Giao'),
+        image: p.thumbnail || p.image || p.images?.[0] || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        hot: Boolean(idx === 0),
+        featured: Boolean(idx < 4),
+        totalUnits: p.totalUnits || '1200 Căn',
+        description: p.description || p.desc || 'Dự án đại đô thị hiện đại đầy đủ tiện ích sinh hoạt đỉnh cao.',
+        highlights: Array.isArray(p.highlights) ? p.highlights : ['Vị trí đắc địa', 'Pháp lý minh bạch', 'Chủ đầu tư uy tín'],
+      }));
+    }
+    return BDS23_PROJECTS;
+  }, [projects, company]);
+
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức dự án & thị trường bất động sản',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || company?.name || 'Ban Biên Tập',
+        category: p.category || 'Thị Trường',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        excerpt: p.summary || p.excerpt || 'Cập nhật tin tức thị trường BĐS mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+    }
+    return BDS23_NEWS;
+  }, [posts, company]);
+
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedProject, setSelectedProject] = useState<ProjectItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS23_PROJECTS.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
+      const found = activeProjects.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS23_PROJECTS[0];
+    return activeProjects[0] || BDS23_PROJECTS[0];
   });
 
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = BDS23_NEWS.find(n => n.slug === initialParsed.artSlug || n.id.toString() === initialParsed.artSlug);
+      const found = activeNews.find(n => n.slug === initialParsed.artSlug || n.id.toString() === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS23_NEWS[0];
+    return activeNews[0] || BDS23_NEWS[0];
   });
 
   // Dynamic Options derived from Data for 100% CMS Resilience
   const availableDevelopers = useMemo(() => {
-    const set = new Set(BDS23_PROJECTS.map(p => p.developer).filter(Boolean));
+    const set = new Set(activeProjects.map(p => p.developer).filter(Boolean));
     return ['all', ...Array.from(set)];
-  }, []);
+  }, [activeProjects]);
 
   // Filter States
   const [filterDeveloper, setFilterDeveloper] = useState('all');
@@ -456,7 +497,7 @@ export default function BDS23Template({
 
   // Resilient Fuzzy & Dynamic Filter
   const filteredProjects = useMemo(() => {
-    return BDS23_PROJECTS.filter(p => {
+    return activeProjects.filter(p => {
       // Developer
       if (filterDeveloper !== 'all' && p.developer !== filterDeveloper) return false;
 

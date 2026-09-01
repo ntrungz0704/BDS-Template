@@ -27,7 +27,8 @@ export default function LP07Template({
   projects,
 }: LP07TemplateProps) {
   // Brand & Company Info Fallback from CMS
-  const brandName = company?.name || 'NOVAWORLD PHAN THIET';
+  const firstProject = (projects && Array.isArray(projects) && projects.length > 0) ? projects[0] : null;
+  const brandName = firstProject?.title || firstProject?.name || company?.name || template?.name || 'DỰ ÁN BẤT ĐỘNG SẢN CAO CẤP';
   const companyGroup = 'TẬP ĐOÀN NOVALAND';
   const hotline = company?.phone || '0919 006 030';
   const zalo = company?.zalo || hotline;

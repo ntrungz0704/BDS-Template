@@ -26,7 +26,8 @@ export default function LP06Template({
   projects,
 }: LP06TemplateProps) {
   // Brand & Company Info Fallback from CMS
-  const brandName = company?.name || 'STELLA MEGA CITY';
+  const firstProject = (projects && Array.isArray(projects) && projects.length > 0) ? projects[0] : null;
+  const brandName = firstProject?.title || firstProject?.name || company?.name || template?.name || 'DỰ ÁN BẤT ĐỘNG SẢN CAO CẤP';
   const companyGroup = 'TẬP ĐOÀN KITA GROUP';
   const hotline = company?.phone || '0919 006 030';
   const zalo = company?.zalo || hotline;

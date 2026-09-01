@@ -25,7 +25,8 @@ export default function LP03Template({
   projects,
 }: LP03TemplateProps) {
   // Brand & Company Info Fallback
-  const brandName = company?.name || 'DỰ ÁN CĂN HỘ SIMPLE PAGE';
+  const firstProject = (projects && Array.isArray(projects) && projects.length > 0) ? projects[0] : null;
+  const brandName = firstProject?.title || firstProject?.name || company?.name || template?.name || 'DỰ ÁN BẤT ĐỘNG SẢN CAO CẤP';
   const companyGroup = 'TẬP ĐOÀN ĐẦU TƯ BẤT ĐỘNG SẢN';
   const hotline = company?.phone || '0919 006 030';
   const zalo = company?.zalo || hotline;
