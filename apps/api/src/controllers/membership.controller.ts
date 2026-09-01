@@ -100,7 +100,7 @@ export const inviteMember = async (req: Request, res: Response) => {
       }
     });
 
-    const FRONTEND_URL = process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001';
+    const FRONTEND_URL = process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com';
     const inviteUrl = `${FRONTEND_URL}/invite/accept?token=${inviteToken}`;
 
     await sendInviteEmail(email, tenant?.name || 'Website', inviteUrl, inviter?.fullName || 'Quản trị viên');
@@ -283,7 +283,7 @@ export const resendInvite = async (req: Request, res: Response) => {
       data: { inviteToken, inviteExpiresAt, inviteStatus: 'PENDING' }
     });
 
-    const FRONTEND_URL = process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001';
+    const FRONTEND_URL = process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com';
     const inviteUrl = `${FRONTEND_URL}/invite/accept?token=${inviteToken}`;
     const tenant = await prisma.tenant.findUnique({ where: { id: tenantId } });
     const inviter = await prisma.user.findUnique({ where: { id: req.user?.userId } });

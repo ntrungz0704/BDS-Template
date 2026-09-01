@@ -37,7 +37,7 @@ export async function sendVerificationEmail(req: Request, res: Response, next: N
       },
     });
 
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const frontendUrl = process.env.FRONTEND_URL || 'https://aireviewbds.com';
     const verifyLink = `${frontendUrl}/verify-email?token=${token}`;
 
     sendVerificationEmailAction(user.email, verifyLink).catch(err => {

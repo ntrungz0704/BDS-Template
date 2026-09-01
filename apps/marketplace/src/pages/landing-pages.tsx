@@ -13,7 +13,7 @@ import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/router';
 import { LANDING_TEMPLATES } from '../data/templatesData';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 
 export default function LandingPagesPage() {
   const router = useRouter();

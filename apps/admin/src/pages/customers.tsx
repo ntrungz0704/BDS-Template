@@ -448,7 +448,7 @@ export default function CustomersPage() {
               <div className="my-5 p-4 bg-slate-50 rounded-2xl border border-slate-200 text-left text-xs font-mono space-y-2 select-all">
                 <div><span className="text-slate-400 font-sans">Email:</span> <strong className="text-slate-800">{restoredResult.email}</strong></div>
                 <div><span className="text-slate-400 font-sans">Mật khẩu mới:</span> <strong className="text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-300 text-sm">{restoredResult.newPassword}</strong></div>
-                <div><span className="text-slate-400 font-sans">Đăng nhập Marketplace:</span> <span className="text-blue-600 font-bold">{process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'http://localhost:3000'}</span></div>
+                <div><span className="text-slate-400 font-sans">Đăng nhập Marketplace:</span> <span className="text-blue-600 font-bold">{process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'https://aireviewbds.com'}</span></div>
                 <div><span className="text-slate-400 font-sans">Đăng nhập CMS:</span> <span className="text-indigo-600 font-bold">{CMS_APP_URL}</span></div>
               </div>
 
@@ -459,7 +459,7 @@ export default function CustomersPage() {
                     const info = `🔐 THÔNG TIN KHÔI PHỤC MẬT KHẨU TÀI KHOẢN:\n\n` +
                       `- Email: ${restoredResult.email}\n` +
                       `- Mật khẩu mới: ${restoredResult.newPassword}\n` +
-                      `- Đăng nhập Sàn Mua Bán: ${process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'http://localhost:3000'}/login\n` +
+                      `- Đăng nhập Sàn Mua Bán: ${process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'https://aireviewbds.com'}/login\n` +
                       `- Đăng nhập Quản Trị Website CMS: ${CMS_APP_URL}/login\n\n` +
                       `👉 Quý khách có thể đăng nhập ngay bằng mật khẩu trên!`;
                     handleCopyText(info);
