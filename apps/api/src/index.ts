@@ -90,7 +90,7 @@ app.use(
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 1500,
   message: {
     success: false,
     error: {
@@ -179,6 +179,7 @@ app.get('/api', (req, res) => {
 });
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  // Handle Prisma known request errors (unique constraint, etc.)
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     if (err.code === 'P2002') {
       const target = err.meta?.target as string[];
@@ -194,14 +195,35 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
     }
   }
 
+  // Handle Prisma transaction timeout errors gracefully
+  const isPrismaTransactionError = err.message?.includes('Transaction API error') ||
+    err.message?.includes('Transaction not found') ||
+    err.message?.includes('transaction') && err.message?.includes('Prisma');
+  if (isPrismaTransactionError) {
+    logger.error('[' + req.method + '] ' + req.path + ' - Prisma Transaction Timeout: ' + err.message);
+    return res.status(504).json({
+      success: false,
+      error: {
+        code: 'TRANSACTION_TIMEOUT',
+        message: 'Thao tác mất nhiều thời gian hơn dự kiến. Vui lòng thử lại sau vài giây.',
+      },
+    });
+  }
+
   const statusCode = err.status || err.statusCode || 500;
   logger.error('[' + req.method + '] ' + req.path + ' - Error: ' + err.message + '\nStack: ' + err.stack);
   
+  // In production, never leak internal error details to the client
+  const isProd = process.env.NODE_ENV === 'production';
+  const safeMessage = isProd
+    ? 'Không thể xử lý yêu cầu. Vui lòng thử lại sau.'
+    : (err.message || 'Không thể xử lý yêu cầu. Vui lòng thử lại sau.');
+
   res.status(statusCode).json({
     success: false,
     error: {
       code: err.code || 'INTERNAL_SERVER_ERROR',
-      message: (process.env.NODE_ENV !== 'production' && err.message) ? err.message : (err.message || 'Không thể xử lý yêu cầu. Vui lòng thử lại sau.'),
+      message: safeMessage,
     },
   });
 });

@@ -1,4 +1,4 @@
-﻿import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
@@ -26,7 +26,7 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
       });
       return res.data;
     },
-    refetchInterval: 5000,
+    refetchInterval: 30000,
     enabled: !checkingAuth,
   });
 
@@ -39,7 +39,7 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
       });
       return res.data;
     },
-    refetchInterval: 5000,
+    refetchInterval: 30000,
     enabled: !checkingAuth,
   });
 

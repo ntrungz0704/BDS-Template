@@ -51,7 +51,7 @@ export default function AdminOrders() {
       });
       return res.data;
     },
-    refetchInterval: 5000,
+    refetchInterval: 30000,
   });
 
   const orders: any[] = (ordersRes?.data || []).filter(
@@ -76,24 +76,14 @@ export default function AdminOrders() {
   // 2. Mutation duyệt đơn hàng & tạo Tenant
   const approveMutation = useMutation({
     mutationFn: async ({ id, version }: { id: string; version: number }) => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
-      const headers: Record<string, string> = {
-        'X-CSRF-Token': csrfToken || '',
-      };
-
       const res = await axios.put(
         `${API_URL}/api/admin/orders/${id}/approve`,
         { version },
-        {
-          headers,
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       return res.data;
     },
+
     onSuccess: (res: any) => {
       if (res?.meta?.conflict) {
         alert(res.meta.message || 'Subdomain đã tồn tại hoặc có lỗi xung đột.');
@@ -124,24 +114,14 @@ export default function AdminOrders() {
   // 3. Mutation từ chối đơn hàng
   const rejectMutation = useMutation({
     mutationFn: async ({ id, version, notes }: { id: string; version: number; notes: string }) => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
-      const headers: Record<string, string> = {
-        'X-CSRF-Token': csrfToken || '',
-      };
-
       const res = await axios.put(
         `${API_URL}/api/admin/orders/${id}/reject`,
         { version, adminNotes: notes },
-        {
-          headers,
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       return res.data;
     },
+
     onSuccess: () => {
       alert('Đã từ chối đơn hàng.');
       setSelectedOrder(null);
@@ -157,20 +137,12 @@ export default function AdminOrders() {
   // 4. Mutation xóa đơn hàng
   const deleteOrderMutation = useMutation({
     mutationFn: async (id: string) => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
-      const headers: Record<string, string> = {
-        'X-CSRF-Token': csrfToken || '',
-      };
-
       const res = await axios.delete(`${API_URL}/api/admin/orders/${id}`, {
-        headers,
         withCredentials: true,
       });
       return res.data;
     },
+
     onSuccess: () => {
       alert('Đã xóa đơn hàng thành công.');
       setSelectedOrder(null);
@@ -598,12 +570,12 @@ export default function AdminOrders() {
                     <span className="text-slate-500 font-sans">Website Khách Hàng:</span>
                     <div className="text-right">
                       <a
-                        href={getTenantUrl(selectedOrder.subdomain || selectedOrder.tenantId || 'website')}
+                        href={selectedOrder.subdomain ? getTenantUrl(selectedOrder.subdomain) : '#'}
                         target="_blank"
                         rel="noreferrer"
                         className="text-blue-600 font-bold hover:underline font-mono block"
                       >
-                        {getTenantUrl(selectedOrder.subdomain || selectedOrder.tenantId || 'website')}
+                        {selectedOrder.subdomain ? getTenantUrl(selectedOrder.subdomain) : 'Đang chuẩn bị...'}
                       </a>
                       <a
                         href={`https://${PLATFORM_DOMAIN}/demo/${selectedOrder.template?.slug || selectedOrder.templateId || 'luxury-gold'}`}
@@ -645,7 +617,7 @@ export default function AdminOrders() {
                   <button
                     onClick={() => {
                       const pwd = selectedOrder.email ? selectedOrder.email.split('@')[0] : '123456';
-                      const targetSub = selectedOrder.subdomain || selectedOrder.tenantId || 'website';
+                      const targetSub = selectedOrder.subdomain || '';
                       const siteLink = getTenantUrl(targetSub);
                       const info = `🎉 THÔNG TIN BÀN GIAO WEBSITE BẤT ĐỘNG SẢN:\n\n` +
                         `- Website công khai: ${siteLink}\n` +
@@ -661,7 +633,7 @@ export default function AdminOrders() {
                   </button>
 
                   <a
-                    href={getTenantUrl(selectedOrder.subdomain || selectedOrder.tenantId || 'website')}
+                    href={selectedOrder.subdomain ? getTenantUrl(selectedOrder.subdomain) : '#'}
                     target="_blank"
                     rel="noreferrer"
                     className="w-full sm:w-auto px-4 py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all text-center"
@@ -782,12 +754,12 @@ export default function AdminOrders() {
               <div>
                 <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Website công khai:</span>
                 <a
-                  href={getTenantUrl(approvalResult.subdomain || approvalResult.tenantSlug || 'website')}
+                  href={approvalResult.subdomain || approvalResult.tenantSlug ? getTenantUrl(approvalResult.subdomain || approvalResult.tenantSlug) : '#'}
                   target="_blank"
                   rel="noreferrer"
                   className="text-blue-600 font-bold hover:underline"
                 >
-                  {getTenantUrl(approvalResult.subdomain || approvalResult.tenantSlug || 'website')}
+                  {approvalResult.subdomain || approvalResult.tenantSlug ? getTenantUrl(approvalResult.subdomain || approvalResult.tenantSlug) : 'Đang chuẩn bị...'}
                 </a>
                 <a
                   href={`https://${PLATFORM_DOMAIN}/demo/${approvalResult.templateSlug || 'luxury-gold'}`}
@@ -827,7 +799,7 @@ export default function AdminOrders() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => {
-                  const targetSub = approvalResult.subdomain || approvalResult.tenantSlug || 'website';
+                  const targetSub = approvalResult.subdomain || approvalResult.tenantSlug || '';
                   const pwd = approvalResult.cmsPassword || approvalResult.password || (approvalResult.email ? approvalResult.email.split('@')[0] : '123456');
                   const tenantLink = getTenantUrl(targetSub);
                   const info = `🎉 CHÚC MỪNG! WEBSITE CỦA BẠN ĐÃ KÍCH HOẠT THÀNH CÔNG:\n\n` +

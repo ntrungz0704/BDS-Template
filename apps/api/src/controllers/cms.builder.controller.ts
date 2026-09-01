@@ -510,7 +510,7 @@ export async function resetThemeToDefault(req: Request, res: Response, next: Nex
           });
         }
       }
-    });
+    }, { maxWait: 15000, timeout: 60000 });
 
     logger.info(`[CMS Builder] Tenant reset to default template successfully: ${tenantId}`);
     return res.json({
@@ -1337,7 +1337,7 @@ export async function applyTenantUpdate(req: Request, res: Response, next: NextF
         where: { id: tenantId },
         data: { version: targetVer }
       });
-    });
+    }, { maxWait: 15000, timeout: 60000 });
 
     logger.info(`[Upgrade] Tenant ${tenantId} đã tự nâng cấp lên v${targetVer / 10}`);
 
@@ -1390,7 +1390,7 @@ export async function rollbackTenantUpdate(req: Request, res: Response, next: Ne
         where: { id: tenantId },
         data: { version: newVer }
       });
-    });
+    }, { maxWait: 15000, timeout: 60000 });
 
     return res.json({
       success: true,

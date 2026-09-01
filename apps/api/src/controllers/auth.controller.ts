@@ -556,11 +556,25 @@ export async function getMe(req: Request, res: Response, next: NextFunction) {
       take: 50,
     });
 
+    // Re-issue csrfToken so new tabs / refreshes capture it via Axios interceptor
+    const existingCsrf = req.cookies?.csrf_token;
+    const csrfToken = existingCsrf || require('crypto').randomBytes(32).toString('hex');
+    if (!existingCsrf) {
+      res.cookie('csrf_token', csrfToken, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        domain: process.env.COOKIE_DOMAIN || undefined,
+        maxAge: 12 * 60 * 60 * 1000,
+      });
+    }
+
     res.status(200).json({
       success: true,
       data: {
         user,
-        orders
+        orders,
+        csrfToken,
       }
     });
   } catch (error) {
@@ -705,7 +719,7 @@ export async function switchTenant(req: Request, res: Response, next: NextFuncti
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       domain: process.env.COOKIE_DOMAIN || undefined,
-      maxAge: 15 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     await writeAuthAudit(req, 'TENANT_SWITCHED', tenantId, userId, { tenantId });

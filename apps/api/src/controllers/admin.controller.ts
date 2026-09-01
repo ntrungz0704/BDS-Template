@@ -161,7 +161,7 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
       });
     }
 
-    const isPending = order.status === 'WAITING_CONFIRM' || order.status === 'PENDING';
+    const isPending = order.status === 'WAITING_CONFIRM' || order.status === 'PENDING' || order.status === 'PENDING_SUBDOMAIN_CONFLICT' || order.status === 'AWAITING_MANUAL_REVIEW';
     const isUnprovisionedCompleted = order.status === 'COMPLETED' && !order.tenantId && order.type !== 'BUY_SOURCE';
 
     if (!isPending && !isUnprovisionedCompleted) {
@@ -179,7 +179,7 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
       const subdomain = order.subdomain.toLowerCase().trim();
 
       // Chặn slug hệ thống
-      const reservedSlugs = ['www', 'admin', 'cms', 'api', 'app', 'marketplace', 'templates', 'template', 'themes', 'mail', 'static', 'assets', 'support'];
+      const reservedSlugs = ['www', 'admin', 'cms', 'api', 'app', 'marketplace', 'templates', 'template', 'themes', 'mail', 'static', 'assets', 'support', 'site', 'website', 'home', 'test', 'demo', 'landing', 'blog', 'login', 'dashboard', 'portal'];
       if (reservedSlugs.includes(subdomain)) {
         return res.status(400).json({
           success: false,
@@ -983,7 +983,7 @@ export async function publishTemplateDraft(req: Request, res: Response, next: Ne
       });
 
       return templateVersion;
-    });
+    }, { maxWait: 10000, timeout: 30000 });
 
     logger.info(`Admin đã xuất bản phiên bản mới v${result.version / 10} cho template ${id}`);
 
@@ -1084,7 +1084,7 @@ export async function rollbackTemplateVersion(req: Request, res: Response, next:
           components: versionRecord.components || {}
         }
       });
-    });
+    }, { maxWait: 10000, timeout: 30000 });
 
     logger.info(`Admin đã rollback template ${id} về phiên bản v${versionRecord.version / 10}`);
 
@@ -1231,7 +1231,7 @@ export async function migrateTenantsToLatest(req: Request, res: Response, next: 
 
         migratedCount++;
       }
-    });
+    }, { maxWait: 15000, timeout: 60000 });
 
     logger.info(`Đã nâng cấp thành công ${migratedCount} Tenants sử dụng mẫu ${template.name} lên phiên bản v${targetVersion / 10}`);
 

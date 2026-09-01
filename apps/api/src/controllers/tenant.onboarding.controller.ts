@@ -201,7 +201,7 @@ export async function completeTenantOnboarding(req: Request, res: Response, next
           }
         }
       }
-    });
+    }, { maxWait: 15000, timeout: 60000 });
 
     logger.info(`[Onboarding] Tenant ${tenantId} completed onboarding. Template: ${templateId}, Subdomain: ${subdomain}.${platformDomain}`);
 

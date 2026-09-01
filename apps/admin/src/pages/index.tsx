@@ -40,7 +40,7 @@ export default function AdminDashboard() {
       const res = await axios.get(`${API_URL}/api/admin/stats`, { withCredentials: true });
       return res.data;
     },
-    refetchInterval: 5000,
+    refetchInterval: 30000,
   });
 
   // 2. Leads query
@@ -50,7 +50,7 @@ export default function AdminDashboard() {
       const res = await axios.get(`${API_URL}/api/admin/leads?limit=5`, { withCredentials: true });
       return res.data;
     },
-    refetchInterval: 5000,
+    refetchInterval: 30000,
   });
 
   // 3. Orders query
@@ -60,7 +60,7 @@ export default function AdminDashboard() {
       const res = await axios.get(`${API_URL}/api/admin/orders?limit=5`, { withCredentials: true });
       return res.data;
     },
-    refetchInterval: 5000,
+    refetchInterval: 30000,
   });
 
   if (isLoading) {

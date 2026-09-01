@@ -775,6 +775,9 @@ export class WebsiteProvisioningService {
       });
 
       return { tenant, user, isNewUser };
+    }, {
+      maxWait: 15000,
+      timeout: 60000,
     });
 
     // n. Tự động đăng ký domain của khách vào Vercel Project qua Vercel API

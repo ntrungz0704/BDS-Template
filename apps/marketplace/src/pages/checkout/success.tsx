@@ -151,12 +151,12 @@ export default function CheckoutSuccessPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                   <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Website Công Khai Của Bạn:</span>
                   <a
-                    href={`https://${tenantSlug || orderData.subdomain || 'site'}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`}
+                    href={tenantSlug || orderData.subdomain ? `https://${tenantSlug || orderData.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}` : '#'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline font-mono font-bold flex items-center gap-1 text-sm"
                   >
-                    {tenantSlug || orderData.subdomain || 'site'}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}
+                    {tenantSlug || orderData.subdomain ? `${tenantSlug || orderData.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}` : 'Đang chuẩn bị...'}
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -164,12 +164,12 @@ export default function CheckoutSuccessPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-slate-200/60 pt-3">
                   <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Link Xem Demo Trực Tiếp:</span>
                   <a
-                    href={`https://website.aireviewbds.com/?subdomain=${tenantSlug || orderData.subdomain || 'site'}`}
+                    href={tenantSlug || orderData.subdomain ? `https://website.aireviewbds.com/?subdomain=${tenantSlug || orderData.subdomain}` : '#'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-emerald-600 hover:underline font-mono font-bold flex items-center gap-1 text-sm"
                   >
-                    https://website.aireviewbds.com/?subdomain={tenantSlug || orderData.subdomain || 'site'}
+                    {tenantSlug || orderData.subdomain ? `https://website.aireviewbds.com/?subdomain=${tenantSlug || orderData.subdomain}` : 'Đang chuẩn bị...'}
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -214,7 +214,7 @@ export default function CheckoutSuccessPage() {
                   <span>Vào Quản Trị CMS Ngay</span>
                 </a>
                 <a
-                  href={typeof window !== 'undefined' && window.location.hostname === 'localhost' ? `http://localhost:3000/site/${tenantSlug || orderData.subdomain || 'luxury-gold'}` : `https://${tenantSlug || orderData.subdomain || 'luxury-gold'}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}/?tenant=${tenantSlug || orderData.subdomain || 'luxury-gold'}`}
+                  href={tenantSlug || orderData.subdomain ? (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? `http://localhost:3000/site/${tenantSlug || orderData.subdomain}` : `https://${tenantSlug || orderData.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}/?tenant=${tenantSlug || orderData.subdomain}`) : '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="py-4 px-6 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl text-sm flex items-center justify-center gap-2 shadow-lg transition-all"

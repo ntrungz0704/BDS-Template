@@ -103,7 +103,7 @@ export default function AdminLeadsPage() {
       });
       return res.data;
     },
-    refetchInterval: 5000,
+    refetchInterval: 30000,
   });
 
   const leads: LeadItem[] = leadsRes?.data?.leads || [];

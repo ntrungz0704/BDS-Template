@@ -415,7 +415,7 @@ export class OnboardingService {
       });
 
       return { tenant, owner };
-    });
+    }, { maxWait: 15000, timeout: 60000 });
 
     const platformDomain = process.env.PLATFORM_DOMAIN || 'platformbds.vn';
 

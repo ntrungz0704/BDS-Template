@@ -7,6 +7,10 @@ declare global {
 
 const basePrisma = global.prisma || new PrismaClient({
   log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  transactionOptions: {
+    maxWait: 10000,
+    timeout: 30000,
+  },
 });
 
 export const prisma = basePrisma.$extends(tenantIsolationExtension);

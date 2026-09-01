@@ -631,7 +631,7 @@ export default function CustomerDashboard() {
                               <td className="py-4 px-4 font-mono font-bold text-slate-950">{ord.orderNumber}</td>
                               <td className="py-4 px-4 font-bold text-slate-850">
                                 {ord.template?.name || 'N/A'}
-                                {ord.subdomain && <span className="block text-[10px] text-slate-400 font-normal font-mono">Domain: {ord.subdomain}.platformbds.vn</span>}
+                                {ord.subdomain && <span className="block text-[10px] text-slate-400 font-normal font-mono">Domain: {ord.subdomain}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}</span>}
                               </td>
                               <td className="py-4 px-4 text-slate-500 font-mono">
                                 {new Date(ord.createdAt).toLocaleDateString('vi-VN')}

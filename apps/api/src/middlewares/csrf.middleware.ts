@@ -4,6 +4,7 @@ import crypto from 'crypto';
 const EXEMPT_PUBLIC_PATHS = new Set([
   '/api/auth/register',
   '/api/auth/login',
+  '/api/auth/refresh',
   '/api/auth/forgot-password',
   '/api/auth/reset-password',
   '/api/auth/verify-email',
