@@ -449,6 +449,113 @@ export async function syncCatalog() {
   return { websiteTemplates: WEBSITE_TEMPLATES.length, landingPages: LANDING_PAGE_TEMPLATES.length, retired: retired.count };
 }
 
+/**
+ * Tự động quét và chuẩn hóa toàn bộ các Tenant slug & Order subdomain cũ
+ * loại bỏ hoàn toàn các chuỗi mã ngẫu nhiên CUID (như cmtctxl0, cmtg4no5...)
+ * và chuyển về chuẩn: {brandSlug}-bds-{stt}-{phoneSuffix} hoặc {brandSlug}-lp-{stt}-{phoneSuffix}
+ */
+export async function sanitizeExistingTenantAndOrderSlugs() {
+  try {
+    const slugifyBrand = (text: string) => {
+      return (text || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/Đ/g, 'd')
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+    };
+
+    const extractTplCode = (tplIdOrSlug: string) => {
+      const s = (tplIdOrSlug || '').toLowerCase().trim();
+      const lpMatch = s.match(/(?:lp|landing)[-_]?0?([1-7])/i);
+      if (lpMatch) {
+        const num = lpMatch[1].padStart(2, '0');
+        return `lp-${num}`;
+      }
+      const bdsMatch = s.match(/(?:bds|portal|template)[-_]?0?([1-9]|1[0-9]|2[0-4])/i);
+      if (bdsMatch) {
+        const num = bdsMatch[1].padStart(2, '0');
+        return `bds-${num}`;
+      }
+      const aliasMap: Record<string, string> = {
+        'luxury-gold': 'bds-01', 'minimal-white': 'bds-02', 'modern-corporate': 'bds-03',
+        'resort-paradise': 'bds-04', 'urban-city': 'bds-05', 'industrial-estate': 'bds-06',
+        'villa-premium': 'bds-07', 'eco-green': 'bds-08', 'classic-elegant': 'bds-09',
+        'investment-pro': 'bds-10', 'agency-onepage': 'bds-11', 'mega-developer': 'bds-12',
+        'auction-template': 'bds-13', 'landplot-template': 'bds-14', 'retail-podium': 'bds-15',
+        'personal-agent': 'bds-16', 'portal-listing': 'bds-17', 'benthanh-portal': 'bds-18',
+        'bds123-portal': 'bds-18', 'nhadatso-density': 'bds-19', 'minhkhai-apartment': 'bds-20',
+        'hanoi-rental': 'bds-21', 'happyland-resort': 'bds-22', 'homeo-multithumb': 'bds-23',
+        'homeo-agency': 'bds-23', 'realtybuild-tech': 'bds-24',
+      };
+      for (const [k, v] of Object.entries(aliasMap)) {
+        if (s.includes(k)) return v;
+      }
+      return 'bds-01';
+    };
+
+    const orders = await prisma.order.findMany({
+      include: { template: true, tenant: true },
+    });
+
+    for (const order of orders) {
+      const currentSub = order.subdomain || order.tenant?.slug || '';
+      const hasCuidPattern = /cmt[a-z0-9]+/i.test(currentSub);
+      const isMissingStandardPrefix = currentSub && !currentSub.includes('bds-') && !currentSub.includes('lp-') && !currentSub.includes('bds') && !currentSub.includes('lp');
+
+      if (hasCuidPattern || isMissingStandardPrefix) {
+        const brand = slugifyBrand(order.fullName) || 'bds';
+        const cleanPhone = (order.phone || '').replace(/\D/g, '');
+        const phoneSuffix = cleanPhone.length >= 4 ? cleanPhone.slice(-4) : (cleanPhone || '9876');
+        const templateSlug = order.template?.slug || (order.productSnapshot as any)?.slug || order.templateId || 'bds-01';
+        const tplCode = extractTplCode(templateSlug);
+
+        const newCleanSlug = `${brand}-${tplCode}-${phoneSuffix}`.toLowerCase();
+
+        // Cập nhật Order
+        await prisma.order.update({
+          where: { id: order.id },
+          data: { subdomain: newCleanSlug },
+        });
+
+        // Cập nhật Tenant nếu có
+        if (order.tenantId) {
+          await prisma.tenant.update({
+            where: { id: order.tenantId },
+            data: { slug: newCleanSlug },
+          });
+        }
+      }
+    }
+
+    // Quét thêm bảng Tenant độc lập nếu còn sót slug lỗi
+    const tenants = await prisma.tenant.findMany({
+      include: { template: true },
+    });
+
+    for (const tenant of tenants) {
+      if (/cmt[a-z0-9]+/i.test(tenant.slug)) {
+        const tplCode = extractTplCode(tenant.template?.slug || tenant.templateId || 'bds-01');
+        const cleanBrand = tenant.slug.split('-cmt')[0] || 'bds';
+        const phoneSuffix = tenant.slug.split('-').pop() || '9876';
+        const newSlug = `${cleanBrand}-${tplCode}-${phoneSuffix}`.toLowerCase();
+
+        await prisma.tenant.update({
+          where: { id: tenant.id },
+          data: { slug: newSlug },
+        });
+      }
+    }
+
+    console.log('✅ Đã quét và chuẩn hóa toàn bộ URL slug Tenant / Order về định dạng bds-XX / lp-XX!');
+  } catch (err: any) {
+    console.warn('⚠️ Lỗi khi chuẩn hóa tenant slugs (bỏ qua):', err.message);
+  }
+}
+
 export async function autoSeedDatabase() {
   try {
     console.log('🌱 Đang đồng bộ catalog chuẩn: 24 BĐS + 7 Landing Page...');
@@ -456,7 +563,10 @@ export async function autoSeedDatabase() {
     // 1. Đồng bộ catalog chuẩn và ẩn an toàn mọi catalog legacy.
     await syncCatalog();
 
-    // 2. Bootstrap Super Admin chỉ khi chưa có; không bao giờ ghi đè mật khẩu hiện hữu.
+    // 2. Chuẩn hóa dọn dẹp các slug cũ bị dính mã ngẫu nhiên trong DB
+    await sanitizeExistingTenantAndOrderSlugs();
+
+    // 3. Bootstrap Super Admin chỉ khi chưa có; không bao giờ ghi đè mật khẩu hiện hữu.
     const adminEmail = 'admin@aireviewbds.com';
     const existingAdmin = await prisma.user.findUnique({ where: { email: adminEmail } });
     if (existingAdmin) {

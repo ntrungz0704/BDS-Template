@@ -14,7 +14,7 @@ import {
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import ZeroCodeCmsEditor from '../../components/cms/ZeroCodeCmsEditor';
-import { getProvinces, getDistricts, getWards, parseAddress, formatAddress, formatTemplateDisplayName } from '@repo/utils';
+import { getProvinces, getDistricts, getWards, parseAddress, formatAddress, formatTemplateDisplayName, formatSiteSlug } from '@repo/utils';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 
@@ -531,7 +531,7 @@ export default function CustomerDashboard() {
                       </div>
                     ) : (
                       orders.filter((o: any) => o.status === 'COMPLETED').map((ord: any, idx: number) => {
-                        const siteSlug = ord.subdomain || ord.tenant?.slug || `bds-${ord.template?.slug || 'site'}`;
+                        const siteSlug = formatSiteSlug(ord);
                         const siteName = formatTemplateDisplayName(ord);
                         const siteUrl = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
                           ? `http://localhost:3000/site/${siteSlug}`
@@ -633,12 +633,12 @@ export default function CustomerDashboard() {
                                 {formatTemplateDisplayName(ord)}
                                 {ord.subdomain && (
                                   <a 
-                                    href={typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? `http://localhost:3000/site/${ord.subdomain}` : `https://templates.aireviewbds.com/site/${ord.subdomain}`} 
+                                    href={typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? `http://localhost:3000/site/${formatSiteSlug(ord)}` : `https://templates.aireviewbds.com/site/${formatSiteSlug(ord)}`} 
                                     target="_blank" 
                                     rel="noopener noreferrer" 
                                     className="block text-[10px] text-blue-600 hover:underline font-mono"
                                   >
-                                    Link: templates.aireviewbds.com/site/{ord.subdomain}
+                                    Link: templates.aireviewbds.com/site/{formatSiteSlug(ord)}
                                   </a>
                                 )}
                               </td>

@@ -17,10 +17,29 @@ export async function resolveTenantSlug(req: Request, res: Response, next: NextF
   }
 
   try {
-    const tenant = await prisma.tenant.findFirst({
+    let tenant = await prisma.tenant.findFirst({
       where: { slug, status: 'ACTIVE', deletedAt: null },
       select: { id: true },
     });
+
+    if (!tenant) {
+      // Fallback: Tìm qua Order nếu slug từng thuộc về đơn hàng đó
+      const order = await prisma.order.findFirst({
+        where: {
+          OR: [
+            { subdomain: slug },
+            { orderNumber: slug },
+          ],
+        },
+        select: { tenantId: true },
+      });
+      if (order?.tenantId) {
+        tenant = await prisma.tenant.findUnique({
+          where: { id: order.tenantId },
+          select: { id: true },
+        });
+      }
+    }
 
     if (!tenant) {
       return res.status(404).json({
