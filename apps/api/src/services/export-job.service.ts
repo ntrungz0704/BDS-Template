@@ -41,13 +41,10 @@ export class ExportJobService {
       }
     }
 
-    // 3. RÀNG BUỘC NGHIỆP VỤ: only an explicit source-code purchase grants
-    // export rights. Hosted SaaS (RENT) and ordinary BUY orders never do.
-    if (order.type !== 'BUY_SOURCE') {
-      throw new Error('Chỉ đơn hàng có quyền SOURCE_TEMPLATE_LICENSE mới được tải mã nguồn. Gói SaaS chỉ quản trị trực tiếp trên CMS.');
-    }
-    if (!order.template?.priceBuySource) {
-      throw new Error('Template này chưa có gói mã nguồn được phát hành.');
+    // 3. RÀNG BUỘC NGHIỆP VỤ: Mua template (BUY/BUY_SOURCE) = mua luôn source code.
+    // Chỉ gói Thuê hàng tháng (RENT) mới không được tải mã nguồn.
+    if (order.type === 'RENT') {
+      throw new Error('Gói Thuê Cloud SaaS chỉ quản trị trực tiếp trên CMS. Hãy nâng cấp lên gói Mua Đứt để tải mã nguồn.');
     }
 
     // 4. Chỉ cho phép khi đơn hàng đã hoàn tất duyệt (COMPLETED)
