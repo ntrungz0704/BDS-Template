@@ -37,10 +37,30 @@ export async function getCompanyInfo(req: Request, res: Response, next: NextFunc
     });
 
     if (!company) {
-      // Tenant chưa hoàn thành onboarding — trả về object rỗng để frontend hiển thị placeholder
+      const tenant = await prisma.tenant.findUnique({
+        where: { id: tenantId, status: 'ACTIVE', deletedAt: null },
+        include: { template: { select: { slug: true } } },
+      });
+
+      if (!tenant) {
+        return res.status(404).json({
+          success: false,
+          error: { code: 'TENANT_NOT_FOUND', message: 'Website không tồn tại hoặc chưa kích hoạt.' },
+        });
+      }
+
       return res.status(200).json({
         success: true,
-        data: null,
+        data: {
+          name: tenant.name,
+          companyName: tenant.name,
+          tenant: {
+            themeOverrides: tenant.themeOverrides,
+            templateId: tenant.templateId,
+            status: tenant.status,
+            template: tenant.template,
+          },
+        },
         meta: { onboardingRequired: true },
       });
     }

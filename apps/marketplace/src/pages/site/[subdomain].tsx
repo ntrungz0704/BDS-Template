@@ -1,49 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import Link from 'next/link';
 import axios from 'axios';
 import { ALL_TEMPLATES, findTemplateBySlugOrId, Template } from '../../data/templatesData';
 import DemoRenderer from '../../components/demo/DemoRenderer';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
-
-// Smart template matcher from subdomain string (e.g. hoang-lam-lp02-3456 -> lp-02)
-function resolveTemplateFromSubdomain(rawSub: string): Template | null {
-  if (!rawSub) return null;
-  const s = rawSub.toLowerCase();
-
-  // 1. Direct slug or ID match
-  const direct = findTemplateBySlugOrId(rawSub);
-  if (direct) return direct;
-
-  // 2. Match LP-01 to LP-07 (e.g. lp01, lp-01, lp02, lp-02...)
-  for (let i = 1; i <= 7; i++) {
-    const num = i < 10 ? `0${i}` : `${i}`;
-    if (s.includes(`lp${num}`) || s.includes(`lp-${num}`) || s.includes(`lp_${num}`)) {
-      const match = findTemplateBySlugOrId(`lp-${num}`) || findTemplateBySlugOrId(`lp${num}`);
-      if (match) return match;
-    }
-  }
-
-  // 3. Match BDS-01 to BDS-24 (e.g. bds01, bds-01, bds14, bds-14...)
-  for (let i = 1; i <= 24; i++) {
-    const num = i < 10 ? `0${i}` : `${i}`;
-    if (s.includes(`bds${num}`) || s.includes(`bds-${num}`) || s.includes(`bds_${num}`)) {
-      const match = findTemplateBySlugOrId(`bds-${num}`) || findTemplateBySlugOrId(`bds${num}`);
-      if (match) return match;
-    }
-  }
-
-  // 4. Match common template keywords
-  for (const tpl of ALL_TEMPLATES) {
-    const cleanTplSlug = tpl.slug.replace(/[^a-z0-9]/g, '');
-    if (cleanTplSlug && s.includes(cleanTplSlug)) {
-      return tpl;
-    }
-  }
-
-  return null;
-}
 
 export default function TenantDirectSitePage() {
   const router = useRouter();
@@ -52,6 +15,7 @@ export default function TenantDirectSitePage() {
   const pageSlug = (page as string) || 'home';
 
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [template, setTemplate] = useState<Template | null>(null);
   const [tenantInfo, setTenantInfo] = useState<any>(null);
   const [tenantProjects, setTenantProjects] = useState<any[]>([]);
@@ -63,49 +27,54 @@ export default function TenantDirectSitePage() {
 
     const fetchTenantData = async () => {
       setLoading(true);
+      setNotFound(false);
       try {
-        // Smart template fallback first (from subdomain pattern matching)
-        const parsedTpl = resolveTemplateFromSubdomain(rawSubdomain);
-        if (parsedTpl) {
-          setTemplate(parsedTpl);
-        }
-
-        // Determine the actual tenant slug
-        // For marketplace subdomains (e.g. "thay-cuong-cmtg4n-9876"), rawSubdomain IS the tenant slug
-        // For custom domains, we need to resolve via API first
         let tenantSlug = rawSubdomain;
 
-        // Try resolving custom domain (optional — may fail for marketplace subdomains, that's OK)
+        // 1. Try resolving custom domain if needed
         try {
           const domainRes = await axios.get(`${API_URL}/api/website/resolve-domain?domain=${encodeURIComponent(rawSubdomain)}`);
           if (domainRes.data?.data?.tenantSlug) {
             tenantSlug = domainRes.data.data.tenantSlug;
           }
         } catch (_) {
-          // Custom domain not found — use rawSubdomain as tenant slug (this is the normal case for marketplace)
+          // Custom domain not found — use rawSubdomain as tenant slug
         }
 
-        // Concurrently fetch tenant company info, projects, posts, and theme settings from CMS API
-        const [infoRes, projectsRes, postsRes, themeRes] = await Promise.allSettled([
-          axios.get(`${API_URL}/api/website/${tenantSlug}/company-info`),
+        // 2. Fetch company info — BẮT BUỘC PHẢI TỒN TẠI VÀ ĐÃ KÍCH HOẠT TRONG DATABASE
+        const infoRes = await axios.get(`${API_URL}/api/website/${tenantSlug}/company-info`);
+        
+        if (!infoRes.data?.success || !infoRes.data?.data) {
+          setNotFound(true);
+          setLoading(false);
+          return;
+        }
+
+        const data = infoRes.data.data;
+        setTenantInfo(data);
+
+        // 3. Lấy đúng mẫu template đã được mua & lưu trong database
+        const assignedTplId = data?.tenant?.template?.slug || data?.tenant?.templateId;
+        if (!assignedTplId) {
+          setNotFound(true);
+          setLoading(false);
+          return;
+        }
+
+        const dbMatched = findTemplateBySlugOrId(assignedTplId);
+        if (!dbMatched) {
+          setNotFound(true);
+          setLoading(false);
+          return;
+        }
+        setTemplate(dbMatched);
+
+        // 4. Lấy dữ liệu dự án, bài viết, theme tùy biến của website khách hàng
+        const [projectsRes, postsRes, themeRes] = await Promise.allSettled([
           axios.get(`${API_URL}/api/website/${tenantSlug}/projects?limit=50`),
           axios.get(`${API_URL}/api/website/${tenantSlug}/posts?limit=50`),
           axios.get(`${API_URL}/api/website/${tenantSlug}/theme`),
         ]);
-
-        if (infoRes.status === 'fulfilled' && infoRes.value.data?.data) {
-          const data = infoRes.value.data.data;
-          setTenantInfo(data);
-
-          // CRITICAL: Use the template slug assigned in the database (from purchase/order)
-          const assignedTplId = data?.tenant?.template?.slug || data?.tenant?.templateId;
-          if (assignedTplId) {
-            const dbMatched = findTemplateBySlugOrId(assignedTplId);
-            if (dbMatched) {
-              setTemplate(dbMatched);
-            }
-          }
-        }
 
         if (projectsRes.status === 'fulfilled' && Array.isArray(projectsRes.value.data?.data)) {
           setTenantProjects(projectsRes.value.data.data);
@@ -118,10 +87,9 @@ export default function TenantDirectSitePage() {
         if (themeRes.status === 'fulfilled' && themeRes.value.data?.data) {
           setTenantTheme(themeRes.value.data.data);
         }
-      } catch (err) {
-        // Only use subdomain fallback if ALL API calls failed
-        const fallbackTpl = resolveTemplateFromSubdomain(rawSubdomain) || ALL_TEMPLATES[0];
-        setTemplate(fallbackTpl);
+      } catch (err: any) {
+        // Website không tồn tại trong database hoặc chưa được kích hoạt
+        setNotFound(true);
       } finally {
         setLoading(false);
       }
@@ -130,13 +98,61 @@ export default function TenantDirectSitePage() {
     fetchTenantData();
   }, [router.isReady, rawSubdomain]);
 
-  if (loading || !template) {
+  // Màn hình loading
+  if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center font-sans text-slate-200">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-[3px] border-blue-500 border-t-transparent rounded-full animate-spin" />
           <div className="text-sm font-semibold tracking-wider uppercase text-slate-400">
-            Đang tải website: {rawSubdomain}...
+            Đang xác thực & tải website: {rawSubdomain}...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Màn hình 404: Website chưa được kích hoạt hoặc chưa mua
+  if (notFound || !template || !tenantInfo) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-6 text-center font-sans">
+        <Head>
+          <title>Website Chưa Tồn Tại Hoặc Chưa Kích Hoạt | AI Review BĐS</title>
+        </Head>
+        <div className="max-w-md w-full bg-slate-900/90 border border-slate-800 rounded-3xl p-8 shadow-2xl backdrop-blur-xl">
+          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-5">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <span className="text-[11px] font-black tracking-widest text-amber-400 uppercase bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+            Website Chưa Kích Hoạt
+          </span>
+          <h1 className="text-xl font-black text-white mt-4 mb-2">
+            Không tìm thấy website: <span className="text-amber-300 font-mono text-base block mt-1 break-all">{rawSubdomain}</span>
+          </h1>
+          <p className="text-xs text-slate-400 leading-relaxed mb-6">
+            Website này chưa được mua, chưa được ban quản trị phê duyệt hoặc chưa kích hoạt trong hệ thống.
+          </p>
+          <div className="flex flex-col gap-3">
+            <Link
+              href="/templates"
+              className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm rounded-xl shadow-lg transition-all"
+            >
+              Khám Phá 24 Mẫu Website BĐS
+            </Link>
+            <Link
+              href="/customer/dashboard"
+              className="w-full py-3 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm rounded-xl transition-all"
+            >
+              Vào Quản Lý Website Của Tôi
+            </Link>
+            <Link
+              href="/"
+              className="text-xs text-slate-500 hover:text-slate-400 mt-2 font-medium"
+            >
+              ← Về Trang Chủ Marketplace
+            </Link>
           </div>
         </div>
       </div>
@@ -144,17 +160,7 @@ export default function TenantDirectSitePage() {
   }
 
   // Display name formatting
-  const displayBrandName =
-    tenantInfo?.name ||
-    tenantInfo?.companyName ||
-    (rawSubdomain
-      ? rawSubdomain
-          .split('-')
-          .filter((part: string) => !part.startsWith('lp') && !part.startsWith('bds') && !/^\d+$/.test(part))
-          .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
-          .join(' ')
-      : '') ||
-    rawSubdomain.toUpperCase();
+  const displayBrandName = tenantInfo?.name || tenantInfo?.companyName || 'Bất Động Sản';
 
   const companyData = {
     name: tenantInfo?.name || displayBrandName,
