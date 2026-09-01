@@ -30,18 +30,10 @@ export default function AdminTemplates() {
   // 2. Phép thay đổi trạng thái ẩn/hiển thị của template trên Marketplace
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, isActive }: { id: string; isActive: boolean }) => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
-
       const res = await axios.put(
         `${API_URL}/api/admin/templates/${id}/status`,
         { isActive },
-        {
-          headers: { 'X-CSRF-Token': csrfToken || '' },
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       return res.data;
     },
@@ -56,18 +48,10 @@ export default function AdminTemplates() {
   // 3. Cập nhật giá bán & giá gốc
   const updatePriceMutation = useMutation({
     mutationFn: async ({ id, priceBuy, priceBuySource, priceRentMonthly }: any) => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
-
       const res = await axios.put(
         `${API_URL}/api/admin/templates/${id}/price`,
         { priceBuy, priceBuySource, priceRentMonthly },
-        {
-          headers: { 'X-CSRF-Token': csrfToken || '' },
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       return res.data;
     },

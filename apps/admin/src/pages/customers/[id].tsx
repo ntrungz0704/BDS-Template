@@ -23,9 +23,7 @@ export default function CustomerDetailPage() {
 
   const extendTrialMutation = useMutation({
     mutationFn: async (days: number) => {
-      const csrfToken = document.cookie.split('; ').find(r => r.startsWith('csrf_token='))?.split('=')[1];
       const res = await axios.post(`${API_URL}/api/admin/customers/${id}/extend-trial`, { days }, {
-        headers: { 'X-CSRF-Token': csrfToken || '' },
         withCredentials: true,
       });
       return res.data;
@@ -39,9 +37,7 @@ export default function CustomerDetailPage() {
 
   const activateSubMutation = useMutation({
     mutationFn: async (months: number) => {
-      const csrfToken = document.cookie.split('; ').find(r => r.startsWith('csrf_token='))?.split('=')[1];
       const res = await axios.post(`${API_URL}/api/admin/customers/${id}/activate-subscription`, { months }, {
-        headers: { 'X-CSRF-Token': csrfToken || '' },
         withCredentials: true,
       });
       return res.data;
@@ -55,46 +51,13 @@ export default function CustomerDetailPage() {
 
   const resetPasswordMutation = useMutation({
     mutationFn: async () => {
-      const csrfToken = document.cookie.split('; ').find(r => r.startsWith('csrf_token='))?.split('=')[1];
       const res = await axios.post(`${API_URL}/api/admin/customers/${id}/reset-password`, {}, {
-        headers: { 'X-CSRF-Token': csrfToken || '' },
         withCredentials: true,
       });
       return res.data;
     },
     onSuccess: (res) => {
       alert(res.data?.message || 'Đã gửi liên kết đặt lại mật khẩu qua email.');
-    },
-    onError: (err: any) => alert(err.response?.data?.error?.message || 'Lỗi đặt lại mật khẩu'),
-  });
-
-  const suspendMutation = useMutation({
-    mutationFn: async (suspended: boolean) => {
-      const csrfToken = document.cookie.split('; ').find(r => r.startsWith('csrf_token='))?.split('=')[1];
-      const res = await axios.post(`${API_URL}/api/admin/customers/${id}/suspend`, { suspended }, {
-        headers: { 'X-CSRF-Token': csrfToken || '' },
-        withCredentials: true,
-      });
-      return res.data;
-    },
-    onSuccess: () => {
-      alert('Đã cập nhật trạng thái hoạt động của khách hàng.');
-      queryClient.invalidateQueries({ queryKey: ['adminCustomerDetail', id] });
-    },
-    onError: (err: any) => alert(err.response?.data?.error?.message || 'Lỗi cập nhật trạng thái'),
-  });
-
-  if (isLoading) {
-    return (
-      <AdminLayout title="Hồ Sơ Khách Hàng 360°">
-        <div className="py-20 text-center text-slate-400">Đang tải hồ sơ khách hàng...</div>
-      </AdminLayout>
-    );
-  }
-
-  const customer = customerRes?.data?.customer;
-  const tenants = customerRes?.data?.tenants || [];
-  const orders = customerRes?.data?.orders || [];
   const auditLogs = customerRes?.data?.auditLogs || [];
 
   if (!customer) {

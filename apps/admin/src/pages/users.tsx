@@ -32,9 +32,7 @@ export default function AdminUsers() {
   // 2. Direct Reset / Restore Password Mutation
   const directResetMutation = useMutation({
     mutationFn: async ({ userId, newPassword }: { userId: string; newPassword?: string }) => {
-      const csrfToken = document.cookie.split('; ').find(r => r.startsWith('csrf_token='))?.split('=')[1];
       const res = await axios.post(`${API_URL}/api/admin/users/${userId}/direct-reset-password`, { newPassword }, {
-        headers: { 'X-CSRF-Token': csrfToken || '' },
         withCredentials: true,
       });
       return res.data;
@@ -50,21 +48,10 @@ export default function AdminUsers() {
   // 3. Phép khóa/mở khóa tài khoản người dùng
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status, isActive }: { id: string; status: string; isActive: boolean }) => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
-      const headers: Record<string, string> = {
-        'X-CSRF-Token': csrfToken || '',
-      };
-
       const res = await axios.put(
         `${API_URL}/api/admin/users/${id}/status`,
         { status, isActive },
-        {
-          headers,
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       return res.data;
     },
@@ -79,16 +66,7 @@ export default function AdminUsers() {
   // 4. Phép xóa người dùng
   const deleteUserMutation = useMutation({
     mutationFn: async (id: string) => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
-      const headers: Record<string, string> = {
-        'X-CSRF-Token': csrfToken || '',
-      };
-
       const res = await axios.delete(`${API_URL}/api/admin/users/${id}`, {
-        headers,
         withCredentials: true,
       });
       return res.data;

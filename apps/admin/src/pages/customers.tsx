@@ -43,13 +43,7 @@ export default function CustomersPage() {
   // 2. Mutation Create Customer + Tenant
   const createCustomerMutation = useMutation({
     mutationFn: async (payload: any) => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
-
       const res = await axios.post(`${API_URL}/api/admin/tenants`, payload, {
-        headers: { 'X-CSRF-Token': csrfToken || '' },
         withCredentials: true,
       });
       return res.data;
@@ -67,9 +61,7 @@ export default function CustomersPage() {
   // 3. Quick Action: Direct Reset / Restore Password
   const directResetMutation = useMutation({
     mutationFn: async ({ userId, newPassword }: { userId: string; newPassword?: string }) => {
-      const csrfToken = document.cookie.split('; ').find(r => r.startsWith('csrf_token='))?.split('=')[1];
       const res = await axios.post(`${API_URL}/api/admin/customers/${userId}/direct-reset-password`, { newPassword }, {
-        headers: { 'X-CSRF-Token': csrfToken || '' },
         withCredentials: true,
       });
       return res.data;
@@ -85,9 +77,7 @@ export default function CustomersPage() {
   // 4. Quick Action: Extend Trial
   const extendTrialMutation = useMutation({
     mutationFn: async ({ userId, days }: { userId: string; days: number }) => {
-      const csrfToken = document.cookie.split('; ').find(r => r.startsWith('csrf_token='))?.split('=')[1];
       const res = await axios.post(`${API_URL}/api/admin/customers/${userId}/extend-trial`, { days }, {
-        headers: { 'X-CSRF-Token': csrfToken || '' },
         withCredentials: true,
       });
       return res.data;
@@ -102,9 +92,7 @@ export default function CustomersPage() {
   // 5. Quick Action: Delete User
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: string) => {
-      const csrfToken = document.cookie.split('; ').find(r => r.startsWith('csrf_token='))?.split('=')[1];
       const res = await axios.delete(`${API_URL}/api/admin/users/${userId}`, {
-        headers: { 'X-CSRF-Token': csrfToken || '' },
         withCredentials: true,
       });
       return res.data;

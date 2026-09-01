@@ -26,18 +26,10 @@ export default function AdminTenants() {
   // Mutation to create Tenant manually
   const createTenantMutation = useMutation({
     mutationFn: async (payload: any) => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
-
       const res = await axios.post(
         `${API_URL}/api/admin/tenants`,
         payload,
-        {
-          headers: { 'X-CSRF-Token': csrfToken || '' },
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       return res.data;
     },
@@ -88,18 +80,10 @@ export default function AdminTenants() {
   // 2. Phép thay đổi trạng thái hoạt động của Tenant
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
-
       const res = await axios.put(
         `${API_URL}/api/admin/tenants/${id}/status`,
         { status },
-        {
-          headers: { 'X-CSRF-Token': csrfToken || '' },
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       return res.data;
     },
@@ -113,17 +97,9 @@ export default function AdminTenants() {
 
   const deleteTenantMutation = useMutation({
     mutationFn: async (id: string) => {
-      const csrfToken = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrf_token='))
-        ?.split('=')[1];
-
       const res = await axios.delete(
         `${API_URL}/api/admin/tenants/${id}`,
-        {
-          headers: { 'X-CSRF-Token': csrfToken || '' },
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       return res.data;
     },
