@@ -1,191 +1,663 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BĐS 24 — RealtyBuild Trang Tin BĐS Số 1 Việt Nam — Website Bất Động Sản Chuyên Nghiệp</title>
-  <meta name="description" content="RealtyBuild Tech Portal · Icon Pills · 6 Thành phố lớn">
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TEMPLATESBDS — TRANG TIN CÔNG NGHỆ BĐS & ĐÔ THỊ THÔNG MINH SỐ 1</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+<body class="w-full min-h-screen bg-white text-slate-900 flex flex-col justify-between selection:bg-[#0F172A] selection:text-cyan-300">
+  <!-- Toast -->
+  <div id="toast-message" class="hidden fixed bottom-24 right-6 z-50 bg-[#0F172A] text-white border border-cyan-400 px-5 py-3 shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce">
+    <i data-lucide="check-circle-2" class="text-cyan-300 w-4 h-4"></i> <span id="toast-text"></span>
+  </div>
 
   <!-- Header -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2 font-black text-xl text-blue-600">
-        <span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-xs">TB</span>
-        <span>TEMPLATES<strong class="text-slate-900">BDS</strong></span>
-      </a>
-      <nav class="hidden md:flex items-center gap-6 text-xs font-bold uppercase text-slate-700">
-        <a href="index.html" class="text-blue-600">Trang Chủ</a>
-        <a href="#san-pham" class="hover:text-blue-600">Sản Phẩm</a>
-        <a href="#du-an" class="hover:text-blue-600">Dự Án</a>
-        <a href="#tin-tuc" class="hover:text-blue-600">Tin Tức</a>
-        <a href="#lien-he" class="hover:text-blue-600">Liên Hệ</a>
+  <header class="sticky top-0 z-40 bg-[#0F172A] text-white shadow-xl border-b border-cyan-500/30">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4">
+      <!-- Left Brand -->
+      <div onclick="navigate('home')" class="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0">
+        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#06B6D4] to-[#2563EB] flex items-center justify-center text-white font-black text-base sm:text-xl shadow shrink-0">
+          ⚡
+        </div>
+        <div class="min-w-0 truncate">
+          <span class="text-base sm:text-2xl font-black tracking-wider text-cyan-400 block leading-none truncate">
+            TEMPLATESBDS
+          </span>
+          <span class="text-[7.5px] sm:text-[8.5px] font-bold text-slate-400 uppercase tracking-widest block mt-0.5 truncate">
+            TRANG TIN CÔNG NGHỆ BĐS & ĐÔ THỊ THÔNG MINH SỐ 1
+          </span>
+        </div>
+      </div>
+
+      <!-- Center Menu -->
+      <nav class="hidden xl:flex items-center gap-0.5 text-xs font-bold uppercase tracking-wider text-slate-300 whitespace-nowrap">
+        <button onclick="navigate('home')" class="nav-btn whitespace-nowrap px-3 py-2 transition-all hover:text-cyan-300" data-page="home">Trang Chủ</button>
+        <button onclick="navigate('about')" class="nav-btn whitespace-nowrap px-3 py-2 transition-all hover:text-cyan-300" data-page="about">Giới Thiệu</button>
+        <button onclick="navigate('projects')" class="nav-btn whitespace-nowrap px-3 py-2 transition-all hover:text-cyan-300" data-page="projects">Dự Án</button>
+        <button onclick="navigate('smart-cities')" class="nav-btn whitespace-nowrap px-3 py-2 transition-all hover:text-cyan-300" data-page="smart-cities">Đô Thị Smart</button>
+        <button onclick="navigate('proptech')" class="nav-btn whitespace-nowrap px-3 py-2 transition-all hover:text-cyan-300" data-page="proptech">PropTech 4.0</button>
+        <button onclick="navigate('map')" class="nav-btn whitespace-nowrap px-3 py-2 transition-all hover:text-cyan-300" data-page="map">Bản Đồ Số</button>
+        <button onclick="navigate('news')" class="nav-btn whitespace-nowrap px-3 py-2 transition-all hover:text-cyan-300" data-page="news">Tin Tức</button>
+        <button onclick="navigate('contact')" class="nav-btn whitespace-nowrap px-3 py-2 transition-all hover:text-cyan-300" data-page="contact">Liên Hệ</button>
       </nav>
-      <div class="flex items-center gap-3">
-        <a href="tel:0919006030" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow transition">
-          📞 0919 006 030
-        </a>
+
+      <!-- Right CTA -->
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
+        <button onclick="document.getElementById('form-tu-van-tech').scrollIntoView({ behavior: 'smooth' })" class="hidden md:inline-block px-4 py-2 bg-[#06B6D4] hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase tracking-wider shadow cursor-pointer">
+          Tư Vấn Smart City
+        </button>
+        <button onclick="toggleMobileMenu()" class="p-1.5 sm:p-2 text-white xl:hidden hover:bg-white/10 rounded-md shrink-0 flex items-center justify-center">
+          <i data-lucide="menu" id="mobile-menu-icon" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div id="mobile-menu" class="hidden xl:hidden bg-[#0F172A] border-t border-cyan-500/30 px-6 py-4 space-y-2">
+      <div class="grid grid-cols-2 gap-2 text-xs font-bold uppercase">
+        <button onclick="navigate('home')" class="p-2.5 text-left bg-[#1E293B] hover:text-cyan-300">Trang Chủ</button>
+        <button onclick="navigate('about')" class="p-2.5 text-left bg-[#1E293B] hover:text-cyan-300">Giới Thiệu</button>
+        <button onclick="navigate('projects')" class="p-2.5 text-left bg-[#1E293B] hover:text-cyan-300">Dự Án</button>
+        <button onclick="navigate('smart-cities')" class="p-2.5 text-left bg-[#1E293B] hover:text-cyan-300">Đô Thị Smart</button>
+        <button onclick="navigate('proptech')" class="p-2.5 text-left bg-[#1E293B] hover:text-cyan-300">PropTech 4.0</button>
+        <button onclick="navigate('map')" class="p-2.5 text-left bg-[#1E293B] hover:text-cyan-300">Bản Đồ Số</button>
+        <button onclick="navigate('news')" class="p-2.5 text-left bg-[#1E293B] hover:text-cyan-300">Tin Tức</button>
+        <button onclick="navigate('contact')" class="p-2.5 text-left bg-[#1E293B] hover:text-cyan-300">Liên Hệ</button>
       </div>
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <main class="flex-1 w-full space-y-12 pb-16">
-    <section class="relative py-20 px-4 bg-slate-900 text-white text-center">
-      <div class="max-w-4xl mx-auto space-y-4">
-        <span class="px-3.5 py-1 rounded-full bg-blue-600/30 text-blue-300 border border-blue-400/40 text-xs font-bold uppercase tracking-widest inline-block">
-          MẪU GIAO DIỆN BĐS 24 — REALTYBUILD TRANG TIN BĐS SỐ 1 VIỆT NAM
-        </span>
-        <h1 class="text-3xl sm:text-5xl font-black uppercase leading-tight font-serif">
-          BĐS 24 — RealtyBuild Trang Tin BĐS Số 1 Việt Nam
+  <!-- Main Content Wrapper -->
+  <main id="main-content" class="flex-grow">
+    
+    <!-- Hero Section -->
+    <section id="hero-section" class="relative bg-[#0F172A] text-white min-h-[460px] sm:min-h-[540px] flex items-center justify-center overflow-hidden border-b border-cyan-500/30">
+      <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&q=80" alt="RealtyBuild Smart Cities" class="absolute inset-0 w-full h-full object-cover opacity-45" onerror="this.src='https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80'" />
+      <div class="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-black/50 to-transparent"></div>
+      <div class="relative z-20 text-center space-y-4 max-w-4xl mx-auto px-4">
+        <div class="inline-block px-4 py-1.5 bg-[#06B6D4]/20 border border-cyan-400 text-cyan-300 text-xs font-black uppercase tracking-widest">
+          NỀN TẢNG THẨM ĐỊNH & DỮ LIỆU ĐÔ THỊ THÔNG MINH SỐ 1
+        </div>
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black uppercase text-white tracking-wider drop-shadow-2xl">
+          ĐÔ THỊ THÔNG MINH <span class="text-cyan-400">& PROPTECH 4.0</span>
         </h1>
-        <p class="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
-          RealtyBuild Tech Portal · Icon Pills · 6 Thành phố lớn — Giải pháp website bất động sản tối ưu chuẩn SEO, tải nhanh và dễ dàng sử dụng.
+        <p class="text-xs sm:text-base text-slate-300 max-w-2xl mx-auto font-medium leading-relaxed">
+          Khám phá mạng lưới hơn 500+ đại đô thị thông minh chuẩn IoT, bản đồ quy hoạch số hóa và nền tảng dữ liệu BĐS thời gian thực hàng đầu Việt Nam.
         </p>
-        <div class="pt-4 flex justify-center gap-3">
-          <a href="#san-pham" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase rounded-full shadow">
-            Xem Sản Phẩm ›
-          </a>
-          <a href="#lien-he" class="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold text-xs uppercase rounded-full">
-            Đăng Ký Tư Vấn
-          </a>
+        <div class="pt-4 flex flex-wrap items-center justify-center gap-4">
+          <button onclick="document.getElementById('danh-sach-smart-cities').scrollIntoView({ behavior: 'smooth' })" class="px-6 py-3 bg-[#06B6D4] hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg cursor-pointer">
+            Khám Phá Các Dự Án Smart City ›
+          </button>
+          <button onclick="navigate('map')" class="px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white font-bold text-xs uppercase tracking-wider border border-white/30 cursor-pointer">
+            Xem Bản Đồ Quy Hoạch Số
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- Danh Sách BĐS -->
-    <section id="san-pham" class="max-w-7xl mx-auto px-4 space-y-6">
-      <div class="text-center space-y-1">
-        <h2 class="text-2xl font-black text-slate-900 uppercase">SẢN PHẨM BẤT ĐỘNG SẢN NỔI BẬT</h2>
-        <div class="w-12 h-1 bg-blue-600 mx-auto rounded-full"></div>
+    <!-- Projects Section -->
+    <section id="projects-section" class="py-16 bg-[#F8FAFC] text-slate-900 border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 space-y-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between border-b-2 border-[#0F172A] pb-3 gap-4">
+          <div>
+            <span class="text-xs font-black uppercase text-cyan-600 tracking-widest block">DỮ LIỆU ĐÔ THỊ SỐ HÓA</span>
+            <h2 id="projects-title" class="text-2xl sm:text-3xl font-black text-slate-900 uppercase">
+              DANH SÁCH ĐẠI ĐÔ THỊ THÔNG MINH
+            </h2>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <select id="filter-city" class="bg-white text-slate-900 border border-slate-300 px-3 py-2 focus:outline-none font-medium">
+              <option value="all">Khu Vực (Tất cả)</option>
+            </select>
+            <select id="filter-developer" class="bg-white text-slate-900 border border-slate-300 px-3 py-2 focus:outline-none font-medium">
+              <option value="all">Chủ Đầu Tư (Tất cả)</option>
+            </select>
+            <button onclick="renderProjects()" class="px-4 py-2 bg-[#0F172A] hover:bg-[#1E293B] text-white font-bold uppercase shadow cursor-pointer">Lọc</button>
+          </div>
+        </div>
+        <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Rendered by JS -->
+        </div>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="property-list">
-        <!-- Javascript renders cards here or static cards -->
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
-          <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80" alt="" class="w-full h-48 object-cover">
-          <div class="p-4 space-y-2">
-            <h3 class="font-bold text-sm text-slate-900">Biệt Thự Nghỉ Dưỡng Cao Cấp</h3>
-            <p class="text-xs text-slate-500">Vị trí đắc địa, sổ hồng riêng chính chủ</p>
-            <div class="flex justify-between items-center pt-2 border-t text-xs">
-              <span class="font-black text-blue-600 text-sm">4.5 Tỷ VNĐ</span>
-              <span class="text-slate-500">250 m²</span>
-            </div>
-          </div>
+    </section>
+
+    <!-- Map Section -->
+    <section id="map-section" class="py-16 bg-[#0F172A] text-white">
+      <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div class="lg:col-span-6 aspect-[4/3] border-2 border-cyan-400/40 shadow-2xl bg-slate-900 overflow-hidden">
+          <iframe src="https://maps.google.com/maps?q=Vinhomes+Smart+City+Tay+Mo+Ha+Noi&t=&z=13&ie=UTF8&iwloc=&output=embed" class="w-full h-full border-0" allowfullscreen loading="lazy"></iframe>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
-          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80" alt="" class="w-full h-48 object-cover">
-          <div class="p-4 space-y-2">
-            <h3 class="font-bold text-sm text-slate-900">Nhà Phố Mặt Tiền Thương Mại</h3>
-            <p class="text-xs text-slate-500">Thuận tiện kinh doanh showroom, văn phòng</p>
-            <div class="flex justify-between items-center pt-2 border-t text-xs">
-              <span class="font-black text-blue-600 text-sm">6.8 Tỷ VNĐ</span>
-              <span class="text-slate-500">120 m²</span>
+        <div class="lg:col-span-6 space-y-4">
+          <span class="text-xs font-black uppercase text-cyan-400 tracking-widest block">HẠ TẦNG DỮ LIỆU ĐỊA CHÍNH THỜI GIAN THỰC</span>
+          <h2 class="text-2xl sm:text-4xl font-black uppercase text-white leading-tight">TRA CỨU BẢN ĐỒ QUY HOẠCH SỐ 4.0</h2>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Hệ thống dữ liệu số hóa kết nối trực tiếp với cổng thông tin địa chính 63 tỉnh thành, giúp thẩm định quy hoạch lộ giới, mật độ xây dựng và kiểm tra pháp lý tức thì.
+          </p>
+          <div class="grid grid-cols-2 gap-3 text-xs pt-2">
+            <div class="bg-slate-900 p-3 border border-slate-800">
+              <strong class="text-cyan-300 block">500+ Đô Thị</strong>
+              <span class="text-[10px] text-slate-400">Được số hóa 3D</span>
             </div>
-          </div>
-        </div>
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
-          <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="" class="w-full h-48 object-cover">
-          <div class="p-4 space-y-2">
-            <h3 class="font-bold text-sm text-slate-900">Đất Nền Phân Lô Sổ Đỏ Trao Tay</h3>
-            <p class="text-xs text-slate-500">Hạ tầng đồng bộ điện âm nước máy</p>
-            <div class="flex justify-between items-center pt-2 border-t text-xs">
-              <span class="font-black text-blue-600 text-sm">1.8 Tỷ VNĐ</span>
-              <span class="text-slate-500">100 m²</span>
+            <div class="bg-slate-900 p-3 border border-slate-800">
+              <strong class="text-cyan-300 block">24/7 Cập Nhật</strong>
+              <span class="text-[10px] text-slate-400">Dữ liệu quy hoạch mới</span>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Form Liên Hệ -->
-    <section id="lien-he" class="max-w-4xl mx-auto px-4">
-      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-lg space-y-4">
-        <h3 class="text-xl font-black text-slate-900 text-center uppercase">LIÊN HỆ & TƯ VẤN BÁO GIÁ</h3>
-        <form id="contact-form" class="space-y-3 text-xs">
-          <input type="text" id="name" placeholder="Họ và tên của bạn (*)" required class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl">
-          <input type="tel" id="phone" placeholder="Số điện thoại / Zalo (*)" required class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl font-bold text-blue-600">
-          <textarea id="message" rows="3" placeholder="Nội dung cần tư vấn..." class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl"></textarea>
-          <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow transition">
-            GỬI YÊU CẦU TƯ VẤN
+    <!-- News Section -->
+    <section id="news-section" class="py-16 bg-white text-slate-900 border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 space-y-8">
+        <div class="flex items-center justify-between border-b-2 border-[#0F172A] pb-3">
+          <h2 class="text-2xl font-black uppercase text-[#0F172A]">TIN TỨC CÔNG NGHỆ BĐS & PROPTECH</h2>
+          <button onclick="navigate('news')" class="text-xs font-bold text-cyan-600 hover:underline">Xem Tất Cả Bài Viết ›</button>
+        </div>
+        <div id="news-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Consult Form Section -->
+    <section id="consult-section" class="py-16 bg-[#0F172A] text-white text-center">
+      <div class="max-w-7xl mx-auto px-4 max-w-xl space-y-6">
+        <div class="space-y-2">
+          <h2 class="text-2xl sm:text-3xl font-black uppercase text-cyan-300">ĐĂNG KÝ TƯ VẤN ĐẦU TƯ SMART CITY</h2>
+          <p class="text-xs text-slate-300">Nhận báo cáo phân tích công nghệ, tiềm năng tăng giá và danh mục suất ngoại giao trực tiếp chủ đầu tư.</p>
+        </div>
+        <form id="form-tu-van-tech" action="api/contact.php" method="POST" onsubmit="handleConsultSubmit(event)" class="bg-slate-900 text-slate-100 p-6 shadow-2xl text-left text-xs space-y-3 border border-cyan-500/30">
+          <div>
+            <label class="block font-bold mb-1">Họ và tên *</label>
+            <input type="text" name="name" required placeholder="Nguyễn Văn A" class="w-full bg-slate-800 border border-slate-700 p-2.5 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+          <div>
+            <label class="block font-bold mb-1">Số điện thoại *</label>
+            <input type="tel" name="phone" required placeholder="0919 006 030" class="w-full bg-slate-800 border border-slate-700 p-2.5 text-white focus:outline-none focus:border-cyan-400" />
+          </div>
+          <div>
+            <label class="block font-bold mb-1">Dự án quan tâm</label>
+            <select id="consult-project" name="projectInterested" class="w-full bg-slate-800 border border-slate-700 p-2.5 text-white focus:outline-none font-bold">
+              <!-- Rendered by JS -->
+            </select>
+          </div>
+          <button type="submit" class="w-full py-3 bg-[#06B6D4] hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase tracking-wider shadow cursor-pointer transition">
+            Gửi Yêu Cầu Nhận Báo Cáo Phân Tích
           </button>
         </form>
       </div>
     </section>
+
+    <!-- Project Detail Section -->
+    <section id="project-detail-section" class="hidden py-12 bg-white min-h-screen">
+      <div class="max-w-7xl mx-auto px-4 space-y-6">
+        <button onclick="navigate('projects')" class="text-xs font-bold text-[#0F172A] hover:underline">‹ Quay lại danh sách đô thị</button>
+        <h1 id="pd-title" class="text-2xl sm:text-3xl font-black text-[#0F172A] uppercase"></h1>
+        <p id="pd-info" class="text-sm font-black text-[#E11D48]"></p>
+        <p id="pd-address" class="text-xs text-slate-500"></p>
+        <img id="pd-image" src="" alt="" class="w-full h-auto object-cover border" onerror="this.src='https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80'" />
+        <p id="pd-desc" class="text-xs sm:text-sm text-slate-700 leading-relaxed"></p>
+        <div class="p-4 bg-[#0F172A] text-white space-y-2 border border-cyan-500/30">
+          <h4 class="font-bold text-xs uppercase text-cyan-300">Tính năng Smart City & Tiện ích tiêu biểu:</h4>
+          <ul id="pd-amenities" class="grid grid-cols-2 gap-2 text-xs text-slate-200"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- News Detail Section -->
+    <section id="news-detail-section" class="hidden py-12 bg-white min-h-screen">
+      <div class="max-w-7xl mx-auto px-4 space-y-6">
+        <button onclick="navigate('news')" class="text-xs font-bold text-[#0F172A] hover:underline">‹ Quay lại trang tin tức</button>
+        <h1 id="nd-title" class="text-2xl font-black text-[#0F172A] uppercase"></h1>
+        <div id="nd-meta" class="text-[11px] text-slate-400 border-b pb-2"></div>
+        <img id="nd-image" src="" alt="" class="w-full h-80 object-cover border" />
+        <div id="nd-content" class="space-y-3 text-xs sm:text-sm text-slate-700 leading-relaxed"></div>
+      </div>
+    </section>
+
   </main>
 
-    <!-- Footer HTML -->
-  <footer class="w-full bg-[#07132B] text-slate-300 text-xs pt-12 pb-6 border-t border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-white/10">
-      <!-- Cột 1: THÔNG TIN LIÊN HỆ ADMIN -->
-      <div class="md:col-span-5 space-y-3">
-        <h4 class="font-black text-sm text-white uppercase tracking-wider">
-          <span class="text-[#0084FF]">TEMPLATES</span><span class="text-white">BDS</span>
-        </h4>
-        <p class="text-slate-400 text-xs leading-relaxed max-w-sm">
-          Kho mẫu website bất động sản cao cấp số 1 Việt Nam. Tối ưu chuyển đổi, chuẩn SEO và tích hợp hệ thống CMS quản trị đa kênh.
-        </p>
-        <div class="space-y-1.5 text-xs text-slate-300 pt-1">
-          <div>📍 Địa chỉ: <strong class="text-white font-medium">180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội</strong></div>
-          <div>📞 Hotline 1: <a href="tel:0919006030" class="text-white font-bold font-mono hover:text-blue-400">0919 006 030</a></div>
-          <div>📞 Hotline 2: <a href="tel:0983312219" class="text-white font-bold font-mono hover:text-emerald-400">0983 312 219</a> (24/7)</div>
-          <div>✉️ Email: <a href="mailto:ntrungz0704@gmail.com" class="text-white hover:text-blue-400">ntrungz0704@gmail.com</a></div>
-          <div>⏰ Giờ làm việc: <strong class="text-white font-medium">8:00 - 20:00 (T2 - CN)</strong></div>
-        </div>
-
-        <!-- 4 Social Icons -->
-        <div class="flex items-center gap-2.5 pt-2">
-          <a href="https://zalo.me/0919006030" target="_blank" class="w-9 h-9 rounded-2xl bg-[#0068FF] text-white flex items-center justify-center font-black text-[10px]">ZALO</a>
-          <a href="https://www.facebook.com/groups/847532091275214" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1877F2] text-white flex items-center justify-center font-bold text-sm">f</a>
-          <a href="https://www.youtube.com/@tungchuofficial" target="_blank" class="w-9 h-9 rounded-2xl bg-[#E62117] text-white flex items-center justify-center text-xs">▶</a>
-          <a href="https://www.tiktok.com/@editnhadat" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1E293B] text-[#A78BFA] flex items-center justify-center text-xs">🎵</a>
+  <!-- Universal Footer -->
+  <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div class="space-y-4">
+        <div class="text-xl font-bold">TEMPLATESBDS</div>
+        <p class="text-sm text-gray-400">Trang tin công nghệ BĐS & Đô thị thông minh số 1.</p>
+        <div class="text-sm text-gray-400">
+          <p>📞 090 123 4567</p>
+          <p>✉️ contact@templatesbds.com</p>
+          <p>📍 Hà Nội, Việt Nam</p>
         </div>
       </div>
-
-      <!-- Cột 2: VỀ CHÚNG TÔI -->
-      <div class="md:col-span-2 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">VỀ CHÚNG TÔI</h4>
-        <div class="space-y-2 text-slate-400">
-          <div><a href="index.html" class="hover:text-blue-400">Trang chủ</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Sản phẩm BĐS</a></div>
-          <div><a href="#du-an" class="hover:text-blue-400">Dự án mới</a></div>
-          <div><a href="#tin-tuc" class="hover:text-blue-400">Tin tức & Sự kiện</a></div>
-          <div><a href="#lien-he" class="hover:text-blue-400">Liên hệ tư vấn</a></div>
-        </div>
+      <div>
+        <h3 class="font-bold mb-4 uppercase text-gray-300">Về Chúng Tôi</h3>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li><a href="#" onclick="navigate('about'); return false;" class="hover:text-white">Giới thiệu</a></li>
+          <li><a href="#" onclick="navigate('projects'); return false;" class="hover:text-white">Dự án</a></li>
+          <li><a href="#" onclick="navigate('contact'); return false;" class="hover:text-white">Liên hệ</a></li>
+        </ul>
       </div>
-
-      <!-- Cột 3: DANH MỤC BĐS -->
-      <div class="md:col-span-2 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">DANH MỤC</h4>
-        <div class="space-y-2 text-slate-400">
-          <div><a href="#san-pham" class="hover:text-blue-400">Đất dự án</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Đất nền phân lô</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Biệt thự view biển</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Nhà phố thương mại</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Nhà cho thuê</a></div>
-        </div>
+      <div>
+        <h3 class="font-bold mb-4 uppercase text-gray-300">Hỗ Trợ</h3>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li><a href="#" class="hover:text-white">Chính sách bảo mật</a></li>
+          <li><a href="#" class="hover:text-white">Điều khoản sử dụng</a></li>
+        </ul>
       </div>
-
-      <!-- Cột 4: CHÍNH SÁCH -->
-      <div class="md:col-span-3 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">CHÍNH SÁCH</h4>
-        <div class="space-y-2 text-slate-400 text-xs">
-          <div>• Bàn giao 100% mã nguồn sạch</div>
-          <div>• Bảo hành & Hỗ trợ kỹ thuật trọn đời</div>
-          <div>• Hỗ trợ cài đặt lên Hosting cPanel / XAMPP</div>
+      <div>
+        <h3 class="font-bold mb-4 uppercase text-gray-300">Bản Tin</h3>
+        <p class="text-sm text-gray-400 mb-2">Đăng ký để nhận tin tức mới nhất.</p>
+        <div class="flex">
+          <input type="email" placeholder="Email của bạn" class="px-3 py-2 bg-gray-800 text-white w-full focus:outline-none" />
+          <button class="bg-[#06B6D4] text-gray-900 px-4 font-bold">Gửi</button>
         </div>
       </div>
     </div>
-
-    <div class="max-w-7xl mx-auto px-4 pt-6 text-center text-[11px] text-slate-400">
-      <p>© 2026 Bản quyền thuộc về <strong class="text-white">TEMPLATEBDS</strong> — Mẫu Giao Diện: BĐS 24 — RealtyBuild Trang Tin BĐS Số 1 Việt Nam.</p>
+    <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-gray-800 text-center text-sm text-gray-500">
+      &copy; 2026 TEMPLATESBDS. All rights reserved.
     </div>
   </footer>
 
-  <script src="js/main.js"></script>
-  <script>lucide.createIcons();</script>
+  <script>
+    const BDS24_PROJECTS = [
+      {
+        id: 'vinhomes-smart-city-tay-mo',
+        title: 'Vinhomes Smart City Tây Mỗ — Đại Đô Thị AI 4.0',
+        slug: 'vinhomes-smart-city-tay-mo-ai',
+        address: 'Đại Lộ Thăng Long, Nam Từ Liêm, Hà Nội',
+        city: 'Hà Nội',
+        priceRange: '2.5 - 8.5 Tỷ VNĐ',
+        priceNum: 2.5,
+        areaRange: '32 - 105 m²',
+        developer: 'Vingroup',
+        status: 'Đang Bàn Giao & Mở Bán Phân Khu Mới',
+        techHighlights: ['Face ID nhận diện khuôn mặt', 'Camera AI phân tích an ninh', 'Smart Parking tự động tìm chỗ đỗ', 'Ứng dụng cư dân VinID Smart'],
+        image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        hot: true,
+        featured: true,
+        iotScore: 99,
+        description: 'Đại đô thị thông minh chuẩn quốc tế đầu tiên tại Việt Nam với hệ sinh thái 4 trụ cột: An ninh thông minh, Vận hành thông minh, Cộng đồng thông minh, Căn hộ thông minh.',
+        amenities: ['Vườn Nhật Zen Park 6.1ha', 'Công viên trung tâm Central Park', 'Bệnh viện Vinmec chuẩn quốc tế', 'Trường liên cấp Vinschool']
+      },
+      {
+        id: 'the-global-city-thu-duc',
+        title: 'The Global City — Trung Tâm Đô Thị Mới Chuẩn Foster+Partners',
+        slug: 'the-global-city-thu-duc-smart',
+        address: 'Đỗ Xuân Hợp, P. An Phú, TP. Thủ Đức, TP.HCM',
+        city: 'TP. Hồ Chí Minh',
+        priceRange: '18.0 - 45.0 Tỷ VNĐ',
+        priceNum: 18.0,
+        areaRange: '95 - 350 m²',
+        developer: 'Masterise Homes',
+        status: 'Đang Xây Dựng & Bàn Giao Shophouse',
+        techHighlights: ['Hệ thống nhạc nước lớn nhất Đông Nam Á', 'Mạng lưới IoT năng lượng mặt trời', 'Cảm biến vi khí hậu thông minh', 'Hạ tầng xe điện ngầm 100%'],
+        image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+        hot: true,
+        featured: true,
+        iotScore: 98,
+        description: 'Downtown thứ 2 của TP.HCM được thiết kế bởi huyền thoại kiến trúc thế giới Foster + Partners, biểu tượng của lối sống thượng lưu hiện đại.',
+        amenities: ['Kênh đào nhạc nước 2km', 'TTTM hạng A 123.000m²', 'Sân Golf 18 lỗ quốc tế', 'Bến du thuyền tiêu chuẩn 5 sao']
+      },
+      {
+        id: 'ecopark-smart-green-city',
+        title: 'Ecopark Grand The Island — Đô Thị Sinh Thái Thông Minh Ecopark',
+        slug: 'ecopark-grand-the-island-smart',
+        address: 'Khu Đô Thị Ecopark, Văn Giang, Hưng Yên',
+        city: 'Hưng Yên',
+        priceRange: '32.0 - 120.0 Tỷ VNĐ',
+        priceNum: 32.0,
+        areaRange: '270 - 1200 m²',
+        developer: 'Ecopark Corporation',
+        status: 'Đã Bàn Giao (Sổ Đỏ Vĩnh Viễn)',
+        techHighlights: ['Lọc nước sinh thái tự nhiên chuẩn Nhật', 'Biệt thự đảo biệt lập quản lý AI', 'Du thuyền đưa đón nội khu', 'Cảm biến đo chất lượng không khí PM2.5'],
+        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+        hot: true,
+        featured: true,
+        iotScore: 96,
+        description: 'Quần thể biệt thự đảo thượng lưu vươn mình ra mặt nước, nơi 100% diện tích tiếp xúc với thiên nhiên sinh thái trong lành bậc nhất miền Bắc.',
+        amenities: ['Clubhouse đẳng cấp quốc tế', 'Hồ nước ngọt tuần hoàn sinh học', 'An ninh 3 lớp bảo vệ 24/7', 'Bến đỗ du thuyền riêng từng căn']
+      },
+      {
+        id: 'lotte-eco-smart-city-thu-thiem',
+        title: 'Lotte Eco Smart City Thủ Thiêm — Đại Đô Thị Tài Chính & Công Nghệ',
+        slug: 'lotte-eco-smart-city-thu-thiem',
+        address: 'Khu Chức Năng 2a, Đô Thị Mới Thủ Thiêm, TP. Thủ Đức, TP.HCM',
+        city: 'TP. Hồ Chí Minh',
+        priceRange: '25.0 - 80.0 Tỷ VNĐ',
+        priceNum: 25.0,
+        areaRange: '88 - 320 m²',
+        developer: 'Lotte Group (Hàn Quốc)',
+        status: 'Đang Triển Khai Giai Đoạn 1',
+        techHighlights: ['Hệ thống quản lý tòa nhà BMS thông minh', 'Thang máy nhận diện vân tay & Face ID', 'Hệ thống logistics giao hàng robot ngầm', 'Chứng chỉ công trình xanh LEED Platinum'],
+        image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&q=80',
+        hot: true,
+        featured: true,
+        iotScore: 99,
+        description: 'Tổ hợp tài chính, thương mại dịch vụ tổng hợp và dân cư đa chức năng ứng dụng công nghệ thông tin tiên tiến hàng đầu châu Á.',
+        amenities: ['Khách sạn 6 sao Lotte Legend', 'Trung tâm thương mại ngầm liên tuyến Metro', 'Đài quan sát Sky Deck 360 độ', 'Hồ bơi chân mây vô cực']
+      },
+      {
+        id: 'sun-grand-city-feria-ha-long',
+        title: 'Sun Grand City Feria Hạ Long — Đô Thị Nghỉ Dưỡng Phong Cách Địa Trung Hải',
+        slug: 'sun-grand-city-feria-ha-long',
+        address: 'Đường Hạ Long, P. Bãi Cháy, TP. Hạ Long, Quảng Ninh',
+        city: 'Quảng Ninh',
+        priceRange: '15.0 - 38.0 Tỷ VNĐ',
+        priceNum: 15.0,
+        areaRange: '130 - 350 m²',
+        developer: 'Sun Group',
+        status: 'Đã Bàn Giao (Sổ Đỏ Lâu Dài)',
+        techHighlights: ['Quản lý vận hành khu đô thị thông minh', 'Hệ thống chiếu sáng năng lượng mặt trời', 'Camera 360 AI giám sát bãi biển', 'App tiện ích cư dân Sun Home'],
+        image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
+        hot: false,
+        featured: true,
+        iotScore: 94,
+        description: 'Biệt thự phong cách Tây Ban Nha & Địa Trung Hải ôm trọn vịnh kỳ quan Hạ Long, sở hữu bãi tắm cát trắng riêng tư tuyệt đẹp.',
+        amenities: ['Công viên Sun World Ha Long Complex', 'Bãi tắm riêng Bãi Cháy', 'Phố đi bộ ẩm thực ven biển', 'Bến du thuyền quốc tế Hạ Long']
+      },
+      {
+        id: 'meyhomes-capital-phu-quoc',
+        title: 'Meyhomes Capital Phú Quốc — Thành Phố Tinh Khiết Chuẩn Đô Thị Thông Minh',
+        slug: 'meyhomes-capital-phu-quoc-smart',
+        address: 'Bãi Trường, P. An Thới, TP. Phú Quốc, Kiên Giang',
+        city: 'Kiên Giang',
+        priceRange: '12.5 - 28.0 Tỷ VNĐ',
+        priceNum: 12.5,
+        areaRange: '117 - 240 m²',
+        developer: 'Tân Á Đại Thành (Meyland)',
+        status: 'Đang Bàn Giao Giai Đoạn 1 & 2',
+        techHighlights: ['Hệ sinh thái lọc nước sạch tinh khiết uống tại vòi', 'Hạ tầng điện năng lượng mặt trời thông minh', 'Hệ thống quản lý đô thị Smart City Meyhomes', 'Cảm biến tưới cây tự động IoT'],
+        image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80',
+        hot: false,
+        featured: true,
+        iotScore: 97,
+        description: 'Thành phố đảo nhiệt đới đa sắc màu tại Bãi Trường Phú Quốc, đất ở đô thị sở hữu lâu dài duy nhất tại nam đảo ngọc.',
+        amenities: ['Công viên sông Mey River Park', 'Trung tâm thể thao phức hợp Clubhouse', 'Trường học liên cấp quốc tế', 'Hồ điều hòa ánh sáng nghệ thuật']
+      }
+    ];
+
+    const BDS24_NEWS = [
+      {
+        id: 1,
+        title: 'Xu Hướng BĐS Proptech 4.0: Trí Tuệ Nhân Tạo AI & Bản Đồ Số Định Hình Thị Trường',
+        slug: 'xu-huong-bds-proptech-40-ai-va-ban-do-so',
+        date: '29/08/2026',
+        author: 'RealtyBuild Tech Insights',
+        category: 'Công Nghệ BĐS',
+        image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        excerpt: 'Ứng dụng công nghệ thực tế ảo VR360, định giá nhà đất bằng thuật toán học máy và giao dịch số giúp tiết kiệm 70% thời gian cho nhà đầu tư.',
+        content: [
+          'Công nghệ PropTech đang chuyển dịch từ cổng thông tin rao vặt truyền thống sang các nền tảng thông minh tích hợp dữ liệu lớn Big Data và AI.',
+          'Khách hàng có thể trải nghiệm xem nhà 3D, kiểm tra pháp lý trực tuyến và nộp hồ sơ công chứng điện tử chỉ bằng vài thao tác trên điện thoại.'
+        ],
+        views: 8450
+      },
+      {
+        id: 2,
+        title: 'Đô Thị Thông Minh (Smart City) — Tiêu Chuẩn Sống Mới Của Cư Dân Thế Hệ Trẻ Gen Z & Millennials',
+        slug: 'do-thi-thong-minh-smart-city-tieu-chuan-song-moi',
+        date: '27/08/2026',
+        author: 'Hiệp Hội Đô Thị Thông Minh',
+        category: 'Smart City',
+        image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+        excerpt: 'Hệ thống an ninh nhận diện khuôn mặt, trạm sạc xe điện thông minh và năng lượng sạch trở thành tiêu chí bắt buộc khi chọn mua nhà.',
+        content: [
+          'Hơn 85% người mua nhà trẻ tuổi sẵn sàng chi trả thêm 10-15% giá trị căn hộ để được sống trong khu đô thị tích hợp giải pháp IoT toàn diện.'
+        ],
+        views: 6120
+      },
+      {
+        id: 3,
+        title: 'Bản Đồ Quy Hoạch Giao Thông & Đường Vành Đai Mới: Cơ Hội Đầu Tư BĐS Bứt Phá',
+        slug: 'ban-do-quy-hoach-giao-thong-co-hoi-dau-tu',
+        date: '25/08/2026',
+        author: 'Chuyên Gia Quy Hoạch Đô Thị',
+        category: 'Quy Hoạch Số',
+        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+        excerpt: 'Tra cứu thông tin quy hoạch sử dụng đất trực tuyến 24/7 giúp nhà đầu tư nắm bắt cơ hội trước khi hạ tầng giao thông khởi công.',
+        content: [
+          'Dữ liệu quy hoạch địa chính số hóa đem lại sự minh bạch tuyệt đối cho thị trường bất động sản Việt Nam.'
+        ],
+        views: 7390
+      }
+    ];
+
+    let currentPage = 'home';
+    let mobileMenuOpen = false;
+
+    // Layout configuration per page
+    const pageConfig = {
+      'home': ['hero-section', 'projects-section', 'map-section', 'news-section', 'consult-section'],
+      'about': ['projects-section', 'map-section', 'consult-section'],
+      'projects': ['projects-section', 'consult-section'],
+      'smart-cities': ['projects-section', 'map-section', 'consult-section'],
+      'proptech': ['map-section', 'news-section', 'consult-section'],
+      'map': ['map-section', 'consult-section'],
+      'news': ['news-section', 'consult-section'],
+      'contact': ['map-section', 'consult-section'],
+      'project-detail': ['project-detail-section'],
+      'news-detail': ['news-detail-section']
+    };
+
+    function init() {
+      lucide.createIcons();
+      populateFilters();
+      renderProjects();
+      renderNews();
+      populateConsultProjects();
+      navigate('home');
+    }
+
+    function toggleMobileMenu() {
+      mobileMenuOpen = !mobileMenuOpen;
+      const menu = document.getElementById('mobile-menu');
+      if (mobileMenuOpen) {
+        menu.classList.remove('hidden');
+      } else {
+        menu.classList.add('hidden');
+      }
+    }
+
+    function navigate(page, slug) {
+      currentPage = page;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      mobileMenuOpen = false;
+      document.getElementById('mobile-menu').classList.add('hidden');
+
+      // Update Nav highlighting
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.dataset.page === page || (page === 'project-detail' && btn.dataset.page === 'projects') || (page === 'news-detail' && btn.dataset.page === 'news')) {
+          btn.classList.add('text-cyan-300', 'font-extrabold', 'bg-[#1E293B]');
+        } else {
+          btn.classList.remove('text-cyan-300', 'font-extrabold', 'bg-[#1E293B]');
+        }
+      });
+
+      // Show/hide sections
+      const sections = ['hero-section', 'projects-section', 'map-section', 'news-section', 'consult-section', 'project-detail-section', 'news-detail-section'];
+      sections.forEach(secId => {
+        const el = document.getElementById(secId);
+        if (pageConfig[page].includes(secId)) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
+      });
+
+      if (page === 'project-detail' && slug) {
+        const proj = BDS24_PROJECTS.find(p => p.slug === slug);
+        if (proj) renderProjectDetail(proj);
+      } else if (page === 'news-detail' && slug) {
+        const article = BDS24_NEWS.find(n => n.slug === slug);
+        if (article) renderNewsDetail(article);
+      }
+    }
+
+    function populateFilters() {
+      const citySet = new Set(BDS24_PROJECTS.map(p => p.city).filter(Boolean));
+      const devSet = new Set(BDS24_PROJECTS.map(p => p.developer).filter(Boolean));
+      
+      const citySelect = document.getElementById('filter-city');
+      citySet.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c; opt.textContent = c;
+        citySelect.appendChild(opt);
+      });
+
+      const devSelect = document.getElementById('filter-developer');
+      devSet.forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d; opt.textContent = d;
+        devSelect.appendChild(opt);
+      });
+    }
+
+    function renderProjects() {
+      const filterCity = document.getElementById('filter-city').value;
+      const filterDeveloper = document.getElementById('filter-developer').value;
+
+      const filtered = BDS24_PROJECTS.filter(p => {
+        if (filterCity !== 'all' && p.city !== filterCity) return false;
+        if (filterDeveloper !== 'all' && p.developer !== filterDeveloper) return false;
+        return true;
+      });
+
+      document.getElementById('projects-title').textContent = `DANH SÁCH ĐẠI ĐÔ THỊ THÔNG MINH (${filtered.length})`;
+
+      const grid = document.getElementById('projects-grid');
+      grid.innerHTML = '';
+      filtered.forEach(proj => {
+        const hotBadge = proj.hot ? `<span class="absolute top-2.5 right-2.5 px-2 py-0.5 bg-[#E11D48] text-white text-[9px] font-black uppercase">HOT</span>` : '';
+        const techList = proj.techHighlights.slice(0,2).map(t => `<li class="truncate">✔ ${t}</li>`).join('');
+        
+        const html = `
+          <div class="bg-white text-slate-900 border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden font-medium">
+            <div class="relative aspect-[16/10] overflow-hidden bg-slate-950">
+              <img src="${proj.image}" alt="${proj.title}" onerror="this.src='https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80'" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-[#0F172A] text-cyan-300 text-[10px] font-black uppercase">
+                ⚡ IoT Score: ${proj.iotScore}/100
+              </span>
+              ${hotBadge}
+            </div>
+            <div class="p-4 space-y-2">
+              <h3 onclick="navigate('project-detail', '${proj.slug}')" class="text-xs font-black text-slate-900 uppercase line-clamp-2 hover:text-cyan-600 cursor-pointer min-h-[34px]">
+                ${proj.title}
+              </h3>
+              <p class="text-[11px] text-slate-500 truncate">📍 ${proj.address}</p>
+              <div class="bg-slate-50 p-2.5 border border-slate-200 space-y-1 text-[11px] text-slate-700">
+                <div class="font-bold text-cyan-700">Tính năng Smart City:</div>
+                <ul class="space-y-0.5">${techList}</ul>
+              </div>
+              <div class="pt-3 border-t flex items-center justify-between">
+                <span class="text-sm font-black text-[#E11D48]">${proj.priceRange}</span>
+                <button onclick="navigate('project-detail', '${proj.slug}')" class="px-3 py-1.5 bg-[#0F172A] hover:bg-[#1E293B] text-cyan-300 font-bold text-xs uppercase transition cursor-pointer">
+                  Xem Dữ Liệu ›
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        grid.insertAdjacentHTML('beforeend', html);
+      });
+    }
+
+    function renderNews() {
+      const grid = document.getElementById('news-grid');
+      grid.innerHTML = '';
+      BDS24_NEWS.forEach(n => {
+        const html = `
+          <div class="bg-white border border-slate-200 shadow-sm flex flex-col justify-between group overflow-hidden">
+            <img src="${n.image}" alt="${n.title}" class="w-full h-44 object-cover group-hover:scale-105 transition duration-500" />
+            <div class="p-4 space-y-2">
+              <span class="text-[10px] font-bold text-cyan-600 uppercase">${n.category} • ${n.date}</span>
+              <h3 onclick="navigate('news-detail', '${n.slug}')" class="text-xs font-black text-slate-900 uppercase line-clamp-2 hover:text-cyan-600 cursor-pointer">
+                ${n.title}
+              </h3>
+              <p class="text-xs text-slate-600 line-clamp-2">${n.excerpt}</p>
+            </div>
+          </div>
+        `;
+        grid.insertAdjacentHTML('beforeend', html);
+      });
+    }
+
+    function populateConsultProjects() {
+      const select = document.getElementById('consult-project');
+      BDS24_PROJECTS.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.title;
+        opt.textContent = p.title;
+        select.appendChild(opt);
+      });
+    }
+
+    function renderProjectDetail(proj) {
+      document.getElementById('pd-title').textContent = proj.title;
+      document.getElementById('pd-info').textContent = `Khoảng giá: ${proj.priceRange} — Diện tích: ${proj.areaRange} — IoT Score: ${proj.iotScore}/100`;
+      document.getElementById('pd-address').textContent = `📍 ${proj.address}`;
+      document.getElementById('pd-image').src = proj.image;
+      document.getElementById('pd-desc').textContent = proj.description;
+      
+      const amenitiesUl = document.getElementById('pd-amenities');
+      amenitiesUl.innerHTML = proj.amenities.map(h => `<li class="flex items-center gap-1.5">⚡ ${h}</li>`).join('');
+    }
+
+    function renderNewsDetail(article) {
+      document.getElementById('nd-title').textContent = article.title;
+      document.getElementById('nd-meta').textContent = `🕒 ${article.date} • Tác giả: ${article.author} • ${article.views} lượt xem`;
+      document.getElementById('nd-image').src = article.image;
+      
+      const contentDiv = document.getElementById('nd-content');
+      contentDiv.innerHTML = article.content.map(p => `<p>${p}</p>`).join('');
+    }
+
+    function handleConsultSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const name = form.name.value;
+      const phone = form.phone.value;
+      
+      if (!name || !phone) {
+        alert('Vui lòng nhập họ tên và số điện thoại!');
+        return;
+      }
+      
+      showToast(`🎉 Tiếp nhận yêu cầu tư vấn từ ${name} (${phone}). Chuyên viên công nghệ RealtyBuild sẽ hỗ trợ quý khách ngay!`);
+      
+      fetch(form.action, {
+        method: form.method,
+        body: new FormData(form)
+      }).catch(err => console.log('Mocked submission'));
+      
+      form.reset();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast-message');
+      const toastText = document.getElementById('toast-text');
+      toastText.textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 4000);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
 </body>
 </html>

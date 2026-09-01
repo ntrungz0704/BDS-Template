@@ -3,189 +3,654 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BĐS 21 — Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội — Website Bất Động Sản Chuyên Nghiệp</title>
-  <meta name="description" content="Cho thuê chung cư Hà Nội · 5 Quận trọng điểm · Giá tốt">
-  <link rel="stylesheet" href="css/style.css">
+  <title>BDS-21 | Homeo Realty - Cổng Giao Dịch BĐS</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .font-serif { font-family: 'Playfair Display', serif; }
+    .max-w-7xl { max-width: 80rem; }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+<body class="w-full min-h-screen bg-white text-slate-900 font-sans flex flex-col justify-between selection:bg-[#1E40AF] selection:text-white">
 
-  <!-- Header -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2 font-black text-xl text-blue-600">
-        <span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-xs">TB</span>
-        <span>TEMPLATES<strong class="text-slate-900">BDS</strong></span>
+  <!-- TOP HEADER & NAVBAR -->
+  <header class="sticky top-0 z-40 bg-[#1E40AF] text-white shadow-xl border-b border-blue-400/30">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0">
+        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-white flex items-center justify-center text-[#1E40AF] font-black text-base sm:text-xl shadow shrink-0">
+          🏠
+        </div>
+        <div class="min-w-0 truncate">
+          <span class="text-base sm:text-2xl font-black tracking-wider text-white block leading-none truncate">
+            HOMEO <span class="text-rose-300">REALTY</span>
+          </span>
+          <span class="text-[7.5px] sm:text-[8.5px] font-bold text-blue-200 uppercase tracking-widest block mt-0.5 truncate">
+            CỔNG GIAO DỊCH BẤT ĐỘNG SẢN TOÀN DIỆN
+          </span>
+        </div>
       </a>
-      <nav class="hidden md:flex items-center gap-6 text-xs font-bold uppercase text-slate-700">
-        <a href="index.html" class="text-blue-600">Trang Chủ</a>
-        <a href="#san-pham" class="hover:text-blue-600">Sản Phẩm</a>
-        <a href="#du-an" class="hover:text-blue-600">Dự Án</a>
-        <a href="#tin-tuc" class="hover:text-blue-600">Tin Tức</a>
-        <a href="#lien-he" class="hover:text-blue-600">Liên Hệ</a>
+
+      <!-- Navigation Menu -->
+      <nav class="hidden xl:flex items-center gap-0.5 text-xs font-bold uppercase tracking-wider text-white whitespace-nowrap">
+        <a href="#" class="whitespace-nowrap px-3 py-2 transition-all hover:text-rose-300 bg-[#1D4ED8] text-rose-300 font-extrabold">Trang Chủ</a>
+        <a href="#gioi-thieu" class="whitespace-nowrap px-3 py-2 transition-all hover:text-rose-300">Giới Thiệu</a>
+        <a href="#danh-sach-bds" class="whitespace-nowrap px-3 py-2 transition-all hover:text-rose-300">BĐS Bán</a>
+        <a href="#danh-sach-bds" class="whitespace-nowrap px-3 py-2 transition-all hover:text-rose-300">Cho Thuê</a>
+        <a href="#danh-sach-bds" class="whitespace-nowrap px-3 py-2 transition-all hover:text-rose-300">Dự Án</a>
+        <a href="#khu-vuc" class="whitespace-nowrap px-3 py-2 transition-all hover:text-rose-300">Khu Vực</a>
+        <a href="#tin-tuc" class="whitespace-nowrap px-3 py-2 transition-all hover:text-rose-300">Tin Tức</a>
+        <a href="#dang-tin" class="whitespace-nowrap px-3 py-2 transition-all hover:text-rose-300">Liên Hệ</a>
       </nav>
-      <div class="flex items-center gap-3">
-        <a href="tel:0919006030" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow transition">
-          📞 0919 006 030
+
+      <!-- Right CTA -->
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
+        <a href="#dang-tin" class="hidden md:inline-block px-4 py-2 bg-[#E11D48] hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider shadow cursor-pointer">
+          + Đăng Tin Miễn Phí
         </a>
+        <button id="mobile-menu-btn" class="p-1.5 sm:p-2 text-white xl:hidden hover:bg-white/10 rounded-md shrink-0 flex items-center justify-center">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div id="mobile-menu" class="hidden xl:hidden bg-[#1E3A8A] border-t border-blue-400/30 px-6 py-4 space-y-2">
+      <div class="grid grid-cols-2 gap-2 text-xs font-bold uppercase">
+        <a href="#" class="p-2.5 text-left bg-[#1D4ED8] hover:text-rose-300 text-rose-300 block">Trang Chủ</a>
+        <a href="#gioi-thieu" class="p-2.5 text-left bg-[#1D4ED8] hover:text-rose-300 block">Giới Thiệu</a>
+        <a href="#danh-sach-bds" class="p-2.5 text-left bg-[#1D4ED8] hover:text-rose-300 block">BĐS Bán</a>
+        <a href="#danh-sach-bds" class="p-2.5 text-left bg-[#1D4ED8] hover:text-rose-300 block">Cho Thuê</a>
+        <a href="#danh-sach-bds" class="p-2.5 text-left bg-[#1D4ED8] hover:text-rose-300 block">Dự Án</a>
+        <a href="#khu-vuc" class="p-2.5 text-left bg-[#1D4ED8] hover:text-rose-300 block">Khu Vực</a>
+        <a href="#tin-tuc" class="p-2.5 text-left bg-[#1D4ED8] hover:text-rose-300 block">Tin Tức</a>
+        <a href="#dang-tin" class="p-2.5 text-left bg-[#1D4ED8] hover:text-rose-300 block">Liên Hệ</a>
       </div>
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <main class="flex-1 w-full space-y-12 pb-16">
-    <section class="relative py-20 px-4 bg-slate-900 text-white text-center">
-      <div class="max-w-4xl mx-auto space-y-4">
-        <span class="px-3.5 py-1 rounded-full bg-blue-600/30 text-blue-300 border border-blue-400/40 text-xs font-bold uppercase tracking-widest inline-block">
-          MẪU GIAO DIỆN BĐS 21 — SÀN CHO THUÊ & MUA BÁN CHUNG CƯ HÀ NỘI
-        </span>
-        <h1 class="text-3xl sm:text-5xl font-black uppercase leading-tight font-serif">
-          BĐS 21 — Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội
+  <main>
+    <!-- HERO SECTION -->
+    <section class="relative bg-slate-950 text-white min-h-[460px] sm:min-h-[540px] flex items-center justify-center overflow-hidden border-b border-blue-300">
+      <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&q=80" alt="Homeo Realty Hero" class="absolute inset-0 w-full h-full object-cover opacity-60" />
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-black/40 to-transparent"></div>
+
+      <div class="max-w-7xl mx-auto px-4 relative z-20 text-center space-y-6 max-w-4xl">
+        <h1 class="text-3xl sm:text-5xl font-serif font-black uppercase text-white tracking-wide drop-shadow-lg">
+          Tìm Kiếm Ngôi Nhà Bạn Yêu Thích
         </h1>
-        <p class="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
-          Cho thuê chung cư Hà Nội · 5 Quận trọng điểm · Giá tốt — Giải pháp website bất động sản tối ưu chuẩn SEO, tải nhanh và dễ dàng sử dụng.
+        <p class="text-xs sm:text-sm text-slate-200 max-w-2xl mx-auto font-medium">
+          Hơn 15.000+ bất động sản chính chủ, căn hộ chung cư, biệt thự nghỉ dưỡng và nhà phố sinh lời cao trên toàn quốc.
         </p>
-        <div class="pt-4 flex justify-center gap-3">
-          <a href="#san-pham" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase rounded-full shadow">
-            Xem Sản Phẩm ›
-          </a>
-          <a href="#lien-he" class="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold text-xs uppercase rounded-full">
-            Đăng Ký Tư Vấn
-          </a>
-        </div>
-      </div>
-    </section>
 
-    <!-- Danh Sách BĐS -->
-    <section id="san-pham" class="max-w-7xl mx-auto px-4 space-y-6">
-      <div class="text-center space-y-1">
-        <h2 class="text-2xl font-black text-slate-900 uppercase">SẢN PHẨM BẤT ĐỘNG SẢN NỔI BẬT</h2>
-        <div class="w-12 h-1 bg-blue-600 mx-auto rounded-full"></div>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="property-list">
-        <!-- Javascript renders cards here or static cards -->
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
-          <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80" alt="" class="w-full h-48 object-cover">
-          <div class="p-4 space-y-2">
-            <h3 class="font-bold text-sm text-slate-900">Biệt Thự Nghỉ Dưỡng Cao Cấp</h3>
-            <p class="text-xs text-slate-500">Vị trí đắc địa, sổ hồng riêng chính chủ</p>
-            <div class="flex justify-between items-center pt-2 border-t text-xs">
-              <span class="font-black text-blue-600 text-sm">4.5 Tỷ VNĐ</span>
-              <span class="text-slate-500">250 m²</span>
-            </div>
+        <!-- Big Search Box -->
+        <form onsubmit="handleSearch(event)" class="bg-white p-2.5 shadow-2xl flex flex-col md:flex-row gap-2 max-w-3xl mx-auto text-slate-800 text-xs">
+          <div class="flex-1 flex items-center px-3 gap-2 border md:border-0 border-slate-200">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 shrink-0"></i>
+            <input type="text" placeholder="Nhập tên dự án, đường, quận hoặc từ khóa cần tìm..." class="w-full py-2.5 focus:outline-none text-slate-800 text-xs font-medium" />
           </div>
-        </div>
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
-          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80" alt="" class="w-full h-48 object-cover">
-          <div class="p-4 space-y-2">
-            <h3 class="font-bold text-sm text-slate-900">Nhà Phố Mặt Tiền Thương Mại</h3>
-            <p class="text-xs text-slate-500">Thuận tiện kinh doanh showroom, văn phòng</p>
-            <div class="flex justify-between items-center pt-2 border-t text-xs">
-              <span class="font-black text-blue-600 text-sm">6.8 Tỷ VNĐ</span>
-              <span class="text-slate-500">120 m²</span>
-            </div>
-          </div>
-        </div>
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition">
-          <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="" class="w-full h-48 object-cover">
-          <div class="p-4 space-y-2">
-            <h3 class="font-bold text-sm text-slate-900">Đất Nền Phân Lô Sổ Đỏ Trao Tay</h3>
-            <p class="text-xs text-slate-500">Hạ tầng đồng bộ điện âm nước máy</p>
-            <div class="flex justify-between items-center pt-2 border-t text-xs">
-              <span class="font-black text-blue-600 text-sm">1.8 Tỷ VNĐ</span>
-              <span class="text-slate-500">100 m²</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- Form Liên Hệ -->
-    <section id="lien-he" class="max-w-4xl mx-auto px-4">
-      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-lg space-y-4">
-        <h3 class="text-xl font-black text-slate-900 text-center uppercase">LIÊN HỆ & TƯ VẤN BÁO GIÁ</h3>
-        <form id="contact-form" class="space-y-3 text-xs">
-          <input type="text" id="name" placeholder="Họ và tên của bạn (*)" required class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl">
-          <input type="tel" id="phone" placeholder="Số điện thoại / Zalo (*)" required class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl font-bold text-blue-600">
-          <textarea id="message" rows="3" placeholder="Nội dung cần tư vấn..." class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl"></textarea>
-          <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow transition">
-            GỬI YÊU CẦU TƯ VẤN
+          <select class="bg-white text-slate-900 border border-slate-200 px-3 py-2.5 focus:outline-none font-bold font-medium">
+            <option class="text-slate-900 bg-white font-medium" value="all">Khu Vực (Tất cả)</option>
+            <option value="Hà Nội">Hà Nội</option>
+            <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+            <option value="Đà Nẵng">Đà Nẵng</option>
+            <option value="Nha Trang">Nha Trang</option>
+            <option value="Phú Quốc">Phú Quốc</option>
+          </select>
+
+          <select class="bg-white text-slate-900 border border-slate-200 px-3 py-2.5 focus:outline-none font-bold font-medium">
+            <option class="text-slate-900 bg-white font-medium" value="all">Hình thức (Tất cả)</option>
+            <option class="text-slate-900 bg-white font-medium" value="ban">BĐS Cần Bán</option>
+            <option class="text-slate-900 bg-white font-medium" value="thue">Cho Thuê</option>
+            <option class="text-slate-900 bg-white font-medium" value="du-an">Dự Án Mới</option>
+            <option class="text-slate-900 bg-white font-medium" value="nghi-duong">BĐS Nghỉ Dưỡng</option>
+          </select>
+
+          <button type="submit" class="px-6 py-3 bg-[#E11D48] hover:bg-rose-700 text-white font-black uppercase tracking-wider shadow cursor-pointer transition flex items-center justify-center gap-1.5">
+            <i data-lucide="search" class="w-4 h-4"></i> Tìm Kiếm
           </button>
         </form>
+
+      </div>
+    </section>
+
+    <!-- SECTION 1: VỀ CHÚNG TÔI -->
+    <section id="gioi-thieu" class="py-16 bg-white text-slate-900 border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="bg-white text-slate-900 border border-slate-200 p-6 sm:p-10 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center font-medium">
+          
+          <div class="lg:col-span-6 relative aspect-[16/10] overflow-hidden border-2 border-[#1E40AF] shadow-md">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80" alt="Homeo Realty Office" class="w-full h-full object-cover" />
+          </div>
+
+          <div class="lg:col-span-6 space-y-4">
+            <span class="text-xs font-black uppercase text-[#E11D48] tracking-widest block">
+              VỀ CHÚNG TÔI
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-serif font-black uppercase text-[#1E40AF]">
+              Homeo Realty — Nền Tảng Giao Dịch Bất Động Sản Uy Tín
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Chúng tôi tự hào là đơn vị phân phối BĐS chuyên nghiệp với mạng lưới hơn 5.000 môi giới giàu kinh nghiệm trên khắp 63 tỉnh thành. Mọi bất động sản đều được kiểm duyệt pháp lý nghiêm ngặt trước khi niêm yết.
+            </p>
+
+            <ul class="space-y-2 text-xs text-slate-700">
+              <li class="flex items-center gap-2">✓ <strong>100% Thông tin chính xác:</strong> Hình ảnh thực tế, pháp lý sổ đỏ/sổ hồng minh bạch</li>
+              <li class="flex items-center gap-2">✓ <strong>Hỗ trợ thủ tục trọn gói:</strong> Tư vấn vay vốn ngân hàng lãi suất ưu đãi, công chứng sang tên nhanh</li>
+              <li class="flex items-center gap-2">✓ <strong>Kết nối trực tiếp chủ nhà:</strong> Đảm bảo giá gốc không qua trung gian nâng giá</li>
+            </ul>
+
+            <div class="pt-2">
+              <a href="#dang-tin" class="inline-block px-5 py-2.5 bg-[#1E40AF] hover:bg-[#1D4ED8] text-white font-bold text-xs uppercase shadow">
+                Liên Hệ Tư Vấn Ngay ›
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: DANH SÁCH BĐS NỔI BẬT -->
+    <section id="danh-sach-bds" class="py-16 bg-[#F8FAFC] text-slate-900 border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 space-y-8">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between border-b-2 border-[#1E40AF] pb-3 gap-4">
+          <div>
+            <span class="text-xs font-black uppercase text-[#E11D48] tracking-widest block">
+              DANH SÁCH BẤT ĐỘNG SẢN MỚI NHẤT
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-serif font-black text-slate-900 uppercase">
+              TẤT CẢ BẤT ĐỘNG SẢN (9)
+            </h2>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <select class="bg-white text-slate-900 border border-slate-300 px-3 py-2 focus:outline-none font-medium">
+              <option class="text-slate-900 bg-white font-medium" value="all">Hình thức (Tất cả)</option>
+              <option class="text-slate-900 bg-white font-medium" value="ban">BĐS Bán</option>
+              <option class="text-slate-900 bg-white font-medium" value="thue">Cho Thuê</option>
+              <option class="text-slate-900 bg-white font-medium" value="du-an">Dự Án</option>
+              <option class="text-slate-900 bg-white font-medium" value="nghi-duong">Nghỉ Dưỡng</option>
+            </select>
+
+            <select class="bg-white text-slate-900 border border-slate-300 px-3 py-2 focus:outline-none font-medium">
+              <option class="text-slate-900 bg-white font-medium" value="all">Tỉnh/Thành (Tất cả)</option>
+              <option value="Hà Nội">Hà Nội</option>
+              <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+              <option value="Đà Nẵng">Đà Nẵng</option>
+              <option value="Nha Trang">Nha Trang</option>
+              <option value="Phú Quốc">Phú Quốc</option>
+            </select>
+
+            <button onclick="handleSearch(event)" class="px-4 py-2 bg-[#1E40AF] hover:bg-[#1D4ED8] text-white font-bold uppercase shadow cursor-pointer">
+              Lọc
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Property 1 -->
+          <div class="bg-white text-slate-900 border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden font-medium cursor-pointer">
+            <div class="relative aspect-[16/10] overflow-hidden bg-slate-950">
+              <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80" alt="Biệt Thự" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-[#1E40AF] text-white text-[10px] font-black uppercase">Đang Mở Bán</span>
+              <span class="absolute top-2.5 right-2.5 px-2 py-0.5 bg-[#E11D48] text-white text-[9px] font-black uppercase">HOT</span>
+              <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-rose-900/90 to-rose-700/80 text-white px-3 py-1.5 flex justify-between items-center text-xs font-black">
+                <span>28.5 Tỷ VNĐ</span>
+                <span class="text-[11px] font-normal">210 m²</span>
+              </div>
+            </div>
+            <div class="p-4 space-y-2">
+              <h3 class="text-xs font-serif font-black text-slate-900 uppercase line-clamp-2 hover:text-[#1E40AF] min-h-[34px]">
+                Biệt Thự Vườn Đơn Lập The Manor Central Park Hoàng Mai
+              </h3>
+              <p class="text-[11px] text-slate-500 flex items-center gap-1 truncate">📍 Đường Nguyễn Xiển, Hoàng Mai, Hà Nội</p>
+              <div class="grid grid-cols-3 gap-1 text-[10px] text-slate-600 bg-slate-50 p-2 border border-slate-200 text-center font-medium">
+                <div>🛏 5 PN</div><div>🚿 5 WC</div><div>📐 210 m²</div>
+              </div>
+              <div class="pt-3 border-t flex items-center justify-between">
+                <span class="text-xs font-bold text-[#1E40AF] uppercase">Biệt Thự Đơn Lập</span>
+                <button class="px-3 py-1.5 bg-[#1E40AF] hover:bg-[#1D4ED8] text-white font-bold text-xs uppercase transition">Chi Tiết ›</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Property 2 -->
+          <div class="bg-white text-slate-900 border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden font-medium cursor-pointer">
+            <div class="relative aspect-[16/10] overflow-hidden bg-slate-950">
+              <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" alt="Căn Hộ" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-[#1E40AF] text-white text-[10px] font-black uppercase">Chính Chủ</span>
+              <span class="absolute top-2.5 right-2.5 px-2 py-0.5 bg-[#E11D48] text-white text-[9px] font-black uppercase">HOT</span>
+              <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-rose-900/90 to-rose-700/80 text-white px-3 py-1.5 flex justify-between items-center text-xs font-black">
+                <span>3.65 Tỷ VNĐ</span>
+                <span class="text-[11px] font-normal">72 m²</span>
+              </div>
+            </div>
+            <div class="p-4 space-y-2">
+              <h3 class="text-xs font-serif font-black text-slate-900 uppercase line-clamp-2 hover:text-[#1E40AF] min-h-[34px]">
+                Căn Hộ Masteri Centre Point Vinhomes Grand Park Quận 9
+              </h3>
+              <p class="text-[11px] text-slate-500 flex items-center gap-1 truncate">📍 Khu Đô Thị Grand Park, TP. Thủ Đức, TP.HCM</p>
+              <div class="grid grid-cols-3 gap-1 text-[10px] text-slate-600 bg-slate-50 p-2 border border-slate-200 text-center font-medium">
+                <div>🛏 2 PN</div><div>🚿 2 WC</div><div>📐 72 m²</div>
+              </div>
+              <div class="pt-3 border-t flex items-center justify-between">
+                <span class="text-xs font-bold text-[#1E40AF] uppercase">Căn Hộ Chung Cư</span>
+                <button class="px-3 py-1.5 bg-[#1E40AF] hover:bg-[#1D4ED8] text-white font-bold text-xs uppercase transition">Chi Tiết ›</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Property 3 -->
+          <div class="bg-white text-slate-900 border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden font-medium cursor-pointer">
+            <div class="relative aspect-[16/10] overflow-hidden bg-slate-950">
+              <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80" alt="Penthouse" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-[#1E40AF] text-white text-[10px] font-black uppercase">VIP Độc Bản</span>
+              <span class="absolute top-2.5 right-2.5 px-2 py-0.5 bg-[#E11D48] text-white text-[9px] font-black uppercase">HOT</span>
+              <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-rose-900/90 to-rose-700/80 text-white px-3 py-1.5 flex justify-between items-center text-xs font-black">
+                <span>48.0 Tỷ VNĐ</span>
+                <span class="text-[11px] font-normal">320 m²</span>
+              </div>
+            </div>
+            <div class="p-4 space-y-2">
+              <h3 class="text-xs font-serif font-black text-slate-900 uppercase line-clamp-2 hover:text-[#1E40AF] min-h-[34px]">
+                Penthouse Duplex Dát Vàng Vinhomes Golden River Ba Son Q1
+              </h3>
+              <p class="text-[11px] text-slate-500 flex items-center gap-1 truncate">📍 Số 2 Tôn Đức Thắng, Bến Nghé, Quận 1, TP.HCM</p>
+              <div class="grid grid-cols-3 gap-1 text-[10px] text-slate-600 bg-slate-50 p-2 border border-slate-200 text-center font-medium">
+                <div>🛏 4 PN</div><div>🚿 5 WC</div><div>📐 320 m²</div>
+              </div>
+              <div class="pt-3 border-t flex items-center justify-between">
+                <span class="text-xs font-bold text-[#1E40AF] uppercase">Penthouse</span>
+                <button class="px-3 py-1.5 bg-[#1E40AF] hover:bg-[#1D4ED8] text-white font-bold text-xs uppercase transition">Chi Tiết ›</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Property 4 -->
+          <div class="bg-white text-slate-900 border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden font-medium cursor-pointer">
+            <div class="relative aspect-[16/10] overflow-hidden bg-slate-950">
+              <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80" alt="Cho Thuê" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-[#1E40AF] text-white text-[10px] font-black uppercase">Giá Tốt</span>
+              <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-rose-900/90 to-rose-700/80 text-white px-3 py-1.5 flex justify-between items-center text-xs font-black">
+                <span>28 Triệu/tháng</span>
+                <span class="text-[11px] font-normal">82 m²</span>
+              </div>
+            </div>
+            <div class="p-4 space-y-2">
+              <h3 class="text-xs font-serif font-black text-slate-900 uppercase line-clamp-2 hover:text-[#1E40AF] min-h-[34px]">
+                Cho Thuê Căn Hộ Vinhomes Metropolis Liễu Giai Ba Đình Full Đồ
+              </h3>
+              <p class="text-[11px] text-slate-500 flex items-center gap-1 truncate">📍 29 Liễu Giai, Ba Đình, Hà Nội</p>
+              <div class="grid grid-cols-3 gap-1 text-[10px] text-slate-600 bg-slate-50 p-2 border border-slate-200 text-center font-medium">
+                <div>🛏 2 PN</div><div>🚿 2 WC</div><div>📐 82 m²</div>
+              </div>
+              <div class="pt-3 border-t flex items-center justify-between">
+                <span class="text-xs font-bold text-[#1E40AF] uppercase">Căn Hộ Chung Cư</span>
+                <button class="px-3 py-1.5 bg-[#1E40AF] hover:bg-[#1D4ED8] text-white font-bold text-xs uppercase transition">Chi Tiết ›</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Property 5 -->
+          <div class="bg-white text-slate-900 border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden font-medium cursor-pointer">
+            <div class="relative aspect-[16/10] overflow-hidden bg-slate-950">
+              <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80" alt="Biệt thự" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-[#1E40AF] text-white text-[10px] font-black uppercase">Mới Nhất</span>
+              <span class="absolute top-2.5 right-2.5 px-2 py-0.5 bg-[#E11D48] text-white text-[9px] font-black uppercase">HOT</span>
+              <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-rose-900/90 to-rose-700/80 text-white px-3 py-1.5 flex justify-between items-center text-xs font-black">
+                <span>85 Triệu/tháng</span>
+                <span class="text-[11px] font-normal">380 m²</span>
+              </div>
+            </div>
+            <div class="p-4 space-y-2">
+              <h3 class="text-xs font-serif font-black text-slate-900 uppercase line-clamp-2 hover:text-[#1E40AF] min-h-[34px]">
+                Cho Thuê Biệt Thự Thảo Điền Quận 2 Có Hồ Bơi Riêng Biệt
+              </h3>
+              <p class="text-[11px] text-slate-500 flex items-center gap-1 truncate">📍 Nguyễn Văn Hưởng, Thảo Điền, Quận 2, TP.HCM</p>
+              <div class="grid grid-cols-3 gap-1 text-[10px] text-slate-600 bg-slate-50 p-2 border border-slate-200 text-center font-medium">
+                <div>🛏 5 PN</div><div>🚿 6 WC</div><div>📐 380 m²</div>
+              </div>
+              <div class="pt-3 border-t flex items-center justify-between">
+                <span class="text-xs font-bold text-[#1E40AF] uppercase">Biệt Thự Đơn Lập</span>
+                <button class="px-3 py-1.5 bg-[#1E40AF] hover:bg-[#1D4ED8] text-white font-bold text-xs uppercase transition">Chi Tiết ›</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Property 6 -->
+          <div class="bg-white text-slate-900 border border-slate-300 shadow-sm hover:shadow-xl transition flex flex-col justify-between group overflow-hidden font-medium cursor-pointer">
+            <div class="relative aspect-[16/10] overflow-hidden bg-slate-950">
+              <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80" alt="Resort" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-[#1E40AF] text-white text-[10px] font-black uppercase">Đang Mở Bán</span>
+              <span class="absolute top-2.5 right-2.5 px-2 py-0.5 bg-[#E11D48] text-white text-[9px] font-black uppercase">HOT</span>
+              <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-rose-900/90 to-rose-700/80 text-white px-3 py-1.5 flex justify-between items-center text-xs font-black">
+                <span>55.0 Tỷ VNĐ</span>
+                <span class="text-[11px] font-normal">450 m²</span>
+              </div>
+            </div>
+            <div class="p-4 space-y-2">
+              <h3 class="text-xs font-serif font-black text-slate-900 uppercase line-clamp-2 hover:text-[#1E40AF] min-h-[34px]">
+                Biệt Thự Biển Sun Premier Village The Eden Bay Mũi Ông Đội
+              </h3>
+              <p class="text-[11px] text-slate-500 flex items-center gap-1 truncate">📍 Mũi Ông Đội, An Thới, TP. Phú Quốc, Kiên Giang</p>
+              <div class="grid grid-cols-3 gap-1 text-[10px] text-slate-600 bg-slate-50 p-2 border border-slate-200 text-center font-medium">
+                <div>🛏 4 PN</div><div>🚿 5 WC</div><div>📐 450 m²</div>
+              </div>
+              <div class="pt-3 border-t flex items-center justify-between">
+                <span class="text-xs font-bold text-[#1E40AF] uppercase">Biệt Thự Đơn Lập</span>
+                <button class="px-3 py-1.5 bg-[#1E40AF] hover:bg-[#1D4ED8] text-white font-bold text-xs uppercase transition">Chi Tiết ›</button>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: BANNER ĐẶC BIỆT THÁNG -->
+    <section class="bg-gradient-to-r from-[#E11D48] via-[#BE123C] to-[#9F1239] text-white py-12">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="bg-white/10 backdrop-blur-md p-6 sm:p-8 border border-white/20 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <div class="lg:col-span-7 space-y-3">
+            <span class="px-3 py-1 bg-white text-[#E11D48] text-xs font-black uppercase">
+              BẤT ĐỘNG SẢN ĐỘC BẢN THÁNG 8
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-serif font-black uppercase text-white leading-tight">
+              Penthouse Duplex Dát Vàng Ba Son Quận 1 View Sông Sài Gòn
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-100 leading-relaxed">
+              Tuyệt phẩm căn hộ áp mái đỉnh cao với trần cao 7m, bể bơi tràn vô cực và tầm nhìn trọn vẹn trung tâm tài chính Quận 1.
+            </p>
+            <div class="pt-2 flex items-center gap-4">
+              <span class="text-2xl font-black text-amber-300">48.0 Tỷ VNĐ</span>
+              <a href="#danh-sach-bds" class="inline-block px-4 py-2 bg-white text-[#E11D48] font-bold text-xs uppercase shadow hover:bg-slate-100 cursor-pointer">
+                Xem Chi Tiết Căn Hộ ›
+              </a>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 relative aspect-[16/10] overflow-hidden border border-white/30 shadow-2xl">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80" alt="Penthouse Ba Son" class="w-full h-full object-cover" />
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: KHÁM PHÁ THEO KHU VỰC -->
+    <section id="khu-vuc" class="py-16 bg-slate-900 text-white">
+      <div class="max-w-7xl mx-auto px-4 space-y-8">
+        
+        <div class="text-center space-y-2 max-w-2xl mx-auto">
+          <span class="text-xs font-black uppercase text-rose-400 tracking-widest">
+            DANH MỤC KHU VỰC TRỌNG ĐIỂM
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-serif font-black uppercase text-white">
+            Khám Phá Bất Động Sản Theo Tỉnh Thành
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div class="relative aspect-[3/4] overflow-hidden border border-slate-700 shadow-md group cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80" alt="Hà Nội" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex flex-col justify-end p-4">
+              <h3 class="text-sm font-black text-white uppercase">Hà Nội</h3>
+              <span class="text-[10px] text-rose-300 font-medium">4.250+ Tin Đăng</span>
+            </div>
+          </div>
+          <div class="relative aspect-[3/4] overflow-hidden border border-slate-700 shadow-md group cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80" alt="TP. Hồ Chí Minh" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex flex-col justify-end p-4">
+              <h3 class="text-sm font-black text-white uppercase">TP. Hồ Chí Minh</h3>
+              <span class="text-[10px] text-rose-300 font-medium">6.890+ Tin Đăng</span>
+            </div>
+          </div>
+          <div class="relative aspect-[3/4] overflow-hidden border border-slate-700 shadow-md group cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80" alt="Đà Nẵng" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex flex-col justify-end p-4">
+              <h3 class="text-sm font-black text-white uppercase">Đà Nẵng</h3>
+              <span class="text-[10px] text-rose-300 font-medium">1.420+ Tin Đăng</span>
+            </div>
+          </div>
+          <div class="relative aspect-[3/4] overflow-hidden border border-slate-700 shadow-md group cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" alt="Nha Trang" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex flex-col justify-end p-4">
+              <h3 class="text-sm font-black text-white uppercase">Nha Trang</h3>
+              <span class="text-[10px] text-rose-300 font-medium">980+ Tin Đăng</span>
+            </div>
+          </div>
+          <div class="relative aspect-[3/4] overflow-hidden border border-slate-700 shadow-md group cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80" alt="Phú Quốc" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex flex-col justify-end p-4">
+              <h3 class="text-sm font-black text-white uppercase">Phú Quốc</h3>
+              <span class="text-[10px] text-rose-300 font-medium">650+ Tin Đăng</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: TIN TỨC & KINH NGHIỆM BĐS -->
+    <section id="tin-tuc" class="py-16 bg-white text-slate-900 border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 space-y-8">
+        
+        <div class="flex items-center justify-between border-b-2 border-[#1E40AF] pb-3">
+          <h2 class="text-2xl font-serif font-black uppercase text-[#1E40AF]">
+            TIN TỨC & KINH NGHIỆM BĐS
+          </h2>
+          <button class="text-xs font-bold text-[#E11D48] hover:underline cursor-pointer">
+            Xem Tất Cả Tin Tức ›
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white border border-slate-200 shadow-sm flex flex-col justify-between group overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" alt="News 1" class="w-full h-44 object-cover group-hover:scale-105 transition duration-500" />
+            <div class="p-4 space-y-2">
+              <span class="text-[10px] font-bold text-[#E11D48] uppercase">Thị Trường • 28/08/2026</span>
+              <h3 class="text-xs font-black text-slate-900 uppercase line-clamp-2 hover:text-[#1E40AF] cursor-pointer">
+                Thị Trường Bất Động Sản Quý 3/2026: Sức Hút Của Phân Khúc BĐS Nghỉ Dưỡng Sinh Thái
+              </h3>
+              <p class="text-xs text-slate-600 line-clamp-2">Dòng tiền đầu tư đang có xu hướng dịch chuyển mạnh mẽ sang các sản phẩm BĐS sở hữu pháp lý minh bạch và giá trị thực.</p>
+            </div>
+          </div>
+          <div class="bg-white border border-slate-200 shadow-sm flex flex-col justify-between group overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80" alt="News 2" class="w-full h-44 object-cover group-hover:scale-105 transition duration-500" />
+            <div class="p-4 space-y-2">
+              <span class="text-[10px] font-bold text-[#E11D48] uppercase">Kinh Nghiệm • 26/08/2026</span>
+              <h3 class="text-xs font-black text-slate-900 uppercase line-clamp-2 hover:text-[#1E40AF] cursor-pointer">
+                Kinh Nghiệm Thẩm Định Pháp Lý & Quy Hoạch Nhà Đất Dành Cho Nhà Đầu Tư Mới
+              </h3>
+              <p class="text-xs text-slate-600 line-clamp-2">Hướng dẫn chi tiết quy trình tra cứu thông tin sổ hồng, kiểm tra quy hoạch phân khu và hạn chế tối đa rủi ro mua bán.</p>
+            </div>
+          </div>
+          <div class="bg-white border border-slate-200 shadow-sm flex flex-col justify-between group overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80" alt="News 3" class="w-full h-44 object-cover group-hover:scale-105 transition duration-500" />
+            <div class="p-4 space-y-2">
+              <span class="text-[10px] font-bold text-[#E11D48] uppercase">Quy Hoạch • 24/08/2026</span>
+              <h3 class="text-xs font-black text-slate-900 uppercase line-clamp-2 hover:text-[#1E40AF] cursor-pointer">
+                Top 5 Tuyến Đường Vành Đai Trọng Điểm Tạo Đòn Bẩy Tăng Giá BĐS Phía Nam
+              </h3>
+              <p class="text-xs text-slate-600 line-clamp-2">Tiến độ hoàn thiện Vành đai 3 và các cây cầu kết nối TP.HCM với các tỉnh lân cận đang mở ra cơ hội sinh lời vượt trội.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 6: FORM ĐĂNG TIN KÝ GỬI -->
+    <section id="dang-tin" class="py-16 bg-slate-50 border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 max-w-2xl space-y-6 text-center">
+        
+        <div class="space-y-2">
+          <span class="text-xs font-black uppercase text-[#E11D48] tracking-widest block">
+            DỊCH VỤ KÝ GỬI NHANH CHÓNG
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-serif font-black uppercase text-[#1E40AF]">
+            Đăng Tin Ký Gửi Mua Bán & Cho Thuê
+          </h2>
+          <p class="text-xs text-slate-600">
+            Tiếp cận hơn 500.000 khách hàng tiềm năng mỗi tháng. Đăng tin hoàn toàn miễn phí!
+          </p>
+        </div>
+
+        <form action="api/contact.php" method="POST" onsubmit="handleFormSubmit(event)" class="bg-white p-6 sm:p-8 border border-slate-300 shadow-md text-left text-xs space-y-3">
+          <div>
+            <label class="block font-bold mb-1">Họ và tên chủ nhà / môi giới *</label>
+            <input type="text" name="name" required placeholder="Nguyễn Văn A" class="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold mb-1">Số điện thoại liên hệ *</label>
+              <input type="tel" name="phone" required placeholder="0919 006 030" class="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block font-bold mb-1">Tỉnh / Thành phố</label>
+              <select name="city" class="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none font-bold">
+                <option value="Hà Nội">Hà Nội</option>
+                <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                <option value="Đà Nẵng">Đà Nẵng</option>
+                <option value="Nha Trang">Nha Trang</option>
+                <option value="Phú Quốc">Phú Quốc</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-bold mb-1">Tiêu đề bất động sản cần bán / cho thuê *</label>
+            <input type="text" name="title" required placeholder="Ví dụ: Bán căn hộ 2PN The Manor Central Park Hoàng Mai..." class="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none" />
+          </div>
+
+          <div>
+            <label class="block font-bold mb-1">Mức giá mong muốn</label>
+            <input type="text" name="price" placeholder="Ví dụ: 3.5 Tỷ VNĐ hoặc 15 Triệu/tháng" class="w-full bg-slate-50 border border-slate-300 p-2.5 focus:outline-none" />
+          </div>
+
+          <button type="submit" class="w-full py-3 bg-[#E11D48] hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider shadow cursor-pointer transition">
+            Gửi Yêu Cầu Đăng Tin Ký Gửi
+          </button>
+        </form>
+
       </div>
     </section>
   </main>
 
-    <!-- Footer HTML -->
-  <footer class="w-full bg-[#07132B] text-slate-300 text-xs pt-12 pb-6 border-t border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-white/10">
-      <!-- Cột 1: THÔNG TIN LIÊN HỆ ADMIN -->
-      <div class="md:col-span-5 space-y-3">
-        <h4 class="font-black text-sm text-white uppercase tracking-wider">
-          <span class="text-[#0084FF]">TEMPLATES</span><span class="text-white">BDS</span>
-        </h4>
-        <p class="text-slate-400 text-xs leading-relaxed max-w-sm">
-          Kho mẫu website bất động sản cao cấp số 1 Việt Nam. Tối ưu chuyển đổi, chuẩn SEO và tích hợp hệ thống CMS quản trị đa kênh.
-        </p>
-        <div class="space-y-1.5 text-xs text-slate-300 pt-1">
-          <div>📍 Địa chỉ: <strong class="text-white font-medium">180 Hoàng Quốc Việt, Cầu Giấy, Hà Nội</strong></div>
-          <div>📞 Hotline 1: <a href="tel:0919006030" class="text-white font-bold font-mono hover:text-blue-400">0919 006 030</a></div>
-          <div>📞 Hotline 2: <a href="tel:0983312219" class="text-white font-bold font-mono hover:text-emerald-400">0983 312 219</a> (24/7)</div>
-          <div>✉️ Email: <a href="mailto:ntrungz0704@gmail.com" class="text-white hover:text-blue-400">ntrungz0704@gmail.com</a></div>
-          <div>⏰ Giờ làm việc: <strong class="text-white font-medium">8:00 - 20:00 (T2 - CN)</strong></div>
-        </div>
-
-        <!-- 4 Social Icons -->
-        <div class="flex items-center gap-2.5 pt-2">
-          <a href="https://zalo.me/0919006030" target="_blank" class="w-9 h-9 rounded-2xl bg-[#0068FF] text-white flex items-center justify-center font-black text-[10px]">ZALO</a>
-          <a href="https://www.facebook.com/groups/847532091275214" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1877F2] text-white flex items-center justify-center font-bold text-sm">f</a>
-          <a href="https://www.youtube.com/@tungchuofficial" target="_blank" class="w-9 h-9 rounded-2xl bg-[#E62117] text-white flex items-center justify-center text-xs">▶</a>
-          <a href="https://www.tiktok.com/@editnhadat" target="_blank" class="w-9 h-9 rounded-2xl bg-[#1E293B] text-[#A78BFA] flex items-center justify-center text-xs">🎵</a>
-        </div>
+  <!-- UNIVERSAL FOOTER -->
+  <footer class="bg-slate-900 text-slate-300 text-xs py-12 border-t-4 border-[#1E40AF]">
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div class="space-y-4">
+        <h3 class="text-white font-serif font-black text-lg">HOMEO <span class="text-rose-400">REALTY</span></h3>
+        <p class="leading-relaxed">Cổng Giao Dịch Bất Động Sản Toàn Diện uy tín hàng đầu Việt Nam. Nơi kết nối những giá trị bền vững và sinh lời cao nhất cho nhà đầu tư.</p>
       </div>
-
-      <!-- Cột 2: VỀ CHÚNG TÔI -->
-      <div class="md:col-span-2 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">VỀ CHÚNG TÔI</h4>
-        <div class="space-y-2 text-slate-400">
-          <div><a href="index.html" class="hover:text-blue-400">Trang chủ</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Sản phẩm BĐS</a></div>
-          <div><a href="#du-an" class="hover:text-blue-400">Dự án mới</a></div>
-          <div><a href="#tin-tuc" class="hover:text-blue-400">Tin tức & Sự kiện</a></div>
-          <div><a href="#lien-he" class="hover:text-blue-400">Liên hệ tư vấn</a></div>
-        </div>
+      <div class="space-y-4">
+        <h4 class="text-white font-bold uppercase tracking-wider">Thông Tin Liên Hệ</h4>
+        <ul class="space-y-2">
+          <li class="flex items-start gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-[#1E40AF]"></i> 123 Đường BĐS, Quận Trung Tâm, TP.HCM</li>
+          <li class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4 text-[#1E40AF]"></i> 1900 6666 (Hỗ trợ 24/7)</li>
+          <li class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4 text-[#1E40AF]"></i> contact@homeorealty.com</li>
+        </ul>
       </div>
-
-      <!-- Cột 3: DANH MỤC BĐS -->
-      <div class="md:col-span-2 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">DANH MỤC</h4>
-        <div class="space-y-2 text-slate-400">
-          <div><a href="#san-pham" class="hover:text-blue-400">Đất dự án</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Đất nền phân lô</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Biệt thự view biển</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Nhà phố thương mại</a></div>
-          <div><a href="#san-pham" class="hover:text-blue-400">Nhà cho thuê</a></div>
-        </div>
+      <div class="space-y-4">
+        <h4 class="text-white font-bold uppercase tracking-wider">Chính Sách & Quy Định</h4>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:text-white transition">Điều Khoản Sử Dụng</a></li>
+          <li><a href="#" class="hover:text-white transition">Chính Sách Bảo Mật</a></li>
+          <li><a href="#" class="hover:text-white transition">Quy Chế Hoạt Động</a></li>
+          <li><a href="#" class="hover:text-white transition">Giải Quyết Khiếu Nại</a></li>
+        </ul>
       </div>
-
-      <!-- Cột 4: CHÍNH SÁCH -->
-      <div class="md:col-span-3 space-y-3">
-        <h4 class="font-bold text-sm text-white uppercase tracking-wider border-b border-white/10 pb-2">CHÍNH SÁCH</h4>
-        <div class="space-y-2 text-slate-400 text-xs">
-          <div>• Bàn giao 100% mã nguồn sạch</div>
-          <div>• Bảo hành & Hỗ trợ kỹ thuật trọn đời</div>
-          <div>• Hỗ trợ cài đặt lên Hosting cPanel / XAMPP</div>
+      <div class="space-y-4">
+        <h4 class="text-white font-bold uppercase tracking-wider">Kết Nối Với Chúng Tôi</h4>
+        <div class="flex gap-3">
+          <a href="#" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-[#1E40AF] hover:text-white transition"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+          <a href="#" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-[#1E40AF] hover:text-white transition"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+          <a href="#" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-[#1E40AF] hover:text-white transition"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+          <a href="#" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-[#1E40AF] hover:text-white transition"><i data-lucide="youtube" class="w-4 h-4"></i></a>
         </div>
       </div>
     </div>
-
-    <div class="max-w-7xl mx-auto px-4 pt-6 text-center text-[11px] text-slate-400">
-      <p>© 2026 Bản quyền thuộc về <strong class="text-white">TEMPLATEBDS</strong> — Mẫu Giao Diện: BĐS 21 — Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội.</p>
+    <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-slate-800 text-center text-[10px] uppercase font-medium">
+      &copy; 2026 Homeo Realty. Thiết kế theo mẫu BDS-21.
     </div>
   </footer>
 
-  <script src="js/main.js"></script>
-  <script>lucide.createIcons();</script>
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-24 right-6 z-50 bg-[#1E40AF] text-white border border-rose-400 px-5 py-3 shadow-2xl font-bold text-xs items-center gap-2 animate-bounce hidden">
+    <i data-lucide="check-circle-2" class="w-4 h-4 text-rose-300"></i> <span id="toast-msg"></span>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Mobile menu toggle
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+      });
+    });
+
+    // Handle form submit (prevent default to show toast for demo, but actual logic would submit via fetch/form action)
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const name = formData.get('name');
+      const phone = formData.get('phone');
+      const title = formData.get('title');
+
+      if (!name || !phone || !title) {
+        alert('Vui lòng điền đầy đủ họ tên, số điện thoại và tiêu đề bất động sản!');
+        return;
+      }
+
+      showToast(`🎉 Tiếp nhận tin đăng "${title}" từ ${name} (${phone}). Bộ phận kiểm duyệt sẽ liên hệ xác nhận trong 15 phút!`);
+      form.reset();
+      
+      // Simulate real post if this was production
+      // fetch(form.action, { method: 'POST', body: formData })
+    }
+
+    // Search handle
+    function handleSearch(e) {
+      e.preventDefault();
+      showToast('🔍 Đang tìm kiếm bất động sản phù hợp...');
+      setTimeout(() => {
+        const resultsElem = document.getElementById('danh-sach-bds');
+        if (resultsElem) {
+          resultsElem.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 500);
+    }
+
+    // Toast
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-msg');
+      toastMsg.textContent = msg;
+      toast.classList.remove('hidden');
+      toast.classList.add('flex');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('flex');
+      }, 4000);
+    }
+  </script>
 </body>
 </html>

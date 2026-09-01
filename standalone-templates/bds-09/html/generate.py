@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+import os
+
+html_content = """<!DOCTYPE html>
 <html lang="vi" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
@@ -758,3 +760,10 @@
     </script>
 </body>
 </html>
+"""
+
+os.makedirs(r"e:\BĐS Template\standalone-templates\bds-09\html", exist_ok=True)
+with open(r"e:\BĐS Template\standalone-templates\bds-09\html\index.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print("Done writing HTML file.")
