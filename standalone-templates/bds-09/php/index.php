@@ -174,12 +174,20 @@ if (!empty($projects_data)) {
                 <input type="text" name="name" placeholder="Họ và tên quý khách..." required class="w-full p-3 rounded-sm border bg-slate-50 focus:bg-white focus:outline-none" />
                 <input type="tel" name="phone" placeholder="Số điện thoại / Zalo (*)..." required class="w-full p-3 rounded-sm border bg-slate-50 focus:bg-white focus:outline-none font-bold text-[#B45309]" />
                 <select name="unitType" class="w-full p-3 rounded-sm border bg-slate-50 focus:bg-white focus:outline-none font-medium">
-                    <option value="Studio Suite Panorama #ST-1808">Studio Nghỉ Dưỡng Hướng Biển (2.35 Tỷ VNĐ)</option>
-                    <option value="Executive 1BR Oceanview #EX-2205">Căn Hộ 1 Phòng Ngủ Deluxe (3.10 Tỷ VNĐ)</option>
-                    <option value="Signature 2BR Grand Corner #SG-2802" selected>Căn Hộ 2 Phòng Ngủ Signature (4.45 Tỷ VNĐ)</option>
-                    <option value="Royal Ocean Suite #RY-3501">Căn Hộ 3 Phòng Ngủ Royal Suite (6.85 Tỷ VNĐ)</option>
-                    <option value="Imperial Penthouse #PH-3901 (Đỉnh Tháp)">Sky Villa Penthouse Hoàng Gia (18.50 Tỷ VNĐ)</option>
-                    <option value="Dual Key Harmony #DK-1604">Căn Hộ Kép Dual Key Đa Năng (5.20 Tỷ VNĐ)</option>
+                    <?php if (!empty($projects_data)): ?>
+                        <?php foreach ($projects_data as $index => $p): ?>
+                            <option value="<?= htmlspecialchars($p['name']) ?>" <?= $index === 2 ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($p['type']) ?> (<?= htmlspecialchars($p['price']) ?>)
+                            </option>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <option value="Studio Suite Panorama #ST-1808">Studio Nghỉ Dưỡng Hướng Biển (2.35 Tỷ VNĐ)</option>
+                        <option value="Executive 1BR Oceanview #EX-2205">Căn Hộ 1 Phòng Ngủ Deluxe (3.10 Tỷ VNĐ)</option>
+                        <option value="Signature 2BR Grand Corner #SG-2802" selected>Căn Hộ 2 Phòng Ngủ Signature (4.45 Tỷ VNĐ)</option>
+                        <option value="Royal Ocean Suite #RY-3501">Căn Hộ 3 Phòng Ngủ Royal Suite (6.85 Tỷ VNĐ)</option>
+                        <option value="Imperial Penthouse #PH-3901 (Đỉnh Tháp)">Sky Villa Penthouse Hoàng Gia (18.50 Tỷ VNĐ)</option>
+                        <option value="Dual Key Harmony #DK-1604">Căn Hộ Kép Dual Key Đa Năng (5.20 Tỷ VNĐ)</option>
+                    <?php endif; ?>
                 </select>
                 <button type="submit" class="w-full py-3 bg-gradient-to-r from-[#D4AF37] to-[#B45309] text-white font-black rounded-sm uppercase tracking-wider shadow-lg hover:scale-[1.02] cursor-pointer">
                     Gửi Đăng Ký Ngay
@@ -484,12 +492,20 @@ if (!empty($projects_data)) {
                             <input type="tel" name="phone" placeholder="Số điện thoại / Zalo (*)..." required class="w-full bg-slate-50 text-slate-900 px-4 py-3 rounded-sm border border-slate-300 focus:bg-white focus:outline-none focus:border-amber-500 font-bold" />
                             <input type="email" name="email" placeholder="Địa chỉ Email nhận tài liệu..." class="w-full bg-slate-50 text-slate-900 px-4 py-3 rounded-sm border border-slate-300 focus:bg-white focus:outline-none focus:border-amber-500" />
                             <select name="unitType" class="w-full bg-slate-50 text-slate-900 px-4 py-3 rounded-sm border border-slate-300 focus:bg-white focus:outline-none focus:border-amber-500 font-medium">
-                                <option value="Studio Suite Panorama #ST-1808">Studio Nghỉ Dưỡng Hướng Biển (45.5 m² - 2.35 Tỷ VNĐ)</option>
-                                <option value="Executive 1BR Oceanview #EX-2205">Căn Hộ 1 Phòng Ngủ Deluxe (58.2 m² - 3.10 Tỷ VNĐ)</option>
-                                <option value="Signature 2BR Grand Corner #SG-2802" selected>Căn Hộ 2 Phòng Ngủ Signature (78.6 m² - 4.45 Tỷ VNĐ)</option>
-                                <option value="Royal Ocean Suite #RY-3501">Căn Hộ 3 Phòng Ngủ Royal Suite (115.8 m² - 6.85 Tỷ VNĐ)</option>
-                                <option value="Imperial Penthouse #PH-3901 (Đỉnh Tháp)">Sky Villa Penthouse Hoàng Gia (268.0 m² - 18.50 Tỷ VNĐ)</option>
-                                <option value="Dual Key Harmony #DK-1604">Căn Hộ Kép Dual Key Đa Năng (92.5 m² - 5.20 Tỷ VNĐ)</option>
+                                <?php if (!empty($projects_data)): ?>
+                                    <?php foreach ($projects_data as $index => $p): ?>
+                                        <option value="<?= htmlspecialchars($p['name']) ?>" <?= $index === 2 ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($p['type']) ?> (<?= htmlspecialchars($p['area']) ?> - <?= htmlspecialchars($p['price']) ?>)
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="Studio Suite Panorama #ST-1808">Studio Nghỉ Dưỡng Hướng Biển (45.5 m² - 2.35 Tỷ VNĐ)</option>
+                                    <option value="Executive 1BR Oceanview #EX-2205">Căn Hộ 1 Phòng Ngủ Deluxe (58.2 m² - 3.10 Tỷ VNĐ)</option>
+                                    <option value="Signature 2BR Grand Corner #SG-2802" selected>Căn Hộ 2 Phòng Ngủ Signature (78.6 m² - 4.45 Tỷ VNĐ)</option>
+                                    <option value="Royal Ocean Suite #RY-3501">Căn Hộ 3 Phòng Ngủ Royal Suite (115.8 m² - 6.85 Tỷ VNĐ)</option>
+                                    <option value="Imperial Penthouse #PH-3901 (Đỉnh Tháp)">Sky Villa Penthouse Hoàng Gia (268.0 m² - 18.50 Tỷ VNĐ)</option>
+                                    <option value="Dual Key Harmony #DK-1604">Căn Hộ Kép Dual Key Đa Năng (92.5 m² - 5.20 Tỷ VNĐ)</option>
+                                <?php endif; ?>
                             </select>
                             <button type="submit" class="w-full py-4 bg-gradient-to-r from-[#E11D48] via-[#BE123C] to-[#9F1239] hover:from-[#BE123C] hover:to-[#881337] text-white font-black text-xs sm:text-sm uppercase tracking-widest rounded-sm shadow-xl transition-all hover:scale-[1.02] cursor-pointer">
                                 NHẬN BÁO GIÁ NGAY

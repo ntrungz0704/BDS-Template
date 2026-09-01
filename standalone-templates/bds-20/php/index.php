@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 // Fallback defaults
-$company_name = "TEMPLATESBDS";
-$slogan = "KHU ĐÔ THỊ CÔNG VIÊN & HỒ ĐIỀU HÒA SINH THÁI";
-$phone = "0900 000 000";
-$email = "info@templatesbds.com";
-$address = "Khu đô thị Ecopark, Văn Giang, Hưng Yên";
+$company_name = "<?= htmlspecialchars($company_name) ?>";
+$slogan = "<?= htmlspecialchars($slogan) ?>";
+$phone = "<?= htmlspecialchars($phone) ?>";
+$email = "info@<?= htmlspecialchars($company_name) ?>.com";
+$address = "<?= htmlspecialchars($address) ?>";
 $zalo = "0900000000";
 
 $projects = [];
@@ -596,8 +596,8 @@ if (empty($news)) {
                     <h3 class="text-sm font-bold text-white uppercase tracking-wider">LiÃªn Há»‡</h3>
                     <ul class="text-xs space-y-2">
                         <li><i data-lucide="map-pin" class="w-3 h-3 inline mr-1"></i> Khu Ä‘Ã´ thá»‹ Ecopark, VÄƒn Giang, HÆ°ng YÃªn</li>
-                        <li><i data-lucide="phone" class="w-3 h-3 inline mr-1"></i> Hotline: 0900 000 000</li>
-                        <li><i data-lucide="mail" class="w-3 h-3 inline mr-1"></i> info@templatesbds.com</li>
+                        <li><i data-lucide="phone" class="w-3 h-3 inline mr-1"></i> Hotline: <?= htmlspecialchars($phone) ?></li>
+                        <li><i data-lucide="mail" class="w-3 h-3 inline mr-1"></i> info@<?= htmlspecialchars($company_name) ?>.com</li>
                     </ul>
                 </div>
                 <div class="space-y-4">
@@ -627,32 +627,9 @@ if (empty($news)) {
         lucide.createIcons();
 
         // Data Models
-        const BDS20_UNITS = [
-            {
-                id: 'can-1pn-block-a-parkview', title: 'CÄƒn Há»™ 1 PhÃ²ng Ngá»§ Eco Suite Block A View CÃ´ng ViÃªn Trung TÃ¢m', code: 'MPV-A0805', slug: 'can-ho-1-phong-ngu-block-a-view-cong-vien', block: 'Block A - Park View', type: '1 PhÃ²ng Ngá»§', floor: 'Táº§ng 08', price: '2.45 Tá»· VNÄ', priceNum: 2.45, area: '48 mÂ²', areaNum: 48, beds: 1, baths: 1, view: 'Trá»±c diá»‡n cÃ´ng viÃªn cÃ¢y xanh 100ha', direction: 'HÆ°á»›ng ÄÃ´ng Nam', image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80', hot: true, featured: true, description: 'Thiáº¿t káº¿ thÃ´ng minh Ä‘Ã³n giÃ³ tá»± nhiÃªn 100%, ban cÃ´ng kÃ­nh rá»™ng ngáº¯m trá»n váº¹n cáº£nh quan xanh mÃ¡t lÃ nh.', specs: ['Ban cÃ´ng ngáº¯m cÃ´ng viÃªn', 'Thiáº¿t bá»‹ Toto cao cáº¥p', 'KÃ­nh Low-E cÃ¡ch Ã¢m', 'Sá»Ÿ há»¯u lÃ¢u dÃ i']
-            },
-            {
-                id: 'can-2pn-block-b-lakeview', title: 'CÄƒn Há»™ GÃ³c 2 PhÃ²ng Ngá»§ Block B View Trá»±c Diá»‡n Há»“ Äiá»u HÃ²a Sinh ThÃ¡i', code: 'MPV-B1502', slug: 'can-ho-goc-2-phong-ngu-block-b-view-ho', block: 'Block B - Lake View', type: '2 PhÃ²ng Ngá»§', floor: 'Táº§ng 15', price: '3.85 Tá»· VNÄ', priceNum: 3.85, area: '72 mÂ²', areaNum: 72, beds: 2, baths: 2, view: 'View máº·t nÆ°á»›c há»“ Ä‘iá»u hÃ²a & ThÃ¡c trÃ n', direction: 'HÆ°á»›ng Nam - ÄÃ´ng Nam', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80', hot: true, featured: true, description: 'CÄƒn gÃ³c 2 máº·t thoÃ¡ng view trá»n váº¹n máº·t há»“ gá»£n sÃ³ng trong lÃ nh, khÃ´ng gian thoÃ¡ng Ä‘Ã£ng nuÃ´i dÆ°á»¡ng sá»©c khá»e gia Ä‘Ã¬nh.', specs: ['CÄƒn gÃ³c 2 máº·t thoÃ¡ng', 'PhÃ²ng ngá»§ Master view há»“', 'BÃ n giao sÃ n gá»— An CÆ°á»ng', 'Táº·ng gÃ³i Smart Home']
-            },
-            {
-                id: 'can-3pn-block-c-gardenview', title: 'CÄƒn Há»™ 3 PhÃ²ng Ngá»§ Gia ÄÃ¬nh Block C View VÆ°á»n Thiá»n Nháº­t Báº£n', code: 'MPV-C2008', slug: 'can-ho-3-phong-ngu-block-c-view-vuon-thien', block: 'Block C - Garden View', type: '3 PhÃ²ng Ngá»§', floor: 'Táº§ng 20', price: '5.20 Tá»· VNÄ', priceNum: 5.2, area: '98 mÂ²', areaNum: 98, beds: 3, baths: 2, view: 'View vÆ°á»n thiá»n Zen Garden & Äá»“i cá» hoa', direction: 'HÆ°á»›ng ÄÃ´ng Báº¯c', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', hot: false, featured: true, description: 'KhÃ´ng gian sá»‘ng lÃ½ tÆ°á»Ÿng cho gia Ä‘Ã¬nh 3 tháº¿ há»‡, phÃ²ng khÃ¡ch rá»™ng hÆ¡n 40mÂ² ná»‘i liá»n khu vá»±c báº¿p vÃ  ban cÃ´ng ngáº¯m hoa.', specs: ['Báº¿p Ä‘áº£o phong cÃ¡ch chÃ¢u Ã‚u', 'Há»‡ thá»‘ng lá»c nÆ°á»›c sáº¡ch', 'Miá»…n phÃ­ 2 nÄƒm phÃ­ dá»‹ch vá»¥', 'Há»— trá»£ vay 70%']
-            },
-            {
-                id: 'duplex-block-d-skypalace', title: 'CÄƒn Há»™ Duplex ThÃ´ng Táº§ng Block D Sky Palace View Triá»‡u ÄÃ´', code: 'MPV-D2801', slug: 'can-ho-duplex-thong-tang-block-d-sky-palace', block: 'Block D - Sky Palace', type: 'Duplex View Há»“', floor: 'Táº§ng 28 - 29', price: '9.50 Tá»· VNÄ', priceNum: 9.5, area: '168 mÂ²', areaNum: 168, beds: 4, baths: 4, view: 'View 360 Ä‘á»™ cÃ´ng viÃªn há»“ Ä‘iá»u hÃ²a vÃ  thÃ nh phá»‘', direction: 'HÆ°á»›ng ÄÃ´ng Nam', image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80', hot: true, featured: true, description: 'Tuyá»‡t tÃ¡c duplex thÃ´ng táº§ng cao 6m xa hoa báº­c nháº¥t, sá»Ÿ há»¯u ban cÃ´ng vÆ°á»n treo riÃªng biá»‡t ngáº¯m trá»n váº¹n cáº£nh sáº¯c thiÃªn nhiÃªn.', specs: ['ThÃ´ng táº§ng cao 6.2m', 'SÃ¢n vÆ°á»n ban cÃ´ng 35mÂ²', 'Thang mÃ¡y riÃªng báº£o máº­t', 'Sá»• há»“ng vÄ©nh viá»…n']
-            },
-            {
-                id: 'can-2pn-block-a-parkview', title: 'CÄƒn Há»™ 2 PhÃ²ng Ngá»§ TiÃªu Chuáº©n Quá»‘c Táº¿ Block A Park View', code: 'MPV-A1203', slug: 'can-ho-2-phong-ngu-tieu-chuan-block-a', block: 'Block A - Park View', type: '2 PhÃ²ng Ngá»§', floor: 'Táº§ng 12', price: '3.35 Tá»· VNÄ', priceNum: 3.35, area: '65 mÂ²', areaNum: 65, beds: 2, baths: 2, view: 'Ná»™i khu há»“ bÆ¡i sinh thÃ¡i & VÆ°á»n hoa rá»±c rá»¡', direction: 'HÆ°á»›ng TÃ¢y Nam', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80', hot: false, featured: true, description: 'Bá»‘ cá»¥c vuÃ´ng váº¯n tá»‘i Æ°u cÃ´ng nÄƒng, phÃ¹ há»£p cho gia Ä‘Ã¬nh tráº» tÃ¬m kiáº¿m chá»‘n an cÆ° trong lÃ nh cÃ¢n báº±ng cuá»™c sá»‘ng.', specs: ['View há»“ bÆ¡i sinh thÃ¡i', 'KhÃ³a tá»« vÃ¢n tay 4 chá»©c nÄƒng', 'Chiáº¿t kháº¥u thanh toÃ¡n 8%', 'Nháº­n nhÃ  á»Ÿ ngay']
-            },
-            {
-                id: 'penthouse-eco-block-b', title: 'Penthouse Eco Resort Äá»‰nh ThÃ¡p Block B Mona Park View', code: 'MPV-PH02', slug: 'penthouse-eco-resort-dinh-thap-block-b', block: 'Block B - Lake View', type: 'Penthouse Eco', floor: 'Táº§ng 30', price: '14.8 Tá»· VNÄ', priceNum: 14.8, area: '220 mÂ²', areaNum: 220, beds: 4, baths: 4, view: 'View Ä‘á»‰nh cao bao quÃ¡t toÃ n bá»™ thung lÅ©ng xanh', direction: 'HÆ°á»›ng ÄÃ´ng Nam', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80', hot: true, featured: true, description: 'Dinh thá»± trÃªn mÃ¢y vá»›i há»“ bÆ¡i vÃ´ cá»±c ngoÃ i trá»i, quáº§y bar BBQ sÃ¢n thÆ°á»£ng vÃ  táº§m nhÃ¬n ngÃºt ngÃ n xanh mÆ°á»›t.', specs: ['Bá»ƒ bÆ¡i trÃ n bá» trÃªn mÃ¡i', 'VÆ°á»n nÆ°á»›ng BBQ riÃªng', 'Ná»™i tháº¥t nháº­p kháº©u Ã', 'Dá»‹ch vá»¥ quáº£n gia 24/7']
-            }
-        ];
+        const BDS20_UNITS = <?= json_encode($projects) ?>;
 
-        const BDS20_NEWS = [
-            { id: 1, title: 'KhÃ¡nh ThÃ nh CÃ´ng ViÃªn Sinh ThÃ¡i Trung TÃ¢m 100ha & Há»“ Äiá»u HÃ²a Mona Park', slug: 'khanh-thanh-cong-vien-sinh-thai-100ha', date: '28/08/2026', author: 'Ban Quáº£n LÃ½ Mona Park View', category: 'Sá»± Kiá»‡n', image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80', excerpt: 'LÃ¡ phá»•i xanh khá»•ng lá»“ chÃ­nh thá»©c Ä‘i vÃ o hoáº¡t Ä‘á»™ng, mang láº¡i khÃ´ng gian vui chÆ¡i, táº­p luyá»‡n thá»ƒ thao vÃ  tÃ¡i táº¡o nÄƒng lÆ°á»£ng cho cÆ° dÃ¢n.', content: ['CÃ´ng viÃªn Mona Park View sá»Ÿ há»¯u Ä‘Æ°á»ng cháº¡y bá»™ ven há»“ dÃ i 5km, vÆ°á»n thiá»n Nháº­t Báº£n vÃ  há»“ cáº£nh quan sinh thÃ¡i trong lÃ nh.', 'Dá»± Ã¡n Ä‘áº¡t giáº£i thÆ°á»Ÿng Khu Ä‘Ã´ thá»‹ cÃ³ cáº£nh quan sinh thÃ¡i xuáº¥t sáº¯c nháº¥t nÄƒm 2026.'], views: 4890 },
-            { id: 2, title: 'Lá»… Cáº¥t NÃ³c Block A & Block B VÆ°á»£t Tiáº¿n Äá»™ 45 NgÃ y', slug: 'le-cat-noc-block-a-b-vuot-tien-do', date: '26/08/2026', author: 'Tá»•ng Tháº§u XÃ¢y Dá»±ng', category: 'Tiáº¿n Äá»™', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80', excerpt: 'Chá»§ Ä‘áº§u tÆ° cam káº¿t bÃ n giao nhÃ  Ä‘Ãºng tiÃªu chuáº©n cháº¥t lÆ°á»£ng cao cáº¥p vÃ  trao sá»• há»“ng táº­n tay khÃ¡ch hÃ ng.', content: ['ToÃ n bá»™ cÃ´ng tÃ¡c hoÃ n thiá»‡n máº·t ngoÃ i vÃ  á»‘p Ä‘Ã¡ khá»‘i sáº£nh lá»… tÃ¢n Ä‘ang Ä‘Æ°á»£c triá»ƒn khai kháº©n trÆ°Æ¡ng.'], views: 3950 },
-            { id: 3, title: 'ChÃ­nh SÃ¡ch Thanh ToÃ¡n Nháº¹ NhÃ ng 8 Äá»£t â€” Há»— Trá»£ LÃ£i Suáº¥t 0% Trong 24 ThÃ¡ng', slug: 'chinh-sach-thanh-toan-8-dot-uu-dai', date: '24/08/2026', author: 'PhÃ²ng Kinh Doanh', category: 'ChÃ­nh SÃ¡ch', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', excerpt: 'KhÃ¡ch hÃ ng chá»‰ cáº§n thanh toÃ¡n 15% Ä‘á»£t Ä‘áº§u lÃ  cÃ³ thá»ƒ kÃ½ há»£p Ä‘á»“ng mua bÃ¡n vÃ  nháº­n nhÃ  vÃ o quÃ½ 4/2026.', content: ['NgÃ¢n hÃ ng Ä‘á»‘i tÃ¡c chiáº¿n lÆ°á»£c há»— trá»£ giáº£i ngÃ¢n lÃªn Ä‘áº¿n 70% giÃ¡ trá»‹ cÄƒn há»™ vá»›i thá»i háº¡n vay tá»‘i Ä‘a 25 nÄƒm.'], views: 5210 }
-        ];
+        const BDS20_NEWS = <?= json_encode($news) ?>;
 
         // State
         let currentPage = 'home';

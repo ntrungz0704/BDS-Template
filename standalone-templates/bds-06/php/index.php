@@ -215,7 +215,10 @@ if ($pdo) {
   <!-- Scripts -->
   <script>
     
-const BDS06_PROPERTIES = <?php echo $projects_json != "[]" ? $projects_json : \'[
+<?php if ($projects_json != '[]'): ?>
+const BDS06_PROPERTIES = <?= $projects_json ?>;
+<?php else: ?>
+const BDS06_PROPERTIES = [
   {
     id: 1,
     title: 'Căn Hộ 1 Phòng Ngủ Smart Modern (1PN + 1) Tháp Sapphire',
@@ -476,7 +479,8 @@ const BDS06_PROPERTIES = <?php echo $projects_json != "[]" ? $projects_json : \'
     desc: 'Tuyệt tác dinh thự dành cho các gia tộc danh giá, nơi khẳng định vị thế tôn quý và giá trị tài sản truyền đời qua nhiều thế hệ.',
     highlight: 'Tặng du thuyền thể thao mini hoặc chiết khấu trực tiếp 1.5 Tỷ vào HĐMB'
   }
-]\'; ?>;
+];
+<?php endif; ?>
 
 const BDS06_AMENITIES = [
   {
@@ -1584,6 +1588,51 @@ window.addEventListener('DOMContentLoaded', () => {
   renderApp();
 });
 
-  </script>
+  
+function handleLeadSubmit(event) {
+  event.preventDefault();
+  let form = event.target;
+  let data = new FormData(form);
+  
+  // Collect data
+  let inputs = form.querySelectorAll('input, select, textarea');
+  inputs.forEach(input => {
+      if(input.id === 'modal-phone' || input.type === 'tel') data.append('phone', input.value);
+      if(input.id === 'modal-name' || (input.type === 'text' && input.placeholder.includes('Họ'))) data.append('name', input.value);
+      if(input.id === 'modal-email' || input.type === 'email') data.append('email', input.value);
+  });
+
+  fetch('api/contact.php', {
+      method: 'POST',
+      body: data
+  })
+  .then(res => res.json())
+  .then(res => {
+      let toast = document.getElementById('toast');
+      if(toast) {
+          document.getElementById('toast-message').innerText = res.message;
+          toast.classList.remove('hidden');
+          toast.classList.add('flex');
+          setTimeout(() => {
+              toast.classList.add('hidden');
+              toast.classList.remove('flex');
+          }, 3000);
+      } else {
+          alert(res.message);
+      }
+      form.reset();
+      if(typeof closeLeadModal === 'function') closeLeadModal();
+  })
+  .catch(err => {
+      console.error(err);
+      alert("Có lỗi xảy ra, vui lòng thử lại!");
+  });
+}
+
+function handleConsignSubmit(event) {
+    handleLeadSubmit(event);
+}
+
+</script>
 </body>
 </html>

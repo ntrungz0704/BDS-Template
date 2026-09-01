@@ -46,4 +46,15 @@ INSERT INTO `projects` (`id`, `title`, `code`, `slug`, `zone`, `type`, `floor`, 
 ('shophouse-marina', 'Shophouse Bến Du Thuyền Mặt Tiền Đại Lộ Hoa Biển HappyLand', 'HLR-SH10', 'shophouse-ben-du-thuyen-dai-lo-hoa-bien', 'Shophouse Bến Du Thuyền', 'Shophouse Bến Du Thuyền', '4 Tầng + Tum', '14.5 Tỷ VNĐ', '135 m²', 4, 5, 'Mặt tiền đại lộ du lịch & Bến du thuyền 5 sao', 'Hướng Nam', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', 0, 'Hỗ trợ tiền thuê 50 Triệu/tháng trong 12 tháng đầu', 'Phù hợp khai thác chuỗi nhà hàng hải sản, quán cafe lounge ngắm du thuyền và spa trị liệu cao cấp.', '[\"Mặt tiền đường 24m\", \"Kinh doanh ngay\", \"Được phép lưu trú khách sạn\", \"Sổ hồng từng căn\"]'),
 ('sky-villa-dinh-doi', 'Sky Villa Thông Tầng Đỉnh Đồi Vườn Treo View Vịnh Nha Trang', 'HLR-SV03', 'sky-villa-thong-tang-dinh-doi-vuon-treo', 'Sky Villa Đỉnh Đồi', 'Sky Villa Hồ Bơi Vô Cực', 'Tầng 25 - 26', '22.0 Tỷ VNĐ', '280 m²', 4, 4, 'View 360 độ từ đỉnh đồi nhìn trọn vịnh Nha Trang', 'Hướng Đông Nam', 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80', 1, 'Tặng thẻ hội viên du thuyền & Golf 10 năm', 'Biệt thự trên không với trần cao 6.5m ngập tràn ánh nắng, hồ bơi đáy kính vươn ra không trung độc nhất vô nhị.', '[\"Hồ bơi đáy kính trên mây\", \"Sân golf mini trên mái\", \"Thang máy riêng biệt\", \"Nội thất nhập khẩu Ý\"]');
 
+CREATE TABLE IF NOT EXISTS `contacts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `phone` varchar(50) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `product_type` varchar(255) DEFAULT NULL,
+  `source` varchar(100) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 COMMIT;

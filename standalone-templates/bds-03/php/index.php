@@ -278,6 +278,12 @@ if (isset($pdo) && $pdo) {
     <?php if(!empty($properties)): ?>
 const BDS03_PROPERTIES = <?= json_encode($properties) ?>;
 <?php else: ?>
+<?php if(!empty($properties)): ?>
+const BDS03_PROPERTIES = <?= json_encode($properties) ?>;
+<?php else: ?>
+<?php if(!empty($properties)): ?>
+    const BDS03_PROPERTIES = <?= json_encode($properties) ?>;
+<?php else: ?>
 const BDS03_PROPERTIES = [
       {
         id: 1,
@@ -462,9 +468,17 @@ const BDS03_PROPERTIES = [
       }
     ];
 <?php endif; ?>
+<?php endif; ?>
+<?php endif; ?>
 
     <?php if(!empty($projects)): ?>
 const BDS03_PROJECTS = <?= json_encode($projects) ?>;
+<?php else: ?>
+<?php if(!empty($projects)): ?>
+const BDS03_PROJECTS = <?= json_encode($projects) ?>;
+<?php else: ?>
+<?php if(!empty($projects)): ?>
+    const BDS03_PROJECTS = <?= json_encode($projects) ?>;
 <?php else: ?>
 const BDS03_PROJECTS = [
       {
@@ -505,9 +519,17 @@ const BDS03_PROJECTS = [
       }
     ];
 <?php endif; ?>
+<?php endif; ?>
+<?php endif; ?>
 
     <?php if(!empty($news)): ?>
 const BDS03_NEWS = <?= json_encode($news) ?>;
+<?php else: ?>
+<?php if(!empty($news)): ?>
+const BDS03_NEWS = <?= json_encode($news) ?>;
+<?php else: ?>
+<?php if(!empty($news)): ?>
+    const BDS03_NEWS = <?= json_encode($news) ?>;
 <?php else: ?>
 const BDS03_NEWS = [
       {
@@ -560,9 +582,17 @@ const BDS03_NEWS = [
       }
     ];
 <?php endif; ?>
+<?php endif; ?>
+<?php endif; ?>
 
     <?php if(!empty($testimonials)): ?>
 const TESTIMONIALS = <?= json_encode($testimonials) ?>;
+<?php else: ?>
+<?php if(!empty($testimonials)): ?>
+const TESTIMONIALS = <?= json_encode($testimonials) ?>;
+<?php else: ?>
+<?php if(!empty($testimonials)): ?>
+    const TESTIMONIALS = <?= json_encode($testimonials) ?>;
 <?php else: ?>
 const TESTIMONIALS = [
       {
@@ -587,6 +617,8 @@ const TESTIMONIALS = [
         avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80'
       }
     ];
+<?php endif; ?>
+<?php endif; ?>
 <?php endif; ?>
 
     const NAV_ITEMS = [
