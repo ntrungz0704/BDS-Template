@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+import os
+import json
+
+html_content = """<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -960,3 +963,8 @@
     </script>
 </body>
 </html>
+"""
+
+os.makedirs("e:\\BĐS Template\\standalone-templates\\bds-01\\html", exist_ok=True)
+with open("e:\\BĐS Template\\standalone-templates\\bds-01\\html\\index.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
