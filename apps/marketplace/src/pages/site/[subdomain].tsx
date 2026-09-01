@@ -61,27 +61,44 @@ export default function TenantDirectSitePage() {
     const fetchTenantData = async () => {
       setLoading(true);
       try {
-        // Smart template fallback first
+        // Smart template fallback first (from subdomain pattern matching)
         const parsedTpl = resolveTemplateFromSubdomain(rawSubdomain);
         if (parsedTpl) {
           setTemplate(parsedTpl);
         }
 
-        // Try resolving from API
-        const res = await axios.get(`${API_URL}/api/website/resolve-domain?domain=${encodeURIComponent(rawSubdomain)}`);
-        const foundSlug = res.data?.data?.tenantSlug || rawSubdomain;
-        
-        const infoRes = await axios.get(`${API_URL}/api/website/${foundSlug}/company-info`);
+        // Determine the actual tenant slug
+        // For marketplace subdomains (e.g. "thay-cuong-cmtg4n-9876"), rawSubdomain IS the tenant slug
+        // For custom domains, we need to resolve via API first
+        let tenantSlug = rawSubdomain;
+
+        // Try resolving custom domain (optional — may fail for marketplace subdomains, that's OK)
+        try {
+          const domainRes = await axios.get(`${API_URL}/api/website/resolve-domain?domain=${encodeURIComponent(rawSubdomain)}`);
+          if (domainRes.data?.data?.tenantSlug) {
+            tenantSlug = domainRes.data.data.tenantSlug;
+          }
+        } catch (_) {
+          // Custom domain not found — use rawSubdomain as tenant slug (this is the normal case for marketplace)
+        }
+
+        // Fetch tenant company info + template assignment from API
+        const infoRes = await axios.get(`${API_URL}/api/website/${tenantSlug}/company-info`);
         const data = infoRes.data?.data;
         if (data) {
           setTenantInfo(data);
+          // CRITICAL: Use the template slug assigned in the database (from purchase/order)
+          // This is the authoritative source — overrides any subdomain pattern matching
           const assignedTplId = data?.tenant?.template?.slug || data?.tenant?.templateId;
-          const dbMatched = findTemplateBySlugOrId(assignedTplId);
-          if (dbMatched) {
-            setTemplate(dbMatched);
+          if (assignedTplId) {
+            const dbMatched = findTemplateBySlugOrId(assignedTplId);
+            if (dbMatched) {
+              setTemplate(dbMatched);
+            }
           }
         }
       } catch (err) {
+        // Only use subdomain fallback if ALL API calls failed
         const fallbackTpl = resolveTemplateFromSubdomain(rawSubdomain) || ALL_TEMPLATES[0];
         setTemplate(fallbackTpl);
       } finally {
