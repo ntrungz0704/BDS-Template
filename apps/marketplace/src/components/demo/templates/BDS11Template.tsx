@@ -414,21 +414,76 @@ export default function BDS11Template({
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
+  const activeProperties = useMemo<PropertyItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): PropertyItem => {
+        const cat = (p.type?.toLowerCase().includes('đất') || p.type === 'LAND')
+          ? 'dat-nen'
+          : (p.type?.toLowerCase().includes('căn') || p.type === 'APARTMENT')
+          ? 'can-ho'
+          : (p.type?.toLowerCase().includes('biệt') || p.type === 'VILLA')
+          ? 'biet-thu'
+          : 'nha-pho';
+        const catLabel = cat === 'dat-nen' ? 'Đất Nền' : (cat === 'can-ho' ? 'Căn Hộ' : (cat === 'biet-thu' ? 'Biệt Thự' : 'Nhà Phố'));
+
+        return {
+          id: p.id || idx + 1,
+          title: p.title || p.name || 'Bất động sản cao cấp',
+          slug: p.slug || `du-an-${idx + 1}`,
+          category: cat,
+          categoryLabel: catLabel,
+          updateDate: p.date || 'Hôm nay',
+          price: p.price || (p.priceFrom ? `${p.priceFrom} Tỷ` : 'Liên hệ'),
+          priceNum: typeof p.priceNum === 'number' ? p.priceNum : 5,
+          area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '100 m²'),
+          areaNum: typeof p.area === 'number' ? p.area : 100,
+          location: p.address || p.location || 'TP. Đà Nẵng & Toàn quốc',
+          city: p.city || 'Đà Nẵng',
+          image: p.thumbnail || p.image || p.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+          gallery: p.gallery || [p.thumbnail || p.image || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80'],
+          featured: Boolean(p.featured || idx < 3),
+          desc: p.description || p.desc || 'Vị trí đắc địa, giao thông thuận lợi, tiềm năng sinh lời cao.',
+          specs: Array.isArray(p.specs) ? p.specs : ['Sổ hồng riêng', 'Hạ tầng hoàn thiện', 'Mặt tiền đường lớn'],
+          legal: p.legal || 'Sổ hồng riêng',
+        };
+      });
+    }
+    return BDS11_PROPERTIES;
+  }, [projects]);
+
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức thị trường bất động sản',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || company?.name || 'Ban Biên Tập',
+        category: p.category || 'Thị Trường',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+        excerpt: p.summary || p.excerpt || 'Cập nhật diễn biến thị trường bất động sản mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+    }
+    return BDS11_NEWS;
+  }, [posts, company]);
+
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedProperty, setSelectedProperty] = useState<PropertyItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS11_PROPERTIES.find(p => p.slug === initialParsed.propSlug);
+      const found = activeProperties.find(p => p.slug === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS11_PROPERTIES[0];
+    return activeProperties[0] || BDS11_PROPERTIES[0];
   });
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = BDS11_NEWS.find(a => a.slug === initialParsed.artSlug);
+      const found = activeNews.find(a => a.slug === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS11_NEWS[0];
+    return activeNews[0] || BDS11_NEWS[0];
   });
 
   // UI Interactive States
@@ -518,15 +573,15 @@ export default function BDS11Template({
         <div className={`${MAX_W} mx-auto flex items-center justify-between`}>
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1">
-              <Mail size={12} /> info@templatebds.com
+              <Mail size={12} /> {company?.email || 'info@templatebds.com'}
             </span>
             <span className="opacity-40">|</span>
             <span className="flex items-center gap-1 font-bold">
-              <Phone size={12} /> Hotline: 0919 006 030 - 0981 142 307
+              <Phone size={12} /> Hotline: {company?.phone || '0919 006 030'}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[11px] text-emerald-100">Bất động sản Linkhouse Miền Trung</span>
+            <span className="text-[11px] text-emerald-100">{company?.slogan || 'Bất động sản Linkhouse Miền Trung'}</span>
           </div>
         </div>
       </div>
@@ -534,20 +589,30 @@ export default function BDS11Template({
       {/* Main Logo & Sponsor Banner Row */}
       <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
         
-        {/* Brand Logo MT {company?.name || 'TEMPLATESBDS'} */}
+        {/* Brand Logo */}
         <div 
           onClick={() => navigate('home')}
           className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="w-8 h-8 sm:w-11 sm:h-11 bg-gradient-to-br from-[#16A34A] to-[#047857] rounded-sm flex items-center justify-center text-white font-black text-base sm:text-xl shadow-md shrink-0">
-            MT
+          <div className="w-8 h-8 sm:w-11 sm:h-11 bg-gradient-to-br from-[#16A34A] to-[#047857] rounded-sm flex items-center justify-center text-white font-black text-base sm:text-xl shadow-md shrink-0 overflow-hidden">
+            {company?.logo ? (
+              <img src={company.logo} alt={company.name || 'Logo'} className="w-full h-full object-cover" />
+            ) : company?.name ? (
+              company.name.substring(0, 2).toUpperCase()
+            ) : (
+              'MT'
+            )}
           </div>
           <div className="min-w-0 truncate">
             <span className="text-base sm:text-2xl font-black text-[#15803D] tracking-tight block leading-none truncate">
-              NHÀ ĐẤT <span className="text-slate-800">MIỀN TRUNG.VN</span>
+              {company?.name ? (
+                company.name
+              ) : (
+                <>NHÀ ĐẤT <span className="text-slate-800">MIỀN TRUNG.VN</span></>
+              )}
             </span>
             <span className="text-[7.5px] sm:text-[9px] font-bold text-slate-500 uppercase tracking-widest block mt-0.5 truncate">
-              CÔNG TY BĐS LINKHOUSE MIỀN TRUNG
+              {company?.slogan || 'CÔNG TY BĐS LINKHOUSE MIỀN TRUNG'}
             </span>
           </div>
         </div>
@@ -630,7 +695,7 @@ export default function BDS11Template({
 
           <div className="flex items-center gap-2">
             <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="text-amber-300 font-extrabold text-xs flex items-center gap-1">
-              <Phone size={12} className="animate-pulse" /> 0919 006 030
+              <Phone size={12} className="animate-pulse" /> {company?.phone || '0919 006 030'}
             </a>
           </div>
         </div>

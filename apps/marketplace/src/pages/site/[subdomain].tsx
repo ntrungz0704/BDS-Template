@@ -54,6 +54,9 @@ export default function TenantDirectSitePage() {
   const [loading, setLoading] = useState(true);
   const [template, setTemplate] = useState<Template | null>(null);
   const [tenantInfo, setTenantInfo] = useState<any>(null);
+  const [tenantProjects, setTenantProjects] = useState<any[]>([]);
+  const [tenantPosts, setTenantPosts] = useState<any[]>([]);
+  const [tenantTheme, setTenantTheme] = useState<any>(null);
 
   useEffect(() => {
     if (!router.isReady || !rawSubdomain) return;
@@ -82,13 +85,19 @@ export default function TenantDirectSitePage() {
           // Custom domain not found — use rawSubdomain as tenant slug (this is the normal case for marketplace)
         }
 
-        // Fetch tenant company info + template assignment from API
-        const infoRes = await axios.get(`${API_URL}/api/website/${tenantSlug}/company-info`);
-        const data = infoRes.data?.data;
-        if (data) {
+        // Concurrently fetch tenant company info, projects, posts, and theme settings from CMS API
+        const [infoRes, projectsRes, postsRes, themeRes] = await Promise.allSettled([
+          axios.get(`${API_URL}/api/website/${tenantSlug}/company-info`),
+          axios.get(`${API_URL}/api/website/${tenantSlug}/projects?limit=50`),
+          axios.get(`${API_URL}/api/website/${tenantSlug}/posts?limit=50`),
+          axios.get(`${API_URL}/api/website/${tenantSlug}/theme`),
+        ]);
+
+        if (infoRes.status === 'fulfilled' && infoRes.value.data?.data) {
+          const data = infoRes.value.data.data;
           setTenantInfo(data);
+
           // CRITICAL: Use the template slug assigned in the database (from purchase/order)
-          // This is the authoritative source — overrides any subdomain pattern matching
           const assignedTplId = data?.tenant?.template?.slug || data?.tenant?.templateId;
           if (assignedTplId) {
             const dbMatched = findTemplateBySlugOrId(assignedTplId);
@@ -96,6 +105,18 @@ export default function TenantDirectSitePage() {
               setTemplate(dbMatched);
             }
           }
+        }
+
+        if (projectsRes.status === 'fulfilled' && Array.isArray(projectsRes.value.data?.data)) {
+          setTenantProjects(projectsRes.value.data.data);
+        }
+
+        if (postsRes.status === 'fulfilled' && Array.isArray(postsRes.value.data?.data)) {
+          setTenantPosts(postsRes.value.data.data);
+        }
+
+        if (themeRes.status === 'fulfilled' && themeRes.value.data?.data) {
+          setTenantTheme(themeRes.value.data.data);
         }
       } catch (err) {
         // Only use subdomain fallback if ALL API calls failed
@@ -122,22 +143,33 @@ export default function TenantDirectSitePage() {
     );
   }
 
-  // Display name formatting (e.g. hoang-lam-lp02-3456 -> HOÀNG LÂM BĐS)
-  const displayBrandName = tenantInfo?.companyName || 
-    rawSubdomain
-      .split('-')
-      .filter((part: string) => !part.startsWith('lp') && !part.startsWith('bds') && !/^\d+$/.test(part))
-      .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(' ') || rawSubdomain.toUpperCase();
+  // Display name formatting
+  const displayBrandName =
+    tenantInfo?.name ||
+    tenantInfo?.companyName ||
+    (rawSubdomain
+      ? rawSubdomain
+          .split('-')
+          .filter((part: string) => !part.startsWith('lp') && !part.startsWith('bds') && !/^\d+$/.test(part))
+          .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ')
+      : '') ||
+    rawSubdomain.toUpperCase();
 
   const companyData = {
-    name: displayBrandName,
-    phone: tenantInfo?.hotline || tenantInfo?.phone || '0919 006 030',
+    name: tenantInfo?.name || displayBrandName,
+    companyName: tenantInfo?.name || displayBrandName,
+    slogan: tenantInfo?.slogan || 'Bất Động Sản Cao Cấp & Đầu Tư Sinh Lời',
+    phone: tenantInfo?.phone || tenantInfo?.hotline || '0919 006 030',
+    hotline: tenantInfo?.phone || tenantInfo?.hotline || '0919 006 030',
     zalo: tenantInfo?.zalo || tenantInfo?.phone || '0919 006 030',
     email: tenantInfo?.email || `${rawSubdomain.replace(/[^a-z0-9]/g, '')}@aireviewbds.com`,
     address: tenantInfo?.address || 'TP. Hồ Chí Minh & Hà Nội',
     logo: tenantInfo?.logo,
-    ...(tenantInfo?.company || {}),
+    aboutContent: tenantInfo?.aboutContent,
+    description: tenantInfo?.description,
+    workingHours: tenantInfo?.workingHours || '8h00 - 20h00',
+    ...(tenantInfo || {}),
   };
 
   return (
@@ -147,14 +179,27 @@ export default function TenantDirectSitePage() {
         <meta name="description" content={`Website bất động sản của ${displayBrandName}`} />
       </Head>
 
+      {tenantTheme && (
+        <style jsx global>{`
+          :root {
+            ${tenantTheme.primaryColor ? `--color-primary: ${tenantTheme.primaryColor};` : ''}
+            ${tenantTheme.secondaryColor ? `--color-secondary: ${tenantTheme.secondaryColor};` : ''}
+            ${tenantTheme.accentColor ? `--color-accent: ${tenantTheme.accentColor};` : ''}
+            ${tenantTheme.backgroundColor ? `--color-bg: ${tenantTheme.backgroundColor};` : ''}
+            ${tenantTheme.textColor ? `--color-text: ${tenantTheme.textColor};` : ''}
+          }
+        `}</style>
+      )}
+
       <div className="min-h-screen bg-white font-sans selection:bg-blue-600 selection:text-white platformbds-template w-full">
         <DemoRenderer 
           template={template} 
           viewport="desktop" 
           initialPage={pageSlug}
           company={companyData}
-          projects={tenantInfo?.projects}
-          posts={tenantInfo?.posts}
+          theme={tenantTheme}
+          projects={tenantProjects.length > 0 ? tenantProjects : undefined}
+          posts={tenantPosts.length > 0 ? tenantPosts : undefined}
         />
       </div>
     </>
