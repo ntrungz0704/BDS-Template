@@ -247,6 +247,10 @@ export default function BDS12Template({
   projects,
   posts
 }: TemplateProps) {
+  const primaryColor = theme?.primaryColor;
+  const secondaryColor = theme?.secondaryColor;
+  const accentColor = theme?.accentColor;
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 

@@ -357,6 +357,10 @@ export const resolvePageAndDetail = (p?: string) => {
 };
 
 export default function BDS02Template({ template, viewport = 'desktop', initialPage = 'home', company, theme, projects, posts }: TemplateProps) {
+  const primaryColor = theme?.primaryColor;
+  const secondaryColor = theme?.secondaryColor;
+  const accentColor = theme?.accentColor;
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
 
   const activeProperties = useMemo<PropertyItem[]>(() => {
@@ -392,6 +396,26 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
     }
     return BDS02_PROPERTIES;
   }, [projects, company]);
+
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức thị trường bất động sản',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || company?.name || 'Ban Biên Tập',
+        category: p.category || 'Thị trường BĐS',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80',
+        desc: p.summary || p.excerpt || 'Cập nhật tin tức thị trường BĐS mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+        tags: ['Bất động sản', 'Thị trường', 'Đầu tư']
+      }));
+    }
+    return BDS02_NEWS;
+  }, [posts, company]);
+
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
@@ -404,10 +428,10 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
   });
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = BDS02_NEWS.find(a => a.slug === initialParsed.artSlug);
+      const found = activeNews.find(a => a.slug === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS02_NEWS[0];
+    return (activeNews[0] || BDS02_NEWS[0]);
   });
 
   // Filter States
@@ -1108,7 +1132,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
                   </button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {BDS02_NEWS.map(art => (
+                  {activeNews.map(art => (
                     <div
                       key={art.id}
                       onClick={() => handleOpenArticle(art)}
@@ -1209,7 +1233,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
               TIN BẤT ĐỘNG SẢN TIN TỨC
             </div>
             <div className="space-y-4">
-              {BDS02_NEWS.map(art => (
+              {activeNews.map(art => (
                 <div
                   key={art.id}
                   onClick={() => handleOpenArticle(art)}

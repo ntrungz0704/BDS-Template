@@ -414,6 +414,11 @@ export default function BDS11Template({
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
+  const primaryColor = theme?.primaryColor || '#16A34A';
+  const secondaryColor = theme?.secondaryColor || '#047857';
+  const accentColor = theme?.accentColor || '#F43F5E';
+  const darkBgColor = theme?.secondaryColor || '#0F382A';
+
   const activeProperties = useMemo<PropertyItem[]>(() => {
     if (projects && Array.isArray(projects) && projects.length > 0) {
       return projects.map((p: any, idx: number): PropertyItem => {
@@ -569,7 +574,7 @@ export default function BDS11Template({
     <header className="sticky top-0 z-40 bg-white text-slate-800 shadow-md border-b border-slate-200">
       
       {/* Top Micro Bar */}
-      <div className="bg-[#047857] text-white text-xs py-1 px-4 hidden md:block">
+      <div className="text-white text-xs py-1 px-4 hidden md:block" style={{ backgroundColor: secondaryColor }}>
         <div className={`${MAX_W} mx-auto flex items-center justify-between`}>
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1">
@@ -594,7 +599,7 @@ export default function BDS11Template({
           onClick={() => navigate('home')}
           className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="w-8 h-8 sm:w-11 sm:h-11 bg-gradient-to-br from-[#16A34A] to-[#047857] rounded-sm flex items-center justify-center text-white font-black text-base sm:text-xl shadow-md shrink-0 overflow-hidden">
+          <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-sm flex items-center justify-center text-white font-black text-base sm:text-xl shadow-md shrink-0 overflow-hidden" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}>
             {company?.logo ? (
               <img src={company.logo} alt={company.name || 'Logo'} className="w-full h-full object-cover" />
             ) : company?.name ? (
@@ -604,7 +609,7 @@ export default function BDS11Template({
             )}
           </div>
           <div className="min-w-0 truncate">
-            <span className="text-base sm:text-2xl font-black text-[#15803D] tracking-tight block leading-none truncate">
+            <span className="text-base sm:text-2xl font-black tracking-tight block leading-none truncate" style={{ color: primaryColor }}>
               {company?.name ? (
                 company.name
               ) : (
@@ -619,11 +624,11 @@ export default function BDS11Template({
 
         {/* Sponsor Banner Right */}
         <div className="hidden lg:flex items-center bg-gradient-to-r from-emerald-50 to-blue-50 border border-emerald-200 rounded-sm px-4 py-2 text-xs gap-3 shadow-sm">
-          <div className="w-8 h-8 rounded-lg bg-[#16A34A] flex items-center justify-center text-white font-black text-sm">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-sm" style={{ backgroundColor: primaryColor }}>
             ★
           </div>
           <div>
-            <span className="text-[10px] font-black text-[#15803D] uppercase block">DỰ ÁN TÀI TRỢ HOT</span>
+            <span className="text-[10px] font-black uppercase block" style={{ color: primaryColor }}>DỰ ÁN TÀI TRỢ HOT</span>
             <span className="font-bold text-slate-800 text-xs">Đất Nền Biển Nhơn Hội New City — Sinh Lời Vượng Phát</span>
           </div>
         </div>
@@ -640,54 +645,54 @@ export default function BDS11Template({
       </div>
 
       {/* Main Navbar Dark Green */}
-      <nav className="bg-[#0F382A] text-white border-t border-emerald-800 hidden lg:block">
+      <nav className="text-white border-t hidden lg:block" style={{ backgroundColor: darkBgColor, borderColor: secondaryColor }}>
         <div className={`${MAX_W} mx-auto px-4 flex items-center justify-between gap-2 text-xs font-bold uppercase tracking-wider whitespace-nowrap`}>
           <div className="flex items-center gap-1">
             <button 
               onClick={() => navigate('home')} 
-              className={`whitespace-nowrap px-4 py-2.5 transition-all ${currentPage === 'home' ? 'bg-[#16A34A] text-white font-black' : 'hover:bg-emerald-800'}`}
+              className={`whitespace-nowrap px-4 py-2.5 transition-all ${currentPage === 'home' ? 'text-white font-black' : 'hover:opacity-80'}" style={{ backgroundColor: currentPage === 'home' ? primaryColor : undefined }}`}
             >
               Trang Chủ
             </button>
             <button 
               onClick={() => navigate('about')} 
-              className={`whitespace-nowrap px-4 py-2.5 transition-all ${currentPage === 'about' ? 'bg-[#16A34A] text-white font-black' : 'hover:bg-emerald-800'}`}
+              className={`whitespace-nowrap px-4 py-2.5 transition-all ${currentPage === 'about' ? 'text-white font-black' : 'hover:opacity-80'}" style={{ backgroundColor: currentPage === 'about' ? primaryColor : undefined }}`}
             >
               Giới Thiệu
             </button>
             <button 
               onClick={() => navigate('projects')} 
-              className={`whitespace-nowrap px-4 py-2.5 transition-all ${currentPage === 'projects' || currentPage === 'property-detail' ? 'bg-[#16A34A] text-white font-black' : 'hover:bg-emerald-800'}`}
+              className={`whitespace-nowrap px-4 py-2.5 transition-all ${currentPage === 'projects' || currentPage === 'property-detail' ? 'text-white font-black' : 'hover:opacity-80'}" style={{ backgroundColor: (currentPage === 'projects' || currentPage === 'property-detail') ? primaryColor : undefined }}`}
             >
               Dự Án
             </button>
             <button 
               onClick={() => navigate('dat-nen')} 
-              className={`whitespace-nowrap px-4 py-2.5 transition-all ${currentPage === 'dat-nen' ? 'bg-[#16A34A] text-white font-black' : 'hover:bg-emerald-800'}`}
+              className={`whitespace-nowrap px-4 py-2.5 transition-all ${currentPage === 'dat-nen' ? 'text-white font-black' : 'hover:opacity-80'}" style={{ backgroundColor: currentPage === 'dat-nen' ? primaryColor : undefined }}`}
             >
               Đất Nền Miền Trung
             </button>
             <button 
               onClick={() => navigate('can-ho')} 
-              className={`whitespace-nowrap px-4 py-2.5 transition-all ${currentPage === 'can-ho' ? 'bg-[#16A34A] text-white font-black' : 'hover:bg-emerald-800'}`}
+              className={`whitespace-nowrap px-4 py-2.5 transition-all ${currentPage === 'can-ho' ? 'text-white font-black' : 'hover:opacity-80'}" style={{ backgroundColor: currentPage === 'can-ho' ? primaryColor : undefined }}`}
             >
               Căn Hộ
             </button>
             <button 
               onClick={() => navigate('nha-pho')} 
-              className={`whitespace-nowrap px-4 py-2.5 transition-all ${currentPage === 'nha-pho' ? 'bg-[#16A34A] text-white font-black' : 'hover:bg-emerald-800'}`}
+              className={`whitespace-nowrap px-4 py-2.5 transition-all ${currentPage === 'nha-pho' ? 'text-white font-black' : 'hover:opacity-80'}" style={{ backgroundColor: currentPage === 'nha-pho' ? primaryColor : undefined }}`}
             >
               Nhà Phố
             </button>
             <button 
               onClick={() => navigate('gallery')} 
-              className={`whitespace-nowrap px-4 py-2.5 transition-all ${currentPage === 'gallery' ? 'bg-[#16A34A] text-white font-black' : 'hover:bg-emerald-800'}`}
+              className={`whitespace-nowrap px-4 py-2.5 transition-all ${currentPage === 'gallery' ? 'text-white font-black' : 'hover:opacity-80'}" style={{ backgroundColor: currentPage === 'gallery' ? primaryColor : undefined }}`}
             >
               Thư Viện Ảnh
             </button>
             <button 
               onClick={() => navigate('contact')} 
-              className={`whitespace-nowrap px-4 py-2.5 transition-all ${currentPage === 'contact' ? 'bg-[#16A34A] text-white font-black' : 'hover:bg-emerald-800'}`}
+              className={`whitespace-nowrap px-4 py-2.5 transition-all ${currentPage === 'contact' ? 'text-white font-black' : 'hover:opacity-80'}" style={{ backgroundColor: currentPage === 'contact' ? primaryColor : undefined }}`}
             >
               Liên Hệ
             </button>
@@ -703,7 +708,7 @@ export default function BDS11Template({
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#0F382A] text-white px-6 py-5 space-y-2 animate-in slide-in-from-top duration-200 shadow-2xl">
+        <div className="lg:hidden text-white px-6 py-5 space-y-2 animate-in slide-in-from-top duration-200 shadow-2xl" style={{ backgroundColor: darkBgColor }}>
           <div className="grid grid-cols-2 gap-2 text-xs font-bold uppercase">
             <button onClick={() => navigate('home')} className="p-2.5 rounded-lg text-left bg-emerald-900 hover:bg-[#16A34A]">Trang Chủ</button>
             <button onClick={() => navigate('about')} className="p-2.5 rounded-lg text-left bg-emerald-900 hover:bg-[#16A34A]">Giới Thiệu</button>
@@ -733,14 +738,14 @@ export default function BDS11Template({
           onError={handleImgError}
           className="absolute inset-0 w-full h-full object-cover opacity-60"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0F382A]/90 via-[#0F382A]/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-transparent" />
 
         {/* Hero Content Box */}
         <div className={`relative z-20 ${MAX_W} mx-auto px-4 py-12`}>
           <div className="max-w-2xl bg-black/40 backdrop-blur-md p-6 sm:p-8 rounded-md border border-emerald-500/40 space-y-4 shadow-2xl">
             
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-[#16A34A] rounded-sm flex items-center justify-center text-white font-black text-2xl shadow-lg">
+              <div className="w-12 h-12 rounded-sm flex items-center justify-center text-white font-black text-2xl shadow-lg" style={{ backgroundColor: primaryColor }}>
                 MT
               </div>
               <div>
@@ -755,7 +760,7 @@ export default function BDS11Template({
 
             <div className="space-y-2 text-xs sm:text-sm text-slate-200 border-t border-white/20 pt-4">
               <p className="flex items-center gap-2">
-                <MapPin size={14} className="text-[#4ADE80] shrink-0" />
+                <MapPin size={14} className="shrink-0" style={{ color: accentColor }} />
                 <span>320 Đường 2/9, Q. Hải Châu, TP. Đà Nẵng</span>
               </p>
               <p className="flex items-center gap-2 font-bold text-[#FDE047]">
@@ -763,11 +768,11 @@ export default function BDS11Template({
                 <span>0919.006.030 — 0981.142.307</span>
               </p>
               <p className="flex items-center gap-2">
-                <Mail size={14} className="text-[#4ADE80] shrink-0" />
+                <Mail size={14} className="shrink-0" style={{ color: accentColor }} />
                 <span>info@templatebds.com</span>
               </p>
               <p className="flex items-center gap-2">
-                <Compass size={14} className="text-[#4ADE80] shrink-0" />
+                <Compass size={14} className="shrink-0" style={{ color: accentColor }} />
                 <span>Website: nhadatmientrung.vn</span>
               </p>
             </div>
@@ -775,7 +780,7 @@ export default function BDS11Template({
             <div className="pt-2 flex gap-3">
               <button
                 onClick={() => navigate('projects')}
-                className="px-6 py-2.5 bg-[#16A34A] hover:bg-[#15803D] text-white font-black text-xs uppercase tracking-wider rounded-sm shadow-lg transition"
+                className="px-6 py-2.5 text-white font-black text-xs uppercase tracking-wider rounded-sm shadow-lg transition opacity-90 hover:opacity-100" style={{ backgroundColor: primaryColor }}
               >
                 Xem Giỏ Hàng BĐS ›
               </button>
@@ -792,13 +797,13 @@ export default function BDS11Template({
   // 3. SECTION 1: TIN NỔI BẬT (6 CARDS GRID)
   // ─────────────────────────────────────────────────────────────────────────
   const renderFeaturedSection = () => {
-    const featuredList = BDS11_PROPERTIES.slice(0, 6);
+    const featuredList = activeProperties.slice(0, 6);
     return (
       <section className="py-10 bg-[#F8FAFC]">
         <div className={`${MAX_W} mx-auto px-4 space-y-6`}>
           
           {/* Header Bar */}
-          <div className="bg-[#0F382A] text-white px-5 py-3 rounded-sm flex items-center justify-between shadow-sm">
+          <div className="bg-slate-900 text-white px-5 py-3 rounded-sm flex items-center justify-between shadow-sm">
             <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2">
               <Sparkles size={16} className="text-amber-400" /> TIN NỔI BẬT
             </h2>
@@ -823,13 +828,13 @@ export default function BDS11Template({
                       onError={handleImgError}
                       className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                     />
-                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-[#16A34A] text-white text-[10px] font-bold">
+                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-white text-[10px] font-bold" style={{ backgroundColor: primaryColor }}>
                       {item.categoryLabel}
                     </div>
                   </div>
 
                   <div className="p-4 space-y-2">
-                    <h3 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-[#15803D] transition-colors leading-snug line-clamp-2 uppercase min-h-[38px]">
+                    <h3 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-inherit transition-colors leading-snug line-clamp-2 uppercase min-h-[38px]">
                       {item.title}
                     </h3>
                     <p className="text-[11px] text-slate-500 line-clamp-2">{item.desc}</p>
@@ -839,7 +844,7 @@ export default function BDS11Template({
                 <div className="px-4 pb-4 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
                   <div>
                     <span className="text-[10px] text-slate-400 block font-medium">Cập nhật: {item.updateDate}</span>
-                    <span className="font-extrabold text-[#E11D48] text-sm">{item.price}</span>
+                    <span className="font-extrabold text-sm" style={{ color: accentColor }}>{item.price}</span>
                   </div>
                   <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-md">
                     DT: {item.area}
@@ -858,13 +863,13 @@ export default function BDS11Template({
   // 4. SECTION 2: CĂN HỘ CAO CẤP (3 CARDS GRID)
   // ─────────────────────────────────────────────────────────────────────────
   const renderApartmentsSection = () => {
-    const aptList = BDS11_PROPERTIES.slice(6, 9);
+    const aptList = activeProperties.slice(6, 9);
     return (
       <section className="py-8 bg-white border-t border-slate-200">
         <div className={`${MAX_W} mx-auto px-4 space-y-6`}>
           
           {/* Header Bar */}
-          <div className="bg-[#0F382A] text-white px-5 py-3 rounded-sm flex items-center justify-between shadow-sm">
+          <div className="bg-slate-900 text-white px-5 py-3 rounded-sm flex items-center justify-between shadow-sm">
             <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2">
               <Building2 size={16} className="text-emerald-400" /> CĂN HỘ CAO CẤP
             </h2>
@@ -895,7 +900,7 @@ export default function BDS11Template({
                   </div>
 
                   <div className="p-4 space-y-2">
-                    <h3 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-[#15803D] transition-colors leading-snug line-clamp-2 uppercase min-h-[38px]">
+                    <h3 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-inherit transition-colors leading-snug line-clamp-2 uppercase min-h-[38px]">
                       {item.title}
                     </h3>
                     <p className="text-[11px] text-slate-500 line-clamp-2">{item.desc}</p>
@@ -903,7 +908,7 @@ export default function BDS11Template({
                 </div>
 
                 <div className="px-4 pb-4 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                  <span className="font-extrabold text-[#E11D48] text-sm">{item.price}</span>
+                  <span className="font-extrabold text-sm" style={{ color: accentColor }}>{item.price}</span>
                   <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-md">
                     DT: {item.area}
                   </span>
@@ -921,13 +926,13 @@ export default function BDS11Template({
   // 5. SECTION 3: ĐẤT NỀN DỰ ÁN (3 CARDS GRID)
   // ─────────────────────────────────────────────────────────────────────────
   const renderLandPlotsSection = () => {
-    const landList = BDS11_PROPERTIES.slice(9, 12);
+    const landList = activeProperties.slice(9, 12);
     return (
       <section className="py-8 bg-[#F8FAFC] border-t border-slate-200">
         <div className={`${MAX_W} mx-auto px-4 space-y-6`}>
           
           {/* Header Bar */}
-          <div className="bg-[#0F382A] text-white px-5 py-3 rounded-sm flex items-center justify-between shadow-sm">
+          <div className="bg-slate-900 text-white px-5 py-3 rounded-sm flex items-center justify-between shadow-sm">
             <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2">
               <Layers size={16} className="text-emerald-400" /> ĐẤT NỀN DỰ ÁN
             </h2>
@@ -952,13 +957,13 @@ export default function BDS11Template({
                       onError={handleImgError}
                       className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                     />
-                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-[#16A34A] text-white text-[10px] font-bold">
+                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-white text-[10px] font-bold" style={{ backgroundColor: primaryColor }}>
                       {item.categoryLabel}
                     </div>
                   </div>
 
                   <div className="p-4 space-y-2">
-                    <h3 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-[#15803D] transition-colors leading-snug line-clamp-2 uppercase min-h-[38px]">
+                    <h3 className="text-xs sm:text-sm font-black text-slate-900 group-hover:text-inherit transition-colors leading-snug line-clamp-2 uppercase min-h-[38px]">
                       {item.title}
                     </h3>
                     <p className="text-[11px] text-slate-500 line-clamp-2">{item.desc}</p>
@@ -966,7 +971,7 @@ export default function BDS11Template({
                 </div>
 
                 <div className="px-4 pb-4 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                  <span className="font-extrabold text-[#E11D48] text-sm">{item.price}</span>
+                  <span className="font-extrabold text-sm" style={{ color: accentColor }}>{item.price}</span>
                   <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-md">
                     DT: {item.area}
                   </span>
@@ -986,10 +991,10 @@ export default function BDS11Template({
   const renderDirectContactBox = () => (
     <section className="py-12 bg-white">
       <div className={`${MAX_W} mx-auto px-4 max-w-4xl`}>
-        <div className="bg-white rounded-md p-6 sm:p-10 border-2 border-[#16A34A] shadow-xl space-y-6">
+        <div className="bg-white rounded-md p-6 sm:p-10 border-2 shadow-xl space-y-6" style={{ borderColor: primaryColor }}>
           
           <div className="text-center space-y-1 border-b border-emerald-100 pb-4">
-            <h3 className="text-lg sm:text-xl font-black text-[#15803D] uppercase tracking-wide">
+            <h3 className="text-lg sm:text-xl font-black uppercase tracking-wide" style={{ color: primaryColor }}>
               LIÊN HỆ TRỰC TIẾP CHỦ ĐẦU TƯ
             </h3>
             <p className="text-xs text-slate-600">
@@ -1027,7 +1032,7 @@ export default function BDS11Template({
                 onChange={e => setLeadForm({ ...leadForm, project: e.target.value })}
                 className="w-full bg-slate-50 px-4 py-3 rounded-sm border border-slate-300 focus:bg-white focus:outline-none focus:border-emerald-500 font-medium"
               >
-                {BDS11_PROPERTIES.map(p => (
+                {activeProperties.map(p => (
                   <option key={p.id} value={p.title}>{p.title}</option>
                 ))}
               </select>
@@ -1043,7 +1048,7 @@ export default function BDS11Template({
               ></textarea>
               <button
                 type="submit"
-                className="w-full py-3.5 bg-[#16A34A] hover:bg-[#15803D] text-white font-black text-xs uppercase tracking-wider rounded-sm shadow-md transition cursor-pointer"
+                className="w-full py-3.5 text-white font-black text-xs uppercase tracking-wider rounded-sm shadow-md transition cursor-pointer opacity-90 hover:opacity-100" style={{ backgroundColor: primaryColor }}
               >
                 GỬI YÊU CẦU NGAY
               </button>
@@ -1061,7 +1066,7 @@ export default function BDS11Template({
   const renderPartners = () => (
     <section className="py-12 bg-white border-t border-slate-200 text-center space-y-6">
       <div className={`${MAX_W} mx-auto px-4`}>
-        <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest text-[#15803D]">
+        <h3 className="text-sm font-black uppercase tracking-widest" style={{ color: primaryColor }}>
           ĐỐI TÁC CỦA CHÚNG TÔI
         </h3>
         <p className="text-xs text-slate-500 max-w-xl mx-auto">
@@ -1090,7 +1095,7 @@ export default function BDS11Template({
           
           <div className="md:col-span-5 space-y-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-[#16A34A] rounded-lg flex items-center justify-center text-white font-black text-sm">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-sm" style={{ backgroundColor: primaryColor }}>
                 MT
               </div>
               <span className="text-lg font-black text-white">{company?.name || 'TEMPLATESBDS'}</span>
@@ -1100,7 +1105,7 @@ export default function BDS11Template({
             </p>
             <div className="space-y-1 text-slate-400 pt-2">
               <p>📍 Trụ sở: 320 Đường 2/9, Q. Hải Châu, TP. Đà Nẵng</p>
-              <p>📞 Hotline: <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="text-[#4ADE80] font-bold">0919 006 030 — 0981 142 307</a></p>
+              <p>📞 Hotline: <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="font-bold" style={{ color: accentColor }}>0919 006 030 — 0981 142 307</a></p>
               <p>✉️ Email: info@templatebds.com</p>
               <p>🌐 Website: nhadatmientrung.vn</p>
             </div>
@@ -1162,7 +1167,7 @@ export default function BDS11Template({
 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-6">
           <div>
-            <div className="inline-block px-3 py-1 rounded-md bg-[#16A34A] text-white text-xs font-bold mb-2">
+            <div className="inline-block px-3 py-1 rounded-md text-white text-xs font-bold mb-2" style={{ backgroundColor: primaryColor }}>
               {selectedProperty.categoryLabel}
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 uppercase">{selectedProperty.title}</h1>
@@ -1172,7 +1177,7 @@ export default function BDS11Template({
           </div>
           <div className="text-right">
             <span className="text-xs text-slate-400 block font-bold">Giá bán:</span>
-            <span className="text-2xl sm:text-3xl font-black text-[#E11D48]">{selectedProperty.price}</span>
+            <span className="text-2xl sm:text-3xl font-black" style={{ color: accentColor }}>{selectedProperty.price}</span>
           </div>
         </div>
 
@@ -1180,7 +1185,7 @@ export default function BDS11Template({
           <div className="lg:col-span-8 space-y-6">
             <PropertyImageGallery images={(selectedProperty as any)?.gallery || (selectedProperty as any)?.images} image={(selectedProperty as any)?.image || (selectedProperty as any)?.thumbnail} badge1={(selectedProperty as any)?.type || (selectedProperty as any)?.badge} badge2={(selectedProperty as any)?.direction || (selectedProperty as any)?.zone} themeColor="blue" />
             <div className="bg-slate-50 p-6 rounded-md border space-y-4">
-              <h3 className="text-base font-black text-[#15803D] uppercase">Thông Tin Chi Tiết & Pháp Lý</h3>
+              <h3 className="text-base font-black uppercase" style={{ color: primaryColor }}>Thông Tin Chi Tiết & Pháp Lý</h3>
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{selectedProperty.desc}</p>
               <ul className="space-y-2 text-xs sm:text-sm text-slate-600">
                 {selectedProperty.specs.map((s, i) => (
@@ -1217,7 +1222,7 @@ export default function BDS11Template({
               />
               <button
                 type="submit"
-                className="w-full py-3.5 bg-[#16A34A] hover:bg-[#15803D] text-white font-black rounded-sm uppercase tracking-wider shadow"
+                className="w-full py-3.5 text-white font-black rounded-sm uppercase tracking-wider shadow opacity-90 hover:opacity-100" style={{ backgroundColor: primaryColor }}
               >
                 Gửi Đăng Ký Ngay
               </button>
@@ -1233,7 +1238,7 @@ export default function BDS11Template({
       
       {/* Toast Popup */}
       {toastMessage && (
-        <div className="fixed bottom-24 right-6 z-50 bg-[#0F382A] text-white border border-emerald-400 px-5 py-3 rounded-sm shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce">
+        <div className="fixed bottom-24 right-6 z-50 bg-slate-900 text-white border border-emerald-400 px-5 py-3 rounded-sm shadow-2xl font-bold text-xs flex items-center gap-2 animate-bounce">
           <CheckCircle2 size={16} className="text-[#4ADE80]" /> {toastMessage}
         </div>
       )}

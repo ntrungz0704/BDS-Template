@@ -619,6 +619,10 @@ export const resolvePageAndDetail = (p?: string) => {
 };
 
 export default function BDS01Template({ template, viewport = 'desktop', initialPage = 'home', company, theme, projects, posts }: TemplateProps) {
+  const primaryColor = theme?.primaryColor;
+  const secondaryColor = theme?.secondaryColor;
+  const accentColor = theme?.accentColor;
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const tSlug = template?.slug || 'bds-01';
 

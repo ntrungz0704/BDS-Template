@@ -260,6 +260,10 @@ export const resolvePageAndDetail = (p?: string) => {
 };
 
 export default function BDS04Template({ template, viewport = 'desktop', initialPage = 'home', company, theme, projects, posts }: TemplateProps) {
+  const primaryColor = theme?.primaryColor;
+  const secondaryColor = theme?.secondaryColor;
+  const accentColor = theme?.accentColor;
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
@@ -288,6 +292,25 @@ export default function BDS04Template({ template, viewport = 'desktop', initialP
     return BDS04_UNITS;
   }, [projects]);
 
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức dự án',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || company?.name || 'Ban Quản Trị',
+        category: p.category || 'Tin Tức',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        desc: p.summary || p.excerpt || 'Cập nhật tin tức dự án mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+    }
+    return BDS04_NEWS;
+  }, [posts, company]);
+
+
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [selectedUnit, setSelectedUnit] = useState<UnitItem>(() => {
     if (initialParsed.propSlug) {
@@ -301,7 +324,7 @@ export default function BDS04Template({ template, viewport = 'desktop', initialP
       const found = BDS04_NEWS.find(a => a.slug === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS04_NEWS[0];
+    return (activeNews[0] || BDS04_NEWS[0]);
   });
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -761,7 +784,7 @@ export default function BDS04Template({ template, viewport = 'desktop', initialP
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {BDS04_NEWS.map(art => (
+          {activeNews.map(art => (
             <div
               key={art.id}
               onClick={() => handleOpenArticle(art)}
@@ -1072,7 +1095,7 @@ export default function BDS04Template({ template, viewport = 'desktop', initialP
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {BDS04_NEWS.map(art => (
+          {activeNews.map(art => (
             <div
               key={art.id}
               onClick={() => handleOpenArticle(art)}

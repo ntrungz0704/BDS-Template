@@ -295,6 +295,10 @@ export default function BDS14Template({
   projects,
   posts
 }: TemplateProps) {
+  const primaryColor = theme?.primaryColor;
+  const secondaryColor = theme?.secondaryColor;
+  const accentColor = theme?.accentColor;
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
@@ -658,7 +662,7 @@ export default function BDS14Template({
               onClick={() => setActiveSearchTab('all')}
               className={`px-5 py-2 rounded-sm text-xs font-bold uppercase tracking-wider transition ${activeSearchTab === 'all' ? 'bg-white text-[#4D7C0F] shadow-md font-extrabold' : 'bg-black/20 text-white hover:bg-black/30'}`}
             >
-              TẤT CẢ ({BDS14_PROPERTIES.length})
+              TẤT CẢ ({activeProperties.length})
             </button>
             <button
               onClick={() => setActiveSearchTab('ban')}
@@ -898,7 +902,7 @@ export default function BDS14Template({
 
         {/* 6 Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {BDS14_PROPERTIES.map(prop => (
+          {activeProperties.map(prop => (
             <div key={prop.id} className="bg-white rounded-sm overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition flex flex-col justify-between group">
               <div className="relative aspect-[16/10] overflow-hidden bg-slate-900">
                 <img src={prop.image} alt={prop.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
@@ -993,7 +997,7 @@ export default function BDS14Template({
 
         {/* 3 News Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {BDS14_NEWS.map(n => (
+          {activeNews.map(n => (
             <div key={n.id} className="bg-slate-50 rounded-sm overflow-hidden border border-slate-200 flex flex-col justify-between group">
               <img src={n.image} alt={n.title} className="w-full h-44 object-cover group-hover:scale-105 transition duration-500" />
               <div className="p-5 space-y-2">

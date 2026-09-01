@@ -258,6 +258,10 @@ export default function BDS10Template({
   projects,
   posts
 }: TemplateProps) {
+  const primaryColor = theme?.primaryColor;
+  const secondaryColor = theme?.secondaryColor;
+  const accentColor = theme?.accentColor;
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
@@ -862,7 +866,7 @@ export default function BDS10Template({
 
         {/* 3 News Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {BDS10_NEWS_ARTICLES.map(news => (
+          {activeNews.map(news => (
             <div
               key={news.id}
               onClick={() => handleOpenArticle(news)}

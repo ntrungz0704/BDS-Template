@@ -272,6 +272,10 @@ export default function BDS24Template({
   projects,
   posts
 }: TemplateProps) {
+  const primaryColor = theme?.primaryColor;
+  const secondaryColor = theme?.secondaryColor;
+  const accentColor = theme?.accentColor;
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
 
   const activeProjects = useMemo<SmartCityProject[]>(() => {
@@ -298,6 +302,25 @@ export default function BDS24Template({
     }
     return BDS24_PROJECTS;
   }, [projects, company]);
+
+  const activeNews = useMemo<TechNewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): TechNewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức đô thị thông minh',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || company?.name || 'Ban Quản Trị AI',
+        category: p.category || 'Công Nghệ AI',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        excerpt: p.summary || p.excerpt || 'Cập nhật tin tức đô thị thông minh mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+    }
+    return BDS24_NEWS;
+  }, [posts, company]);
+
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
@@ -312,10 +335,10 @@ export default function BDS24Template({
 
   const [selectedArticle, setSelectedArticle] = useState<TechNewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = BDS24_NEWS.find(n => n.slug === initialParsed.artSlug || n.id.toString() === initialParsed.artSlug);
+      const found = activeNews.find(n => n.slug === initialParsed.artSlug || n.id.toString() === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS24_NEWS[0];
+    return (activeNews[0] || BDS24_NEWS[0]);
   });
 
   // Dynamic Options derived from Data for 100% CMS Resilience
@@ -743,7 +766,7 @@ export default function BDS24Template({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {BDS24_NEWS.map(n => (
+          {activeNews.map(n => (
             <div key={n.id} className="bg-white border border-slate-200 shadow-sm flex flex-col justify-between group overflow-hidden">
               <img src={n.image} alt={n.title} className="w-full h-44 object-cover group-hover:scale-105 transition duration-500" />
               <div className="p-4 space-y-2">

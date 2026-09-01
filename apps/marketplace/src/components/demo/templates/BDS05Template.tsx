@@ -347,6 +347,10 @@ export const resolvePageAndDetail = (p?: string) => {
 };
 
 export default function BDS05Template({ template, viewport = 'desktop', initialPage = 'home', company, theme, projects, posts }: TemplateProps) {
+  const primaryColor = theme?.primaryColor;
+  const secondaryColor = theme?.secondaryColor;
+  const accentColor = theme?.accentColor;
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
@@ -832,7 +836,7 @@ export default function BDS05Template({ template, viewport = 'desktop', initialP
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {BDS05_NEWS.map(art => (
+          {activeNews.map(art => (
             <div
               key={art.id}
               onClick={() => handleOpenArticle(art)}
@@ -891,7 +895,7 @@ export default function BDS05Template({ template, viewport = 'desktop', initialP
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Main Left Column (70%) */}
             <div className="lg:col-span-8 space-y-4">
-              {BDS05_NEWS.map(art => (
+              {activeNews.map(art => (
                 <div
                   key={art.id}
                   onClick={() => handleOpenArticle(art)}
@@ -958,7 +962,7 @@ export default function BDS05Template({ template, viewport = 'desktop', initialP
                 CÓ THỂ BẠN THÍCH
               </div>
               <div className="divide-y divide-slate-100 p-2 space-y-2">
-                {BDS05_PROPERTIES.slice(0, 5).map(item => (
+                {activeProperties.slice(0, 5).map(item => (
                   <div
                     key={item.id}
                     onClick={() => handleOpenProperty(item)}

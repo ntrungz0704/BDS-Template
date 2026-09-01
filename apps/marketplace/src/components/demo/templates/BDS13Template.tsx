@@ -273,6 +273,10 @@ export default function BDS13Template({
   projects,
   posts
 }: TemplateProps) {
+  const primaryColor = theme?.primaryColor;
+  const secondaryColor = theme?.secondaryColor;
+  const accentColor = theme?.accentColor;
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
@@ -761,7 +765,7 @@ export default function BDS13Template({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           <div 
-            onClick={() => handleOpenProperty(BDS13_PROPERTIES[0])}
+            onClick={() => handleOpenProperty(activeProperties[0] || BDS13_PROPERTIES[0])}
             className="relative rounded-md overflow-hidden shadow-xl group cursor-pointer border border-slate-200"
           >
             <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1000&q=80" alt="Hoang Huy" className="w-full h-80 object-cover group-hover:scale-105 transition duration-500" />
@@ -773,7 +777,7 @@ export default function BDS13Template({
           </div>
 
           <div 
-            onClick={() => handleOpenProperty(BDS13_PROPERTIES[1])}
+            onClick={() => handleOpenProperty(activeProperties[1] || BDS13_PROPERTIES[1])}
             className="relative rounded-md overflow-hidden shadow-xl group cursor-pointer border border-slate-200"
           >
             <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1000&q=80" alt="Belhomes" className="w-full h-80 object-cover group-hover:scale-105 transition duration-500" />
@@ -889,7 +893,7 @@ export default function BDS13Template({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {BDS13_PROPERTIES.map(prop => (
+          {activeProperties.map(prop => (
             <div key={prop.id} className="bg-white rounded-sm overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition flex flex-col justify-between group">
               <img src={prop.image} alt={prop.title} className="w-full h-40 object-cover group-hover:scale-105 transition" />
               <div className="p-4 space-y-1.5">
@@ -975,7 +979,7 @@ export default function BDS13Template({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
           <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-            {BDS13_NEWS.map(n => (
+            {activeNews.map(n => (
               <div key={n.id} className="bg-slate-50 rounded-sm overflow-hidden border border-slate-200 flex flex-col justify-between group">
                 <img src={n.image} alt={n.title} className="w-full h-44 object-cover group-hover:scale-105 transition" />
                 <div className="p-4 space-y-2">

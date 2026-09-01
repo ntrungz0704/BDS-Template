@@ -468,6 +468,10 @@ export const resolvePageAndDetail = (p?: string) => {
 };
 
 export default function BDS03Template({ template, viewport = 'desktop', initialPage = 'home', company, theme, projects, posts }: TemplateProps) {
+  const primaryColor = theme?.primaryColor;
+  const secondaryColor = theme?.secondaryColor;
+  const accentColor = theme?.accentColor;
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
@@ -952,7 +956,7 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {BDS03_PROJECTS.map(proj => (
+          {activeProperties.map(proj => (
             <div
               key={proj.id}
               onClick={() => navigate('du-an')}
@@ -966,7 +970,7 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
                 />
                 <span className="absolute top-3 left-3 px-3 py-1 bg-amber-600 text-white font-black text-xs rounded-sm shadow">
-                  {proj.status}
+                  {proj.badge || (proj as any).status || 'Đang Bán'}
                 </span>
               </div>
               <div className="p-5 space-y-2.5">
@@ -976,7 +980,7 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
                 <p className="text-xs text-slate-500 line-clamp-2">{proj.desc}</p>
                 <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
                   <span className="font-extrabold text-amber-700">{proj.price}</span>
-                  <span className="text-slate-500 font-medium">{proj.scale}</span>
+                  <span className="text-slate-500 font-medium">{proj.area || (proj as any).scale}</span>
                 </div>
               </div>
             </div>
@@ -1133,7 +1137,7 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {BDS03_NEWS.map(art => (
+          {activeNews.map(art => (
             <div
               key={art.id}
               onClick={() => handleOpenArticle(art)}
@@ -1435,7 +1439,7 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {BDS03_NEWS.map(art => (
+          {activeNews.map(art => (
             <div
               key={art.id}
               onClick={() => handleOpenArticle(art)}

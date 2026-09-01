@@ -338,6 +338,10 @@ export default function BDS23Template({
   projects,
   posts
 }: TemplateProps) {
+  const primaryColor = theme?.primaryColor;
+  const secondaryColor = theme?.secondaryColor;
+  const accentColor = theme?.accentColor;
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
@@ -851,7 +855,7 @@ export default function BDS23Template({
                   onChange={e => setInquiryForm({ ...inquiryForm, projectInterested: e.target.value })}
                   className="w-full bg-slate-900 border border-white/40 p-2.5 text-white focus:outline-none font-bold"
                 >
-                  {BDS23_PROJECTS.map(p => (
+                  {activeProjects.map(p => (
                     <option key={p.id} value={p.title}>{p.title}</option>
                   ))}
                 </select>
@@ -926,7 +930,7 @@ export default function BDS23Template({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {BDS23_NEWS.map(n => (
+          {activeNews.map(n => (
             <div key={n.id} className="bg-white border border-slate-200 shadow-sm flex flex-col justify-between group overflow-hidden">
               <img src={n.image} alt={n.title} className="w-full h-44 object-cover group-hover:scale-105 transition duration-500" />
               <div className="p-4 space-y-2">

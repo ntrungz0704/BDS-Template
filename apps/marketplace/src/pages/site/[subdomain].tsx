@@ -177,6 +177,18 @@ export default function TenantDirectSitePage() {
       <Head>
         <title>{`${displayBrandName} — Website BĐS`}</title>
         <meta name="description" content={`Website bất động sản của ${displayBrandName}`} />
+        {tenantTheme?.fontHeading && (
+          <link
+            rel="stylesheet"
+            href={`https://fonts.googleapis.com/css2?family=${encodeURIComponent(tenantTheme.fontHeading).replace(/%20/g, '+')}:wght@400;600;700;800;900&display=swap`}
+          />
+        )}
+        {tenantTheme?.fontBody && tenantTheme?.fontBody !== tenantTheme?.fontHeading && (
+          <link
+            rel="stylesheet"
+            href={`https://fonts.googleapis.com/css2?family=${encodeURIComponent(tenantTheme.fontBody).replace(/%20/g, '+')}:wght@400;500;600;700&display=swap`}
+          />
+        )}
       </Head>
 
       {tenantTheme && (
@@ -187,7 +199,24 @@ export default function TenantDirectSitePage() {
             ${tenantTheme.accentColor ? `--color-accent: ${tenantTheme.accentColor};` : ''}
             ${tenantTheme.backgroundColor ? `--color-bg: ${tenantTheme.backgroundColor};` : ''}
             ${tenantTheme.textColor ? `--color-text: ${tenantTheme.textColor};` : ''}
+            ${tenantTheme.fontHeading ? `--font-heading: '${tenantTheme.fontHeading}', sans-serif;` : ''}
+            ${tenantTheme.fontBody ? `--font-body: '${tenantTheme.fontBody}', sans-serif;` : ''}
           }
+          ${tenantTheme.fontBody ? `
+          .platformbds-template {
+            font-family: var(--font-body) !important;
+          }
+          ` : ''}
+          ${tenantTheme.fontHeading ? `
+          .platformbds-template h1,
+          .platformbds-template h2,
+          .platformbds-template h3,
+          .platformbds-template h4,
+          .platformbds-template h5,
+          .platformbds-template h6 {
+            font-family: var(--font-heading) !important;
+          }
+          ` : ''}
         `}</style>
       )}
 

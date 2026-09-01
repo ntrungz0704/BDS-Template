@@ -294,6 +294,10 @@ export default function BDS15Template({
   projects,
   posts
 }: TemplateProps) {
+  const primaryColor = theme?.primaryColor;
+  const secondaryColor = theme?.secondaryColor;
+  const accentColor = theme?.accentColor;
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
@@ -689,7 +693,7 @@ export default function BDS15Template({
           </p>
           <div className="pt-2">
             <button
-              onClick={() => handleOpenProperty(BDS15_PROPERTIES[4])}
+              onClick={() => handleOpenProperty(activeProperties[4] || activeProperties[0] || BDS15_PROPERTIES[4])}
               className="px-6 py-2.5 bg-white text-[#0D9488] font-black text-xs uppercase tracking-wider shadow hover:bg-teal-50 transition cursor-pointer"
             >
               XEM DỰ ÁN ›
@@ -883,7 +887,7 @@ export default function BDS15Template({
       <div className={`${MAX_W} mx-auto grid grid-cols-1 md:grid-cols-3 gap-6`}>
         
         <div 
-          onClick={() => handleOpenProperty(BDS15_PROPERTIES[4])}
+          onClick={() => handleOpenProperty(activeProperties[4] || activeProperties[0] || BDS15_PROPERTIES[4])}
           className="relative aspect-[16/9] overflow-hidden shadow-md group cursor-pointer border border-slate-200"
         >
           <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80" alt="EcoLake City" className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
@@ -893,7 +897,7 @@ export default function BDS15Template({
         </div>
 
         <div 
-          onClick={() => handleOpenProperty(BDS15_PROPERTIES[1])}
+          onClick={() => handleOpenProperty(activeProperties[1] || BDS15_PROPERTIES[1])}
           className="relative aspect-[16/9] overflow-hidden shadow-md group cursor-pointer border border-slate-200"
         >
           <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80" alt="Palm Villa Resort" className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
@@ -903,7 +907,7 @@ export default function BDS15Template({
         </div>
 
         <div 
-          onClick={() => handleOpenProperty(BDS15_PROPERTIES[0])}
+          onClick={() => handleOpenProperty(activeProperties[0] || BDS15_PROPERTIES[0])}
           className="relative aspect-[16/9] overflow-hidden shadow-md group cursor-pointer border border-slate-200"
         >
           <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&q=80" alt="Wyndham Gardens" className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
@@ -930,7 +934,7 @@ export default function BDS15Template({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {BDS15_PROPERTIES.map(prop => (
+          {activeProperties.map(prop => (
             <div key={prop.id} className="bg-white p-3.5 border border-slate-200 flex gap-3 shadow-sm hover:shadow-md transition">
               <img src={prop.image} alt={prop.title} className="w-24 h-24 object-cover shrink-0 border border-slate-200" />
               <div className="space-y-1 text-xs flex flex-col justify-between">
@@ -1020,7 +1024,7 @@ export default function BDS15Template({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {BDS15_NEWS.map(n => (
+          {activeNews.map(n => (
             <div key={n.id} className="bg-white border border-slate-200 flex flex-col justify-between group shadow-sm">
               <img src={n.image} alt={n.title} className="w-full h-36 object-cover group-hover:scale-105 transition" />
               <div className="p-4 space-y-2">

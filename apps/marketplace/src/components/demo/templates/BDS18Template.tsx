@@ -297,6 +297,10 @@ export default function BDS18Template({
   projects,
   posts
 }: TemplateProps) {
+  const primaryColor = theme?.primaryColor;
+  const secondaryColor = theme?.secondaryColor;
+  const accentColor = theme?.accentColor;
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
 
   const activeProjects = useMemo<ProjectItem[]>(() => {
@@ -324,6 +328,25 @@ export default function BDS18Template({
     }
     return BDS18_PROJECTS;
   }, [projects, company]);
+
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức căn hộ & dự án',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || company?.name || 'Ban Biên Tập',
+        category: p.category || 'Tin Tức',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        excerpt: p.summary || p.excerpt || 'Cập nhật tin tức dự án mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+    }
+    return BDS18_NEWS;
+  }, [posts, company]);
+
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
@@ -338,10 +361,10 @@ export default function BDS18Template({
 
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = BDS18_NEWS.find(n => n.slug === initialParsed.artSlug || n.id.toString() === initialParsed.artSlug);
+      const found = activeNews.find(n => n.slug === initialParsed.artSlug || n.id.toString() === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS18_NEWS[0];
+    return (activeNews[0] || BDS18_NEWS[0]);
   });
 
   // Dynamic Options derived from Data for 100% CMS Resilience
@@ -1156,7 +1179,7 @@ export default function BDS18Template({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {BDS18_NEWS.map(n => (
+          {activeNews.map(n => (
             <div key={n.id} className="bg-[#18181B] border border-white/10 rounded-sm overflow-hidden flex flex-col justify-between group shadow-lg">
               <img src={n.image} alt={n.title} className="w-full h-56 object-cover group-hover:scale-105 transition duration-500" />
               <div className="p-6 space-y-2">

@@ -487,6 +487,10 @@ export default function BDS08Template({
   projects,
   posts
 }: TemplateProps) {
+  const primaryColor = theme?.primaryColor;
+  const secondaryColor = theme?.secondaryColor;
+  const accentColor = theme?.accentColor;
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 
@@ -533,6 +537,24 @@ export default function BDS08Template({
     return BDS08_PROJECTS;
   }, [projects, company]);
 
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức sự kiện BĐS',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || company?.name || 'Ban Truyền Thông',
+        category: p.category || 'Sự Kiện',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&q=80',
+        excerpt: p.summary || p.excerpt || 'Cập nhật sự kiện BĐS mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+    }
+    return [...BDS08_NEWS_EVENTS, ...BDS08_COMPANY_ACTIVITIES];
+  }, [posts, company]);
+
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedProperty, setSelectedProperty] = useState<ProjectCardItem>(() => {
@@ -544,10 +566,10 @@ export default function BDS08Template({
   });
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = [...BDS08_NEWS_EVENTS, ...BDS08_COMPANY_ACTIVITIES].find(a => a.slug === initialParsed.artSlug);
+      const found = activeNews.find(a => a.slug === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS08_NEWS_EVENTS[0];
+    return (activeNews[0] || BDS08_NEWS_EVENTS[0]);
   });
 
   // UI Interactive States
@@ -831,7 +853,7 @@ export default function BDS08Template({
           
           {/* LEFT: 6 Project Cards Grid (2 rows x 3 cols) */}
           <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-            {BDS08_PROJECTS.map(proj => (
+            {activeProjects.map(proj => (
               <div
                 key={proj.id}
                 onClick={() => handleOpenProperty(proj)}
@@ -992,7 +1014,7 @@ export default function BDS08Template({
               Tin tức — sự kiện
             </h3>
             <div className="space-y-3">
-              {BDS08_NEWS_EVENTS.map(news => (
+              {activeNews.map(news => (
                 <div
                   key={news.id}
                   onClick={() => handleOpenArticle(news)}
@@ -1201,7 +1223,7 @@ export default function BDS08Template({
                 onChange={e => setQuickLeadForm({ ...quickLeadForm, project: e.target.value })}
                 className="w-full bg-white text-slate-800 px-3.5 py-2 rounded-lg focus:outline-none"
               >
-                {BDS08_PROJECTS.map(p => (
+                {activeProjects.map(p => (
                   <option key={p.id} value={p.title}>{p.title}</option>
                 ))}
               </select>
@@ -1316,7 +1338,7 @@ export default function BDS08Template({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {[...BDS08_NEWS_EVENTS, ...BDS08_COMPANY_ACTIVITIES].map(news => (
+          {activeNews.map(news => (
             <div
               key={news.id}
               onClick={() => handleOpenArticle(news)}
@@ -1482,7 +1504,7 @@ export default function BDS08Template({
                 onChange={e => setQuickLeadForm({ ...quickLeadForm, project: e.target.value })}
                 className="w-full p-3 rounded-sm border bg-slate-50 focus:bg-white focus:outline-none"
               >
-                {BDS08_PROJECTS.map(p => (
+                {activeProjects.map(p => (
                   <option key={p.id} value={p.title}>{p.title}</option>
                 ))}
               </select>
