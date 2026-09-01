@@ -1,250 +1,911 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LP #01 - Căn Hộ Chung Cư Cao Cấp Launch Funnel</title>
-  <meta name="description" content="Đại đô thị căn hộ cao cấp thông minh, 3 mặt view sông, tiện ích 5 sao đồng bộ, chiết khấu tới 8.5% và hỗ trợ lãi suất 0% trong 24 tháng.">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE MATRIX ONE LUXURY</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
+            },
+            colors: {
+              amber: {
+                50: '#fffbeb',
+                100: '#fef3c7',
+                200: '#fde68a',
+                300: '#fcd34d',
+                400: '#fbbf24',
+                500: '#f59e0b',
+                600: '#d97706',
+                700: '#b45309',
+                800: '#92400e',
+                900: '#78350f',
+                950: '#451a03',
+              },
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      .animate-fadeIn {
+        animation: fadeIn 0.5s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 antialiased min-h-screen flex flex-col justify-between selection:bg-blue-600 selection:text-white">
+<body class="min-h-screen bg-[#FDFBF7] text-slate-800 font-sans selection:bg-amber-500 selection:text-white">
 
-  <!-- Header -->
-  <header class="w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 py-3.5 px-4 sm:px-8">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2 font-black text-lg sm:text-xl text-white tracking-tight">
-        <span class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-white text-sm shadow-md">LP</span>
-        <span>TEMPLATES<strong class="text-blue-500">BDS</strong></span>
-      </a>
-      <nav class="hidden md:flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-slate-300">
-        <a href="#tong-quan" class="hover:text-blue-400 transition">Tổng Quan</a>
-        <a href="#san-pham" class="hover:text-blue-400 transition">Bảng Hàng VIP</a>
-        <a href="#uu-dai" class="hover:text-blue-400 transition">Chính Sách</a>
-        <a href="#lien-he" class="hover:text-blue-400 transition">Liên Hệ</a>
-      </nav>
-      <div class="flex items-center gap-3">
-        <a href="tel:0919006030" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition flex items-center gap-2">
-          <span>📞 0919 006 030</span>
-        </a>
-      </div>
+    <!-- 1. TOP NAVBAR -->
+    <header class="sticky top-0 z-50 bg-[#082B27]/95 backdrop-blur-md text-white border-b border-emerald-900/50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          
+          <a href="#tong-quan" class="flex items-center gap-2 group min-w-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 font-black shadow-md shrink-0">
+              <span class="text-sm sm:text-base tracking-tighter">M</span>
+            </div>
+            <div class="min-w-0">
+              <span class="font-extrabold text-xs sm:text-base tracking-wider text-white uppercase block leading-none truncate max-w-[140px] xs:max-w-[180px] sm:max-w-none">
+                THE MATRIX ONE LUXURY
+              </span>
+              <span class="text-[9px] sm:text-[10px] text-amber-300 tracking-widest font-mono uppercase block mt-0.5">
+                LUXURY APARTMENT
+              </span>
+            </div>
+          </a>
+
+          <nav class="hidden lg:flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-slate-200">
+            <a href="#tong-quan" class="hover:text-amber-400 transition-colors">Tổng Quan</a>
+            <a href="#vi-tri" class="hover:text-amber-400 transition-colors">Vị Trí</a>
+            <a href="#tien-ich" class="hover:text-amber-400 transition-colors">Tiện Ích</a>
+            <a href="#mat-bang" class="hover:text-amber-400 transition-colors">Mặt Bằng</a>
+            <a href="#chinh-sach" class="hover:text-amber-400 transition-colors">Chính Sách</a>
+          </nav>
+
+          <div class="flex items-center gap-3">
+            <a href="#dang-ky" class="px-4 py-2 rounded-lg border border-amber-400/80 text-amber-300 hover:bg-amber-400 hover:text-slate-950 text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-sm">
+              Nhận Báo Giá
+            </a>
+            <a href="tel:0919006030" class="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-all shadow-md">
+              <i data-lucide="phone" class="w-3.5 h-3.5"></i>
+              <span>0919 006 030</span>
+            </a>
+          </div>
+        </div>
+    </header>
+
+    <!-- 2. HERO SECTION & HERO LEAD FORM -->
+    <section id="tong-quan" class="relative bg-gradient-to-b from-[#082B27] via-[#0F3B38] to-[#0A2E2A] text-white py-14 sm:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <div class="absolute top-0 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-10 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center relative z-10">
+          
+          <div class="lg:col-span-7 space-y-6 text-left">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-widest">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+              <span>DỰ ÁN CĂN HỘ HẠNG A TRUNG TÂM THỦ ĐÔ</span>
+            </div>
+
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.15] uppercase text-white">
+              SỐNG ĐỈNH PHỒN HOA <br />
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400">
+                NGAY TRÁI TIM VIỆT NAM
+              </span>
+            </h1>
+
+            <p class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl font-normal">
+              Tổ hợp căn hộ cao cấp chuẩn quốc tế sở hữu vị trí kim cương đắt giá, tầm nhìn panorama ôm trọn công viên hồ điều hòa 14ha và hệ thống tiện ích 5 sao đặc quyền dành riêng cho cộng đồng cư dân tinh hoa.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs text-slate-200">
+              <div class="flex items-center gap-2">
+                <i data-lucide="check-circle-2" class="w-4 h-4 text-amber-400 shrink-0"></i>
+                <span>Chiết khấu mở bán lên tới <strong>12%</strong></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="check-circle-2" class="w-4 h-4 text-amber-400 shrink-0"></i>
+                <span>Hỗ trợ vay <strong>70% - Lãi suất 0% 24 tháng</strong></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="check-circle-2" class="w-4 h-4 text-amber-400 shrink-0"></i>
+                <span>Bàn giao nội thất nhập khẩu Châu Âu</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="check-circle-2" class="w-4 h-4 text-amber-400 shrink-0"></i>
+                <span>Pháp lý minh bạch - Sổ hồng lâu dài</span>
+              </div>
+            </div>
+
+            <div class="pt-2 flex items-center gap-4">
+              <a href="#video-gioi-thieu" class="inline-flex items-center gap-2 text-xs font-bold text-amber-300 hover:text-amber-200 underline decoration-amber-400/50 underline-offset-4">
+                <i data-lucide="play" class="w-4 h-4 text-amber-400 fill-current"></i>
+                <span>Xem Video Giới Thiệu Dự Án</span>
+              </a>
+            </div>
+          </div>
+
+          <div id="dang-ky" class="lg:col-span-5">
+            <div class="bg-[#05211E]/95 border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/50 text-left relative overflow-hidden backdrop-blur-xl">
+              <div class="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+              
+              <div class="text-center mb-6">
+                <span class="text-[11px] font-extrabold text-amber-400 uppercase tracking-widest block mb-1">
+                  ƯU ĐÃI ĐỢT 1 TỪ CHỦ ĐẦU TƯ
+                </span>
+                <h3 class="text-xl font-black text-white uppercase tracking-tight">
+                  ĐĂNG KÝ TƯ VẤN & NHẬN BẢNG GIÁ
+                </h3>
+                <p class="text-[11px] text-slate-300 mt-1">
+                  Nhận trọn bộ mặt bằng 2D/3D & bảng tính lãi vay ngân hàng miễn phí
+                </p>
+              </div>
+
+              <div id="hero-success" class="hidden bg-emerald-950/80 border border-emerald-500/60 p-6 rounded-2xl text-center space-y-3 animate-fadeIn">
+                <div class="w-12 h-12 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center mx-auto shadow-lg">
+                  <i data-lucide="check" class="w-6 h-6 stroke-[3]"></i>
+                </div>
+                <h4 class="font-bold text-base text-emerald-300">ĐĂNG KÝ THÀNH CÔNG!</h4>
+                <p class="text-xs text-slate-200 leading-relaxed">
+                  Chuyên viên dự án sẽ liên hệ lại qua số điện thoại <strong id="hero-success-phone"></strong> và gửi file PDF Bảng Giá qua Zalo cho bạn trong 3 phút.
+                </p>
+              </div>
+
+              <form id="hero-form" class="space-y-3.5 text-xs">
+                <div>
+                  <label class="block text-slate-300 font-bold mb-1 text-[11px]">Họ và tên của bạn *</label>
+                  <input type="text" name="name" required placeholder="Ví dụ: Nguyễn Văn A" class="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-900 font-medium placeholder:text-slate-400 border border-slate-300 focus:ring-2 focus:ring-amber-400 outline-none" />
+                </div>
+
+                <div>
+                  <label class="block text-slate-300 font-bold mb-1 text-[11px]">Số điện thoại nhận bảng giá (Zalo) *</label>
+                  <input type="tel" name="phone" required placeholder="Ví dụ: 0912 345 678" class="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-900 font-bold placeholder:text-slate-400 border border-slate-300 focus:ring-2 focus:ring-amber-400 outline-none" />
+                </div>
+
+                <div>
+                  <label class="block text-slate-300 font-bold mb-1 text-[11px]">Email (tùy chọn nhận hợp đồng mẫu)</label>
+                  <input type="email" name="email" placeholder="example@gmail.com" class="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-900 font-medium placeholder:text-slate-400 border border-slate-300 focus:ring-2 focus:ring-amber-400 outline-none" />
+                </div>
+
+                <div>
+                  <label class="block text-slate-300 font-bold mb-1 text-[11px]">Loại căn hộ bạn đang quan tâm</label>
+                  <select id="hero-unit-select" name="unit_type" class="w-full px-3.5 py-2.5 rounded-xl bg-white text-slate-900 font-bold border border-slate-300 focus:ring-2 focus:ring-amber-400 outline-none transition-all duration-300">
+                    <option class="text-slate-900 bg-white font-medium" value="Căn Hộ 1 Phòng Ngủ (52.8 m²)">Căn Hộ 1 Phòng Ngủ (52.8 m²)</option>
+                    <option class="text-slate-900 bg-white font-medium" value="Căn Hộ 2 Phòng Ngủ (74.2 m² - 86.5 m²)" selected>Căn Hộ 2 Phòng Ngủ (74.2 m² - 86.5 m²)</option>
+                    <option class="text-slate-900 bg-white font-medium" value="Căn Hộ 3 Phòng Ngủ Master (112.4 m²)">Căn Hộ 3 Phòng Ngủ Master (112.4 m²)</option>
+                    <option class="text-slate-900 bg-white font-medium" value="Căn Hộ Dual Key & Sky Villa (149.0 m²)">Căn Hộ Dual Key & Sky Villa (149.0 m²)</option>
+                  </select>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-red-600 via-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 text-white font-black text-sm uppercase tracking-wider shadow-lg shadow-red-900/50 hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2 mt-2">
+                  <span>ĐĂNG KÝ NHẬN BÁO GIÁ NGAY</span>
+                  <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+
+                <p class="text-[10px] text-center text-slate-400 flex items-center justify-center gap-1">
+                  <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+                  <span>Cam kết bảo mật thông tin 100% · Không làm phiền</span>
+                </p>
+              </form>
+            </div>
+          </div>
+
+        </div>
+    </section>
+
+    <!-- 3. KEY STATS BAR -->
+    <section class="bg-[#FDFBF7] py-10 border-b border-amber-900/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            
+            <div class="p-4 rounded-2xl bg-white border border-amber-200/60 shadow-xs space-y-1">
+              <span class="text-2xl sm:text-3xl font-black text-[#0F3B38] font-mono block">39.8 ha</span>
+              <span class="text-xs font-bold text-amber-700 uppercase tracking-wider block">Tổng Diện Tích Dự Án</span>
+              <span class="text-[11px] text-slate-500">Bao gồm công viên & hồ 14ha</span>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white border border-amber-200/60 shadow-xs space-y-1">
+              <span class="text-2xl sm:text-3xl font-black text-[#0F3B38] font-mono block">30.0 %</span>
+              <span class="text-xs font-bold text-amber-700 uppercase tracking-wider block">Mật Độ Xây Dựng</span>
+              <span class="text-[11px] text-slate-500">70% cảnh quan cây xanh</span>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white border border-amber-200/60 shadow-xs space-y-1">
+              <span class="text-2xl sm:text-3xl font-black text-[#0F3B38] font-mono block">2 Tòa / 44 Tầng</span>
+              <span class="text-xs font-bold text-amber-700 uppercase tracking-wider block">Quy Mô Chiều Cao</span>
+              <span class="text-[11px] text-slate-500">Biểu tượng kiến trúc tương lai</span>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white border border-amber-200/60 shadow-xs space-y-1">
+              <span class="text-2xl sm:text-3xl font-black text-[#0F3B38] font-mono block">54m² - 149m²</span>
+              <span class="text-xs font-bold text-amber-700 uppercase tracking-wider block">Diện Tích Căn Hộ</span>
+              <span class="text-[11px] text-slate-500">Từ 1PN đến 3PN & Dual Key</span>
+            </div>
+
+          </div>
+        </div>
+    </section>
+
+    <!-- 4. VIDEO TEASER SHOWCASE -->
+    <section id="video-gioi-thieu" class="py-14 bg-[#F5EFE6] text-center px-4 sm:px-6">
+        <div class="max-w-5xl mx-auto space-y-6">
+          <div class="space-y-2">
+            <span class="text-xs font-bold text-amber-700 uppercase tracking-widest">TRẢI NGHIỆM KHÔNG GIAN SỐNG THỰC TẾ</span>
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-[#082B27] uppercase tracking-tight">ĐÓN ĐẦU CƠ HỘI ĐẦU TƯ SINH LỜI BỀN VỮNG</h2>
+            <p class="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed">Video flycam thực tế phân tích tiềm năng hạ tầng, cự ly di chuyển và thiết kế không gian căn hộ mẫu tiêu chuẩn khách sạn 5 sao.</p>
+          </div>
+
+          <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-slate-950 aspect-video group cursor-pointer" onclick="openLightbox('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80')">
+            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80" alt="Video Poster Dự Án" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col items-center justify-center p-6">
+              <button class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 ring-8 ring-amber-400/30">
+                <i data-lucide="play" class="w-8 h-8 fill-current ml-1"></i>
+              </button>
+              <span class="mt-4 text-xs font-bold text-white uppercase tracking-wider bg-black/60 px-4 py-1.5 rounded-full border border-white/20">Xem Phim Giới Thiệu Dự Án (3:45s)</span>
+            </div>
+          </div>
+        </div>
+    </section>
+
+    <!-- 5. THÔNG TIN TỔNG QUAN & MẶT BẰNG QUY HOẠCH -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          
+          <div class="lg:col-span-5 space-y-6 text-left">
+            <div>
+              <span class="text-xs font-bold text-amber-700 uppercase tracking-widest block mb-1">HỒ SƠ DỰ ÁN</span>
+              <h2 class="text-2xl sm:text-3xl font-black text-[#082B27] uppercase">THÔNG TIN TỔNG QUAN</h2>
+            </div>
+
+            <div class="divide-y divide-slate-100 text-xs font-medium text-slate-700">
+              <div class="py-3 flex justify-between">
+                <span class="text-slate-500 font-bold">Tên thương mại:</span>
+                <span class="font-bold text-slate-900 text-right">THE MATRIX ONE LUXURY</span>
+              </div>
+              <div class="py-3 flex justify-between">
+                <span class="text-slate-500 font-bold">Chủ đầu tư:</span>
+                <span class="font-bold text-slate-900 text-right">Tập đoàn MIK Group</span>
+              </div>
+              <div class="py-3 flex justify-between">
+                <span class="text-slate-500 font-bold">Vị trí đắc địa:</span>
+                <span class="font-bold text-slate-900 text-right max-w-[240px]">Ngã tư Lê Quang Đạo - Mễ Trì, Quận Nam Từ Liêm, Hà Nội</span>
+              </div>
+              <div class="py-3 flex justify-between">
+                <span class="text-slate-500 font-bold">Tổng diện tích quy hoạch:</span>
+                <span class="font-bold text-slate-900">39.8 ha (Công viên hồ 14ha)</span>
+              </div>
+              <div class="py-3 flex justify-between">
+                <span class="text-slate-500 font-bold">Quy mô xây dựng:</span>
+                <span class="font-bold text-slate-900">2 Tòa tháp cao 44 tầng</span>
+              </div>
+              <div class="py-3 flex justify-between">
+                <span class="text-slate-500 font-bold">Loại hình sản phẩm:</span>
+                <span class="font-bold text-slate-900">Căn hộ hạng A, Dual Key, Penthouse</span>
+              </div>
+              <div class="py-3 flex justify-between">
+                <span class="text-slate-500 font-bold">Hình thức sở hữu:</span>
+                <span class="font-bold text-emerald-700">Sổ hồng lâu dài (Người Việt Nam)</span>
+              </div>
+              <div class="py-3 flex justify-between">
+                <span class="text-slate-500 font-bold">Thời gian bàn giao:</span>
+                <span class="font-bold text-slate-900">Quý IV / 2026</span>
+              </div>
+            </div>
+
+            <a href="#dang-ky" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#082B27] hover:bg-[#0F3B38] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md">
+              <span>Tải Toàn Bộ Hồ Sơ Pháp Lý 1/500</span>
+              <i data-lucide="download" class="w-4 h-4"></i>
+            </a>
+          </div>
+
+          <div class="lg:col-span-7">
+            <div class="relative rounded-3xl overflow-hidden border-2 border-amber-200 bg-slate-100 shadow-xl group cursor-pointer" onclick="openLightbox('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80')">
+              <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80" alt="Sơ Đồ Quy Hoạch Tổng Thể" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                <span class="px-4 py-2 bg-slate-950/80 backdrop-blur text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-lg">
+                  <i data-lucide="zoom-in" class="w-4 h-4 text-amber-400"></i>
+                  <span>Bấm để phóng to xem chi tiết phân khu</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+    </section>
+
+    <!-- 6. VỊ TRÍ & TỌA ĐỘ VÀNG KẾT NỐI VÙNG -->
+    <section id="vi-tri" class="py-16 bg-[#082B27] text-white px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto space-y-12">
+          
+          <div class="text-center max-w-3xl mx-auto space-y-2">
+            <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">TÂM ĐIỂM GIAO THƯƠNG THỊNH VƯỢNG</span>
+            <h2 class="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight">VỊ TRÍ KIM CƯƠNG & KẾT NỐI VÀNG</h2>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">Tọa lạc tại mặt đường huyết mạch trung tâm hành chính mới, dễ dàng kết nối tới các đại lộ vành đai và tuyến Metro số 5.</p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <div class="lg:col-span-7">
+              <div class="relative rounded-3xl overflow-hidden border-2 border-emerald-700/60 shadow-2xl bg-slate-900 aspect-[16/10] group cursor-pointer" onclick="openLightbox('https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1600&q=80')">
+                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1200&q=80" alt="Sơ đồ vị trí kết nối giao thông" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-6">
+                  <div class="flex items-center justify-between w-full">
+                    <div>
+                      <span class="text-sm font-bold text-amber-300 block">Ngã tư Lê Quang Đạo - Mễ Trì, Quận Nam Từ Liêm, Hà Nội</span>
+                      <span class="text-xs text-slate-300">Vị trí đắc địa 2 mặt tiền đường lớn</span>
+                    </div>
+                    <span class="px-3 py-1.5 bg-amber-500 text-slate-950 text-xs font-black rounded-lg flex items-center gap-1 shadow">
+                      <i data-lucide="zoom-in" class="w-3.5 h-3.5"></i> Xem Bản Đồ
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="lg:col-span-5 space-y-4 text-left">
+              <div class="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-700/40 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-amber-300">3 PHÚT DI CHUYỂN</span>
+                  <span class="text-[10px] text-slate-400 font-mono">500m</span>
+                </div>
+                <p class="text-xs text-slate-200 font-medium">Trường Quốc tế JIS, Khách sạn JW Marriott, Đại siêu thị Vincom Mega Mall.</p>
+              </div>
+              <div class="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-700/40 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-amber-300">5 PHÚT DI CHUYỂN</span>
+                  <span class="text-[10px] text-slate-400 font-mono">1.2km</span>
+                </div>
+                <p class="text-xs text-slate-200 font-medium">Bệnh viện Quốc tế Hồng Ngọc, Công viên hồ điều hòa 14ha Mễ Trì.</p>
+              </div>
+              <div class="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-700/40 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-amber-300">10 PHÚT DI CHUYỂN</span>
+                  <span class="text-[10px] text-slate-400 font-mono">3.5km</span>
+                </div>
+                <p class="text-xs text-slate-200 font-medium">Trung tâm Hội nghị Quốc Gia, Sân vận động Mỹ Đình, Tòa nhà Keangnam Landmark 72.</p>
+              </div>
+              <div class="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-700/40 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-amber-300">20 PHÚT DI CHUYỂN</span>
+                  <span class="text-[10px] text-slate-400 font-mono">22km</span>
+                </div>
+                <p class="text-xs text-slate-200 font-medium">Sân bay Quốc tế Nội Bài qua cầu Nhật Tân và đường Võ Nguyên Giáp.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+    </section>
+
+    <!-- 7. THIẾT KẾ KIẾN TRÚC & TẦM VIEW PANORAMA -->
+    <section class="py-16 bg-[#FDFBF7] px-4 sm:px-6 lg:px-8 border-b border-amber-900/10">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <div class="lg:col-span-6 grid grid-cols-2 gap-4">
+            <div class="rounded-2xl overflow-hidden shadow-lg border border-amber-200 cursor-pointer group" onclick="openLightbox('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80')">
+              <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" alt="Kiến trúc hiện đại" class="w-full h-48 sm:h-64 object-cover group-hover:scale-105 transition duration-500" />
+            </div>
+            <div class="rounded-2xl overflow-hidden shadow-lg border border-amber-200 cursor-pointer group" onclick="openLightbox('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80')">
+              <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="Góc view panorama" class="w-full h-48 sm:h-64 object-cover group-hover:scale-105 transition duration-500" />
+            </div>
+          </div>
+
+          <div class="lg:col-span-6 space-y-5 text-left">
+            <div class="w-12 h-12 rounded-2xl bg-[#082B27] text-amber-400 flex items-center justify-center shadow-md">
+              <i data-lucide="layers" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-2xl sm:text-3xl font-black text-[#082B27] uppercase leading-tight">
+              TẦM VIEW PANORAMA VÔ CỰC <br />
+              <span class="text-amber-600">ĐẲNG CẤP VƯỢT TRỘI</span>
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              100% căn hộ được trang bị hệ kính Low-E tràn viền chạm trần cách âm, cách nhiệt hoàn hảo. Mỗi căn nhà là một tác phẩm nghệ thuật đón trọn ánh sáng bình minh và ánh đèn rực rỡ của thủ đô về đêm.
+            </p>
+            <div class="pt-2 flex items-center gap-4 text-xs font-bold text-[#082B27]">
+              <span class="flex items-center gap-1.5"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Kính Low-E 3 lớp</span>
+              <span class="flex items-center gap-1.5"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Trần cao 3.4m</span>
+              <span class="flex items-center gap-1.5"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Điều hòa âm trần Daikin</span>
+            </div>
+          </div>
+
+        </div>
+    </section>
+
+    <!-- 8. BỘ SƯU TẬP TIỆN ÍCH ĐẲNG CẤP 5 SAO -->
+    <section id="tien-ich" class="py-16 bg-white px-4 sm:px-6 lg:px-8 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto space-y-10">
+          
+          <div class="text-center max-w-3xl mx-auto space-y-2">
+            <span class="text-xs font-bold text-amber-700 uppercase tracking-widest">ĐẶC QUYỀN SỐNG THƯỢNG LƯU</span>
+            <h2 class="text-2xl sm:text-4xl font-black text-[#082B27] uppercase tracking-tight">HỆ SINH THÁI TIỆN ÍCH 5 SAO</h2>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Hơn 39+ tiện ích nội khu đỉnh cao đáp ứng trọn vẹn mọi nhu cầu nghỉ dưỡng, chăm sóc sức khỏe và giải trí của cư dân ngay ngưỡng cửa.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <div class="group relative bg-[#FDFBF7] rounded-3xl overflow-hidden border border-amber-200/80 shadow-sm hover:shadow-xl transition-all duration-300 text-left cursor-pointer flex flex-col justify-between" onclick="openLightbox('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80')">
+              <div class="relative aspect-[16/10] overflow-hidden bg-slate-900">
+                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80" alt="Công Viên Cây Xanh 14ha & Hồ Điều Hòa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div class="absolute top-3 left-3 px-2.5 py-1 bg-black/60 backdrop-blur-md rounded-lg text-white font-bold text-[10px] uppercase tracking-wider">Tiện ích #1</div>
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <span class="p-2.5 bg-amber-500 text-slate-950 rounded-full shadow-lg"><i data-lucide="zoom-in" class="w-5 h-5"></i></span>
+                </div>
+              </div>
+              <div class="p-5 space-y-1.5 flex-1 flex flex-col justify-between">
+                <h4 class="font-bold text-sm sm:text-base text-slate-900 group-hover:text-amber-700 transition-colors">Công Viên Cây Xanh 14ha & Hồ Điều Hòa</h4>
+                <p class="text-xs text-slate-500 leading-relaxed">Lá phổi xanh điều hòa vi khí hậu mang lại không gian sống trong lành</p>
+              </div>
+            </div>
+
+            <div class="group relative bg-[#FDFBF7] rounded-3xl overflow-hidden border border-amber-200/80 shadow-sm hover:shadow-xl transition-all duration-300 text-left cursor-pointer flex flex-col justify-between" onclick="openLightbox('https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=1200&q=80')">
+              <div class="relative aspect-[16/10] overflow-hidden bg-slate-900">
+                <img src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=1200&q=80" alt="Hồ Bơi Vô Cực 4 Mùa Trên Cao" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div class="absolute top-3 left-3 px-2.5 py-1 bg-black/60 backdrop-blur-md rounded-lg text-white font-bold text-[10px] uppercase tracking-wider">Tiện ích #2</div>
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <span class="p-2.5 bg-amber-500 text-slate-950 rounded-full shadow-lg"><i data-lucide="zoom-in" class="w-5 h-5"></i></span>
+                </div>
+              </div>
+              <div class="p-5 space-y-1.5 flex-1 flex flex-col justify-between">
+                <h4 class="font-bold text-sm sm:text-base text-slate-900 group-hover:text-amber-700 transition-colors">Hồ Bơi Vô Cực 4 Mùa Trên Cao</h4>
+                <p class="text-xs text-slate-500 leading-relaxed">Thiết kế chuẩn resort 5 sao với tầm view panorama ôm trọn chân trời</p>
+              </div>
+            </div>
+
+            <div class="group relative bg-[#FDFBF7] rounded-3xl overflow-hidden border border-amber-200/80 shadow-sm hover:shadow-xl transition-all duration-300 text-left cursor-pointer flex flex-col justify-between" onclick="openLightbox('https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?w=1200&q=80')">
+              <div class="relative aspect-[16/10] overflow-hidden bg-slate-900">
+                <img src="https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?w=1200&q=80" alt="Khu Vui Chơi Trẻ Em Kid Paradise" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div class="absolute top-3 left-3 px-2.5 py-1 bg-black/60 backdrop-blur-md rounded-lg text-white font-bold text-[10px] uppercase tracking-wider">Tiện ích #3</div>
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <span class="p-2.5 bg-amber-500 text-slate-950 rounded-full shadow-lg"><i data-lucide="zoom-in" class="w-5 h-5"></i></span>
+                </div>
+              </div>
+              <div class="p-5 space-y-1.5 flex-1 flex flex-col justify-between">
+                <h4 class="font-bold text-sm sm:text-base text-slate-900 group-hover:text-amber-700 transition-colors">Khu Vui Chơi Trẻ Em Kid Paradise</h4>
+                <p class="text-xs text-slate-500 leading-relaxed">Không gian vận động sáng tạo, an toàn đa tầng cho cư dân nhí</p>
+              </div>
+            </div>
+
+            <div class="group relative bg-[#FDFBF7] rounded-3xl overflow-hidden border border-amber-200/80 shadow-sm hover:shadow-xl transition-all duration-300 text-left cursor-pointer flex flex-col justify-between" onclick="openLightbox('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80')">
+              <div class="relative aspect-[16/10] overflow-hidden bg-slate-900">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80" alt="Sảnh Đón Lounge Đại Sảnh Chuẩn 5 Sao" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div class="absolute top-3 left-3 px-2.5 py-1 bg-black/60 backdrop-blur-md rounded-lg text-white font-bold text-[10px] uppercase tracking-wider">Tiện ích #4</div>
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <span class="p-2.5 bg-amber-500 text-slate-950 rounded-full shadow-lg"><i data-lucide="zoom-in" class="w-5 h-5"></i></span>
+                </div>
+              </div>
+              <div class="p-5 space-y-1.5 flex-1 flex flex-col justify-between">
+                <h4 class="font-bold text-sm sm:text-base text-slate-900 group-hover:text-amber-700 transition-colors">Sảnh Đón Lounge Đại Sảnh Chuẩn 5 Sao</h4>
+                <p class="text-xs text-slate-500 leading-relaxed">Lễ tân phục vụ 24/7, không gian tiếp khách sang trọng và đẳng cấp</p>
+              </div>
+            </div>
+
+            <div class="group relative bg-[#FDFBF7] rounded-3xl overflow-hidden border border-amber-200/80 shadow-sm hover:shadow-xl transition-all duration-300 text-left cursor-pointer flex flex-col justify-between" onclick="openLightbox('https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1200&q=80')">
+              <div class="relative aspect-[16/10] overflow-hidden bg-slate-900">
+                <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1200&q=80" alt="Quảng Trường Nhạc Nước Nghệ Thuật" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div class="absolute top-3 left-3 px-2.5 py-1 bg-black/60 backdrop-blur-md rounded-lg text-white font-bold text-[10px] uppercase tracking-wider">Tiện ích #5</div>
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <span class="p-2.5 bg-amber-500 text-slate-950 rounded-full shadow-lg"><i data-lucide="zoom-in" class="w-5 h-5"></i></span>
+                </div>
+              </div>
+              <div class="p-5 space-y-1.5 flex-1 flex flex-col justify-between">
+                <h4 class="font-bold text-sm sm:text-base text-slate-900 group-hover:text-amber-700 transition-colors">Quảng Trường Nhạc Nước Nghệ Thuật</h4>
+                <p class="text-xs text-slate-500 leading-relaxed">Điểm hẹn thư giãn cuối tuần lung linh ánh sáng và âm thanh</p>
+              </div>
+            </div>
+
+            <div class="group relative bg-[#FDFBF7] rounded-3xl overflow-hidden border border-amber-200/80 shadow-sm hover:shadow-xl transition-all duration-300 text-left cursor-pointer flex flex-col justify-between" onclick="openLightbox('https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80')">
+              <div class="relative aspect-[16/10] overflow-hidden bg-slate-900">
+                <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80" alt="Sky Lounge & Vườn Chân Mây" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div class="absolute top-3 left-3 px-2.5 py-1 bg-black/60 backdrop-blur-md rounded-lg text-white font-bold text-[10px] uppercase tracking-wider">Tiện ích #6</div>
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <span class="p-2.5 bg-amber-500 text-slate-950 rounded-full shadow-lg"><i data-lucide="zoom-in" class="w-5 h-5"></i></span>
+                </div>
+              </div>
+              <div class="p-5 space-y-1.5 flex-1 flex flex-col justify-between">
+                <h4 class="font-bold text-sm sm:text-base text-slate-900 group-hover:text-amber-700 transition-colors">Sky Lounge & Vườn Chân Mây</h4>
+                <p class="text-xs text-slate-500 leading-relaxed">Nơi ngắm hoàng hôn đắt giá và thưởng thức cocktail tầng thượng</p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+    </section>
+
+    <!-- 9. MẶT BẰNG CHI TIẾT CĂN HỘ (TAB SWITCHER) -->
+    <section id="mat-bang" class="py-16 bg-[#FDFBF7] px-4 sm:px-6 lg:px-8 border-b border-amber-900/10">
+        <div class="max-w-7xl mx-auto space-y-10">
+          
+          <div class="text-center max-w-3xl mx-auto space-y-2">
+            <span class="text-xs font-bold text-amber-700 uppercase tracking-widest">THIẾT KẾ CÔNG NĂNG HOÀN HẢO</span>
+            <h2 class="text-2xl sm:text-4xl font-black text-[#082B27] uppercase tracking-tight">MẶT BẰNG CĂN HỘ ĐIỂN HÌNH</h2>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Tối ưu từng centimet diện tích, 100% các phòng đều có cửa sổ đón gió và ánh sáng tự nhiên.</p>
+          </div>
+
+          <div class="flex justify-center flex-wrap gap-2 sm:gap-3">
+            <button onclick="switchTab('1pn')" id="tab-1pn" class="tab-btn px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200 border bg-white text-slate-700 border-amber-200/80 hover:bg-amber-50">Căn 1 Phòng Ngủ (52.8 m²)</button>
+            <button onclick="switchTab('2pn')" id="tab-2pn" class="tab-btn px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200 border bg-[#082B27] text-amber-300 border-[#082B27] shadow-md scale-105">Căn 2 Phòng Ngủ (74.2m² - 86.5m²)</button>
+            <button onclick="switchTab('3pn')" id="tab-3pn" class="tab-btn px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200 border bg-white text-slate-700 border-amber-200/80 hover:bg-amber-50">Căn 3 Phòng Ngủ Master (112.4 m²)</button>
+            <button onclick="switchTab('dualkey')" id="tab-dualkey" class="tab-btn px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200 border bg-white text-slate-700 border-amber-200/80 hover:bg-amber-50">Dual Key & Sky Villa (149.0 m²)</button>
+          </div>
+
+          <div class="bg-white rounded-3xl border border-amber-200 p-6 sm:p-8 shadow-xl max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center text-left">
+            
+            <div class="lg:col-span-5 space-y-4">
+              <span class="px-3 py-1 bg-amber-50 text-amber-800 border border-amber-300 text-[10px] font-bold rounded-lg uppercase">Bản vẽ mặt bằng chi tiết</span>
+              <h3 id="fp-title" class="text-xl sm:text-2xl font-black text-[#082B27]">Căn Hộ 2 Phòng Ngủ (74.2 m² - 86.5 m²)</h3>
+              <p id="fp-desc" class="text-xs text-slate-600 leading-relaxed font-medium">Không gian sống lý tưởng với 2 phòng ngủ master rộng rãi, phòng khách nối liền ban công đón gió mát.</p>
+              
+              <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 text-xs text-amber-950 font-bold space-y-1">
+                <span class="text-[10px] uppercase text-amber-700 block">Cơ cấu không gian:</span>
+                <p id="fp-rooms">2 Phòng Ngủ · 2 WC · 2 Ban Công & Logia · 1 Phòng Khách Lớn</p>
+              </div>
+
+              <div class="pt-2 flex items-center gap-3">
+                <button type="button" onclick="handleSelectUnitType()" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5">
+                  <span>Nhận Báo Giá Căn Này</span>
+                  <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="lg:col-span-7 rounded-2xl overflow-hidden bg-slate-900 border border-slate-200 aspect-[16/11] relative group cursor-pointer" onclick="openLightbox(document.getElementById('fp-img').src)">
+              <img id="fp-img" src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80" alt="Mặt bằng" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                <span class="px-4 py-2 bg-slate-950/80 backdrop-blur text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow">
+                  <i data-lucide="zoom-in" class="w-4 h-4 text-amber-400"></i>
+                  <span>Bấm để phóng to xem sơ đồ 3D</span>
+                </span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+    </section>
+
+    <!-- 10. MID-PAGE LEAD CAPTURE BAR -->
+    <section class="py-12 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-400 text-slate-950 px-4 sm:px-6">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-left">
+          <div class="space-y-1 max-w-xl">
+            <span class="text-[11px] font-black uppercase tracking-widest bg-black/10 px-2.5 py-0.5 rounded-full">GIỎ HÀNG NGOẠI GIAO ĐỢT 1</span>
+            <h3 class="text-xl sm:text-2xl font-black uppercase tracking-tight">NHẬN BẢNG GIÁ & CHÍNH SÁCH CHIẾT KHẤU 12%</h3>
+            <p class="text-xs text-slate-800 font-medium">Chỉ áp dụng cho 20 khách hàng đầu tiên đăng ký nhận giỏ hàng trong tuần này.</p>
+          </div>
+
+          <div id="mid-success" class="hidden bg-slate-900 text-amber-300 px-6 py-3 rounded-2xl font-bold text-xs flex items-center gap-2 shadow-lg animate-fadeIn">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-400 stroke-[3]"></i>
+            <span>Đã tiếp nhận! Chuyên viên đang gửi bảng giá qua Zalo...</span>
+          </div>
+
+          <form id="mid-form" class="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
+            <input type="text" name="name" required placeholder="Họ và tên" class="px-4 py-3 rounded-xl bg-white text-slate-900 font-medium placeholder:text-slate-400 text-xs w-full sm:w-40 border border-amber-600/30 focus:ring-2 focus:ring-slate-900 outline-none" />
+            <input type="tel" name="phone" required placeholder="Số điện thoại / Zalo" class="px-4 py-3 rounded-xl bg-white text-slate-900 font-bold placeholder:text-slate-400 text-xs w-full sm:w-44 border border-amber-600/30 focus:ring-2 focus:ring-slate-900 outline-none" />
+            <button type="submit" class="px-6 py-3 rounded-xl bg-slate-950 hover:bg-slate-900 text-amber-300 font-black text-xs uppercase tracking-wider transition-all shadow-lg shrink-0 w-full sm:w-auto">GỬI CHO TÔI</button>
+          </form>
+        </div>
+    </section>
+
+    <!-- 11. CHÍNH SÁCH BÁN HÀNG & ƯU ĐÃI KHỦNG -->
+    <section id="chinh-sach" class="py-16 bg-[#082B27] text-white px-4 sm:px-6 lg:px-8 border-b border-emerald-950">
+        <div class="max-w-7xl mx-auto space-y-12">
+          
+          <div class="text-center max-w-3xl mx-auto space-y-2">
+            <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">CHÍNH SÁCH BÁN HÀNG ĐẶC BIỆT</span>
+            <h2 class="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight">ƯU ĐÃI DÀNH RIÊNG CHO KHÁCH MUA ĐỢT 1</h2>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">Giải pháp tài chính linh hoạt giúp bạn dễ dàng sở hữu căn hộ cao cấp với số vốn ban đầu chỉ từ 15%.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+            
+            <div class="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl flex flex-col justify-between">
+              <div>
+                <div class="inline-flex min-w-[54px] h-10 px-3.5 rounded-xl bg-amber-500 text-slate-950 items-center justify-center font-black text-sm shadow-md whitespace-nowrap mb-3">12%</div>
+                <h4 class="font-bold text-sm text-amber-300 uppercase">Chiết Khấu Thanh Toán Sớm</h4>
+                <p class="text-xs text-slate-300 leading-relaxed mt-2">Chiết khấu trực tiếp tới 12% giá trị căn hộ khi khách hàng thanh toán sớm 95% giá trị hợp đồng.</p>
+              </div>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl flex flex-col justify-between">
+              <div>
+                <div class="inline-flex min-w-[54px] h-10 px-3.5 rounded-xl bg-amber-500 text-slate-950 items-center justify-center font-black text-sm shadow-md whitespace-nowrap mb-3">0% Lãi Suất</div>
+                <h4 class="font-bold text-sm text-amber-300 uppercase">Lãi Suất 0% Trong 24 Tháng</h4>
+                <p class="text-xs text-slate-300 leading-relaxed mt-2">Ngân hàng Vietcombank, Techcombank hỗ trợ vay 70%, ân hạn nợ gốc và miễn lãi tới 24 tháng.</p>
+              </div>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl flex flex-col justify-between">
+              <div>
+                <div class="inline-flex min-w-[54px] h-10 px-3.5 rounded-xl bg-amber-500 text-slate-950 items-center justify-center font-black text-sm shadow-md whitespace-nowrap mb-3">150 Triệu</div>
+                <h4 class="font-bold text-sm text-amber-300 uppercase">Tặng Gói Nội Thất Cao Cấp</h4>
+                <p class="text-xs text-slate-300 leading-relaxed mt-2">Tặng ngay gói quà tặng hoàn thiện nội thất trị giá 150.000.000 đồng trừ thẳng vào giá bán.</p>
+              </div>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl flex flex-col justify-between">
+              <div>
+                <div class="inline-flex min-w-[54px] h-10 px-3.5 rounded-xl bg-amber-500 text-slate-950 items-center justify-center font-black text-sm shadow-md whitespace-nowrap mb-3">2 Năm</div>
+                <h4 class="font-bold text-sm text-amber-300 uppercase">Miễn Phí Phí Quản Lý</h4>
+                <p class="text-xs text-slate-300 leading-relaxed mt-2">Miễn phí 24 tháng dịch vụ quản lý tòa nhà tiêu chuẩn quốc tế Savills / CBRE.</p>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="text-center pt-4">
+            <a href="#dang-ky" class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-black text-xs uppercase tracking-wider shadow-xl shadow-red-900/40 hover:scale-105 active:scale-95 transition-all">
+              <span>TẢI BẢNG TÍNH LÃI VAY & TIẾN ĐỘ THANH TOÁN (PDF)</span>
+              <i data-lucide="download" class="w-4 h-4"></i>
+            </a>
+          </div>
+
+        </div>
+    </section>
+
+    <!-- 12. COUNTDOWN URGENCY BAR -->
+    <section class="py-12 bg-gradient-to-b from-[#374151] to-[#1F2937] text-white px-4 sm:px-6 text-center border-t border-slate-700">
+        <div class="max-w-4xl mx-auto space-y-6">
+          
+          <div class="space-y-2">
+            <span class="text-xs font-black text-amber-400 uppercase tracking-widest">SỐ LƯỢNG CĂN ĐẸP CÓ HẠN</span>
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-white uppercase tracking-tight">CHỈ CÒN 15 CĂN ĐẸP NHẤT - NHẬN BOOKING TRONG THÁNG</h2>
+            <p class="text-xs sm:text-sm text-slate-300">Đồng hồ đếm ngược thời gian áp dụng quà tặng vàng 9999 & chiết khấu đợt 1:</p>
+          </div>
+
+          <div class="flex items-center justify-center gap-3 sm:gap-4 font-mono">
+            <div class="bg-slate-900/90 border border-slate-600 p-3 sm:p-4 rounded-2xl min-w-[64px] sm:min-w-[80px]">
+              <span id="cd-days" class="text-2xl sm:text-4xl font-black text-amber-400 block">05</span>
+              <span class="text-[10px] text-slate-400 uppercase font-sans">Ngày</span>
+            </div>
+            <span class="text-2xl font-bold text-amber-400">:</span>
+            <div class="bg-slate-900/90 border border-slate-600 p-3 sm:p-4 rounded-2xl min-w-[64px] sm:min-w-[80px]">
+              <span id="cd-hours" class="text-2xl sm:text-4xl font-black text-amber-400 block">14</span>
+              <span class="text-[10px] text-slate-400 uppercase font-sans">Giờ</span>
+            </div>
+            <span class="text-2xl font-bold text-amber-400">:</span>
+            <div class="bg-slate-900/90 border border-slate-600 p-3 sm:p-4 rounded-2xl min-w-[64px] sm:min-w-[80px]">
+              <span id="cd-minutes" class="text-2xl sm:text-4xl font-black text-amber-400 block">36</span>
+              <span class="text-[10px] text-slate-400 uppercase font-sans">Phút</span>
+            </div>
+            <span class="text-2xl font-bold text-amber-400">:</span>
+            <div class="bg-slate-900/90 border border-slate-600 p-3 sm:p-4 rounded-2xl min-w-[64px] sm:min-w-[80px]">
+              <span id="cd-seconds" class="text-2xl sm:text-4xl font-black text-amber-400 block">20</span>
+              <span class="text-[10px] text-slate-400 uppercase font-sans">Giây</span>
+            </div>
+          </div>
+
+          <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a href="tel:0919006030" class="px-8 py-3.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs sm:text-sm uppercase tracking-wider transition-all shadow-xl flex items-center gap-2">
+              <i data-lucide="phone" class="w-4 h-4"></i>
+              <span>HOTLINE 24/7: 0919 006 030</span>
+            </a>
+            <a href="https://zalo.me/0919006030" target="_blank" rel="noopener noreferrer" class="px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs sm:text-sm uppercase tracking-wider transition-all shadow-xl flex items-center gap-2">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+              <span>CHAT ZALO GIỮ CĂN ĐẸP</span>
+            </a>
+          </div>
+
+        </div>
+    </section>
+
+    <!-- 13. FOOTER -->
+    <footer class="bg-[#051A18] text-white py-12 px-4 sm:px-6 lg:px-8 border-t border-emerald-950 text-xs">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+          
+          <div class="space-y-3">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-slate-950 font-black">M</div>
+              <span class="font-extrabold text-sm text-white uppercase tracking-wider">THE MATRIX ONE LUXURY</span>
+            </div>
+            <p class="text-slate-400 leading-relaxed text-[11px]">
+              Dự án căn hộ cao cấp biểu tượng mới tại trung tâm thủ đô. Nơi khẳng định đẳng cấp sống thượng lưu và sinh lời bền vững.
+            </p>
+          </div>
+
+          <div class="space-y-2 text-[11px] text-slate-300">
+            <h4 class="font-bold text-amber-400 text-xs uppercase mb-1">VĂN PHÒNG BÁN HÀNG & NHÀ MẪU</h4>
+            <p class="flex items-start gap-2">
+              <i data-lucide="map-pin" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
+              <span>Ngã tư Lê Quang Đạo - Mễ Trì, Quận Nam Từ Liêm, Hà Nội</span>
+            </p>
+            <p class="flex items-center gap-2">
+              <i data-lucide="phone" class="w-4 h-4 text-amber-400 shrink-0"></i>
+              <span>Hotline 24/7: <strong>0919 006 030</strong></span>
+            </p>
+            <p class="flex items-center gap-2">
+              <i data-lucide="mail" class="w-4 h-4 text-amber-400 shrink-0"></i>
+              <span>Email: admin@templatesbds.com</span>
+            </p>
+          </div>
+
+          <div class="space-y-2 text-[11px] text-slate-400">
+            <h4 class="font-bold text-amber-400 text-xs uppercase mb-1">PHÁP LÝ & BẢO LÃNH DỰ ÁN</h4>
+            <p>✓ Giấy phép xây dựng số 84/GPXD cấp bởi Sở Xây Dựng.</p>
+            <p>✓ Phê duyệt quy hoạch chi tiết tỷ lệ 1/500 hoàn thiện.</p>
+            <p>✓ Ngân hàng Vietcombank bảo lãnh tiến độ dự án.</p>
+            <p class="text-[10px] text-slate-500 pt-2">© 2026 THE MATRIX ONE LUXURY. All rights reserved.</p>
+          </div>
+
+        </div>
+    </footer>
+
+    <!-- 14. LIGHTBOX ZOOM MODAL -->
+    <div id="lightbox" class="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 hidden animate-fadeIn" onclick="closeLightbox()">
+        <div class="relative max-w-5xl max-h-[90vh] w-full flex flex-col items-center">
+          <button onclick="closeLightbox()" class="absolute -top-12 right-0 p-2 text-white/80 hover:text-white bg-white/10 rounded-full transition-colors" title="Đóng (Esc)">
+            <i data-lucide="x" class="w-6 h-6"></i>
+          </button>
+          <img id="lightbox-img" src="" alt="Phóng to chi tiết" class="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/20" onclick="event.stopPropagation()" />
+        </div>
     </div>
-  </header>
 
-  <main class="flex-1 w-full space-y-16 pb-20">
+    <!-- 15. FLOATING BOTTOM CONTACT BAR -->
+    <div class="fixed bottom-4 left-4 z-40 flex items-center gap-2">
+        <a href="tel:0919006030" class="px-4 py-2.5 rounded-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs flex items-center gap-2 shadow-2xl hover:scale-105 transition-transform">
+          <i data-lucide="phone" class="w-4 h-4 animate-bounce"></i>
+          <span class="hidden sm:inline">Gọi Ngay: 0919 006 030</span>
+          <span class="sm:hidden">Gọi Hotline</span>
+        </a>
+        <a href="https://zalo.me/0919006030" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-2 shadow-2xl hover:scale-105 transition-transform">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          <span>Chat Zalo</span>
+        </a>
+    </div>
 
-    <!-- Hero Section -->
-    <section id="tong-quan" class="relative py-24 px-4 overflow-hidden border-b border-slate-800">
-      <div class="absolute inset-0 z-0">
-        <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&auto=format&fit=crop&q=80" alt="" class="w-full h-full object-cover opacity-20 filter blur-[1px]">
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent"></div>
-      </div>
+    <script>
+      // Initialize Lucide Icons
+      lucide.createIcons();
 
-      <div class="relative z-10 max-w-5xl mx-auto text-center space-y-6">
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-400/30 text-blue-400 text-xs font-black uppercase tracking-widest">
-          <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span>
-          <span>MỞ BÁN ĐỢT 1 — ƯU ĐÃI 8.5%</span>
-        </div>
-
-        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-tight uppercase tracking-tight">
-          KHÔNG GIAN SỐNG THÔNG MINH CHUẨN QUỐC TẾ
-        </h1>
-
-        <p class="text-slate-300 text-sm sm:text-base max-w-3xl mx-auto leading-relaxed">
-          Đại đô thị căn hộ cao cấp thông minh, 3 mặt view sông, tiện ích 5 sao đồng bộ, chiết khấu tới 8.5% và hỗ trợ lãi suất 0% trong 24 tháng.
-        </p>
-
-        <div class="flex flex-wrap items-center justify-center gap-4 pt-4">
-          <a href="#lien-he" class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-sm uppercase tracking-wider rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-all hover:scale-105">
-            Nhận Bảng Giá & Ưu Đãi Ngay
-          </a>
-          <a href="https://zalo.me/0983312219" target="_blank" class="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm rounded-2xl border border-slate-700 transition-all">
-            Chat Zalo Trực Tiếp
-          </a>
-        </div>
-
-        <!-- Quick Specs -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-10 max-w-4xl mx-auto">
-          
-            <div class="bg-slate-800/80 backdrop-blur border border-slate-700/80 p-4 rounded-2xl text-center">
-              <span class="text-[11px] font-bold text-slate-400 uppercase block">Quy mô</span>
-              <span class="text-base sm:text-lg font-black text-white mt-0.5 block">4.2 Hecta</span>
-            </div>
-          
-            <div class="bg-slate-800/80 backdrop-blur border border-slate-700/80 p-4 rounded-2xl text-center">
-              <span class="text-[11px] font-bold text-slate-400 uppercase block">Số lượng</span>
-              <span class="text-base sm:text-lg font-black text-white mt-0.5 block">1.200 Căn hộ</span>
-            </div>
-          
-            <div class="bg-slate-800/80 backdrop-blur border border-slate-700/80 p-4 rounded-2xl text-center">
-              <span class="text-[11px] font-bold text-slate-400 uppercase block">Mật độ xây dựng</span>
-              <span class="text-base sm:text-lg font-black text-white mt-0.5 block">28%</span>
-            </div>
-          
-            <div class="bg-slate-800/80 backdrop-blur border border-slate-700/80 p-4 rounded-2xl text-center">
-              <span class="text-[11px] font-bold text-slate-400 uppercase block">Bàn giao</span>
-              <span class="text-base sm:text-lg font-black text-white mt-0.5 block">Quý 4/2026</span>
-            </div>
-          
-        </div>
-      </div>
-    </section>
-
-    <!-- Product Showcase -->
-    <section id="san-pham" class="max-w-7xl mx-auto px-4 space-y-8">
-      <div class="text-center space-y-2">
-        <span class="text-blue-500 text-xs font-extrabold uppercase tracking-widest">DANH MỤC SẢN PHẨM</span>
-        <h2 class="text-2xl sm:text-4xl font-black text-white uppercase">GIỎ HÀNG ĐẶC QUYỀN ĐỢT 1</h2>
-        <p class="text-slate-400 text-xs sm:text-sm max-w-xl mx-auto">Các vị trí đẹp nhất với chính sách giá gốc trực tiếp và hỗ trợ thủ tục pháp lý trọn gói.</p>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      // Countdown Timer
+      let secondsLeft = (5 * 24 * 60 * 60) + (14 * 60 * 60) + (36 * 60) + 20;
+      setInterval(() => {
+        if(secondsLeft > 0) secondsLeft--;
+        const d = Math.floor(secondsLeft / (24 * 3600));
+        const h = Math.floor((secondsLeft % (24 * 3600)) / 3600);
+        const m = Math.floor((secondsLeft % 3600) / 60);
+        const s = Math.floor(secondsLeft % 60);
         
-          <div class="bg-slate-800/90 border border-slate-700 rounded-3xl overflow-hidden shadow-lg flex flex-col justify-between group hover:border-blue-500 transition-all duration-300">
-            <div class="relative overflow-hidden h-48">
-              <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800" alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-              <div class="absolute top-3 right-3 bg-blue-600 text-white font-black text-[10px] px-3 py-1 rounded-full uppercase shadow">
-                48m²
-              </div>
-            </div>
-            <div class="p-5 space-y-4">
-              <div>
-                <h3 class="font-bold text-base text-white group-hover:text-blue-400 transition">Căn hộ 1PN + 1 Smart (48m²)</h3>
-                <span class="text-xs text-slate-400 block mt-1">Sở hữu lâu dài · Sổ hồng sẵn</span>
-              </div>
-              <div class="flex items-center justify-between pt-3 border-t border-slate-700">
-                <div>
-                  <span class="text-[10px] text-slate-400 uppercase font-bold block">Giá niêm yết</span>
-                  <span class="text-lg font-black text-blue-400">1.85 Tỷ</span>
-                </div>
-                <a href="#lien-he" class="px-4 py-2 bg-slate-700 hover:bg-blue-600 text-white text-xs font-bold rounded-xl transition">
-                  Đặt Mua
-                </a>
-              </div>
-            </div>
-          </div>
+        document.getElementById('cd-days').textContent = d.toString().padStart(2, '0');
+        document.getElementById('cd-hours').textContent = h.toString().padStart(2, '0');
+        document.getElementById('cd-minutes').textContent = m.toString().padStart(2, '0');
+        document.getElementById('cd-seconds').textContent = s.toString().padStart(2, '0');
+      }, 1000);
+
+      // Floor Plans Data
+      const floorPlans = {
+        '1pn': {
+          title: 'Căn Hộ 1 Phòng Ngủ (52.8 m²)',
+          desc: 'Thiết kế tối ưu cho chuyên gia độc thân hoặc gia đình trẻ, đón trọn ánh sáng tự nhiên.',
+          rooms: '1 Phòng Ngủ · 1 WC · 1 Ban Công Panorama · 1 Bếp Mở',
+          image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80',
+        },
+        '2pn': {
+          title: 'Căn Hộ 2 Phòng Ngủ (74.2 m² - 86.5 m²)',
+          desc: 'Không gian sống lý tưởng với 2 phòng ngủ master rộng rãi, phòng khách nối liền ban công đón gió mát.',
+          rooms: '2 Phòng Ngủ · 2 WC · 2 Ban Công & Logia · 1 Phòng Khách Lớn',
+          image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80',
+        },
+        '3pn': {
+          title: 'Căn Hộ 3 Phòng Ngủ Master (112.4 m²)',
+          desc: 'Dành riêng cho gia đình đa thế hệ, tầm nhìn trực diện hồ điều hòa và công viên trung tâm.',
+          rooms: '3 Phòng Ngủ · 2 WC · 1 Phòng Đa Năng · Phòng Bếp Riêng Biệt',
+          image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80',
+        },
+        'dualkey': {
+          title: 'Căn Hộ Dual Key & Sky Villa (149.0 m²)',
+          desc: 'Giải pháp 2 trong 1: Vừa ở vừa cho thuê sinh lời dòng tiền đều đặn mỗi tháng.',
+          rooms: '2 Lối Đi Riêng · 3 Phòng Ngủ · 3 WC · Sân Vườn Chân Mây',
+          image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80',
+        },
+      };
+
+      function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+          btn.className = "tab-btn px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200 border bg-white text-slate-700 border-amber-200/80 hover:bg-amber-50";
+        });
+        const activeBtn = document.getElementById('tab-' + tabId);
+        activeBtn.className = "tab-btn px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-200 border bg-[#082B27] text-amber-300 border-[#082B27] shadow-md scale-105";
+
+        const data = floorPlans[tabId];
+        document.getElementById('fp-title').textContent = data.title;
+        document.getElementById('fp-desc').textContent = data.desc;
+        document.getElementById('fp-rooms').textContent = data.rooms;
+        document.getElementById('fp-img').src = data.image;
+      }
+
+      function handleSelectUnitType() {
+        const title = document.getElementById('fp-title').textContent;
+        const select = document.getElementById('hero-unit-select');
+        for(let i=0; i<select.options.length; i++){
+          if(select.options[i].value === title) {
+            select.selectedIndex = i;
+            break;
+          }
+        }
+        document.getElementById('dang-ky').scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => {
+          select.focus();
+          select.classList.add('ring-4', 'ring-amber-400', 'border-amber-500');
+          setTimeout(() => select.classList.remove('ring-4', 'ring-amber-400', 'border-amber-500'), 2000);
+        }, 350);
+      }
+
+      // Lightbox
+      function openLightbox(src) {
+        document.getElementById('lightbox-img').src = src;
+        document.getElementById('lightbox').classList.remove('hidden');
+      }
+      function closeLightbox() {
+        document.getElementById('lightbox').classList.add('hidden');
+        document.getElementById('lightbox-img').src = '';
+      }
+      
+      document.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape') closeLightbox();
+      });
+
+      // Forms
+      document.getElementById('hero-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const phone = formData.get('phone');
+        if(!phone.trim()) return;
+
+        fetch('api/contact.php', {
+          method: 'POST',
+          body: formData
+        }).catch(err => console.error(err));
+
+        document.getElementById('hero-success-phone').textContent = phone;
+        this.classList.add('hidden');
+        document.getElementById('hero-success').classList.remove('hidden');
         
-          <div class="bg-slate-800/90 border border-slate-700 rounded-3xl overflow-hidden shadow-lg flex flex-col justify-between group hover:border-blue-500 transition-all duration-300">
-            <div class="relative overflow-hidden h-48">
-              <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800" alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-              <div class="absolute top-3 right-3 bg-blue-600 text-white font-black text-[10px] px-3 py-1 rounded-full uppercase shadow">
-                68m²
-              </div>
-            </div>
-            <div class="p-5 space-y-4">
-              <div>
-                <h3 class="font-bold text-base text-white group-hover:text-blue-400 transition">Căn hộ 2PN 2WC Ban công Panorama (68m²)</h3>
-                <span class="text-xs text-slate-400 block mt-1">Sở hữu lâu dài · Sổ hồng sẵn</span>
-              </div>
-              <div class="flex items-center justify-between pt-3 border-t border-slate-700">
-                <div>
-                  <span class="text-[10px] text-slate-400 uppercase font-bold block">Giá niêm yết</span>
-                  <span class="text-lg font-black text-blue-400">2.80 Tỷ</span>
-                </div>
-                <a href="#lien-he" class="px-4 py-2 bg-slate-700 hover:bg-blue-600 text-white text-xs font-bold rounded-xl transition">
-                  Đặt Mua
-                </a>
-              </div>
-            </div>
-          </div>
+        setTimeout(() => {
+          this.reset();
+          this.classList.remove('hidden');
+          document.getElementById('hero-success').classList.add('hidden');
+        }, 6000);
+      });
+
+      document.getElementById('mid-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const phone = formData.get('phone');
+        if(!phone.trim()) return;
+
+        fetch('api/contact.php', {
+          method: 'POST',
+          body: formData
+        }).catch(err => console.error(err));
+
+        this.classList.add('hidden');
+        document.getElementById('mid-success').classList.remove('hidden');
         
-          <div class="bg-slate-800/90 border border-slate-700 rounded-3xl overflow-hidden shadow-lg flex flex-col justify-between group hover:border-blue-500 transition-all duration-300">
-            <div class="relative overflow-hidden h-48">
-              <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800" alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-              <div class="absolute top-3 right-3 bg-blue-600 text-white font-black text-[10px] px-3 py-1 rounded-full uppercase shadow">
-                92m²
-              </div>
-            </div>
-            <div class="p-5 space-y-4">
-              <div>
-                <h3 class="font-bold text-base text-white group-hover:text-blue-400 transition">Căn hộ 3PN Góc 2 Mặt Thoáng (92m²)</h3>
-                <span class="text-xs text-slate-400 block mt-1">Sở hữu lâu dài · Sổ hồng sẵn</span>
-              </div>
-              <div class="flex items-center justify-between pt-3 border-t border-slate-700">
-                <div>
-                  <span class="text-[10px] text-slate-400 uppercase font-bold block">Giá niêm yết</span>
-                  <span class="text-lg font-black text-blue-400">3.95 Tỷ</span>
-                </div>
-                <a href="#lien-he" class="px-4 py-2 bg-slate-700 hover:bg-blue-600 text-white text-xs font-bold rounded-xl transition">
-                  Đặt Mua
-                </a>
-              </div>
-            </div>
-          </div>
-        
-          <div class="bg-slate-800/90 border border-slate-700 rounded-3xl overflow-hidden shadow-lg flex flex-col justify-between group hover:border-blue-500 transition-all duration-300">
-            <div class="relative overflow-hidden h-48">
-              <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800" alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-              <div class="absolute top-3 right-3 bg-blue-600 text-white font-black text-[10px] px-3 py-1 rounded-full uppercase shadow">
-                185m²
-              </div>
-            </div>
-            <div class="p-5 space-y-4">
-              <div>
-                <h3 class="font-bold text-base text-white group-hover:text-blue-400 transition">Sky Villa Penthouse Sân Vườn (185m²)</h3>
-                <span class="text-xs text-slate-400 block mt-1">Sở hữu lâu dài · Sổ hồng sẵn</span>
-              </div>
-              <div class="flex items-center justify-between pt-3 border-t border-slate-700">
-                <div>
-                  <span class="text-[10px] text-slate-400 uppercase font-bold block">Giá niêm yết</span>
-                  <span class="text-lg font-black text-blue-400">8.50 Tỷ</span>
-                </div>
-                <a href="#lien-he" class="px-4 py-2 bg-slate-700 hover:bg-blue-600 text-white text-xs font-bold rounded-xl transition">
-                  Đặt Mua
-                </a>
-              </div>
-            </div>
-          </div>
-        
-      </div>
-    </section>
-
-    <!-- Contact Form Funnel -->
-    <section id="lien-he" class="max-w-4xl mx-auto px-4">
-      <div class="bg-gradient-to-br from-slate-800 to-slate-900 border-2 border-blue-500/40 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6 text-center">
-        <span class="px-3.5 py-1 bg-blue-600/20 text-blue-400 border border-blue-500/30 text-xs font-black uppercase rounded-full tracking-widest inline-block">
-          ĐĂNG KÝ TƯ VẤN TRỰC TIẾP
-        </span>
-        <h2 class="text-2xl sm:text-3xl font-black text-white uppercase">
-          NHẬN TOÀN BỘ TÀI LIỆU & BẢNG GIÁ NGOẠI GIAO
-        </h2>
-        <p class="text-slate-300 text-xs sm:text-sm max-w-lg mx-auto">
-          Điền thông tin bên dưới, chuyên viên phân tích sẽ gửi trọn bộ hồ sơ quy hoạch và bảng giá chi tiết qua Zalo trong 5 phút.
-        </p>
-
-        <form action="api/contact.php" method="POST" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto text-left pt-2">
-          <div class="space-y-1">
-            <label class="text-[11px] font-bold text-slate-300 uppercase">Họ và tên *</label>
-            <input type="text" name="name" required placeholder="Nguyễn Văn A" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-xs font-semibold text-white focus:outline-none focus:border-blue-500">
-          </div>
-          <div class="space-y-1">
-            <label class="text-[11px] font-bold text-slate-300 uppercase">Số điện thoại / Zalo *</label>
-            <input type="tel" name="phone" required placeholder="0983xxxxxx" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-xs font-semibold text-white focus:outline-none focus:border-blue-500">
-          </div>
-          <div class="sm:col-span-2 space-y-1">
-            <label class="text-[11px] font-bold text-slate-300 uppercase">Nhu cầu quan tâm</label>
-            <textarea name="message" rows="2" placeholder="Ví dụ: Cần tư vấn căn 2PN tầng cao view sông, tư vấn gói vay ngân hàng..." class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-xs font-semibold text-white focus:outline-none focus:border-blue-500"></textarea>
-          </div>
-          <div class="sm:col-span-2 pt-2">
-            <button type="submit" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-sm uppercase tracking-wider rounded-2xl shadow-xl transition-all hover:scale-[1.01]">
-              Gửi Thông Tin Nhận Báo Giá Ngay
-            </button>
-          </div>
-        </form>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- Footer -->
-  <footer class="w-full bg-slate-950 border-t border-slate-800 py-8 px-4 text-center text-xs text-slate-500 space-y-2">
-    <p class="font-bold text-slate-400">© 2026 LP #01 - Căn Hộ Chung Cư Cao Cấp Launch Funnel. Nền tảng phân phối TEMPLATES BDS.</p>
-    <p class="text-[11px]">Hotline CSKH 24/7: <a href="tel:0919006030" class="text-blue-500 font-bold">0919 006 030</a> — Zalo: <a href="https://zalo.me/0983312219" class="text-blue-500 font-bold">0983 312 219</a></p>
-  </footer>
-
+        setTimeout(() => {
+          this.reset();
+          this.classList.remove('hidden');
+          document.getElementById('mid-success').classList.add('hidden');
+        }, 6000);
+      });
+    </script>
 </body>
 </html>
