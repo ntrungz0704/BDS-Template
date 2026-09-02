@@ -152,7 +152,11 @@ export function extractTemplateCode(ordOrTemplate: any): string {
 
 export function formatSiteSlug(ord: any): string {
   if (!ord) return 'site-demo';
-  const rawSub = (ord.subdomain || ord.tenant?.slug || '').toLowerCase();
+  const rawSub = (ord.subdomain || ord.tenant?.slug || '')
+    .toLowerCase()
+    .replace(/\.aireviewbds\.com.*$/i, '')
+    .replace(/\.localhost.*$/i, '')
+    .trim();
   
   const brand = (ord.fullName || 'bds')
     .normalize('NFD')
@@ -176,5 +180,28 @@ export function formatSiteSlug(ord: any): string {
   return rawSub;
 }
 
+export function getTemplateTypeLabel(ordOrTemplate: any): string {
+  const code = extractTemplateCode(ordOrTemplate);
+  return code.startsWith('lp-') ? 'Landing Page' : 'Website Template';
+}
+
+export function getPlatformDomain(customEnvDomain?: string): string {
+  const domain = customEnvDomain || (typeof process !== 'undefined' ? process.env?.NEXT_PUBLIC_PLATFORM_DOMAIN : '') || 'templates.aireviewbds.com';
+  if (!domain) return 'templates.aireviewbds.com';
+  if (domain.includes('localhost') || domain.includes('127.0.0.1')) return domain;
+  if (domain.startsWith('templates.')) return domain;
+  return `templates.${domain.replace(/^www\./, '')}`;
+}
+
+export function getTenantSiteUrl(ordOrSubdomain: any, customEnvDomain?: string): string {
+  const domain = getPlatformDomain(customEnvDomain);
+  const slug = typeof ordOrSubdomain === 'string' 
+    ? ordOrSubdomain.replace(/\.aireviewbds\.com.*$/i, '').replace(/\.localhost.*$/i, '').trim()
+    : formatSiteSlug(ordOrSubdomain);
+  const protocol = domain.includes('localhost') ? 'http' : 'https';
+  return `${protocol}://${domain}/site/${slug}`;
+}
+
 export * from './template-configs';
 export * from './vietnam-addresses';
+

@@ -604,15 +604,15 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
       <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex flex-col md:flex-row justify-between items-center gap-3`}>
         {/* Left: Brand Logo */}
         <div onClick={() => navigate('home')} className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-full">
-          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-sm bg-gradient-to-tr from-blue-700 to-blue-600 flex items-center justify-center text-white font-black text-lg sm:text-xl shadow-md group-hover:scale-105 transition shrink-0">
-            TB
+          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white font-black text-lg sm:text-xl shadow-md group-hover:scale-105 transition shrink-0">
+            MR
           </div>
           <div className="min-w-0 truncate">
-            <div className="text-lg sm:text-xl font-black tracking-tight text-[#0D3F8D] flex items-center gap-1 group-hover:text-blue-700 transition truncate">
-              {company?.name || 'TEMPLATESBDS'}
+            <div className="text-lg sm:text-xl font-black tracking-tight text-[#0369a1] flex items-center gap-1 group-hover:text-cyan-600 transition truncate">
+              {company?.name || 'METRO REALTY'}
             </div>
-            <div className="text-[9px] sm:text-[10px] text-slate-500 font-bold uppercase tracking-wider truncate">
-              {company?.slogan || 'Kho Mẫu Website Bất Động Sản Cao Cấp Số 1 Việt Nam'}
+            <div className="text-[9px] sm:text-[10px] text-cyan-700 font-bold uppercase tracking-wider truncate">
+              {company?.slogan || 'Sàn Giao Dịch BĐS Đô Thị & Căn Hộ Hiện Đại'}
             </div>
           </div>
         </div>
@@ -741,9 +741,15 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
       }}
     >
       <div className={`${MAX_W} mx-auto max-w-4xl text-center space-y-4`}>
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-wider text-white">
-          TÌM KIẾM BẤT ĐỘNG SẢN
-        </h2>
+        <div className="space-y-1">
+          <div className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 font-bold text-xs uppercase tracking-widest border border-cyan-400/30 mb-1">
+            DÒNG A #02 — CĂN HỘ & BĐS ĐÔ THỊ HIỆN ĐẠI
+          </div>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-wider text-white">
+            TÌM KIẾM BẤT ĐỘNG SẢN ĐÔ THỊ
+          </h2>
+          <p className="text-xs sm:text-sm text-cyan-100/80 font-medium">Hơn 25.000 căn hộ cao cấp, duplex, penthouse và nhà phố đô thị thông minh.</p>
+        </div>
 
         <div className="bg-white/10 backdrop-blur-md p-3 sm:p-4 rounded-sm border border-white/20 shadow-2xl space-y-2.5">
           {/* Row 1: Keyword */}

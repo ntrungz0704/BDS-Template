@@ -4,10 +4,11 @@ import axios from 'axios';
 import Link from 'next/link';
 import AdminLayout from '../components/AdminLayout';
 import { KeyRound, Copy, Check, ShieldAlert, Sparkles, RefreshCw, Lock } from 'lucide-react';
+import { getPlatformDomain } from '@repo/utils';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 const CMS_APP_URL = process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com';
-const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com';
+const PLATFORM_DOMAIN = getPlatformDomain(process.env.NEXT_PUBLIC_PLATFORM_DOMAIN);
 
 export default function CustomersPage() {
   const queryClient = useQueryClient();
@@ -498,7 +499,7 @@ export default function CustomersPage() {
                   </div>
 
                   <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs font-mono space-y-2 select-all">
-                    <div><strong>Website:</strong> {createdCredentials.websiteUrl || `https://${createdCredentials.subdomain}.${PLATFORM_DOMAIN}/?tenant=${createdCredentials.subdomain}`}</div>
+                    <div><strong>Website:</strong> {createdCredentials.websiteUrl || `https://${PLATFORM_DOMAIN}/site/${createdCredentials.subdomain}`}</div>
                     <div><strong>Quản trị CMS:</strong> {createdCredentials.cmsUrl || CMS_APP_URL}</div>
                     <div><strong>Email:</strong> {createdCredentials.email}</div>
                     <div><strong>Mật khẩu tạm:</strong> {createdCredentials.password}</div>

@@ -14,7 +14,7 @@ import {
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import ZeroCodeCmsEditor from '../../components/cms/ZeroCodeCmsEditor';
-import { getProvinces, getDistricts, getWards, parseAddress, formatAddress, formatTemplateDisplayName, formatSiteSlug } from '@repo/utils';
+import { getProvinces, getDistricts, getWards, parseAddress, formatAddress, formatTemplateDisplayName, formatSiteSlug, extractTemplateCode, getTemplateTypeLabel } from '@repo/utils';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 
@@ -630,17 +630,22 @@ export default function CustomerDashboard() {
                             <tr key={ord.id} className="text-slate-750 hover:bg-slate-50/60 transition-colors">
                               <td className="py-4 px-4 font-mono font-bold text-slate-950">{ord.orderNumber}</td>
                               <td className="py-4 px-4 font-bold text-slate-850">
-                                {formatTemplateDisplayName(ord)}
-                                {ord.subdomain && (
-                                  <a 
-                                    href={typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? `http://localhost:3000/site/${formatSiteSlug(ord)}` : `https://templates.aireviewbds.com/site/${formatSiteSlug(ord)}`} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer" 
-                                    className="block text-[10px] text-blue-600 hover:underline font-mono"
-                                  >
-                                    Link: templates.aireviewbds.com/site/{formatSiteSlug(ord)}
-                                  </a>
-                                )}
+                                <div className="flex flex-col gap-1 items-start">
+                                  <span>{formatTemplateDisplayName(ord)}</span>
+                                  <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-mono font-black bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                    {getTemplateTypeLabel(ord)}: {extractTemplateCode(ord)}
+                                  </span>
+                                  {ord.subdomain && (
+                                    <a 
+                                      href={typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? `http://localhost:3000/site/${formatSiteSlug(ord)}` : `https://templates.aireviewbds.com/site/${formatSiteSlug(ord)}`} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer" 
+                                      className="block text-[10px] text-blue-600 hover:underline font-mono"
+                                    >
+                                      Link: templates.aireviewbds.com/site/{formatSiteSlug(ord)}
+                                    </a>
+                                  )}
+                                </div>
                               </td>
                               <td className="py-4 px-4 text-slate-500 font-mono">
                                 {new Date(ord.createdAt).toLocaleDateString('vi-VN')}

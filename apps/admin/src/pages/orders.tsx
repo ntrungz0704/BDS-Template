@@ -2,12 +2,20 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import AdminLayout from '../components/AdminLayout';
-import { formatVND, formatTemplateDisplayName } from '@repo/utils';
+import { 
+  formatVND, 
+  formatTemplateDisplayName, 
+  extractTemplateCode, 
+  formatSiteSlug, 
+  getTemplateTypeLabel, 
+  getPlatformDomain, 
+  getTenantSiteUrl 
+} from '@repo/utils';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
-const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com';
+const PLATFORM_DOMAIN = getPlatformDomain(process.env.NEXT_PUBLIC_PLATFORM_DOMAIN);
 const CMS_APP_URL = process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com';
-const getTenantUrl = (subdomain: string) => `https://${PLATFORM_DOMAIN}/site/${subdomain}`;
+const getTenantUrl = (subdomainOrOrder: any) => getTenantSiteUrl(subdomainOrOrder, PLATFORM_DOMAIN);
 
 // Web Audio API beep chime for new orders
 function playOrderAlertSound() {
@@ -400,9 +408,14 @@ export default function AdminOrders() {
 
                       {/* Mẫu Website */}
                       <td className="px-3 py-3">
-                        <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60 truncate max-w-full">
-                          {formatTemplateDisplayName(order)}
-                        </span>
+                        <div className="flex flex-col gap-1 items-start">
+                          <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60 truncate max-w-full">
+                            {formatTemplateDisplayName(order)}
+                          </span>
+                          <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-mono font-black bg-indigo-50 text-indigo-700 border border-indigo-200">
+                            {getTemplateTypeLabel(order)}: {extractTemplateCode(order)}
+                          </span>
+                        </div>
                       </td>
 
                       {/* Subdomain / Loại */}
@@ -412,13 +425,11 @@ export default function AdminOrders() {
                             <span className="font-bold text-slate-800 text-[11px] block">Mua Mã Nguồn</span>
                             <span className="text-[9px] text-slate-400 italic">File nén mã nguồn</span>
                           </div>
-                        ) : order.subdomain ? (
-                          <div>
-                            <span className="font-mono font-bold text-indigo-700 text-[11px] truncate block">{order.subdomain}</span>
-                            <span className="text-[9px] text-slate-400 italic">Cấp tên miền tự động</span>
-                          </div>
                         ) : (
-                          <span className="text-slate-400 italic text-[11px]">Chưa đặt</span>
+                          <div>
+                            <span className="font-mono font-bold text-indigo-700 text-[11px] truncate block">{formatSiteSlug(order)}</span>
+                            <span className="text-[9px] text-slate-400 italic">templates.aireviewbds.com/site/...</span>
+                          </div>
                         )}
                       </td>
 
@@ -536,6 +547,11 @@ export default function AdminOrders() {
                   <p className="font-extrabold text-indigo-700 text-sm mt-0.5">
                     {formatTemplateDisplayName(selectedOrder)}
                   </p>
+                  <div className="mt-1 flex items-center gap-1.5 flex-wrap">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-black bg-indigo-100 text-indigo-800 border border-indigo-200">
+                      🏷️ {getTemplateTypeLabel(selectedOrder)}: {extractTemplateCode(selectedOrder)}
+                    </span>
+                  </div>
                 </div>
                 <div>
                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Tổng Tiền Thanh Toán</span>
@@ -546,9 +562,7 @@ export default function AdminOrders() {
                 <div>
                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Subdomain Yêu Cầu</span>
                   <p className="font-mono font-bold text-slate-800 mt-0.5">
-                    {selectedOrder.subdomain 
-                      ? `${selectedOrder.subdomain}.${PLATFORM_DOMAIN}`
-                      : 'Tự động tạo từ tên khách hàng'}
+                    {formatSiteSlug(selectedOrder)}.{PLATFORM_DOMAIN}
                   </p>
                   {selectedOrder.status === 'COMPLETED' && selectedOrder.tenantId && (
                     <p className="text-[10px] text-emerald-600 mt-1 font-bold">✓ Subdomain đã được kích hoạt</p>
@@ -581,20 +595,20 @@ export default function AdminOrders() {
                     <span className="text-slate-500 font-sans">Website Khách Hàng:</span>
                     <div className="text-right">
                       <a
-                        href={selectedOrder.subdomain ? getTenantUrl(selectedOrder.subdomain) : '#'}
+                        href={getTenantUrl(selectedOrder)}
                         target="_blank"
                         rel="noreferrer"
                         className="text-blue-600 font-bold hover:underline font-mono block"
                       >
-                        {selectedOrder.subdomain ? getTenantUrl(selectedOrder.subdomain) : 'Đang chuẩn bị...'}
+                        {getTenantUrl(selectedOrder)}
                       </a>
                       <a
-                        href={`https://${PLATFORM_DOMAIN}/demo/${selectedOrder.template?.slug || selectedOrder.templateId || 'luxury-gold'}`}
+                        href={`https://${PLATFORM_DOMAIN}/demo/${extractTemplateCode(selectedOrder)}`}
                         target="_blank"
                         rel="noreferrer"
                         className="text-[11px] text-emerald-600 font-sans font-bold hover:underline block mt-0.5"
                       >
-                        👉 Xem trực tiếp mẫu giao diện tức thì
+                        👉 Xem trực tiếp mẫu giao diện tức thì ({extractTemplateCode(selectedOrder)})
                       </a>
                     </div>
                   </div>
@@ -628,9 +642,11 @@ export default function AdminOrders() {
                   <button
                     onClick={() => {
                       const pwd = selectedOrder.email ? selectedOrder.email.split('@')[0] : '123456';
-                      const targetSub = selectedOrder.subdomain || '';
-                      const siteLink = getTenantUrl(targetSub);
+                      const siteLink = getTenantUrl(selectedOrder);
+                      const tplCode = extractTemplateCode(selectedOrder);
+                      const tplType = getTemplateTypeLabel(selectedOrder);
                       const info = `🎉 THÔNG TIN BÀN GIAO WEBSITE BẤT ĐỘNG SẢN:\n\n` +
+                        `- Mẫu đã chọn: ${formatTemplateDisplayName(selectedOrder)} [${tplType}: ${tplCode}]\n` +
                         `- Website công khai: ${siteLink}\n` +
                         `- Trang quản trị CMS: ${CMS_APP_URL}\n` +
                         `- Email đăng nhập: ${selectedOrder.email}\n` +
@@ -644,7 +660,7 @@ export default function AdminOrders() {
                   </button>
 
                   <a
-                    href={selectedOrder.subdomain ? getTenantUrl(selectedOrder.subdomain) : '#'}
+                    href={getTenantUrl(selectedOrder)}
                     target="_blank"
                     rel="noreferrer"
                     className="w-full sm:w-auto px-4 py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all text-center"

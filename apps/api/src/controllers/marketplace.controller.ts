@@ -11,6 +11,7 @@ import { websiteProvisioningService } from '../services/website-provisioning.ser
 import { TemplatePackagingService } from '../services/template-packaging.service';
 import { ExportJobService } from '../services/export-job.service';
 import { resolveTemplateAlias } from '../utils/template-aliases';
+import { extractTemplateCode, formatSiteSlug } from '@repo/utils';
 
 // Định nghĩa schemas Zod validation
 const createOrderSchema = z.object({
@@ -574,8 +575,8 @@ export async function handleSepayWebhook(req: Request, res: Response, next: Next
       return res.status(200).json({ success: true, message: 'Source purchase completed, no provisioning needed' });
     }
 
-    const candidateSubdomain = order.subdomain || order.phone.replace(/[^a-zA-Z0-9]/g, '') || `site-${Date.now().toString().slice(-6)}`;
-    const cleanSubdomain = candidateSubdomain.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 30);
+    const candidateSubdomain = formatSiteSlug(order);
+    const cleanSubdomain = candidateSubdomain.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 45);
 
     let finalSubdomain = cleanSubdomain;
     const existingTenant = await prisma.tenant.findUnique({ where: { slug: finalSubdomain } });
@@ -759,13 +760,8 @@ export async function simulatePayment(req: Request, res: Response, next: NextFun
         .replace(/^-|-$/g, '');
     };
 
-    let candidateSubdomain = order.subdomain;
-    if (!candidateSubdomain || candidateSubdomain.trim() === '') {
-      const brandSlug = slugifyBrand(order.fullName || '');
-      candidateSubdomain = brandSlug ? `${brandSlug}-land` : `bds-${Date.now().toString().slice(-6)}`;
-    }
-
-    const cleanSubdomain = candidateSubdomain.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 30);
+    const candidateSubdomain = formatSiteSlug(order);
+    const cleanSubdomain = candidateSubdomain.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 45);
 
     let finalSubdomain = cleanSubdomain;
     const existingTenant = await prisma.tenant.findUnique({ where: { slug: finalSubdomain } });

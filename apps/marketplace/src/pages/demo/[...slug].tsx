@@ -144,36 +144,59 @@ export default function TemplateLiveDemoPage() {
     if (!router.isReady || !template || isEmbed) return;
     
     const fetchOrInitSession = async () => {
+      const templateParam = template.slug || template.id;
       try {
-        const templateParam = template.slug || template.id;
         const savedToken = localStorage.getItem(`demo_session_${templateParam}`) || localStorage.getItem(`demo_session_${template.id}`);
         if (savedToken && savedToken !== 'local-demo-session') {
-          const res = await axios.get(`${API_URL}/api/demo/sessions/${savedToken}`, { withCredentials: true });
-          if (res.data?.success) {
-            setSession({
-              token: res.data.data.sessionToken || savedToken,
-              expiresAt: res.data.data.expiresAt,
-              saveCount: res.data.data.saveCount || 0,
-              expired: res.data.data.expired || false,
-            });
-            return;
+          try {
+            const res = await axios.get(`${API_URL}/api/demo/sessions/${savedToken}`, { withCredentials: true });
+            if (res.data?.success) {
+              if (res.data.data.expired) {
+                // Token expired: remove from localStorage and auto-refresh a new session
+                localStorage.removeItem(`demo_session_${templateParam}`);
+                localStorage.removeItem(`demo_session_${template.id}`);
+              } else {
+                setSession({
+                  token: res.data.data.sessionToken || savedToken,
+                  expiresAt: res.data.data.expiresAt,
+                  saveCount: res.data.data.saveCount || 0,
+                  expired: false,
+                });
+                return;
+              }
+            }
+          } catch {
+            // Ignore error and proceed to fresh session
           }
         }
         
-        // Init session via API
-        const res = await axios.post(`${API_URL}/api/demo/sessions`, { templateId: templateParam }, { withCredentials: true });
-        if (res.data?.success) {
-          const { sessionToken, expiresAt } = res.data.data;
-          localStorage.setItem(`demo_session_${templateParam}`, sessionToken);
-          setSession({
-            token: sessionToken,
-            expiresAt,
-            saveCount: 0,
-            expired: false,
-          });
+        // Init fresh session via API
+        try {
+          const res = await axios.post(`${API_URL}/api/demo/sessions`, { templateId: templateParam }, { withCredentials: true });
+          if (res.data?.success) {
+            const { sessionToken, expiresAt } = res.data.data;
+            localStorage.setItem(`demo_session_${templateParam}`, sessionToken);
+            setSession({
+              token: sessionToken,
+              expiresAt,
+              saveCount: 0,
+              expired: false,
+            });
+            return;
+          }
+        } catch {
+          // Fall through to local session
         }
+
+        // Always provide an active local session so the customer is never blocked
+        setSession({
+          token: 'local-demo-session',
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          saveCount: 0,
+          expired: false,
+        });
       } catch (err) {
-        console.warn('Phiên demo backend không khả dụng, sử dụng phiên cục bộ:', err);
+        console.warn('Khởi tạo phiên demo:', err);
         setSession({
           token: 'local-demo-session',
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -239,31 +262,7 @@ export default function TemplateLiveDemoPage() {
           </div>
         )}
 
-        {/* Expired Overlay */}
-        {!isEmbed && session?.expired && (
-          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[99999] flex flex-col items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center space-y-6">
-              <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-slate-900">Phiên dùng thử đã hết hạn</h2>
-              <p className="text-slate-600">Bạn đã dùng thử template này. Mua ngay để sở hữu vĩnh viễn và mở khóa toàn bộ tính năng!</p>
-              <button 
-                onClick={() => {
-                  if (template) {
-                    addToCart(template, 'BUY');
-                  }
-                  router.push('/cart');
-                }}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl transition-colors shadow-lg shadow-blue-500/30 cursor-pointer"
-              >
-                Mua ngay
-              </button>
-            </div>
-          </div>
-        )}
+
 
         {/* ── Preview Toolbar ─────────────────────────────────────────────── */}
         <PreviewToolbar

@@ -319,17 +319,16 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
     const phoneSuffix = cleanPhone.length >= 4 ? cleanPhone.slice(-4) : (cleanPhone || Date.now().toString().slice(-4));
     const tplCode = extractTplCode(order);
 
-    let candidateSubdomain = order.subdomain;
-    if (!candidateSubdomain || candidateSubdomain.trim() === '') {
-      const brandSlug = slugifyBrand(order.fullName || '') || 'bds';
+    const brandSlug = slugifyBrand(order.fullName || '') || 'bds';
+    let candidateSubdomain = (order.subdomain || '')
+      .replace(/\.aireviewbds\.com.*$/i, '')
+      .replace(/\.localhost.*$/i, '')
+      .trim();
+
+    if (!candidateSubdomain || /cmt[a-z0-9]+/i.test(candidateSubdomain) || !candidateSubdomain.includes(tplCode)) {
       candidateSubdomain = `${brandSlug}-${tplCode}-${phoneSuffix}`;
     } else {
-      const cleanCustom = slugifyBrand(candidateSubdomain);
-      if (!cleanCustom.includes(tplCode)) {
-        candidateSubdomain = `${cleanCustom}-${tplCode}-${phoneSuffix}`;
-      } else {
-        candidateSubdomain = `${cleanCustom}-${phoneSuffix}`;
-      }
+      candidateSubdomain = slugifyBrand(candidateSubdomain);
     }
 
     const cleanSubdomain = candidateSubdomain.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 45);

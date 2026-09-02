@@ -280,7 +280,10 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
   const activeTenant = userTenants?.find((t: any) => t.id === domainData?.tenantId) || userTenants?.[0];
   const tenantSlug = hasTenant ? (domainData?.subdomain || activeTenant?.slug || '') : '';
   const tenantName = hasTenant ? (companyInfo?.name || activeTenant?.name || 'Website của tôi') : 'Chưa có Website';
-  const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com';
+  const rawPlatform = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com';
+  const PLATFORM_DOMAIN = rawPlatform.includes('localhost') || rawPlatform.includes('127.0.0.1')
+    ? rawPlatform
+    : (rawPlatform.startsWith('templates.') ? rawPlatform : `templates.${rawPlatform.replace(/^www\./, '')}`);
 
   const buildPublicUrl = () => {
     if (!hasTenant || !tenantSlug) return `https://${PLATFORM_DOMAIN}`;
