@@ -8,6 +8,7 @@ import {
   Settings, Globe, Shield 
 } from 'lucide-react';
 import { ALL_TEMPLATES, Template } from '../data/templatesData';
+import NotificationBell from './NotificationBell';
 
 interface HeaderProps {
   onSearch?: (query: string) => void;
@@ -158,6 +159,7 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
                 <span>0983 312 219</span>
               </a>
             </div>
+            {user && <NotificationBell />}
             {user ? (
               <div className="relative" ref={userDropdownRef}>
                 <button

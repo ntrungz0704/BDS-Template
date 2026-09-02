@@ -44,6 +44,7 @@ import {
   Plus,
   ShoppingBag,
 } from 'lucide-react';
+import CMSNotificationBell from '../NotificationBell';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -622,6 +623,7 @@ export default function CMSLayout({ children, title, breadcrumbs }: CMSLayoutPro
 
           {/* Right actions */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <CMSNotificationBell />
             {/* Marketplace link */}
             <a
               href={process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'https://templates.aireviewbds.com'}

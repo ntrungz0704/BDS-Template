@@ -167,3 +167,34 @@ DATABASE_URL=postgresql://postgres:password@db-host:5432/real_estate_platform?sc
 ## 5. Quy Trình Khôi Phục & Rollback Khi Gặp Lỗi SSL/Domain
 1. Nếu chứng chỉ Wildcard hết hạn hoặc lỗi: Tạm thời chuyển toàn bộ traffic SSL về TLS dự phòng thông qua CDN (Cloudflare Proxy) trong khi chạy lại Certbot.
 2. Nếu Custom Domain bị trỏ sai hoặc lỗi: Đảm bảo khách thuê vẫn có thể truy cập website qua subdomain mặc định `{slug}.platformbds.vn` bằng cách cập nhật trường `customDomain` về `null` trong database.
+
+---
+
+## 6. Hướng Dẫn Hai Chế Độ Triển Khai Cho Khách Hàng (Managed vs Standalone)
+
+Khách hàng sau khi sở hữu template hoặc landing page có thể lựa chọn 1 trong 2 mô hình triển khai:
+
+### Chế độ A: Triển khai Managed trên GitHub & Vercel (Kết nối CMS Nền Tảng)
+- **Mục đích:** Khách hàng muốn sử dụng hạ tầng Cloud siêu tốc của Vercel (hoặc Netlify) nhưng vẫn quản lý nội dung dễ dàng thông qua **CMS Nền Tảng**.
+- **Cách thức hoạt động:**
+  1. Khách hàng kết nối repository mã nguồn website với Vercel.
+  2. Trong mục **Environment Variables** trên Vercel, cấu hình các biến sau:
+     ```env
+     NEXT_PUBLIC_API_URL=https://bds-template-api.onrender.com
+     SITE_SLUG=ten-subdomain-cua-ban
+     SITE_PUBLIC_KEY=site_pub_xxxxxxxxxxxxxxxxxxxx
+     ```
+  3. **Đồng bộ nội dung:** Mỗi khi khách hàng sửa tiêu đề, hình ảnh, dự án hay bảng giá trên CMS Nền Tảng, website Vercel sẽ tự động fetch nội dung mới nhất qua API.
+  4. **Thu thập khách hàng (CRM):** Khách truy cập điền form liên hệ trên website Vercel, dữ liệu được chuyển thẳng vào CRM của khách trong CMS (`/leads`) kèm thông báo realtime.
+
+### Chế độ B: Triển khai Độc lập (Standalone Package - PHP/MySQL/HTML5 hoặc Next.js Standalone)
+- **Mục đích:** Khách hàng muốn sở hữu toàn bộ mã nguồn trọn gói, tự lưu trữ trên Hosting cPanel, XAMPP, VPS hoặc máy chủ riêng của doanh nghiệp.
+- **Cách thức hoạt động:**
+  1. Vào **Customer Dashboard** > **Tải Mã Nguồn ZIP**.
+  2. Gói ZIP tải về chứa:
+     - Toàn bộ source code giao diện chuẩn HTML5/CSS3/JS hoặc Next.js Standalone.
+     - Thư mục backend PHP xử lý form liên hệ và kết nối database.
+     - File `database.sql` định dạng sẵn schema và dữ liệu mẫu đầy đủ 100%.
+  3. Khách hàng import `database.sql` vào phpMyAdmin trên Hosting cPanel, cấu hình `config.php` với thông tin DB.
+  4. **Lưu ý quan trọng:** Chế độ Standalone hoạt động hoàn toàn độc lập, tách biệt khỏi hệ thống máy chủ của Nền tảng. Khách hàng tự chịu trách nhiệm sao lưu dữ liệu và bảo trì hosting của mình.
+

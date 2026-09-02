@@ -151,6 +151,7 @@ import demoRoutes from './routes/demo.routes';
 import membershipRoutes from './routes/membership.routes';
 import sourceRoutes from './routes/source.routes';
 import aiRoutes from './routes/ai.routes';
+import notificationRoutes from './routes/notification.routes';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/marketplace', marketplaceRoutes);
@@ -167,6 +168,7 @@ app.use('/api/tenants', tenantRoutes);
 app.use('/api/demo', demoRoutes);
 app.use('/api/source', sourceRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.get('/api', (req, res) => {
   res.json({

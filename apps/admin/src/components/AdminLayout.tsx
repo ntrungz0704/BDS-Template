@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import AdminNotificationBell from './NotificationBell';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 
@@ -231,7 +232,8 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
             {subtitle && <p className="text-xs text-slate-400 font-semibold mt-0.5">{subtitle}</p>}
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <AdminNotificationBell />
             <div className="h-8 w-px bg-slate-200"></div>
             <button
               onClick={handleLogout}

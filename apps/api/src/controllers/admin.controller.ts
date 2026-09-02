@@ -8,6 +8,7 @@ import { BUSINESS_CONFIG } from '@repo/config';
 import { websiteProvisioningService } from '../services/website-provisioning.service';
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
+import { sendRealtimeNotification } from './notification.controller';
 
 async function writeAdminAudit(
   req: Request,
@@ -376,6 +377,18 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
       }
     }
 
+    // Gửi thông báo realtime đến tài khoản khách hàng
+    if (order.userId) {
+      await sendRealtimeNotification(order.userId, {
+        type: 'ORDER_APPROVED',
+        title: '🎉 Đơn hàng đã được duyệt thành công!',
+        content: `Đơn hàng #${order.orderNumber} đã được phê duyệt. Website của bạn tại "${finalSubdomain}" đã sẵn sàng hoạt động!`,
+        actionUrl: `/customer/dashboard`,
+        entityType: 'Order',
+        entityId: order.id,
+      });
+    }
+
     logger.info(`Duyệt thành công đơn hàng: ${order.orderNumber}. Kích hoạt Tenant ID: ${tenantId || 'N/A'}`);
     await writeAdminAudit(req, 'ORDER_APPROVED_AND_TENANT_PROVISIONED', 'Order', order.id, tenantId, {
       orderNumber: order.orderNumber,
@@ -434,6 +447,18 @@ export async function rejectOrder(req: Request, res: Response, next: NextFunctio
         version: { increment: 1 },
       },
     });
+
+    // Gửi thông báo realtime đến tài khoản khách hàng
+    if (order.userId) {
+      await sendRealtimeNotification(order.userId, {
+        type: 'ORDER_REJECTED',
+        title: '⚠️ Đơn hàng chưa được phê duyệt',
+        content: `Đơn hàng #${order.orderNumber} đã bị từ chối. Lý do: ${adminNotes || 'Vui lòng kiểm tra lại thông tin giao dịch.'}`,
+        actionUrl: `/customer/dashboard`,
+        entityType: 'Order',
+        entityId: order.id,
+      });
+    }
 
     logger.info(`Đã từ chối đơn hàng: ${order.orderNumber} - Lý do: ${adminNotes}`);
 

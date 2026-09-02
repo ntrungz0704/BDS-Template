@@ -676,14 +676,21 @@ model Review {
 }
 
 model Notification {
-  id        String   @id @default(cuid())
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title     String
-  content   String
-  isRead    Boolean  @default(false) @map("is_read")
-  createdAt DateTime @default(now()) @map("created_at")
+  id         String    @id @default(cuid())
+  userId     String    @map("user_id")
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type       String?   // ORDER_CREATED, ORDER_APPROVED, ORDER_REJECTED, NEW_LEAD, SYSTEM
+  title      String
+  content    String
+  actionUrl  String?   @map("action_url")
+  entityType String?   @map("entity_type")
+  entityId   String?   @map("entity_id")
+  isRead     Boolean   @default(false) @map("is_read")
+  readAt     DateTime? @map("read_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
 
+  @@index([userId, isRead])
+  @@index([userId, createdAt(sort: Desc)])
   @@map("notifications")
 }
 
@@ -959,30 +966,34 @@ enum LeadActivityType {
 
 /// CRM Lead record — one per contact inquiry
 model Lead {
-  id           String         @id @default(cuid())
-  tenantId     String         @map("tenant_id")
-  tenant       Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  fullName     String         @map("full_name")
-  email        String?
-  phone        String
-  source       String         @default("FORM") // FORM, MANUAL, API, WEBHOOK, IMPORT
-  status       LeadStatus     @default(NEW)
-  assignedTo   String?        @map("assigned_to") // userId of staff
-  projectId    String?        @map("project_id") // Optional: linked to a project
-  projectTitle String?        @map("project_title") // Snapshot
-  budget       BigInt?
-  note         String?        // Quick note on creation
-  tags         String[]
-  lastActivityAt DateTime?    @map("last_activity_at")
-  wonAt        DateTime?      @map("won_at")
-  lostAt       DateTime?      @map("lost_at")
-  lostReason   String?        @map("lost_reason")
-  deletedAt    DateTime?      @map("deleted_at")
-  createdAt    DateTime       @default(now()) @map("created_at")
-  updatedAt    DateTime       @updatedAt @map("updated_at")
-  notes        LeadNote[]
-  activities   LeadActivity[]
+  id             String         @id @default(cuid())
+  tenantId       String?        @map("tenant_id")
+  tenant         Tenant?        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  scope          String         @default("TENANT") // "PLATFORM" | "TENANT"
+  ownerType      String         @default("TENANT") @map("owner_type") // "PLATFORM" | "TENANT"
+  websiteId      String?        @map("website_id")
+  fullName       String         @map("full_name")
+  email          String?
+  phone          String
+  source         String         @default("FORM") // FORM, MANUAL, API, WEBHOOK, IMPORT, MARKETPLACE
+  status         LeadStatus     @default(NEW)
+  assignedTo     String?        @map("assigned_to") // userId of staff
+  projectId      String?        @map("project_id") // Optional: linked to a project
+  projectTitle   String?        @map("project_title") // Snapshot
+  budget         BigInt?
+  note           String?        // Quick note on creation
+  tags           String[]
+  lastActivityAt DateTime?      @map("last_activity_at")
+  wonAt          DateTime?      @map("won_at")
+  lostAt         DateTime?      @map("lost_at")
+  lostReason     String?        @map("lost_reason")
+  deletedAt      DateTime?      @map("deleted_at")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+  notes          LeadNote[]
+  activities     LeadActivity[]
 
+  @@index([scope])
   @@index([tenantId, status])
   @@index([tenantId, assignedTo])
   @@index([tenantId, createdAt(sort: Desc)])
@@ -995,7 +1006,7 @@ model LeadNote {
   id        String   @id @default(cuid())
   leadId    String   @map("lead_id")
   lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  tenantId  String   @map("tenant_id") // Denormalized for isolation queries
+  tenantId  String?  @map("tenant_id") // Denormalized for isolation queries
   content   String
   createdBy String   @map("created_by") // userId
   createdAt DateTime @default(now()) @map("created_at")
@@ -1011,7 +1022,7 @@ model LeadActivity {
   id          String          @id @default(cuid())
   leadId      String          @map("lead_id")
   lead        Lead            @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  tenantId    String          @map("tenant_id") // Denormalized for isolation queries
+  tenantId    String?         @map("tenant_id") // Denormalized for isolation queries
   type        LeadActivityType
   description String
   metadata    Json?           // { from: "NEW", to: "CONTACTED" } or { duration: "10m" }

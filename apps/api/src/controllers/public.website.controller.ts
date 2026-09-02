@@ -239,7 +239,7 @@ export async function submitContactForm(req: Request, res: Response, next: NextF
       }
     }
 
-    const [submission] = await prisma.$transaction([
+    const [submission, lead] = await prisma.$transaction([
       prisma.contactFormSubmission.create({
         data: {
           tenantId,
@@ -262,6 +262,8 @@ export async function submitContactForm(req: Request, res: Response, next: NextF
       prisma.lead.create({
         data: {
           tenantId,
+          scope: 'TENANT',
+          ownerType: 'TENANT',
           fullName: data.fullName,
           email: data.email || null,
           phone: data.phone,
@@ -273,6 +275,30 @@ export async function submitContactForm(req: Request, res: Response, next: NextF
         },
       }),
     ]);
+
+    // Gửi thông báo cho chủ sở hữu / thành viên quản trị của Tenant
+    try {
+      const tenantMembers = await prisma.tenantMembership.findMany({
+        where: { tenantId, status: 'ACTIVE' },
+        select: { userId: true },
+      });
+      const userIds = tenantMembers.map((m: any) => m.userId).filter(Boolean) as string[];
+      if (userIds.length > 0) {
+        await prisma.notification.createMany({
+          data: userIds.map((uid: string) => ({
+            userId: uid,
+            type: 'NEW_LEAD',
+            title: '🔥 Lead mới từ website của bạn',
+            content: `${data.fullName} (${data.phone}) vừa gửi form liên hệ.`,
+            actionUrl: '/leads',
+            entityType: 'Lead',
+            entityId: lead.id,
+          })),
+        });
+      }
+    } catch (notifErr) {
+      logger.warn(`Không thể tạo notification cho tenant: ${(notifErr as Error).message}`);
+    }
 
     logger.info(`Nhận form liên hệ mới từ khách hàng ${data.fullName} tại Website Tenant ID ${tenantId}`);
 

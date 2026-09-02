@@ -12,6 +12,7 @@ import { TemplatePackagingService } from '../services/template-packaging.service
 import { ExportJobService } from '../services/export-job.service';
 import { resolveTemplateAlias } from '../utils/template-aliases';
 import { extractTemplateCode, formatSiteSlug } from '@repo/utils';
+import { sendRealtimeNotification } from './notification.controller';
 
 // Định nghĩa schemas Zod validation
 const createOrderSchema = z.object({
@@ -294,17 +295,29 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
 
     try {
       const admins = await prisma.user.findMany({ where: { role: 'SUPER_ADMIN', isActive: true } });
-      if (admins.length > 0) {
-        await prisma.notification.createMany({
-          data: admins.map((admin: any) => ({
-            userId: admin.id,
-            title: `📦 Đơn hàng mới #${orderNumber}`,
-            content: `${data.fullName} (${data.phone}) vừa đặt ${data.type === 'BUY' ? 'mua' : 'thuê'} template "${template.name}". Số tiền: ${amount?.toLocaleString('vi-VN')}đ.`,
-          })),
+      for (const admin of admins) {
+        await sendRealtimeNotification(admin.id, {
+          type: 'ORDER_CREATED',
+          title: `📦 Đơn hàng mới #${orderNumber}`,
+          content: `${data.fullName} (${data.phone}) vừa đặt ${data.type === 'BUY' ? 'mua' : 'thuê'} template "${template.name}". Số tiền: ${amount?.toLocaleString('vi-VN')}đ.`,
+          actionUrl: '/orders',
+          entityType: 'Order',
+          entityId: order.id,
+        });
+      }
+
+      if (authenticatedUserId) {
+        await sendRealtimeNotification(authenticatedUserId, {
+          type: 'ORDER_CREATED',
+          title: `✅ Đơn hàng #${orderNumber} đã được khởi tạo`,
+          content: `Bạn vừa đặt đơn hàng cho template "${template.name}". Vui lòng hoàn tất thanh toán để hệ thống phê duyệt và kích hoạt.`,
+          actionUrl: `/customer/dashboard`,
+          entityType: 'Order',
+          entityId: order.id,
         });
       }
     } catch (notifErr) {
-      logger.warn(`Không thể tạo notification cho admin: ${(notifErr as Error).message}`);
+      logger.warn(`Không thể tạo notification: ${(notifErr as Error).message}`);
     }
 
     res.status(201).json({
@@ -465,7 +478,7 @@ export async function downloadTemplateSource(req: Request, res: Response, next: 
       where: {
         userId,
         templateId: tpl.id,
-        type: 'BUY_SOURCE',
+        type: { in: ['BUY', 'BUY_SOURCE'] },
         status: 'COMPLETED',
         ...(cleanOrdNo ? { orderNumber: { in: [cleanOrdNo, orderNumberQuery] } } : {}),
       },
@@ -856,59 +869,36 @@ export async function createContactSubmission(req: Request, res: Response, next:
       data.message ? `💬 Lời nhắn: ${data.message}` : '',
     ].filter(Boolean).join(' | ') || (data.message || 'Khách đăng ký nhận tư vấn và bảng giá chi tiết');
 
-    // Find default tenant or first tenant for record keeping
-    let firstTenant = await prisma.tenant.findFirst();
-    if (!firstTenant) {
-      firstTenant = await prisma.tenant.create({
-        data: {
-          name: 'TEMPLATES BDS Marketplace',
-          slug: 'marketplace-main',
-          status: 'ACTIVE',
-        }
-      });
-    }
-    const tenantId = firstTenant.id;
+    // Lưu trực tiếp vào Lead CRM với phạm vi PLATFORM (tenantId = null, không bị rò rỉ sang Tenant)
+    const platformLead = await prisma.lead.create({
+      data: {
+        tenantId: null,
+        scope: 'PLATFORM',
+        ownerType: 'PLATFORM',
+        fullName: data.fullName,
+        email: data.email || null,
+        phone: data.phone,
+        status: 'NEW',
+        source: 'MARKETPLACE',
+        projectTitle: templateName,
+        note: summaryLines,
+        tags: ['Tư vấn Marketplace', 'Bảng giá', templateName],
+      }
+    });
 
-    if (tenantId) {
-      // 1. Create in ContactFormSubmission
-      await prisma.contactFormSubmission.create({
-        data: {
-          tenantId,
-          fullName: data.fullName,
-          email: data.email || '',
-          phone: data.phone,
-          message: summaryLines,
-          source: 'MARKETPLACE_DEMO',
-          sourcePage: templateName,
-          isRead: false,
-        }
-      });
-
-      // 2. Create in Lead CRM table
-      await prisma.lead.create({
-        data: {
-          tenantId,
-          fullName: data.fullName,
-          email: data.email || null,
-          phone: data.phone,
-          status: 'NEW',
-          source: 'MARKETPLACE_DEMO',
-          projectTitle: templateName,
-          note: summaryLines,
-          tags: ['Tư vấn BĐS', 'Bảng giá', templateName],
-        }
-      });
-    }
-
-    // 3. Notify Admins
+    // 3. Notify Platform Admins
     try {
       const admins = await prisma.user.findMany({ where: { role: 'SUPER_ADMIN', isActive: true } });
       if (admins.length > 0) {
         await prisma.notification.createMany({
           data: admins.map((admin: any) => ({
             userId: admin.id,
-            title: '📩 Khách hàng tư vấn mới (CRM)',
+            type: 'NEW_LEAD',
+            title: '📩 Khách hàng tư vấn mới (Marketplace)',
             content: `${data.fullName} (${data.phone}) quan tâm "${templateName}". Yêu cầu: ${summaryLines}`,
+            actionUrl: '/leads',
+            entityType: 'Lead',
+            entityId: platformLead.id,
           })),
         });
       }

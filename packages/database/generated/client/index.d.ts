@@ -34795,27 +34795,42 @@ export namespace Prisma {
   export type NotificationMinAggregateOutputType = {
     id: string | null
     userId: string | null
+    type: string | null
     title: string | null
     content: string | null
+    actionUrl: string | null
+    entityType: string | null
+    entityId: string | null
     isRead: boolean | null
+    readAt: Date | null
     createdAt: Date | null
   }
 
   export type NotificationMaxAggregateOutputType = {
     id: string | null
     userId: string | null
+    type: string | null
     title: string | null
     content: string | null
+    actionUrl: string | null
+    entityType: string | null
+    entityId: string | null
     isRead: boolean | null
+    readAt: Date | null
     createdAt: Date | null
   }
 
   export type NotificationCountAggregateOutputType = {
     id: number
     userId: number
+    type: number
     title: number
     content: number
+    actionUrl: number
+    entityType: number
+    entityId: number
     isRead: number
+    readAt: number
     createdAt: number
     _all: number
   }
@@ -34824,27 +34839,42 @@ export namespace Prisma {
   export type NotificationMinAggregateInputType = {
     id?: true
     userId?: true
+    type?: true
     title?: true
     content?: true
+    actionUrl?: true
+    entityType?: true
+    entityId?: true
     isRead?: true
+    readAt?: true
     createdAt?: true
   }
 
   export type NotificationMaxAggregateInputType = {
     id?: true
     userId?: true
+    type?: true
     title?: true
     content?: true
+    actionUrl?: true
+    entityType?: true
+    entityId?: true
     isRead?: true
+    readAt?: true
     createdAt?: true
   }
 
   export type NotificationCountAggregateInputType = {
     id?: true
     userId?: true
+    type?: true
     title?: true
     content?: true
+    actionUrl?: true
+    entityType?: true
+    entityId?: true
     isRead?: true
+    readAt?: true
     createdAt?: true
     _all?: true
   }
@@ -34924,9 +34954,14 @@ export namespace Prisma {
   export type NotificationGroupByOutputType = {
     id: string
     userId: string
+    type: string | null
     title: string
     content: string
+    actionUrl: string | null
+    entityType: string | null
+    entityId: string | null
     isRead: boolean
+    readAt: Date | null
     createdAt: Date
     _count: NotificationCountAggregateOutputType | null
     _min: NotificationMinAggregateOutputType | null
@@ -34950,9 +34985,14 @@ export namespace Prisma {
   export type NotificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    type?: boolean
     title?: boolean
     content?: boolean
+    actionUrl?: boolean
+    entityType?: boolean
+    entityId?: boolean
     isRead?: boolean
+    readAt?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notification"]>
@@ -34960,9 +35000,14 @@ export namespace Prisma {
   export type NotificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    type?: boolean
     title?: boolean
     content?: boolean
+    actionUrl?: boolean
+    entityType?: boolean
+    entityId?: boolean
     isRead?: boolean
+    readAt?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notification"]>
@@ -34970,9 +35015,14 @@ export namespace Prisma {
   export type NotificationSelectScalar = {
     id?: boolean
     userId?: boolean
+    type?: boolean
     title?: boolean
     content?: boolean
+    actionUrl?: boolean
+    entityType?: boolean
+    entityId?: boolean
     isRead?: boolean
+    readAt?: boolean
     createdAt?: boolean
   }
 
@@ -34991,9 +35041,14 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
+      type: string | null
       title: string
       content: string
+      actionUrl: string | null
+      entityType: string | null
+      entityId: string | null
       isRead: boolean
+      readAt: Date | null
       createdAt: Date
     }, ExtArgs["result"]["notification"]>
     composites: {}
@@ -35391,9 +35446,14 @@ export namespace Prisma {
   interface NotificationFieldRefs {
     readonly id: FieldRef<"Notification", 'String'>
     readonly userId: FieldRef<"Notification", 'String'>
+    readonly type: FieldRef<"Notification", 'String'>
     readonly title: FieldRef<"Notification", 'String'>
     readonly content: FieldRef<"Notification", 'String'>
+    readonly actionUrl: FieldRef<"Notification", 'String'>
+    readonly entityType: FieldRef<"Notification", 'String'>
+    readonly entityId: FieldRef<"Notification", 'String'>
     readonly isRead: FieldRef<"Notification", 'Boolean'>
+    readonly readAt: FieldRef<"Notification", 'DateTime'>
     readonly createdAt: FieldRef<"Notification", 'DateTime'>
   }
     
@@ -47257,6 +47317,9 @@ export namespace Prisma {
   export type LeadMinAggregateOutputType = {
     id: string | null
     tenantId: string | null
+    scope: string | null
+    ownerType: string | null
+    websiteId: string | null
     fullName: string | null
     email: string | null
     phone: string | null
@@ -47279,6 +47342,9 @@ export namespace Prisma {
   export type LeadMaxAggregateOutputType = {
     id: string | null
     tenantId: string | null
+    scope: string | null
+    ownerType: string | null
+    websiteId: string | null
     fullName: string | null
     email: string | null
     phone: string | null
@@ -47301,6 +47367,9 @@ export namespace Prisma {
   export type LeadCountAggregateOutputType = {
     id: number
     tenantId: number
+    scope: number
+    ownerType: number
+    websiteId: number
     fullName: number
     email: number
     phone: number
@@ -47334,6 +47403,9 @@ export namespace Prisma {
   export type LeadMinAggregateInputType = {
     id?: true
     tenantId?: true
+    scope?: true
+    ownerType?: true
+    websiteId?: true
     fullName?: true
     email?: true
     phone?: true
@@ -47356,6 +47428,9 @@ export namespace Prisma {
   export type LeadMaxAggregateInputType = {
     id?: true
     tenantId?: true
+    scope?: true
+    ownerType?: true
+    websiteId?: true
     fullName?: true
     email?: true
     phone?: true
@@ -47378,6 +47453,9 @@ export namespace Prisma {
   export type LeadCountAggregateInputType = {
     id?: true
     tenantId?: true
+    scope?: true
+    ownerType?: true
+    websiteId?: true
     fullName?: true
     email?: true
     phone?: true
@@ -47487,7 +47565,10 @@ export namespace Prisma {
 
   export type LeadGroupByOutputType = {
     id: string
-    tenantId: string
+    tenantId: string | null
+    scope: string
+    ownerType: string
+    websiteId: string | null
     fullName: string
     email: string | null
     phone: string
@@ -47530,6 +47611,9 @@ export namespace Prisma {
   export type LeadSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     tenantId?: boolean
+    scope?: boolean
+    ownerType?: boolean
+    websiteId?: boolean
     fullName?: boolean
     email?: boolean
     phone?: boolean
@@ -47548,7 +47632,7 @@ export namespace Prisma {
     deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    tenant?: boolean | Lead$tenantArgs<ExtArgs>
     notes?: boolean | Lead$notesArgs<ExtArgs>
     activities?: boolean | Lead$activitiesArgs<ExtArgs>
     _count?: boolean | LeadCountOutputTypeDefaultArgs<ExtArgs>
@@ -47557,6 +47641,9 @@ export namespace Prisma {
   export type LeadSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     tenantId?: boolean
+    scope?: boolean
+    ownerType?: boolean
+    websiteId?: boolean
     fullName?: boolean
     email?: boolean
     phone?: boolean
@@ -47575,12 +47662,15 @@ export namespace Prisma {
     deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    tenant?: boolean | Lead$tenantArgs<ExtArgs>
   }, ExtArgs["result"]["lead"]>
 
   export type LeadSelectScalar = {
     id?: boolean
     tenantId?: boolean
+    scope?: boolean
+    ownerType?: boolean
+    websiteId?: boolean
     fullName?: boolean
     email?: boolean
     phone?: boolean
@@ -47602,25 +47692,28 @@ export namespace Prisma {
   }
 
   export type LeadInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    tenant?: boolean | Lead$tenantArgs<ExtArgs>
     notes?: boolean | Lead$notesArgs<ExtArgs>
     activities?: boolean | Lead$activitiesArgs<ExtArgs>
     _count?: boolean | LeadCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type LeadIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    tenant?: boolean | Lead$tenantArgs<ExtArgs>
   }
 
   export type $LeadPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Lead"
     objects: {
-      tenant: Prisma.$TenantPayload<ExtArgs>
+      tenant: Prisma.$TenantPayload<ExtArgs> | null
       notes: Prisma.$LeadNotePayload<ExtArgs>[]
       activities: Prisma.$LeadActivityPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      tenantId: string
+      tenantId: string | null
+      scope: string
+      ownerType: string
+      websiteId: string | null
       fullName: string
       email: string | null
       phone: string
@@ -48003,7 +48096,7 @@ export namespace Prisma {
    */
   export interface Prisma__LeadClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    tenant<T extends Lead$tenantArgs<ExtArgs> = {}>(args?: Subset<T, Lead$tenantArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     notes<T extends Lead$notesArgs<ExtArgs> = {}>(args?: Subset<T, Lead$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadNotePayload<ExtArgs>, T, "findMany"> | Null>
     activities<T extends Lead$activitiesArgs<ExtArgs> = {}>(args?: Subset<T, Lead$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadActivityPayload<ExtArgs>, T, "findMany"> | Null>
     /**
@@ -48037,6 +48130,9 @@ export namespace Prisma {
   interface LeadFieldRefs {
     readonly id: FieldRef<"Lead", 'String'>
     readonly tenantId: FieldRef<"Lead", 'String'>
+    readonly scope: FieldRef<"Lead", 'String'>
+    readonly ownerType: FieldRef<"Lead", 'String'>
+    readonly websiteId: FieldRef<"Lead", 'String'>
     readonly fullName: FieldRef<"Lead", 'String'>
     readonly email: FieldRef<"Lead", 'String'>
     readonly phone: FieldRef<"Lead", 'String'>
@@ -48373,6 +48469,21 @@ export namespace Prisma {
   }
 
   /**
+   * Lead.tenant
+   */
+  export type Lead$tenantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tenant
+     */
+    select?: TenantSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TenantInclude<ExtArgs> | null
+    where?: TenantWhereInput
+  }
+
+  /**
    * Lead.notes
    */
   export type Lead$notesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -48575,7 +48686,7 @@ export namespace Prisma {
   export type LeadNoteGroupByOutputType = {
     id: string
     leadId: string
-    tenantId: string
+    tenantId: string | null
     content: string
     createdBy: string
     createdAt: Date
@@ -48646,7 +48757,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       leadId: string
-      tenantId: string
+      tenantId: string | null
       content: string
       createdBy: string
       createdAt: Date
@@ -49546,7 +49657,7 @@ export namespace Prisma {
   export type LeadActivityGroupByOutputType = {
     id: string
     leadId: string
-    tenantId: string
+    tenantId: string | null
     type: $Enums.LeadActivityType
     description: string
     metadata: JsonValue | null
@@ -49629,7 +49740,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       leadId: string
-      tenantId: string
+      tenantId: string | null
       type: $Enums.LeadActivityType
       description: string
       metadata: Prisma.JsonValue | null
@@ -58964,9 +59075,14 @@ export namespace Prisma {
   export const NotificationScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
+    type: 'type',
     title: 'title',
     content: 'content',
+    actionUrl: 'actionUrl',
+    entityType: 'entityType',
+    entityId: 'entityId',
     isRead: 'isRead',
+    readAt: 'readAt',
     createdAt: 'createdAt'
   };
 
@@ -59177,6 +59293,9 @@ export namespace Prisma {
   export const LeadScalarFieldEnum: {
     id: 'id',
     tenantId: 'tenantId',
+    scope: 'scope',
+    ownerType: 'ownerType',
+    websiteId: 'websiteId',
     fullName: 'fullName',
     email: 'email',
     phone: 'phone',
@@ -62372,9 +62491,14 @@ export namespace Prisma {
     NOT?: NotificationWhereInput | NotificationWhereInput[]
     id?: StringFilter<"Notification"> | string
     userId?: StringFilter<"Notification"> | string
+    type?: StringNullableFilter<"Notification"> | string | null
     title?: StringFilter<"Notification"> | string
     content?: StringFilter<"Notification"> | string
+    actionUrl?: StringNullableFilter<"Notification"> | string | null
+    entityType?: StringNullableFilter<"Notification"> | string | null
+    entityId?: StringNullableFilter<"Notification"> | string | null
     isRead?: BoolFilter<"Notification"> | boolean
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
     createdAt?: DateTimeFilter<"Notification"> | Date | string
     user?: XOR<UserRelationFilter, UserWhereInput>
   }
@@ -62382,9 +62506,14 @@ export namespace Prisma {
   export type NotificationOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
+    type?: SortOrderInput | SortOrder
     title?: SortOrder
     content?: SortOrder
+    actionUrl?: SortOrderInput | SortOrder
+    entityType?: SortOrderInput | SortOrder
+    entityId?: SortOrderInput | SortOrder
     isRead?: SortOrder
+    readAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
@@ -62395,9 +62524,14 @@ export namespace Prisma {
     OR?: NotificationWhereInput[]
     NOT?: NotificationWhereInput | NotificationWhereInput[]
     userId?: StringFilter<"Notification"> | string
+    type?: StringNullableFilter<"Notification"> | string | null
     title?: StringFilter<"Notification"> | string
     content?: StringFilter<"Notification"> | string
+    actionUrl?: StringNullableFilter<"Notification"> | string | null
+    entityType?: StringNullableFilter<"Notification"> | string | null
+    entityId?: StringNullableFilter<"Notification"> | string | null
     isRead?: BoolFilter<"Notification"> | boolean
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
     createdAt?: DateTimeFilter<"Notification"> | Date | string
     user?: XOR<UserRelationFilter, UserWhereInput>
   }, "id">
@@ -62405,9 +62539,14 @@ export namespace Prisma {
   export type NotificationOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
+    type?: SortOrderInput | SortOrder
     title?: SortOrder
     content?: SortOrder
+    actionUrl?: SortOrderInput | SortOrder
+    entityType?: SortOrderInput | SortOrder
+    entityId?: SortOrderInput | SortOrder
     isRead?: SortOrder
+    readAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: NotificationCountOrderByAggregateInput
     _max?: NotificationMaxOrderByAggregateInput
@@ -62420,9 +62559,14 @@ export namespace Prisma {
     NOT?: NotificationScalarWhereWithAggregatesInput | NotificationScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Notification"> | string
     userId?: StringWithAggregatesFilter<"Notification"> | string
+    type?: StringNullableWithAggregatesFilter<"Notification"> | string | null
     title?: StringWithAggregatesFilter<"Notification"> | string
     content?: StringWithAggregatesFilter<"Notification"> | string
+    actionUrl?: StringNullableWithAggregatesFilter<"Notification"> | string | null
+    entityType?: StringNullableWithAggregatesFilter<"Notification"> | string | null
+    entityId?: StringNullableWithAggregatesFilter<"Notification"> | string | null
     isRead?: BoolWithAggregatesFilter<"Notification"> | boolean
+    readAt?: DateTimeNullableWithAggregatesFilter<"Notification"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Notification"> | Date | string
   }
 
@@ -63477,7 +63621,10 @@ export namespace Prisma {
     OR?: LeadWhereInput[]
     NOT?: LeadWhereInput | LeadWhereInput[]
     id?: StringFilter<"Lead"> | string
-    tenantId?: StringFilter<"Lead"> | string
+    tenantId?: StringNullableFilter<"Lead"> | string | null
+    scope?: StringFilter<"Lead"> | string
+    ownerType?: StringFilter<"Lead"> | string
+    websiteId?: StringNullableFilter<"Lead"> | string | null
     fullName?: StringFilter<"Lead"> | string
     email?: StringNullableFilter<"Lead"> | string | null
     phone?: StringFilter<"Lead"> | string
@@ -63496,14 +63643,17 @@ export namespace Prisma {
     deletedAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
     createdAt?: DateTimeFilter<"Lead"> | Date | string
     updatedAt?: DateTimeFilter<"Lead"> | Date | string
-    tenant?: XOR<TenantRelationFilter, TenantWhereInput>
+    tenant?: XOR<TenantNullableRelationFilter, TenantWhereInput> | null
     notes?: LeadNoteListRelationFilter
     activities?: LeadActivityListRelationFilter
   }
 
   export type LeadOrderByWithRelationInput = {
     id?: SortOrder
-    tenantId?: SortOrder
+    tenantId?: SortOrderInput | SortOrder
+    scope?: SortOrder
+    ownerType?: SortOrder
+    websiteId?: SortOrderInput | SortOrder
     fullName?: SortOrder
     email?: SortOrderInput | SortOrder
     phone?: SortOrder
@@ -63532,7 +63682,10 @@ export namespace Prisma {
     AND?: LeadWhereInput | LeadWhereInput[]
     OR?: LeadWhereInput[]
     NOT?: LeadWhereInput | LeadWhereInput[]
-    tenantId?: StringFilter<"Lead"> | string
+    tenantId?: StringNullableFilter<"Lead"> | string | null
+    scope?: StringFilter<"Lead"> | string
+    ownerType?: StringFilter<"Lead"> | string
+    websiteId?: StringNullableFilter<"Lead"> | string | null
     fullName?: StringFilter<"Lead"> | string
     email?: StringNullableFilter<"Lead"> | string | null
     phone?: StringFilter<"Lead"> | string
@@ -63551,14 +63704,17 @@ export namespace Prisma {
     deletedAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
     createdAt?: DateTimeFilter<"Lead"> | Date | string
     updatedAt?: DateTimeFilter<"Lead"> | Date | string
-    tenant?: XOR<TenantRelationFilter, TenantWhereInput>
+    tenant?: XOR<TenantNullableRelationFilter, TenantWhereInput> | null
     notes?: LeadNoteListRelationFilter
     activities?: LeadActivityListRelationFilter
   }, "id">
 
   export type LeadOrderByWithAggregationInput = {
     id?: SortOrder
-    tenantId?: SortOrder
+    tenantId?: SortOrderInput | SortOrder
+    scope?: SortOrder
+    ownerType?: SortOrder
+    websiteId?: SortOrderInput | SortOrder
     fullName?: SortOrder
     email?: SortOrderInput | SortOrder
     phone?: SortOrder
@@ -63589,7 +63745,10 @@ export namespace Prisma {
     OR?: LeadScalarWhereWithAggregatesInput[]
     NOT?: LeadScalarWhereWithAggregatesInput | LeadScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Lead"> | string
-    tenantId?: StringWithAggregatesFilter<"Lead"> | string
+    tenantId?: StringNullableWithAggregatesFilter<"Lead"> | string | null
+    scope?: StringWithAggregatesFilter<"Lead"> | string
+    ownerType?: StringWithAggregatesFilter<"Lead"> | string
+    websiteId?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     fullName?: StringWithAggregatesFilter<"Lead"> | string
     email?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     phone?: StringWithAggregatesFilter<"Lead"> | string
@@ -63616,7 +63775,7 @@ export namespace Prisma {
     NOT?: LeadNoteWhereInput | LeadNoteWhereInput[]
     id?: StringFilter<"LeadNote"> | string
     leadId?: StringFilter<"LeadNote"> | string
-    tenantId?: StringFilter<"LeadNote"> | string
+    tenantId?: StringNullableFilter<"LeadNote"> | string | null
     content?: StringFilter<"LeadNote"> | string
     createdBy?: StringFilter<"LeadNote"> | string
     createdAt?: DateTimeFilter<"LeadNote"> | Date | string
@@ -63627,7 +63786,7 @@ export namespace Prisma {
   export type LeadNoteOrderByWithRelationInput = {
     id?: SortOrder
     leadId?: SortOrder
-    tenantId?: SortOrder
+    tenantId?: SortOrderInput | SortOrder
     content?: SortOrder
     createdBy?: SortOrder
     createdAt?: SortOrder
@@ -63641,7 +63800,7 @@ export namespace Prisma {
     OR?: LeadNoteWhereInput[]
     NOT?: LeadNoteWhereInput | LeadNoteWhereInput[]
     leadId?: StringFilter<"LeadNote"> | string
-    tenantId?: StringFilter<"LeadNote"> | string
+    tenantId?: StringNullableFilter<"LeadNote"> | string | null
     content?: StringFilter<"LeadNote"> | string
     createdBy?: StringFilter<"LeadNote"> | string
     createdAt?: DateTimeFilter<"LeadNote"> | Date | string
@@ -63652,7 +63811,7 @@ export namespace Prisma {
   export type LeadNoteOrderByWithAggregationInput = {
     id?: SortOrder
     leadId?: SortOrder
-    tenantId?: SortOrder
+    tenantId?: SortOrderInput | SortOrder
     content?: SortOrder
     createdBy?: SortOrder
     createdAt?: SortOrder
@@ -63668,7 +63827,7 @@ export namespace Prisma {
     NOT?: LeadNoteScalarWhereWithAggregatesInput | LeadNoteScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"LeadNote"> | string
     leadId?: StringWithAggregatesFilter<"LeadNote"> | string
-    tenantId?: StringWithAggregatesFilter<"LeadNote"> | string
+    tenantId?: StringNullableWithAggregatesFilter<"LeadNote"> | string | null
     content?: StringWithAggregatesFilter<"LeadNote"> | string
     createdBy?: StringWithAggregatesFilter<"LeadNote"> | string
     createdAt?: DateTimeWithAggregatesFilter<"LeadNote"> | Date | string
@@ -63681,7 +63840,7 @@ export namespace Prisma {
     NOT?: LeadActivityWhereInput | LeadActivityWhereInput[]
     id?: StringFilter<"LeadActivity"> | string
     leadId?: StringFilter<"LeadActivity"> | string
-    tenantId?: StringFilter<"LeadActivity"> | string
+    tenantId?: StringNullableFilter<"LeadActivity"> | string | null
     type?: EnumLeadActivityTypeFilter<"LeadActivity"> | $Enums.LeadActivityType
     description?: StringFilter<"LeadActivity"> | string
     metadata?: JsonNullableFilter<"LeadActivity">
@@ -63695,7 +63854,7 @@ export namespace Prisma {
   export type LeadActivityOrderByWithRelationInput = {
     id?: SortOrder
     leadId?: SortOrder
-    tenantId?: SortOrder
+    tenantId?: SortOrderInput | SortOrder
     type?: SortOrder
     description?: SortOrder
     metadata?: SortOrderInput | SortOrder
@@ -63712,7 +63871,7 @@ export namespace Prisma {
     OR?: LeadActivityWhereInput[]
     NOT?: LeadActivityWhereInput | LeadActivityWhereInput[]
     leadId?: StringFilter<"LeadActivity"> | string
-    tenantId?: StringFilter<"LeadActivity"> | string
+    tenantId?: StringNullableFilter<"LeadActivity"> | string | null
     type?: EnumLeadActivityTypeFilter<"LeadActivity"> | $Enums.LeadActivityType
     description?: StringFilter<"LeadActivity"> | string
     metadata?: JsonNullableFilter<"LeadActivity">
@@ -63726,7 +63885,7 @@ export namespace Prisma {
   export type LeadActivityOrderByWithAggregationInput = {
     id?: SortOrder
     leadId?: SortOrder
-    tenantId?: SortOrder
+    tenantId?: SortOrderInput | SortOrder
     type?: SortOrder
     description?: SortOrder
     metadata?: SortOrderInput | SortOrder
@@ -63745,7 +63904,7 @@ export namespace Prisma {
     NOT?: LeadActivityScalarWhereWithAggregatesInput | LeadActivityScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"LeadActivity"> | string
     leadId?: StringWithAggregatesFilter<"LeadActivity"> | string
-    tenantId?: StringWithAggregatesFilter<"LeadActivity"> | string
+    tenantId?: StringNullableWithAggregatesFilter<"LeadActivity"> | string | null
     type?: EnumLeadActivityTypeWithAggregatesFilter<"LeadActivity"> | $Enums.LeadActivityType
     description?: StringWithAggregatesFilter<"LeadActivity"> | string
     metadata?: JsonNullableWithAggregatesFilter<"LeadActivity">
@@ -67541,9 +67700,14 @@ export namespace Prisma {
 
   export type NotificationCreateInput = {
     id?: string
+    type?: string | null
     title: string
     content: string
+    actionUrl?: string | null
+    entityType?: string | null
+    entityId?: string | null
     isRead?: boolean
+    readAt?: Date | string | null
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutNotificationsInput
   }
@@ -67551,17 +67715,27 @@ export namespace Prisma {
   export type NotificationUncheckedCreateInput = {
     id?: string
     userId: string
+    type?: string | null
     title: string
     content: string
+    actionUrl?: string | null
+    entityType?: string | null
+    entityId?: string | null
     isRead?: boolean
+    readAt?: Date | string | null
     createdAt?: Date | string
   }
 
   export type NotificationUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    actionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutNotificationsNestedInput
   }
@@ -67569,35 +67743,55 @@ export namespace Prisma {
   export type NotificationUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    type?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    actionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotificationCreateManyInput = {
     id?: string
     userId: string
+    type?: string | null
     title: string
     content: string
+    actionUrl?: string | null
+    entityType?: string | null
+    entityId?: string | null
     isRead?: boolean
+    readAt?: Date | string | null
     createdAt?: Date | string
   }
 
   export type NotificationUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    actionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotificationUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    type?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    actionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -68789,6 +68983,9 @@ export namespace Prisma {
 
   export type LeadCreateInput = {
     id?: string
+    scope?: string
+    ownerType?: string
+    websiteId?: string | null
     fullName: string
     email?: string | null
     phone: string
@@ -68807,14 +69004,17 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    tenant: TenantCreateNestedOneWithoutLeadsInput
+    tenant?: TenantCreateNestedOneWithoutLeadsInput
     notes?: LeadNoteCreateNestedManyWithoutLeadInput
     activities?: LeadActivityCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUncheckedCreateInput = {
     id?: string
-    tenantId: string
+    tenantId?: string | null
+    scope?: string
+    ownerType?: string
+    websiteId?: string | null
     fullName: string
     email?: string | null
     phone: string
@@ -68839,6 +69039,9 @@ export namespace Prisma {
 
   export type LeadUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    scope?: StringFieldUpdateOperationsInput | string
+    ownerType?: StringFieldUpdateOperationsInput | string
+    websiteId?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
@@ -68857,14 +69060,17 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tenant?: TenantUpdateOneRequiredWithoutLeadsNestedInput
+    tenant?: TenantUpdateOneWithoutLeadsNestedInput
     notes?: LeadNoteUpdateManyWithoutLeadNestedInput
     activities?: LeadActivityUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    scope?: StringFieldUpdateOperationsInput | string
+    ownerType?: StringFieldUpdateOperationsInput | string
+    websiteId?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
@@ -68889,7 +69095,10 @@ export namespace Prisma {
 
   export type LeadCreateManyInput = {
     id?: string
-    tenantId: string
+    tenantId?: string | null
+    scope?: string
+    ownerType?: string
+    websiteId?: string | null
     fullName: string
     email?: string | null
     phone: string
@@ -68912,6 +69121,9 @@ export namespace Prisma {
 
   export type LeadUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    scope?: StringFieldUpdateOperationsInput | string
+    ownerType?: StringFieldUpdateOperationsInput | string
+    websiteId?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
@@ -68934,7 +69146,10 @@ export namespace Prisma {
 
   export type LeadUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    scope?: StringFieldUpdateOperationsInput | string
+    ownerType?: StringFieldUpdateOperationsInput | string
+    websiteId?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
@@ -68957,7 +69172,7 @@ export namespace Prisma {
 
   export type LeadNoteCreateInput = {
     id?: string
-    tenantId: string
+    tenantId?: string | null
     content: string
     createdBy: string
     createdAt?: Date | string
@@ -68968,7 +69183,7 @@ export namespace Prisma {
   export type LeadNoteUncheckedCreateInput = {
     id?: string
     leadId: string
-    tenantId: string
+    tenantId?: string | null
     content: string
     createdBy: string
     createdAt?: Date | string
@@ -68977,7 +69192,7 @@ export namespace Prisma {
 
   export type LeadNoteUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdBy?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -68988,7 +69203,7 @@ export namespace Prisma {
   export type LeadNoteUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     leadId?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdBy?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -68998,7 +69213,7 @@ export namespace Prisma {
   export type LeadNoteCreateManyInput = {
     id?: string
     leadId: string
-    tenantId: string
+    tenantId?: string | null
     content: string
     createdBy: string
     createdAt?: Date | string
@@ -69007,7 +69222,7 @@ export namespace Prisma {
 
   export type LeadNoteUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdBy?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -69017,7 +69232,7 @@ export namespace Prisma {
   export type LeadNoteUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     leadId?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdBy?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -69026,7 +69241,7 @@ export namespace Prisma {
 
   export type LeadActivityCreateInput = {
     id?: string
-    tenantId: string
+    tenantId?: string | null
     type: $Enums.LeadActivityType
     description: string
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -69040,7 +69255,7 @@ export namespace Prisma {
   export type LeadActivityUncheckedCreateInput = {
     id?: string
     leadId: string
-    tenantId: string
+    tenantId?: string | null
     type: $Enums.LeadActivityType
     description: string
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -69052,7 +69267,7 @@ export namespace Prisma {
 
   export type LeadActivityUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumLeadActivityTypeFieldUpdateOperationsInput | $Enums.LeadActivityType
     description?: StringFieldUpdateOperationsInput | string
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -69066,7 +69281,7 @@ export namespace Prisma {
   export type LeadActivityUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     leadId?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumLeadActivityTypeFieldUpdateOperationsInput | $Enums.LeadActivityType
     description?: StringFieldUpdateOperationsInput | string
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -69079,7 +69294,7 @@ export namespace Prisma {
   export type LeadActivityCreateManyInput = {
     id?: string
     leadId: string
-    tenantId: string
+    tenantId?: string | null
     type: $Enums.LeadActivityType
     description: string
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -69091,7 +69306,7 @@ export namespace Prisma {
 
   export type LeadActivityUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumLeadActivityTypeFieldUpdateOperationsInput | $Enums.LeadActivityType
     description?: StringFieldUpdateOperationsInput | string
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -69104,7 +69319,7 @@ export namespace Prisma {
   export type LeadActivityUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     leadId?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumLeadActivityTypeFieldUpdateOperationsInput | $Enums.LeadActivityType
     description?: StringFieldUpdateOperationsInput | string
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -72217,27 +72432,42 @@ export namespace Prisma {
   export type NotificationCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    type?: SortOrder
     title?: SortOrder
     content?: SortOrder
+    actionUrl?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
     isRead?: SortOrder
+    readAt?: SortOrder
     createdAt?: SortOrder
   }
 
   export type NotificationMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    type?: SortOrder
     title?: SortOrder
     content?: SortOrder
+    actionUrl?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
     isRead?: SortOrder
+    readAt?: SortOrder
     createdAt?: SortOrder
   }
 
   export type NotificationMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    type?: SortOrder
     title?: SortOrder
     content?: SortOrder
+    actionUrl?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
     isRead?: SortOrder
+    readAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -72860,6 +73090,9 @@ export namespace Prisma {
   export type LeadCountOrderByAggregateInput = {
     id?: SortOrder
     tenantId?: SortOrder
+    scope?: SortOrder
+    ownerType?: SortOrder
+    websiteId?: SortOrder
     fullName?: SortOrder
     email?: SortOrder
     phone?: SortOrder
@@ -72887,6 +73120,9 @@ export namespace Prisma {
   export type LeadMaxOrderByAggregateInput = {
     id?: SortOrder
     tenantId?: SortOrder
+    scope?: SortOrder
+    ownerType?: SortOrder
+    websiteId?: SortOrder
     fullName?: SortOrder
     email?: SortOrder
     phone?: SortOrder
@@ -72909,6 +73145,9 @@ export namespace Prisma {
   export type LeadMinOrderByAggregateInput = {
     id?: SortOrder
     tenantId?: SortOrder
+    scope?: SortOrder
+    ownerType?: SortOrder
+    websiteId?: SortOrder
     fullName?: SortOrder
     email?: SortOrder
     phone?: SortOrder
@@ -76553,10 +76792,12 @@ export namespace Prisma {
     push?: string | string[]
   }
 
-  export type TenantUpdateOneRequiredWithoutLeadsNestedInput = {
+  export type TenantUpdateOneWithoutLeadsNestedInput = {
     create?: XOR<TenantCreateWithoutLeadsInput, TenantUncheckedCreateWithoutLeadsInput>
     connectOrCreate?: TenantCreateOrConnectWithoutLeadsInput
     upsert?: TenantUpsertWithoutLeadsInput
+    disconnect?: TenantWhereInput | boolean
+    delete?: TenantWhereInput | boolean
     connect?: TenantWhereUniqueInput
     update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutLeadsInput, TenantUpdateWithoutLeadsInput>, TenantUncheckedUpdateWithoutLeadsInput>
   }
@@ -77660,17 +77901,27 @@ export namespace Prisma {
 
   export type NotificationCreateWithoutUserInput = {
     id?: string
+    type?: string | null
     title: string
     content: string
+    actionUrl?: string | null
+    entityType?: string | null
+    entityId?: string | null
     isRead?: boolean
+    readAt?: Date | string | null
     createdAt?: Date | string
   }
 
   export type NotificationUncheckedCreateWithoutUserInput = {
     id?: string
+    type?: string | null
     title: string
     content: string
+    actionUrl?: string | null
+    entityType?: string | null
+    entityId?: string | null
     isRead?: boolean
+    readAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -78107,9 +78358,14 @@ export namespace Prisma {
     NOT?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
     id?: StringFilter<"Notification"> | string
     userId?: StringFilter<"Notification"> | string
+    type?: StringNullableFilter<"Notification"> | string | null
     title?: StringFilter<"Notification"> | string
     content?: StringFilter<"Notification"> | string
+    actionUrl?: StringNullableFilter<"Notification"> | string | null
+    entityType?: StringNullableFilter<"Notification"> | string | null
+    entityId?: StringNullableFilter<"Notification"> | string | null
     isRead?: BoolFilter<"Notification"> | boolean
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
     createdAt?: DateTimeFilter<"Notification"> | Date | string
   }
 
@@ -79204,6 +79460,9 @@ export namespace Prisma {
 
   export type LeadCreateWithoutTenantInput = {
     id?: string
+    scope?: string
+    ownerType?: string
+    websiteId?: string | null
     fullName: string
     email?: string | null
     phone: string
@@ -79228,6 +79487,9 @@ export namespace Prisma {
 
   export type LeadUncheckedCreateWithoutTenantInput = {
     id?: string
+    scope?: string
+    ownerType?: string
+    websiteId?: string | null
     fullName: string
     email?: string | null
     phone: string
@@ -80308,7 +80570,10 @@ export namespace Prisma {
     OR?: LeadScalarWhereInput[]
     NOT?: LeadScalarWhereInput | LeadScalarWhereInput[]
     id?: StringFilter<"Lead"> | string
-    tenantId?: StringFilter<"Lead"> | string
+    tenantId?: StringNullableFilter<"Lead"> | string | null
+    scope?: StringFilter<"Lead"> | string
+    ownerType?: StringFilter<"Lead"> | string
+    websiteId?: StringNullableFilter<"Lead"> | string | null
     fullName?: StringFilter<"Lead"> | string
     email?: StringNullableFilter<"Lead"> | string | null
     phone?: StringFilter<"Lead"> | string
@@ -88849,7 +89114,7 @@ export namespace Prisma {
 
   export type LeadNoteCreateWithoutLeadInput = {
     id?: string
-    tenantId: string
+    tenantId?: string | null
     content: string
     createdBy: string
     createdAt?: Date | string
@@ -88858,7 +89123,7 @@ export namespace Prisma {
 
   export type LeadNoteUncheckedCreateWithoutLeadInput = {
     id?: string
-    tenantId: string
+    tenantId?: string | null
     content: string
     createdBy: string
     createdAt?: Date | string
@@ -88877,7 +89142,7 @@ export namespace Prisma {
 
   export type LeadActivityCreateWithoutLeadInput = {
     id?: string
-    tenantId: string
+    tenantId?: string | null
     type: $Enums.LeadActivityType
     description: string
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -88889,7 +89154,7 @@ export namespace Prisma {
 
   export type LeadActivityUncheckedCreateWithoutLeadInput = {
     id?: string
-    tenantId: string
+    tenantId?: string | null
     type: $Enums.LeadActivityType
     description: string
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -89036,7 +89301,7 @@ export namespace Prisma {
     NOT?: LeadNoteScalarWhereInput | LeadNoteScalarWhereInput[]
     id?: StringFilter<"LeadNote"> | string
     leadId?: StringFilter<"LeadNote"> | string
-    tenantId?: StringFilter<"LeadNote"> | string
+    tenantId?: StringNullableFilter<"LeadNote"> | string | null
     content?: StringFilter<"LeadNote"> | string
     createdBy?: StringFilter<"LeadNote"> | string
     createdAt?: DateTimeFilter<"LeadNote"> | Date | string
@@ -89065,7 +89330,7 @@ export namespace Prisma {
     NOT?: LeadActivityScalarWhereInput | LeadActivityScalarWhereInput[]
     id?: StringFilter<"LeadActivity"> | string
     leadId?: StringFilter<"LeadActivity"> | string
-    tenantId?: StringFilter<"LeadActivity"> | string
+    tenantId?: StringNullableFilter<"LeadActivity"> | string | null
     type?: EnumLeadActivityTypeFilter<"LeadActivity"> | $Enums.LeadActivityType
     description?: StringFilter<"LeadActivity"> | string
     metadata?: JsonNullableFilter<"LeadActivity">
@@ -89077,6 +89342,9 @@ export namespace Prisma {
 
   export type LeadCreateWithoutNotesInput = {
     id?: string
+    scope?: string
+    ownerType?: string
+    websiteId?: string | null
     fullName: string
     email?: string | null
     phone: string
@@ -89095,13 +89363,16 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    tenant: TenantCreateNestedOneWithoutLeadsInput
+    tenant?: TenantCreateNestedOneWithoutLeadsInput
     activities?: LeadActivityCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUncheckedCreateWithoutNotesInput = {
     id?: string
-    tenantId: string
+    tenantId?: string | null
+    scope?: string
+    ownerType?: string
+    websiteId?: string | null
     fullName: string
     email?: string | null
     phone: string
@@ -89141,6 +89412,9 @@ export namespace Prisma {
 
   export type LeadUpdateWithoutNotesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    scope?: StringFieldUpdateOperationsInput | string
+    ownerType?: StringFieldUpdateOperationsInput | string
+    websiteId?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
@@ -89159,13 +89433,16 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tenant?: TenantUpdateOneRequiredWithoutLeadsNestedInput
+    tenant?: TenantUpdateOneWithoutLeadsNestedInput
     activities?: LeadActivityUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateWithoutNotesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    scope?: StringFieldUpdateOperationsInput | string
+    ownerType?: StringFieldUpdateOperationsInput | string
+    websiteId?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
@@ -89189,6 +89466,9 @@ export namespace Prisma {
 
   export type LeadCreateWithoutActivitiesInput = {
     id?: string
+    scope?: string
+    ownerType?: string
+    websiteId?: string | null
     fullName: string
     email?: string | null
     phone: string
@@ -89207,13 +89487,16 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    tenant: TenantCreateNestedOneWithoutLeadsInput
+    tenant?: TenantCreateNestedOneWithoutLeadsInput
     notes?: LeadNoteCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUncheckedCreateWithoutActivitiesInput = {
     id?: string
-    tenantId: string
+    tenantId?: string | null
+    scope?: string
+    ownerType?: string
+    websiteId?: string | null
     fullName: string
     email?: string | null
     phone: string
@@ -89253,6 +89536,9 @@ export namespace Prisma {
 
   export type LeadUpdateWithoutActivitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    scope?: StringFieldUpdateOperationsInput | string
+    ownerType?: StringFieldUpdateOperationsInput | string
+    websiteId?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
@@ -89271,13 +89557,16 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tenant?: TenantUpdateOneRequiredWithoutLeadsNestedInput
+    tenant?: TenantUpdateOneWithoutLeadsNestedInput
     notes?: LeadNoteUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateWithoutActivitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
+    scope?: StringFieldUpdateOperationsInput | string
+    ownerType?: StringFieldUpdateOperationsInput | string
+    websiteId?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
@@ -90993,9 +91282,14 @@ export namespace Prisma {
 
   export type NotificationCreateManyUserInput = {
     id?: string
+    type?: string | null
     title: string
     content: string
+    actionUrl?: string | null
+    entityType?: string | null
+    entityId?: string | null
     isRead?: boolean
+    readAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -91155,25 +91449,40 @@ export namespace Prisma {
 
   export type NotificationUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    actionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotificationUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    actionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotificationUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
+    actionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
     isRead?: BoolFieldUpdateOperationsInput | boolean
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -91535,6 +91844,9 @@ export namespace Prisma {
 
   export type LeadCreateManyTenantInput = {
     id?: string
+    scope?: string
+    ownerType?: string
+    websiteId?: string | null
     fullName: string
     email?: string | null
     phone: string
@@ -92358,6 +92670,9 @@ export namespace Prisma {
 
   export type LeadUpdateWithoutTenantInput = {
     id?: StringFieldUpdateOperationsInput | string
+    scope?: StringFieldUpdateOperationsInput | string
+    ownerType?: StringFieldUpdateOperationsInput | string
+    websiteId?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
@@ -92382,6 +92697,9 @@ export namespace Prisma {
 
   export type LeadUncheckedUpdateWithoutTenantInput = {
     id?: StringFieldUpdateOperationsInput | string
+    scope?: StringFieldUpdateOperationsInput | string
+    ownerType?: StringFieldUpdateOperationsInput | string
+    websiteId?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
@@ -92406,6 +92724,9 @@ export namespace Prisma {
 
   export type LeadUncheckedUpdateManyWithoutTenantInput = {
     id?: StringFieldUpdateOperationsInput | string
+    scope?: StringFieldUpdateOperationsInput | string
+    ownerType?: StringFieldUpdateOperationsInput | string
+    websiteId?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
@@ -93904,7 +94225,7 @@ export namespace Prisma {
 
   export type LeadNoteCreateManyLeadInput = {
     id?: string
-    tenantId: string
+    tenantId?: string | null
     content: string
     createdBy: string
     createdAt?: Date | string
@@ -93913,7 +94234,7 @@ export namespace Prisma {
 
   export type LeadActivityCreateManyLeadInput = {
     id?: string
-    tenantId: string
+    tenantId?: string | null
     type: $Enums.LeadActivityType
     description: string
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -93925,7 +94246,7 @@ export namespace Prisma {
 
   export type LeadNoteUpdateWithoutLeadInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdBy?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -93934,7 +94255,7 @@ export namespace Prisma {
 
   export type LeadNoteUncheckedUpdateWithoutLeadInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdBy?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -93943,7 +94264,7 @@ export namespace Prisma {
 
   export type LeadNoteUncheckedUpdateManyWithoutLeadInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     createdBy?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -93952,7 +94273,7 @@ export namespace Prisma {
 
   export type LeadActivityUpdateWithoutLeadInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumLeadActivityTypeFieldUpdateOperationsInput | $Enums.LeadActivityType
     description?: StringFieldUpdateOperationsInput | string
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -93964,7 +94285,7 @@ export namespace Prisma {
 
   export type LeadActivityUncheckedUpdateWithoutLeadInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumLeadActivityTypeFieldUpdateOperationsInput | $Enums.LeadActivityType
     description?: StringFieldUpdateOperationsInput | string
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -93976,7 +94297,7 @@ export namespace Prisma {
 
   export type LeadActivityUncheckedUpdateManyWithoutLeadInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    tenantId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumLeadActivityTypeFieldUpdateOperationsInput | $Enums.LeadActivityType
     description?: StringFieldUpdateOperationsInput | string
     metadata?: NullableJsonNullValueInput | InputJsonValue

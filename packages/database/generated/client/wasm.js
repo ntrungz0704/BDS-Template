@@ -548,9 +548,14 @@ exports.Prisma.ReviewScalarFieldEnum = {
 exports.Prisma.NotificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  type: 'type',
   title: 'title',
   content: 'content',
+  actionUrl: 'actionUrl',
+  entityType: 'entityType',
+  entityId: 'entityId',
   isRead: 'isRead',
+  readAt: 'readAt',
   createdAt: 'createdAt'
 };
 
@@ -725,6 +730,9 @@ exports.Prisma.MediaRecycleBinScalarFieldEnum = {
 exports.Prisma.LeadScalarFieldEnum = {
   id: 'id',
   tenantId: 'tenantId',
+  scope: 'scope',
+  ownerType: 'ownerType',
+  websiteId: 'websiteId',
   fullName: 'fullName',
   email: 'email',
   phone: 'phone',
