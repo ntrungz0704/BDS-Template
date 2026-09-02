@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Star, Eye, Heart, Play, Check, Zap, Users, ArrowRight, Crown, TrendingUp, ShoppingCart } from 'lucide-react';
+import Link from 'next/link';
+import { Star, Eye, Heart, Play, Check, Zap, Users, ArrowRight, Crown, TrendingUp, ShoppingCart, Clock } from 'lucide-react';
 import { getTemplateDemoUrl } from '../utils/demo';
 import { Template } from '../data/templatesData';
 import { useAuth } from '../context/AuthContext';
@@ -165,7 +166,7 @@ const CARD_CONFIG: Record<string, {
   'portal-02': { accent:'#1E40AF', badge:'DÒNG A #02', badgeBg:'#1E40AF', badgeColor:'#FFFFFF', tagline:'Sàn BĐS đô thị hiện đại · Grid 3 cột · Fullwidth thoáng đãng', audience:'Sàn phân phối căn hộ & PropTech', rating:4.9, reviews:180, ribbon:'HIỆN ĐẠI', ribbonColor:'#1E40AF', badgeIcon:<Zap className="w-3 h-3 text-cyan-400"/>, thumbnail:'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800' },
   'portal-03': { accent:'#C5A028', badge:'DÒNG A #03', badgeBg:'#0F172A', badgeColor:'#D4AF37', tagline:'Sàn BĐS phân khúc siêu sang · VIP Lounge · Gold Accent', audience:'Chủ đầu tư biệt thự & Dinh thự triệu đô', rating:5.0, reviews:165, ribbon:'SIÊU SANG', ribbonColor:'#D97706', badgeIcon:<Crown className="w-3 h-3 text-amber-400"/>, thumbnail:'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800' },
   'portal-04': { accent:'#1E8449', badge:'DÒNG A #04', badgeBg:'#D1FAE5', badgeColor:'#065F46', tagline:'Cổng tin rao vặt siêu dày đặc · Mật độ tin cao chuẩn Việt Nam', audience:'Báo mạng BĐS & Sàn môi giới thổ cư', rating:4.9, reviews:195, ribbon:'MẬT ĐỘ CAO', ribbonColor:'#16A34A', badgeIcon:<TrendingUp className="w-3 h-3 text-emerald-600"/>, thumbnail:'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800' },
-  'portal-05': { accent:'#0284C7', badge:'DÒNG A #05', badgeBg:'#E0F2FE', badgeColor:'#0369A1', tagline:'Cổng tin BĐS bản đồ thông minh · Split Map/List · Lọc bán kính', audience:'Khách hàng tìm nhà theo khu vực', rating:4.9, reviews:150, ribbon:'BẢN ĐỒ MAP', ribbonColor:'#0284C7', badgeIcon:<Zap className="w-3 h-3 text-sky-600"/>, thumbnail:'https://images.unsplash.com/photo-1524813686514-a57563d77d66?w=800' },
+  'portal-05': { accent:'#0284C7', badge:'DÒNG A #05', badgeBg:'#E0F2FE', badgeColor:'#0369A1', tagline:'Cổng tin BĐS bản đồ thông minh · Split Map/List · Lọc bán kính', audience:'Khách hàng tìm nhà theo khu vực', rating:4.9, reviews:150, ribbon:'BẢN ĐỒ MAP', ribbonColor:'#0284C7', badgeIcon:<Zap className="w-3 h-3 text-sky-600"/>, thumbnail:'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=800' },
   'portal-06': { accent:'#16A34A', badge:'DÒNG A #06', badgeBg:'#DCFCE7', badgeColor:'#16A34A', tagline:'Sàn đô thị sinh thái & Nhà vườn nghỉ dưỡng · ESG Green', audience:'Khu đô thị sinh thái & Nhà vườn nghỉ dưỡng', rating:4.8, reviews:142, ribbon:'CHUẨN XANH', ribbonColor:'#16A34A', badgeIcon:<Zap className="w-3 h-3 text-emerald-600"/>, thumbnail:'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800' },
   'portal-07': { accent:'#0284C7', badge:'DÒNG A #07', badgeBg:'#E0F2FE', badgeColor:'#0284C7', tagline:'Sàn BĐS nghỉ dưỡng & Villa biển cao cấp · Sun & Sea Theme', audience:'Chủ đầu tư BĐS biển & Second Home', rating:5.0, reviews:188, ribbon:'NGHỈ DƯỠNG', ribbonColor:'#0284C7', badgeIcon:<Crown className="w-3 h-3 text-sky-600"/>, thumbnail:'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800' },
   'portal-08': { accent:'#D97706', badge:'DÒNG A #08', badgeBg:'#1E293B', badgeColor:'#F59E0B', tagline:'Cổng BĐS công nghiệp · Kho bãi logistics · B2B FDI', audience:'Chủ đầu tư KCN & Doanh nghiệp FDI', rating:4.8, reviews:110, ribbon:'KHO BÃI B2B', ribbonColor:'#475569', badgeIcon:<Zap className="w-3 h-3 text-amber-500"/>, thumbnail:'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800' },
@@ -207,21 +208,22 @@ const VIETNAMESE_CARD_COPY: Record<string, { tagline: string; audience: string; 
 };
 
 export default function ProductCard({ template, onSelect, onOpenDetails }: ProductCardProps) {
-  const { wishlists, toggleWishlist, addToCart, isPurchased } = useAuth();
+  const { wishlists, toggleWishlist, addToCart, isPurchased, isPendingApproval } = useAuth();
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
   const owned = isPurchased(template.slug || template.id);
+  const isPending = isPendingApproval(template.slug || template.id);
   const isFavorite = wishlists?.some((w: any) => w.templateId === template.id || w.template?.id === template.id) || false;
 
   const sourceSlug = template.sectionConfig?.sourceSlug;
   const cfg = CARD_CONFIG[sourceSlug] || CARD_CONFIG[template.slug] || CARD_CONFIG[template.id] || CARD_CONFIG['luxury-gold'] || CARD_CONFIG['mock-1'];
   const vietnameseCopy = VIETNAMESE_CARD_COPY[template.collectionSlug] || VIETNAMESE_CARD_COPY.corporate;
   
-  const badgeText = owned ? 'ĐÃ SỞ HỮU' : (template.badge || cfg?.badge || 'PREMIUM');
-  const badgeBg = owned ? '#10B981' : (template.badgeBg || cfg?.badgeBg || '#0F172A');
-  const badgeColor = owned ? '#FFFFFF' : (template.badgeColor || cfg?.badgeColor || '#D4AF37');
+  const badgeText = owned ? 'ĐÃ SỞ HỮU' : isPending ? 'CHỜ DUYỆT' : (template.badge || cfg?.badge || 'PREMIUM');
+  const badgeBg = owned ? '#10B981' : isPending ? '#F59E0B' : (template.badgeBg || cfg?.badgeBg || '#0F172A');
+  const badgeColor = owned ? '#FFFFFF' : isPending ? '#FFFFFF' : (template.badgeColor || cfg?.badgeColor || '#D4AF37');
   const tagline = vietnameseCopy.tagline;
   const rating = template.rating || cfg?.rating || 4.9;
   const reviewCount = template.reviewCount || cfg?.reviews || 95;
@@ -358,6 +360,15 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
                 <Check className="w-3.5 h-3.5" />
                 <span>Vào CMS Quản trị</span>
               </a>
+            ) : isPending ? (
+              <Link
+                href="/customer/dashboard"
+                onClick={(e) => e.stopPropagation()}
+                className="flex-1 py-2.5 px-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-all"
+              >
+                <Clock className="w-3.5 h-3.5" />
+                <span>Đang chờ duyệt</span>
+              </Link>
             ) : (
               <>
                 <button

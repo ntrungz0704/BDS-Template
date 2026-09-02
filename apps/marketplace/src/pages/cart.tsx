@@ -8,15 +8,16 @@ import axios from 'axios';
 import { 
   Trash2, CreditCard, ShoppingBag, ArrowLeft, Loader2, Sparkles, CheckCircle2, 
   ChevronRight, Lock, HelpCircle, Phone, Mail, User, Info, Check, Settings, DatabaseZap,
-  ShieldCheck, MessageSquare, Globe
+  ShieldCheck, MessageSquare, Globe, Clock
 } from 'lucide-react';
+import { formatTemplateDisplayName, extractTemplateCode } from '@repo/utils';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 
 export default function CartPage() {
-  const { cart, removeFromCart, clearCart, user, openAuthModal, showToast, isPurchased } = useAuth();
+  const { cart, removeFromCart, clearCart, user, openAuthModal, showToast, isPurchased, isPendingApproval } = useAuth();
   const router = useRouter();
 
   // Mounted guard to prevent SSR hydration mismatch / blank screen
@@ -46,8 +47,18 @@ export default function CartPage() {
     }
   }, [user]);
 
-  // Safe cart array
-  const safeCart = (Array.isArray(cart) ? cart : []).filter((item: any) => item && (item.template || item.id));
+  // Safe and deduplicated cart array by canonical template code (e.g. prevents bds-01 duplicating with legacy aliases)
+  const safeCart = React.useMemo(() => {
+    const raw = (Array.isArray(cart) ? cart : []).filter((item: any) => item && (item.template || item.id));
+    const seen = new Map<string, any>();
+    for (const it of raw) {
+      const code = extractTemplateCode(it.template || it);
+      if (!seen.has(code)) {
+        seen.set(code, it);
+      }
+    }
+    return Array.from(seen.values());
+  }, [cart]);
 
   // Pricing calculator helper
   const getItemPrice = (item: any) => {
@@ -125,10 +136,20 @@ export default function CartPage() {
     try {
       const createdOrders: any[] = [];
       
+      const unownedItems = (safeCart as any[]).filter(item => {
+        const tpl = item?.template || item;
+        return !isPurchased(tpl?.slug || tpl?.id);
+      });
+
+      if (unownedItems.length === 0) {
+        showToast('Tất cả mẫu trong giỏ bạn đã sở hữu và kích hoạt thành công!', 'info');
+        return;
+      }
+
       // Submit orders in sequence with per-item notes
-      for (const item of (safeCart as any[])) {
+      for (const item of unownedItems) {
         const tpl: any = item.template || item;
-        const tplIdentifier = tpl?.slug || tpl?.id || 'luxury-gold';
+        const tplIdentifier = extractTemplateCode(tpl);
         const price = getItemPrice(item);
         let selectedAddons = [];
         const itemId = tpl?.id || tpl?.slug;
@@ -283,14 +304,16 @@ export default function CartPage() {
                   const id = tpl?.id || tpl?.slug || 'item';
                   const itemPrice = getItemPrice(item);
                   const owned = typeof isPurchased === 'function' ? isPurchased(tpl?.slug || id) : false;
+                  const isPending = typeof isPendingApproval === 'function' ? isPendingApproval(tpl?.slug || id) : false;
+                  const displayName = formatTemplateDisplayName(tpl);
 
                   return (
-                    <div key={tpl?.slug || id} className={`bg-white border ${owned ? 'border-emerald-300 ring-2 ring-emerald-500/20' : 'border-slate-200'} rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col gap-4 justify-between`}>
-                      {owned && (
+                    <div key={tpl?.slug || id} className={`bg-white border ${owned ? 'border-emerald-300 ring-2 ring-emerald-500/20' : isPending ? 'border-amber-300 ring-2 ring-amber-500/20' : 'border-slate-200'} rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col gap-4 justify-between`}>
+                      {owned ? (
                         <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-emerald-800">
                           <div className="flex items-center gap-2 font-bold">
                             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                            <span>Bạn đã mua và sở hữu mẫu này trọn đời. Không cần thanh toán lại!</span>
+                            <span>Bạn đã mua và sở hữu mẫu này trọn đời. Hệ thống đã kích hoạt website!</span>
                           </div>
                           <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
                             <a
@@ -308,19 +331,52 @@ export default function CartPage() {
                             </button>
                           </div>
                         </div>
-                      )}
+                      ) : isPending ? (
+                        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-amber-900">
+                          <div className="flex items-center gap-2 font-bold">
+                            <Clock className="w-4 h-4 text-amber-600 shrink-0" />
+                            <span>Đơn hàng đang chờ Admin kiểm tra và duyệt kích hoạt website.</span>
+                          </div>
+                          <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                            <Link
+                              href="/customer/dashboard"
+                              className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg transition-all text-center"
+                            >
+                              Xem tiến độ đơn hàng
+                            </Link>
+                            <button
+                              type="button"
+                              onClick={() => removeFromCart(id)}
+                              className="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 hover:text-rose-600 hover:border-rose-300 rounded-lg transition-all font-semibold"
+                            >
+                              Xóa khỏi giỏ
+                            </button>
+                          </div>
+                        </div>
+                      ) : null}
+
                       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between border-b border-slate-100 pb-4">
                         <div className="flex gap-3.5 items-center">
                           <img 
                             src={tpl.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'} 
-                            alt={tpl.name || 'Mẫu Website'} 
+                            alt={displayName} 
                             className="w-24 h-16 rounded-xl object-cover border border-slate-100 shrink-0" 
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80';
+                            }}
                           />
                           <div>
-                            <h3 className="font-bold text-slate-900 text-sm">{tpl.name || 'Mẫu Website BĐS'}</h3>
+                            <h3 className="font-bold text-slate-900 text-sm">{displayName}</h3>
                             <div className="flex items-center gap-2 mt-1">
-                              <span className={`text-[10px] ${owned ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-blue-50 text-blue-600 border-blue-200'} font-bold px-2 py-0.5 rounded uppercase tracking-wider border`}>
-                                {owned ? 'ĐÃ SỞ HỮU TRỌN ĐỜI' : 'Bàn giao trọn gói / 1 Năm'}
+                              <span className={`text-[10px] ${
+                                owned 
+                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                                  : isPending 
+                                    ? 'bg-amber-50 text-amber-700 border-amber-200' 
+                                    : 'bg-blue-50 text-blue-600 border-blue-200'
+                              } font-bold px-2 py-0.5 rounded uppercase tracking-wider border`}>
+                                {owned ? 'ĐÃ SỞ HỮU' : isPending ? 'CHỜ ADMIN DUYỆT' : 'Bàn giao trọn gói / 1 Năm'}
                               </span>
                             </div>
                           </div>

@@ -17,73 +17,50 @@ export function formatVND(amount: number): string {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 }
 
+export const CANONICAL_BDS_TITLES: Record<string, string> = {
+  'bds-01': 'Template #01 - BatDongSan Classic Portal',
+  'bds-02': 'Template #02 - Modern Metro Portal',
+  'bds-03': 'Template #03 - Luxury Realty Prestige',
+  'bds-04': 'Template #04 - Density RaoVat Pro',
+  'bds-05': 'Template #05 - Map-Centric Interactive Portal',
+  'bds-06': 'Template #06 - Grand Riverside Eco-Township',
+  'bds-07': 'Template #07 - Pannamera Eco-Village Bảo Lộc',
+  'bds-08': 'Template #08 - Industrial & Logistics Hub',
+  'bds-09': 'Template #09 - Heritage & Colonial Portal',
+  'bds-10': 'Template #10 - Investment & High Yield Portal',
+  'bds-11': 'Template #11 - Modern Villa & Waterfront Estate',
+  'bds-12': 'Template #12 - Mega Developer Ecosystem Portal',
+  'bds-13': 'Template #13 - Real Estate Auction & Liquidation Portal',
+  'bds-14': 'Template #14 - Landplot & Farmland Exchange Portal',
+  'bds-15': 'Template #15 - Commercial & Retail Podium Portal',
+  'bds-16': 'Template #16 - Elite Personal Broker Portal',
+  'bds-17': 'Template #17 - Northern Capital Heritage Portal',
+  'bds-18': 'Template #18 - Saigon Dynamic Riverfront Portal',
+  'bds-19': 'Template #19 - Central Coast Scenic Portal',
+  'bds-20': 'Template #20 - Mountain & Highland Retreat Portal',
+  'bds-21': 'Template #21 - Clean Minimal Scandinavian Portal',
+  'bds-22': 'Template #22 - Night Life & Commercial Strip Portal',
+  'bds-23': 'Template #23 - Luxury Penthouse & Sky Villa Portal',
+  'bds-24': 'Template #24 - Smart City & Future Living Portal',
+  'lp-01': 'LP #01 - Căn Hộ Chung Cư Cao Cấp Launch Funnel',
+  'lp-02': 'LP #02 - Tuyển Dụng 300 Chuyên Viên Kinh Doanh BĐS',
+  'lp-03': 'LP #03 - Tổ Hợp Căn Hộ Cao Cấp Simple Page',
+  'lp-04': 'LP #04 - Sale Môi Giới BĐS Triệu Đô Authority',
+  'lp-05': 'LP #05 - Tổ Hợp Căn Hộ Khách Sạn 5 Sao Golden Park Tower',
+  'lp-06': 'LP #06 - Đại Đô Thị Sân Bay Stella Mega City Cần Thơ',
+  'lp-07': 'LP #07 - Siêu Thành Phố Biển Du Lịch Sức Khỏe NovaWorld Phan Thiết 1.000ha',
+};
+
 export function formatTemplateDisplayName(ordOrTemplate: any): string {
   if (!ordOrTemplate) return 'Website Bất Động Sản';
   
+  const code = extractTemplateCode(ordOrTemplate);
+  if (CANONICAL_BDS_TITLES[code]) {
+    return CANONICAL_BDS_TITLES[code];
+  }
+
   const template = ordOrTemplate.template || (ordOrTemplate.name ? ordOrTemplate : null);
   const name = template?.name || ordOrTemplate?.productSnapshot?.name || ordOrTemplate?.name || '';
-  const slug = template?.slug || ordOrTemplate?.productSnapshot?.slug || ordOrTemplate?.templateId || ordOrTemplate?.slug || '';
-
-  const lowerStr = (name + ' ' + slug).toLowerCase();
-
-  // 1. Landing Pages (LP 01 -> LP 07)
-  const lpMatch = lowerStr.match(/(?:lp|landing)[-_\s#]*0?([1-7])\b/i);
-  if (lpMatch) {
-    const num = lpMatch[1].padStart(2, '0');
-    const cleanTitle = name
-      .replace(/^LP\s*#?0?\d+\s*[-—:]*\s*/i, '')
-      .replace(/^Landing\s*Page\s*#?0?\d+\s*[-—:]*\s*/i, '')
-      .trim();
-    return `LP #${num} - ${cleanTitle || 'Landing Page Sale BĐS'}`;
-  }
-
-  // 2. BĐS Templates (BĐS 01 -> BĐS 24)
-  const bdsMatch = lowerStr.match(/(?:bds|template|portal)[-_\s#]*0?([1-9]|1[0-9]|2[0-4])\b/i);
-  if (bdsMatch) {
-    const num = bdsMatch[1].padStart(2, '0');
-    const cleanTitle = name
-      .replace(/^Template\s*#?0?\d+\s*[-—:]*\s*/i, '')
-      .replace(/^BĐS\s*0?\d+\s*[-—:]*\s*/i, '')
-      .trim();
-    return `BĐS ${num} — ${cleanTitle || 'Website Bất Động Sản'}`;
-  }
-
-  // 3. Legacy Aliases Mapping
-  const legacyAliases: Record<string, string> = {
-    'luxury-gold': 'BĐS 01 — Biệt Thự Hoàng Gia',
-    'minimal-white': 'BĐS 02 — Căn Hộ Tối Giản',
-    'modern-corporate': 'BĐS 03 — Sàn Giao Dịch Chuyên Nghiệp',
-    'resort-paradise': 'BĐS 04 — Nghỉ Dưỡng Ven Biển',
-    'urban-city': 'BĐS 05 — Đại Đô Thị Thông Minh',
-    'industrial-estate': 'BĐS 06 — Khu Công Nghiệp Hiện Đại',
-    'villa-premium': 'BĐS 07 — Biệt Thự Compound 3D',
-    'eco-green': 'BĐS 08 — Đô Thị Sinh Thái',
-    'classic-elegant': 'BĐS 09 — Dinh Thự Di Sản',
-    'investment-pro': 'BĐS 10 — Đầu Tư Bất Động Sản',
-    'agency-onepage': 'BĐS 11 — Landing Mở Bán',
-    'mega-developer': 'BĐS 12 — Cổng Thông Tin Dự Án',
-    'auction-template': 'BĐS 13 — Sàn Đấu Giá Bất Động Sản',
-    'landplot-template': 'BĐS 14 — Đất Nền Quy Hoạch',
-    'retail-podium': 'BĐS 15 — Shophouse Thương Mại',
-    'personal-agent': 'BĐS 16 — Môi Giới Nhà Đất',
-    'portal-listing': 'BĐS 17 — Cổng Thông Tin Bất Động Sản Số 1',
-    'benthanh-portal': 'BĐS 18 — Sàn Giao Dịch & Đấu Giá Bến Thành',
-    'bds123-portal': 'BĐS 18 — Sàn Giao Dịch & Đấu Giá Bến Thành',
-    'nhadatso-density': 'BĐS 19 — Sàn Niêm Yết Mật Độ Cao Nhà Đất Số',
-    'minhkhai-apartment': 'BĐS 20 — Chung Cư Minh Khai & Times City',
-    'hanoi-rental': 'BĐS 21 — Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội',
-    'happyland-resort': 'BĐS 22 — ZoHotels & Happy Land Nha Trang',
-    'homeo-multithumb': 'BĐS 23 — Sàn Giao Dịch Nhà Phố Homeo',
-    'homeo-agency': 'BĐS 23 — Sàn Giao Dịch Nhà Phố Homeo',
-    'realtybuild-tech': 'BĐS 24 — RealtyBuild Trang Tin BĐS Số 1 Việt Nam',
-  };
-
-  for (const [key, val] of Object.entries(legacyAliases)) {
-    if (slug.includes(key) || lowerStr.includes(key.replace('-', ' '))) {
-      return val;
-    }
-  }
-
   return name || 'Website Bất Động Sản';
 }
 

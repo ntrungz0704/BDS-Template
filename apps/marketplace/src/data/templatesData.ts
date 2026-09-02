@@ -321,9 +321,9 @@ export const WEBSITE_TEMPLATES: Template[] = [
     accentColor: "#4F46E5",
     description: "Cổng tìm kiếm và tra cứu bất động sản tương tác bản đồ thông minh (Split View 50/50 Map & Listing tương tự Airbnb / Compass). Đồng bộ tức thì giữa thẻ tin đăng và ghim vị trí trên bản đồ vệ tinh.",
     shortDescription: "Bản đồ tương tác Split View · Tra cứu theo tọa độ · Bản đồ quy hoạch",
-    thumbnail: "https://images.unsplash.com/photo-1524813686514-a57563d77d61?w=800&auto=format&fit=crop&q=80",
+    thumbnail: "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=800&auto=format&fit=crop&q=80",
     screenshots: [
-      "https://images.unsplash.com/photo-1524813686514-a57563d77d61?w=1200&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=1200&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80"
     ],

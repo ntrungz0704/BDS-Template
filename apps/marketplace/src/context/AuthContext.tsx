@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
+import { extractTemplateCode, formatTemplateDisplayName } from '@repo/utils';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 
@@ -32,7 +33,8 @@ export interface Order {
   orderNumber: string;
   amount: number;
   type: 'BUY' | 'RENT' | 'BUY_SOURCE';
-  status: 'COMPLETED' | 'WAITING_CONFIRM' | 'PENDING';
+  status: string;
+  fulfillmentStatus?: string;
   createdAt: string;
   template: OrderTemplateInfo;
   subdomain?: string;
@@ -95,6 +97,7 @@ interface AuthContextType {
   toggleWishlist: (template: any) => void;
   isWishlisted: (templateSlug: string) => boolean;
   isPurchased: (templateSlug: string) => boolean;
+  isPendingApproval: (templateSlug: string) => boolean;
   addToCart: (template: any, type?: 'BUY' | 'RENT' | 'BUY_SOURCE', subdomain?: string, note?: string) => void;
   removeFromCart: (templateId: string) => void;
   updateCartItem: (templateId: string, updates: Partial<CartItem>) => void;
@@ -264,13 +267,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 note: '',
               }));
 
-            // Merge server cart with initial local cart (preserving any added items)
+            // Merge server cart with initial local cart (deduplicating by canonical template code)
             const mergedCartMap = new Map<string, CartItem>();
-            serverCartItems.forEach((item) => mergedCartMap.set(item.template.slug || item.template.id, item));
+            serverCartItems.forEach((item) => {
+              const code = extractTemplateCode(item.template || item);
+              mergedCartMap.set(code, item);
+            });
             initialCart.forEach((item) => {
-              const key = item.template?.slug || item.template?.id;
-              if (key && !mergedCartMap.has(key)) {
-                mergedCartMap.set(key, item);
+              const code = extractTemplateCode(item.template || item);
+              if (code && !mergedCartMap.has(code)) {
+                mergedCartMap.set(code, item);
               }
             });
             const mergedCart = Array.from(mergedCartMap.values());
@@ -577,26 +583,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const isPurchased = (templateSlug: string): boolean => {
     if (!templateSlug) return false;
-    const slug = templateSlug.toLowerCase().trim();
+    const canonicalCode = extractTemplateCode(templateSlug).toLowerCase();
     
-    // Check if current user's tenant has this template
-    if ((user as any)?.tenant?.templateSlug?.toLowerCase() === slug || (user as any)?.tenant?.template?.toLowerCase() === slug) {
-      return true;
+    // Check if current user has an ACTIVE tenant website with this template
+    const userTenant = (user as any)?.tenant;
+    if (userTenant && (userTenant.status === 'ACTIVE' || !userTenant.status)) {
+      const tCode = extractTemplateCode(userTenant.templateSlug || userTenant.template?.slug || userTenant.template || '').toLowerCase();
+      if (tCode === canonicalCode) return true;
     }
 
-    // Check in existing orders
+    // Check user orders: ONLY COMPLETED orders count as purchased/owned!
+    // PENDING, WAITING_PAYMENT, PAYMENT_REVIEW are NOT completed yet!
     return orders.some((o) => {
-      const oSlug = (o.template?.slug || (o.template as any)?.id || '').toLowerCase().trim();
-      return oSlug === slug;
+      if (o.status !== 'COMPLETED' && o.fulfillmentStatus !== 'ACTIVE') return false;
+      const oCode = extractTemplateCode(o.template?.slug || (o.template as any)?.id || (o as any).productSnapshot?.slug || '').toLowerCase();
+      return oCode === canonicalCode;
+    });
+  };
+
+  const isPendingApproval = (templateSlug: string): boolean => {
+    if (!templateSlug) return false;
+    const canonicalCode = extractTemplateCode(templateSlug).toLowerCase();
+
+    // Check if user has an order in pending/review status for this template
+    return orders.some((o) => {
+      if (o.status === 'COMPLETED' || o.status === 'REJECTED' || o.status === 'CANCELLED') return false;
+      const oCode = extractTemplateCode(o.template?.slug || (o.template as any)?.id || (o as any).productSnapshot?.slug || '').toLowerCase();
+      return oCode === canonicalCode;
     });
   };
 
   const addToCart = (template: any, type: 'BUY' | 'RENT' | 'BUY_SOURCE' = 'BUY', subdomain?: string, note?: string) => {
     const slug = template.slug || template.id;
+    const canonicalCode = extractTemplateCode(template);
+    const displayName = formatTemplateDisplayName(template);
 
-    // If template is already owned by user
+    // If template is already owned and active by user
     if (isPurchased(slug)) {
-      showToast(`Bạn đã sở hữu mẫu "${template.name}". Bạn có thể sử dụng vĩnh viễn không cần mua lại!`, 'info', {
+      showToast(`Bạn đã sở hữu mẫu "${displayName}". Bạn có thể sử dụng vĩnh viễn không cần mua lại!`, 'info', {
         label: 'Vào CMS Quản trị',
         onClick: () => {
           const cmsUrl = process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com';
@@ -606,9 +630,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const exists = cart.some(item => item.template.slug === slug || item.template.id === template.id);
+    // Deduplicate by canonical template code
+    const exists = cart.some(item => extractTemplateCode(item.template || item) === canonicalCode);
     if (exists) {
-      showToast(`Mẫu "${template.name}" đã có trong giỏ hàng!`, 'info', {
+      showToast(`Mẫu "${displayName}" đã có trong giỏ hàng!`, 'info', {
         label: 'Xem giỏ hàng',
         onClick: () => {
           if (typeof window !== 'undefined') window.location.href = '/cart';
@@ -620,8 +645,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const newItem: CartItem = {
       template: {
         id: template.id || slug,
-        name: template.name,
-        slug: slug,
+        name: displayName,
+        slug: canonicalCode,
         thumbnail: template.thumbnail || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
         priceBuy: template.priceBuy || 499000,
         priceRentMonthly: template.priceRentMonthly || 199000,
@@ -643,7 +668,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       syncCartToBackend(newCart);
     }
 
-    showToast(`Đã thêm "${template.name}" vào giỏ hàng!`, 'success', {
+    showToast(`Đã thêm "${displayName}" vào giỏ hàng!`, 'success', {
       label: 'Xem giỏ hàng',
       onClick: () => {
         if (typeof window !== 'undefined') window.location.href = '/cart';
@@ -652,7 +677,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const removeFromCart = (templateId: string) => {
-    const newCart = cart.filter(item => item.template.id !== templateId && item.template.slug !== templateId);
+    const targetCode = extractTemplateCode(templateId);
+    const newCart = cart.filter(item => {
+      const itemCode = extractTemplateCode(item.template || item);
+      return item.template?.id !== templateId && item.template?.slug !== templateId && itemCode !== targetCode;
+    });
     setCart(newCart);
     if (typeof window !== 'undefined') {
       localStorage.setItem('platformbds_cart_v3', JSON.stringify(newCart));
@@ -721,6 +750,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         toggleWishlist,
         isWishlisted,
         isPurchased,
+        isPendingApproval,
         addToCart,
         removeFromCart,
         updateCartItem,

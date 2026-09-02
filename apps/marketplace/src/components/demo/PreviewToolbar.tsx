@@ -28,6 +28,7 @@ import {
   ChevronRight,
   Zap,
   Check,
+  Clock,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -72,8 +73,9 @@ export default function PreviewToolbar({
   className = '',
 }: PreviewToolbarProps) {
   const router = useRouter();
-  const { addToCart, isPurchased } = useAuth();
+  const { addToCart, isPurchased, isPendingApproval } = useAuth();
   const owned = isPurchased(template.slug);
+  const isPending = isPendingApproval(template.slug);
   const [copied, setCopied] = useState(false);
   const [toolbarVisible, setToolbarVisible] = useState(true);
 
@@ -245,6 +247,15 @@ export default function PreviewToolbar({
             <span className="hidden sm:inline">Đã Sở Hữu - Vào CMS</span>
             <span className="sm:hidden">Vào CMS</span>
           </a>
+        ) : isPending ? (
+          <button
+            onClick={() => router.push('/customer/dashboard')}
+            className="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-white text-xs font-extrabold shadow-lg transition-all duration-150 flex items-center gap-1.5"
+          >
+            <Clock className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Đang Chờ Duyệt</span>
+            <span className="sm:hidden">Chờ duyệt</span>
+          </button>
         ) : (
           <>
             {/* Add to Cart CTA */}

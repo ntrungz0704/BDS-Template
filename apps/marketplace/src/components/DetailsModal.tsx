@@ -665,8 +665,9 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
   const accent = extra.accentColor;
 
   const router = useRouter();
-  const { addToCart, isPurchased } = useAuth();
+  const { addToCart, isPurchased, isPendingApproval } = useAuth();
   const owned = isPurchased(template.slug || template.id);
+  const isPending = isPendingApproval(template.slug || template.id);
 
   const fmt = (v: number) =>
     new Intl.NumberFormat('vi-VN').format(v) + 'đ';
@@ -895,8 +896,19 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
                       href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
                       className="w-full h-10 text-[13px] font-bold rounded-xl text-white bg-emerald-600 hover:bg-emerald-700 flex items-center justify-center gap-1.5 transition-all shadow-md"
                     >
-                      <Check className="w-4 h-4" /> Bạn Đã Sở Hữu - Vào CMS Quản Trị
+                      <Check className="w-4 h-4" /> Đã Sở Hữu - Vào CMS Quản Trị
                     </a>
+                  ) : isPending ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        router.push('/customer/dashboard');
+                      }}
+                      className="w-full h-10 text-[13px] font-bold rounded-xl text-white bg-amber-500 hover:bg-amber-600 flex items-center justify-center gap-1.5 transition-all shadow-md"
+                    >
+                      <Zap className="w-4 h-4" /> Đang Chờ Admin Duyệt - Xem Đơn Hàng
+                    </button>
                   ) : (
                     <div className="grid grid-cols-2 gap-2">
                       <button
