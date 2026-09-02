@@ -20,8 +20,8 @@ const loginSchema = z.object({
   password: z.string().min(1, 'Mật khẩu không được để trống.'),
 });
 
-const ACCESS_TOKEN_EXPIRY = '7d';
-const REFRESH_TOKEN_EXPIRY_DAYS = 30;
+const ACCESS_TOKEN_EXPIRY = '30d';
+const REFRESH_TOKEN_EXPIRY_DAYS = 365;
 
 // Helper sinh Access Token
 function generateAccessToken(payload: { userId: string; email: string; role: string; tenantId: string | null }): string {
@@ -278,7 +278,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       secure: isProd,
       sameSite: sameSiteMode,
       domain: cookieDomain,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
     res.cookie('refresh_token', refreshTokenString, {
@@ -438,7 +438,7 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
       secure: isProd,
       sameSite: sameSiteMode,
       domain: cookieDomain,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
     res.cookie('refresh_token', newRefreshTokenString, {
@@ -466,8 +466,10 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
 
 export async function logout(req: Request, res: Response, next: NextFunction) {
   const refreshTokenString = req.cookies?.refresh_token;
+  const accessToken = req.cookies?.access_token || (req.headers.authorization?.startsWith('Bearer ') ? req.headers.authorization.slice(7) : null);
 
   try {
+    // 1. Thu hồi token cụ thể trong database
     if (refreshTokenString) {
       await prisma.refreshToken.update({
         where: { token: refreshTokenString },
@@ -475,17 +477,37 @@ export async function logout(req: Request, res: Response, next: NextFunction) {
       }).catch(() => {});
     }
 
+    // 2. Thu hồi toàn bộ refresh tokens của user để bảo đảm an toàn tuyệt đối
+    if (accessToken) {
+      try {
+        const decoded = jwt.decode(accessToken) as any;
+        if (decoded?.userId) {
+          await prisma.refreshToken.updateMany({
+            where: { userId: decoded.userId, revokedAt: null },
+            data: { revokedAt: new Date() },
+          }).catch(() => {});
+        }
+      } catch (_) {}
+    }
+
     const isProd = process.env.NODE_ENV === 'production';
     const cookieDomain = process.env.COOKIE_DOMAIN || undefined;
-    const cookieOptions = {
-      secure: isProd,
-      sameSite: isProd ? ('none' as const) : ('lax' as const),
-      domain: cookieDomain,
-    };
-    res.clearCookie('access_token', { ...cookieOptions, path: '/' });
-    res.clearCookie('refresh_token', { ...cookieOptions, path: '/api/auth' });
-    res.clearCookie('csrf_token', { ...cookieOptions, path: '/' });
-    res.clearCookie('is_logged_in', { ...cookieOptions, path: '/' });
+
+    // Bắt buộc truyền httpOnly: true để trình duyệt chịu xóa HttpOnly cookies
+    const cookieOptionsList = [
+      { httpOnly: true, secure: isProd, sameSite: isProd ? ('none' as const) : ('lax' as const), domain: cookieDomain },
+      { httpOnly: true, secure: isProd, sameSite: isProd ? ('none' as const) : ('lax' as const) },
+      { secure: isProd, sameSite: isProd ? ('none' as const) : ('lax' as const), domain: cookieDomain },
+      { secure: isProd, sameSite: isProd ? ('none' as const) : ('lax' as const) },
+    ];
+
+    for (const opt of cookieOptionsList) {
+      res.clearCookie('access_token', { ...opt, path: '/' });
+      res.clearCookie('refresh_token', { ...opt, path: '/api/auth' });
+      res.clearCookie('refresh_token', { ...opt, path: '/' });
+      res.clearCookie('csrf_token', { ...opt, path: '/' });
+      res.clearCookie('is_logged_in', { ...opt, path: '/' });
+    }
 
     res.status(200).json({
       success: true,

@@ -545,7 +545,7 @@ export async function handleSepayWebhook(req: Request, res: Response, next: Next
       return res.status(200).json({ success: true, message: `Order ${orderNumber} already completed` });
     }
 
-    if (transferAmount > 0 && transferAmount < order.amount) {
+    if (order.amount && transferAmount > 0 && transferAmount < order.amount) {
       logger.warn(`[SePay Webhook] Số tiền chuyển ${transferAmount} nhỏ hơn giá trị đơn ${order.amount}`);
       await prisma.order.update({
         where: { id: order.id },
@@ -562,6 +562,17 @@ export async function handleSepayWebhook(req: Request, res: Response, next: Next
         paidAt: new Date(),
       },
     });
+
+    // BUY_SOURCE / SOURCE_TEMPLATE orders do NOT provision a SaaS website
+    const isSourcePurchase = (order as any).type === 'BUY_SOURCE' || (order as any).purchaseType === 'SOURCE_TEMPLATE';
+    if (isSourcePurchase) {
+      logger.info(`[SePay Webhook] Đơn mua source code ${orderNumber} — bỏ qua provisioning website SaaS.`);
+      await prisma.order.update({
+        where: { id: order.id },
+        data: { fulfillmentStatus: 'NOT_REQUIRED' },
+      });
+      return res.status(200).json({ success: true, message: 'Source purchase completed, no provisioning needed' });
+    }
 
     const candidateSubdomain = order.subdomain || order.phone.replace(/[^a-zA-Z0-9]/g, '') || `site-${Date.now().toString().slice(-6)}`;
     const cleanSubdomain = candidateSubdomain.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 30);
@@ -581,7 +592,17 @@ export async function handleSepayWebhook(req: Request, res: Response, next: Next
       websiteName: `${order.fullName} Real Estate`,
       slug: finalSubdomain,
       plan: 'STARTER',
-      amount: order.amount,
+      amount: order.amount ?? undefined,
+    });
+
+    // Update order with provisioned tenant info
+    await prisma.order.update({
+      where: { id: order.id },
+      data: {
+        tenantId: provResult.tenant.id,
+        subdomain: finalSubdomain,
+        fulfillmentStatus: 'ACTIVE',
+      },
     });
 
     logger.info(`[SePay Webhook] Đã tự động duyệt đơn ${orderNumber} và tạo Website Instance thành công: ${finalSubdomain}`);
@@ -716,10 +737,20 @@ export async function simulatePayment(req: Request, res: Response, next: NextFun
       },
     });
 
+    // BUY_SOURCE / SOURCE_TEMPLATE orders do NOT provision a SaaS website
+    const isSourcePurchase = (order as any).type === 'BUY_SOURCE' || (order as any).purchaseType === 'SOURCE_TEMPLATE';
+    if (isSourcePurchase) {
+      await prisma.order.update({
+        where: { id: order.id },
+        data: { fulfillmentStatus: 'NOT_REQUIRED' },
+      });
+      return res.status(200).json({ success: true, message: 'Giả lập thanh toán mua source code thành công!' });
+    }
+
     const slugifyBrand = (text: string) => {
       return (text || '')
         .normalize('NFD')
-        .replace(/[̀-ͯ]/g, '')
+        .replace(/[\u0300-\u036f]/g, '')
         .replace(/đ/g, 'd')
         .replace(/Đ/g, 'd')
         .toLowerCase()
@@ -751,6 +782,16 @@ export async function simulatePayment(req: Request, res: Response, next: NextFun
       websiteName: `${order.fullName} Real Estate`,
       slug: finalSubdomain,
       plan: 'STARTER',
+    });
+
+    // Update order with provisioned tenant info
+    await prisma.order.update({
+      where: { id: order.id },
+      data: {
+        tenantId: provResult.tenant.id,
+        subdomain: finalSubdomain,
+        fulfillmentStatus: 'ACTIVE',
+      },
     });
 
     return res.status(200).json({

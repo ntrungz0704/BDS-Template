@@ -144,6 +144,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const initAuth = async () => {
       setIsLoading(true);
       if (typeof window !== 'undefined') {
+        const explicitlyLoggedOut = localStorage.getItem('platformbds_logged_out') === 'true';
+        if (explicitlyLoggedOut) {
+          setUser(null);
+          setOrders([]);
+          setWishlists([]);
+          setCart([]);
+          setIsLoading(false);
+          return;
+        }
+
         const savedUser = localStorage.getItem('platformbds_user_v3');
         const savedOrders = localStorage.getItem('platformbds_orders_v3');
         const savedWishlist = localStorage.getItem('platformbds_wishlist_v3');
@@ -326,6 +336,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           throw new Error('Tài khoản Super Admin không thể đăng nhập trên Marketplace. Vui lòng đăng nhập tại https://admin.aireviewbds.com');
         }
         
+        localStorage.removeItem('platformbds_logged_out');
         setUser(loggedUser);
         localStorage.setItem('platformbds_user_v3', JSON.stringify(loggedUser));
 
@@ -424,6 +435,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       // Tự động đồng bộ lịch sử chat của khách vãng lai sau khi đăng ký
+      if (res.data?.success) {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('platformbds_logged_out');
+        }
+      }
       if (res.data?.success && res.data?.data?.user?.id) {
         try {
           const guestSid = typeof window !== 'undefined' ? localStorage.getItem('AI_GUEST_SESSION_ID') : null;
@@ -444,25 +460,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    try {
-      await axios.post(`${API_URL}/api/auth/logout`, {}, {
-        withCredentials: true,
-        timeout: 2000,
-      });
-    } catch (e) {}
-
-    // When logging out, clear local session state from memory
-    // Note: Cart on the database is kept completely intact so when the user logs back in
-    // on this or any other browser, it will be restored automatically!
-    setUser(null);
-    setOrders([]);
-    setWishlists([]);
-    setCart([]);
     if (typeof window !== 'undefined') {
+      localStorage.setItem('platformbds_logged_out', 'true');
       localStorage.removeItem('platformbds_user_v3');
       localStorage.removeItem('platformbds_orders_v3');
       localStorage.removeItem('platformbds_wishlist_v3');
       localStorage.removeItem('platformbds_cart_v3');
+      localStorage.removeItem('csrf_token');
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key && (key.startsWith('platformbds_user_cart_') || key.startsWith('platformbds_orders_'))) {
+          localStorage.removeItem(key);
+        }
+      }
+    }
+
+    setUser(null);
+    setOrders([]);
+    setWishlists([]);
+    setCart([]);
+
+    try {
+      await axios.post(`${API_URL}/api/auth/logout`, {}, {
+        withCredentials: true,
+        timeout: 3000,
+      });
+    } catch (e) {}
+
+    if (typeof window !== 'undefined') {
+      window.location.href = '/';
     }
   };
 

@@ -11,7 +11,7 @@ import Head from 'next/head';
 import axios from 'axios';
 
 export default function App({ Component, pageProps, router }: AppProps) {
-  const isDemoPage = router.pathname.startsWith('/demo');
+  const isDemoPage = router.pathname.startsWith('/demo') || router.pathname.startsWith('/site');
   React.useEffect(() => {
     axios.defaults.withCredentials = true;
     const reqInterceptor = axios.interceptors.request.use((config) => {
@@ -21,13 +21,36 @@ export default function App({ Component, pageProps, router }: AppProps) {
       }
       return config;
     });
-    const resInterceptor = axios.interceptors.response.use((response) => {
-      const csrfToken = response.data?.data?.csrfToken;
-      if (csrfToken) {
-        localStorage.setItem('csrf_token', csrfToken);
+    const resInterceptor = axios.interceptors.response.use(
+      (response) => {
+        const csrfToken = response.data?.data?.csrfToken;
+        if (csrfToken) {
+          localStorage.setItem('csrf_token', csrfToken);
+        }
+        return response;
+      },
+      async (error) => {
+        const originalRequest = error?.config;
+        if (
+          error?.response?.status === 401 &&
+          originalRequest &&
+          !originalRequest._retry &&
+          !originalRequest.url?.includes('/api/auth/login') &&
+          !originalRequest.url?.includes('/api/auth/logout') &&
+          !originalRequest.url?.includes('/api/auth/refresh')
+        ) {
+          originalRequest._retry = true;
+          try {
+            const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
+            await axios.post(`${API_URL}/api/auth/refresh`, {}, { withCredentials: true, timeout: 5000 });
+            return axios(originalRequest);
+          } catch (_) {
+            return Promise.reject(error);
+          }
+        }
+        return Promise.reject(error);
       }
-      return response;
-    });
+    );
     return () => {
       axios.interceptors.request.eject(reqInterceptor);
       axios.interceptors.response.eject(resInterceptor);

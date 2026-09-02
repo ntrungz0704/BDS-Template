@@ -663,9 +663,10 @@ export default function CustomerDashboard() {
                                   {ord.status === 'COMPLETED' ? 'Đã duyệt' : ord.status === 'WAITING_CONFIRM' ? 'Chờ duyệt' : ord.status === 'REJECTED' ? 'Bị từ chối' : ord.status}
                                 </span>
                               </td>
+                              <td className="py-4 px-4 text-right">
                                  {/* Đơn chờ xác nhận CK */}
                                  {(ord.status === 'PENDING' || ord.status === 'REJECTED') && (
-                                   <div className="inline-flex gap-2">
+                                   <div className="inline-flex gap-2 justify-end">
                                      <button
                                        onClick={() => setSelectedPaymentOrder(ord)}
                                        className="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-all text-[10px]"
@@ -676,7 +677,7 @@ export default function CustomerDashboard() {
                                  )}
                                   {/* Đơn đã duyệt → Nút đi CMS & Xem Website */}
                                   {ord.status === 'COMPLETED' && (
-                                    <div className="inline-flex items-center gap-1.5 flex-wrap">
+                                    <div className="inline-flex items-center gap-1.5 flex-wrap justify-end">
                                       <a
                                         href={process.env.NEXT_PUBLIC_CMS_URL || 'https://cms.aireviewbds.com'}
                                         target="_blank"
@@ -689,8 +690,8 @@ export default function CustomerDashboard() {
                                       {ord.subdomain && (
                                         <a
                                           href={typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-                                            ? `http://localhost:3000/site/${ord.subdomain}`
-                                            : `https://templates.aireviewbds.com/site/${ord.subdomain}`}
+                                            ? `http://localhost:3000/site/${formatSiteSlug(ord)}`
+                                            : `https://templates.aireviewbds.com/site/${formatSiteSlug(ord)}`}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all text-[10px]"
@@ -711,10 +712,11 @@ export default function CustomerDashboard() {
                                   )}
                                  {/* Đơn chờ admin duyệt */}
                                  {ord.status === 'WAITING_CONFIRM' && (
-                                   <div className="inline-flex items-center gap-2">
+                                   <div className="inline-flex items-center gap-2 justify-end">
                                      <span className="text-amber-600 font-medium text-[10px]">Đang xử lý...</span>
                                    </div>
                                  )}
+                               </td>
                             </tr>
                           ))
                         )}

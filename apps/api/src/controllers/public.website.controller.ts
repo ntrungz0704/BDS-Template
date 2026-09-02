@@ -11,7 +11,7 @@ const contactFormSchema = z.object({
   source: z.string().optional(),
   formId: z.string().max(100).optional(),
   sourcePage: z.string().max(500).optional(),
-  sourceUrl: z.string().url().max(2000).optional(),
+  sourceUrl: z.string().url().max(2000).optional().or(z.literal('')),
   projectId: z.string().max(100).optional(),
   utm_source: z.string().max(200).optional(),
   utm_medium: z.string().max(200).optional(),
@@ -37,7 +37,7 @@ export async function getCompanyInfo(req: Request, res: Response, next: NextFunc
     });
 
     if (!company) {
-      const tenant = await prisma.tenant.findUnique({
+      const tenant = await prisma.tenant.findFirst({
         where: { id: tenantId, status: 'ACTIVE', deletedAt: null },
         include: { template: { select: { slug: true } } },
       });
@@ -244,7 +244,7 @@ export async function submitContactForm(req: Request, res: Response, next: NextF
         data: {
           tenantId,
           fullName: data.fullName,
-          email: data.email,
+          email: data.email || '',
           phone: data.phone,
           message: data.message,
           source: data.source || 'website_contact_page',
@@ -313,7 +313,7 @@ export async function getThemeSettings(req: Request, res: Response, next: NextFu
     }
     const theme = await prisma.tenantThemeSettings.findUnique({ where: { tenantId } });
     if (!theme) {
-      return res.status(409).json({ success: false, error: { code: 'TENANT_NOT_PROVISIONED', message: 'Website chưa hoàn tất khởi tạo.' } });
+      return res.status(200).json({ success: true, data: null, meta: { themeNotConfigured: true } });
     }
     return res.json({ success: true, data: theme });
   } catch (error) {

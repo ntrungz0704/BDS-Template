@@ -76,7 +76,7 @@ export class AiController {
     try {
       const { question, contextData, userApiKey, guestSessionId, tenantId } = req.body;
       const user = (req as any).user;
-      const userId = user?.id || null;
+      const userId = user?.userId || null;
 
       if (!question || typeof question !== 'string') {
         res.status(400).json({
@@ -328,7 +328,7 @@ QUY TẮC TRẢ LỜI BẮT BUỘC (PHONG CÁCH NHẮN TIN TỰ NHIÊN NHƯ NGƯ
     try {
       const { guestSessionId } = req.body;
       const user = (req as any).user;
-      const userId = user?.id || req.body.userId;
+      const userId = user?.userId || req.body.userId;
 
       if (!guestSessionId || !userId) {
         res.status(400).json({
@@ -373,7 +373,7 @@ QUY TẮC TRẢ LỜI BẮT BUỘC (PHONG CÁCH NHẮN TIN TỰ NHIÊN NHƯ NGƯ
   public static async getHistory(req: Request, res: Response): Promise<void> {
     try {
       const user = (req as any).user;
-      const userId = user?.id || (req.query.userId as string);
+      const userId = user?.userId || (req.query.userId as string);
       const guestSessionId = req.query.guestSessionId as string;
 
       if (!userId && !guestSessionId) {

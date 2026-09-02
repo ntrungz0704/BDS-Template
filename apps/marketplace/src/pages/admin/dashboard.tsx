@@ -441,9 +441,18 @@ export default function AdminDashboard() {
                                     <div className="font-bold text-slate-700">{order.fullName}</div>
                                     <div className="text-[10px] text-slate-400">{order.phone}</div>
                                   </td>
-                                  <td className="px-5 py-4 font-bold text-indigo-600">
-                                    {order.subdomain ? `${order.subdomain}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}` : 'Mua Source Code'}
-                                  </td>
+                                   <td className="px-5 py-4 font-bold text-indigo-600">
+                                     {order.subdomain ? (
+                                       <a
+                                         href={typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? `http://localhost:3000/site/${order.subdomain}` : `https://templates.aireviewbds.com/site/${order.subdomain}`}
+                                         target="_blank"
+                                         rel="noreferrer"
+                                         className="text-indigo-600 hover:underline text-xs font-mono"
+                                       >
+                                         templates.aireviewbds.com/site/{order.subdomain}
+                                       </a>
+                                     ) : 'Mua Source Code'}
+                                   </td>
                                   <td className="px-5 py-4 font-black text-slate-800">
                                     {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(order.amount)}
                                   </td>
@@ -529,12 +538,12 @@ export default function AdminDashboard() {
                                   <td className="px-5 py-4 font-bold text-slate-800">{tenant.name}</td>
                                   <td className="px-5 py-4 font-mono">
                                     <a
-                                      href={`https://${tenant.slug}.${process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}`}
+                                      href={typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? `http://localhost:3000/site/${tenant.slug}` : `https://templates.aireviewbds.com/site/${tenant.slug}`}
                                       target="_blank"
                                       rel="noreferrer"
-                                      className="text-indigo-600 hover:underline font-semibold"
+                                      className="text-indigo-600 hover:underline font-semibold text-xs"
                                     >
-                                      {tenant.slug}.{process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || 'templates.aireviewbds.com'}
+                                      templates.aireviewbds.com/site/{tenant.slug}
                                     </a>
                                   </td>
                                   <td className="px-5 py-4 text-slate-600">{tenant.template?.name || 'Luxury Default'}</td>

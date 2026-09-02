@@ -35,7 +35,7 @@ export async function resolveTenantSlug(req: Request, res: Response, next: NextF
       });
       if (order?.tenantId) {
         tenant = await prisma.tenant.findUnique({
-          where: { id: order.tenantId },
+          where: { id: order.tenantId, status: 'ACTIVE', deletedAt: null },
           select: { id: true },
         });
       }
@@ -83,36 +83,7 @@ export async function checkTenantAccess(req: Request, res: Response, next: NextF
     });
   }
 
-  const tenant = await prisma.tenant.findUnique({
-    where: { id: tenantId, deletedAt: null },
-    select: { id: true, status: true },
-  });
-  if (!tenant) {
-    return res.status(403).json({
-      success: false,
-      error: { code: 'TENANT_ACCESS_DENIED', message: 'Website không tồn tại hoặc không còn khả dụng.' },
-    });
-  }
-  if (tenant.status === 'SUSPENDED') {
-    return res.status(403).json({
-      success: false,
-      error: { code: 'TENANT_SUSPENDED', message: 'Website đang bị tạm khóa do vi phạm hoặc chưa thanh toán.' },
-    });
-  }
-
-  if (user.role !== 'SUPER_ADMIN') {
-    const membership = await prisma.tenantMembership.findFirst({
-      where: { userId: user.userId, tenantId, status: 'ACTIVE' },
-      select: { id: true },
-    });
-    if (!membership) {
-      return res.status(403).json({
-        success: false,
-        error: { code: 'TENANT_ACCESS_DENIED', message: 'Bạn không có quyền truy cập website này.' },
-      });
-    }
-  }
-
+  // Block internal ADMIN accounts from CMS tenant access early (before DB queries)
   if (user.role === 'ADMIN') {
     return res.status(403).json({
       success: false,
@@ -123,7 +94,44 @@ export async function checkTenantAccess(req: Request, res: Response, next: NextF
     });
   }
 
-  req.tenantId = tenantId;
-  tenantStorage.run(tenantId, () => next());
-}
+  try {
+    const tenant = await prisma.tenant.findFirst({
+      where: { id: tenantId, deletedAt: null },
+      select: { id: true, status: true },
+    });
+    if (!tenant) {
+      return res.status(403).json({
+        success: false,
+        error: { code: 'TENANT_ACCESS_DENIED', message: 'Website không tồn tại hoặc không còn khả dụng.' },
+      });
+    }
+    if (tenant.status === 'SUSPENDED') {
+      return res.status(403).json({
+        success: false,
+        error: { code: 'TENANT_SUSPENDED', message: 'Website đang bị tạm khóa do vi phạm hoặc chưa thanh toán.' },
+      });
+    }
 
+    if (user.role !== 'SUPER_ADMIN') {
+      const membership = await prisma.tenantMembership.findFirst({
+        where: { userId: user.userId, tenantId, status: 'ACTIVE' },
+        select: { id: true },
+      });
+      if (!membership) {
+        return res.status(403).json({
+          success: false,
+          error: { code: 'TENANT_ACCESS_DENIED', message: 'Bạn không có quyền truy cập website này.' },
+        });
+      }
+    }
+
+    req.tenantId = tenantId;
+    tenantStorage.run(tenantId, () => next());
+  } catch (error) {
+    console.error(`[Error] Database connection failed for tenant access check: ${(error as Error).message}`);
+    return res.status(503).json({
+      success: false,
+      error: { code: 'SERVICE_UNAVAILABLE', message: 'Hệ thống đang bảo trì. Vui lòng thử lại sau.' },
+    });
+  }
+}

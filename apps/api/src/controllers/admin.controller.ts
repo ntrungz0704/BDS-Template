@@ -2107,7 +2107,7 @@ export async function addAdminLeadNote(req: Request, res: Response, next: NextFu
             leadId: lead.id,
             tenantId: lead.tenantId,
             content: content.trim(),
-            createdBy: user?.id || 'admin',
+            createdBy: user?.userId || 'admin',
           }
         });
         await prisma.lead.update({

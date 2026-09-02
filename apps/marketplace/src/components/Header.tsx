@@ -241,9 +241,9 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
                       <div className="border-t border-slate-100 my-1"></div>
 
                       <button
-                        onClick={() => {
+                        onClick={async () => {
                           setUserDropdownOpen(false);
-                          logout();
+                          await logout();
                         }}
                         className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 transition-colors text-left"
                       >
@@ -565,9 +565,9 @@ export default function Header({ onSearch, onOpenConsultation, onOpenAuth }: Hea
               </a>
 
               <button
-                onClick={() => {
+                onClick={async () => {
                   setMobileMenuOpen(false);
-                  logout();
+                  await logout();
                 }}
                 className="w-full flex items-center gap-2 py-2 px-3 rounded-md text-xs font-semibold text-rose-600 hover:bg-rose-50 text-left"
               >
