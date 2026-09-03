@@ -1,4 +1,5 @@
 'use client';
+import { getCmsHero, getCmsQuickStats, getCmsPolicies, getCmsOverview } from '../../utils/cmsSectionHelper';
 import React, { useState, useEffect } from 'react';
 import { 
   Phone, Mail, MapPin, Send, CheckCircle2, Clock, 
@@ -17,13 +18,20 @@ export interface LP05TemplateProps {
   theme?: any;
   projects?: any;
   posts?: any;
+  pageContent?: any;
 }
 
 export default function LP05Template({
   template,
   company,
   projects,
+  pageContent
 }: LP05TemplateProps) {
+  // CMS Dynamic Section Data
+  const cmsHero = getCmsHero(pageContent);
+  const cmsStats = getCmsQuickStats(pageContent, []);
+  const cmsPolicies = getCmsPolicies(pageContent, []);
+
   // Brand & Company info fallback from CMS
   const brandName = company?.name || 'GOLDEN PARK TOWER CẦU GIẤY';
   const companyGroup = 'TẬP ĐOÀN ĐẦU TƯ & PHÁT TRIỂN ĐÔ THỊ TÂY ĐÔ';

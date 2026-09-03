@@ -59,6 +59,7 @@ export interface DemoRendererProps {
   theme?: any;
   projects?: any[];
   posts?: any[];
+  pageContent?: any;
 }
 
 export const normalizePageSlug = (p?: string): string => {
@@ -1078,7 +1079,8 @@ export default function DemoRenderer({
   company,
   theme,
   projects,
-  posts
+  posts,
+  pageContent
 }: DemoRendererProps) {
   const slug = template.slug?.toLowerCase() || '';
   const sourceSlug = String(template.sectionConfig?.sourceSlug || slug).toLowerCase();
@@ -1099,129 +1101,129 @@ export default function DemoRenderer({
     // ─── SPECIALIZED HIGH-CONVERTING SALES LANDING PAGES (CHECK FIRST) ───
     // LP-01: Landing Page Căn Hộ Chung Cư Cao Cấp
     if (['lp-01', 'landing-01', 'luxury-condo-lp', 'condos-sales'].some(k => slug === k || slug.startsWith(k) || sourceSlug.includes(k))) {
-      return <LP01Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <LP01Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // LP-02: Landing Page Biệt Thự & Nghỉ Dưỡng Hoàng Gia
     if (['lp-02', 'landing-02', 'villa-resort-lp', 'resort-sales'].some(k => slug === k || slug.startsWith(k) || sourceSlug.includes(k))) {
-      return <LP02Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <LP02Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // LP-03: Landing Page Đất Nền Phân Lô F0
     if (['lp-03', 'landing-03', 'landplot-lp', 'land-sales'].some(k => slug === k || slug.startsWith(k) || sourceSlug.includes(k))) {
-      return <LP03Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <LP03Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // LP-04: Landing Page Đại Đô Thị Hoàng Gia
     if (['lp-04', 'landing-04', 'broker-authority-lp', 'royal-palace-lp', 'royal-eco-lp'].some(k => slug === k || slug.startsWith(k) || sourceSlug.includes(k))) {
-      return <LP04Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <LP04Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // LP-05: Landing Page Golden Park Tower Cầu Giấy
     if (['lp-05', 'landing-05', 'golden-park-lp', 'golden-park'].some(k => slug === k || slug.startsWith(k) || sourceSlug.includes(k))) {
-      return <LP05Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <LP05Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // LP-06: Landing Page Stella Mega City Cần Thơ
     if (['lp-06', 'landing-06', 'stella-mega-city-lp', 'stella-mega-city'].some(k => slug === k || slug.startsWith(k) || sourceSlug.includes(k))) {
-      return <LP06Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <LP06Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // LP-07: Landing Page NovaWorld Phan Thiết
     if (['lp-07', 'landing-07', 'novaworld-phan-thiet-lp', 'novaworld-phan-thiet', '188-novaworld-phan-thiet-2020'].some(k => slug === k || slug.startsWith(k) || sourceSlug.includes(k))) {
-      return <LP07Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <LP07Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
 
     // ─── 24 MULTI-PAGE WEBSITE TEMPLATES ───
     // 01. Luxury Gold
     if (['bds-01', 'portal-01', 'luxury-gold', 'portal-classic'].some(k => slug === k || slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS01Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS01Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 02. Minimal White
     if (['bds-02', 'portal-02', 'minimal-white', 'minimal-zen', 'portal-modern'].some(k => slug === k || slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS02Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS02Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 03. Modern Corporate
     if (['bds-03', 'portal-03', 'modern-corporate', 'portal-luxury'].some(k => slug === k || slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS03Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS03Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 04. Resort Paradise
     if (['bds-04', 'portal-04', 'resort-paradise', 'ocean-view'].some(k => slug === k || slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS04Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS04Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 05. Smart Urban City (An Viên Nha Trang)
     if (['05', 'bds-05', 'portal-05', 'urban-city', 'smart-urban', 'smartcity'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS05Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS05Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 06. Industrial Estate
     if (['06', 'bds-06', 'portal-06', 'industrial-estate', 'industrial-logistics'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS06Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS06Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 07. Villa Royal Garden
     if (['07', 'bds-07', 'portal-07', 'villa-royal', 'villa-premium', 'luxury-villa'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS07Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS07Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 08. Green Eco Living
     if (['08', 'bds-08', 'portal-08', 'eco-green', 'eco-living', 'green-eco'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS08Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS08Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 09. Classic Heritage
     if (['09', 'bds-09', 'portal-09', 'classic-heritage', 'heritage-colonial', 'classic-elegant'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS09Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS09Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 10. Investment Pro Hub
     if (['10', 'bds-10', 'portal-10', 'investment-pro', 'invest-yield'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS10Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS10Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 11. Agency Marketing OnePage
     if (['11', 'bds-11', 'portal-11', 'agency-onepage', 'agency-marketing'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS11Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS11Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 12. Mega Developer Portal
     if (['12', 'bds-12', 'portal-12', 'mega-developer', 'listing-portal'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS12Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS12Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 13. Auction Bidding Platform
     if (['13', 'bds-13', 'portal-13', 'auction-platform', 'auction-template'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS13Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS13Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 14. LandPlot Masterplan
     if (['14', 'bds-14', 'portal-14', 'landplot-masterplan', 'landplot-template', 'land-plot'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS14Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS14Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 15. Retail & Shophouse Podium
     if (['15', 'bds-15', 'portal-15', 'retail-shophouse', 'retail-podium'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS15Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS15Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 16. Top Personal Broker
     if (['16', 'bds-16', 'portal-16', 'personal-top-broker', 'personal-agent', 'elite-broker'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS16Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS16Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 17. Portal BĐS Số 1 (Hà Nội Heritage)
     if (['17', 'bds-17', 'portal-17', 'portal-bds-so1', 'portal-listing', 'hanoi-capital'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS17Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS17Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 18. Sàn Giao Dịch & Đấu Giá Bến Thành Bds123
     if (['18', 'bds-18', 'portal-18', 'bds123-benthanh', 'bds123-portal', 'saigon-riverfront'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS18Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS18Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 19. Sàn Niêm Yết Mật Độ Cao Nhà Đất Số
     if (['19', 'bds-19', 'portal-19', 'nhadatso-density', 'nhadatso-portal'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS19Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS19Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 20. Chung Cư Minh Khai & Times City
     if (['20', 'bds-20', 'portal-20', 'minhkhai-timescity', 'minhkhai-apartment'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS20Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS20Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 21. Sàn Cho Thuê & Mua Bán Chung Cư Hà Nội
     if (['21', 'bds-21', 'portal-21', 'hanoi-rental-portal', 'hanoi-rental'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS21Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS21Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 22. ZoHotels & Happy Land Nha Trang
     if (['22', 'bds-22', 'portal-22', 'happyland-zohotels', 'happyland-resort'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS22Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS22Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 23. Sàn Giao Dịch Nhà Phố Homeo
     if (['23', 'bds-23', 'portal-23', 'homeo-agency', 'homeo-multithumb'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS23Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS23Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 24. RealtyBuild Trang Tin BĐS Số 1 Việt Nam
     if (['24', 'bds-24', 'portal-24', 'realtybuild-tech', 'realtybuild-portal'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS24Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} />;
+      return <BDS24Template template={template} viewport={viewport} initialPage={initialPage} company={company} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
 
     return <div className="grid min-h-screen place-items-center bg-slate-950 p-8 text-center text-white"><p>Demo chưa có renderer tương ứng cho template này.</p></div>;

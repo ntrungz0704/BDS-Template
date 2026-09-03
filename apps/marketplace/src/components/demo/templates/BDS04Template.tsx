@@ -1,3 +1,4 @@
+import { getCmsHero, getCmsQuickStats, getCmsPolicies, getCmsOverview } from '../../../utils/cmsSectionHelper';
 import { PropertyImageGallery } from '../PropertyImageGallery';
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
@@ -11,7 +12,7 @@ import {
 import { MAX_W } from '../design-system';
 import UniversalTemplateFooter from '../UniversalTemplateFooter';
 
-interface TemplateProps {
+export interface TemplateProps {
   template: { name: string; slug: string; collectionSlug?: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
@@ -38,6 +39,7 @@ interface TemplateProps {
   theme?: Record<string, string>;
   projects?: Array<Record<string, unknown>>;
   posts?: Array<Record<string, unknown>>;
+  pageContent?: any;
 }
 
 export interface UnitItem {
@@ -259,7 +261,12 @@ export const resolvePageAndDetail = (p?: string) => {
   return { page: 'home', propSlug: '', artSlug: '' };
 };
 
-export default function BDS04Template({ template, viewport = 'desktop', initialPage = 'home', company, theme, projects, posts }: TemplateProps) {
+export default function BDS04Template({ template, viewport = 'desktop', initialPage = 'home', company, theme, projects, posts, pageContent }: TemplateProps) {
+  // CMS Dynamic Section Data
+  const cmsHero = getCmsHero(pageContent);
+  const cmsStats = getCmsQuickStats(pageContent, []);
+  const cmsPolicies = getCmsPolicies(pageContent, []);
+
   const primaryColor = theme?.primaryColor;
   const secondaryColor = theme?.secondaryColor;
   const accentColor = theme?.accentColor;

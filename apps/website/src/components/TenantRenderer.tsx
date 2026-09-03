@@ -48,19 +48,15 @@ export default function TenantRenderer({ templateSlug, company, theme, projects,
 
   return (
     <div onSubmitCapture={handleSubmitCapture}>
-      {pageContent?.sections?.length ? (
-        <CmsManagedPage page={pageContent} company={company} theme={theme} projects={projects} posts={posts} tenantSlug={tenantSlug} />
-      ) : (
-        <TemplateComponent
-          template={templateMock}
-          company={company}
-          theme={theme}
-          projects={projects}
-          posts={posts}
-          initialPage={initialPage}
-          pageContent={pageContent}
-        />
-      )}
+      <TemplateComponent
+        template={templateMock}
+        company={company}
+        theme={theme}
+        projects={projects}
+        posts={posts}
+        initialPage={initialPage}
+        pageContent={pageContent}
+      />
     </div>
   );
 }

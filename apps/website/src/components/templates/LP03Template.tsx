@@ -1,4 +1,5 @@
 'use client';
+import { getCmsHero, getCmsQuickStats, getCmsPolicies, getCmsOverview } from '../../utils/cmsSectionHelper';
 import React, { useState, useEffect } from 'react';
 import { 
   Phone, Mail, MapPin, Send, CheckCircle2, Clock, 
@@ -17,13 +18,20 @@ export interface LP03TemplateProps {
   theme?: any;
   projects?: any;
   posts?: any;
+  pageContent?: any;
 }
 
 export default function LP03Template({
   template,
   company,
   projects,
+  pageContent
 }: LP03TemplateProps) {
+  // CMS Dynamic Section Data
+  const cmsHero = getCmsHero(pageContent);
+  const cmsStats = getCmsQuickStats(pageContent, []);
+  const cmsPolicies = getCmsPolicies(pageContent, []);
+
   // Brand & Company Info Fallback
   const brandName = company?.name || 'DỰ ÁN CĂN HỘ SIMPLE PAGE';
   const companyGroup = 'TẬP ĐOÀN ĐẦU TƯ BẤT ĐỘNG SẢN';

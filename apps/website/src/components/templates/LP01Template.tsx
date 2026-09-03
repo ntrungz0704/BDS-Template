@@ -8,6 +8,7 @@ import {
   Check, Layers, Star, ExternalLink, X, ZoomIn
 } from 'lucide-react';
 import { PropertyImageGallery } from '../PropertyImageGallery';
+import { getCmsQuickStats, getCmsHero, getCmsPolicies } from '../../utils/cmsSectionHelper';
 
 export interface LP01TemplateProps {
   template?: any;
@@ -17,15 +18,46 @@ export interface LP01TemplateProps {
   theme?: any;
   projects?: any;
   posts?: any;
+  pageContent?: any;
 }
 
 export default function LP01Template({
   template,
+  viewport,
+  initialPage,
   company,
+  theme,
   projects,
+  posts,
+  pageContent,
 }: LP01TemplateProps) {
+  // CMS Dynamic Section Data
+  const cmsHero = getCmsHero(pageContent, {
+    badge: 'DỰ ÁN CĂN HỘ HẠNG A TRUNG TÂM THỦ ĐÔ',
+    heading: 'SỐNG ĐỈNH PHỒN HOA',
+    headingAccent: 'NGAY TRÁI TIM VIỆT NAM',
+    subtitle: 'Tổ hợp căn hộ cao cấp chuẩn quốc tế sở hữu vị trí kim cương đắt giá, tầm nhìn panorama ôm trọn công viên hồ điều hòa 14ha và hệ thống tiện ích 5 sao đặc quyền dành riêng cho cộng đồng cư dân tinh hoa.',
+    ctaText: 'Nhận Bảng Giá',
+  });
+
+  const defaultStats = [
+    { value: '39.8 ha', label: 'Tổng Diện Tích Dự Án', desc: 'Bao gồm công viên & hồ 14ha' },
+    { value: '30.0 %', label: 'Mật Độ Xây Dựng', desc: '70% cảnh quan cây xanh' },
+    { value: '2 Tòa / 44 Tầng', label: 'Quy Mô Chiều Cao', desc: 'Biểu tượng kiến trúc tương lai' },
+    { value: '54m² - 149m²', label: 'Diện Tích Căn Hộ', desc: 'Từ 1PN đến 3PN & Dual Key' },
+  ];
+  const activeStats = getCmsQuickStats(pageContent, defaultStats);
+
+  const defaultPolicies = [
+    { badge: '12%', title: 'Chiết Khấu Thanh Toán Sớm', desc: 'Chiết khấu trực tiếp tới 12% giá trị căn hộ khi khách hàng thanh toán sớm 95% giá trị hợp đồng.' },
+    { badge: '0% Lãi Suất', title: 'Lãi Suất 0% Trong 24 Tháng', desc: 'Ngân hàng Vietcombank, Techcombank hỗ trợ vay 70%, ân hạn nợ gốc và miễn lãi tới 24 tháng.' },
+    { badge: '150 Triệu', title: 'Tặng Gói Nội Thất Cao Cấp', desc: 'Tặng ngay gói quà tặng hoàn thiện nội thất trị giá 150.000.000 đồng trừ thẳng vào giá bán.' },
+    { badge: '2 Năm', title: 'Miễn Phí Phí Quản Lý', desc: 'Miễn phí 24 tháng dịch vụ quản lý tòa nhà tiêu chuẩn quốc tế Savills / CBRE.' },
+  ];
+  const activePolicies = getCmsPolicies(pageContent, defaultPolicies);
   // Brand & Company info fallback from CMS
-  const brandName = company?.name || template?.name || 'THE MATRIX ONE LUXURY';
+  const firstProject = (projects && Array.isArray(projects) && projects.length > 0) ? projects[0] : null;
+  const brandName = firstProject?.title || firstProject?.name || company?.name || template?.name || 'DỰ ÁN BẤT ĐỘNG SẢN CAO CẤP';
   const hotline = company?.phone || '0919 006 030';
   const zalo = company?.zalo || hotline;
   const email = company?.email || 'admin@templatesbds.com';
@@ -227,18 +259,20 @@ export default function LP01Template({
           <div className="lg:col-span-7 space-y-6 text-left">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-widest">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>DỰ ÁN CĂN HỘ HẠNG A TRUNG TÂM THỦ ĐÔ</span>
+              <span>{cmsHero.badge}</span>
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.15] uppercase text-white">
-              SỐNG ĐỈNH PHỒN HOA <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400">
-                NGAY TRÁI TIM VIỆT NAM
-              </span>
+              {cmsHero.heading} <br />
+              {cmsHero.headingAccent && (
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400">
+                  {cmsHero.headingAccent}
+                </span>
+              )}
             </h1>
 
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl font-normal">
-              Tổ hợp căn hộ cao cấp chuẩn quốc tế sở hữu vị trí kim cương đắt giá, tầm nhìn panorama ôm trọn công viên hồ điều hòa 14ha và hệ thống tiện ích 5 sao đặc quyền dành riêng cho cộng đồng cư dân tinh hoa.
+              {cmsHero.subtitle}
             </p>
 
             {/* Quick Benefits Bullet List */}
@@ -371,51 +405,21 @@ export default function LP01Template({
         </div>
       </section>
 
-      {/* ════════════════ 3. KEY STATS BAR ════════════════ */}
+      {/* ════════════════ 3. KEY STATS BAR (DYNAMIC CMS BINDING) ════════════════ */}
       <section className="bg-[#FDFBF7] py-10 border-b border-amber-900/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            
-            <div className="p-4 rounded-2xl bg-white border border-amber-200/60 shadow-xs space-y-1">
-              <span className="text-2xl sm:text-3xl font-black text-[#0F3B38] font-mono block">
-                39.8 ha
-              </span>
-              <span className="text-xs font-bold text-amber-700 uppercase tracking-wider block">
-                Tổng Diện Tích Dự Án
-              </span>
-              <span className="text-[11px] text-slate-500">Bao gồm công viên & hồ 14ha</span>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-white border border-amber-200/60 shadow-xs space-y-1">
-              <span className="text-2xl sm:text-3xl font-black text-[#0F3B38] font-mono block">
-                30.0 %
-              </span>
-              <span className="text-xs font-bold text-amber-700 uppercase tracking-wider block">
-                Mật Độ Xây Dựng
-              </span>
-              <span className="text-[11px] text-slate-500">70% cảnh quan cây xanh</span>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-white border border-amber-200/60 shadow-xs space-y-1">
-              <span className="text-2xl sm:text-3xl font-black text-[#0F3B38] font-mono block">
-                2 Tòa / 44 Tầng
-              </span>
-              <span className="text-xs font-bold text-amber-700 uppercase tracking-wider block">
-                Quy Mô Chiều Cao
-              </span>
-              <span className="text-[11px] text-slate-500">Biểu tượng kiến trúc tương lai</span>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-white border border-amber-200/60 shadow-xs space-y-1">
-              <span className="text-2xl sm:text-3xl font-black text-[#0F3B38] font-mono block">
-                54m² - 149m²
-              </span>
-              <span className="text-xs font-bold text-amber-700 uppercase tracking-wider block">
-                Diện Tích Căn Hộ
-              </span>
-              <span className="text-[11px] text-slate-500">Từ 1PN đến 3PN & Dual Key</span>
-            </div>
-
+          <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 ${activeStats.length > 4 ? 'lg:grid-cols-' + Math.min(activeStats.length, 6) : ''} gap-4 sm:gap-6 text-center`}>
+            {activeStats.map((st: any, idx: number) => (
+              <div key={idx} className="p-4 rounded-2xl bg-white border border-amber-200/60 shadow-xs space-y-1">
+                <span className="text-2xl sm:text-3xl font-black text-[#0F3B38] font-mono block break-words">
+                  {st.value || st.number || '0'}
+                </span>
+                <span className="text-xs font-bold text-amber-700 uppercase tracking-wider block">
+                  {st.label || st.title || `Chỉ số #${idx + 1}`}
+                </span>
+                {st.desc && <span className="text-[11px] text-slate-500 block">{st.desc}</span>}
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -888,55 +892,19 @@ export default function LP01Template({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
-            
-            <div className="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl flex flex-col justify-between">
-              <div>
-                <div className="inline-flex min-w-[54px] h-10 px-3.5 rounded-xl bg-amber-500 text-slate-950 items-center justify-center font-black text-sm shadow-md whitespace-nowrap mb-3">
-                  12%
+            {activePolicies.map((pol: any, idx: number) => (
+              <div key={idx} className="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl flex flex-col justify-between">
+                <div>
+                  <div className="inline-flex min-w-[54px] h-10 px-3.5 rounded-xl bg-amber-500 text-slate-950 items-center justify-center font-black text-sm shadow-md whitespace-nowrap mb-3">
+                    {pol.badge || pol.value || pol.tag || `${idx + 1}`}
+                  </div>
+                  <h4 className="font-bold text-sm text-amber-300 uppercase">{pol.title || pol.name || pol.label}</h4>
+                  <p className="text-xs text-slate-300 leading-relaxed mt-2">
+                    {pol.desc || pol.description}
+                  </p>
                 </div>
-                <h4 className="font-bold text-sm text-amber-300 uppercase">Chiết Khấu Thanh Toán Sớm</h4>
-                <p className="text-xs text-slate-300 leading-relaxed mt-2">
-                  Chiết khấu trực tiếp tới 12% giá trị căn hộ khi khách hàng thanh toán sớm 95% giá trị hợp đồng.
-                </p>
               </div>
-            </div>
-
-            <div className="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl flex flex-col justify-between">
-              <div>
-                <div className="inline-flex min-w-[54px] h-10 px-3.5 rounded-xl bg-amber-500 text-slate-950 items-center justify-center font-black text-sm shadow-md whitespace-nowrap mb-3">
-                  0% Lãi Suất
-                </div>
-                <h4 className="font-bold text-sm text-amber-300 uppercase">Lãi Suất 0% Trong 24 Tháng</h4>
-                <p className="text-xs text-slate-300 leading-relaxed mt-2">
-                  Ngân hàng Vietcombank, Techcombank hỗ trợ vay 70%, ân hạn nợ gốc và miễn lãi tới 24 tháng.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl flex flex-col justify-between">
-              <div>
-                <div className="inline-flex min-w-[54px] h-10 px-3.5 rounded-xl bg-amber-500 text-slate-950 items-center justify-center font-black text-sm shadow-md whitespace-nowrap mb-3">
-                  150 Triệu
-                </div>
-                <h4 className="font-bold text-sm text-amber-300 uppercase">Tặng Gói Nội Thất Cao Cấp</h4>
-                <p className="text-xs text-slate-300 leading-relaxed mt-2">
-                  Tặng ngay gói quà tặng hoàn thiện nội thất trị giá 150.000.000 đồng trừ thẳng vào giá bán.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl flex flex-col justify-between">
-              <div>
-                <div className="inline-flex min-w-[54px] h-10 px-3.5 rounded-xl bg-amber-500 text-slate-950 items-center justify-center font-black text-sm shadow-md whitespace-nowrap mb-3">
-                  2 Năm
-                </div>
-                <h4 className="font-bold text-sm text-amber-300 uppercase">Miễn Phí Phí Quản Lý</h4>
-                <p className="text-xs text-slate-300 leading-relaxed mt-2">
-                  Miễn phí 24 tháng dịch vụ quản lý tòa nhà tiêu chuẩn quốc tế Savills / CBRE.
-                </p>
-              </div>
-            </div>
-
+            ))}
           </div>
 
           <div className="text-center pt-4">

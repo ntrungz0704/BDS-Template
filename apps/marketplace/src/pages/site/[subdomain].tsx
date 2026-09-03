@@ -21,6 +21,7 @@ export default function TenantDirectSitePage() {
   const [tenantProjects, setTenantProjects] = useState<any[]>([]);
   const [tenantPosts, setTenantPosts] = useState<any[]>([]);
   const [tenantTheme, setTenantTheme] = useState<any>(null);
+  const [tenantPageContent, setTenantPageContent] = useState<any>(null);
 
   useEffect(() => {
     if (!router.isReady || !rawSubdomain) return;
@@ -69,12 +70,14 @@ export default function TenantDirectSitePage() {
         }
         setTemplate(dbMatched);
 
-        // 4. Lấy dữ liệu dự án, bài viết, theme tùy biến của website khách hàng (kèm timestamp chống stale cache)
+        // 4. Lấy dữ liệu dự án, bài viết, theme, nội dung trang tùy biến của website khách hàng (kèm timestamp chống stale cache)
         const t = Date.now();
-        const [projectsRes, postsRes, themeRes] = await Promise.allSettled([
+        const targetPage = pageSlug && pageSlug !== 'home' ? pageSlug : 'home';
+        const [projectsRes, postsRes, themeRes, pageRes] = await Promise.allSettled([
           axios.get(`${API_URL}/api/website/${tenantSlug}/projects?limit=50&_t=${t}`),
           axios.get(`${API_URL}/api/website/${tenantSlug}/posts?limit=50&_t=${t}`),
           axios.get(`${API_URL}/api/website/${tenantSlug}/theme?_t=${t}`),
+          axios.get(`${API_URL}/api/website/${tenantSlug}/pages/${targetPage}?_t=${t}`),
         ]);
 
         if (projectsRes.status === 'fulfilled' && Array.isArray(projectsRes.value.data?.data)) {
@@ -87,6 +90,10 @@ export default function TenantDirectSitePage() {
 
         if (themeRes.status === 'fulfilled' && themeRes.value.data?.data) {
           setTenantTheme(themeRes.value.data.data);
+        }
+
+        if (pageRes.status === 'fulfilled' && pageRes.value.data?.data) {
+          setTenantPageContent(pageRes.value.data.data);
         }
       } catch (err: any) {
         // Website không tồn tại trong database hoặc chưa được kích hoạt
@@ -281,6 +288,7 @@ export default function TenantDirectSitePage() {
           theme={tenantTheme}
           projects={tenantProjects.length > 0 ? tenantProjects : undefined}
           posts={tenantPosts.length > 0 ? tenantPosts : undefined}
+          pageContent={tenantPageContent}
         />
       </div>
     </>

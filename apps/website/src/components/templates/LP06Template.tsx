@@ -1,4 +1,5 @@
 'use client';
+import { getCmsHero, getCmsQuickStats, getCmsPolicies, getCmsOverview } from '../../utils/cmsSectionHelper';
 import React, { useState, useEffect } from 'react';
 import { 
   Phone, Mail, MapPin, Send, CheckCircle2, Clock, 
@@ -18,13 +19,20 @@ export interface LP06TemplateProps {
   theme?: any;
   projects?: any;
   posts?: any;
+  pageContent?: any;
 }
 
 export default function LP06Template({
   template,
   company,
   projects,
+  pageContent
 }: LP06TemplateProps) {
+  // CMS Dynamic Section Data
+  const cmsHero = getCmsHero(pageContent);
+  const cmsStats = getCmsQuickStats(pageContent, []);
+  const cmsPolicies = getCmsPolicies(pageContent, []);
+
   // Brand & Company Info Fallback from CMS
   const brandName = company?.name || 'STELLA MEGA CITY';
   const companyGroup = 'TẬP ĐOÀN KITA GROUP';

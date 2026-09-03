@@ -1,4 +1,5 @@
 'use client';
+import { getCmsHero, getCmsQuickStats, getCmsPolicies, getCmsOverview } from '../../utils/cmsSectionHelper';
 import React, { useState, useEffect } from 'react';
 import { 
   Phone, Mail, MapPin, Send, CheckCircle2, Clock, 
@@ -19,13 +20,20 @@ export interface LP07TemplateProps {
   theme?: any;
   projects?: any;
   posts?: any;
+  pageContent?: any;
 }
 
 export default function LP07Template({
   template,
   company,
   projects,
+  pageContent
 }: LP07TemplateProps) {
+  // CMS Dynamic Section Data
+  const cmsHero = getCmsHero(pageContent);
+  const cmsStats = getCmsQuickStats(pageContent, []);
+  const cmsPolicies = getCmsPolicies(pageContent, []);
+
   // Brand & Company Info Fallback from CMS
   const brandName = company?.name || 'NOVAWORLD PHAN THIET';
   const companyGroup = 'TẬP ĐOÀN NOVALAND';

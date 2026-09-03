@@ -1,4 +1,5 @@
 'use client';
+import { getCmsHero, getCmsQuickStats, getCmsPolicies, getCmsOverview } from '../../utils/cmsSectionHelper';
 import { PropertyImageGallery } from '../PropertyImageGallery';
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
@@ -14,7 +15,7 @@ import { MAX_W } from '../design-system';
 import UniversalTemplateFooter from '../UniversalTemplateFooter';
 import { syncDemoUrl } from '../../../utils/demo';
 
-interface TemplateProps {
+export interface TemplateProps {
   template: { name: string; slug: string; collectionSlug?: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
@@ -41,6 +42,7 @@ interface TemplateProps {
   theme?: Record<string, string>;
   projects?: Array<Record<string, unknown>>;
   posts?: Array<Record<string, unknown>>;
+  pageContent?: any;
 }
 
 export interface PropertyItem {
@@ -272,7 +274,12 @@ export default function BDS13Template({
   theme,
   projects,
   posts
-}: TemplateProps) {
+, pageContent }: TemplateProps) {
+  // CMS Dynamic Section Data
+  const cmsHero = getCmsHero(pageContent);
+  const cmsStats = getCmsQuickStats(pageContent, []);
+  const cmsPolicies = getCmsPolicies(pageContent, []);
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
 

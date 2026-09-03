@@ -1,4 +1,5 @@
 'use client';
+import { getCmsHero, getCmsQuickStats, getCmsPolicies, getCmsOverview } from '../../../utils/cmsSectionHelper';
 import React, { useState, useEffect } from 'react';
 import { 
   Phone, Mail, MapPin, Send, CheckCircle2, Clock, 
@@ -18,13 +19,20 @@ export interface LP02TemplateProps {
   theme?: any;
   projects?: any;
   posts?: any;
+  pageContent?: any;
 }
 
 export default function LP02Template({
   template,
   company,
   projects,
+  pageContent
 }: LP02TemplateProps) {
+  // CMS Dynamic Section Data
+  const cmsHero = getCmsHero(pageContent);
+  const cmsStats = getCmsQuickStats(pageContent, []);
+  const cmsPolicies = getCmsPolicies(pageContent, []);
+
   // Brand & Company info fallback from CMS
   const firstProject = (projects && Array.isArray(projects) && projects.length > 0) ? projects[0] : null;
   const brandName = firstProject?.title || firstProject?.name || company?.name || template?.name || 'DỰ ÁN BẤT ĐỘNG SẢN CAO CẤP';
