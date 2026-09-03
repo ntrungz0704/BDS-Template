@@ -246,30 +246,31 @@ if (process.env.NODE_ENV !== 'test' && !process.env.JEST_WORKER_ID) {
       logger.warn(`Catalog sync warning: ${syncErr.message}`);
     }
 
-    // Tự động kiểm tra và nâng cấp dự án mẫu cho tenant bds-02 (nếu đang chứa 3 căn LMR cũ)
+    // Tự động kiểm tra và nâng cấp dự án mẫu cho TẤT CẢ các tenant (BDS-01..24 & LP-01..07) nếu chưa có dự án hoặc chứa căn LMR cũ
     try {
-      const bds02Tenants = await prisma.tenant.findMany({
-        where: {
-          OR: [
-            { templateId: 'bds-02' },
-            { slug: { contains: 'bds-02' } },
-          ],
-        },
+      const allTenants = await prisma.tenant.findMany({
         include: {
           projects: true,
+          template: true,
         },
       });
 
-      for (const tenant of bds02Tenants) {
-        const hasLMR = tenant.projects.some(p => p.title.includes('LMR') || p.title.includes('LUMIÈRE'));
-        if (hasLMR || tenant.projects.length <= 3) {
-          logger.info(`[STARTUP] Nâng cấp 9 dự án chuẩn cho tenant bds-02: ${tenant.slug}`);
-          await prisma.project.deleteMany({
-            where: { tenantId: tenant.id },
-          });
+      const { TEMPLATE_CONFIGS, getTemplateConfig } = await import('@repo/utils');
 
-          const { TEMPLATE_CONFIGS } = await import('@repo/utils');
-          const tplConfig = TEMPLATE_CONFIGS['minimal-white'] || TEMPLATE_CONFIGS['bds-02'];
+      for (const tenant of allTenants) {
+        const hasLMR = tenant.projects.some(p => p.title.includes('LMR') || p.title.includes('LUMIÈRE'));
+        const needReseed = hasLMR || tenant.projects.length === 0;
+
+        if (needReseed) {
+          const tplSlug = tenant.templateId || tenant.template?.slug || 'bds-01';
+          logger.info(`[STARTUP] Đồng bộ danh mục dự án chuẩn cho tenant [${tenant.slug}] (${tplSlug})...`);
+          if (hasLMR) {
+            await prisma.project.deleteMany({
+              where: { tenantId: tenant.id },
+            });
+          }
+
+          const tplConfig = getTemplateConfig ? getTemplateConfig(tplSlug, tenant.template) : (TEMPLATE_CONFIGS[tplSlug] || TEMPLATE_CONFIGS['minimal-white']);
           const demoProjects = tplConfig?.demoProjects || [];
 
           for (let k = 0; k < demoProjects.length; k++) {
@@ -278,17 +279,17 @@ if (process.env.NODE_ENV !== 'test' && !process.env.JEST_WORKER_ID) {
             await prisma.project.create({
               data: {
                 tenantId: tenant.id,
-                title: dp.title || dp.name,
+                title: dp.title || dp.name || `Dự án #${k + 1}`,
                 slug: `${tenant.slug}-p-${k + 1}`,
                 description: dp.desc || '',
                 shortDescription: dp.type || 'Nhà đất',
-                type: dp.type === 'Biệt thự' ? 'VILLA' : (dp.type === 'Căn hộ' ? 'APARTMENT' : 'TOWNHOUSE'),
+                type: (dp.type?.toLowerCase().includes('biệt') || dp.type === 'VILLA') ? 'VILLA' : ((dp.type?.toLowerCase().includes('căn') || dp.type === 'APARTMENT') ? 'APARTMENT' : 'TOWNHOUSE'),
                 status: 'SELLING',
-                price: dp.price,
+                price: dp.price || `${priceVal} Tỷ`,
                 priceFrom: BigInt(Math.round(priceVal * 1_000_000_000)),
-                area: dp.area,
-                address: dp.location || 'Đà Nẵng',
-                thumbnail: dp.img || dp.thumbnail,
+                area: dp.area || '100m²',
+                address: dp.location || dp.address || 'Đà Nẵng',
+                thumbnail: dp.img || dp.thumbnail || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80',
                 published: true,
                 sortOrder: k,
               },
@@ -313,7 +314,7 @@ if (process.env.NODE_ENV !== 'test' && !process.env.JEST_WORKER_ID) {
               });
             }
           }
-          logger.info(`[STARTUP] ✅ Đã nâng cấp thành công 9 dự án và bài viết cho tenant ${tenant.slug}`);
+          logger.info(`[STARTUP] ✅ Đã đồng bộ thành công ${demoProjects.length} dự án cho tenant ${tenant.slug}`);
         }
       }
     } catch (upgradeErr: any) {

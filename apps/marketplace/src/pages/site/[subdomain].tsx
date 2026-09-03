@@ -228,31 +228,44 @@ export default function TenantDirectSitePage() {
           .platformbds-template [class*="bg-[#0D3F8D]"],
           .platformbds-template [class*="bg-[#0d3f8d]"],
           .platformbds-template [class*="bg-[#00438b]"],
-          .platformbds-template [class*="bg-[#00438B]"] {
+          .platformbds-template [class*="bg-[#00438B]"],
+          .platformbds-template [class*="bg-[#082B27]"],
+          .platformbds-template [class*="bg-[#082b27]"],
+          .platformbds-template [class*="bg-[#1e3a8a]"],
+          .platformbds-template [class*="bg-[#1E3A8A]"],
+          .platformbds-template [class*="bg-[#1E40AF]"],
+          .platformbds-template [class*="bg-[#1e40af]"] {
             background-color: ${tenantTheme.primaryColor} !important;
           }
           .platformbds-template [class*="text-[#0D3F8D]"],
           .platformbds-template [class*="text-[#0d3f8d]"],
           .platformbds-template [class*="text-[#00438b]"],
-          .platformbds-template [class*="text-[#0369a1]"] {
+          .platformbds-template [class*="text-[#0369a1]"],
+          .platformbds-template [class*="text-[#082B27]"],
+          .platformbds-template [class*="text-[#1e3a8a]"] {
             color: ${tenantTheme.primaryColor} !important;
           }
           .platformbds-template [class*="border-[#0D3F8D]"],
-          .platformbds-template [class*="border-[#0d3f8d]"] {
+          .platformbds-template [class*="border-[#0d3f8d]"],
+          .platformbds-template [class*="border-[#082B27]"] {
             border-color: ${tenantTheme.primaryColor} !important;
           }
           ` : ''}
           ${tenantTheme.accentColor ? `
           .platformbds-template [class*="bg-[#D8232A]"],
-          .platformbds-template [class*="bg-[#d8232a]"] {
+          .platformbds-template [class*="bg-[#d8232a]"],
+          .platformbds-template [class*="bg-red-600"],
+          .platformbds-template [class*="hover:bg-red-700"]:hover {
             background-color: ${tenantTheme.accentColor} !important;
           }
           .platformbds-template [class*="text-[#D8232A]"],
-          .platformbds-template [class*="text-[#d8232a]"] {
+          .platformbds-template [class*="text-[#d8232a]"],
+          .platformbds-template [class*="text-red-600"] {
             color: ${tenantTheme.accentColor} !important;
           }
           .platformbds-template [class*="border-[#D8232A]"],
-          .platformbds-template [class*="border-[#d8232a]"] {
+          .platformbds-template [class*="border-[#d8232a]"],
+          .platformbds-template [class*="border-red-600"] {
             border-color: ${tenantTheme.accentColor} !important;
           }
           ` : ''}
