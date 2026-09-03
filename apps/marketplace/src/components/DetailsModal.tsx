@@ -667,7 +667,7 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
   const router = useRouter();
   const { addToCart, isPurchased, isPendingApproval } = useAuth();
   const owned = isPurchased(template.slug || template.id);
-  const isPending = isPendingApproval(template.slug || template.id);
+  const isPending = !owned && isPendingApproval(template.slug || template.id);
 
   const fmt = (v: number) =>
     new Intl.NumberFormat('vi-VN').format(v) + 'đ';
@@ -903,7 +903,7 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
                       type="button"
                       onClick={() => {
                         onClose();
-                        router.push('/customer/dashboard');
+                        router.push('/customer/dashboard?tab=orders');
                       }}
                       className="w-full h-10 text-[13px] font-bold rounded-xl text-white bg-amber-500 hover:bg-amber-600 flex items-center justify-center gap-1.5 transition-all shadow-md"
                     >

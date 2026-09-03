@@ -1100,7 +1100,8 @@ export default function BDS06Template({
   // 5. SECTION 3: MẶT BẰNG TỔNG THỂ & CATALOG CĂN HỘ (MATCHING MOCKUP)
   // ─────────────────────────────────────────────────────────────────────────
   const renderMasterplanSection = () => {
-    const apartmentList = activeProperties.filter(p => p.category === 'can-ho');
+    const rawApartmentList = activeProperties.filter(p => p.category === 'can-ho');
+    const apartmentList = rawApartmentList.length > 0 ? rawApartmentList : BDS06_PROPERTIES.filter(p => p.category === 'can-ho');
 
     return (
       <section id="masterplan-section" className="py-20 bg-slate-50 text-slate-900">
@@ -1285,7 +1286,8 @@ export default function BDS06Template({
   // 6. SECTION 4: PHÂN KHU NHÀ PHỐ & SHOPHOUSE (MATCHING MOCKUP)
   // ─────────────────────────────────────────────────────────────────────────
   const renderLowRiseSection = () => {
-    const lowRiseList = activeProperties.filter(p => ['shophouse', 'nha-pho', 'biet-thu'].includes(p.category));
+    const rawLowRiseList = activeProperties.filter(p => ['shophouse', 'nha-pho', 'biet-thu'].includes(p.category));
+    const lowRiseList = rawLowRiseList.length > 0 ? rawLowRiseList : BDS06_PROPERTIES.filter(p => ['shophouse', 'nha-pho', 'biet-thu'].includes(p.category));
 
     return (
       <section id="lowrise-section" className="py-20 bg-white text-slate-900">

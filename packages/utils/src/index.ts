@@ -65,12 +65,21 @@ export function formatTemplateDisplayName(ordOrTemplate: any): string {
 }
 
 export function extractTemplateCode(ordOrTemplate: any): string {
-  if (!ordOrTemplate) return 'bds-01';
+  if (!ordOrTemplate) return '';
   
+  if (typeof ordOrTemplate === 'string') {
+    const str = ordOrTemplate.trim().toLowerCase();
+    if (!str) return '';
+    const lpMatch = str.match(/(?:lp|landing)[-_#\s]*0?([1-7])\b/i);
+    if (lpMatch) return 'lp-' + lpMatch[1].padStart(2, '0');
+    const bdsMatch = str.match(/(?:bds|template|portal)[-_#\s]*0?([1-9]|1[0-9]|2[0-4])\b/i);
+    if (bdsMatch) return 'bds-' + bdsMatch[1].padStart(2, '0');
+  }
+
   const template = ordOrTemplate.template || (ordOrTemplate.name ? ordOrTemplate : null);
   const name = template?.name || ordOrTemplate?.productSnapshot?.name || ordOrTemplate?.name || '';
-  const slug = template?.slug || ordOrTemplate?.productSnapshot?.slug || ordOrTemplate?.templateId || ordOrTemplate?.slug || '';
-  const subdomain = ordOrTemplate?.subdomain || ordOrTemplate?.tenant?.slug || '';
+  const slug = template?.slug || ordOrTemplate?.productSnapshot?.slug || ordOrTemplate?.productSnapshot?.templateId || ordOrTemplate?.templateId || ordOrTemplate?.slug || (typeof ordOrTemplate === 'string' ? ordOrTemplate : '');
+  const subdomain = ordOrTemplate?.subdomain || ordOrTemplate?.tenant?.slug || ordOrTemplate?.tenantSlug || '';
 
   const combined = (name + ' ' + slug + ' ' + subdomain).toLowerCase();
 
@@ -78,14 +87,14 @@ export function extractTemplateCode(ordOrTemplate: any): string {
   const lpMatch = combined.match(/(?:lp|landing)[-_#\s]*0?([1-7])\b/i);
   if (lpMatch) {
     const num = lpMatch[1].padStart(2, '0');
-    return `lp-${num}`;
+    return 'lp-' + num;
   }
 
   // 2. BĐS Templates (BĐS 01 -> BĐS 24)
   const bdsMatch = combined.match(/(?:bds|template|portal)[-_#\s]*0?([1-9]|1[0-9]|2[0-4])\b/i);
   if (bdsMatch) {
     const num = bdsMatch[1].padStart(2, '0');
-    return `bds-${num}`;
+    return 'bds-' + num;
   }
 
   // 3. Legacy Aliases Mapping
@@ -124,7 +133,7 @@ export function extractTemplateCode(ordOrTemplate: any): string {
     }
   }
 
-  return 'bds-01';
+  return '';
 }
 
 export function formatSiteSlug(ord: any): string {

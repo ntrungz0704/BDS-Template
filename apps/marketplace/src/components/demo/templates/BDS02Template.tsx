@@ -365,8 +365,8 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
   const activeProperties = useMemo<PropertyItem[]>(() => {
     if (projects && Array.isArray(projects) && projects.length > 0) {
-      return projects.map((p: any, idx: number): PropertyItem => ({
-        id: p.id || idx + 1,
+      const customProps = projects.map((p: any, idx: number): PropertyItem => ({
+        id: p.id || (1000 + idx),
         title: p.title || p.name || 'Bất động sản cao cấp',
         slug: p.slug || `bds-${idx + 1}`,
         category: p.category || p.type || 'nha-mat-tien',
@@ -376,7 +376,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
         area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '100 m²'),
         areaNum: typeof p.area === 'number' ? p.area : (parseFloat(p.area) || 100),
         location: p.location || p.address || 'Đà Nẵng & Toàn quốc',
-        district: p.district || p.location || 'Hải Châu',
+        district: p.district || (p.location?.includes('Thanh Khê') ? 'Thanh Khê' : p.location?.includes('Sơn Trà') ? 'Sơn Trà' : p.location?.includes('Ngũ Hành Sơn') ? 'Ngũ Hành Sơn' : 'Hải Châu'),
         city: p.city || 'Đà Nẵng',
         bedrooms: p.bedrooms || 3,
         bathrooms: p.bathrooms || 2,
@@ -393,14 +393,17 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
           avatar: company?.logo || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80',
         }
       }));
+      const customSlugs = new Set(customProps.map(cp => cp.slug));
+      const remainingDefaults = BDS02_PROPERTIES.filter(dp => !customSlugs.has(dp.slug));
+      return [...customProps, ...remainingDefaults];
     }
     return BDS02_PROPERTIES;
   }, [projects, company]);
 
   const activeNews = useMemo<NewsItem[]>(() => {
     if (posts && Array.isArray(posts) && posts.length > 0) {
-      return posts.map((p: any, idx: number): NewsItem => ({
-        id: p.id || idx + 1,
+      const customNews = posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || (1000 + idx),
         title: p.title || 'Tin tức thị trường bất động sản',
         slug: p.slug || `tin-tuc-${idx + 1}`,
         date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
@@ -412,6 +415,9 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
         views: p.views || 1200,
         tags: ['Bất động sản', 'Thị trường', 'Đầu tư']
       }));
+      const customSlugs = new Set(customNews.map(cn => cn.slug));
+      const remainingDefaults = BDS02_NEWS.filter(dn => !customSlugs.has(dn.slug));
+      return [...customNews, ...remainingDefaults];
     }
     return BDS02_NEWS;
   }, [posts, company]);
@@ -1041,9 +1047,14 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
   // ── HOMEPAGE RENDERER ──
   const renderHomePage = () => {
-    const featuredItems = activeProperties.filter(p => p.featured);
-    const thanhKheItems = activeProperties.filter(p => p.district === 'Thanh Khê');
-    const sonTraItems = activeProperties.filter(p => p.district === 'Sơn Trà');
+    const rawFeatured = activeProperties.filter(p => p.featured);
+    const featuredItems = rawFeatured.length > 0 ? rawFeatured.slice(0, 6) : BDS02_PROPERTIES.filter(p => p.featured);
+
+    const rawThanhKhe = activeProperties.filter(p => (p.district && p.district.includes('Thanh Khê')) || (p.location && p.location.includes('Thanh Khê')));
+    const thanhKheItems = rawThanhKhe.length > 0 ? rawThanhKhe : BDS02_PROPERTIES.filter(p => p.district === 'Thanh Khê');
+
+    const rawSonTra = activeProperties.filter(p => (p.district && p.district.includes('Sơn Trà')) || (p.location && p.location.includes('Sơn Trà')));
+    const sonTraItems = rawSonTra.length > 0 ? rawSonTra : BDS02_PROPERTIES.filter(p => p.district === 'Sơn Trà');
 
     return (
       <div className="bg-[#F8FAFC] space-y-8 pb-12">

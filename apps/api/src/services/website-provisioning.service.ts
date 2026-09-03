@@ -611,22 +611,34 @@ export class WebsiteProvisioningService {
 
       // Every delivered website starts with enough real content to exercise
       // cards, filters and detail navigation. Existing registry data is kept;
-      // generic records only fill a short catalog up to the minimum of three.
+      // rich template-specific records fill the catalog so customers see full listings immediately.
       const seededProjectCount = await tx.project.count({ where: { tenantId: tenant.id } });
-      const projectFallbacks = [
+      const isBDS02 = actualTemplateId.includes('bds-02') || actualTemplateId.includes('minimal-white');
+      const bds02Fallbacks = [
+        { title: 'Bán nhà mặt tiền 3.5 tầng đường Nguyễn Tri Phương, Quận Thanh Khê', type: 'APARTMENT', price: '7.8 Tỷ', area: '105 m²', address: 'Đường Nguyễn Tri Phương, Phường Chính Gián, Quận Thanh Khê, Đà Nẵng', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80' },
+        { title: 'Biệt thự sân vườn đẳng cấp khu Euro Village 1 ven sông Hàn, Sơn Trà', type: 'VILLA', price: '28.5 Tỷ', area: '250 m²', address: 'Khu Đô Thị Euro Village 1, Phường An Hải Tây, Quận Sơn Trà, Đà Nẵng', image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80' },
+        { title: 'Căn hộ cao cấp 2PN The Filmore view trực diện sông Hàn, Hải Châu', type: 'APARTMENT', price: '5.2 Tỷ', area: '78 m²', address: 'Đường Bạch Đằng, Phường Bình Thuận, Quận Hải Châu, Đà Nẵng', image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80' },
+        { title: 'Tòa nhà căn hộ dịch vụ 5 tầng cho thuê dòng tiền đường Lê Duẩn, Thanh Khê', type: 'SHOPHOUSE', price: '13.5 Tỷ', area: '120 m²', address: 'Đường Lê Duẩn, Phường Tân Chính, Quận Thanh Khê, Đà Nẵng', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80' },
+        { title: 'Bán nhà mặt tiền đường Võ Văn Kiệt view biển Mỹ Khê, Quận Sơn Trà', type: 'APARTMENT', price: '16.8 Tỷ', area: '115 m²', address: 'Đại lộ Võ Văn Kiệt, Phường Phước Mỹ, Quận Sơn Trà, Đà Nẵng', image: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800&q=80' },
+        { title: 'Biệt thự nghỉ dưỡng Ocean Villas ven biển Ngũ Hành Sơn', type: 'VILLA', price: '32.0 Tỷ', area: '320 m²', address: 'Đường Trường Sa, Phường Hòa Hải, Quận Ngũ Hành Sơn, Đà Nẵng', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80' },
+      ];
+
+      const projectFallbacks = isBDS02 ? bds02Fallbacks : [
         { title: 'Căn Hộ Panorama Trung Tâm', type: 'APARTMENT', price: 'Từ 4,8 Tỷ VNĐ', area: '82m²', address: 'Trung tâm TP. Hồ Chí Minh', image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800' },
         { title: 'Biệt Thự Compound Ven Sông', type: 'VILLA', price: 'Từ 18 Tỷ VNĐ', area: '320m²', address: 'TP. Thủ Đức', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800' },
         { title: 'Shophouse Đại Lộ Thương Mại', type: 'SHOPHOUSE', price: 'Từ 12 Tỷ VNĐ', area: '150m²', address: 'Khu đô thị mới', image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800' },
       ];
-      for (let k = seededProjectCount; k < 3; k++) {
+
+      const minSeedCount = isBDS02 ? 6 : 3;
+      for (let k = seededProjectCount; k < minSeedCount; k++) {
         const fallback = projectFallbacks[k];
         await tx.project.create({
           data: {
             tenantId: tenant.id,
             title: fallback.title,
             slug: `${actualTemplateId}-project-default-${k + 1}`,
-            description: `${fallback.title} với pháp lý minh bạch, tiện ích đồng bộ và chính sách thanh toán linh hoạt.`,
-            shortDescription: 'Sản phẩm bất động sản tiêu biểu',
+            description: `${fallback.title} với vị trí đắc địa, pháp lý minh bạch, tiện ích đồng bộ và tiềm năng tăng giá cao.`,
+            shortDescription: 'Bất động sản nổi bật tiêu biểu',
             type: fallback.type as any,
             status: 'SELLING',
             price: fallback.price,

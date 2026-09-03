@@ -75,7 +75,7 @@ export default function PreviewToolbar({
   const router = useRouter();
   const { addToCart, isPurchased, isPendingApproval } = useAuth();
   const owned = isPurchased(template.slug);
-  const isPending = isPendingApproval(template.slug);
+  const isPending = !owned && isPendingApproval(template.slug);
   const [copied, setCopied] = useState(false);
   const [toolbarVisible, setToolbarVisible] = useState(true);
 
@@ -249,7 +249,7 @@ export default function PreviewToolbar({
           </a>
         ) : isPending ? (
           <button
-            onClick={() => router.push('/customer/dashboard')}
+            onClick={() => router.push('/customer/dashboard?tab=orders')}
             className="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-white text-xs font-extrabold shadow-lg transition-all duration-150 flex items-center gap-1.5"
           >
             <Clock className="w-3.5 h-3.5" />

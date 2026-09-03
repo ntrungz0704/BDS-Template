@@ -588,32 +588,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isPurchased = (templateSlug: string): boolean => {
     if (!templateSlug) return false;
     const canonicalCode = extractTemplateCode(templateSlug).toLowerCase();
+    if (!canonicalCode) return false;
     
-    // Check if current user has an ACTIVE tenant website with this template
+    // 1. Check if current user has an ACTIVE tenant website with this template
     const userTenant = (user as any)?.tenant;
     if (userTenant && (userTenant.status === 'ACTIVE' || !userTenant.status)) {
-      const tCode = extractTemplateCode(userTenant.templateSlug || userTenant.template?.slug || userTenant.template || '').toLowerCase();
-      if (tCode === canonicalCode) return true;
+      const rawTenantTpl = userTenant.templateId || userTenant.templateSlug || userTenant.template?.slug || userTenant.slug || '';
+      const tCode = extractTemplateCode(rawTenantTpl).toLowerCase();
+      if (tCode && tCode === canonicalCode) return true;
     }
 
-    // Check user orders: ONLY COMPLETED orders count as purchased/owned!
-    // PENDING, WAITING_PAYMENT, PAYMENT_REVIEW are NOT completed yet!
+    // 2. Check user orders: ONLY COMPLETED orders count as purchased/owned!
+    // PENDING, WAITING_PAYMENT, WAITING_CONFIRM, PAYMENT_REVIEW are NOT completed yet!
     return orders.some((o) => {
-      if (o.status !== 'COMPLETED' && o.fulfillmentStatus !== 'ACTIVE') return false;
-      const oCode = extractTemplateCode(o.template?.slug || (o.template as any)?.id || (o as any).productSnapshot?.slug || '').toLowerCase();
-      return oCode === canonicalCode;
+      if (o.status !== 'COMPLETED') return false;
+      const rawOrderTpl = o.templateId || o.template?.slug || (o.template as any)?.id || (o as any).productSnapshot?.slug || (o as any).productSnapshot?.templateId || o.templateName || (o as any).name || '';
+      const oCode = extractTemplateCode(rawOrderTpl).toLowerCase();
+      return Boolean(oCode && oCode === canonicalCode);
     });
   };
 
   const isPendingApproval = (templateSlug: string): boolean => {
     if (!templateSlug) return false;
     const canonicalCode = extractTemplateCode(templateSlug).toLowerCase();
+    if (!canonicalCode) return false;
+
+    // If already purchased/owned, it is not pending
+    if (isPurchased(templateSlug)) return false;
 
     // Check if user has an order in pending/review status for this template
+    const PENDING_STATUSES = ['PENDING', 'WAITING_CONFIRM', 'WAITING_PAYMENT', 'PAYMENT_REVIEW', 'AWAITING_MANUAL_REVIEW', 'PENDING_SUBDOMAIN_CONFLICT'];
     return orders.some((o) => {
-      if (o.status === 'COMPLETED' || o.status === 'REJECTED' || o.status === 'CANCELLED') return false;
-      const oCode = extractTemplateCode(o.template?.slug || (o.template as any)?.id || (o as any).productSnapshot?.slug || '').toLowerCase();
-      return oCode === canonicalCode;
+      if (!PENDING_STATUSES.includes(o.status)) return false;
+      const rawOrderTpl = o.templateId || o.template?.slug || (o.template as any)?.id || (o as any).productSnapshot?.slug || (o as any).productSnapshot?.templateId || o.templateName || (o as any).name || '';
+      const oCode = extractTemplateCode(rawOrderTpl).toLowerCase();
+      return Boolean(oCode && oCode === canonicalCode);
     });
   };
 

@@ -214,7 +214,7 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
   const [isHovered, setIsHovered] = useState(false);
 
   const owned = isPurchased(template.slug || template.id);
-  const isPending = isPendingApproval(template.slug || template.id);
+  const isPending = !owned && isPendingApproval(template.slug || template.id);
   const isFavorite = wishlists?.some((w: any) => w.templateId === template.id || w.template?.id === template.id) || false;
 
   const sourceSlug = template.sectionConfig?.sourceSlug;
@@ -345,8 +345,8 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
                 {fmt(template.priceBuy || 499000)}
               </span>
             </div>
-            <span className={`text-[10px] ${owned ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-emerald-50 text-emerald-700 border-emerald-200'} font-bold px-2 py-0.5 rounded-md border`}>
-              {owned ? 'ĐÃ SỞ HỮU TRỌN ĐỜI' : 'BÀN GIAO NGAY'}
+            <span className={`text-[10px] ${owned ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : isPending ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-emerald-50 text-emerald-700 border-emerald-200'} font-bold px-2 py-0.5 rounded-md border`}>
+              {owned ? 'ĐÃ SỞ HỮU TRỌN ĐỜI' : isPending ? 'CHỜ ADMIN DUYỆT' : 'BÀN GIAO NGAY'}
             </span>
           </div>
 
@@ -362,7 +362,7 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
               </a>
             ) : isPending ? (
               <Link
-                href="/customer/dashboard"
+                href="/customer/dashboard?tab=orders"
                 onClick={(e) => e.stopPropagation()}
                 className="flex-1 py-2.5 px-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-all"
               >
