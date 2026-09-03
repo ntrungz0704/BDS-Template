@@ -9,6 +9,7 @@ import { websiteProvisioningService } from '../services/website-provisioning.ser
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import { sendRealtimeNotification } from './notification.controller';
+import { purgeUserAccount } from '../services/user-cleanup.service';
 
 async function writeAdminAudit(
   req: Request,
@@ -167,11 +168,37 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
     const isUnprovisionedCompleted = order.status === 'COMPLETED' && !order.tenantId && order.type !== 'BUY_SOURCE';
 
     if (!isPending && !isUnprovisionedCompleted) {
+      if (order.status === 'COMPLETED') {
+        let tenantSlug = order.subdomain || '';
+        if (order.tenantId) {
+          const t = await prisma.tenant.findUnique({ where: { id: order.tenantId }, select: { slug: true } });
+          if (t?.slug) tenantSlug = t.slug;
+        }
+        const fallbackPwd = order.email ? order.email.split('@')[0] : '123456';
+        return res.status(200).json({
+          success: true,
+          data: {
+            ...order,
+            tenantId: order.tenantId,
+            subdomain: tenantSlug,
+            credentials: {
+              email: order.email,
+              password: fallbackPwd,
+              cmsPassword: fallbackPwd,
+              subdomain: tenantSlug,
+              tenantSlug: tenantSlug,
+              isNewUser: false,
+            },
+          },
+          meta: { alreadyCompleted: true, message: 'Đơn hàng này đã được kích hoạt thành công.' },
+        });
+      }
+
       return res.status(400).json({
         success: false,
         error: {
           code: 'ORDER_NOT_WAITING',
-          message: 'Đơn hàng này không còn ở trạng thái chờ xác nhận thanh toán hoặc đã được kích hoạt hoàn tất.',
+          message: 'Đơn hàng này không còn ở trạng thái chờ xác nhận thanh toán.',
         },
       });
     }
@@ -368,13 +395,11 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
       data: { tenantId, subdomain: finalSubdomain, fulfillmentStatus: 'ACTIVE' },
     });
 
-    // Gửi email chào mừng ngoài block transaction
+    // Gửi email chào mừng ngoài block transaction (non-blocking)
     if (tenantId) {
-      try {
-        await sendWelcomeEmail(order.email, order.fullName, finalSubdomain, tempPassword);
-      } catch (mailErr) {
+      sendWelcomeEmail(order.email, order.fullName, finalSubdomain, tempPassword).catch((mailErr) => {
         logger.warn(`Không gửi được email chào mừng: ${(mailErr as Error).message}`);
-      }
+      });
     }
 
     // Gửi thông báo realtime đến tài khoản khách hàng
@@ -530,8 +555,10 @@ export async function createTenantManually(req: Request, res: Response, next: Ne
       subdomain: subdomain.toLowerCase(),
     });
 
-    // Send Welcome Email
-    await sendWelcomeEmail(email, fullName, subdomain, tempPassword);
+    // Send Welcome Email (non-blocking)
+    sendWelcomeEmail(email, fullName, subdomain, tempPassword).catch((mailErr) => {
+      logger.warn(`Không gửi được email chào mừng: ${(mailErr as Error).message}`);
+    });
 
     res.status(201).json({
       success: true,
@@ -2149,3 +2176,32 @@ export async function addAdminLeadNote(req: Request, res: Response, next: NextFu
     next(error);
   }
 }
+
+/**
+ * Super Admin Purge Account Controller
+ * Xóa vĩnh viễn và triệt để 100% tài khoản khách hàng cùng mọi đơn hàng, website, dữ liệu liên quan.
+ */
+export async function purgeUserAccountController(req: Request, res: Response, next: NextFunction) {
+  const { email, phone, userId } = req.body;
+  if (!email && !phone && !userId) {
+    return res.status(400).json({
+      success: false,
+      error: { message: 'Cần cung cấp email, phone hoặc userId để xóa tài khoản.' },
+    });
+  }
+
+  try {
+    const result = await purgeUserAccount({ email, phone, userId });
+    await writeAdminAudit(req, 'USER_PURGED_COMPLETELY', 'User', userId || 'TARGET', null, { email, phone, result });
+    logger.info(`[ADMIN PURGE] Super Admin đã xóa vĩnh viễn dữ liệu người dùng: email=${email}, phone=${phone}, orders=${result.deletedOrderCount}, tenants=${result.deletedTenantCount}`);
+
+    res.status(200).json({
+      success: true,
+      message: `Đã xóa hoàn toàn tài khoản và toàn bộ dữ liệu liên quan (${result.deletedOrderCount} đơn hàng, ${result.deletedTenantCount} website).`,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+

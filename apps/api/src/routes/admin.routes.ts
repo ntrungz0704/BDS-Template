@@ -1,4 +1,4 @@
-﻿import { Router } from 'express';
+import { Router } from 'express';
 import { 
   getDashboardStats, 
   getOrders, 
@@ -34,6 +34,7 @@ import {
   directResetUserPassword,
   activateSubscription,
   suspendCustomer,
+  purgeUserAccountController,
 } from '../controllers/admin.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/role.middleware';
@@ -69,6 +70,7 @@ router.delete('/tenants/:id', csrfMiddleware, deleteTenant);
 router.get('/users', getUsers);
 router.put('/users/:id/status', csrfMiddleware, updateUserStatus);
 router.delete('/users/:id', csrfMiddleware, deleteUser);
+router.post('/users/purge', csrfMiddleware, purgeUserAccountController);
 
 router.get('/templates', getTemplates);
 router.put('/templates/:id/status', csrfMiddleware, updateTemplateStatus);

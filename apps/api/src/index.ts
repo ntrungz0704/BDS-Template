@@ -14,6 +14,7 @@ import winston from 'winston';
 import { PrismaClient, Prisma } from '@repo/database';
 import { autoSeedDatabase, syncCatalog } from './utils/auto-seed';
 import { csrfMiddleware } from './middlewares/csrf.middleware';
+import { purgeUserAccount } from './services/user-cleanup.service';
 
 export const logger = winston.createLogger({
   level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
@@ -243,6 +244,30 @@ if (process.env.NODE_ENV !== 'test' && !process.env.JEST_WORKER_ID) {
       );
     } catch (syncErr: any) {
       logger.warn(`Catalog sync warning: ${syncErr.message}`);
+    }
+
+    // Tự động quét dọn dẹp triệt để tài khoản test anh trung (anhtrung@gmail.com) và các đơn test cũ
+    try {
+      const targetUser = await prisma.user.findFirst({
+        where: { email: { equals: 'anhtrung@gmail.com', mode: 'insensitive' } },
+        select: { id: true },
+      });
+      const targetOrder = await prisma.order.findFirst({
+        where: {
+          OR: [
+            { email: { equals: 'anhtrung@gmail.com', mode: 'insensitive' } },
+            { phone: { contains: '987654321' } },
+          ],
+        },
+        select: { id: true },
+      });
+      if (targetUser || targetOrder) {
+        logger.info('[STARTUP] Phát hiện tài khoản test anh trung (anhtrung@gmail.com). Đang dọn dẹp 100%...');
+        const purgeRes = await purgeUserAccount({ email: 'anhtrung@gmail.com', phone: '09876543211' });
+        logger.info(`[STARTUP] ✅ Đã xóa full tài khoản anh trung: ${purgeRes.deletedOrderCount} đơn hàng, ${purgeRes.deletedTenantCount} website, ${purgeRes.deletedUserCount} user.`);
+      }
+    } catch (purgeErr: any) {
+      logger.warn(`[STARTUP] Warning khi dọn dẹp tài khoản test: ${purgeErr.message}`);
     }
 
     server = app.listen(PORT, () => {

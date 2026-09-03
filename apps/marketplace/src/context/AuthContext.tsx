@@ -301,8 +301,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (err?.response?.status === 401) {
             setUser(null);
             setOrders([]);
+            setCart([]);
+            setWishlists([]);
             localStorage.removeItem('platformbds_user_v3');
             localStorage.removeItem('platformbds_orders_v3');
+            localStorage.removeItem('platformbds_cart_v3');
+            localStorage.removeItem('platformbds_wishlist_v3');
           }
           // On network errors or timeouts, preserve localStorage cached user state
         }

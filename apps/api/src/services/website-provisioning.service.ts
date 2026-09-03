@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { vercelDomainService } from './vercel-domain.service';
 import { resolveTemplateAlias } from '../utils/template-aliases';
+import { logger } from '../index';
 
 export interface ProvisionWebsiteInput {
   templateId: string;
@@ -780,10 +781,12 @@ export class WebsiteProvisioningService {
       timeout: 60000,
     });
 
-    // n. Tự động đăng ký domain của khách vào Vercel Project qua Vercel API
+    // n. Tự động đăng ký domain của khách vào Vercel Project qua Vercel API (background non-blocking)
     const platformDomain = process.env.PLATFORM_DOMAIN || 'templates.aireviewbds.com';
     const targetDomain = `${slug.toLowerCase()}.${platformDomain}`;
-    await vercelDomainService.addDomainToVercel(targetDomain);
+    vercelDomainService.addDomainToVercel(targetDomain).catch((err: any) => {
+      logger.warn(`[Vercel Domain] Auto-add domain background error: ${err?.message || err}`);
+    });
 
     return {
       tenant: result.tenant,

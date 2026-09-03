@@ -9,6 +9,9 @@ const transporter = nodemailer.createTransport({
     user: process.env.SMTP_USER || 'your-email@gmail.com',
     pass: process.env.SMTP_PASS || 'your-app-password',
   },
+  connectionTimeout: 3000,
+  greetingTimeout: 3000,
+  socketTimeout: 3000,
 });
 
 export async function sendWelcomeEmail(to: string, fullName: string, subdomain: string, tempPassword: string) {

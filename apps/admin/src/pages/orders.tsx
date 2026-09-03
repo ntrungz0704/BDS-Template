@@ -81,18 +81,39 @@ export default function AdminOrders() {
     prevPendingCountRef.current = pendingOrders.length;
   }, [pendingOrders.length]);
 
+  // Helper mở modal bàn giao thông tin cho bất kỳ đơn hàng nào đã hoàn tất
+  const openHandoverModal = (order: any) => {
+    const targetEmail = order.email || '';
+    const fallbackPwd = targetEmail ? targetEmail.split('@')[0] : '123456';
+    const targetPwd = order.password || order.cmsPassword || fallbackPwd;
+    const targetSub = order.subdomain || order.tenant?.slug || '';
+
+    setApprovalResult({
+      email: targetEmail,
+      password: targetPwd,
+      cmsPassword: targetPwd,
+      subdomain: targetSub,
+      tenantSlug: targetSub,
+      templateSlug: order.template?.slug || order.templateId || 'bds-01',
+      templateName: order.template?.name || formatTemplateDisplayName(order) || 'Website Bất Động Sản',
+      customerName: order.fullName || 'Khách hàng',
+      phone: order.phone || '',
+      orderNumber: order.orderNumber || '',
+    });
+  };
+
   // 2. Mutation duyệt đơn hàng & tạo Tenant
   const approveMutation = useMutation({
-    mutationFn: async ({ id, version }: { id: string; version: number }) => {
+    mutationFn: async ({ id, version, order }: { id: string; version: number; order?: any }) => {
       const res = await axios.put(
         `${API_URL}/api/admin/orders/${id}/approve`,
         { version },
         { withCredentials: true }
       );
-      return res.data;
+      return { ...res.data, cachedOrder: order };
     },
 
-    onSuccess: (res: any) => {
+    onSuccess: (res: any, variables: any) => {
       if (res?.meta?.conflict) {
         alert(res.meta.message || 'Subdomain đã tồn tại hoặc có lỗi xung đột.');
         return;
@@ -100,7 +121,7 @@ export default function AdminOrders() {
 
       const raw = res?.data || res;
       const orderCreds = raw?.credentials || raw;
-      const currentOrder = selectedOrder;
+      const currentOrder = variables?.order || selectedOrder || raw;
 
       const targetEmail = orderCreds?.email || raw?.email || currentOrder?.email || '';
       const fallbackPwd = targetEmail ? targetEmail.split('@')[0] : '123456';
@@ -114,11 +135,13 @@ export default function AdminOrders() {
         subdomain: targetSub,
         tenantSlug: targetSub,
         templateSlug: currentOrder?.template?.slug || currentOrder?.templateId || raw?.templateId || 'bds-01',
-        templateName: currentOrder?.template?.name || 'Website Bất Động Sản',
+        templateName: currentOrder?.template?.name || formatTemplateDisplayName(currentOrder) || 'Website Bất Động Sản',
         customerName: currentOrder?.fullName || 'Khách hàng',
+        phone: currentOrder?.phone || '',
         orderNumber: currentOrder?.orderNumber || raw?.orderNumber || '',
       };
 
+      playOrderAlertSound();
       setSelectedOrder(null);
       setApprovalResult(creds);
       queryClient.invalidateQueries({ queryKey: ['adminOrders'] });
@@ -153,7 +176,7 @@ export default function AdminOrders() {
     },
   });
 
-  // 4. Mutation xóa đơn hàng
+  // 4. Mutation xóa 1 đơn hàng
   const deleteOrderMutation = useMutation({
     mutationFn: async (id: string) => {
       const res = await axios.delete(`${API_URL}/api/admin/orders/${id}`, {
@@ -170,6 +193,28 @@ export default function AdminOrders() {
     },
     onError: (error: any) => {
       alert(error.response?.data?.error?.message || 'Có lỗi xảy ra khi xóa đơn hàng.');
+    },
+  });
+
+  // 5. Mutation XÓA SẠCH VĨNH VIỄN 100% TÀI KHOẢN & TẤT CẢ ĐƠN HÀNG (Dành cho Super Admin reset test)
+  const purgeCustomerMutation = useMutation({
+    mutationFn: async ({ email, phone, userId }: { email?: string; phone?: string; userId?: string }) => {
+      const res = await axios.post(
+        `${API_URL}/api/admin/users/purge`,
+        { email, phone, userId },
+        { withCredentials: true }
+      );
+      return res.data;
+    },
+    onSuccess: (res: any) => {
+      alert(res?.message || '✅ Đã xóa hoàn toàn tài khoản khách hàng, tất cả đơn hàng và website liên quan thành công. Bạn có thể test mua lại từ đầu!');
+      setSelectedOrder(null);
+      queryClient.invalidateQueries({ queryKey: ['adminOrders'] });
+      queryClient.invalidateQueries({ queryKey: ['adminStats'] });
+    },
+    onError: (err: any) => {
+      const msg = err.response?.data?.error?.message || err.message || 'Có lỗi xảy ra khi dọn dẹp tài khoản.';
+      alert(`⚠️ Lỗi: ${msg}`);
     },
   });
 
@@ -207,6 +252,22 @@ export default function AdminOrders() {
       order.template?.name?.toLowerCase().includes(term)
     );
   });
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  // Tự động nhảy về trang 1 khi đổi bộ lọc hoặc gõ từ khóa tìm kiếm
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeFilter, searchTerm]);
+
+  // Tính toán phân trang
+  const totalItems = filteredOrders.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const startIndex = (safeCurrentPage - 1) * pageSize;
+  const paginatedOrders = filteredOrders.slice(startIndex, startIndex + pageSize);
 
   const isPendingStatus = (status: string) => {
     return status === 'PENDING' || status === 'WAITING_CONFIRM' || status === 'PENDING_SUBDOMAIN_CONFLICT' || status === 'AWAITING_MANUAL_REVIEW';
@@ -372,7 +433,7 @@ export default function AdminOrders() {
                   </td>
                 </tr>
               ) : (
-                filteredOrders.map((order: any) => {
+                paginatedOrders.map((order: any) => {
                   const isPending = isPendingStatus(order.status);
                   return (
                     <tr key={order.id} className="hover:bg-slate-50/60 transition-colors">
@@ -466,6 +527,15 @@ export default function AdminOrders() {
                               Duyệt
                             </button>
                           )}
+                          {order.status === 'COMPLETED' && (
+                            <button
+                              onClick={() => openHandoverModal(order)}
+                              className="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold rounded text-[10px] transition-colors"
+                              title="Xem và sao chép thông tin tài khoản CMS gửi khách"
+                            >
+                              TK/MK
+                            </button>
+                          )}
                           <button
                             onClick={() => setSelectedOrder(order)}
                             className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded text-[10px] transition-colors"
@@ -480,6 +550,94 @@ export default function AdminOrders() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Thanh Phân Trang (Pagination Controls) */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-5 py-3.5 bg-slate-50/70 border-t border-slate-100">
+          <div className="flex items-center gap-3 text-xs text-slate-500">
+            <span>
+              Hiển thị <span className="font-bold text-slate-800">{totalItems > 0 ? startIndex + 1 : 0} - {Math.min(startIndex + pageSize, totalItems)}</span> trong tổng số <span className="font-bold text-slate-800">{totalItems}</span> đơn hàng
+            </span>
+            <span className="text-slate-300">|</span>
+            <div className="flex items-center gap-1.5">
+              <span>Mỗi trang:</span>
+              <select
+                value={pageSize}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+                className="bg-white border border-slate-200 text-slate-700 text-xs rounded-lg px-2 py-1 font-bold focus:outline-none focus:border-indigo-500 cursor-pointer shadow-2xs"
+              >
+                <option value={5}>5 đơn</option>
+                <option value={10}>10 đơn</option>
+                <option value={20}>20 đơn</option>
+                <option value={50}>50 đơn</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            {/* Nút Mũi Tên Trái (Trang trước) */}
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={safeCurrentPage <= 1}
+              className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-xs font-bold hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1 shadow-2xs"
+              title="Trang trước"
+            >
+              <span>‹</span>
+              <span className="hidden sm:inline">Trước</span>
+            </button>
+
+            {/* Danh Sách Các Số Trang */}
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter((page) => {
+                if (totalPages <= 7) return true;
+                if (page === 1 || page === totalPages) return true;
+                return Math.abs(page - safeCurrentPage) <= 1;
+              })
+              .reduce((acc: any[], page, idx, arr) => {
+                if (idx > 0 && page - arr[idx - 1] > 1) {
+                  acc.push('ellipsis-' + page);
+                }
+                acc.push(page);
+                return acc;
+              }, [])
+              .map((item) => {
+                if (typeof item === 'string') {
+                  return (
+                    <span key={item} className="px-2 text-slate-400 text-xs font-bold">
+                      …
+                    </span>
+                  );
+                }
+                const isCurrent = item === safeCurrentPage;
+                return (
+                  <button
+                    key={item}
+                    onClick={() => setCurrentPage(item)}
+                    className={`min-w-[32px] h-8 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center ${
+                      isCurrent
+                        ? 'bg-indigo-600 text-white shadow-sm font-black'
+                        : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                    }`}
+                  >
+                    {item}
+                  </button>
+                );
+              })}
+
+            {/* Nút Mũi Tên Phải (Trang tiếp theo) */}
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={safeCurrentPage >= totalPages}
+              className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-xs font-bold hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1 shadow-2xs"
+              title="Trang tiếp"
+            >
+              <span className="hidden sm:inline">Sau</span>
+              <span>›</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -689,21 +847,40 @@ export default function AdminOrders() {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-100 pt-5">
-              {selectedOrder.status !== 'COMPLETED' ? (
+              <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                {selectedOrder.status !== 'COMPLETED' && (
+                  <button
+                    onClick={() => {
+                      if (confirm(`Xác nhận hủy đơn hàng #${selectedOrder.orderNumber}?`)) {
+                        deleteOrderMutation.mutate(selectedOrder.id);
+                      }
+                    }}
+                    disabled={deleteOrderMutation.isPending}
+                    className="px-3.5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs rounded-xl border border-rose-200 transition-all"
+                  >
+                    {deleteOrderMutation.isPending ? 'Đang hủy...' : '🚫 Hủy Đơn Hàng'}
+                  </button>
+                )}
+
+                {/* Nút Xóa Sạch Tài Khoản Test (Reset từ đầu) */}
                 <button
                   onClick={() => {
-                    if (confirm(`Xác nhận hủy đơn hàng #${selectedOrder.orderNumber}?`)) {
-                      deleteOrderMutation.mutate(selectedOrder.id);
+                    const confirmMsg = `⚠️ CẢNH BÁO RESET DỮ LIỆU TEST:\n\nBạn có chắc chắn muốn XÓA VĨNH VIỄN toàn bộ tài khoản [${selectedOrder.email}], tất cả các đơn hàng đã mua và mọi website liên quan không?\n\nThao tác này dùng để dọn dẹp sạch sẽ để test lại từ đầu. Không thể hoàn tác!`;
+                    if (confirm(confirmMsg)) {
+                      purgeCustomerMutation.mutate({
+                        email: selectedOrder.email,
+                        phone: selectedOrder.phone,
+                        userId: selectedOrder.userId,
+                      });
                     }
                   }}
-                  disabled={deleteOrderMutation.isPending}
-                  className="w-full sm:w-auto px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs rounded-xl border border-rose-200 transition-all"
+                  disabled={purgeCustomerMutation.isPending}
+                  className="px-3.5 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs rounded-xl border border-amber-300 transition-all flex items-center gap-1.5"
+                  title="Xóa triệt để toàn bộ dữ liệu tài khoản và các đơn hàng này để test lại từ đầu"
                 >
-                  {deleteOrderMutation.isPending ? 'Đang hủy...' : '🚫 Hủy Đơn Hàng'}
+                  {purgeCustomerMutation.isPending ? 'Đang dọn dẹp sạch...' : '🗑️ Xóa Sạch Tài Khoản (Reset Test)'}
                 </button>
-              ) : (
-                <div />
-              )}
+              </div>
 
               <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
                 <button
@@ -712,6 +889,19 @@ export default function AdminOrders() {
                 >
                   Đóng
                 </button>
+
+                {selectedOrder.status === 'COMPLETED' && (
+                  <button
+                    onClick={() => {
+                      openHandoverModal(selectedOrder);
+                      setSelectedOrder(null);
+                    }}
+                    className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center gap-1.5"
+                  >
+                    <span>📋</span>
+                    <span>Xem Lại TK/MK Bàn Giao</span>
+                  </button>
+                )}
 
                 {isPendingStatus(selectedOrder.status) && (
                   <>
@@ -736,6 +926,7 @@ export default function AdminOrders() {
                           approveMutation.mutate({
                             id: selectedOrder.id,
                             version: selectedOrder.version || 1,
+                            order: selectedOrder,
                           });
                         }
                       }}
@@ -747,7 +938,7 @@ export default function AdminOrders() {
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                           </svg>
-                          <span>Đang kích hoạt & tạo website...</span>
+                          <span>⚡ Đang tạo website & cấp CMS (1-2s)...</span>
                         </>
                       ) : (
                         <>
@@ -782,17 +973,47 @@ export default function AdminOrders() {
               Website Đã Kích Hoạt Thành Công!
             </h3>
             <p className="text-xs text-slate-500 mt-1">
-              Hệ thống đã tự động cấu hình Tenant và tài khoản CMS cho khách hàng. Hãy sao chép thông tin bàn giao dưới đây gửi cho khách:
+              Hệ thống đã tự động cấu hình Tenant và cấp tài khoản CMS cho khách hàng. Thông tin bàn giao chi tiết:
             </p>
 
-            <div className="my-6 p-5 bg-slate-50 rounded-2xl border border-slate-200 text-left text-xs font-mono space-y-3">
+            {/* Thẻ tóm tắt khách hàng */}
+            <div className="mt-4 p-3 bg-indigo-50/70 rounded-2xl border border-indigo-100 flex items-center justify-between text-left text-xs">
               <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Website công khai:</span>
+                <span className="text-[10px] text-indigo-400 font-bold uppercase block">Khách hàng nhận bàn giao:</span>
+                <span className="font-extrabold text-indigo-950 text-sm">{approvalResult.customerName || 'Khách hàng'}</span>
+                {approvalResult.orderNumber && (
+                  <span className="ml-2 px-2 py-0.5 bg-indigo-200/60 text-indigo-800 text-[10px] font-mono font-bold rounded-md">
+                    #{approvalResult.orderNumber}
+                  </span>
+                )}
+              </div>
+              {approvalResult.phone && (
+                <div className="text-right">
+                  <span className="text-[10px] text-indigo-400 font-bold uppercase block">Số điện thoại:</span>
+                  <span className="font-mono font-bold text-indigo-900 text-xs">{approvalResult.phone}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="my-5 p-5 bg-slate-50 rounded-2xl border border-slate-200 text-left text-xs font-mono space-y-3.5">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">1. Website công khai:</span>
+                  <button
+                    onClick={() => {
+                      const url = approvalResult.subdomain || approvalResult.tenantSlug ? getTenantUrl(approvalResult.subdomain || approvalResult.tenantSlug) : '';
+                      handleCopy(url, 'SITE_URL');
+                    }}
+                    className="text-[10px] text-indigo-600 font-sans hover:underline font-bold"
+                  >
+                    {copiedField === 'SITE_URL' ? '✓ Đã chép' : 'Sao chép link'}
+                  </button>
+                </div>
                 <a
                   href={approvalResult.subdomain || approvalResult.tenantSlug ? getTenantUrl(approvalResult.subdomain || approvalResult.tenantSlug) : '#'}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-blue-600 font-bold hover:underline"
+                  className="text-blue-600 font-bold hover:underline break-all block mt-0.5"
                 >
                   {approvalResult.subdomain || approvalResult.tenantSlug ? getTenantUrl(approvalResult.subdomain || approvalResult.tenantSlug) : 'Đang chuẩn bị...'}
                 </a>
@@ -800,44 +1021,73 @@ export default function AdminOrders() {
                   href={`https://${PLATFORM_DOMAIN}/demo/${approvalResult.templateSlug || 'luxury-gold'}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-[11px] text-emerald-600 font-sans font-bold hover:underline block mt-0.5"
+                  className="text-[11px] text-emerald-600 font-sans font-bold hover:underline block mt-1"
                 >
-                  👉 Xem trực tiếp mẫu giao diện tức thì
+                  👉 Xem trực tiếp mẫu giao diện tức thì ({approvalResult.templateName || 'Mẫu BĐS'})
                 </a>
               </div>
 
-              <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Trang quản trị CMS:</span>
+              <div className="pt-2 border-t border-slate-200/60">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">2. Trang quản trị CMS:</span>
+                  <button
+                    onClick={() => handleCopy(CMS_APP_URL, 'CMS_URL')}
+                    className="text-[10px] text-indigo-600 font-sans hover:underline font-bold"
+                  >
+                    {copiedField === 'CMS_URL' ? '✓ Đã chép' : 'Sao chép link'}
+                  </button>
+                </div>
                 <a
                   href={CMS_APP_URL}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-indigo-600 font-bold hover:underline"
+                  className="text-indigo-600 font-bold hover:underline block mt-0.5"
                 >
                   {CMS_APP_URL}
                 </a>
               </div>
 
-              <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Email đăng nhập:</span>
-                <span className="font-bold text-slate-800">{approvalResult.email}</span>
+              <div className="pt-2 border-t border-slate-200/60">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">3. Email đăng nhập CMS:</span>
+                  <button
+                    onClick={() => handleCopy(approvalResult.email, 'EMAIL')}
+                    className="text-[10px] text-indigo-600 font-sans hover:underline font-bold"
+                  >
+                    {copiedField === 'EMAIL' ? '✓ Đã chép' : 'Sao chép'}
+                  </button>
+                </div>
+                <span className="font-bold text-slate-900 block mt-0.5">{approvalResult.email}</span>
               </div>
 
-              <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">Mật khẩu CMS (Mặc định):</span>
-                <span className="font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200 text-sm">
+              <div className="pt-2 border-t border-slate-200/60">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">4. Mật khẩu CMS (Mặc định):</span>
+                  <button
+                    onClick={() => {
+                      const pwd = approvalResult.cmsPassword || approvalResult.password || (approvalResult.email ? approvalResult.email.split('@')[0] : '123456');
+                      handleCopy(pwd, 'PWD');
+                    }}
+                    className="text-[10px] text-indigo-600 font-sans hover:underline font-bold"
+                  >
+                    {copiedField === 'PWD' ? '✓ Đã chép' : 'Sao chép'}
+                  </button>
+                </div>
+                <span className="font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200 text-sm inline-block mt-1">
                   {approvalResult.cmsPassword || approvalResult.password || (approvalResult.email ? approvalResult.email.split('@')[0] : '123456')}
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-center gap-2.5">
               <button
                 onClick={() => {
                   const targetSub = approvalResult.subdomain || approvalResult.tenantSlug || '';
                   const pwd = approvalResult.cmsPassword || approvalResult.password || (approvalResult.email ? approvalResult.email.split('@')[0] : '123456');
                   const tenantLink = getTenantUrl(targetSub);
                   const info = `🎉 CHÚC MỪNG! WEBSITE CỦA BẠN ĐÃ KÍCH HOẠT THÀNH CÔNG:\n\n` +
+                    `- Khách hàng: ${approvalResult.customerName || 'Quý khách'}\n` +
+                    `- Mẫu Website: ${approvalResult.templateName || 'Bất Động Sản'}\n` +
                     `- Website công khai: ${tenantLink}\n` +
                     `- Quản trị website (CMS): ${CMS_APP_URL}\n` +
                     `- Email đăng nhập: ${approvalResult.email}\n` +
@@ -845,14 +1095,26 @@ export default function AdminOrders() {
                     `👉 Bạn hãy đăng nhập vào CMS để đổi thông tin và đăng tải dự án ngay!`;
                   handleCopy(info, 'ALL_INFO');
                 }}
-                className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md"
+                className="w-full sm:flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5"
               >
-                {copiedField === 'ALL_INFO' ? '✓ Đã Sao Chép Toàn Bộ' : '📋 Sao Chép Thông Tin Gửi Zalo'}
+                <span>{copiedField === 'ALL_INFO' ? '✓ Đã Sao Chép Toàn Bộ' : '📋 Sao Chép Toàn Bộ Gửi Zalo'}</span>
               </button>
+
+              {approvalResult.phone && (
+                <a
+                  href={`https://zalo.me/${approvalResult.phone.replace(/\D/g, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5"
+                  title="Mở Zalo chat trực tiếp với khách hàng"
+                >
+                  <span>💬 Chat Zalo Với Khách</span>
+                </a>
+              )}
 
               <button
                 onClick={() => setApprovalResult(null)}
-                className="px-6 py-3 border border-slate-300 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-50 transition-all"
+                className="w-full sm:w-auto px-5 py-3 border border-slate-300 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-50 transition-all"
               >
                 Đóng
               </button>
