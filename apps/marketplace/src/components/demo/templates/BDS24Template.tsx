@@ -280,7 +280,7 @@ export default function BDS24Template({
 
   const activeProjects = useMemo<SmartCityProject[]>(() => {
     if (projects && Array.isArray(projects) && projects.length > 0) {
-      return projects.map((p: any, idx: number): SmartCityProject => ({
+      const customProps = projects.map((p: any, idx: number): SmartCityProject => ({
         id: String(p.id || p.slug || `sc-${idx + 1}`),
         title: p.title || p.name || 'Đại Đô Thị Thông Minh AI 4.0',
         slug: p.slug || `du-an-${idx + 1}`,
@@ -299,13 +299,16 @@ export default function BDS24Template({
         description: p.description || 'Dự án áp dụng công nghệ số và hệ thống quản trị năng lượng thông minh.',
         amenities: p.amenities || ['Hồ bơi tràn viền', 'Sân thể thao', 'Công viên xanh', 'Bãi đỗ xe AI']
       }));
+      const customSlugs = new Set(customProps.map((cp: any) => cp.slug));
+      const remainingDefaults = (BDS24_PROJECTS).filter((dp: any) => !customSlugs.has(dp.slug));
+      return [...customProps, ...remainingDefaults];
     }
     return BDS24_PROJECTS;
   }, [projects, company]);
 
   const activeNews = useMemo<TechNewsItem[]>(() => {
     if (posts && Array.isArray(posts) && posts.length > 0) {
-      return posts.map((p: any, idx: number): TechNewsItem => ({
+      const customNews = posts.map((p: any, idx: number): TechNewsItem => ({
         id: p.id || idx + 1,
         title: p.title || 'Tin tức đô thị thông minh',
         slug: p.slug || `tin-tuc-${idx + 1}`,
@@ -317,6 +320,9 @@ export default function BDS24Template({
         content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
         views: p.views || 1200,
       }));
+      const customSlugs = new Set(customNews.map((cn: any) => cn.slug));
+      const remainingDefaults = (BDS24_NEWS).filter((dn: any) => !customSlugs.has(dn.slug));
+      return [...customNews, ...remainingDefaults];
     }
     return BDS24_NEWS;
   }, [posts, company]);

@@ -256,7 +256,7 @@ export default function BDS12Template({
 
   const activeUnits = useMemo<UnitTypeItem[]>(() => {
     if (projects && Array.isArray(projects) && projects.length > 0) {
-      return projects.map((p: any, idx: number): UnitTypeItem => ({
+      const customProps = projects.map((p: any, idx: number): UnitTypeItem => ({
         id: p.slug || `unit-${idx + 1}`,
         type: p.type || 'Shophouse & Villa',
         category: (p.type?.toLowerCase().includes('villa') ? 'villa' : (p.type?.toLowerCase().includes('wyndham') ? 'wyndham' : 'shophouse')),
@@ -274,6 +274,9 @@ export default function BDS12Template({
         description: p.description || p.desc || 'Thiết kế tối ưu cho cả mục đích an cư lẫn kinh doanh sinh lời.',
         highlights: Array.isArray(p.highlights) ? p.highlights : ['Vị trí đắc địa ven biển', 'Tiềm năng tăng giá mạnh mẽ'],
       }));
+      const customSlugs = new Set(customProps.map((cp: any) => cp.slug));
+      const remainingDefaults = (BDS12_UNITS).filter((dp: any) => !customSlugs.has(dp.slug));
+      return [...customProps, ...remainingDefaults];
     }
     return BDS12_UNITS;
   }, [projects]);

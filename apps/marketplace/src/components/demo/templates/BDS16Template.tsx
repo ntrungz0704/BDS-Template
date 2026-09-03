@@ -446,7 +446,7 @@ export default function BDS16Template({
 
   const activeProperties = useMemo<PropertyItem[]>(() => {
     if (projects && Array.isArray(projects) && projects.length > 0) {
-      return projects.map((p: any, idx: number): PropertyItem => ({
+      const customProps = projects.map((p: any, idx: number): PropertyItem => ({
         id: p.slug || `prop-${idx + 1}`,
         title: p.title || p.name || 'Bất động sản cao cấp',
         slug: p.slug || `bds-${idx + 1}`,
@@ -468,13 +468,16 @@ export default function BDS16Template({
         description: p.description || p.desc || 'Không gian sống hiện đại, tiện ích chuẩn quốc tế.',
         specs: Array.isArray(p.specs) ? p.specs : ['Sổ hồng lâu dài', 'Vị trí đắc địa', 'Giao thông thuận tiện'],
       }));
+      const customSlugs = new Set(customProps.map((cp: any) => cp.slug));
+      const remainingDefaults = (BDS16_PROPERTIES).filter((dp: any) => !customSlugs.has(dp.slug));
+      return [...customProps, ...remainingDefaults];
     }
     return BDS16_PROPERTIES;
   }, [projects]);
 
   const activeNews = useMemo<NewsItem[]>(() => {
     if (posts && Array.isArray(posts) && posts.length > 0) {
-      return posts.map((p: any, idx: number): NewsItem => ({
+      const customNews = posts.map((p: any, idx: number): NewsItem => ({
         id: p.id || idx + 1,
         title: p.title || 'Tin tức thị trường bất động sản',
         slug: p.slug || `tin-tuc-${idx + 1}`,
@@ -486,6 +489,9 @@ export default function BDS16Template({
         content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
         views: p.views || 1200,
       }));
+      const customSlugs = new Set(customNews.map((cn: any) => cn.slug));
+      const remainingDefaults = (BDS16_NEWS).filter((dn: any) => !customSlugs.has(dn.slug));
+      return [...customNews, ...remainingDefaults];
     }
     return BDS16_NEWS;
   }, [posts, company]);

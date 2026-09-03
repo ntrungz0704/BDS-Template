@@ -477,7 +477,7 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
 
   const activeProperties = useMemo<PropertyItem[]>(() => {
     if (projects && Array.isArray(projects) && projects.length > 0) {
-      return projects.map((p: any, idx: number): PropertyItem => {
+      const customProps = projects.map((p: any, idx: number): PropertyItem => {
         const cat = (p.type?.toLowerCase().includes('vườn') || p.category === 'dat-vuon')
           ? 'dat-vuon'
           : (p.type?.toLowerCase().includes('đất') || p.type === 'LAND')
@@ -513,13 +513,16 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
           }
         };
       });
+      const customSlugs = new Set(customProps.map((cp: any) => cp.slug));
+      const remainingDefaults = (BDS03_PROPERTIES).filter((dp: any) => !customSlugs.has(dp.slug));
+      return [...customProps, ...remainingDefaults];
     }
     return BDS03_PROPERTIES;
   }, [projects, company]);
 
   const activeNews = useMemo<NewsItem[]>(() => {
     if (posts && Array.isArray(posts) && posts.length > 0) {
-      return posts.map((p: any, idx: number): NewsItem => ({
+      const customNews = posts.map((p: any, idx: number): NewsItem => ({
         id: p.id || idx + 1,
         title: p.title || 'Tin tức thị trường bất động sản',
         slug: p.slug || `tin-tuc-${idx + 1}`,
@@ -531,6 +534,9 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
         content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
         views: p.views || 1200,
       }));
+      const customSlugs = new Set(customNews.map((cn: any) => cn.slug));
+      const remainingDefaults = (BDS03_NEWS).filter((dn: any) => !customSlugs.has(dn.slug));
+      return [...customNews, ...remainingDefaults];
     }
     return BDS03_NEWS;
   }, [posts, company]);

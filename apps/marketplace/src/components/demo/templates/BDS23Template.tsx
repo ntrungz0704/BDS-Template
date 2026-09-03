@@ -347,7 +347,7 @@ export default function BDS23Template({
 
   const activeProjects = useMemo<ProjectItem[]>(() => {
     if (projects && Array.isArray(projects) && projects.length > 0) {
-      return projects.map((p: any, idx: number): ProjectItem => ({
+      const customProps = projects.map((p: any, idx: number): ProjectItem => ({
         id: p.slug || `du-an-${idx + 1}`,
         title: p.title || p.name || 'Dự án bất động sản chiến lược',
         slug: p.slug || `du-an-${idx + 1}`,
@@ -364,13 +364,16 @@ export default function BDS23Template({
         description: p.description || p.desc || 'Dự án đại đô thị hiện đại đầy đủ tiện ích sinh hoạt đỉnh cao.',
         highlights: Array.isArray(p.highlights) ? p.highlights : ['Vị trí đắc địa', 'Pháp lý minh bạch', 'Chủ đầu tư uy tín'],
       }));
+      const customSlugs = new Set(customProps.map((cp: any) => cp.slug));
+      const remainingDefaults = (BDS23_PROJECTS).filter((dp: any) => !customSlugs.has(dp.slug));
+      return [...customProps, ...remainingDefaults];
     }
     return BDS23_PROJECTS;
   }, [projects, company]);
 
   const activeNews = useMemo<NewsItem[]>(() => {
     if (posts && Array.isArray(posts) && posts.length > 0) {
-      return posts.map((p: any, idx: number): NewsItem => ({
+      const customNews = posts.map((p: any, idx: number): NewsItem => ({
         id: p.id || idx + 1,
         title: p.title || 'Tin tức dự án & thị trường bất động sản',
         slug: p.slug || `tin-tuc-${idx + 1}`,
@@ -382,6 +385,9 @@ export default function BDS23Template({
         content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
         views: p.views || 1200,
       }));
+      const customSlugs = new Set(customNews.map((cn: any) => cn.slug));
+      const remainingDefaults = (BDS23_NEWS).filter((dn: any) => !customSlugs.has(dn.slug));
+      return [...customNews, ...remainingDefaults];
     }
     return BDS23_NEWS;
   }, [posts, company]);

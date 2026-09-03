@@ -627,8 +627,9 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
   const tSlug = template?.slug || 'bds-01';
 
   const allPropertyList: PropertyItem[] = useMemo(() => {
+    const defaultList = [...INITIAL_PROPERTIES, ...RENT_PROPERTIES];
     if (projects && projects.length > 0) {
-      return projects.map((p: any, idx: number): PropertyItem => ({
+      const customProps = projects.map((p: any, idx: number): PropertyItem => ({
         id: p.id || idx + 1,
         title: p.title || p.name || `Dự án #${idx + 1}`,
         slug: p.slug || `du-an-${p.id || idx + 1}`,
@@ -669,8 +670,11 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
           role: 'Tư Vấn BĐS Cao Cấp',
         },
       }));
+      const customSlugs = new Set(customProps.map((cp: any) => cp.slug));
+      const remainingDefaults = defaultList.filter((dp: any) => !customSlugs.has(dp.slug));
+      return [...customProps, ...remainingDefaults];
     }
-    return [...INITIAL_PROPERTIES, ...RENT_PROPERTIES];
+    return defaultList;
   }, [projects, company]);
 
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);

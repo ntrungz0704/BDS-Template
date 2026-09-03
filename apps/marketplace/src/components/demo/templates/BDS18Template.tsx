@@ -305,7 +305,7 @@ export default function BDS18Template({
 
   const activeProjects = useMemo<ProjectItem[]>(() => {
     if (projects && Array.isArray(projects) && projects.length > 0) {
-      return projects.map((p: any, idx: number): ProjectItem => ({
+      const customProps = projects.map((p: any, idx: number): ProjectItem => ({
         id: String(p.id || p.slug || `p-${idx + 1}`),
         title: p.title || p.name || 'Dự án bất động sản',
         slug: p.slug || `du-an-${idx + 1}`,
@@ -325,13 +325,16 @@ export default function BDS18Template({
         description: p.description || 'Dự án bất động sản cao cấp với không gian sống chuẩn nghỉ dưỡng thượng lưu.',
         specs: p.specs || p.features || p.amenities || ['Hồ bơi riêng', 'Sân vườn xanh mát', 'Nội thất nhập khẩu', 'An ninh 24/7']
       }));
+      const customSlugs = new Set(customProps.map((cp: any) => cp.slug));
+      const remainingDefaults = (BDS18_PROJECTS).filter((dp: any) => !customSlugs.has(dp.slug));
+      return [...customProps, ...remainingDefaults];
     }
     return BDS18_PROJECTS;
   }, [projects, company]);
 
   const activeNews = useMemo<NewsItem[]>(() => {
     if (posts && Array.isArray(posts) && posts.length > 0) {
-      return posts.map((p: any, idx: number): NewsItem => ({
+      const customNews = posts.map((p: any, idx: number): NewsItem => ({
         id: p.id || idx + 1,
         title: p.title || 'Tin tức căn hộ & dự án',
         slug: p.slug || `tin-tuc-${idx + 1}`,
@@ -343,6 +346,9 @@ export default function BDS18Template({
         content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
         views: p.views || 1200,
       }));
+      const customSlugs = new Set(customNews.map((cn: any) => cn.slug));
+      const remainingDefaults = (BDS18_NEWS).filter((dn: any) => !customSlugs.has(dn.slug));
+      return [...customNews, ...remainingDefaults];
     }
     return BDS18_NEWS;
   }, [posts, company]);

@@ -307,7 +307,7 @@ export default function BDS20Template({
 
   const activeUnits = useMemo<UnitItem[]>(() => {
     if (projects && Array.isArray(projects) && projects.length > 0) {
-      return projects.map((p: any, idx: number): UnitItem => ({
+      const customProps = projects.map((p: any, idx: number): UnitItem => ({
         id: p.slug || `unit-${idx + 1}`,
         title: p.title || p.name || 'Căn hộ chung cư xanh Eco Park',
         code: `ECO-${(idx + 1).toString().padStart(2, '0')}`,
@@ -329,13 +329,16 @@ export default function BDS20Template({
         description: p.description || p.desc || 'Không gian sống xanh an lành giữa đại đô thị công viên sinh thái.',
         specs: Array.isArray(p.specs) ? p.specs : ['Vật liệu thân thiện môi trường', 'Hệ thống lọc khí tươi', 'Tiết kiệm năng lượng'],
       }));
+      const customSlugs = new Set(customProps.map((cp: any) => cp.slug));
+      const remainingDefaults = (BDS20_UNITS).filter((dp: any) => !customSlugs.has(dp.slug));
+      return [...customProps, ...remainingDefaults];
     }
     return BDS20_UNITS;
   }, [projects]);
 
   const activeNews = useMemo<NewsItem[]>(() => {
     if (posts && Array.isArray(posts) && posts.length > 0) {
-      return posts.map((p: any, idx: number): NewsItem => ({
+      const customNews = posts.map((p: any, idx: number): NewsItem => ({
         id: p.id || idx + 1,
         title: p.title || 'Tin tức thị trường căn hộ xanh',
         slug: p.slug || `tin-tuc-${idx + 1}`,
@@ -347,6 +350,9 @@ export default function BDS20Template({
         content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
         views: p.views || 1200,
       }));
+      const customSlugs = new Set(customNews.map((cn: any) => cn.slug));
+      const remainingDefaults = (BDS20_NEWS).filter((dn: any) => !customSlugs.has(dn.slug));
+      return [...customNews, ...remainingDefaults];
     }
     return BDS20_NEWS;
   }, [posts, company]);

@@ -304,7 +304,7 @@ export default function BDS14Template({
 
   const activeProperties = useMemo<PropertyItem[]>(() => {
     if (projects && Array.isArray(projects) && projects.length > 0) {
-      return projects.map((p: any, idx: number): PropertyItem => {
+      const customProps = projects.map((p: any, idx: number): PropertyItem => {
         const cat = (p.category === 'thue' || p.category === 'cho-thue') ? 'thue' : 'ban';
 
         return {
@@ -330,13 +330,16 @@ export default function BDS14Template({
           specs: Array.isArray(p.specs) ? p.specs : ['Sổ hồng chính chủ', 'Mặt tiền rộng thoáng', 'Nội thất sang trọng'],
         };
       });
+      const customSlugs = new Set(customProps.map((cp: any) => cp.slug));
+      const remainingDefaults = (BDS14_PROPERTIES).filter((dp: any) => !customSlugs.has(dp.slug));
+      return [...customProps, ...remainingDefaults];
     }
     return BDS14_PROPERTIES;
   }, [projects]);
 
   const activeNews = useMemo<NewsItem[]>(() => {
     if (posts && Array.isArray(posts) && posts.length > 0) {
-      return posts.map((p: any, idx: number): NewsItem => ({
+      const customNews = posts.map((p: any, idx: number): NewsItem => ({
         id: p.id || idx + 1,
         title: p.title || 'Tin tức bất động sản',
         slug: p.slug || `tin-tuc-${idx + 1}`,
@@ -348,6 +351,9 @@ export default function BDS14Template({
         content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
         views: p.views || 1200,
       }));
+      const customSlugs = new Set(customNews.map((cn: any) => cn.slug));
+      const remainingDefaults = (BDS14_NEWS).filter((dn: any) => !customSlugs.has(dn.slug));
+      return [...customNews, ...remainingDefaults];
     }
     return BDS14_NEWS;
   }, [posts, company]);

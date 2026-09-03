@@ -301,7 +301,7 @@ export default function BDS18Template({
 
   const activeProjects = useMemo<ProjectItem[]>(() => {
     if (projects && Array.isArray(projects) && projects.length > 0) {
-      return projects.map((p: any, idx: number): ProjectItem => ({
+      const customProps = projects.map((p: any, idx: number): ProjectItem => ({
         id: String(p.id || p.slug || `p-${idx + 1}`),
         title: p.title || p.name || 'Dự án bất động sản',
         slug: p.slug || `du-an-${idx + 1}`,
@@ -321,6 +321,9 @@ export default function BDS18Template({
         description: p.description || 'Dự án bất động sản cao cấp với không gian sống chuẩn nghỉ dưỡng thượng lưu.',
         specs: p.specs || p.features || p.amenities || ['Hồ bơi riêng', 'Sân vườn xanh mát', 'Nội thất nhập khẩu', 'An ninh 24/7']
       }));
+      const customSlugs = new Set(customProps.map((cp: any) => cp.slug));
+      const remainingDefaults = (BDS18_PROJECTS).filter((dp: any) => !customSlugs.has(dp.slug));
+      return [...customProps, ...remainingDefaults];
     }
     return BDS18_PROJECTS;
   }, [projects, company]);

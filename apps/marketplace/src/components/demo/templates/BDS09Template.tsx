@@ -355,7 +355,7 @@ export default function BDS09Template({
 
   const activeUnits = useMemo<UnitTypeItem[]>(() => {
     if (projects && Array.isArray(projects) && projects.length > 0) {
-      return projects.map((p: any, idx: number): UnitTypeItem => ({
+      const customProps = projects.map((p: any, idx: number): UnitTypeItem => ({
         id: p.slug || `unit-${idx + 1}`,
         type: p.type || 'Căn Hộ 2 Phòng Ngủ',
         category: (p.type?.toLowerCase().includes('sky') || p.type?.toLowerCase().includes('penthouse') || p.type === 'SKYVILLA')
@@ -374,13 +374,16 @@ export default function BDS09Template({
         description: p.description || p.desc || 'Không gian sống chuẩn mực dành cho gia đình hiện đại.',
         highlights: Array.isArray(p.highlights) ? p.highlights : ['Vị trí kim cương', 'Tiện ích 5 sao'],
       }));
+      const customSlugs = new Set(customProps.map((cp: any) => cp.slug));
+      const remainingDefaults = (BDS09_UNITS).filter((dp: any) => !customSlugs.has(dp.slug));
+      return [...customProps, ...remainingDefaults];
     }
     return BDS09_UNITS;
   }, [projects]);
 
   const activeNews = useMemo<NewsItem[]>(() => {
     if (posts && Array.isArray(posts) && posts.length > 0) {
-      return posts.map((p: any, idx: number): NewsItem => ({
+      const customNews = posts.map((p: any, idx: number): NewsItem => ({
         id: p.id || idx + 1,
         title: p.title || 'Tin tức thị trường bất động sản',
         slug: p.slug || `tin-tuc-${idx + 1}`,
@@ -392,6 +395,9 @@ export default function BDS09Template({
         content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
         views: p.views || 1200,
       }));
+      const customSlugs = new Set(customNews.map((cn: any) => cn.slug));
+      const remainingDefaults = (BDS09_NEWS_LIST).filter((dn: any) => !customSlugs.has(dn.slug));
+      return [...customNews, ...remainingDefaults];
     }
     return BDS09_NEWS_LIST;
   }, [posts, company]);

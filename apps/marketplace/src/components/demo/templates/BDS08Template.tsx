@@ -496,7 +496,7 @@ export default function BDS08Template({
 
   const activeProjects = useMemo<ProjectCardItem[]>(() => {
     if (projects && Array.isArray(projects) && projects.length > 0) {
-      return projects.map((p: any, idx: number): ProjectCardItem => {
+      const customProps = projects.map((p: any, idx: number): ProjectCardItem => {
         const cat = (p.type?.toLowerCase().includes('đất') || p.type === 'LAND')
           ? 'dat-nen'
           : (p.type?.toLowerCase().includes('biệt') || p.type === 'VILLA')
@@ -533,13 +533,16 @@ export default function BDS08Template({
           handover: p.handover || 'Năm 2026',
         };
       });
+      const customSlugs = new Set(customProps.map((cp: any) => cp.slug));
+      const remainingDefaults = (BDS08_PROJECTS).filter((dp: any) => !customSlugs.has(dp.slug));
+      return [...customProps, ...remainingDefaults];
     }
     return BDS08_PROJECTS;
   }, [projects, company]);
 
   const activeNews = useMemo<NewsItem[]>(() => {
     if (posts && Array.isArray(posts) && posts.length > 0) {
-      return posts.map((p: any, idx: number): NewsItem => ({
+      const customNews = posts.map((p: any, idx: number): NewsItem => ({
         id: p.id || idx + 1,
         title: p.title || 'Tin tức sự kiện BĐS',
         slug: p.slug || `tin-tuc-${idx + 1}`,
@@ -551,6 +554,9 @@ export default function BDS08Template({
         content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
         views: p.views || 1200,
       }));
+      const customSlugs = new Set(customNews.map((cn: any) => cn.slug));
+      const remainingDefaults = ([...BDS08_NEWS_EVENTS, ...BDS08_COMPANY_ACTIVITIES]).filter((dn: any) => !customSlugs.has(dn.slug));
+      return [...customNews, ...remainingDefaults];
     }
     return [...BDS08_NEWS_EVENTS, ...BDS08_COMPANY_ACTIVITIES];
   }, [posts, company]);

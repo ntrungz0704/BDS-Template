@@ -312,7 +312,7 @@ export default function BDS22Template({
 
   const activeUnits = useMemo<UnitItem[]>(() => {
     if (projects && Array.isArray(projects) && projects.length > 0) {
-      return projects.map((p: any, idx: number): UnitItem => ({
+      const customProps = projects.map((p: any, idx: number): UnitItem => ({
         id: p.slug || `unit-${idx + 1}`,
         title: p.title || p.name || 'Căn hộ nghỉ dưỡng & biệt thự biển',
         code: `RESORT-${(idx + 1).toString().padStart(2, '0')}`,
@@ -335,13 +335,16 @@ export default function BDS22Template({
         description: p.description || p.desc || 'Thiên đường nghỉ dưỡng biển nhiệt đới chuẩn quốc tế.',
         amenities: Array.isArray(p.amenities) ? p.amenities : ['Hồ bơi vô cực', 'Bến du thuyền', 'Spa 5 sao'],
       }));
+      const customSlugs = new Set(customProps.map((cp: any) => cp.slug));
+      const remainingDefaults = (BDS22_UNITS).filter((dp: any) => !customSlugs.has(dp.slug));
+      return [...customProps, ...remainingDefaults];
     }
     return BDS22_UNITS;
   }, [projects]);
 
   const activeNews = useMemo<NewsItem[]>(() => {
     if (posts && Array.isArray(posts) && posts.length > 0) {
-      return posts.map((p: any, idx: number): NewsItem => ({
+      const customNews = posts.map((p: any, idx: number): NewsItem => ({
         id: p.id || idx + 1,
         title: p.title || 'Tin tức bất động sản nghỉ dưỡng',
         slug: p.slug || `tin-tuc-${idx + 1}`,
@@ -353,6 +356,9 @@ export default function BDS22Template({
         content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
         views: p.views || 1200,
       }));
+      const customSlugs = new Set(customNews.map((cn: any) => cn.slug));
+      const remainingDefaults = (BDS22_NEWS).filter((dn: any) => !customSlugs.has(dn.slug));
+      return [...customNews, ...remainingDefaults];
     }
     return BDS22_NEWS;
   }, [posts, company]);
