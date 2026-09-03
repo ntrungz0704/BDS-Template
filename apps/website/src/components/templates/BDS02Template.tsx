@@ -613,8 +613,8 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
         </div>
       </div>
 
-      {/* Main Nav Bar (Dark Blue #0D3F8D + Red Active #D8232A) */}
-      <div className="w-full bg-[#0D3F8D] text-white">
+      {/* Main Nav Bar (Dynamic Colors) */}
+      <div className="w-full text-white" style={{ backgroundColor: primaryColor || '#0D3F8D' }}>
         <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-1.5 lg:py-0 flex items-center justify-between`}>
           <nav className="hidden lg:flex items-center text-xs font-bold uppercase tracking-wider whitespace-nowrap">
             {[
@@ -631,10 +631,11 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
                 <button
                   key={navItem.id}
                   onClick={() => navigate(navItem.id)}
+                  style={isActive ? { backgroundColor: accentColor || '#D8232A' } : undefined}
                   className={`whitespace-nowrap px-4 py-3.5 transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-[#D8232A] text-white font-black shadow-inner'
-                      : 'text-white/90 hover:bg-blue-900/60 hover:text-white'
+                      ? 'text-white font-black shadow-inner'
+                      : 'text-white/90 hover:bg-black/20 hover:text-white'
                   }`}
                 >
                   {navItem.label}

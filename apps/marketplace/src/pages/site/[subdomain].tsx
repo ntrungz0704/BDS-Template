@@ -69,11 +69,12 @@ export default function TenantDirectSitePage() {
         }
         setTemplate(dbMatched);
 
-        // 4. Lấy dữ liệu dự án, bài viết, theme tùy biến của website khách hàng
+        // 4. Lấy dữ liệu dự án, bài viết, theme tùy biến của website khách hàng (kèm timestamp chống stale cache)
+        const t = Date.now();
         const [projectsRes, postsRes, themeRes] = await Promise.allSettled([
-          axios.get(`${API_URL}/api/website/${tenantSlug}/projects?limit=50`),
-          axios.get(`${API_URL}/api/website/${tenantSlug}/posts?limit=50`),
-          axios.get(`${API_URL}/api/website/${tenantSlug}/theme`),
+          axios.get(`${API_URL}/api/website/${tenantSlug}/projects?limit=50&_t=${t}`),
+          axios.get(`${API_URL}/api/website/${tenantSlug}/posts?limit=50&_t=${t}`),
+          axios.get(`${API_URL}/api/website/${tenantSlug}/theme?_t=${t}`),
         ]);
 
         if (projectsRes.status === 'fulfilled' && Array.isArray(projectsRes.value.data?.data)) {
@@ -221,6 +222,38 @@ export default function TenantDirectSitePage() {
           .platformbds-template h5,
           .platformbds-template h6 {
             font-family: var(--font-heading) !important;
+          }
+          ` : ''}
+          ${tenantTheme.primaryColor ? `
+          .platformbds-template [class*="bg-[#0D3F8D]"],
+          .platformbds-template [class*="bg-[#0d3f8d]"],
+          .platformbds-template [class*="bg-[#00438b]"],
+          .platformbds-template [class*="bg-[#00438B]"] {
+            background-color: ${tenantTheme.primaryColor} !important;
+          }
+          .platformbds-template [class*="text-[#0D3F8D]"],
+          .platformbds-template [class*="text-[#0d3f8d]"],
+          .platformbds-template [class*="text-[#00438b]"],
+          .platformbds-template [class*="text-[#0369a1]"] {
+            color: ${tenantTheme.primaryColor} !important;
+          }
+          .platformbds-template [class*="border-[#0D3F8D]"],
+          .platformbds-template [class*="border-[#0d3f8d]"] {
+            border-color: ${tenantTheme.primaryColor} !important;
+          }
+          ` : ''}
+          ${tenantTheme.accentColor ? `
+          .platformbds-template [class*="bg-[#D8232A]"],
+          .platformbds-template [class*="bg-[#d8232a]"] {
+            background-color: ${tenantTheme.accentColor} !important;
+          }
+          .platformbds-template [class*="text-[#D8232A]"],
+          .platformbds-template [class*="text-[#d8232a]"] {
+            color: ${tenantTheme.accentColor} !important;
+          }
+          .platformbds-template [class*="border-[#D8232A]"],
+          .platformbds-template [class*="border-[#d8232a]"] {
+            border-color: ${tenantTheme.accentColor} !important;
           }
           ` : ''}
         `}</style>

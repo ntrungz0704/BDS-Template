@@ -246,28 +246,78 @@ if (process.env.NODE_ENV !== 'test' && !process.env.JEST_WORKER_ID) {
       logger.warn(`Catalog sync warning: ${syncErr.message}`);
     }
 
-    // Tự động quét dọn dẹp triệt để tài khoản test anh trung (anhtrung@gmail.com) và các đơn test cũ
+    // Tự động kiểm tra và nâng cấp dự án mẫu cho tenant bds-02 (nếu đang chứa 3 căn LMR cũ)
     try {
-      const targetUser = await prisma.user.findFirst({
-        where: { email: { equals: 'anhtrung@gmail.com', mode: 'insensitive' } },
-        select: { id: true },
-      });
-      const targetOrder = await prisma.order.findFirst({
+      const bds02Tenants = await prisma.tenant.findMany({
         where: {
           OR: [
-            { email: { equals: 'anhtrung@gmail.com', mode: 'insensitive' } },
-            { phone: { contains: '987654321' } },
+            { templateId: 'bds-02' },
+            { slug: { contains: 'bds-02' } },
           ],
         },
-        select: { id: true },
+        include: {
+          projects: true,
+        },
       });
-      if (targetUser || targetOrder) {
-        logger.info('[STARTUP] Phát hiện tài khoản test anh trung (anhtrung@gmail.com). Đang dọn dẹp 100%...');
-        const purgeRes = await purgeUserAccount({ email: 'anhtrung@gmail.com', phone: '09876543211' });
-        logger.info(`[STARTUP] ✅ Đã xóa full tài khoản anh trung: ${purgeRes.deletedOrderCount} đơn hàng, ${purgeRes.deletedTenantCount} website, ${purgeRes.deletedUserCount} user.`);
+
+      for (const tenant of bds02Tenants) {
+        const hasLMR = tenant.projects.some(p => p.title.includes('LMR') || p.title.includes('LUMIÈRE'));
+        if (hasLMR || tenant.projects.length <= 3) {
+          logger.info(`[STARTUP] Nâng cấp 9 dự án chuẩn cho tenant bds-02: ${tenant.slug}`);
+          await prisma.project.deleteMany({
+            where: { tenantId: tenant.id },
+          });
+
+          const { TEMPLATE_CONFIGS } = await import('@repo/utils');
+          const tplConfig = TEMPLATE_CONFIGS['minimal-white'] || TEMPLATE_CONFIGS['bds-02'];
+          const demoProjects = tplConfig?.demoProjects || [];
+
+          for (let k = 0; k < demoProjects.length; k++) {
+            const dp = demoProjects[k];
+            const priceVal = typeof dp.priceVal === 'number' ? dp.priceVal : (parseFloat(dp.price) || 5.0);
+            await prisma.project.create({
+              data: {
+                tenantId: tenant.id,
+                title: dp.title || dp.name,
+                slug: `${tenant.slug}-p-${k + 1}`,
+                description: dp.desc || '',
+                shortDescription: dp.type || 'Nhà đất',
+                type: dp.type === 'Biệt thự' ? 'VILLA' : (dp.type === 'Căn hộ' ? 'APARTMENT' : 'TOWNHOUSE'),
+                status: 'SELLING',
+                price: dp.price,
+                priceFrom: BigInt(Math.round(priceVal * 1_000_000_000)),
+                area: dp.area,
+                address: dp.location || 'Đà Nẵng',
+                thumbnail: dp.img || dp.thumbnail,
+                published: true,
+                sortOrder: k,
+              },
+            });
+          }
+
+          const postCount = await prisma.post.count({ where: { tenantId: tenant.id } });
+          if (postCount === 0 && tplConfig?.demoPosts) {
+            for (let j = 0; j < tplConfig.demoPosts.length; j++) {
+              const post = tplConfig.demoPosts[j];
+              await prisma.post.create({
+                data: {
+                  tenantId: tenant.id,
+                  title: post.title,
+                  slug: `${tenant.slug}-post-${j + 1}`,
+                  summary: post.summary,
+                  content: post.content,
+                  thumbnail: post.thumbnail,
+                  published: true,
+                  publishedAt: new Date(),
+                },
+              });
+            }
+          }
+          logger.info(`[STARTUP] ✅ Đã nâng cấp thành công 9 dự án và bài viết cho tenant ${tenant.slug}`);
+        }
       }
-    } catch (purgeErr: any) {
-      logger.warn(`[STARTUP] Warning khi dọn dẹp tài khoản test: ${purgeErr.message}`);
+    } catch (upgradeErr: any) {
+      logger.warn(`[STARTUP] Warning khi nâng cấp tenant demo: ${upgradeErr.message}`);
     }
 
     server = app.listen(PORT, () => {

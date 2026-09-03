@@ -161,9 +161,10 @@ export class WebsiteProvisioningService {
       }
     }
 
-    // Cấp mật khẩu mặc định tự động từ phần trước @ của email khách hàng cho user mới
-    const defaultPassword = customerEmail.split('@')[0] || '123456';
-    const cmsPassword = defaultPassword;
+    // Cấp mật khẩu mặc định tự động chuẩn chính sách bảo mật (có chữ hoa, chữ thường, số, ký tự đặc biệt)
+    const phoneClean = customerPhone ? customerPhone.replace(/\D/g, '') : '';
+    const phoneSuffix = phoneClean.length >= 4 ? phoneClean.slice(-4) : '2026';
+    const cmsPassword = `Matkhau@${phoneSuffix}`;
     const newPasswordHash = await bcrypt.hash(cmsPassword, 12);
 
     const result = await prisma.$transaction(async (tx: any) => {
@@ -791,9 +792,12 @@ export class WebsiteProvisioningService {
     return {
       tenant: result.tenant,
       user: result.user,
+      isNewUser: result.isNewUser,
       credentials: {
-        tempPassword: cmsPassword,
-        cmsPassword: cmsPassword,
+        userId: result.user?.id,
+        tempPassword: result.isNewUser ? cmsPassword : '',
+        cmsPassword: result.isNewUser ? cmsPassword : '',
+        isNewUser: result.isNewUser,
       },
     };
   }

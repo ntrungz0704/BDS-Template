@@ -82,14 +82,44 @@ export default function AdminOrders() {
   }, [pendingOrders.length]);
 
   // Helper mở modal bàn giao thông tin cho bất kỳ đơn hàng nào đã hoàn tất
+  const [resettingPwd, setResettingPwd] = useState(false);
+  const [resetSuccessPwd, setResetSuccessPwd] = useState<string | null>(null);
+
+  const handleDirectResetPassword = async (userId: string, email: string) => {
+    if (!userId && !email) {
+      alert('Không tìm thấy thông tin tài khoản người dùng.');
+      return;
+    }
+    setResettingPwd(true);
+    try {
+      const newPwd = 'Matkhau@2026';
+      const targetId = userId || email;
+      await axios.post(
+        `${API_URL}/api/admin/users/${targetId}/direct-reset-password`,
+        { newPassword: newPwd },
+        { withCredentials: true }
+      );
+      setResetSuccessPwd(newPwd);
+      alert(`✅ Đã cấp lại mật khẩu mới cho ${email}: ${newPwd}\nKhách hàng có thể đăng nhập vào CMS ngay lập tức!`);
+    } catch (err: any) {
+      alert('Không thể đặt lại mật khẩu: ' + (err?.response?.data?.error?.message || err.message));
+    } finally {
+      setResettingPwd(false);
+    }
+  };
+
   const openHandoverModal = (order: any) => {
     const targetEmail = order.email || '';
-    const fallbackPwd = targetEmail ? targetEmail.split('@')[0] : '123456';
-    const targetPwd = order.password || order.cmsPassword || fallbackPwd;
+    const isNewUser = Boolean(order.isNewUser);
+    const userId = order.userId || order.user?.id || '';
+    const targetPwd = order.password || order.cmsPassword || '';
     const targetSub = order.subdomain || order.tenant?.slug || '';
 
+    setResetSuccessPwd(null);
     setApprovalResult({
       email: targetEmail,
+      userId,
+      isNewUser,
       password: targetPwd,
       cmsPassword: targetPwd,
       subdomain: targetSub,
@@ -123,13 +153,16 @@ export default function AdminOrders() {
       const orderCreds = raw?.credentials || raw;
       const currentOrder = variables?.order || selectedOrder || raw;
 
+      const isNewUser = Boolean(orderCreds?.isNewUser ?? raw?.isNewUser);
+      const userId = orderCreds?.userId || raw?.userId || currentOrder?.userId || '';
       const targetEmail = orderCreds?.email || raw?.email || currentOrder?.email || '';
-      const fallbackPwd = targetEmail ? targetEmail.split('@')[0] : '123456';
-      const targetPwd = orderCreds?.password || orderCreds?.cmsPassword || raw?.password || fallbackPwd;
+      const targetPwd = orderCreds?.password || orderCreds?.cmsPassword || '';
       const targetSub = orderCreds?.subdomain || orderCreds?.tenantSlug || raw?.subdomain || currentOrder?.subdomain || '';
 
       const creds = {
         email: targetEmail,
+        userId,
+        isNewUser,
         password: targetPwd,
         cmsPassword: targetPwd,
         subdomain: targetSub,
@@ -141,6 +174,7 @@ export default function AdminOrders() {
         orderNumber: currentOrder?.orderNumber || raw?.orderNumber || '',
       };
 
+      setResetSuccessPwd(null);
       playOrderAlertSound();
       setSelectedOrder(null);
       setApprovalResult(creds);
@@ -788,18 +822,48 @@ export default function AdminOrders() {
                     <span className="font-bold text-slate-800">{selectedOrder.email}</span>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                    <span className="text-slate-500 font-sans">Mật Khẩu CMS:</span>
-                    <span className="font-bold text-emerald-800 bg-white px-2 py-0.5 rounded border border-emerald-300 inline-block w-fit">
-                      {selectedOrder.email ? selectedOrder.email.split('@')[0] : '123456'}
-                    </span>
+                  <div className="pt-2 border-t border-slate-200/60">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500 font-sans">Mật Khẩu CMS:</span>
+                      {resetSuccessPwd && (
+                        <span className="text-[10px] text-emerald-600 font-sans font-bold">✅ Đã cấp lại mật khẩu</span>
+                      )}
+                    </div>
+                    {resetSuccessPwd ? (
+                      <div className="mt-1 flex items-center justify-between gap-2">
+                        <span className="font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-300 font-mono text-xs">
+                          {resetSuccessPwd}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(resetSuccessPwd, 'PWD_ORDER')}
+                          className="text-[11px] text-indigo-600 font-bold hover:underline"
+                        >
+                          {copiedField === 'PWD_ORDER' ? '✓ Đã chép' : 'Sao chép'}
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="mt-1 p-2 bg-slate-50 rounded border border-slate-200">
+                        <div className="text-[11px] text-slate-600">
+                          Khách hàng đăng nhập bằng mật khẩu tài khoản đã đăng ký trên sàn.
+                        </div>
+                        <button
+                          type="button"
+                          disabled={resettingPwd}
+                          onClick={() => handleDirectResetPassword(selectedOrder.userId || selectedOrder.user?.id, selectedOrder.email)}
+                          className="mt-1.5 px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white font-sans text-[11px] font-bold rounded transition flex items-center gap-1 cursor-pointer disabled:opacity-50"
+                        >
+                          {resettingPwd ? 'Đang cấp lại...' : '🔑 Cấp lại mật khẩu mới cho khách (Matkhau@2026)'}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-emerald-200/60 flex flex-col sm:flex-row items-center gap-2">
                   <button
                     onClick={() => {
-                      const pwd = selectedOrder.email ? selectedOrder.email.split('@')[0] : '123456';
+                      const pwd = resetSuccessPwd || 'Mật khẩu tài khoản khách đã đăng ký trên sàn';
                       const siteLink = getTenantUrl(selectedOrder);
                       const tplCode = extractTemplateCode(selectedOrder);
                       const tplType = getTemplateTypeLabel(selectedOrder);
@@ -1062,20 +1126,52 @@ export default function AdminOrders() {
 
               <div className="pt-2 border-t border-slate-200/60">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">4. Mật khẩu CMS (Mặc định):</span>
-                  <button
-                    onClick={() => {
-                      const pwd = approvalResult.cmsPassword || approvalResult.password || (approvalResult.email ? approvalResult.email.split('@')[0] : '123456');
-                      handleCopy(pwd, 'PWD');
-                    }}
-                    className="text-[10px] text-indigo-600 font-sans hover:underline font-bold"
-                  >
-                    {copiedField === 'PWD' ? '✓ Đã chép' : 'Sao chép'}
-                  </button>
+                  <span className="text-slate-400 block text-[10px] uppercase font-sans font-bold">4. Mật khẩu CMS:</span>
+                  {(resetSuccessPwd || (approvalResult.isNewUser && approvalResult.cmsPassword)) && (
+                    <button
+                      onClick={() => {
+                        handleCopy(resetSuccessPwd || approvalResult.cmsPassword, 'PWD');
+                      }}
+                      className="text-[10px] text-indigo-600 font-sans hover:underline font-bold"
+                    >
+                      {copiedField === 'PWD' ? '✓ Đã chép' : 'Sao chép'}
+                    </button>
+                  )}
                 </div>
-                <span className="font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200 text-sm inline-block mt-1">
-                  {approvalResult.cmsPassword || approvalResult.password || (approvalResult.email ? approvalResult.email.split('@')[0] : '123456')}
-                </span>
+                {resetSuccessPwd ? (
+                  <div className="mt-1">
+                    <span className="font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200 text-sm inline-block">
+                      {resetSuccessPwd}
+                    </span>
+                    <span className="ml-2 text-[11px] text-emerald-600 font-sans font-bold">✅ Đã cấp lại mật khẩu mới</span>
+                  </div>
+                ) : approvalResult.isNewUser && approvalResult.cmsPassword ? (
+                  <div className="mt-1">
+                    <span className="font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200 text-sm inline-block">
+                      {approvalResult.cmsPassword}
+                    </span>
+                    <span className="ml-2 text-[11px] text-slate-500 font-sans">(Mật khẩu khởi tạo cho tài khoản mới)</span>
+                  </div>
+                ) : (
+                  <div className="mt-1 p-2.5 bg-amber-50 rounded-lg border border-amber-200 text-left">
+                    <div className="text-xs text-amber-900 font-semibold font-sans">
+                      💡 Khách hàng đã có tài khoản trên Marketplace
+                    </div>
+                    <div className="text-[11px] text-slate-600 font-sans mt-0.5">
+                      Khách hàng đăng nhập vào CMS bằng chính mật khẩu tài khoản cá nhân đã đăng ký trên sàn.
+                    </div>
+                    <div className="mt-2">
+                      <button
+                        type="button"
+                        disabled={resettingPwd}
+                        onClick={() => handleDirectResetPassword(approvalResult.userId, approvalResult.email)}
+                        className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-sans text-xs font-bold rounded-lg transition shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                      >
+                        {resettingPwd ? 'Đang cấp lại...' : '🔑 Cấp lại mật khẩu mới cho khách (Matkhau@2026)'}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -1083,7 +1179,11 @@ export default function AdminOrders() {
               <button
                 onClick={() => {
                   const targetSub = approvalResult.subdomain || approvalResult.tenantSlug || '';
-                  const pwd = approvalResult.cmsPassword || approvalResult.password || (approvalResult.email ? approvalResult.email.split('@')[0] : '123456');
+                  const pwdText = resetSuccessPwd
+                    ? resetSuccessPwd
+                    : (approvalResult.isNewUser && approvalResult.cmsPassword
+                        ? approvalResult.cmsPassword
+                        : 'Sử dụng mật khẩu bạn đã đăng ký trên sàn');
                   const tenantLink = getTenantUrl(targetSub);
                   const info = `🎉 CHÚC MỪNG! WEBSITE CỦA BẠN ĐÃ KÍCH HOẠT THÀNH CÔNG:\n\n` +
                     `- Khách hàng: ${approvalResult.customerName || 'Quý khách'}\n` +
@@ -1091,7 +1191,7 @@ export default function AdminOrders() {
                     `- Website công khai: ${tenantLink}\n` +
                     `- Quản trị website (CMS): ${CMS_APP_URL}\n` +
                     `- Email đăng nhập: ${approvalResult.email}\n` +
-                    `- Mật khẩu đăng nhập: ${pwd}\n\n` +
+                    `- Mật khẩu CMS: ${pwdText}\n\n` +
                     `👉 Bạn hãy đăng nhập vào CMS để đổi thông tin và đăng tải dự án ngay!`;
                   handleCopy(info, 'ALL_INFO');
                 }}

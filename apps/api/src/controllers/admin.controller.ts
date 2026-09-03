@@ -174,7 +174,7 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
           const t = await prisma.tenant.findUnique({ where: { id: order.tenantId }, select: { slug: true } });
           if (t?.slug) tenantSlug = t.slug;
         }
-        const fallbackPwd = order.email ? order.email.split('@')[0] : '123456';
+        const user = order.userId ? await prisma.user.findUnique({ where: { id: order.userId } }) : (await prisma.user.findUnique({ where: { email: order.email } }));
         return res.status(200).json({
           success: true,
           data: {
@@ -183,8 +183,9 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
             subdomain: tenantSlug,
             credentials: {
               email: order.email,
-              password: fallbackPwd,
-              cmsPassword: fallbackPwd,
+              userId: user?.id || order.userId,
+              password: '',
+              cmsPassword: '',
               subdomain: tenantSlug,
               tenantSlug: tenantSlug,
               isNewUser: false,
@@ -429,10 +430,12 @@ export async function approveOrder(req: Request, res: Response, next: NextFuncti
         subdomain: finalSubdomain,
         credentials: {
           email: order.email,
-          password: cmsPassword,
+          userId: provResult.user?.id || order.userId,
+          password: provResult.isNewUser ? cmsPassword : '',
+          cmsPassword: provResult.isNewUser ? cmsPassword : '',
           subdomain: finalSubdomain,
           tenantSlug: finalSubdomain,
-          isNewUser
+          isNewUser: Boolean(provResult.isNewUser),
         }
       },
     });

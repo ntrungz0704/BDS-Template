@@ -637,8 +637,8 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
         </div>
       </div>
 
-      {/* Main Nav Bar (Dark Blue #0D3F8D + Red Active #D8232A) */}
-      <div className="w-full bg-[#0D3F8D] text-white">
+      {/* Main Nav Bar (Dynamic Primary & Accent Colors) */}
+      <div className="w-full text-white" style={{ backgroundColor: primaryColor || '#0D3F8D' }}>
         <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-1.5 lg:py-0 flex items-center justify-between`}>
           <nav className="hidden lg:flex items-center text-xs font-bold uppercase tracking-wider whitespace-nowrap">
             {[
@@ -655,10 +655,11 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
                 <button
                   key={navItem.id}
                   onClick={() => navigate(navItem.id)}
+                  style={isActive ? { backgroundColor: accentColor || '#D8232A' } : undefined}
                   className={`whitespace-nowrap px-4 py-3.5 transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-[#D8232A] text-white font-black shadow-inner'
-                      : 'text-white/90 hover:bg-blue-900/60 hover:text-white'
+                      ? 'text-white font-black shadow-inner'
+                      : 'text-white/90 hover:bg-black/20 hover:text-white'
                   }`}
                 >
                   {navItem.label}
@@ -675,11 +676,12 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
               value={searchLocation}
               onChange={e => setSearchLocation(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') navigate('nha-mat-tien'); }}
-              className="bg-blue-950/60 text-white placeholder-blue-200 text-xs px-3.5 py-1.5 rounded-l-md border border-blue-700/60 focus:outline-none focus:bg-blue-900 w-48 lg:w-56"
+              className="bg-black/25 text-white placeholder-white/70 text-xs px-3.5 py-1.5 rounded-l-md border border-white/20 focus:outline-none focus:bg-black/40 w-48 lg:w-56"
             />
             <button
               onClick={() => navigate('nha-mat-tien')}
-              className="bg-[#D8232A] hover:bg-red-700 text-white px-3 py-1.5 rounded-r-md transition cursor-pointer flex items-center justify-center"
+              style={{ backgroundColor: accentColor || '#D8232A' }}
+              className="hover:brightness-110 text-white px-3 py-1.5 rounded-r-md transition cursor-pointer flex items-center justify-center"
             >
               <Search size={14} />
             </button>
@@ -688,7 +690,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-1.5 sm:p-2 text-white hover:bg-blue-900 rounded-md cursor-pointer ml-auto shrink-0 flex items-center justify-center"
+            className="lg:hidden p-1.5 sm:p-2 text-white hover:bg-black/20 rounded-md cursor-pointer ml-auto shrink-0 flex items-center justify-center"
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -698,7 +700,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#0D3F8D] border-t border-blue-800 px-4 py-3 space-y-1 text-xs font-bold uppercase text-white shadow-xl">
+        <div className="lg:hidden border-t border-white/10 px-4 py-3 space-y-1 text-xs font-bold uppercase text-white shadow-xl" style={{ backgroundColor: primaryColor || '#0D3F8D' }}>
           {[
             { id: 'home', label: 'TRANG CHỦ' },
             { id: 'biet-thu', label: 'BIỆT THỰ' },
@@ -713,8 +715,9 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
               <button
                 key={navItem.id}
                 onClick={() => navigate(navItem.id)}
+                style={isActive ? { backgroundColor: accentColor || '#D8232A' } : undefined}
                 className={`block w-full text-left py-2 px-3 rounded cursor-pointer ${
-                  isActive ? 'bg-[#D8232A] font-black' : 'hover:bg-blue-900'
+                  isActive ? 'font-black' : 'hover:bg-black/20'
                 }`}
               >
                 {navItem.label}
@@ -827,7 +830,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
     <aside className="space-y-6">
       {/* Box 1: Quick Search Widget */}
       <div className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs">
-        <div className="bg-[#0D3F8D] px-4 py-2.5 text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5">
+        <div className="px-4 py-2.5 text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5" style={{ backgroundColor: primaryColor || '#0D3F8D' }}>
           <Search size={14} /> Tìm kiếm bất động sản
         </div>
         <div className="p-3.5 space-y-2 text-xs bg-slate-50 border-t border-slate-100">
@@ -882,7 +885,8 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
           </select>
           <button
             onClick={() => navigate('nha-mat-tien')}
-            className="w-full bg-[#0D3F8D] hover:bg-blue-900 text-white font-black py-2 rounded-md transition cursor-pointer"
+            className="w-full text-white font-black py-2 rounded-md transition cursor-pointer hover:brightness-110"
+            style={{ backgroundColor: primaryColor || '#0D3F8D' }}
           >
             Tìm kiếm
           </button>
@@ -909,7 +913,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
       {/* Box 3: Bất Động Sản Bán Theo Quận */}
       <div className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs">
-        <div className="bg-[#D8232A] px-4 py-2 text-white font-black text-xs uppercase tracking-wider">
+        <div className="px-4 py-2 text-white font-black text-xs uppercase tracking-wider" style={{ backgroundColor: accentColor || '#D8232A' }}>
           BẤT ĐỘNG SẢN BÁN THEO QUẬN
         </div>
         <div className="p-3 space-y-1.5 text-xs font-bold text-slate-700">
@@ -936,7 +940,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
       {/* Box 4: Bất Động Sản Cho Thuê */}
       <div className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs">
-        <div className="bg-[#D8232A] px-4 py-2 text-white font-black text-xs uppercase tracking-wider">
+        <div className="px-4 py-2 text-white font-black text-xs uppercase tracking-wider" style={{ backgroundColor: accentColor || '#D8232A' }}>
           BẤT ĐỘNG SẢN CHO THUÊ
         </div>
         <div className="p-3 space-y-1.5 text-xs font-bold text-slate-700">
@@ -963,7 +967,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
       {/* Box 5: Bất Động Sản Theo Khoảng Giá */}
       <div className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs">
-        <div className="bg-[#D8232A] px-4 py-2 text-white font-black text-xs uppercase tracking-wider">
+        <div className="px-4 py-2 text-white font-black text-xs uppercase tracking-wider" style={{ backgroundColor: accentColor || '#D8232A' }}>
           BẤT ĐỘNG SẢN THEO KHOẢNG GIÁ
         </div>
         <div className="p-3 space-y-1.5 text-xs font-bold text-slate-700">
@@ -1051,9 +1055,9 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
             <div className="lg:col-span-8 space-y-8">
               {/* 1. BẤT ĐỘNG SẢN NỔI BẬT */}
               <section className="space-y-4">
-                <div className="bg-[#0D3F8D] px-4 py-2.5 rounded-t-lg text-white font-black text-xs uppercase tracking-wider flex items-center justify-between">
+                <div className="px-4 py-2.5 rounded-t-lg text-white font-black text-xs uppercase tracking-wider flex items-center justify-between" style={{ backgroundColor: primaryColor || '#0D3F8D' }}>
                   <span>BẤT ĐỘNG SẢN NỔI BẬT</span>
-                  <span className="text-[10px] text-blue-200 font-medium">Cập nhật liên tục</span>
+                  <span className="text-[10px] text-white/80 font-medium">Cập nhật liên tục</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {featuredItems.map(item => (
@@ -1089,9 +1093,9 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
               {/* 2. TIN BẤT ĐỘNG SẢN QUẬN THANH KHÊ */}
               <section className="space-y-4">
-                <div className="bg-[#0D3F8D] px-4 py-2.5 rounded-t-lg text-white font-black text-xs uppercase tracking-wider flex items-center justify-between">
+                <div className="px-4 py-2.5 rounded-t-lg text-white font-black text-xs uppercase tracking-wider flex items-center justify-between" style={{ backgroundColor: primaryColor || '#0D3F8D' }}>
                   <span>TIN BẤT ĐỘNG SẢN QUẬN THANH KHÊ</span>
-                  <button onClick={() => navigate('nha-mat-tien')} className="text-[11px] text-blue-200 hover:text-white font-bold">
+                  <button onClick={() => navigate('nha-mat-tien')} className="text-[11px] text-white/80 hover:text-white font-bold">
                     Xem tất cả ›
                   </button>
                 </div>
@@ -1101,7 +1105,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
                 <div className="flex justify-center pt-2">
                   <button
                     onClick={() => { setFilterDistrict('Thanh Khê'); navigate('nha-mat-tien'); }}
-                    className="px-5 py-2 border border-blue-700 hover:bg-blue-50 text-blue-800 rounded-sm font-bold text-xs transition cursor-pointer"
+                    className="px-5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-800 rounded-sm font-bold text-xs transition cursor-pointer"
                   >
                     Xem thêm nhà đất Thanh Khê ›
                   </button>
@@ -1110,9 +1114,9 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
               {/* 3. TIN BẤT ĐỘNG SẢN QUẬN SƠN TRÀ */}
               <section className="space-y-4">
-                <div className="bg-[#0D3F8D] px-4 py-2.5 rounded-t-lg text-white font-black text-xs uppercase tracking-wider flex items-center justify-between">
+                <div className="px-4 py-2.5 rounded-t-lg text-white font-black text-xs uppercase tracking-wider flex items-center justify-between" style={{ backgroundColor: primaryColor || '#0D3F8D' }}>
                   <span>TIN BẤT ĐỘNG SẢN QUẬN SƠN TRÀ</span>
-                  <button onClick={() => navigate('biet-thu')} className="text-[11px] text-blue-200 hover:text-white font-bold">
+                  <button onClick={() => navigate('biet-thu')} className="text-[11px] text-white/80 hover:text-white font-bold">
                     Xem tất cả ›
                   </button>
                 </div>
@@ -1122,7 +1126,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
                 <div className="flex justify-center pt-2">
                   <button
                     onClick={() => { setFilterDistrict('Sơn Trà'); navigate('biet-thu'); }}
-                    className="px-5 py-2 border border-blue-700 hover:bg-blue-50 text-blue-800 rounded-sm font-bold text-xs transition cursor-pointer"
+                    className="px-5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-800 rounded-sm font-bold text-xs transition cursor-pointer"
                   >
                     Xem thêm nhà đất Sơn Trà ›
                   </button>
@@ -1131,9 +1135,9 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
               {/* 4. CẨM NANG & TIN TỨC BẤT ĐỘNG SẢN */}
               <section className="space-y-4">
-                <div className="bg-[#0D3F8D] px-4 py-2.5 rounded-t-lg text-white font-black text-xs uppercase tracking-wider flex items-center justify-between">
+                <div className="px-4 py-2.5 rounded-t-lg text-white font-black text-xs uppercase tracking-wider flex items-center justify-between" style={{ backgroundColor: primaryColor || '#0D3F8D' }}>
                   <span>CẨM NANG - TIN TỨC</span>
-                  <button onClick={() => navigate('news')} className="text-[11px] text-blue-200 hover:text-white font-bold">
+                  <button onClick={() => navigate('news')} className="text-[11px] text-white/80 hover:text-white font-bold">
                     Xem tất cả ›
                   </button>
                 </div>
@@ -1192,9 +1196,9 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div className="lg:col-span-8 space-y-4">
-              <div className="bg-[#0D3F8D] px-4 py-3 rounded-t-lg text-white font-black text-sm uppercase tracking-wider flex items-center justify-between">
+              <div className="px-4 py-3 rounded-t-lg text-white font-black text-sm uppercase tracking-wider flex items-center justify-between" style={{ backgroundColor: primaryColor || '#0D3F8D' }}>
                 <span>{currentTitle}</span>
-                <span className="text-xs font-normal text-blue-200">Hiển thị {filteredList.length} kết quả</span>
+                <span className="text-xs font-normal text-white/80">Hiển thị {filteredList.length} kết quả</span>
               </div>
 
               {filteredList.length === 0 ? (
@@ -1235,7 +1239,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-8 space-y-4">
-            <div className="bg-[#0D3F8D] px-4 py-3 rounded-t-lg text-white font-black text-sm uppercase tracking-wider">
+            <div className="px-4 py-3 rounded-t-lg text-white font-black text-sm uppercase tracking-wider" style={{ backgroundColor: primaryColor || '#0D3F8D' }}>
               TIN BẤT ĐỘNG SẢN TIN TỨC
             </div>
             <div className="space-y-4">
@@ -1375,7 +1379,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
             {/* Specifications */}
             <div className="bg-white rounded-sm border border-slate-200 p-5 shadow-xs space-y-4">
-              <h3 className="font-black text-sm text-[#0D3F8D] uppercase tracking-wider border-b border-slate-100 pb-2">
+              <h3 className="font-black text-sm uppercase tracking-wider border-b border-slate-100 pb-2" style={{ color: primaryColor || '#0D3F8D' }}>
                 THÔNG SỐ CHI TIẾT BẤT ĐỘNG SẢN
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
@@ -1390,7 +1394,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
             {/* Description */}
             <div className="bg-white rounded-sm border border-slate-200 p-5 shadow-xs space-y-3">
-              <h3 className="font-black text-sm text-[#0D3F8D] uppercase tracking-wider border-b border-slate-100 pb-2">
+              <h3 className="font-black text-sm uppercase tracking-wider border-b border-slate-100 pb-2" style={{ color: primaryColor || '#0D3F8D' }}>
                 MÔ TẢ CHI TIẾT
               </h3>
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{selectedProperty.desc}</p>
@@ -1398,7 +1402,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
             {/* Mortgage Calculator */}
             <div className="bg-white rounded-sm border border-slate-200 p-5 shadow-xs space-y-4">
-              <h3 className="font-black text-sm text-[#0D3F8D] uppercase tracking-wider border-b border-slate-100 pb-2 flex items-center gap-1.5">
+              <h3 className="font-black text-sm uppercase tracking-wider border-b border-slate-100 pb-2 flex items-center gap-1.5" style={{ color: primaryColor || '#0D3F8D' }}>
                 <Calculator size={16} /> BẢNG TÍNH LÃI SUẤT VAY MUA NHÀ
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
@@ -1438,8 +1442,8 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
                   />
                 </div>
               </div>
-              <div className="p-4 bg-blue-50 rounded-sm grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-slate-800">
-                <div>Số tiền vay: <strong className="text-blue-900 block font-black">{(mortgageCalc.loanAmount / 1_000_000_000).toFixed(2)} Tỷ</strong></div>
+              <div className="p-4 bg-slate-50 rounded-sm grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-slate-800">
+                <div>Số tiền vay: <strong className="text-slate-900 block font-black">{(mortgageCalc.loanAmount / 1_000_000_000).toFixed(2)} Tỷ</strong></div>
                 <div>Gốc + Lãi tháng đầu: <strong className="text-red-600 block font-black">{(mortgageCalc.monthlyPayment / 1_000_000).toFixed(1)} Triệu/tháng</strong></div>
                 <div>Tổng lãi phải trả: <strong className="text-slate-900 block font-black">{(mortgageCalc.totalInterest / 1_000_000_000).toFixed(2)} Tỷ</strong></div>
               </div>
@@ -1447,7 +1451,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
             {/* Google Map Embed */}
             <div className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs">
-              <div className="bg-[#0D3F8D] px-4 py-2 text-white font-black text-xs uppercase">
+              <div className="px-4 py-2 text-white font-black text-xs uppercase" style={{ backgroundColor: primaryColor || '#0D3F8D' }}>
                 VỊ TRÍ BẤT ĐỘNG SẢN TRÊN BẢN ĐỒ
               </div>
               <iframe
@@ -1504,7 +1508,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
       <div className={`${MAX_W} mx-auto px-4`}>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-8 bg-white rounded-sm border border-slate-200 p-6 shadow-xs space-y-5">
-            <h2 className="text-base sm:text-lg font-black text-[#0D3F8D] leading-snug">
+            <h2 className="text-base sm:text-lg font-black leading-snug" style={{ color: primaryColor || '#0D3F8D' }}>
               Thông tin góp ý - phản hồi của bạn sẽ giúp chúng tôi phục vụ bạn ngày càng tốt hơn
             </h2>
 
@@ -1570,7 +1574,8 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
               <div className="flex justify-end pt-2">
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-[#0D3F8D] hover:bg-blue-900 text-white font-black text-xs rounded-md transition shadow-md cursor-pointer active:scale-95"
+                  className="px-6 py-2.5 text-white font-black text-xs rounded-md transition shadow-md cursor-pointer active:scale-95 hover:brightness-110"
+                  style={{ backgroundColor: accentColor || primaryColor || '#0D3F8D' }}
                 >
                   GỬI THÔNG TIN
                 </button>
@@ -1679,7 +1684,8 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
 
             <button
               type="submit"
-              className="w-full py-3 bg-[#D8232A] hover:bg-red-700 text-white font-black text-xs rounded-sm shadow-lg transition cursor-pointer"
+              className="w-full py-3 hover:brightness-110 text-white font-black text-xs rounded-sm shadow-lg transition cursor-pointer"
+              style={{ backgroundColor: accentColor || '#D8232A' }}
             >
               GỬI YÊU CẦU KÝ GỬI NGAY
             </button>
@@ -1694,7 +1700,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
     <div className="bg-[#F8FAFC] py-8 min-h-screen">
       <div className={`${MAX_W} mx-auto px-4 max-w-4xl space-y-6`}>
         <div className="bg-white rounded-sm border border-slate-200 p-8 shadow-sm space-y-6">
-          <h1 className="text-2xl font-black text-[#0D3F8D]">VỀ CHÚNG TÔI — SÀN GIAO DỊCH BẤT ĐỘNG SẢN</h1>
+          <h1 className="text-2xl font-black" style={{ color: primaryColor || '#0D3F8D' }}>VỀ CHÚNG TÔI — SÀN GIAO DỊCH BẤT ĐỘNG SẢN</h1>
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
             Chúng tôi tự hào là đơn vị phân phối và môi giới bất động sản uy tín hàng đầu, chuyên cung cấp các giải pháp mua bán, cho thuê nhà mặt tiền, biệt thự nghỉ dưỡng, nhà phố và căn hộ dịch vụ cao cấp.
           </p>
@@ -1704,7 +1710,7 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
               <div className="text-xs text-slate-500 mt-1">Kinh nghiệm thị trường</div>
             </div>
             <div className="p-4 bg-slate-50 rounded-sm">
-              <div className="text-2xl font-black text-[#0D3F8D]">5,000+</div>
+              <div className="text-2xl font-black" style={{ color: primaryColor || '#0D3F8D' }}>5,000+</div>
               <div className="text-xs text-slate-500 mt-1">Giao dịch thành công</div>
             </div>
             <div className="p-4 bg-slate-50 rounded-sm">
