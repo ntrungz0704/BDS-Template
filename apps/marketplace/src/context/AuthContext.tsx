@@ -602,7 +602,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // PENDING, WAITING_PAYMENT, WAITING_CONFIRM, PAYMENT_REVIEW are NOT completed yet!
     return orders.some((o) => {
       if (o.status !== 'COMPLETED') return false;
-      const rawOrderTpl = o.templateId || o.template?.slug || (o.template as any)?.id || (o as any).productSnapshot?.slug || (o as any).productSnapshot?.templateId || o.templateName || (o as any).name || '';
+      const rawOrderTpl = (o as any).templateId || o.template?.slug || (o.template as any)?.id || (o as any).productSnapshot?.slug || (o as any).productSnapshot?.templateId || (o as any).templateName || (o as any).name || '';
       const oCode = extractTemplateCode(rawOrderTpl).toLowerCase();
       return Boolean(oCode && oCode === canonicalCode);
     });
@@ -620,7 +620,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const PENDING_STATUSES = ['PENDING', 'WAITING_CONFIRM', 'WAITING_PAYMENT', 'PAYMENT_REVIEW', 'AWAITING_MANUAL_REVIEW', 'PENDING_SUBDOMAIN_CONFLICT'];
     return orders.some((o) => {
       if (!PENDING_STATUSES.includes(o.status)) return false;
-      const rawOrderTpl = o.templateId || o.template?.slug || (o.template as any)?.id || (o as any).productSnapshot?.slug || (o as any).productSnapshot?.templateId || o.templateName || (o as any).name || '';
+      const rawOrderTpl = (o as any).templateId || o.template?.slug || (o.template as any)?.id || (o as any).productSnapshot?.slug || (o as any).productSnapshot?.templateId || (o as any).templateName || (o as any).name || '';
       const oCode = extractTemplateCode(rawOrderTpl).toLowerCase();
       return Boolean(oCode && oCode === canonicalCode);
     });
