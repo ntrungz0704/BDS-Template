@@ -355,6 +355,275 @@ INSERT INTO \`company_info\` (\`name\`, \`phone\`, \`email\`, \`address\`, \`slo
         }
       }
 
+      // 1.5. Đồng bộ Cloud CMS Realtime & Lead Capture cho bản HTML & Vercel / GitHub
+      let tenantSlug = '';
+      if (tenantId) {
+        try {
+          const tenant = await prisma.tenant.findUnique({ where: { id: tenantId } });
+          tenantSlug = tenant?.subdomain || tenant?.slug || '';
+        } catch (tErr) {
+          logger.warn(`[PackageService] Lỗi tra cứu tenant: ${tErr}`);
+        }
+      }
+      if (!tenantSlug && customerEmail) {
+        try {
+          const user = await prisma.user.findUnique({ where: { email: customerEmail } });
+          if (user) {
+            const tenant = await prisma.tenant.findFirst({ where: { userId: user.id } });
+            tenantSlug = tenant?.subdomain || tenant?.slug || '';
+          }
+        } catch (uErr) {}
+      }
+
+      const activeSlug = tenantSlug || folderCode || slug;
+      const apiUrl = process.env.API_URL || 'https://bds-template-api.onrender.com';
+      const cmsUrl = process.env.CMS_URL || 'https://cms.aireviewbds.com';
+
+      // 1.5.1 Tạo api-config.js
+      const apiConfigJs = `/**
+ * CẤU HÌNH KẾT NỐI CLOUD CMS (TỰ ĐỘNG ĐỒNG BỘ 100% NỘI DUNG TỪ CMS)
+ * Khi Quý khách chỉnh sửa trên ${cmsUrl}, website trên GitHub Pages, Vercel hoặc Hosting sẽ tự động cập nhật ngay lập tức!
+ */
+window.CMS_CONFIG = {
+  apiUrl: ${JSON.stringify(apiUrl)},
+  tenantSlug: ${JSON.stringify(activeSlug)},
+  cmsUrl: ${JSON.stringify(cmsUrl)},
+  orderNumber: ${JSON.stringify(orderNumber)},
+  customerName: ${JSON.stringify(customerName)}
+};
+`;
+      zip.addFile('html/js/api-config.js', Buffer.from(apiConfigJs, 'utf-8'));
+      zip.addFile('php/api-config.js', Buffer.from(apiConfigJs, 'utf-8'));
+
+      // 1.5.2 Tạo cms-sync.js
+      const cmsSyncJs = `/**
+ * CLOUD CMS REALTIME SYNCHRONIZER
+ * Tự động đồng bộ 100% các mục Thêm / Xóa / Sửa trên CMS:
+ * - Tiêu đề & nội dung Hero Banner
+ * - Các chỉ số thống kê QuickStats (ví dụ: đâsd: 123213, ádasđa: 123123...)
+ * - Chính sách bán hàng & ưu đãi
+ * - Thông tin thương hiệu: Hotline, Zalo, Email, Địa chỉ công ty
+ * - Tự động chuyển tiếp thông tin khách để lại form (Lead Capture) về CMS
+ */
+(function() {
+  var config = window.CMS_CONFIG || {};
+  var API_URL = config.apiUrl || 'https://bds-template-api.onrender.com';
+  var TENANT_SLUG = config.tenantSlug;
+
+  if (!TENANT_SLUG) return;
+
+  // 1. TỰ ĐỘNG CHUYỂN TIẾP MỌI FORM LIÊN HỆ VỀ CMS LEADS
+  document.addEventListener('submit', function(e) {
+    var form = e.target;
+    if (!form || form.tagName !== 'FORM') return;
+
+    var formData = new FormData(form);
+    var phone = formData.get('phone') || formData.get('telephone') || (form.querySelector('input[type="tel"]') ? form.querySelector('input[type="tel"]').value : '');
+    var fullName = formData.get('name') || formData.get('fullName') || formData.get('fullname') || (form.querySelector('input[type="text"]') ? form.querySelector('input[type="text"]').value : '');
+    var email = formData.get('email') || (form.querySelector('input[type="email"]') ? form.querySelector('input[type="email"]').value : '');
+    var note = formData.get('note') || formData.get('message') || formData.get('product') || '';
+
+    if (phone && phone.trim()) {
+      fetch(API_URL + '/api/website/' + encodeURIComponent(TENANT_SLUG) + '/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: (fullName || 'Khách truy cập Website').trim(),
+          phone: phone.trim(),
+          email: (email || '').trim(),
+          note: (note || '').trim(),
+          sourceUrl: window.location.href
+        })
+      }).then(function(r) { return r.json(); })
+        .then(function(data) {
+          console.log('[CMS Sync] Lead forwarded to CMS:', data);
+        }).catch(function(err) {
+          console.warn('[CMS Sync] Lead notice:', err);
+        });
+    }
+  }, true);
+
+  // 2. TỰ ĐỘNG ĐỒNG BỘ DỮ LIỆU TRANG TỪ CMS (HERO, QUICK STATS, CHÍNH SÁCH)
+  fetch(API_URL + '/api/website/' + encodeURIComponent(TENANT_SLUG) + '/pages/home?_t=' + Date.now())
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      if (!res || !res.success || !res.data || !Array.isArray(res.data.sections)) return;
+      var sections = res.data.sections;
+
+      // Section Hero
+      var heroSec = sections.find(function(s) { return s.sectionKey === 'hero'; });
+      if (heroSec && heroSec.content) {
+        var c = heroSec.content;
+        
+        // Cập nhật tiêu đề h1
+        if (c.heading) {
+          var h1 = document.querySelector('h1');
+          if (h1) {
+            var html = c.heading;
+            if (c.headingAccent) {
+              html += ' <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400">' + c.headingAccent + '</span>';
+            }
+            h1.innerHTML = html;
+          }
+        }
+
+        // Cập nhật subtitle
+        if (c.subtitle) {
+          var p = document.querySelector('h1 ~ p') || document.querySelector('.hero-subtitle');
+          if (p) p.textContent = c.subtitle;
+        }
+
+        // Cập nhật badge
+        if (c.badge) {
+          var badgeEl = document.querySelector('.hero-badge') || document.querySelector('section span.uppercase.tracking-widest');
+          if (badgeEl) badgeEl.textContent = c.badge;
+        }
+
+        // Cập nhật các chỉ số thống kê QuickStats (đâsd: 123213, ádasđa: 123123...)
+        if (Array.isArray(c.quickStats) && c.quickStats.length > 0) {
+          var statsSection = document.querySelector('section.bg-\\[\\#FDFBF7\\] .grid') ||
+                             document.querySelector('[data-stats-grid]') ||
+                             document.querySelector('.stats-grid');
+          if (statsSection) {
+            statsSection.className = 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 ' + (c.quickStats.length > 4 ? 'lg:grid-cols-' + Math.min(c.quickStats.length, 6) : '') + ' gap-4 sm:gap-6 text-center';
+            statsSection.innerHTML = c.quickStats.map(function(st, idx) {
+              return '<div class="p-4 rounded-2xl bg-white border border-amber-200/60 shadow-xs space-y-1">' +
+                '<span class="text-2xl sm:text-3xl font-black text-[#0F3B38] font-mono block break-words">' + (st.value || '0') + '</span>' +
+                '<span class="text-xs font-bold text-amber-700 uppercase tracking-wider block">' + (st.label || ('Chỉ số #' + (idx + 1))) + '</span>' +
+                (st.desc ? '<span class="text-[11px] text-slate-500 block">' + st.desc + '</span>' : '') +
+              '</div>';
+            }).join('');
+          }
+        }
+      }
+
+      // Section Policies (#chinh-sach)
+      var polSec = sections.find(function(s) { return s.sectionKey === 'policies'; });
+      if (polSec && polSec.content && Array.isArray(polSec.content.items) && polSec.content.items.length > 0) {
+        var polContainer = document.querySelector('#chinh-sach .grid') || document.querySelector('.policies-grid');
+        if (polContainer) {
+          polContainer.innerHTML = polSec.content.items.map(function(pol, idx) {
+            return '<div class="p-6 rounded-3xl bg-emerald-950/60 border border-emerald-700/50 space-y-3 shadow-xl flex flex-col justify-between">' +
+              '<div>' +
+                '<div class="inline-flex min-w-[54px] h-10 px-3.5 rounded-xl bg-amber-500 text-slate-950 items-center justify-center font-black text-sm shadow-md whitespace-nowrap mb-3">' +
+                  (pol.badge || pol.value || (idx + 1)) +
+                '</div>' +
+                '<h4 class="font-bold text-sm text-amber-300 uppercase">' + (pol.title || pol.name || '') + '</h4>' +
+                '<p class="text-xs text-slate-300 leading-relaxed mt-2">' + (pol.desc || pol.description || '') + '</p>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+        }
+      }
+    }).catch(function() {});
+
+  // 3. TỰ ĐỘNG ĐỒNG BỘ THÔNG TIN DOANH NGHIỆP TỪ CMS
+  fetch(API_URL + '/api/website/' + encodeURIComponent(TENANT_SLUG) + '/company-info?_t=' + Date.now())
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      if (!res || !res.success || !res.data) return;
+      var c = res.data;
+      var phone = c.hotline || c.phone;
+      if (phone) {
+        document.querySelectorAll('a[href^="tel:"]').forEach(function(a) {
+          a.href = 'tel:' + phone;
+        });
+        document.querySelectorAll('a[href*="zalo.me"]').forEach(function(a) {
+          a.href = 'https://zalo.me/' + (c.zalo || phone);
+        });
+      }
+    }).catch(function() {});
+})();
+`;
+      zip.addFile('html/js/cms-sync.js', Buffer.from(cmsSyncJs, 'utf-8'));
+      zip.addFile('php/cms-sync.js', Buffer.from(cmsSyncJs, 'utf-8'));
+
+      // 1.5.3 Chèn script vào html/index.html bên trong ZIP
+      const htmlEntry = zip.getEntry('html/index.html');
+      if (htmlEntry) {
+        let htmlStr = htmlEntry.getData().toString('utf-8');
+        if (!htmlStr.includes('cms-sync.js')) {
+          htmlStr = htmlStr.replace('</body>', '  <script src="js/api-config.js"></script>\n  <script src="js/cms-sync.js"></script>\n</body>');
+          zip.deleteFile('html/index.html');
+          zip.addFile('html/index.html', Buffer.from(htmlStr, 'utf-8'));
+        }
+      }
+
+      // 1.5.4 GitHub Pages Action
+      const githubWorkflow = `name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: \${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'html'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+`;
+      zip.addFile('.github/workflows/deploy-pages.yml', Buffer.from(githubWorkflow, 'utf-8'));
+
+      // 1.5.5 Hướng dẫn chi tiết đẩy lên GitHub & Vercel
+      const githubGuide = `# HƯỚNG DẪN UP LÊN GITHUB & VERCEL — ĐỒNG BỘ 100% VỚI CMS
+
+## 🌟 TÍNH NĂNG TỰ ĐỘNG ĐỒNG BỘ CLOUD CMS (REALTIME)
+Website trong gói này đã được cấu hình sẵn tính năng **kết nối trực tiếp với tài khoản CMS của Quý Khách** (${cmsUrl}):
+- Khi Quý khách đăng nhập vào CMS và **thay đổi bất kỳ thông tin nào** (đổi số hotline, đổi tiêu đề, thêm chỉ số thống kê mới, đổi chính sách bán hàng, thêm/sửa/xóa dự án)...
+- Website đang chạy trên **GitHub Pages**, **Vercel** hoặc **Tên Miền Riêng** sẽ **TỰ ĐỘNG CẬP NHẬT 100% THEO THỜI GIAN THỰC** mà Quý Khách không cần phải chỉnh sửa code hay deploy lại!
+- Mọi khách hàng điền form nhận tư vấn / báo giá trên website sẽ **chuyển thẳng về mục "Khách Hàng (Leads)" trong CMS** của Quý Khách.
+
+---
+
+## 🚀 CÁCH 1: CHẠY MIỄN PHÍ TRÊN GITHUB PAGES (0đ Hosting)
+1. Đăng nhập vào [GitHub](https://github.com) và tạo một Repository mới (ví dụ: \`my-bds-website\`).
+2. Mở Terminal / Command Prompt tại thư mục vừa giải nén và chạy:
+   \`\`\`bash
+   git init
+   git add .
+   git commit -m "Khởi tạo website BĐS đồng bộ CMS"
+   git branch -M main
+   git remote add origin https://github.com/TEN-TAI-KHOAN/my-bds-website.git
+   git push -u origin main
+   \`\`\`
+3. Vào tab **Settings** của Repository trên GitHub $\\rightarrow$ Chọn **Pages** $\\rightarrow$ Tại mục **Source**, chọn **GitHub Actions**.
+4. Website sẽ tự động chạy online trực tiếp tại: \`https://TEN-TAI-KHOAN.github.io/my-bds-website/\`!
+
+---
+
+## ⚡ CÁCH 2: TRIỂN KHAI NHANH TRÊN VERCEL
+1. Đăng nhập vào [Vercel](https://vercel.com) bằng tài khoản GitHub.
+2. Bấm **"Add New Project"** $\\rightarrow$ Chọn repo \`my-bds-website\`.
+3. Tại phần **Root Directory**, chọn thư mục \`html\`.
+4. Bấm **Deploy** $\\rightarrow$ Website sẽ chạy online toàn cầu với tốc độ cao và SSL miễn phí!
+
+Mọi thắc mắc kỹ thuật, Quý Khách luôn được hỗ trợ 24/7!
+`;
+      zip.addFile('HUONG-DAN-UP-LEN-GITHUB-VA-VERCEL.md', Buffer.from(githubGuide, 'utf-8'));
+
       // 2. Đính kèm tài liệu hướng dẫn lấy Key Google Gemini AI miễn phí
       const possibleGuidePaths = [
         path.resolve(process.cwd(), 'HUONG-DAN-LAY-KEY-GEMINI-AI.md'),

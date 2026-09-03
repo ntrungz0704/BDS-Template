@@ -36,8 +36,10 @@ export class SingleTenantExporterService {
     let postsList: any[] = [];
     let leadsList: any[] = [];
 
+    let tenantInfo: any = null;
     if (tenantId) {
       try {
+        tenantInfo = await prisma.tenant.findUnique({ where: { id: tenantId } });
         companyInfo = await prisma.companyInfo.findUnique({ where: { tenantId } });
         themeSetting = await prisma.tenantThemeSettings.findUnique({ where: { tenantId } });
         projectsList = await prisma.project.findMany({
@@ -178,7 +180,8 @@ module.exports = {
 `;
     zip.addFile('postcss.config.js', Buffer.from(postCssConfigContent, 'utf-8'));
 
-    // 4. .env.example
+    // 4. .env.example & .env
+    const tenantSlug = tenantInfo?.subdomain || tenantInfo?.slug || templateSlug;
     const envExampleContent = `# CẤU HÌNH DATABASE POSTGRESQL (Khách hàng điền chuỗi kết nối của mình vào đây)
 DATABASE_URL="postgresql://postgres:password123@localhost:5432/my_bds_db?schema=public"
 
@@ -187,6 +190,11 @@ JWT_SECRET="bds_secret_key_${orderNumber.replace(/[^a-zA-Z0-9]/g, '_')}_secure_2
 
 # CỔNG CHẠY (Mặc định 3000)
 PORT=3000
+
+# CLOUD CMS SYNC (TỰ ĐỘNG ĐỒNG BỘ 100% VỚI https://cms.aireviewbds.com KHI CHẠY TRÊN VERCEL / GITHUB)
+NEXT_PUBLIC_API_URL="https://bds-template-api.onrender.com"
+NEXT_PUBLIC_TENANT_SLUG="${tenantSlug}"
+NEXT_PUBLIC_CMS_URL="https://cms.aireviewbds.com"
 
 # GOOGLE GEMINI AI API KEY (Trợ lý AI tư vấn BĐS, phân tích tiềm năng & Viết bài tự động)
 # Lấy API Key miễn phí 100% tại: https://aistudio.google.com/app/apikey
