@@ -154,7 +154,7 @@ export default function LP04Template({
             </div>
             <div>
               <span className="font-black text-sm sm:text-base text-amber-300 tracking-wider uppercase block leading-none">
-                {brandName}
+                {(company as any)?.logoText || "LP BDS04"}
               </span>
               <span className="text-[10px] text-slate-300 uppercase tracking-widest block mt-0.5 font-semibold">
                 ĐẠI ĐÔ THỊ NGHỈ DƯỠNG HOÀNG GIA

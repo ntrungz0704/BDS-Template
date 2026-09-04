@@ -171,15 +171,17 @@ export default function LP07Template({
           
           {/* Logo Brand */}
           <div className="flex items-center gap-2">
-            <div className="text-xl font-black tracking-tight text-[#0F2942] uppercase flex items-center">
-              <span>Nova</span>
-              <span className="text-[#0D9488]">W</span>
-              <span className="inline-block w-3.5 h-3.5 mx-0.5 rounded-full bg-gradient-to-tr from-amber-400 to-orange-500 border border-white" />
-              <span>RLD</span>
+            <div className="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center font-black text-xs shadow-sm">
+              {(company as any)?.brandShort || "LP"}
             </div>
-            <span className="text-[10px] text-slate-500 uppercase tracking-widest block font-medium pl-1 border-l border-slate-300">
-              PHAN THIET
-            </span>
+            <div>
+              <div className="text-base font-black tracking-tight text-[#0F2942] uppercase">
+                {(company as any)?.logoText || "LP BDS07"}
+              </div>
+              <span className="text-[9px] text-slate-500 uppercase tracking-widest block font-medium">
+                PHAN THIET RESORT
+              </span>
+            </div>
           </div>
 
           {/* Navigation Links */}

@@ -412,11 +412,11 @@ export default function BDS04Template({ template, viewport = 'desktop', initialP
         {/* Brand Logo with Gold Emblem */}
         <div onClick={() => navigate('home')} className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0">
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-sm bg-gradient-to-tr from-[#C5A059] to-[#E6CA65] flex items-center justify-center text-[#07132B] font-black text-base sm:text-xl shadow-md group-hover:scale-105 transition shrink-0">
-            TB
+            {(company as any)?.brandShort || 'TL'}
           </div>
           <div className="min-w-0 truncate">
             <div className="text-base sm:text-lg font-black tracking-widest text-[#E6CA65] uppercase leading-none font-serif group-hover:text-white transition truncate">
-              {company?.name || 'TEMPLATESBDS'}
+              {(company as any)?.logoText || company?.name || 'TL BDS04'}
             </div>
             <div className="text-[7.5px] sm:text-[9px] text-[#C5A059] font-bold tracking-widest uppercase mt-0.5 truncate">
               {company?.slogan || 'Kho Mẫu Website Bất Động Sản Cao Cấp Số 1 Việt Nam'}

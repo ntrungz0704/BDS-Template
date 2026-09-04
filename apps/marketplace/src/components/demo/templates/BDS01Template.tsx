@@ -856,7 +856,7 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
       <div className="bg-slate-50 border-b border-slate-100 text-xs py-1.5 px-3 sm:px-4 text-slate-500">
         <div className={`${MAX_W} mx-auto flex flex-wrap justify-between items-center gap-2`}>
           <div className="flex items-center gap-3 sm:gap-4 truncate">
-            <span className="hidden md:inline font-medium truncate">CỔNG THÔNG TIN BẤT ĐỘNG SẢN SỐ 1 VIỆT NAM — {company?.name || 'BATDONGSAN CLASSIC'}</span>
+            <span className="hidden md:inline font-medium truncate">CỔNG THÔNG TIN BẤT ĐỘNG SẢN SỐ 1 VIỆT NAM — {(company as any)?.logoText || company?.name || 'TL BDS01'}</span>
             <a
               href={`mailto:${activeEmail}`}
               title="Gửi Email liên hệ"
@@ -900,11 +900,11 @@ export default function BDS01Template({ template, viewport = 'desktop', initialP
       <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4`}>
         <div onClick={() => navigate('home')} className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0">
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-sm bg-[#D8232A] flex items-center justify-center text-white shadow-md group-hover:bg-red-700 transition font-black text-xs sm:text-sm shrink-0">
-            BC
+            {(company as any)?.brandShort || 'TL'}
           </div>
           <div className="min-w-0 truncate">
             <div className="text-base sm:text-lg font-black tracking-tight text-[#D8232A] group-hover:text-red-700 transition leading-tight truncate">
-              {company?.name || 'BATDONGSAN CLASSIC'}
+              {(company as any)?.logoText || company?.name || 'TL BDS01'}
             </div>
             <div className="text-[7.5px] sm:text-[9px] tracking-widest text-slate-400 font-extrabold uppercase truncate">Cổng Thông Tin & Sàn Giao Dịch BĐS Toàn Quốc</div>
           </div>

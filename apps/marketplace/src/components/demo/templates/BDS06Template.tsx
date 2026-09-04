@@ -736,7 +736,7 @@ export default function BDS06Template({
           </div>
           <div className="min-w-0 truncate">
             <span className="text-sm sm:text-base font-black tracking-tight block leading-tight text-white group-hover:text-red-400 transition-colors truncate">
-              {company?.name || 'TEMPLATESBDS'}
+              {(company as any)?.logoText || company?.name || 'TL BDS06'}
             </span>
             <span className="text-[7.5px] sm:text-[10px] tracking-widest text-amber-400 block uppercase font-bold truncate">
               ĐẠI ĐÔ THỊ SINH THÁI 120HA

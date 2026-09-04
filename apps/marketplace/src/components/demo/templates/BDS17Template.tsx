@@ -542,7 +542,7 @@ export default function BDS17Template({
           </div>
           <div className="min-w-0 truncate">
             <span className="text-base sm:text-2xl font-serif font-black text-[#855828] tracking-wider block leading-none truncate">
-              BEVERLY HILLS <span className="text-slate-900">HẠ LONG</span>
+              {(company as any)?.logoText || "TL BDS17"}
             </span>
             <span className="text-[7px] sm:text-[8.5px] font-bold text-amber-700 uppercase tracking-widest block mt-0.5 truncate">
               ĐỈNH CAO NGHỈ DƯỠNG THƯỢNG LƯU — BÃI CHÁY

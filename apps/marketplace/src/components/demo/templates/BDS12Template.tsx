@@ -397,7 +397,7 @@ export default function BDS12Template({
           </div>
           <div className="min-w-0 truncate">
             <span className="text-base sm:text-xl font-serif font-black text-[#0369A1] tracking-wider block leading-none truncate">
-              SONASEA <span className="text-slate-900">VÂN ĐỒN</span>
+              {(company as any)?.logoText || "TL BDS12"}
             </span>
             <span className="text-[7.5px] sm:text-[9px] font-bold text-amber-600 uppercase tracking-widest block mt-0.5 truncate">
               HARBOR CITY — CEO GROUP

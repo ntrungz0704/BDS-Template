@@ -535,10 +535,10 @@ export default function BDS18Template({
           className="flex items-center gap-2 sm:gap-2.5 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
           <div className="w-8 h-8 bg-gradient-to-tr from-amber-500 to-amber-200 rounded-sm flex items-center justify-center text-slate-950 font-black text-base sm:text-lg shadow-md shrink-0">
-            V
+            {(company as any)?.brandShort || "TL"}
           </div>
           <span className="text-xl sm:text-2xl font-serif font-black tracking-tight text-white group-hover:text-amber-400 transition truncate">
-            TEMPLATESBDS
+            {(company as any)?.logoText || "TL BDS18"}
           </span>
         </div>
 

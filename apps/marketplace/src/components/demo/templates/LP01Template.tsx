@@ -207,11 +207,11 @@ export default function LP01Template({
           {/* Brand Logo */}
           <a href="#tong-quan" className="flex items-center gap-2 group min-w-0">
             <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 font-black shadow-md shrink-0">
-              <span className="text-sm sm:text-base tracking-tighter">M</span>
+              <span className="text-sm sm:text-base tracking-tighter">{(company as any)?.brandShort || "LP"}</span>
             </div>
             <div className="min-w-0">
               <span className="font-extrabold text-xs sm:text-base tracking-wider text-white uppercase block leading-none truncate max-w-[140px] xs:max-w-[180px] sm:max-w-none">
-                {brandName}
+                {(company as any)?.logoText || "LP BDS01"}
               </span>
               <span className="text-[9px] sm:text-[10px] text-amber-300 tracking-widest font-mono uppercase block mt-0.5">
                 LUXURY APARTMENT

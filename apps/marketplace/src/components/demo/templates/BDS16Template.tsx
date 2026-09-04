@@ -740,7 +740,7 @@ export default function BDS16Template({
             <div className="flex items-center gap-1">
               <div className="w-4 h-4 sm:w-5 sm:h-5 border-t-2 border-l-2 border-[#E11D48] rotate-45 transform -translate-y-0.5" />
               <span className="text-base sm:text-xl font-black text-slate-900 tracking-tight leading-none">
-                EGA <span className="text-[#D97706]">LAND</span>
+                {(company as any)?.logoText || "TL BDS16"}
               </span>
             </div>
             <span className="text-[6.5px] sm:text-[7.5px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">

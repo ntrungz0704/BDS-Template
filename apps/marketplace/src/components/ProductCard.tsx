@@ -238,16 +238,6 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
       ? template.targetAudience
       : (matchedTpl?.targetAudience?.[0] || cfg?.audience || vietnameseCopy.audience));
 
-  // Features list: top 3 accurate, distinct features for each template and landing page
-  const rawFeatures = (Array.isArray(template.features) && template.features.length > 0)
-    ? template.features
-    : (Array.isArray(matchedTpl?.features) && matchedTpl.features.length > 0
-      ? matchedTpl.features
-      : (Array.isArray(template.highlights) && template.highlights.length > 0
-        ? template.highlights
-        : (matchedTpl?.highlights || vietnameseCopy.features)));
-
-  const displayFeatures = rawFeatures.length > 0 ? rawFeatures.slice(0, 3) : vietnameseCopy.features.slice(0, 3);
   const demoUrl = getTemplateDemoUrl(template.slug);
 
   const normalizedSlug = (template.slug || template.id || '').toLowerCase().replace(/^mock-/, '');
@@ -347,15 +337,6 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
           </span>
         </div>
 
-        {/* Features — top 3 */}
-        <div className="flex flex-col gap-1.5 mb-4 flex-grow">
-          {displayFeatures.map((f: string, i: number) => (
-            <div key={i} className="flex items-center gap-2 text-xs text-slate-600">
-              <Check className="w-3.5 h-3.5 shrink-0 text-blue-600" />
-              <span className="line-clamp-1">{f}</span>
-            </div>
-          ))}
-        </div>
 
         {/* Price + CTA */}
         <div className="border-t border-slate-100 pt-3.5 mt-auto">

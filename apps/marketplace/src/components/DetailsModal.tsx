@@ -667,12 +667,34 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
   const normalizedSlug = (template.slug || template.id || '').toLowerCase().replace(/^mock-/, '');
   const canonicalId = canonicalTpl?.id || canonicalTpl?.slug || template.slug;
   const mockupSlug = (canonicalId?.startsWith('bds-') || canonicalId?.startsWith('lp-')) ? canonicalId : normalizedSlug;
-  const mockupImg = `/images/mockups/${mockupSlug}.webp`;
 
-  const rawShots = (Array.isArray(extra.screenshots) && extra.screenshots.length > 0)
-    ? extra.screenshots
-    : [template.thumbnail || canonicalTpl?.thumbnail || 'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=800'];
-  const shots = [mockupImg, ...rawShots.filter(s => s !== mockupImg)];
+  const showcaseSlides = [
+    {
+      label: 'Phối Cảnh 3D',
+      sub: '3 Thiết Bị',
+      src: `/images/mockups/${mockupSlug}.webp`,
+      Icon: null,
+    },
+    {
+      label: 'Desktop',
+      sub: 'Máy Tính',
+      src: `/images/mockups/raw/${mockupSlug}/desktop.png`,
+      Icon: Monitor,
+    },
+    {
+      label: 'Tablet',
+      sub: 'Máy Tính Bảng',
+      src: `/images/mockups/raw/${mockupSlug}/tablet.png`,
+      Icon: Tablet,
+    },
+    {
+      label: 'Mobile',
+      sub: 'Điện Thoại',
+      src: `/images/mockups/raw/${mockupSlug}/mobile.png`,
+      Icon: Smartphone,
+    },
+  ];
+  const shots = showcaseSlides.map(s => s.src);
   const accent = extra.accentColor;
 
   const router = useRouter();
@@ -723,26 +745,32 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
 
             {/* ── LEFT: Gallery ── */}
             <div className="p-5 border-r border-slate-50">
-              {/* Main image - compact height */}
-              <div className="relative rounded-xl overflow-hidden bg-slate-100 group"
-                style={{ aspectRatio: '16/9', maxHeight: 260 }}>
+              {/* Main image */}
+              <div className="relative rounded-xl overflow-hidden bg-slate-900/5 group flex items-center justify-center border border-slate-100"
+                style={{ aspectRatio: '16/10', maxHeight: 300 }}>
                 <img
                   src={shots[activeImgIdx]}
-                  alt={template.name}
-                  className={`w-full h-full ${shots[activeImgIdx]?.includes('/mockups/') ? 'object-contain bg-slate-900/5 p-1' : 'object-cover'} transition-all duration-400`}
+                  alt={`${template.name} - ${showcaseSlides[activeImgIdx]?.label}`}
+                  className="w-full h-full object-contain p-1 transition-all duration-300"
                 />
                 <button
                   onClick={() => setActiveImgIdx(p => p === 0 ? shots.length - 1 : p - 1)}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 p-1.5 rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-1.5 rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity z-10"
                 >
                   <ChevronLeft className="w-3.5 h-3.5 text-slate-700" />
                 </button>
                 <button
                   onClick={() => setActiveImgIdx(p => p === shots.length - 1 ? 0 : p + 1)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 p-1.5 rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-1.5 rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity z-10"
                 >
                   <ChevronRight className="w-3.5 h-3.5 text-slate-700" />
                 </button>
+
+                {/* Current slide badge */}
+                <div className="absolute top-2.5 left-2.5 bg-black/60 backdrop-blur-md text-white px-2.5 py-1 rounded-md text-[10px] font-bold flex items-center gap-1.5 shadow-sm">
+                  <span>Ảnh {activeImgIdx + 1}/4: {showcaseSlides[activeImgIdx]?.label}</span>
+                </div>
+
                 {/* Device icons */}
                 <div className="absolute bottom-2 right-2 flex gap-1">
                   {[Monitor, Tablet, Smartphone].map((Icon, i) => (
@@ -753,22 +781,35 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
                 </div>
               </div>
 
-              {/* Thumbnails */}
-              <div className="grid grid-cols-3 gap-2 mt-2.5">
-                {shots.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImgIdx(idx)}
-                    className={`rounded-lg overflow-hidden border-2 transition-all ${activeImgIdx === idx ? 'ring-2' : 'border-slate-100 hover:border-slate-300'}`}
-                    style={{
-                      aspectRatio: '16/9',
-                      borderColor: activeImgIdx === idx ? accent : undefined,
-                      boxShadow: activeImgIdx === idx ? `0 0 0 2px ${accent}30` : undefined
-                    }}
-                  >
-                    <img src={img} alt="" className="w-full h-full object-cover" loading="lazy" decoding="async" />
-                  </button>
-                ))}
+              {/* Thumbnails: 4 structured cards */}
+              <div className="grid grid-cols-4 gap-2 mt-2.5">
+                {showcaseSlides.map((slide, idx) => {
+                  const isSelected = activeImgIdx === idx;
+                  const Icon = slide.Icon;
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveImgIdx(idx)}
+                      className={`relative rounded-lg overflow-hidden border-2 transition-all flex flex-col items-center bg-slate-50 ${
+                        isSelected ? 'ring-2' : 'border-slate-200 hover:border-slate-300'
+                      }`}
+                      style={{
+                        borderColor: isSelected ? accent : undefined,
+                        boxShadow: isSelected ? `0 0 0 2px ${accent}30` : undefined
+                      }}
+                    >
+                      <div className="w-full bg-slate-900/5 aspect-[16/10] overflow-hidden flex items-center justify-center p-0.5">
+                        <img src={slide.src} alt={slide.label} className="w-full h-full object-contain" loading="lazy" decoding="async" />
+                      </div>
+                      <div className={`w-full py-1 px-1 text-center transition-colors ${isSelected ? 'bg-slate-900 text-white' : 'text-slate-600'}`}>
+                        <div className="text-[10px] font-bold tracking-tight truncate flex items-center justify-center gap-1">
+                          {Icon && <Icon className="w-2.5 h-2.5" />}
+                          <span>{slide.label}</span>
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
 
               {/* Info sections (below gallery, left col) */}

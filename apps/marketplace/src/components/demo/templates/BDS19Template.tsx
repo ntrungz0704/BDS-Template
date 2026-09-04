@@ -531,7 +531,7 @@ export default function BDS19Template({
           </div>
           <div className="min-w-0 truncate">
             <span className="text-base sm:text-2xl font-serif font-black tracking-wider text-amber-300 block leading-none truncate">
-              SUNSHINE CITY <span className="text-white">SAIGON</span>
+              {(company as any)?.logoText || "TL BDS19"}
             </span>
             <span className="text-[7.5px] sm:text-[8.5px] font-bold text-amber-200/80 uppercase tracking-widest block mt-0.5 truncate">
               CĂN HỘ NGHỈ DƯỠNG THÔNG MINH 4.0 — QUẬN 7

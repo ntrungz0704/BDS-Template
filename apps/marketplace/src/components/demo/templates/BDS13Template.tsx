@@ -531,7 +531,7 @@ export default function BDS13Template({
           </div>
           <div className="min-w-0 truncate">
             <span className="text-base sm:text-2xl font-black text-[#0F4C81] tracking-tight block leading-none truncate">
-              ĐẠI PHÁT <span className="text-[#F97316]">LAND</span>
+              {(company as any)?.logoText || "TL BDS13"}
             </span>
             <span className="text-[7.5px] sm:text-[9px] font-bold text-slate-500 uppercase tracking-widest block mt-0.5 truncate">
               BẤT ĐỘNG SẢN THỦY NGUYÊN HẢI PHÒNG

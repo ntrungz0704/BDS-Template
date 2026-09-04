@@ -544,7 +544,7 @@ export default function BDS15Template({
             </div>
             <div>
               <span className="text-xl font-black text-[#0D9488] tracking-tight leading-none block">
-                LUPUL <span className="text-slate-800">GROUP</span>
+                {(company as any)?.logoText || "TL BDS15"}
               </span>
               <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest block">
                 REAL ESTATE INVESTMENT

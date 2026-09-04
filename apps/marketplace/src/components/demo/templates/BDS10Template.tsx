@@ -476,11 +476,11 @@ export default function BDS10Template({
         >
           <div className="flex items-center gap-2">
             <span className="text-2xl sm:text-3xl font-black tracking-tighter text-[#0284C7] group-hover:text-[#0369A1] transition font-sans">
-              DKRP
+              {(company as any)?.brandShort || "TL"}
             </span>
             <div className="hidden sm:block border-l-2 border-slate-300 pl-2">
               <span className="text-[10px] font-black uppercase text-slate-800 tracking-wider block leading-tight">
-                DANH KHÔI
+                {(company as any)?.logoText || "TL BDS10"}
               </span>
               <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block leading-tight">
                 REAL ESTATE

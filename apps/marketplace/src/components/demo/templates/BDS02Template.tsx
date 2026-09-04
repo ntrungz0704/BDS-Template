@@ -618,11 +618,11 @@ export default function BDS02Template({ template, viewport = 'desktop', initialP
         {/* Left: Brand Logo */}
         <div onClick={() => navigate('home')} className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-full">
           <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white font-black text-lg sm:text-xl shadow-md group-hover:scale-105 transition shrink-0">
-            MR
+            {(company as any)?.brandShort || 'TL'}
           </div>
           <div className="min-w-0 truncate">
             <div className="text-lg sm:text-xl font-black tracking-tight text-[#0369a1] flex items-center gap-1 group-hover:text-cyan-600 transition truncate">
-              {company?.name || 'METRO REALTY'}
+              {(company as any)?.logoText || company?.name || 'TL BDS02'}
             </div>
             <div className="text-[9px] sm:text-[10px] text-cyan-700 font-bold uppercase tracking-wider truncate">
               {company?.slogan || 'Sàn Giao Dịch BĐS Đô Thị & Căn Hộ Hiện Đại'}

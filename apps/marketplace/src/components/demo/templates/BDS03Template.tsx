@@ -479,7 +479,7 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
   const secondaryColor = theme?.secondaryColor || '#5C3A21';
   const accentColor = theme?.accentColor || '#D97706';
 
-  const companyName = company?.name || 'Bất động sản Tuấn Nhân';
+  const companyName = company?.name || 'TL BDS03';
   const companySlogan = company?.slogan || 'Chuyên phân phối đất nền phân lô, đất vườn sinh thái & biệt thự đồi nghỉ dưỡng tại Bảo Lộc - Bảo Lâm - Di Linh - Lâm Đồng.';
   const companyPhone = company?.phone || (company as any)?.hotline || '0909.568.888';
   const companyZalo = (company as any)?.zalo || companyPhone;

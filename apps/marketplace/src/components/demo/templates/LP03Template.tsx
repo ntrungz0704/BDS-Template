@@ -186,11 +186,11 @@ export default function LP03Template({
           {/* Brand Logo */}
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#9B1C1C] text-white flex items-center justify-center font-black shadow-sm">
-              <span className="text-sm tracking-tighter">SP</span>
+              <span className="text-sm tracking-tighter">{(company as any)?.brandShort || "LP"}</span>
             </div>
             <div>
               <span className="font-black text-sm text-white tracking-wide uppercase block leading-none">
-                SIMPLE PAGE
+                {(company as any)?.logoText || "LP BDS03"}
               </span>
               <span className="text-[9px] text-slate-400 uppercase tracking-wider block mt-0.5">
                 BẤT ĐỘNG SẢN CAO CẤP

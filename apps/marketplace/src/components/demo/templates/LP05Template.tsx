@@ -134,11 +134,11 @@ export default function LP05Template({
           {/* Logo Brand */}
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-gradient-to-tr from-[#C59B27] to-amber-300 text-[#0A2E28] flex items-center justify-center font-black">
-              GP
+              {(company as any)?.brandShort || "LP"}
             </div>
             <div>
               <span className="font-black text-sm tracking-wide text-amber-400 uppercase block leading-none">
-                GOLDEN PARK TOWER
+                {(company as any)?.logoText || "LP BDS05"}
               </span>
               <span className="text-[9px] text-slate-300 uppercase tracking-wider block mt-0.5">
                 TỔ HỢP CĂN HỘ CAO CẤP & KHÁCH SẠN 5 SAO CẦU GIẤY

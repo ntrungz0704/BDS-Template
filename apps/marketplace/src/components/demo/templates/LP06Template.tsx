@@ -111,10 +111,10 @@ export default function LP06Template({
           {/* Brand Logo */}
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 bg-gradient-to-tr from-amber-500 to-yellow-300 text-slate-950 flex items-center justify-center font-black text-xs">
-              ★
+              {(company as any)?.brandShort || "LP"}
             </div>
             <span className="font-black text-sm text-amber-400 uppercase tracking-wider">
-              {brandName}
+              {(company as any)?.logoText || "LP BDS06"}
             </span>
           </div>
 

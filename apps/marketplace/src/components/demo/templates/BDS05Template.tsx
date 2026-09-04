@@ -543,14 +543,14 @@ export default function BDS05Template({ template, viewport = 'desktop', initialP
   const renderHeader = () => (
     <header className="w-full bg-white text-slate-800 sticky top-0 z-40 border-b border-slate-200 shadow-sm">
       <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
-        {/* Brand Logo: TEMPLATESBDS */}
+        {/* Brand Logo */}
         <div onClick={() => navigate('home')} className="flex items-center gap-2 sm:gap-2.5 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0">
           <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-sm bg-[#0084FF] text-white flex items-center justify-center font-black text-xs sm:text-sm shadow-sm group-hover:scale-105 transition shrink-0">
-            TB
+            {(company as any)?.brandShort || 'TL'}
           </div>
           <div className="min-w-0 truncate">
             <div className="text-lg sm:text-2xl font-black tracking-tight text-[#0084FF] leading-none group-hover:text-blue-700 transition truncate">
-              {company?.name || 'TEMPLATESBDS'}
+              {(company as any)?.logoText || company?.name || 'TL BDS05'}
             </div>
             <div className="text-[7.5px] sm:text-[9px] text-slate-400 font-semibold uppercase tracking-wider mt-0.5 truncate">
               {company?.slogan || 'Kho Mẫu Website Bất Động Sản Cao Cấp Số 1 Việt Nam'}

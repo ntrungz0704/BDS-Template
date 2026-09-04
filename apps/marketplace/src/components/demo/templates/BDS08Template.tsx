@@ -700,7 +700,7 @@ export default function BDS08Template({
           <div className="min-w-0 truncate">
             <div className="flex items-center gap-1">
               <span className="text-base sm:text-xl font-black tracking-tight text-[#0284C7] group-hover:text-[#0369A1] transition truncate">
-                {company?.name || 'TEMPLATESBDS'}
+                {(company as any)?.logoText || company?.name || 'TL BDS08'}
               </span>
             </div>
             <span className="text-[7.5px] sm:text-[10px] tracking-widest text-[#15803D] block uppercase font-extrabold truncate">

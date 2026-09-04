@@ -55,10 +55,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
 // ─── PORTAL 01. BATDONGSAN CLASSIC PORTAL ──────────────────────────────────
   {
     id: "bds-01",
-    name: "Template #01 - BatDongSan Classic Portal",
+    name: "Mẫu #01 - Cổng Thông Tin Bất Động Sản Truyền Thống",
     slug: "bds-01",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #01",
     badgeBg: "#D8232A",
     badgeColor: "#FFFFFF",
@@ -119,10 +119,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 02. MODERN METRO PORTAL ───────────────────────────────────────
   {
     id: "bds-02",
-    name: "Template #02 - Modern Metro Portal",
+    name: "Mẫu #02 - Sàn Giao Dịch Đô Thị Hiện Đại",
     slug: "bds-02",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #02",
     badgeBg: "#1E40AF",
     badgeColor: "#FFFFFF",
@@ -183,10 +183,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 03. LUXURY REALTY PRESTIGE ─────────────────────────────────────
   {
     id: "bds-03",
-    name: "Template #03 - Tuấn Nhân Land (Đất Nền & Nghỉ Dưỡng)",
+    name: "Mẫu #03 - Sàn Đất Nền & Vườn Nghỉ Dưỡng Tuấn Nhân",
     slug: "bds-03",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #03",
     badgeBg: "#4A2810",
     badgeColor: "#FFFFFF",
@@ -247,10 +247,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 04. DENSITY RAOVAT PRO ─────────────────────────────────────────
   {
     id: "bds-04",
-    name: "Template #04 - Density RaoVat Pro",
+    name: "Mẫu #04 - Chuyên Trang Rao Vặt BĐS Chuyên Nghiệp",
     slug: "bds-04",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #04",
     badgeBg: "#059669",
     badgeColor: "#FFFFFF",
@@ -311,10 +311,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 05. MAP-CENTRIC INTERACTIVE PORTAL ─────────────────────────────
   {
     id: "bds-05",
-    name: "Template #05 - Map-Centric Interactive Portal",
+    name: "Mẫu #05 - Cổng Tra Cứu Quy Hoạch & Bản Đồ BĐS",
     slug: "bds-05",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #05",
     badgeBg: "#4F46E5",
     badgeColor: "#FFFFFF",
@@ -375,10 +375,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 06. GRAND RIVERSIDE ECO-TOWNSHIP & RESIDENTIAL RESORT ──────────
   {
     id: "bds-06",
-    name: "Template #06 - Grand Riverside Eco-Township",
+    name: "Mẫu #06 - Khu Đô Thị Sinh Thái Ven Sông Grand Riverside",
     slug: "bds-06",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #06",
     badgeBg: "#D8232A",
     badgeColor: "#FFFFFF",
@@ -441,10 +441,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 07. PANNAMERA ECO VILLAGE & CLOUD HUNTING RESORT ──────────────
   {
     id: "bds-07",
-    name: "Template #07 - Pannamera Eco-Village Bảo Lộc",
+    name: "Mẫu #07 - Làng Sinh Thái Nghỉ Dưỡng Bảo Lộc",
     slug: "bds-07",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #07",
     badgeBg: "#047857",
     badgeColor: "#FFFFFF",
@@ -507,10 +507,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 08. INDUSTRIAL & LOGISTICS HUB ─────────────────────────────────
   {
     id: "bds-08",
-    name: "Template #08 - Industrial & Logistics Hub",
+    name: "Mẫu #08 - Cụm Bất Động Sản Công Nghiệp & Kho Vận",
     slug: "bds-08",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #08",
     badgeBg: "#0F172A",
     badgeColor: "#EA580C",
@@ -571,10 +571,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 09. HERITAGE & COLONIAL PORTAL ─────────────────────────────────
   {
     id: "bds-09",
-    name: "Template #09 - Heritage & Colonial Portal",
+    name: "Mẫu #09 - Biệt Thự Cổ Điển & Di Sản Hoàng Gia",
     slug: "bds-09",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #09",
     badgeBg: "#78350F",
     badgeColor: "#FEF3C7",
@@ -635,10 +635,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 10. INVESTMENT & HIGH YIELD PORTAL ─────────────────────────────
   {
     id: "bds-10",
-    name: "Template #10 - Investment & High Yield Portal",
+    name: "Mẫu #10 - Sàn Đầu Tư BĐS Dòng Tiền & Sinh Lời Cao",
     slug: "bds-10",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #10",
     badgeBg: "#0D9488",
     badgeColor: "#FFFFFF",
@@ -699,10 +699,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 11. MODERN VILLA & WATERFRONT ESTATE ───────────────────────────
   {
     id: "bds-11",
-    name: "Template #11 - Modern Villa & Waterfront Estate",
+    name: "Mẫu #11 - Biệt Thự Ven Sông & Dinh Thự Nghỉ Dưỡng",
     slug: "bds-11",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #11",
     badgeBg: "#0F766E",
     badgeColor: "#FFFFFF",
@@ -763,10 +763,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 12. MEGA DEVELOPER ECOSYSTEM PORTAL ────────────────────────────
   {
     id: "bds-12",
-    name: "Template #12 - Mega Developer Ecosystem Portal",
+    name: "Mẫu #12 - Hệ Sinh Thái Dự Án Đại Đô Thị Chủ Đầu Tư",
     slug: "bds-12",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #12",
     badgeBg: "#1E3A8A",
     badgeColor: "#FFFFFF",
@@ -827,10 +827,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 13. REAL ESTATE AUCTION & LIQUIDATION PORTAL ───────────────────
   {
     id: "bds-13",
-    name: "Template #13 - Real Estate Auction & Liquidation Portal",
+    name: "Mẫu #13 - Sàn Đấu Giá & Thanh Lý Bất Động Sản",
     slug: "bds-13",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #13",
     badgeBg: "#991B1B",
     badgeColor: "#FFFFFF",
@@ -891,10 +891,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 14. LANDPLOT & FARMLAND EXCHANGE PORTAL ────────────────────────
   {
     id: "bds-14",
-    name: "Template #14 - Landplot & Farmland Exchange Portal",
+    name: "Mẫu #14 - Sàn Phân Phối Đất Nền Phân Lô & Đất Vườn",
     slug: "bds-14",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #14",
     badgeBg: "#854D0E",
     badgeColor: "#FFFFFF",
@@ -955,10 +955,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 15. COMMERCIAL & RETAIL PODIUM PORTAL ──────────────────────────
   {
     id: "bds-15",
-    name: "Template #15 - Commercial & Retail Podium Portal",
+    name: "Mẫu #15 - Mặt Bằng Thương Mại, Shophouse & Khối Đế",
     slug: "bds-15",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #15",
     badgeBg: "#EA580C",
     badgeColor: "#FFFFFF",
@@ -1019,10 +1019,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 16. ELITE PERSONAL BROKER PORTAL ───────────────────────────────
   {
     id: "bds-16",
-    name: "Template #16 - Elite Personal Broker Portal",
+    name: "Mẫu #16 - Trang Môi Giới BĐS Cá Nhân Triệu Đô",
     slug: "bds-16",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #16",
     badgeBg: "#090A0F",
     badgeColor: "#FB7185",
@@ -1083,10 +1083,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 17. NORTHERN CAPITAL HERITAGE PORTAL ───────────────────────────
   {
     id: "bds-17",
-    name: "Template #17 - Northern Capital Heritage Portal",
+    name: "Mẫu #17 - Sàn BĐS Thủ Đô Truyền Thống & Phố Cổ",
     slug: "bds-17",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #17",
     badgeBg: "#B91C1C",
     badgeColor: "#FEF3C7",
@@ -1147,10 +1147,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 18. SAIGON DYNAMIC RIVERFRONT PORTAL ───────────────────────────
   {
     id: "bds-18",
-    name: "Template #18 - Saigon Dynamic Riverfront Portal",
+    name: "Mẫu #18 - Cổng BĐS Sài Gòn Năng Động & Ven Sông",
     slug: "bds-18",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #18",
     badgeBg: "#1D4ED8",
     badgeColor: "#FFFFFF",
@@ -1211,10 +1211,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 19. CENTRAL COAST SCENIC PORTAL ────────────────────────────────
   {
     id: "bds-19",
-    name: "Template #19 - Central Coast Scenic Portal",
+    name: "Mẫu #19 - Cổng BĐS Nghỉ Dưỡng Duyên Hải Miền Trung",
     slug: "bds-19",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #19",
     badgeBg: "#0284C7",
     badgeColor: "#FFFFFF",
@@ -1275,10 +1275,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 20. MOUNTAIN & HIGHLAND RETREAT PORTAL ─────────────────────────
   {
     id: "bds-20",
-    name: "Template #20 - Mountain & Highland Retreat Portal",
+    name: "Mẫu #20 - Bất Động Sản Đồi Núi & Nghỉ Dưỡng Tây Nguyên",
     slug: "bds-20",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #20",
     badgeBg: "#166534",
     badgeColor: "#FEFCE8",
@@ -1339,10 +1339,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 21. CLEAN MINIMAL SCANDINAVIAN PORTAL ──────────────────────────
   {
     id: "bds-21",
-    name: "Template #21 - Clean Minimal Scandinavian Portal",
+    name: "Mẫu #21 - Phong Cách Tối Giản Bắc Âu Scandinavian",
     slug: "bds-21",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #21",
     badgeBg: "#0F172A",
     badgeColor: "#F8FAFC",
@@ -1403,10 +1403,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 22. NIGHT LIFE & COMMERCIAL STRIP PORTAL ───────────────────────
   {
     id: "bds-22",
-    name: "Template #22 - Night Life & Commercial Strip Portal",
+    name: "Mẫu #22 - Phố Thương Mại Shophouse & Kinh Tế Đêm",
     slug: "bds-22",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #22",
     badgeBg: "#090A0F",
     badgeColor: "#EC4899",
@@ -1467,10 +1467,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 23. LUXURY PENTHOUSE & SKY VILLA PORTAL ────────────────────────
   {
     id: "bds-23",
-    name: "Template #23 - Luxury Penthouse & Sky Villa Portal",
+    name: "Mẫu #23 - Căn Hộ Penthouse & Biệt Thự Trên Không Sky Villa",
     slug: "bds-23",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #23",
     badgeBg: "#05060A",
     badgeColor: "#FACC15",
@@ -1531,10 +1531,10 @@ export const WEBSITE_TEMPLATES: Template[] = [
   // ─── PORTAL 24. SMART CITY & FUTURE LIVING PORTAL ──────────────────────────
   {
     id: "bds-24",
-    name: "Template #24 - Smart City & Future Living Portal",
+    name: "Mẫu #24 - Đô Thị Thông Minh & Cuộc Sống Tương Lai Smart City",
     slug: "bds-24",
     collectionSlug: "portal",
-    collectionName: "Listing Portal Collection",
+    collectionName: "Kho Mẫu Website BĐS",
     badge: "DÒNG A #24",
     badgeBg: "#0B0F19",
     badgeColor: "#06B6D4",
@@ -1598,10 +1598,10 @@ export const LANDING_TEMPLATES: Template[] = [
 // ─── LP 01. LANDING PAGE CĂN HỘ CAO CẤP LAUNCH FUNNEL ──────────────────────
   {
     id: "lp-01",
-    name: "LP #01 - Căn Hộ Chung Cư Cao Cấp Launch Funnel",
+    name: "Landing Page #01 - Mở Bán Căn Hộ Chung Cư Cao Cấp",
     slug: "lp-01",
     collectionSlug: "landing-page",
-    collectionName: "Kho Landing Page Sale BĐS",
+    collectionName: "Kho Landing Page BĐS",
     badge: "LANDING PAGE #01",
     badgeBg: "#2563EB",
     badgeColor: "#FFFFFF",
@@ -1664,10 +1664,10 @@ export const LANDING_TEMPLATES: Template[] = [
 // ─── LP 02. LANDING PAGE TUYỂN DỤNG CHUYÊN VIÊN KINH DOANH BĐS ───────────────
   {
     id: "lp-02",
-    name: "LP #02 - Tuyển Dụng 300 Chuyên Viên Kinh Doanh BĐS",
+    name: "Landing Page #02 - Tuyển Dụng Chuyên Viên Kinh Doanh BĐS",
     slug: "lp-02",
     collectionSlug: "landing-page",
-    collectionName: "Kho Landing Page Sale BĐS",
+    collectionName: "Kho Landing Page BĐS",
     badge: "LANDING PAGE #02",
     badgeBg: "#C1121F",
     badgeColor: "#FFFFFF",
@@ -1728,10 +1728,10 @@ export const LANDING_TEMPLATES: Template[] = [
 // ─── LP 03. LANDING PAGE TỔ HỢP CĂN HỘ CAO CẤP SIMPLE PAGE ──────────────────
   {
     id: "lp-03",
-    name: "LP #03 - Tổ Hợp Căn Hộ Cao Cấp Simple Page",
+    name: "Landing Page #03 - Giới Thiệu Tổ Hợp Căn Hộ Cao Cấp",
     slug: "lp-03",
     collectionSlug: "landing-page",
-    collectionName: "Kho Landing Page Sale BĐS",
+    collectionName: "Kho Landing Page BĐS",
     badge: "LANDING PAGE #03",
     badgeBg: "#9B1C1C",
     badgeColor: "#FFFFFF",
@@ -1792,10 +1792,10 @@ export const LANDING_TEMPLATES: Template[] = [
 // ─── LP 04. LANDING PAGE SALE MÔI GIỚI BĐS TRIỆU ĐÔ AUTHORITY ────────────────
   {
     id: "lp-04",
-    name: "LP #04 - Sale Môi Giới BĐS Triệu Đô Authority",
+    name: "Landing Page #04 - Xây Dựng Thương Hiệu Môi Giới BĐS Triệu Đô",
     slug: "lp-04",
     collectionSlug: "landing-page",
-    collectionName: "Kho Landing Page Sale BĐS",
+    collectionName: "Kho Landing Page BĐS",
     badge: "LANDING PAGE #04",
     badgeBg: "#1D4ED8",
     badgeColor: "#FFFFFF",
@@ -1856,10 +1856,10 @@ export const LANDING_TEMPLATES: Template[] = [
 // ─── LP 05. LANDING PAGE GOLDEN PARK TOWER CẦU GIẤY ─────────────────────────
   {
     id: "lp-05",
-    name: "LP #05 - Tổ Hợp Căn Hộ Khách Sạn 5 Sao Golden Park Tower",
+    name: "Landing Page #05 - Căn Hộ Khách Sạn 5 Sao Golden Park Tower",
     slug: "lp-05",
     collectionSlug: "landing-page",
-    collectionName: "Kho Landing Page Sale BĐS",
+    collectionName: "Kho Landing Page BĐS",
     badge: "LANDING PAGE #05",
     badgeBg: "#0C3832",
     badgeColor: "#FDE047",
@@ -1921,10 +1921,10 @@ export const LANDING_TEMPLATES: Template[] = [
 // ─── LP 06. LANDING PAGE STELLA MEGA CITY CẦN THƠ ───────────────────────────
   {
     id: "lp-06",
-    name: "LP #06 - Đại Đô Thị Sân Bay Stella Mega City Cần Thơ",
+    name: "Landing Page #06 - Đại Đô Thị Sân Bay Stella Mega City Cần Thơ",
     slug: "lp-06",
     collectionSlug: "landing-page",
-    collectionName: "Kho Landing Page Sale BĐS",
+    collectionName: "Kho Landing Page BĐS",
     badge: "LANDING PAGE #06",
     badgeBg: "#071326",
     badgeColor: "#FDE047",
@@ -1986,10 +1986,10 @@ export const LANDING_TEMPLATES: Template[] = [
 // ─── LP 07. LANDING PAGE NOVAWORLD PHAN THIẾT ───────────────────────────────
   {
     id: "lp-07",
-    name: "LP #07 - Siêu Thành Phố Biển Du Lịch Sức Khỏe NovaWorld Phan Thiết 1.000ha",
+    name: "Landing Page #07 - Siêu Thành Phố Biển NovaWorld Phan Thiết",
     slug: "lp-07",
     collectionSlug: "landing-page",
-    collectionName: "Kho Landing Page Sale BĐS",
+    collectionName: "Kho Landing Page BĐS",
     badge: "LANDING PAGE #07",
     badgeBg: "#0C4A6E",
     badgeColor: "#FDE047",

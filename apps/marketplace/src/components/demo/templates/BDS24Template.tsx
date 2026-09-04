@@ -504,7 +504,7 @@ export default function BDS24Template({
           </div>
           <div className="min-w-0 truncate">
             <span className="text-base sm:text-2xl font-black tracking-wider text-cyan-400 block leading-none truncate">
-              {company?.name || 'TEMPLATESBDS'}
+              {(company as any)?.logoText || company?.name || "TL BDS24"}
             </span>
             <span className="text-[7.5px] sm:text-[8.5px] font-bold text-slate-400 uppercase tracking-widest block mt-0.5 truncate">
               TRANG TIN CÔNG NGHỆ BĐS & ĐÔ THỊ THÔNG MINH SỐ 1

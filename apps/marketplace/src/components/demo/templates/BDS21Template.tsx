@@ -604,7 +604,7 @@ export default function BDS21Template({
           </div>
           <div className="min-w-0 truncate">
             <span className="text-base sm:text-2xl font-black tracking-wider text-white block leading-none truncate">
-              HOMEO <span className="text-rose-300">REALTY</span>
+              {(company as any)?.logoText || "TL BDS21"}
             </span>
             <span className="text-[7.5px] sm:text-[8.5px] font-bold text-blue-200 uppercase tracking-widest block mt-0.5 truncate">
               CỔNG GIAO DỊCH BẤT ĐỘNG SẢN TOÀN DIỆN

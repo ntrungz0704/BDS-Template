@@ -618,7 +618,7 @@ export default function BDS11Template({
             ) : company?.name ? (
               company.name.substring(0, 2).toUpperCase()
             ) : (
-              'MT'
+              (company as any)?.brandShort || 'TL'
             )}
           </div>
           <div className="min-w-0 truncate">
@@ -626,7 +626,7 @@ export default function BDS11Template({
               {company?.name ? (
                 company.name
               ) : (
-                <>NHÀ ĐẤT <span className="text-slate-800">MIỀN TRUNG.VN</span></>
+                <>{(company as any)?.logoText || 'TL BDS11'}</>
               )}
             </span>
             <span className="text-[7.5px] sm:text-[9px] font-bold text-slate-500 uppercase tracking-widest block mt-0.5 truncate">

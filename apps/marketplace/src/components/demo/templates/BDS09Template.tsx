@@ -532,10 +532,7 @@ export default function BDS09Template({
           <div className="min-w-0 truncate">
             <div className="flex items-center gap-1.5 truncate">
               <span className="text-base sm:text-xl font-serif font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#FDE047] via-[#D4AF37] to-[#F59E0B] truncate">
-                AN VIÊN
-              </span>
-              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-300">
-                RESIDENCE
+                {(company as any)?.logoText || "TL BDS09"}
               </span>
             </div>
             <span className="text-[7.5px] sm:text-[9px] tracking-widest text-[#D4AF37] block uppercase font-extrabold truncate">

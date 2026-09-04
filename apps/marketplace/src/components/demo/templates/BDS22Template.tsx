@@ -533,7 +533,7 @@ export default function BDS22Template({
           </div>
           <div className="min-w-0 truncate">
             <span className="text-base sm:text-2xl font-serif font-black tracking-wider text-white block leading-none truncate">
-              {company?.name || 'TEMPLATESBDS'}
+              {(company as any)?.logoText || company?.name || "TL BDS22"}
             </span>
             <span className="text-[7.5px] sm:text-[8.5px] font-bold text-cyan-200 uppercase tracking-widest block mt-0.5 truncate">
               TỔ HỢP RESORT & CONDOTEL QUỐC TẾ ZOHOTELS

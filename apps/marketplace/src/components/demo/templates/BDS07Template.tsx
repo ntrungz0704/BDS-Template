@@ -696,7 +696,7 @@ export default function BDS07Template({
           </div>
           <div className="min-w-0 truncate">
             <span className="text-sm sm:text-base font-black tracking-tight block leading-tight text-white group-hover:text-emerald-300 transition-colors truncate">
-              {company?.name || 'TEMPLATESBDS'}
+              {(company as any)?.logoText || company?.name || 'TL BDS07'}
             </span>
             <span className="text-[7.5px] sm:text-[10px] tracking-widest text-emerald-300 block uppercase font-bold truncate">
               LÀNG SINH THÁI NGHỈ DƯỠNG

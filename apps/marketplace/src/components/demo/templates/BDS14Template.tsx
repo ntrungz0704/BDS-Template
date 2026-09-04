@@ -546,7 +546,7 @@ export default function BDS14Template({
           </div>
           <div className="min-w-0 truncate">
             <span className="text-base sm:text-2xl font-black text-[#4D7C0F] tracking-tight block leading-none truncate">
-              WINT<span className="text-slate-900">LAND</span>
+              {(company as any)?.logoText || "TL BDS14"}
             </span>
             <span className="text-[7.5px] sm:text-[9px] font-bold text-slate-500 uppercase tracking-widest block mt-0.5 truncate">
               REAL ESTATE PLATFORM

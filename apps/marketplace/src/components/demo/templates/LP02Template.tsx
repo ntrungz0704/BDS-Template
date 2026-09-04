@@ -173,11 +173,11 @@ export default function LP02Template({
           {/* Logo Brand */}
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-[#C1121F] text-white flex items-center justify-center font-black shadow-md">
-              <span className="text-base tracking-tighter">CT</span>
+              <span className="text-base tracking-tighter">{(company as any)?.brandShort || "LP"}</span>
             </div>
             <div>
               <span className="font-black text-sm sm:text-base text-[#C1121F] tracking-wide uppercase block leading-none">
-                {companyGroup}
+                {(company as any)?.logoText || "LP BDS02"}
               </span>
               <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider block mt-0.5">
                 {brandName}
