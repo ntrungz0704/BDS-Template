@@ -18,6 +18,7 @@ import {
   downloadExportByToken,
   getUserCart,
   syncUserCart,
+  syncTenantContent,
 } from '../controllers/marketplace.controller';
 import { authMiddleware, optionalAuthMiddleware } from '../middlewares/auth.middleware';
 import { requireRole } from '../middlewares/role.middleware';
@@ -39,6 +40,9 @@ router.put('/cart', authMiddleware, syncUserCart);
 // Checkout hỗ trợ cả khách vãng lai và tài khoản đã đăng nhập
 router.post('/orders', optionalAuthMiddleware, createOrder);
 router.post('/contact', createContactSubmission);
+
+// Đồng bộ nội dung CMS tức thời từ ZeroCodeCmsEditor
+router.post('/tenant/sync-content', optionalAuthMiddleware, syncTenantContent);
 
 
 // API lịch sử đơn hàng của khách (yêu cầu đăng nhập)

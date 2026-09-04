@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, register, refresh, logout, getMe, getUserTenants, switchTenant, updateProfile } from '../controllers/auth.controller';
+import { login, register, checkDuplicate, refresh, logout, getMe, getUserTenants, switchTenant, updateProfile } from '../controllers/auth.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import rateLimit from 'express-rate-limit';
 
@@ -25,6 +25,7 @@ const router = Router();
 router.use('/', passwordRoutes);
 router.use('/', emailVerificationRoutes);
 
+router.get('/check-duplicate', checkDuplicate);
 router.post('/register', loginLimiter, register);
 router.post('/login', loginLimiter, login);
 router.post('/refresh', refresh);

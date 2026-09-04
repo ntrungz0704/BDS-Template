@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Star, Eye, Heart, Play, Check, Zap, Users, ArrowRight, Crown, TrendingUp, ShoppingCart, Clock } from 'lucide-react';
 import { getTemplateDemoUrl } from '../utils/demo';
-import { Template } from '../data/templatesData';
+import { Template, findTemplateBySlugOrId } from '../data/templatesData';
 import { useAuth } from '../context/AuthContext';
 
 interface ProductCardProps {
@@ -25,50 +25,50 @@ const CARD_CONFIG: Record<string, {
   ribbonColor?: string;
   thumbnail: string;
 }> = {
-  // 1. Luxury Gold
-  'bds-01': { accent:'#C5A028', badge:'LUXURY VIP', badgeBg:'#0F172A', badgeColor:'#E2B714', tagline:'Biệt thự · Penthouse · Dinh thự dát vàng', audience:'Chủ đầu tư biệt thự siêu sang', rating:5.0, reviews:128, ribbon:'Bán chạy #1', ribbonColor:'#D97706', badgeIcon:<Crown className="w-3 h-3 text-amber-400"/>, thumbnail:'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=800' },
+  // 1. BatDongSan Classic Portal
+  'bds-01': { accent:'#D8232A', badge:'DÒNG A #01', badgeBg:'#D8232A', badgeColor:'#FFFFFF', tagline:'Sàn giao dịch BĐS · Rao vặt kinh điển · Sidebar dày đặc', audience:'Sàn giao dịch BĐS tổng hợp', rating:5.0, reviews:128, ribbon:'Bán chạy #1', ribbonColor:'#D8232A', badgeIcon:<Crown className="w-3 h-3 text-white"/>, thumbnail:'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800' },
   'luxury-gold': { accent:'#C5A028', badge:'LUXURY VIP', badgeBg:'#0F172A', badgeColor:'#E2B714', tagline:'Biệt thự · Penthouse · Dinh thự dát vàng', audience:'Chủ đầu tư biệt thự siêu sang', rating:5.0, reviews:128, ribbon:'Bán chạy #1', ribbonColor:'#D97706', badgeIcon:<Crown className="w-3 h-3 text-amber-400"/>, thumbnail:'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=800' },
   'mock-1': { accent:'#C5A028', badge:'LUXURY VIP', badgeBg:'#0F172A', badgeColor:'#E2B714', tagline:'Biệt thự · Penthouse · Dinh thự dát vàng', audience:'Chủ đầu tư biệt thự siêu sang', rating:5.0, reviews:128, ribbon:'Bán chạy #1', ribbonColor:'#D97706', badgeIcon:<Crown className="w-3 h-3 text-amber-400"/>, thumbnail:'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=800' },
 
-  // 2. Minimal White
-  'bds-02': { accent:'#2563EB', badge:'APPLE MINIMAL', badgeBg:'#EFF6FF', badgeColor:'#2563EB', tagline:'Penthouse · Căn hộ Bắc Âu · Tối giản', audience:'Môi giới cá nhân & Studio trẻ', rating:4.9, reviews:98, ribbon:'Phổ biến', ribbonColor:'#2563EB', badgeIcon:<Zap className="w-3 h-3 text-blue-600"/>, thumbnail:'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800' },
+  // 2. Modern Metro Portal
+  'bds-02': { accent:'#1E40AF', badge:'DÒNG A #02', badgeBg:'#1E40AF', badgeColor:'#FFFFFF', tagline:'Sàn BĐS đô thị hiện đại · Grid 3 cột · Fullwidth thoáng đãng', audience:'Sàn phân phối căn hộ chung cư', rating:4.9, reviews:98, ribbon:'Phổ biến', ribbonColor:'#1E40AF', badgeIcon:<Zap className="w-3 h-3 text-blue-600"/>, thumbnail:'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800' },
   'minimal-white': { accent:'#2563EB', badge:'APPLE MINIMAL', badgeBg:'#EFF6FF', badgeColor:'#2563EB', tagline:'Penthouse · Căn hộ Bắc Âu · Tối giản', audience:'Môi giới cá nhân & Studio trẻ', rating:4.9, reviews:98, ribbon:'Phổ biến', ribbonColor:'#2563EB', badgeIcon:<Zap className="w-3 h-3 text-blue-600"/>, thumbnail:'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800' },
   'minimal-zen': { accent:'#2563EB', badge:'APPLE MINIMAL', badgeBg:'#EFF6FF', badgeColor:'#2563EB', tagline:'Penthouse · Căn hộ Bắc Âu · Tối giản', audience:'Môi giới cá nhân & Studio trẻ', rating:4.9, reviews:98, ribbon:'Phổ biến', ribbonColor:'#2563EB', badgeIcon:<Zap className="w-3 h-3 text-blue-600"/>, thumbnail:'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800' },
   'mock-2': { accent:'#2563EB', badge:'APPLE MINIMAL', badgeBg:'#EFF6FF', badgeColor:'#2563EB', tagline:'Penthouse · Căn hộ Bắc Âu · Tối giản', audience:'Môi giới cá nhân & Studio trẻ', rating:4.9, reviews:98, ribbon:'Phổ biến', ribbonColor:'#2563EB', badgeIcon:<Zap className="w-3 h-3 text-blue-600"/>, thumbnail:'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800' },
 
-  // 3. Modern Corporate
-  'bds-03': { accent:'#0F4C81', badge:'CORPORATE PRO', badgeBg:'#0F4C81', badgeColor:'#FFFFFF', tagline:'Tập đoàn BĐS · Sàn lớn · Multi-Branch', audience:'Doanh nghiệp & Tập đoàn 100+ nhân sự', rating:4.8, reviews:76, ribbon:'Doanh nghiệp', ribbonColor:'#0F4C81', badgeIcon:<TrendingUp className="w-3 h-3 text-white"/>, thumbnail:'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800' },
-  'modern-corporate': { accent:'#0F4C81', badge:'CORPORATE PRO', badgeBg:'#0F4C81', badgeColor:'#FFFFFF', tagline:'Tập đoàn BĐS · Sàn lớn · Multi-Branch', audience:'Doanh nghiệp & Tập đoàn 100+ nhân sự', rating:4.8, reviews:76, ribbon:'Doanh nghiệp', ribbonColor:'#0F4C81', badgeIcon:<TrendingUp className="w-3 h-3 text-white"/>, thumbnail:'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800' },
-  'mock-3': { accent:'#0F4C81', badge:'CORPORATE PRO', badgeBg:'#0F4C81', badgeColor:'#FFFFFF', tagline:'Tập đoàn BĐS · Sàn lớn · Multi-Branch', audience:'Doanh nghiệp & Tập đoàn 100+ nhân sự', rating:4.8, reviews:76, ribbon:'Doanh nghiệp', ribbonColor:'#0F4C81', badgeIcon:<TrendingUp className="w-3 h-3 text-white"/>, thumbnail:'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800' },
+  // 3. Tuấn Nhân Land
+  'bds-03': { accent:'#D97706', badge:'DÒNG A #03', badgeBg:'#4A2810', badgeColor:'#FFFFFF', tagline:'Đất nền phân lô · Đất vườn nghỉ dưỡng · Bảo Lộc', audience:'Nhà đầu tư đất nền & second home nghỉ dưỡng', rating:4.9, reviews:88, ribbon:'Đất Nền & Vườn', ribbonColor:'#4A2810', badgeIcon:<TrendingUp className="w-3 h-3 text-amber-400"/>, thumbnail:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800' },
+  'modern-corporate': { accent:'#D97706', badge:'TUẤN NHÂN LAND', badgeBg:'#4A2810', badgeColor:'#FFFFFF', tagline:'Đất nền · Đất vườn · Nghỉ dưỡng Bảo Lộc - Lâm Đồng', audience:'Nhà đầu tư đất nền & second home nghỉ dưỡng', rating:4.9, reviews:88, ribbon:'Đất Nền & Vườn', ribbonColor:'#4A2810', badgeIcon:<TrendingUp className="w-3 h-3 text-amber-400"/>, thumbnail:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800' },
+  'mock-3': { accent:'#D97706', badge:'TUẤN NHÂN LAND', badgeBg:'#4A2810', badgeColor:'#FFFFFF', tagline:'Đất nền · Đất vườn · Nghỉ dưỡng Bảo Lộc - Lâm Đồng', audience:'Nhà đầu tư đất nền & second home nghỉ dưỡng', rating:4.9, reviews:88, ribbon:'Đất Nền & Vườn', ribbonColor:'#4A2810', badgeIcon:<TrendingUp className="w-3 h-3 text-amber-400"/>, thumbnail:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800' },
 
-  // 4. Resort Paradise
-  'bds-04': { accent:'#0284C7', badge:'RESORT PARADISE', badgeBg:'#E0F2FE', badgeColor:'#0284C7', tagline:'Biển đảo · Condotel · Second Home', audience:'Chủ đầu tư BĐS nghỉ dưỡng ven biển', rating:4.9, reviews:64, ribbon:'Nghỉ dưỡng', ribbonColor:'#0284C7', badgeIcon:<Zap className="w-3 h-3 text-sky-600"/>, thumbnail:'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800' },
+  // 4. Nhadatso Density Portal
+  'bds-04': { accent:'#1E8449', badge:'DÒNG A #04', badgeBg:'#D1FAE5', badgeColor:'#065F46', tagline:'Cổng rao vặt mật độ cao · Bố cục 3 cột · Tối ưu hiển thị', audience:'Báo mạng BĐS & Sàn môi giới thổ cư', rating:4.9, reviews:64, ribbon:'Mật độ cao', ribbonColor:'#16A34A', badgeIcon:<TrendingUp className="w-3 h-3 text-emerald-600"/>, thumbnail:'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800' },
   'resort-paradise': { accent:'#0284C7', badge:'RESORT PARADISE', badgeBg:'#E0F2FE', badgeColor:'#0284C7', tagline:'Biển đảo · Condotel · Second Home', audience:'Chủ đầu tư BĐS nghỉ dưỡng ven biển', rating:4.9, reviews:64, ribbon:'Nghỉ dưỡng', ribbonColor:'#0284C7', badgeIcon:<Zap className="w-3 h-3 text-sky-600"/>, thumbnail:'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800' },
   'ocean-view': { accent:'#0284C7', badge:'RESORT PARADISE', badgeBg:'#E0F2FE', badgeColor:'#0284C7', tagline:'Biển đảo · Condotel · Second Home', audience:'Chủ đầu tư BĐS nghỉ dưỡng ven biển', rating:4.9, reviews:64, ribbon:'Nghỉ dưỡng', ribbonColor:'#0284C7', badgeIcon:<Zap className="w-3 h-3 text-sky-600"/>, thumbnail:'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800' },
   'mock-4': { accent:'#0284C7', badge:'RESORT PARADISE', badgeBg:'#E0F2FE', badgeColor:'#0284C7', tagline:'Biển đảo · Condotel · Second Home', audience:'Chủ đầu tư BĐS nghỉ dưỡng ven biển', rating:4.9, reviews:64, ribbon:'Nghỉ dưỡng', ribbonColor:'#0284C7', badgeIcon:<Zap className="w-3 h-3 text-sky-600"/>, thumbnail:'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800' },
 
-  // 5. Urban City / Smart Urban
-  'bds-05': { accent:'#7C3AED', badge:'SMART URBAN', badgeBg:'#F5F3FF', badgeColor:'#7C3AED', tagline:'Smart City · Căn hộ cao tầng · Bản đồ Metro', audience:'Chung cư nội đô & Đại đô thị thông minh', rating:4.8, reviews:52, ribbon:'Smart City', ribbonColor:'#7C3AED', badgeIcon:<Zap className="w-3 h-3 text-purple-600"/>, thumbnail:'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800' },
+  // 5. Portal Map Search
+  'bds-05': { accent:'#0284C7', badge:'DÒNG A #05', badgeBg:'#E0F2FE', badgeColor:'#0369A1', tagline:'Bản đồ tương tác Split View · Tra cứu theo tọa độ · Bản đồ quy hoạch', audience:'Khách hàng tìm nhà theo khu vực & bản đồ', rating:4.8, reviews:52, ribbon:'Bản Đồ Map', ribbonColor:'#0284C7', badgeIcon:<Zap className="w-3 h-3 text-sky-600"/>, thumbnail:'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=800' },
   'urban-city': { accent:'#7C3AED', badge:'SMART URBAN', badgeBg:'#F5F3FF', badgeColor:'#7C3AED', tagline:'Smart City · Căn hộ cao tầng · Bản đồ Metro', audience:'Chung cư nội đô & Đại đô thị thông minh', rating:4.8, reviews:52, ribbon:'Smart City', ribbonColor:'#7C3AED', badgeIcon:<Zap className="w-3 h-3 text-purple-600"/>, thumbnail:'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800' },
   'smart-urban': { accent:'#7C3AED', badge:'SMART URBAN', badgeBg:'#F5F3FF', badgeColor:'#7C3AED', tagline:'Smart City · Căn hộ cao tầng · Bản đồ Metro', audience:'Chung cư nội đô & Đại đô thị thông minh', rating:4.8, reviews:52, ribbon:'Smart City', ribbonColor:'#7C3AED', badgeIcon:<Zap className="w-3 h-3 text-purple-600"/>, thumbnail:'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800' },
   'high-rise': { accent:'#7C3AED', badge:'SMART URBAN', badgeBg:'#F5F3FF', badgeColor:'#7C3AED', tagline:'Smart City · Căn hộ cao tầng · Bản đồ Metro', audience:'Chung cư nội đô & Đại đô thị thông minh', rating:4.8, reviews:52, ribbon:'Smart City', ribbonColor:'#7C3AED', badgeIcon:<Zap className="w-3 h-3 text-purple-600"/>, thumbnail:'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800' },
   'mock-5': { accent:'#7C3AED', badge:'SMART URBAN', badgeBg:'#F5F3FF', badgeColor:'#7C3AED', tagline:'Smart City · Căn hộ cao tầng · Bản đồ Metro', audience:'Chung cư nội đô & Đại đô thị thông minh', rating:4.8, reviews:52, ribbon:'Smart City', ribbonColor:'#7C3AED', badgeIcon:<Zap className="w-3 h-3 text-purple-600"/>, thumbnail:'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800' },
 
-  // 6. Industrial Estate
-  'bds-06': { accent:'#F59E0B', badge:'INDUSTRIAL B2B', badgeBg:'#1E293B', badgeColor:'#F59E0B', tagline:'Khu công nghiệp · Nhà xưởng · Kho vận B2B', audience:'Chủ đầu tư KCN & Doanh nghiệp FDI', rating:4.7, reviews:39, ribbon:'KCN & Kho Bãi', ribbonColor:'#475569', badgeIcon:<Zap className="w-3 h-3 text-amber-500"/>, thumbnail:'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800' },
+  // 6. Eco Green Living
+  'bds-06': { accent:'#16A34A', badge:'DÒNG A #06', badgeBg:'#DCFCE7', badgeColor:'#16A34A', tagline:'Đại đô thị sinh thái 120ha · Căn hộ & Shophouse · Hồ cảnh quan 12ha', audience:'Khu đô thị sinh thái & Nhà vườn nghỉ dưỡng', rating:4.8, reviews:39, ribbon:'Chuẩn Xanh', ribbonColor:'#16A34A', badgeIcon:<Zap className="w-3 h-3 text-emerald-600"/>, thumbnail:'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800' },
   'industrial-estate': { accent:'#F59E0B', badge:'INDUSTRIAL B2B', badgeBg:'#1E293B', badgeColor:'#F59E0B', tagline:'Khu công nghiệp · Nhà xưởng · Kho vận B2B', audience:'Chủ đầu tư KCN & Doanh nghiệp FDI', rating:4.7, reviews:39, ribbon:'KCN & Kho Bãi', ribbonColor:'#475569', badgeIcon:<Zap className="w-3 h-3 text-amber-500"/>, thumbnail:'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800' },
   'industrial-logistics': { accent:'#F59E0B', badge:'INDUSTRIAL B2B', badgeBg:'#1E293B', badgeColor:'#F59E0B', tagline:'Khu công nghiệp · Nhà xưởng · Kho vận B2B', audience:'Chủ đầu tư KCN & Doanh nghiệp FDI', rating:4.7, reviews:39, ribbon:'KCN & Kho Bãi', ribbonColor:'#475569', badgeIcon:<Zap className="w-3 h-3 text-amber-500"/>, thumbnail:'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800' },
   'mock-6': { accent:'#F59E0B', badge:'INDUSTRIAL B2B', badgeBg:'#1E293B', badgeColor:'#F59E0B', tagline:'Khu công nghiệp · Nhà xưởng · Kho vận B2B', audience:'Chủ đầu tư KCN & Doanh nghiệp FDI', rating:4.7, reviews:39, ribbon:'KCN & Kho Bãi', ribbonColor:'#475569', badgeIcon:<Zap className="w-3 h-3 text-amber-500"/>, thumbnail:'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800' },
 
-  // 7. Villa Premium / Royal Garden
-  'bds-07': { accent:'#B45309', badge:'VILLA 3D TOUR', badgeBg:'#FEF3C7', badgeColor:'#B45309', tagline:'Biệt thự đơn lập · Sơ đồ mặt bằng · 3D Tour', audience:'Dự án Villa compound cao cấp', rating:5.0, reviews:84, ribbon:'Matterport 3D', ribbonColor:'#B45309', badgeIcon:<Crown className="w-3 h-3 text-amber-600"/>, thumbnail:'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800' },
+  // 7. Coastal Resort Paradise
+  'bds-07': { accent:'#0284C7', badge:'DÒNG A #07', badgeBg:'#E0F2FE', badgeColor:'#0284C7', tagline:'Làng sinh thái 900m biển · Đất vườn săn mây · Sổ đỏ thổ cư có sẵn', audience:'Chủ đầu tư BĐS biển & Second Home', rating:5.0, reviews:84, ribbon:'Nghỉ Dưỡng Biển', ribbonColor:'#0284C7', badgeIcon:<Crown className="w-3 h-3 text-sky-600"/>, thumbnail:'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800' },
   'villa-premium': { accent:'#B45309', badge:'VILLA 3D TOUR', badgeBg:'#FEF3C7', badgeColor:'#B45309', tagline:'Biệt thự đơn lập · Sơ đồ mặt bằng · 3D Tour', audience:'Dự án Villa compound cao cấp', rating:5.0, reviews:84, ribbon:'Matterport 3D', ribbonColor:'#B45309', badgeIcon:<Crown className="w-3 h-3 text-amber-600"/>, thumbnail:'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800' },
   'modern-villa': { accent:'#B45309', badge:'VILLA 3D TOUR', badgeBg:'#FEF3C7', badgeColor:'#B45309', tagline:'Biệt thự đơn lập · Sơ đồ mặt bằng · 3D Tour', audience:'Dự án Villa compound cao cấp', rating:5.0, reviews:84, ribbon:'Matterport 3D', ribbonColor:'#B45309', badgeIcon:<Crown className="w-3 h-3 text-amber-600"/>, thumbnail:'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800' },
   'luxury-villa': { accent:'#B45309', badge:'VILLA 3D TOUR', badgeBg:'#FEF3C7', badgeColor:'#B45309', tagline:'Biệt thự đơn lập · Sơ đồ mặt bằng · 3D Tour', audience:'Dự án Villa compound cao cấp', rating:5.0, reviews:84, ribbon:'Matterport 3D', ribbonColor:'#B45309', badgeIcon:<Crown className="w-3 h-3 text-amber-600"/>, thumbnail:'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800' },
   'mock-7': { accent:'#B45309', badge:'VILLA 3D TOUR', badgeBg:'#FEF3C7', badgeColor:'#B45309', tagline:'Biệt thự đơn lập · Sơ đồ mặt bằng · 3D Tour', audience:'Dự án Villa compound cao cấp', rating:5.0, reviews:84, ribbon:'Matterport 3D', ribbonColor:'#B45309', badgeIcon:<Crown className="w-3 h-3 text-amber-600"/>, thumbnail:'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800' },
 
-  // 8. Eco Green Living
-  'bds-08': { accent:'#16A34A', badge:'ECO LIVING', badgeBg:'#DCFCE7', badgeColor:'#16A34A', tagline:'Đô thị sinh thái xanh · Ecopark · ESG', audience:'Khu đô thị sinh thái & Nhà vườn xanh', rating:4.8, reviews:58, ribbon:'Chuẩn Xanh ESG', ribbonColor:'#16A34A', badgeIcon:<Zap className="w-3 h-3 text-emerald-600"/>, thumbnail:'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800' },
+  // 8. Industrial Zone Logistics
+  'bds-08': { accent:'#D97706', badge:'DÒNG A #08', badgeBg:'#1E293B', badgeColor:'#F59E0B', tagline:'Đất KCN · Nhà xưởng RBF · Kho bãi Logistics RBW · Tư vấn FDI', audience:'Chủ đầu tư KCN & Doanh nghiệp FDI', rating:4.8, reviews:58, ribbon:'Kho Bãi B2B', ribbonColor:'#475569', badgeIcon:<Zap className="w-3 h-3 text-amber-500"/>, thumbnail:'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800' },
   'eco-green': { accent:'#16A34A', badge:'ECO LIVING', badgeBg:'#DCFCE7', badgeColor:'#16A34A', tagline:'Đô thị sinh thái xanh · Ecopark · ESG', audience:'Khu đô thị sinh thái & Nhà vườn xanh', rating:4.8, reviews:58, ribbon:'Chuẩn Xanh ESG', ribbonColor:'#16A34A', badgeIcon:<Zap className="w-3 h-3 text-emerald-600"/>, thumbnail:'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800' },
   'green-eco': { accent:'#16A34A', badge:'ECO LIVING', badgeBg:'#DCFCE7', badgeColor:'#16A34A', tagline:'Đô thị sinh thái xanh · Ecopark · ESG', audience:'Khu đô thị sinh thái & Nhà vườn xanh', rating:4.8, reviews:58, ribbon:'Chuẩn Xanh ESG', ribbonColor:'#16A34A', badgeIcon:<Zap className="w-3 h-3 text-emerald-600"/>, thumbnail:'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800' },
   'eco-living': { accent:'#16A34A', badge:'ECO LIVING', badgeBg:'#DCFCE7', badgeColor:'#16A34A', tagline:'Đô thị sinh thái xanh · Ecopark · ESG', audience:'Khu đô thị sinh thái & Nhà vườn xanh', rating:4.8, reviews:58, ribbon:'Chuẩn Xanh ESG', ribbonColor:'#16A34A', badgeIcon:<Zap className="w-3 h-3 text-emerald-600"/>, thumbnail:'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800' },
@@ -217,27 +217,55 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
   const isPending = !owned && isPendingApproval(template.slug || template.id);
   const isFavorite = wishlists?.some((w: any) => w.templateId === template.id || w.template?.id === template.id) || false;
 
-  const sourceSlug = template.sectionConfig?.sourceSlug;
-  const cfg = CARD_CONFIG[sourceSlug] || CARD_CONFIG[template.slug] || CARD_CONFIG[template.id] || CARD_CONFIG['luxury-gold'] || CARD_CONFIG['mock-1'];
-  const vietnameseCopy = VIETNAMESE_CARD_COPY[template.collectionSlug] || VIETNAMESE_CARD_COPY.corporate;
+  const matchedTpl = findTemplateBySlugOrId(template.slug || template.id);
+  const sourceSlug = template.sectionConfig?.sourceSlug || matchedTpl?.sectionConfig?.sourceSlug;
+  const cfg = CARD_CONFIG[template.slug] || CARD_CONFIG[sourceSlug] || CARD_CONFIG[template.id] || CARD_CONFIG['bds-01'];
+  const vietnameseCopy = VIETNAMESE_CARD_COPY[template.collectionSlug] || VIETNAMESE_CARD_COPY[matchedTpl?.collectionSlug || ''] || VIETNAMESE_CARD_COPY.corporate;
   
-  const badgeText = owned ? 'ĐÃ SỞ HỮU' : isPending ? 'CHỜ DUYỆT' : (template.badge || cfg?.badge || 'PREMIUM');
-  const badgeBg = owned ? '#10B981' : isPending ? '#F59E0B' : (template.badgeBg || cfg?.badgeBg || '#0F172A');
-  const badgeColor = owned ? '#FFFFFF' : isPending ? '#FFFFFF' : (template.badgeColor || cfg?.badgeColor || '#D4AF37');
-  const tagline = vietnameseCopy.tagline;
+  const badgeText = owned ? 'ĐÃ SỞ HỮU' : isPending ? 'CHỜ DUYỆT' : (template.badge || matchedTpl?.badge || cfg?.badge || 'PREMIUM');
+  const badgeBg = owned ? '#10B981' : isPending ? '#F59E0B' : (template.badgeBg || matchedTpl?.badgeBg || cfg?.badgeBg || '#0F172A');
+  const badgeColor = owned ? '#FFFFFF' : isPending ? '#FFFFFF' : (template.badgeColor || matchedTpl?.badgeColor || cfg?.badgeColor || '#FFFFFF');
+  
+  // Tagline: accurate & distinct for each template and landing page
+  const tagline = template.shortDescription || matchedTpl?.shortDescription || cfg?.tagline || vietnameseCopy.tagline || template.description;
   const rating = template.rating || cfg?.rating || 4.9;
   const reviewCount = template.reviewCount || cfg?.reviews || 95;
-  const targetAudience = vietnameseCopy.audience;
-  const audience = targetAudience;
+  
+  // Target audience: accurate & distinct for each template and landing page
+  const audience = (Array.isArray(template.targetAudience) && template.targetAudience.length > 0)
+    ? template.targetAudience[0]
+    : (typeof template.targetAudience === 'string' && template.targetAudience
+      ? template.targetAudience
+      : (matchedTpl?.targetAudience?.[0] || cfg?.audience || vietnameseCopy.audience));
+
+  // Features list: top 3 accurate, distinct features for each template and landing page
+  const rawFeatures = (Array.isArray(template.features) && template.features.length > 0)
+    ? template.features
+    : (Array.isArray(matchedTpl?.features) && matchedTpl.features.length > 0
+      ? matchedTpl.features
+      : (Array.isArray(template.highlights) && template.highlights.length > 0
+        ? template.highlights
+        : (matchedTpl?.highlights || vietnameseCopy.features)));
+
+  const displayFeatures = rawFeatures.length > 0 ? rawFeatures.slice(0, 3) : vietnameseCopy.features.slice(0, 3);
   const demoUrl = getTemplateDemoUrl(template.slug);
 
-  const cardThumbnail = template.thumbnail || cfg?.thumbnail || 'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=800';
+  const normalizedSlug = (template.slug || template.id || '').toLowerCase().replace(/^mock-/, '');
+  const canonicalId = matchedTpl?.id || matchedTpl?.slug || template.slug;
+  const mockupSlug = (canonicalId?.startsWith('bds-') || canonicalId?.startsWith('lp-')) ? canonicalId : normalizedSlug;
+  const localMockup = `/images/mockups/${mockupSlug}.webp`;
+
+  const cardThumbnail = template.mockupImage || localMockup || template.thumbnail || matchedTpl?.thumbnail || cfg?.thumbnail || 'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=800';
 
   const fmt = (val: number) => new Intl.NumberFormat('vi-VN').format(val) + 'đ';
 
   const stars = Array.from({ length: 5 }, (_, i) => (
     <Star key={i} className={`w-3.5 h-3.5 ${i < Math.floor(rating) ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
   ));
+
+  const imageSrc = cardThumbnail.startsWith('/')
+    ? cardThumbnail
+    : `${cardThumbnail}${cardThumbnail.includes('?') ? '&' : '?'}auto=format&fit=crop&w=800&q=80`;
 
   return (
     <div
@@ -247,7 +275,7 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
       onClick={() => onOpenDetails(template)}
     >
       {/* ── IMAGE ── */}
-      <div className="relative overflow-hidden bg-slate-100 aspect-[16/10]">
+      <div className="relative overflow-hidden bg-slate-900/5 aspect-[16/10] flex items-center justify-center">
         {!imgLoaded && !imgError && (
           <div className="absolute inset-0 bg-slate-100 animate-pulse flex items-center justify-center z-10">
             <span className="text-xs text-slate-400 font-medium tracking-wide">⚡ {template.name}</span>
@@ -255,13 +283,13 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
         )}
 
         <img
-          src={imgError ? 'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?auto=format&fit=crop&w=800&q=80' : `${cardThumbnail}${cardThumbnail.includes('?') ? '&' : '?'}auto=format&fit=crop&w=800&q=80`}
+          src={imgError ? 'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?auto=format&fit=crop&w=800&q=80' : imageSrc}
           alt={template.name}
           onLoad={() => setImgLoaded(true)}
           onError={() => { setImgError(true); setImgLoaded(true); }}
           loading="lazy"
           decoding="async"
-          className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+          className="w-full h-full object-contain transition-transform duration-500 ease-out group-hover:scale-105"
         />
 
         {/* Top Badges */}
@@ -321,7 +349,7 @@ export default function ProductCard({ template, onSelect, onOpenDetails }: Produ
 
         {/* Features — top 3 */}
         <div className="flex flex-col gap-1.5 mb-4 flex-grow">
-          {vietnameseCopy.features.map((f: string, i: number) => (
+          {displayFeatures.map((f: string, i: number) => (
             <div key={i} className="flex items-center gap-2 text-xs text-slate-600">
               <Check className="w-3.5 h-3.5 shrink-0 text-blue-600" />
               <span className="line-clamp-1">{f}</span>

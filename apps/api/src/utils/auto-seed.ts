@@ -28,10 +28,10 @@ const LEGACY_TEMPLATE_CONTENT = [
   },
   {
     slug: 'modern-corporate',
-    name: 'Modern Corporate Pro',
-    shortDescription: 'Tập đoàn BĐS · Tổng công ty · Sàn lớn 100+ nhân sự',
-    thumbnail: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800',
-    features: ['Mega Menu Đa Tầng', 'Grid Dự Án Phân Phối', 'Trang Đối Tác & Tuyển Dụng', 'Timeline Doanh Nghiệp'],
+    name: 'BĐS 03 — Tuấn Nhân Land (Đất Nền & Nghỉ Dưỡng)',
+    shortDescription: 'Chuyên đất nền phân lô, đất vườn sinh thái & biệt thự đồi nghỉ dưỡng Bảo Lộc - Lâm Đồng',
+    thumbnail: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800',
+    features: ['Lưới 8 Sản Phẩm Đất Nền & Vườn', 'BĐS Theo Địa Điểm 3 Vùng', '3 Dự Án Sổ Đỏ Sẵn Thổ Cư', 'Tích Hợp Hotline & Zalo Tư Vấn'],
     priceBuy: 499000,
     priceBuySource: 799000,
     priceRentMonthly: 799000,
@@ -289,7 +289,7 @@ const DEFAULT_TEMPLATE_CONFIG = {
 const CANONICAL_BDS_NAMES = [
   'Template #01 - BatDongSan Classic Portal',
   'Template #02 - Modern Metro Portal',
-  'Template #03 - Luxury Realty Prestige',
+  'Template #03 - Tuấn Nhân Land (Đất Nền & Nghỉ Dưỡng)',
   'Template #04 - Density RaoVat Pro',
   'Template #05 - Map-Centric Interactive Portal',
   'Template #06 - Grand Riverside Eco-Township',
@@ -413,7 +413,7 @@ export async function syncCatalog() {
   const legacyAliases: Record<string, string> = {
     'luxury-gold': 'BĐS 01 — Biệt Thự Hoàng Gia',
     'minimal-white': 'BĐS 02 — Căn Hộ Tối Giản',
-    'modern-corporate': 'BĐS 03 — Sàn Giao Dịch Chuyên Nghiệp',
+    'modern-corporate': 'BĐS 03 — Tuấn Nhân Land (Đất Nền & Nghỉ Dưỡng)',
     'resort-paradise': 'BĐS 04 — Nghỉ Dưỡng Ven Biển',
     'urban-city': 'BĐS 05 — Đại Đô Thị Thông Minh',
     'industrial-estate': 'BĐS 06 — Khu Công Nghiệp Hiện Đại',

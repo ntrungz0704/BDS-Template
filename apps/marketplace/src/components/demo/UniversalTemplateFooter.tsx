@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { Send, Phone, ArrowUp, CheckCircle, MapPin, Mail, Clock, MessageSquare, MessageCircle, X } from 'lucide-react';
+import ZaloIcon from '../icons/ZaloIcon';
 import { MAX_W } from './design-system';
 
 export interface FooterColumnItem {
@@ -235,9 +236,9 @@ export default function UniversalTemplateFooter({
                 target="_blank"
                 rel="noreferrer"
                 title={`Chat Zalo CSKH (${phone})`}
-                className="w-10 h-10 rounded-2xl bg-[#0068FF] hover:bg-[#0052cc] text-white flex items-center justify-center font-black text-[11px] tracking-tight shadow-md hover:scale-105 transition"
+                className="w-10 h-10 rounded-2xl bg-[#0068FF] hover:bg-[#0052cc] text-white flex items-center justify-center p-2 shadow-md hover:scale-105 transition"
               >
-                ZALO
+                <ZaloIcon className="w-full h-full" />
               </a>
               <a
                 href="https://www.facebook.com/groups/847532091275214"
@@ -387,10 +388,10 @@ export default function UniversalTemplateFooter({
           href={`https://zalo.me/${zalo}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-12 h-12 rounded-full bg-[#0068FF] hover:bg-[#0052cc] text-white shadow-xl shadow-blue-600/40 flex items-center justify-center font-black text-xs border-2 border-white/80 hover:scale-110 active:scale-95 transition-all"
+          className="w-12 h-12 rounded-full bg-[#0068FF] hover:bg-[#0052cc] text-white shadow-xl shadow-blue-600/40 flex items-center justify-center p-2.5 border-2 border-white/80 hover:scale-110 active:scale-95 transition-all"
           title={`Chat Zalo CSKH (${phone})`}
         >
-          ZALO
+          <ZaloIcon className="w-full h-full" />
         </a>
 
         {/* Hotline Call Button */}

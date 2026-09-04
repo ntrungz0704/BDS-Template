@@ -63,90 +63,59 @@ export class WebsiteProvisioningService {
     const actualTemplateId = template.id;
     const templateSlug = template.slug;
 
-    // Resolve template config with complete alias mappings
-    const aliasMap: Record<string, string> = {
-      'eco-living': 'eco-green',
-      'eco-green': 'eco-green',
-      'template-eco-living': 'eco-green',
-      'template-eco-green': 'eco-green',
-      'luxury-villa': 'villa-premium',
-      'premium-villa': 'villa-premium',
-      'villa-premium': 'villa-premium',
-      'template-luxury-villa': 'villa-premium',
-      'modern-corporate': 'modern-corporate',
-      'corporate-tower': 'modern-corporate',
-      'template-modern-corporate': 'modern-corporate',
-      'urban-city': 'urban-city',
-      'smart-urban': 'urban-city',
-      'template-urban-city': 'urban-city',
-      'industrial-estate': 'industrial-estate',
-      'industrial-park': 'industrial-estate',
-      'template-industrial-estate': 'industrial-estate',
-      'investment-pro': 'investment-pro',
-      'invest-pro': 'investment-pro',
-      'template-investment-pro': 'investment-pro',
-      'classic-heritage': 'classic-heritage',
-      'classic-elegant': 'classic-heritage',
-      'template-classic-heritage': 'classic-heritage',
-      'agency-onepage': 'landing-high-convert',
-      'landing-high-convert': 'landing-high-convert',
-      'template-agency-onepage': 'landing-high-convert',
-      'retail-commercial': 'retail-shophouse',
-      'retail-shophouse': 'retail-shophouse',
-      'template-retail-commercial': 'retail-shophouse',
-      'listing-portal': 'mega-portal',
-      'mega-portal': 'mega-portal',
-      'template-listing-portal': 'mega-portal',
-      'personal-agent': 'personal-agent',
-      'template-personal-agent': 'personal-agent',
-      'auction-bds': 'auction-platform',
-      'auction-platform': 'auction-platform',
-      'template-auction-bds': 'auction-platform',
-      'land-plot': 'land-plot',
-      'template-land-plot': 'land-plot',
-      'minimal-white': 'minimal-white',
-      'template-minimal-white': 'minimal-white',
-      'luxury-gold': 'luxury-gold',
-      'template-luxury-gold': 'luxury-gold',
-      'resort-paradise': 'resort-paradise',
-      'template-resort-paradise': 'resort-paradise',
-      'apple-minimal': 'apple-minimal',
-      // BDS slugs → legacy config keys
-      'bds-01': 'luxury-gold',
-      'bds-02': 'minimal-white',
-      'bds-03': 'modern-corporate',
-      'bds-04': 'resort-paradise',
-      'bds-05': 'urban-city',
-      'bds-06': 'industrial-estate',
-      'bds-07': 'villa-premium',
-      'bds-08': 'eco-green',
-      'bds-09': 'classic-heritage',
-      'bds-10': 'investment-pro',
-      'bds-11': 'landing-high-convert',
-      'bds-12': 'mega-portal',
-      'bds-13': 'auction-platform',
-      'bds-14': 'land-plot',
-      'bds-15': 'retail-shophouse',
-      'bds-16': 'personal-agent',
-      'bds-17': 'mega-portal',
-      'bds-18': 'mega-portal',
-      'bds-19': 'mega-portal',
-      'bds-20': 'luxury-gold',
-      'bds-21': 'mega-portal',
-      'bds-22': 'resort-paradise',
-      'bds-23': 'landing-high-convert',
-      'bds-24': 'mega-portal',
-      'lp-01': 'luxury-gold',
-      'lp-02': 'villa-premium',
-      'lp-03': 'land-plot',
-      'lp-04': 'personal-agent',
-      'lp-05': 'resort-paradise',
-      'lp-06': 'urban-city',
-      'lp-07': 'eco-green',
+    // Resolve template config: prioritize canonical STT slugs (bds-01..bds-24, lp-01..lp-07)
+    // and map old legacy slugs back to their canonical STT definitions.
+    const legacyToSTTMap: Record<string, string> = {
+      'luxury-gold': 'bds-01',
+      'template-luxury-gold': 'bds-01',
+      'minimal-white': 'bds-02',
+      'template-minimal-white': 'bds-02',
+      'apple-minimal': 'bds-02',
+      'modern-corporate': 'bds-03',
+      'corporate-tower': 'bds-03',
+      'template-modern-corporate': 'bds-03',
+      'resort-paradise': 'bds-04',
+      'template-resort-paradise': 'bds-04',
+      'urban-city': 'bds-05',
+      'smart-urban': 'bds-05',
+      'template-urban-city': 'bds-05',
+      'industrial-estate': 'bds-06',
+      'industrial-park': 'bds-06',
+      'template-industrial-estate': 'bds-06',
+      'villa-premium': 'bds-07',
+      'luxury-villa': 'bds-07',
+      'template-luxury-villa': 'bds-07',
+      'eco-green': 'bds-08',
+      'eco-living': 'bds-08',
+      'template-eco-living': 'bds-08',
+      'classic-heritage': 'bds-09',
+      'classic-elegant': 'bds-09',
+      'template-classic-heritage': 'bds-09',
+      'investment-pro': 'bds-10',
+      'invest-pro': 'bds-10',
+      'template-investment-pro': 'bds-10',
+      'landing-high-convert': 'bds-11',
+      'agency-onepage': 'bds-11',
+      'template-agency-onepage': 'bds-11',
+      'mega-portal': 'bds-12',
+      'listing-portal': 'bds-12',
+      'template-listing-portal': 'bds-12',
+      'auction-platform': 'bds-13',
+      'auction-bds': 'bds-13',
+      'template-auction-bds': 'bds-13',
+      'land-plot': 'bds-14',
+      'template-land-plot': 'bds-14',
+      'retail-shophouse': 'bds-15',
+      'retail-commercial': 'bds-15',
+      'template-retail-commercial': 'bds-15',
+      'personal-agent': 'bds-16',
+      'template-personal-agent': 'bds-16',
     };
 
-    const resolvedConfigKey = aliasMap[templateSlug] || aliasMap[templateId] || templateSlug;
-    const templateConfig = TEMPLATE_CONFIGS[resolvedConfigKey] || TEMPLATE_CONFIGS['luxury-gold'] || TEMPLATE_CONFIGS['minimal-white'] || ({} as any);
+    const targetKey = (templateSlug || templateId || '').toLowerCase().replace(/^template-/, '');
+    const isSTT = targetKey.startsWith('bds-') || targetKey.startsWith('lp-');
+    const resolvedConfigKey = isSTT ? targetKey : (legacyToSTTMap[targetKey] || legacyToSTTMap[templateSlug] || targetKey);
+    const templateConfig = TEMPLATE_CONFIGS[resolvedConfigKey] || TEMPLATE_CONFIGS['bds-03'] || TEMPLATE_CONFIGS['bds-01'] || ({} as any);
     const registryTemplate = TemplateRegistry.get(actualTemplateId) || TemplateRegistry.get(templateSlug) || TemplateRegistry.get(resolvedConfigKey);
 
     // Resolve template version
@@ -246,13 +215,14 @@ export class WebsiteProvisioningService {
         },
       });
 
-      // d. Clone ThemeSettings
-      const defaultTheme = registryTemplate?.defaultConfig?.themeConfig || {
-        primaryColor: templateConfig?.theme?.primaryBg || '#0B132B',
-        secondaryColor: templateConfig?.theme?.secondaryBg || '#1C2541',
-        accentColor: templateConfig?.theme?.accentBtn || '#D4AF37',
-        backgroundColor: templateConfig?.theme?.cardBg || '#FFFFFF',
-        textColor: templateConfig?.theme?.primaryText || '#1A1A2E',
+      // d. Clone ThemeSettings (use templateConfig.themeConfig or true hex colors)
+      const cfgTheme = templateConfig?.themeConfig;
+      const defaultTheme = cfgTheme || registryTemplate?.defaultConfig?.themeConfig || {
+        primaryColor: (templateConfig as any)?.theme?.primaryColor || '#4A2810',
+        secondaryColor: (templateConfig as any)?.theme?.secondaryColor || '#2D190A',
+        accentColor: (templateConfig as any)?.theme?.accentColor || '#D97706',
+        backgroundColor: (templateConfig as any)?.theme?.backgroundColor || '#FCFBF9',
+        textColor: (templateConfig as any)?.theme?.textColor || '#1E293B',
         fontHeading: 'Playfair Display, serif',
         fontBody: 'Plus Jakarta Sans, sans-serif',
         borderRadius: '8px',
@@ -262,16 +232,16 @@ export class WebsiteProvisioningService {
       await tx.tenantThemeSettings.create({
         data: {
           tenantId: tenant.id,
-          primaryColor: defaultTheme.primaryColor || '#0B132B',
-          secondaryColor: defaultTheme.secondaryColor || '#1C2541',
-          accentColor: defaultTheme.accentColor || '#D4AF37',
-          backgroundColor: defaultTheme.backgroundColor || '#FFFFFF',
-          surfaceColor: defaultTheme.surfaceColor || '#F8FAFC',
-          textColor: defaultTheme.textColor || '#1A1A2E',
+          primaryColor: defaultTheme.primaryColor || '#4A2810',
+          secondaryColor: defaultTheme.secondaryColor || '#2D190A',
+          accentColor: defaultTheme.accentColor || '#D97706',
+          backgroundColor: defaultTheme.backgroundColor || '#FCFBF9',
+          surfaceColor: defaultTheme.surfaceColor || '#FFFFFF',
+          textColor: defaultTheme.textColor || '#1E293B',
           textMutedColor: defaultTheme.textMutedColor || '#64748B',
           borderColor: defaultTheme.borderColor || '#E2E8F0',
-          fontHeading: defaultTheme.fontHeading || 'Plus Jakarta Sans',
-          fontBody: defaultTheme.fontBody || 'Inter',
+          fontHeading: defaultTheme.fontHeading || 'Playfair Display, serif',
+          fontBody: defaultTheme.fontBody || 'Plus Jakarta Sans, sans-serif',
           fontSizeBase: defaultTheme.fontSizeBase || '16px',
           lineHeight: defaultTheme.lineHeight || '1.6',
           containerWidth: defaultTheme.containerWidth || '1280px',
@@ -284,17 +254,19 @@ export class WebsiteProvisioningService {
       });
 
       // e. Clone CompanyInfo defaults
+      const compDefaults = templateConfig?.companyInfo;
       await tx.companyInfo.create({
         data: {
           tenantId: tenant.id,
-          name: websiteName,
-          email: customerEmail,
-          phone: customerPhone,
-          slogan: templateConfig?.tagline || 'Bất Động Sản Cao Cấp & Đầu Tư Thông Minh',
-          description: templateConfig?.heroSubtitle || 'Hệ thống website bất động sản phân phối dự án chuyên nghiệp.',
-          address: templateConfig?.location?.highlights?.[0] || 'Tầng 15, Tòa nhà Landmark, TP. HCM',
+          name: websiteName || compDefaults?.name || 'Bất Động Sản',
+          email: customerEmail || compDefaults?.email || 'contact@aireviewbds.com',
+          phone: customerPhone || compDefaults?.phone || '0909.568.888',
+          slogan: compDefaults?.slogan || templateConfig?.tagline || 'Bất Động Sản Cao Cấp & Đầu Tư Thông Minh',
+          description: compDefaults?.aboutContent || templateConfig?.heroSubtitle || 'Hệ thống website bất động sản phân phối dự án chuyên nghiệp.',
+          address: compDefaults?.address || 'Việt Nam',
           workingHours: '8h00 - 20h00',
-          aboutContent: templateConfig?.location?.desc || 'Đơn vị phân phối và phát triển bất động sản uy tín hàng đầu.',
+          aboutContent: compDefaults?.aboutContent || 'Đơn vị phân phối và phát triển bất động sản uy tín hàng đầu.',
+          logo: compDefaults?.logo || null,
         },
       });
 
@@ -304,14 +276,14 @@ export class WebsiteProvisioningService {
           id: 'hero',
           name: 'Hero Banner (Tiêu Đề & Ảnh Lớn)',
           content: {
-            badge: templateConfig?.tagline || 'BẤT ĐỘNG SẢN CAO CẤP',
-            heading: templateConfig?.heroTitle || 'Không Gian Sống Thượng Lưu',
-            headingAccent: 'Đỉnh Cao',
-            subtitle: templateConfig?.heroSubtitle || 'Kiến trúc hiện đại, tiện ích chuẩn quốc tế, hòa mình cùng thiên nhiên xanh mát.',
-            ctaText: 'Nhận Bảng Giá & Ưu Đãi',
-            ctaUrl: '#contact',
-            backgroundImage: templateConfig?.heroImage || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600',
-            quickStats: [
+            badge: templateConfig?.heroBanner?.badge || templateConfig?.badge || templateConfig?.tagline || 'BẤT ĐỘNG SẢN CAO CẤP',
+            heading: websiteName || templateConfig?.heroBanner?.heading || templateConfig?.heroTitle || 'Không Gian Sống Thượng Lưu',
+            headingAccent: templateConfig?.heroBanner?.headingAccent || 'Đỉnh Cao',
+            subtitle: templateConfig?.heroBanner?.subtitle || compDefaults?.slogan || templateConfig?.heroSubtitle || 'Kiến trúc hiện đại, tiện ích chuẩn quốc tế, hòa mình cùng thiên nhiên xanh mát.',
+            ctaText: templateConfig?.heroBanner?.ctaText || 'Nhận Bảng Giá & Ưu Đãi',
+            ctaUrl: templateConfig?.heroBanner?.ctaUrl || '#san-pham',
+            backgroundImage: templateConfig?.heroBanner?.backgroundImage || templateConfig?.heroImage || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1600',
+            quickStats: templateConfig?.heroBanner?.quickStats || [
               { label: 'Quy mô', value: '45 Hecta' },
               { label: 'Mật độ xanh', value: '82%' },
               { label: 'Bàn giao', value: 'Quý 4/2026' }
@@ -628,7 +600,6 @@ export class WebsiteProvisioningService {
         { title: 'Biệt Thự Compound Ven Sông', type: 'VILLA', price: 'Từ 18 Tỷ VNĐ', area: '320m²', address: 'TP. Thủ Đức', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800' },
         { title: 'Shophouse Đại Lộ Thương Mại', type: 'SHOPHOUSE', price: 'Từ 12 Tỷ VNĐ', area: '150m²', address: 'Khu đô thị mới', image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800' },
       ];
-
       const minSeedCount = isBDS02 ? 6 : 3;
       for (let k = seededProjectCount; k < minSeedCount; k++) {
         const fallback = projectFallbacks[k];
@@ -652,10 +623,8 @@ export class WebsiteProvisioningService {
         });
       }
 
-      // h. Clone Default Posts
-      // Seed content belongs to the immutable template package/registry, not
-      // to provisioning code. A template may intentionally start with no posts.
-      const samplePosts = registryTemplate?.defaultPosts || [];
+            // h. Clone Default Posts from templateConfig
+      const samplePosts = templateConfig?.demoPosts || registryTemplate?.defaultPosts || [];
 
       for (let k = 0; k < samplePosts.length; k++) {
         const sp = samplePosts[k];
@@ -663,10 +632,10 @@ export class WebsiteProvisioningService {
           data: {
             tenantId: tenant.id,
             title: sp.title,
-          slug: sp.slug || `${templateId}-post-${k + 1}`,
-            summary: sp.summary,
-            content: sp.content,
-            thumbnail: sp.thumbnail,
+            slug: sp.slug || `${actualTemplateId}-post-${k + 1}`,
+            summary: sp.summary || sp.desc || sp.title,
+            content: sp.content || sp.summary || sp.title,
+            thumbnail: sp.thumbnail || sp.image || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800',
             published: true,
             publishedAt: new Date(),
           }
@@ -674,28 +643,30 @@ export class WebsiteProvisioningService {
       }
 
       const seededPostCount = await tx.post.count({ where: { tenantId: tenant.id } });
-      const postFallbacks = [
-        ['Cập nhật thị trường bất động sản 2026', 'Phân tích nguồn cung, mặt bằng giá và cơ hội đầu tư đáng chú ý trong năm 2026.'],
-        ['Cẩm nang kiểm tra pháp lý trước khi xuống tiền', 'Danh sách hồ sơ và các bước thẩm định giúp người mua hạn chế rủi ro trong giao dịch.'],
-        ['Kinh nghiệm chọn sản phẩm phù hợp dòng tiền', 'Cách so sánh vị trí, tiện ích, tiến độ thanh toán và khả năng khai thác cho thuê.'],
-      ];
-      for (let k = seededPostCount; k < 3; k++) {
-        const [title, summary] = postFallbacks[k];
-        await tx.post.create({
-          data: {
-            tenantId: tenant.id,
-            title,
-            slug: `${actualTemplateId}-news-default-${k + 1}`,
-            summary,
-            content: `<p>${summary}</p><p>Liên hệ đội ngũ chuyên viên để nhận báo cáo chi tiết và dữ liệu cập nhật.</p>`,
-            thumbnail: projectFallbacks[k].image,
-            published: true,
-            publishedAt: new Date(),
-          },
-        });
+      if (seededPostCount === 0) {
+        const postFallbacks = [
+          ['Cập nhật thị trường bất động sản 2026', 'Phân tích nguồn cung, mặt bằng giá và cơ hội đầu tư đáng chú ý trong năm 2026.'],
+          ['Cẩm nang kiểm tra pháp lý trước khi xuống tiền', 'Danh sách hồ sơ và các bước thẩm định giúp người mua hạn chế rủi ro trong giao dịch.'],
+          ['Kinh nghiệm chọn sản phẩm phù hợp dòng tiền', 'Cách so sánh vị trí, tiện ích, tiến độ thanh toán và khả năng khai thác cho thuê.'],
+        ];
+        for (let k = 0; k < 3; k++) {
+          const [title, summary] = postFallbacks[k];
+          await tx.post.create({
+            data: {
+              tenantId: tenant.id,
+              title,
+              slug: `${actualTemplateId}-news-default-${k + 1}`,
+              summary,
+              content: `<p>${summary}</p><p>Liên hệ đội ngũ chuyên viên để nhận báo cáo chi tiết và dữ liệu cập nhật.</p>`,
+              thumbnail: projectFallbacks[k]?.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800',
+              published: true,
+              publishedAt: new Date(),
+            },
+          });
+        }
       }
 
-      // i. Create default Menu & MenuItems
+// i. Create default Menu & MenuItems
       const menu = await tx.menu.create({
         data: {
           tenantId: tenant.id,

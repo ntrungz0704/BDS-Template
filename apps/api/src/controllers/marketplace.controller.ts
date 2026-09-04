@@ -1199,3 +1199,136 @@ export async function syncUserCart(req: Request, res: Response, next: NextFuncti
   }
 }
 
+export async function syncTenantContent(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { orderNumber, tenantId: rawTenantId, companyInfo, projects } = req.body;
+
+    let tenantId = rawTenantId;
+    if (!tenantId && orderNumber) {
+      const ord = await prisma.order.findUnique({
+        where: { orderNumber },
+        select: { tenantId: true },
+      });
+      if (ord?.tenantId) {
+        tenantId = ord.tenantId;
+      }
+    }
+
+    if (!tenantId) {
+      return res.status(400).json({
+        success: false,
+        error: { code: 'TENANT_NOT_FOUND', message: 'Không tìm thấy thông tin website/tenant để cập nhật.' },
+      });
+    }
+
+    const tenant = await prisma.tenant.findUnique({
+      where: { id: tenantId },
+      select: { id: true, slug: true },
+    });
+
+    if (!tenant) {
+      return res.status(404).json({
+        success: false,
+        error: { code: 'TENANT_NOT_FOUND', message: 'Website không tồn tại.' },
+      });
+    }
+
+    // 1. Cập nhật CompanyInfo
+    if (companyInfo && typeof companyInfo === 'object') {
+      await prisma.companyInfo.upsert({
+        where: { tenantId: tenant.id },
+        create: {
+          tenantId: tenant.id,
+          name: companyInfo.name || undefined,
+          slogan: companyInfo.slogan || undefined,
+          phone: companyInfo.phone || undefined,
+          hotline: companyInfo.phone || undefined,
+          zalo: companyInfo.zalo || undefined,
+          email: companyInfo.email || undefined,
+          address: companyInfo.address || undefined,
+          facebook: companyInfo.facebook || undefined,
+          description: companyInfo.description || undefined,
+        },
+        update: {
+          name: companyInfo.name || undefined,
+          slogan: companyInfo.slogan || undefined,
+          phone: companyInfo.phone || undefined,
+          hotline: companyInfo.phone || undefined,
+          zalo: companyInfo.zalo || undefined,
+          email: companyInfo.email || undefined,
+          address: companyInfo.address || undefined,
+          facebook: companyInfo.facebook || undefined,
+          description: companyInfo.description || undefined,
+          updatedAt: new Date(),
+        },
+      });
+
+      if (companyInfo.name) {
+        await prisma.tenant.update({
+          where: { id: tenant.id },
+          data: { name: companyInfo.name },
+        }).catch(() => {});
+      }
+    }
+
+    // 2. Cập nhật các Projects nếu có
+    if (Array.isArray(projects) && projects.length > 0) {
+      for (const [idx, p] of projects.entries()) {
+        const title = p.title || `Dự án #${idx + 1}`;
+        const slug = p.slug || `du-an-${idx + 1}-${Date.now().toString().slice(-4)}`;
+        const existingProj = await prisma.project.findFirst({
+          where: {
+            tenantId: tenant.id,
+            OR: [
+              ...(p.id && typeof p.id === 'string' ? [{ id: p.id }] : []),
+              { title },
+              { slug },
+            ],
+          },
+        });
+
+        if (existingProj) {
+          await prisma.project.update({
+            where: { id: existingProj.id },
+            data: {
+              title,
+              price: p.price || existingProj.price,
+              area: p.area || existingProj.area,
+              address: p.address || existingProj.address,
+              thumbnail: p.thumbnail || existingProj.thumbnail,
+              images: Array.isArray(p.images) ? p.images : existingProj.images,
+              amenities: Array.isArray(p.amenities) ? p.amenities : existingProj.amenities,
+              description: p.description || existingProj.description,
+            },
+          }).catch(() => {});
+        } else {
+          await prisma.project.create({
+            data: {
+              tenantId: tenant.id,
+              title,
+              slug,
+              price: p.price || 'Liên hệ',
+              area: p.area || 'Đang cập nhật',
+              address: p.address || 'Hà Nội',
+              thumbnail: p.thumbnail || 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80',
+              images: Array.isArray(p.images) ? p.images : [],
+              amenities: Array.isArray(p.amenities) ? p.amenities : [],
+              description: p.description || '',
+              published: true,
+              publishedAt: new Date(),
+            },
+          }).catch(() => {});
+        }
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Đồng bộ nội dung website CMS thành công!',
+      data: { tenantSlug: tenant.slug },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+

@@ -469,29 +469,123 @@ export const resolvePageAndDetail = (p?: string) => {
   return { page: 'home', propSlug: '', artSlug: '' };
 };
 
-export default function BDS03Template({ template, viewport = 'desktop', initialPage = 'home', company, theme, projects, posts , pageContent }: TemplateProps) {
+export default function BDS03Template({ template, viewport = 'desktop', initialPage = 'home', company, theme, projects, posts, pageContent }: TemplateProps) {
   // CMS Dynamic Section Data
   const cmsHero = getCmsHero(pageContent);
   const cmsStats = getCmsQuickStats(pageContent, []);
   const cmsPolicies = getCmsPolicies(pageContent, []);
 
+  const primaryColor = theme?.primaryColor || '#4A2810';
+  const secondaryColor = theme?.secondaryColor || '#5C3A21';
+  const accentColor = theme?.accentColor || '#D97706';
+
+  const companyName = company?.name || 'Bất động sản Tuấn Nhân';
+  const companySlogan = company?.slogan || 'Chuyên phân phối đất nền phân lô, đất vườn sinh thái & biệt thự đồi nghỉ dưỡng tại Bảo Lộc - Bảo Lâm - Di Linh - Lâm Đồng.';
+  const companyPhone = company?.phone || (company as any)?.hotline || '0909.568.888';
+  const companyZalo = (company as any)?.zalo || companyPhone;
+  const companyEmail = company?.email || 'tuannhanbds@gmail.com';
+  const companyAddress = company?.address || 'Đường Trần Phú (QL20), Phường 1, TP. Bảo Lộc, Lâm Đồng';
+  const companyLogo = company?.logo;
+  const companyAbout = (company as any)?.aboutContent || (company as any)?.description || 'Bất Động Sản Tuấn Nhân là đơn vị tiên phong trong lĩnh vực tư vấn, đầu tư và phát triển các sản phẩm đất nền nghỉ dưỡng, đất vườn sinh thái và nhà phố tại thị trường Bảo Lộc, Bảo Lâm, Di Linh - Tỉnh Lâm Đồng.';
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
+
+  const activeProperties = useMemo<PropertyItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): PropertyItem => {
+        const cat = (p.type?.toLowerCase().includes('vườn') || p.category === 'dat-vuon')
+          ? 'dat-vuon'
+          : (p.type?.toLowerCase().includes('đất') || p.type === 'LAND')
+          ? 'dat-nen'
+          : (p.type?.toLowerCase().includes('biệt') || p.type === 'VILLA')
+          ? 'biet-thu'
+          : 'nha-pho';
+        return {
+          id: p.id || idx + 1,
+          title: p.title || p.name || 'Bất động sản Bảo Lộc - Lâm Đồng',
+          slug: p.slug || `bds-${idx + 1}`,
+          category: cat,
+          type: p.type || 'Nhà đất',
+          price: p.price || (p.priceFrom ? `${p.priceFrom} Tỷ` : 'Liên hệ'),
+          priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 3.5),
+          area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '100 m²'),
+          areaNum: typeof p.area === 'number' ? p.area : 100,
+          location: p.address || p.location || 'TP. Bảo Lộc, Lâm Đồng',
+          district: p.district || 'Bảo Lộc',
+          province: p.province || p.city || 'Lâm Đồng',
+          legal: p.legal || 'Sổ hồng riêng',
+          badge: p.badge || 'Sổ Sẵn',
+          image: p.thumbnail || p.image || p.images?.[0] || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+          gallery: p.gallery || [p.thumbnail || p.image || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80'],
+          date: p.date || 'Hôm nay',
+          featured: Boolean(p.featured || idx < 4),
+          desc: p.description || p.desc || 'Vị trí đắc địa, cảnh quan tuyệt đẹp, khí hậu ôn hòa quanh năm.',
+          author: {
+            name: companyName,
+            phone: companyPhone,
+            zalo: companyZalo,
+            avatar: companyLogo || 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80',
+          }
+        };
+      });
+    }
+    return BDS03_PROPERTIES;
+  }, [projects, companyName, companyPhone, companyZalo, companyLogo]);
+
+  const activeProjects = useMemo<ProjectItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      const projs = projects.filter((p: any) => p.scale || p.isProject || p.type === 'PROJECT');
+      if (projs.length > 0) {
+        return projs.map((p: any, idx: number): ProjectItem => ({
+          id: p.id || idx + 1,
+          title: p.title || p.name || 'Dự án nghỉ dưỡng',
+          slug: p.slug || `du-an-${idx + 1}`,
+          scale: p.scale || p.area || 'Quy mô chuẩn',
+          price: p.price || (p.priceFrom ? `Từ ${p.priceFrom} Tỷ` : 'Liên hệ'),
+          priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 1.2),
+          location: p.address || p.location || 'Lâm Đồng',
+          status: p.status || 'Đang mở bán',
+          image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+          desc: p.description || p.desc || 'Quần thể nghỉ dưỡng sinh thái chuẩn 5 sao.'
+        }));
+      }
+    }
+    return BDS03_PROJECTS;
+  }, [projects]);
+
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức thị trường bất động sản',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || companyName,
+        category: p.category || 'Thị Trường',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+        desc: p.summary || p.excerpt || 'Cập nhật tin tức thị trường BĐS mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+    }
+    return BDS03_NEWS;
+  }, [posts, companyName]);
 
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [selectedProperty, setSelectedProperty] = useState<PropertyItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS03_PROPERTIES.find(p => p.slug === initialParsed.propSlug);
+      const found = activeProperties.find(p => p.slug === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS03_PROPERTIES[0];
+    return activeProperties[0] || BDS03_PROPERTIES[0];
   });
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = BDS03_NEWS.find(a => a.slug === initialParsed.artSlug);
+      const found = activeNews.find(a => a.slug === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS03_NEWS[0];
+    return activeNews[0] || BDS03_NEWS[0];
   });
 
   // Filter state
@@ -511,11 +605,11 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
     const res = resolvePageAndDetail(initialPage);
     setCurrentPageState(res.page);
     if (res.propSlug) {
-      const found = BDS03_PROPERTIES.find(p => p.slug === res.propSlug);
+      const found = activeProperties.find(p => p.slug === res.propSlug);
       if (found) setSelectedProperty(found);
     }
     if (res.artSlug) {
-      const found = BDS03_NEWS.find(a => a.slug === res.artSlug);
+      const found = activeNews.find(a => a.slug === res.artSlug);
       if (found) setSelectedArticle(found);
     }
   }, [initialPage]);
@@ -565,7 +659,7 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
 
   // Filtered properties
   const filteredProperties = useMemo(() => {
-    return BDS03_PROPERTIES.filter(item => {
+    return activeProperties.filter(item => {
       if (['dat-nen', 'dat-vuon', 'biet-thu', 'nha-pho'].includes(currentPage)) {
         if (item.category !== currentPage) return false;
       }
@@ -591,25 +685,25 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
     });
   }, [currentPage, filterCategory, filterLocation, searchKeyword, filterPrice, filterArea]);
 
-  const activeHotline = company?.phone || '0919 006 030';
-  const hotlineTel = activeHotline.replace(/[^0-9]/g, '') || '0919006030';
-  const activeEmail = company?.email || 'ntrungz0704@gmail.com';
+  const activeHotline = companyPhone;
+  const hotlineTel = activeHotline.replace(/[^0-9]/g, '') || '0909568888';
+  const activeEmail = companyEmail;
 
   // ── RENDER HEADER ──
   const renderHeader = () => (
-    <header className="w-full bg-[#4A2810] text-white sticky top-0 z-40 shadow-md">
+    <header className="w-full text-white sticky top-0 z-40 shadow-md" style={{ backgroundColor: primaryColor }}>
       {/* Top Hotline Bar */}
-      <div className="bg-[#351C0A] border-b border-white/10 text-xs py-1.5 px-4 text-amber-100/80">
+      <div className="border-b border-white/10 text-xs py-1.5 px-4 text-amber-100/80" style={{ backgroundColor: secondaryColor }}>
         <div className={`${MAX_W} mx-auto flex flex-wrap justify-between items-center gap-2`}>
           <div className="flex items-center gap-4 text-[11px] truncate">
-            <span className="hidden sm:inline font-semibold">KHO MẪU WEBSITE BẤT ĐỘNG SẢN CAO CẤP SỐ 1 VIỆT NAM</span>
+            <span className="hidden sm:inline font-semibold">{companyAddress}</span>
             <a href={`mailto:${activeEmail}`} className="hover:text-amber-300 transition flex items-center gap-1">
               <Mail size={11} className="text-amber-400" /> {activeEmail}
             </a>
           </div>
           <div className="flex items-center gap-4 text-[11px]">
-            <a href={`tel:${hotlineTel}`} className="flex items-center gap-1 font-bold text-amber-300 hover:text-white transition">
-              <Phone size={11} className="text-amber-400" /> Hotline: {activeHotline}
+            <a href={`tel:${hotlineTel}`} className="flex items-center gap-1 font-bold hover:text-white transition" style={{ color: accentColor }}>
+              <Phone size={11} /> Hotline: {activeHotline}
             </a>
           </div>
         </div>
@@ -619,15 +713,27 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
       <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4`}>
         {/* Brand Logo */}
         <div onClick={() => navigate('home')} className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-[#4A2810] font-black text-base sm:text-xl shadow-md group-hover:scale-105 transition shrink-0">
-            TB
-          </div>
+          {companyLogo ? (
+            <img
+              src={companyLogo}
+              alt={companyName}
+              className="h-8 sm:h-10 w-auto object-contain rounded shrink-0 shadow-sm"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
+          ) : (
+            <div
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center font-black text-base sm:text-xl shadow-md group-hover:scale-105 transition shrink-0"
+              style={{ backgroundColor: accentColor, color: primaryColor }}
+            >
+              {companyName.slice(0, 2).toUpperCase()}
+            </div>
+          )}
           <div className="min-w-0 truncate">
-            <div className="text-base sm:text-lg font-black tracking-wider text-amber-300 uppercase leading-none group-hover:text-white transition truncate">
-              {company?.name || 'TEMPLATESBDS'}
+            <div className="text-base sm:text-lg font-black tracking-wider uppercase leading-none group-hover:text-white transition truncate" style={{ color: accentColor }}>
+              {companyName}
             </div>
             <div className="text-[7.5px] sm:text-[10px] text-amber-100/70 font-semibold tracking-wider mt-0.5 truncate">
-              {company?.slogan || 'Kho Mẫu Website Bất Động Sản Cao Cấp Số 1 Việt Nam'}
+              {companySlogan}
             </div>
           </div>
         </div>
@@ -650,9 +756,10 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
                 onClick={() => navigate(navItem.id)}
                 className={`whitespace-nowrap px-3 py-2 rounded-md transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-amber-500 text-slate-950 font-black shadow-sm'
+                    ? 'font-black shadow-sm'
                     : 'text-amber-100/90 hover:bg-white/10 hover:text-white'
                 }`}
+                style={isActive ? { backgroundColor: accentColor, color: '#1A1A1A' } : undefined}
               >
                 {navItem.label}
               </button>
@@ -664,7 +771,8 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
         <div className="hidden md:flex items-center gap-3 shrink-0">
           <a
             href={`tel:${hotlineTel}`}
-            className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs rounded-sm shadow-md transition flex items-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap shrink-0"
+            className="px-4 py-2 font-black text-xs rounded-sm shadow-md transition flex items-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap shrink-0 text-slate-950"
+            style={{ backgroundColor: accentColor }}
           >
             <Phone size={13} /> {activeHotline}
           </a>
@@ -682,7 +790,7 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#351C0A] border-t border-white/10 px-4 py-3 space-y-1 text-xs font-bold uppercase text-amber-100 shadow-xl">
+        <div className="lg:hidden border-t border-white/10 px-4 py-3 space-y-1 text-xs font-bold uppercase text-amber-100 shadow-xl" style={{ backgroundColor: secondaryColor }}>
           {[
             { id: 'home', label: 'Trang Chủ' },
             { id: 'san-pham-bds', label: 'Sản Phẩm BĐS' },
@@ -698,8 +806,9 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
                 key={navItem.id}
                 onClick={() => navigate(navItem.id)}
                 className={`block w-full text-left py-2.5 px-3 rounded cursor-pointer ${
-                  isActive ? 'bg-amber-500 text-slate-950 font-black' : 'hover:bg-white/10'
+                  isActive ? 'text-slate-950 font-black' : 'hover:bg-white/10'
                 }`}
+                style={isActive ? { backgroundColor: accentColor } : undefined}
               >
                 {navItem.label}
               </button>
@@ -707,7 +816,8 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
           })}
           <a
             href={`tel:${hotlineTel}`}
-            className="block w-full text-center py-2.5 px-3 bg-amber-500 text-slate-950 font-black rounded-lg mt-2 cursor-pointer"
+            className="block w-full text-center py-2.5 px-3 font-black rounded-lg mt-2 cursor-pointer text-slate-950"
+            style={{ backgroundColor: accentColor }}
           >
             📞 GỌI HOTLINE: {activeHotline}
           </a>
@@ -725,19 +835,23 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
       }}
     >
       <div className={`${MAX_W} mx-auto max-w-3xl space-y-4`}>
-        <span className="px-3.5 py-1 rounded-sm bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold uppercase tracking-widest inline-block">
+        <span
+          className="px-3.5 py-1 rounded-sm text-xs font-bold uppercase tracking-widest inline-block"
+          style={{ backgroundColor: 'rgba(217, 119, 6, 0.2)', color: accentColor, border: `1px solid ${accentColor}` }}
+        >
           SÀN GIAO DỊCH BẤT ĐỘNG SẢN TÂY NGUYÊN
         </span>
         <h1 className="text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-wider text-white leading-tight font-serif drop-shadow-md">
-          {company?.name || 'Bất động sản Tuấn Nhân'}
+          {companyName}
         </h1>
         <p className="text-xs sm:text-sm md:text-base text-amber-100/90 max-w-xl mx-auto font-medium">
-          Chuyên phân phối đất nền phân lô, đất vườn sinh thái & biệt thự đồi nghỉ dưỡng tại Bảo Lộc - Bảo Lâm - Di Linh - Lâm Đồng.
+          {companySlogan}
         </p>
         <div className="pt-3">
           <button
             onClick={() => navigate('san-pham-bds')}
-            className="px-8 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs uppercase tracking-wider rounded-sm shadow-xl transition transform hover:scale-105 active:scale-95 cursor-pointer"
+            className="px-8 py-3 text-slate-950 font-black text-xs uppercase tracking-wider rounded-sm shadow-xl transition transform hover:scale-105 active:scale-95 cursor-pointer"
+            style={{ backgroundColor: accentColor }}
           >
             Khám Phá Dự Án ›
           </button>
@@ -866,23 +980,24 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
       {/* 1. SẢN PHẨM BẤT ĐỘNG SẢN (8 CARDS AUTO-GRID) */}
       <section className={`${MAX_W} mx-auto px-4 space-y-6`}>
         <div className="text-center space-y-1">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-[#4A2810] font-serif uppercase tracking-wider">
-            Sản phẩm bất động sản
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-black font-serif uppercase tracking-wider" style={{ color: primaryColor }}>
+            SẢN PHẨM BẤT ĐỘNG SẢN
           </h2>
-          <div className="w-12 h-1 bg-amber-500 mx-auto rounded-sm" />
+          <div className="w-12 h-1 mx-auto rounded-sm" style={{ backgroundColor: accentColor }} />
           <p className="text-xs text-slate-500 max-w-md mx-auto pt-1">
             Danh sách đất nền, đất vườn sinh thái và nhà phố pháp lý sạch sẵn sàng giao dịch
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {BDS03_PROPERTIES.slice(0, 8).map(renderPropertyCard)}
+          {activeProperties.slice(0, 8).map(renderPropertyCard)}
         </div>
 
         <div className="flex justify-center pt-4">
           <button
             onClick={() => navigate('san-pham-bds')}
-            className="px-6 py-2.5 border-2 border-[#5C3A21] hover:bg-[#5C3A21] hover:text-white text-[#5C3A21] font-black text-xs rounded-sm transition cursor-pointer"
+            className="px-6 py-2.5 border-2 font-black text-xs rounded-sm transition cursor-pointer"
+            style={{ borderColor: primaryColor, color: primaryColor }}
           >
             Xem tất cả sản phẩm ›
           </button>
@@ -892,18 +1007,19 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
       {/* 2. DỰ ÁN NỔI BẬT */}
       <section className={`${MAX_W} mx-auto px-4 space-y-6`}>
         <div className="text-center space-y-1">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-[#4A2810] font-serif uppercase tracking-wider">
-            Dự án nổi bật
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-black font-serif uppercase tracking-wider" style={{ color: primaryColor }}>
+            DỰ ÁN NỔI BẬT
           </h2>
-          <div className="w-12 h-1 bg-amber-500 mx-auto rounded-sm" />
+          <div className="w-12 h-1 mx-auto rounded-sm" style={{ backgroundColor: accentColor }} />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {BDS03_PROJECTS.map(proj => (
+          {activeProjects.map(proj => (
             <div
               key={proj.id}
               onClick={() => navigate('du-an')}
-              className="bg-white rounded-sm border border-slate-200 hover:border-amber-500 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 group cursor-pointer flex flex-col justify-between"
+              className="bg-white rounded-sm border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 group cursor-pointer flex flex-col justify-between"
+              style={{ borderColor: 'rgba(226, 232, 240, 0.8)' }}
             >
               <div className="h-52 relative overflow-hidden bg-slate-100">
                 <img
@@ -912,18 +1028,18 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
                   onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'; }}
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
                 />
-                <span className="absolute top-3 left-3 px-3 py-1 bg-amber-600 text-white font-black text-xs rounded-sm shadow">
-                  {proj.status}
+                <span className="absolute top-3 left-3 px-3 py-1 text-white font-black text-xs rounded-sm shadow" style={{ backgroundColor: accentColor }}>
+                  {(proj as any).badge || (proj as any).status || 'Đang Bán'}
                 </span>
               </div>
               <div className="p-5 space-y-2.5">
-                <h3 className="font-black text-sm sm:text-base text-slate-900 group-hover:text-[#5C3A21] transition font-serif">
+                <h3 className="font-black text-sm sm:text-base text-slate-900 transition font-serif group-hover:text-amber-800">
                   {proj.title}
                 </h3>
                 <p className="text-xs text-slate-500 line-clamp-2">{proj.desc}</p>
                 <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                  <span className="font-extrabold text-amber-700">{proj.price}</span>
-                  <span className="text-slate-500 font-medium">{proj.scale}</span>
+                  <span className="font-extrabold" style={{ color: accentColor }}>{proj.price}</span>
+                  <span className="text-slate-500 font-medium">{(proj as any).area || (proj as any).scale}</span>
                 </div>
               </div>
             </div>
@@ -1080,7 +1196,7 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {BDS03_NEWS.map(art => (
+          {activeNews.map(art => (
             <div
               key={art.id}
               onClick={() => handleOpenArticle(art)}
@@ -1382,7 +1498,7 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {BDS03_NEWS.map(art => (
+          {activeNews.map(art => (
             <div
               key={art.id}
               onClick={() => handleOpenArticle(art)}
@@ -1467,19 +1583,19 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
     <div className="bg-[#FCFBF9] py-12 min-h-screen">
       <div className={`${MAX_W} mx-auto px-4 max-w-4xl space-y-8`}>
         <div className="bg-white rounded-md border border-amber-100 p-8 shadow-md space-y-6">
-          <h1 className="text-2xl sm:text-3xl font-black text-[#4A2810] font-serif uppercase">
-            VỀ CHÚNG TÔI — TUẤN NHÂN REALTY
+          <h1 className="text-2xl sm:text-3xl font-black font-serif uppercase" style={{ color: primaryColor }}>
+            VỀ CHÚNG TÔI — {companyName.toUpperCase()}
           </h1>
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-            Bất Động Sản Tuấn Nhân là đơn vị tiên phong trong lĩnh vực tư vấn, đầu tư và phát triển các sản phẩm đất nền nghỉ dưỡng, đất vườn sinh thái và nhà phố tại thị trường Bảo Lộc, Bảo Lâm, Di Linh - Tỉnh Lâm Đồng.
+            {companyAbout}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-100 text-center">
             <div className="p-4 bg-amber-50/60 rounded-sm">
-              <div className="text-2xl font-black text-[#4A2810] font-serif">10+ Năm</div>
+              <div className="text-2xl font-black font-serif" style={{ color: primaryColor }}>10+ Năm</div>
               <div className="text-xs text-slate-500 mt-1">Kinh nghiệm Tây Nguyên</div>
             </div>
             <div className="p-4 bg-amber-50/60 rounded-sm">
-              <div className="text-2xl font-black text-[#4A2810] font-serif">1,200+</div>
+              <div className="text-2xl font-black font-serif" style={{ color: primaryColor }}>1,200+</div>
               <div className="text-xs text-slate-500 mt-1">Sổ đỏ trao tay</div>
             </div>
             <div className="p-4 bg-amber-50/60 rounded-sm">
@@ -1498,8 +1614,23 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
       <div className={`${MAX_W} mx-auto px-4 max-w-4xl space-y-8`}>
         <div className="bg-white rounded-md border border-amber-100 p-8 shadow-md space-y-6">
           <div className="space-y-1">
-            <h1 className="text-2xl font-black text-[#4A2810] font-serif uppercase">LIÊN HỆ & TƯ VẤN ĐẦU TƯ</h1>
-            <p className="text-xs text-slate-500">Đội ngũ chuyên viên sẵn sàng hỗ trợ khảo sát thực tế và thẩm định pháp lý 24/7</p>
+            <h1 className="text-2xl font-black font-serif uppercase" style={{ color: primaryColor }}>LIÊN HỆ & TƯ VẤN ĐẦU TƯ</h1>
+            <p className="text-xs text-slate-500">Đội ngũ chuyên viên {companyName} sẵn sàng hỗ trợ khảo sát thực tế và thẩm định pháp lý 24/7</p>
+          </div>
+
+          <div className="p-4 rounded-sm bg-amber-50/50 border border-amber-100 space-y-2 text-xs text-slate-700">
+            <div className="flex items-center gap-2">
+              <MapPin size={14} className="text-amber-600 shrink-0" />
+              <span><strong>Địa chỉ:</strong> {companyAddress}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Phone size={14} className="text-amber-600 shrink-0" />
+              <span><strong>Hotline:</strong> {companyPhone}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Mail size={14} className="text-amber-600 shrink-0" />
+              <span><strong>Email:</strong> {companyEmail}</span>
+            </div>
           </div>
 
           <form onSubmit={handleConsultSubmit} className="space-y-4 text-xs">
@@ -1537,7 +1668,8 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
             </div>
             <button
               type="submit"
-              className="w-full py-3.5 bg-[#5C3A21] hover:bg-[#4A2810] text-amber-300 font-black text-xs uppercase tracking-wider rounded-sm shadow-lg transition cursor-pointer"
+              className="w-full py-3.5 font-black text-xs uppercase tracking-wider rounded-sm shadow-lg transition cursor-pointer"
+              style={{ backgroundColor: primaryColor, color: accentColor }}
             >
               GỬI THÔNG TIN LIÊN HỆ
             </button>
@@ -1562,10 +1694,10 @@ export default function BDS03Template({ template, viewport = 'desktop', initialP
       </main>
       <UniversalTemplateFooter
         company={company}
-        templateName="BDS-03 (Tuấn Nhân Resort & Land)"
+        templateName={companyName}
         onNavigate={navigate}
-        zaloPhone={selectedProperty?.author?.zalo}
-        hotlinePhone={company?.phone}
+        zaloPhone={companyZalo}
+        hotlinePhone={companyPhone}
       />
     </div>
   );

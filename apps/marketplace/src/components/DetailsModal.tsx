@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { X, Check, ChevronLeft, ChevronRight, ShoppingCart, Play, Monitor, Tablet, Smartphone, ChevronDown, Building, Users, Zap, Globe, BarChart3, Shield, Headphones, Star } from 'lucide-react';
 import { getTemplateDemoUrl } from '../utils/demo';
 import { useAuth } from '../context/AuthContext';
+import { findTemplateBySlugOrId } from '../data/templatesData';
 
 interface Template {
   id: string;
@@ -93,33 +94,33 @@ const TEMPLATE_EXTRA: Record<string, {
     benefits: ['Tải nhanh điểm số cao', 'Dễ dùng, không cần IT', 'Thể hiện chuyên nghiệp', 'Tối ưu mobile tuyệt đối'],
   },
 
-  // 3. Modern Corporate
+  // 3. Tuấn Nhân Land
   'bds-03': {
-    accentColor: '#0F4C81', badge: 'CORPORATE PRO',
-    screenshots: ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800','https://images.unsplash.com/photo-1497366216548-37526070297c?w=800','https://images.unsplash.com/photo-1554469384-e58fac16e23a?w=800'],
-    targetAudience: ['Tổng công ty BĐS', 'Sàn môi giới lớn', 'Doanh nghiệp F1', 'Tập đoàn đa chi nhánh'],
-    highlights: ['Grid Dự án phân phối', 'Khu vực Đối tác Chiến lược', 'Mega Menu Đa Tầng', 'Trang Tuyển dụng', 'Timeline Phát triển'],
-    availablePages: ['Trang chủ', 'Giới thiệu', 'Dự án', 'Đối tác', 'Tuyển dụng', 'Tin tức', 'Liên hệ'],
-    modules: ['CRM Lead Router', 'Lead Form', 'SEO Multi-Project', 'Google Maps Multi-Branch', 'Zalo OA'],
-    benefits: ['Xây dựng thương hiệu mạnh', 'Quản lý nhiều dự án cùng lúc', 'Tuyển dụng nhân tài hiệu quả', 'Chuẩn doanh nghiệp'],
+    accentColor: '#D97706', badge: 'TUẤN NHÂN LAND',
+    screenshots: ['https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800','https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800','https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=800'],
+    targetAudience: ['Sàn giao dịch đất nền phân lô', 'Đại lý phân phối đất vườn nghỉ dưỡng', 'Nhà đầu tư second home Bảo Lộc - Lâm Đồng'],
+    highlights: ['Lưới 8 Sản Phẩm Đất Nền & Vườn', 'Bất Động Sản Theo Địa Điểm 3 Vùng', '3 Dự Án Tiêu Điểm Sổ Đỏ Sẵn', 'Đăng Ký Nhận Bảng Giá & Sổ Đỏ'],
+    availablePages: ['Trang chủ', 'Nhà đất bán', 'Dự án nổi bật', 'Tin tức & Cẩm nang', 'Giới thiệu', 'Liên hệ'],
+    modules: ['CRM Lead Router', 'Lead Form Sổ Sẵn', 'SEO Local Bảo Lộc', 'Google Maps Tọa Độ Thật', 'Zalo OA'],
+    benefits: ['Tăng tỷ lệ chốt deal đất nền thổ cư', 'Bố cục chuẩn sàn BĐS địa phương uy tín', 'Khách hàng tra cứu vị trí nhanh chóng'],
   },
   'modern-corporate': {
-    accentColor: '#0F4C81', badge: 'CORPORATE PRO',
-    screenshots: ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800','https://images.unsplash.com/photo-1497366216548-37526070297c?w=800','https://images.unsplash.com/photo-1554469384-e58fac16e23a?w=800'],
-    targetAudience: ['Tổng công ty BĐS', 'Sàn môi giới lớn', 'Doanh nghiệp F1', 'Tập đoàn đa chi nhánh'],
-    highlights: ['Grid Dự án phân phối', 'Khu vực Đối tác Chiến lược', 'Mega Menu Đa Tầng', 'Trang Tuyển dụng', 'Timeline Phát triển'],
-    availablePages: ['Trang chủ', 'Giới thiệu', 'Dự án', 'Đối tác', 'Tuyển dụng', 'Tin tức', 'Liên hệ'],
-    modules: ['CRM Lead Router', 'Lead Form', 'SEO Multi-Project', 'Google Maps Multi-Branch', 'Zalo OA'],
-    benefits: ['Xây dựng thương hiệu mạnh', 'Quản lý nhiều dự án cùng lúc', 'Tuyển dụng nhân tài hiệu quả', 'Chuẩn doanh nghiệp'],
+    accentColor: '#D97706', badge: 'TUẤN NHÂN LAND',
+    screenshots: ['https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800','https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800','https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=800'],
+    targetAudience: ['Sàn giao dịch đất nền phân lô', 'Đại lý phân phối đất vườn nghỉ dưỡng', 'Nhà đầu tư second home Bảo Lộc - Lâm Đồng'],
+    highlights: ['Lưới 8 Sản Phẩm Đất Nền & Vườn', 'Bất Động Sản Theo Địa Điểm 3 Vùng', '3 Dự Án Tiêu Điểm Sổ Đỏ Sẵn', 'Đăng Ký Nhận Bảng Giá & Sổ Đỏ'],
+    availablePages: ['Trang chủ', 'Nhà đất bán', 'Dự án nổi bật', 'Tin tức & Cẩm nang', 'Giới thiệu', 'Liên hệ'],
+    modules: ['CRM Lead Router', 'Lead Form Sổ Sẵn', 'SEO Local Bảo Lộc', 'Google Maps Tọa Độ Thật', 'Zalo OA'],
+    benefits: ['Tăng tỷ lệ chốt deal đất nền thổ cư', 'Bố cục chuẩn sàn BĐS địa phương uy tín', 'Khách hàng tra cứu vị trí nhanh chóng'],
   },
   'mock-3': {
-    accentColor: '#0F4C81', badge: 'CORPORATE PRO',
-    screenshots: ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800','https://images.unsplash.com/photo-1497366216548-37526070297c?w=800','https://images.unsplash.com/photo-1554469384-e58fac16e23a?w=800'],
-    targetAudience: ['Tổng công ty BĐS', 'Sàn môi giới lớn', 'Doanh nghiệp F1', 'Tập đoàn đa chi nhánh'],
-    highlights: ['Grid Dự án phân phối', 'Khu vực Đối tác Chiến lược', 'Mega Menu Đa Tầng', 'Trang Tuyển dụng', 'Timeline Phát triển'],
-    availablePages: ['Trang chủ', 'Giới thiệu', 'Dự án', 'Đối tác', 'Tuyển dụng', 'Tin tức', 'Liên hệ'],
-    modules: ['CRM Lead Router', 'Lead Form', 'SEO Multi-Project', 'Google Maps Multi-Branch', 'Zalo OA'],
-    benefits: ['Xây dựng thương hiệu mạnh', 'Quản lý nhiều dự án cùng lúc', 'Tuyển dụng nhân tài hiệu quả', 'Chuẩn doanh nghiệp'],
+    accentColor: '#D97706', badge: 'TUẤN NHÂN LAND',
+    screenshots: ['https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800','https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800','https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=800'],
+    targetAudience: ['Sàn giao dịch đất nền phân lô', 'Đại lý phân phối đất vườn nghỉ dưỡng', 'Nhà đầu tư second home Bảo Lộc - Lâm Đồng'],
+    highlights: ['Lưới 8 Sản Phẩm Đất Nền & Vườn', 'Bất Động Sản Theo Địa Điểm 3 Vùng', '3 Dự Án Tiêu Điểm Sổ Đỏ Sẵn', 'Đăng Ký Nhận Bảng Giá & Sổ Đỏ'],
+    availablePages: ['Trang chủ', 'Nhà đất bán', 'Dự án nổi bật', 'Tin tức & Cẩm nang', 'Giới thiệu', 'Liên hệ'],
+    modules: ['CRM Lead Router', 'Lead Form Sổ Sẵn', 'SEO Local Bảo Lộc', 'Google Maps Tọa Độ Thật', 'Zalo OA'],
+    benefits: ['Tăng tỷ lệ chốt deal đất nền thổ cư', 'Bố cục chuẩn sàn BĐS địa phương uy tín', 'Khách hàng tra cứu vị trí nhanh chóng'],
   },
 
   // 4. Resort Paradise
@@ -647,21 +648,31 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
   const [techOpen, setTechOpen] = useState(false);
 
   const tAny = template as any;
+  const canonicalTpl = findTemplateBySlugOrId(template.slug || template.id);
   const fallbackExtra = TEMPLATE_EXTRA[template.slug] || TEMPLATE_EXTRA[template.id] || {
     screenshots: [], accentColor: '#2563EB', badge: 'TEMPLATE', targetAudience: [],
     highlights: [], availablePages: [], modules: [], benefits: [],
   };
   const extra = {
-    screenshots: tAny.screenshots && tAny.screenshots.length > 0 ? tAny.screenshots : fallbackExtra.screenshots,
-    accentColor: tAny.accentColor || fallbackExtra.accentColor,
-    badge: tAny.badge || fallbackExtra.badge,
-    targetAudience: tAny.targetAudience && tAny.targetAudience.length > 0 ? tAny.targetAudience : fallbackExtra.targetAudience,
-    highlights: tAny.highlights && tAny.highlights.length > 0 ? tAny.highlights : fallbackExtra.highlights,
-    availablePages: tAny.availablePages && tAny.availablePages.length > 0 ? tAny.availablePages : fallbackExtra.availablePages,
-    modules: tAny.modules && tAny.modules.length > 0 ? tAny.modules : fallbackExtra.modules,
-    benefits: tAny.benefits && tAny.benefits.length > 0 ? tAny.benefits : fallbackExtra.benefits,
+    screenshots: tAny.screenshots && tAny.screenshots.length > 0 ? tAny.screenshots : (canonicalTpl?.screenshots || fallbackExtra.screenshots),
+    accentColor: tAny.accentColor || canonicalTpl?.accentColor || fallbackExtra.accentColor,
+    badge: tAny.badge || canonicalTpl?.badge || fallbackExtra.badge,
+    targetAudience: tAny.targetAudience && tAny.targetAudience.length > 0 ? tAny.targetAudience : (canonicalTpl?.targetAudience || fallbackExtra.targetAudience),
+    highlights: tAny.highlights && tAny.highlights.length > 0 ? tAny.highlights : (canonicalTpl?.highlights || fallbackExtra.highlights),
+    availablePages: tAny.availablePages && tAny.availablePages.length > 0 ? tAny.availablePages : (canonicalTpl?.availablePages || fallbackExtra.availablePages),
+    modules: tAny.modules && tAny.modules.length > 0 ? tAny.modules : (canonicalTpl?.modules || fallbackExtra.modules),
+    benefits: tAny.benefits && tAny.benefits.length > 0 ? tAny.benefits : (canonicalTpl?.benefits || fallbackExtra.benefits),
   };
-  const shots = extra.screenshots;
+
+  const normalizedSlug = (template.slug || template.id || '').toLowerCase().replace(/^mock-/, '');
+  const canonicalId = canonicalTpl?.id || canonicalTpl?.slug || template.slug;
+  const mockupSlug = (canonicalId?.startsWith('bds-') || canonicalId?.startsWith('lp-')) ? canonicalId : normalizedSlug;
+  const mockupImg = `/images/mockups/${mockupSlug}.webp`;
+
+  const rawShots = (Array.isArray(extra.screenshots) && extra.screenshots.length > 0)
+    ? extra.screenshots
+    : [template.thumbnail || canonicalTpl?.thumbnail || 'https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?w=800'];
+  const shots = [mockupImg, ...rawShots.filter(s => s !== mockupImg)];
   const accent = extra.accentColor;
 
   const router = useRouter();
@@ -718,7 +729,7 @@ export default function DetailsModal({ template, onClose, onSelect }: DetailsMod
                 <img
                   src={shots[activeImgIdx]}
                   alt={template.name}
-                  className="w-full h-full object-cover transition-all duration-400"
+                  className={`w-full h-full ${shots[activeImgIdx]?.includes('/mockups/') ? 'object-contain bg-slate-900/5 p-1' : 'object-cover'} transition-all duration-400`}
                 />
                 <button
                   onClick={() => setActiveImgIdx(p => p === 0 ? shots.length - 1 : p - 1)}

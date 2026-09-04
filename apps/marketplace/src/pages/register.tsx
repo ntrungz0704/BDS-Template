@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, User, Phone, ArrowRight, CheckCircle2, ShieldCheck, Check, X } from 'lucide-react';
+import { Mail, Lock, User, Phone, ArrowRight, CheckCircle2, ShieldCheck, Check, X, AlertTriangle } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+
+const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -21,6 +24,9 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [isCheckingDuplicate, setIsCheckingDuplicate] = useState(false);
 
   const requestedRedirect = router.query.redirect;
   const redirectUrl = typeof requestedRedirect === 'string'
@@ -51,6 +57,31 @@ export default function RegisterPage() {
     return { text: 'Mật khẩu rất mạnh & an toàn tuyệt đối', colorBg: 'bg-emerald-500', colorText: 'text-emerald-600', percent: 100 };
   };
   const strength = getStrengthData();
+
+  const checkEmailDuplicate = async () => {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return;
+    try {
+      const res = await axios.get(`${API_URL}/api/auth/check-duplicate?email=${encodeURIComponent(email.trim())}`);
+      if (res.data?.data?.isEmailTaken) {
+        setEmailError('Email này đã được đăng ký tài khoản. Vui lòng đăng nhập hoặc dùng email khác.');
+      } else {
+        setEmailError('');
+      }
+    } catch (e) {}
+  };
+
+  const checkPhoneDuplicate = async () => {
+    const phoneClean = phone.replace(/\s/g, '');
+    if (!phoneClean || !/^(0|\+84)[0-9]{9,10}$/.test(phoneClean)) return;
+    try {
+      const res = await axios.get(`${API_URL}/api/auth/check-duplicate?phone=${encodeURIComponent(phoneClean)}`);
+      if (res.data?.data?.isPhoneTaken) {
+        setPhoneError('Số điện thoại này đã được đăng ký trong hệ thống.');
+      } else {
+        setPhoneError('');
+      }
+    } catch (e) {}
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,8 +120,22 @@ export default function RegisterPage() {
     }
 
     setLoading(true);
+    setIsCheckingDuplicate(true);
     try {
-      await register({ fullName, email, phone, password });
+      // Chủ động kiểm tra trùng lặp Email và SĐT trước khi gửi yêu cầu đăng ký
+      const dupRes = await axios.get(`${API_URL}/api/auth/check-duplicate?email=${encodeURIComponent(email.trim())}&phone=${encodeURIComponent(phoneClean)}`).catch(() => null);
+      if (dupRes?.data?.data?.isDuplicate) {
+        setIsCheckingDuplicate(false);
+        setLoading(false);
+        const dupData = dupRes.data.data;
+        if (dupData.isEmailTaken) setEmailError('Email này đã được đăng ký tài khoản.');
+        if (dupData.isPhoneTaken) setPhoneError('Số điện thoại này đã được đăng ký.');
+        setErrorMsg(dupData.message || 'Thông tin đăng ký đã tồn tại trong hệ thống. Vui lòng kiểm tra lại.');
+        return;
+      }
+      setIsCheckingDuplicate(false);
+
+      await register({ fullName, email: email.trim(), phone: phoneClean, password });
       setSuccessMsg('Đăng ký tài khoản thành công! Đang chuyển hướng đến trang đăng nhập...');
       showToast('Đăng ký thành công! Vui lòng đăng nhập vào tài khoản của bạn.', 'success');
       
@@ -104,8 +149,9 @@ export default function RegisterPage() {
         router.push(`/login?${loginQuery.toString()}`);
       }, 1000);
     } catch (err: any) {
-      setErrorMsg(err?.message || 'Đăng ký không thành công. Email có thể đã tồn tại.');
+      setErrorMsg(err?.message || 'Đăng ký không thành công. Thông tin có thể đã tồn tại trong hệ thống.');
     } finally {
+      setIsCheckingDuplicate(false);
       setLoading(false);
     }
   };
@@ -181,10 +227,20 @@ export default function RegisterPage() {
                       required
                       placeholder="name@company.com"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-md text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-colors"
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (emailError) setEmailError('');
+                      }}
+                      onBlur={checkEmailDuplicate}
+                      className={`w-full pl-9 pr-3 py-2 bg-white border ${emailError ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-300'} rounded-md text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-colors`}
                     />
                   </div>
+                  {emailError && (
+                    <p className="text-[11px] text-rose-600 font-semibold mt-1 flex items-center gap-1">
+                      <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                      <span>{emailError}</span>
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -197,11 +253,21 @@ export default function RegisterPage() {
                       type="tel"
                       placeholder="0919 006 030"
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      onChange={(e) => {
+                        setPhone(e.target.value);
+                        if (phoneError) setPhoneError('');
+                      }}
+                      onBlur={checkPhoneDuplicate}
                       required
-                      className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-md text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-colors"
+                      className={`w-full pl-9 pr-3 py-2 bg-white border ${phoneError ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-300'} rounded-md text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-colors`}
                     />
                   </div>
+                  {phoneError && (
+                    <p className="text-[11px] text-rose-600 font-semibold mt-1 flex items-center gap-1">
+                      <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                      <span>{phoneError}</span>
+                    </p>
+                  )}
                 </div>
 
                 {/* Password Fields */}

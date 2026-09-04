@@ -58,6 +58,51 @@ async function writeAuthAudit(
   }
 }
 
+export async function checkDuplicate(req: Request, res: Response, next: NextFunction) {
+  try {
+    const email = req.query.email ? String(req.query.email).trim().toLowerCase() : undefined;
+    const phone = req.query.phone ? String(req.query.phone).trim() : undefined;
+
+    let isEmailTaken = false;
+    let isPhoneTaken = false;
+    let message = '';
+
+    if (email) {
+      const emailUser = await prisma.user.findFirst({
+        where: { email },
+        select: { id: true },
+      });
+      if (emailUser) {
+        isEmailTaken = true;
+        message = 'Email này đã được đăng ký tài khoản. Vui lòng sử dụng email khác hoặc đăng nhập.';
+      }
+    }
+
+    if (phone) {
+      const phoneUser = await prisma.user.findFirst({
+        where: { phone },
+        select: { id: true },
+      });
+      if (phoneUser) {
+        isPhoneTaken = true;
+        message = message ? `${message} | Số điện thoại này cũng đã được sử dụng.` : 'Số điện thoại này đã được đăng ký trong hệ thống.';
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        isDuplicate: isEmailTaken || isPhoneTaken,
+        isEmailTaken,
+        isPhoneTaken,
+        message,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function register(req: Request, res: Response, next: NextFunction) {
   try {
     const data = registerSchema.parse(req.body);

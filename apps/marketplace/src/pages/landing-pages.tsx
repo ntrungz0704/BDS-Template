@@ -9,9 +9,9 @@ import {
 } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/router';
-import { LANDING_TEMPLATES } from '../data/templatesData';
+import { useAuth } from '../context/AuthContext';
+import { LANDING_TEMPLATES, findTemplateBySlugOrId } from '../data/templatesData';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 
@@ -164,64 +164,77 @@ export default function LandingPagesPage() {
             </div>
           ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {filteredTemplates.map((tpl) => (
-              <div
-                key={tpl.id}
-                className="bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col group"
-              >
-                {/* Image Banner */}
-                <div className="relative h-64 overflow-hidden bg-slate-900">
-                  <img
-                    src={tpl.thumbnail}
-                    alt={tpl.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  
-                  {/* Badge */}
-                  <div className="absolute top-4 left-4">
-                    <span 
-                      className="text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-wider text-white shadow-md"
-                      style={{ backgroundColor: tpl.badgeBg || '#2563EB' }}
-                    >
-                      {tpl.badge}
-                    </span>
-                  </div>
+            {filteredTemplates.map((tpl) => {
+              const canonicalTpl = findTemplateBySlugOrId(tpl.slug || tpl.id);
+              const name = tpl.name || canonicalTpl?.name;
+              const shortDesc = tpl.shortDescription || canonicalTpl?.shortDescription || '';
+              const desc = tpl.description || canonicalTpl?.description || '';
+              const featList = (Array.isArray(tpl.features) && tpl.features.length > 0 ? tpl.features : canonicalTpl?.features) || [];
+              const canonicalId = canonicalTpl?.id || canonicalTpl?.slug || tpl.id;
+              const mockupSlug = (canonicalId?.startsWith('lp-') || canonicalId?.startsWith('bds-')) ? canonicalId : tpl.id;
+              const localMockup = `/images/mockups/${mockupSlug}.webp`;
+              const thumbnail = tpl.mockupImage || localMockup || tpl.thumbnail || canonicalTpl?.thumbnail || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800';
+              const badge = tpl.badge || canonicalTpl?.badge || 'LANDING PAGE';
+              const badgeBg = tpl.badgeBg || canonicalTpl?.badgeBg || '#2563EB';
 
-                  {/* Title overlay */}
-                  <div className="absolute bottom-4 left-4 right-4 text-left">
-                    <h3 className="text-lg font-black text-white drop-shadow-md">
-                      {tpl.name}
-                    </h3>
-                    <p className="text-xs text-slate-200 mt-1 line-clamp-1">
-                      {tpl.shortDescription}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Body Content */}
-                <div className="p-6 flex-1 flex flex-col justify-between space-y-6 text-left">
-                  
-                  <div className="space-y-4">
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {tpl.description}
-                    </p>
-
-                    {/* Features list */}
-                    <div className="space-y-2 pt-2 border-t border-slate-100">
-                      <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                        Đặc điểm nổi bật dành cho Sale:
+              return (
+                <div
+                  key={tpl.id}
+                  className="bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col group"
+                >
+                  {/* Image Banner */}
+                  <div className="relative h-64 overflow-hidden bg-slate-900 flex items-center justify-center">
+                    <img
+                      src={thumbnail}
+                      alt={name}
+                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+                    
+                    {/* Badge */}
+                    <div className="absolute top-4 left-4">
+                      <span 
+                        className="text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-wider text-white shadow-md"
+                        style={{ backgroundColor: badgeBg }}
+                      >
+                        {badge}
                       </span>
-                      <ul className="space-y-1.5 text-xs text-slate-700">
-                      {(tpl.features || []).slice(0, 4).map((feat: string, i: number) => (
-                          <li key={i} className="flex items-start gap-2">
-                            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                            <span>{feat}</span>
-                          </li>
-                        ))}
-                      </ul>
+                    </div>
+
+                    {/* Title overlay */}
+                    <div className="absolute bottom-4 left-4 right-4 text-left">
+                      <h3 className="text-lg font-black text-white drop-shadow-md">
+                        {name}
+                      </h3>
+                      <p className="text-xs text-slate-200 mt-1 line-clamp-1">
+                        {shortDesc}
+                      </p>
                     </div>
                   </div>
+
+                  {/* Body Content */}
+                  <div className="p-6 flex-1 flex flex-col justify-between space-y-6 text-left">
+                    
+                    <div className="space-y-4">
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        {desc}
+                      </p>
+
+                      {/* Features list */}
+                      <div className="space-y-2 pt-2 border-t border-slate-100">
+                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                          Đặc điểm nổi bật dành cho Sale:
+                        </span>
+                        <ul className="space-y-1.5 text-xs text-slate-700">
+                        {featList.slice(0, 4).map((feat: string, i: number) => (
+                            <li key={i} className="flex items-start gap-2">
+                              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                              <span>{feat}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
 
                   {/* Pricing and Actions */}
                   <div className="pt-4 border-t border-slate-100 flex items-center justify-between flex-wrap gap-4">
@@ -255,10 +268,10 @@ export default function LandingPagesPage() {
                       </button>
                     </div>
                   </div>
-
                 </div>
               </div>
-            ))}
+            );
+          })}
           </div>
           )}
         </section>

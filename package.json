@@ -13,6 +13,7 @@
     "lint": "turbo lint",
     "db:generate": "turbo db:generate",
     "db:migrate": "turbo db:migrate",
+    "mockups:generate": "python scripts/generate_device_mockups.py",
     "clean": "turbo clean"
   },
   "devDependencies": {

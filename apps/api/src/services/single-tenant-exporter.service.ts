@@ -3,6 +3,7 @@ import path from 'path';
 import AdmZip from 'adm-zip';
 import bcrypt from 'bcrypt';
 import { prisma } from '@repo/database';
+import { getCanonicalBdsConfig } from '@repo/utils';
 import { logger } from '../index';
 
 export interface SingleTenantExportOptions {
@@ -28,6 +29,7 @@ export class SingleTenantExporterService {
     logger.info(`[SingleTenantExporter] Bắt đầu đóng gói Single-Tenant cho đơn #${orderNumber} (Template: ${templateSlug})`);
 
     const zip = new AdmZip();
+    const canonical = getCanonicalBdsConfig(templateSlug);
 
     // 1. Trích xuất dữ liệu thực tế của Tenant từ DB chung (hoặc lấy mặc định theo template)
     let companyInfo: any = null;
@@ -58,6 +60,31 @@ export class SingleTenantExporterService {
       } catch (err) {
         logger.warn(`[SingleTenantExporter] Không thể truy vấn DB tenant, dùng dữ liệu khởi tạo mặc định: ${err}`);
       }
+    }
+
+    // Fallback to Canonical Template Dataset if tenant records are empty
+    if ((!projectsList || projectsList.length === 0) && canonical?.demoProjects) {
+      projectsList = canonical.demoProjects;
+    }
+    if ((!postsList || postsList.length === 0) && canonical?.demoPosts) {
+      postsList = canonical.demoPosts;
+    }
+    if (!companyInfo && canonical?.companyInfo) {
+      companyInfo = {
+        companyName: canonical.companyInfo.name,
+        hotline: canonical.companyInfo.phone,
+        email: canonical.companyInfo.email,
+        address: canonical.companyInfo.address,
+        slogan: canonical.companyInfo.slogan,
+        zalo: (canonical.companyInfo as any).zalo || canonical.companyInfo.phone,
+      };
+    }
+    if (!themeSetting && canonical?.themeConfig) {
+      themeSetting = {
+        primaryColor: canonical.themeConfig.primaryColor,
+        secondaryColor: canonical.themeConfig.secondaryColor,
+        accentColor: canonical.themeConfig.accentColor,
+      };
     }
 
     // Default Fallbacks

@@ -24,14 +24,33 @@ export interface RealEstateConfig {
     badgeStyle: string;
     fontStyle: string;
   };
-  stats: { label: string; value: string }[];
-  overview: { label: string; value: string }[];
-  location: { title: string; desc: string; highlights: string[] };
-  amenities: { icon: string; title: string; desc: string }[];
+  stats?: { label: string; value: string }[];
+  overview?: { label: string; value: string }[];
+  location?: { title: string; desc: string; highlights: string[] };
+  amenities?: { icon: string; title: string; desc: string }[];
   floorPlans?: { floor: string; name: string; specs: string; price: string; area: string; bedrooms: string }[];
-  policies: { title: string; desc: string; tag: string }[];
-  gallery: string[];
-  progress: { status: string; date: string; desc: string };
+  policies?: { title: string; desc: string; tag: string }[];
+  gallery?: string[];
+  progress?: { status: string; date: string; desc: string };
+  companyInfo?: {
+    name?: string;
+    slogan?: string;
+    phone?: string;
+    email?: string;
+    address?: string;
+    aboutContent?: string;
+    logo?: string;
+  };
+  themeConfig?: {
+    primaryColor?: string;
+    secondaryColor?: string;
+    accentColor?: string;
+    backgroundColor?: string;
+    textColor?: string;
+    fontHeading?: string;
+    fontBody?: string;
+  };
+  heroBanner?: any;
   demoProjects?: any[];
   demoPosts?: any[];
 }
@@ -3513,51 +3532,45 @@ export const TEMPLATE_CONFIGS: Record<string, RealEstateConfig> = {
   },
 };
 
-// ─── BDS & LP Slug Aliases ──────────────────────────────────────────────────
-// Map bds-XX and lp-XX slugs to their corresponding legacy config keys
-// so the provisioning service finds the correct demo content for each template.
-const BDS_CONFIG_MAP: Record<string, string> = {
-  'bds-01': 'luxury-gold',
-  'bds-02': 'minimal-white',
-  'bds-03': 'modern-corporate',
-  'bds-04': 'resort-paradise',
-  'bds-05': 'urban-city',
-  'bds-06': 'industrial-estate',
-  'bds-07': 'villa-premium',
-  'bds-08': 'eco-green',
-  'bds-09': 'classic-heritage',
-  'bds-10': 'investment-pro',
-  'bds-11': 'landing-high-convert',
-  'bds-12': 'mega-portal',
-  'bds-13': 'auction-platform',
-  'bds-14': 'land-plot',
-  'bds-15': 'retail-shophouse',
-  'bds-16': 'personal-agent',
-  'bds-17': 'mega-portal',
-  'bds-18': 'mega-portal',
-  'bds-19': 'mega-portal',
-  'bds-20': 'luxury-gold',
-  'bds-21': 'mega-portal',
-  'bds-22': 'resort-paradise',
-  'bds-23': 'landing-high-convert',
-  'bds-24': 'mega-portal',
-  'lp-01': 'luxury-gold',
-  'lp-02': 'villa-premium',
-  'lp-03': 'land-plot',
-  'lp-04': 'personal-agent',
-  'lp-05': 'resort-paradise',
-  'lp-06': 'urban-city',
-  'lp-07': 'eco-green',
+import { BDS_CANONICAL_CONFIGS } from './bds-canonical-configs';
+
+// ─── CANONICAL 31 TEMPLATES (BDS-01 .. BDS-24 & LP-01 .. LP-07) ──────────────
+// Register all 31 verified canonical BDS and LP configs directly
+for (const [slug, cfg] of Object.entries(BDS_CANONICAL_CONFIGS)) {
+  TEMPLATE_CONFIGS[slug] = cfg;
+}
+
+// ─── LEGACY SLUG ALIASES (BACKWARDS COMPATIBILITY) ───────────────────────────
+// Map old legacy slugs to the canonical STT configs so existing links and orders never break
+export const LEGACY_ALIASES: Record<string, string> = {
+  'luxury-gold': 'bds-01',
+  'minimal-white': 'bds-02',
+  'modern-corporate': 'bds-03',
+  'resort-paradise': 'bds-04',
+  'urban-city': 'bds-05',
+  'industrial-estate': 'bds-06',
+  'villa-premium': 'bds-07',
+  'eco-green': 'bds-08',
+  'classic-heritage': 'bds-09',
+  'investment-pro': 'bds-10',
+  'landing-high-convert': 'bds-11',
+  'agency-onepage': 'bds-11',
+  'mega-portal': 'bds-12',
+  'auction-platform': 'bds-13',
+  'land-plot': 'bds-14',
+  'retail-shophouse': 'bds-15',
+  'personal-agent': 'bds-16',
 };
 
-// Register BDS/LP aliases directly in TEMPLATE_CONFIGS
-for (const [bdsSlug, legacySlug] of Object.entries(BDS_CONFIG_MAP)) {
-  if (TEMPLATE_CONFIGS[legacySlug] && !TEMPLATE_CONFIGS[bdsSlug]) {
-    TEMPLATE_CONFIGS[bdsSlug] = TEMPLATE_CONFIGS[legacySlug];
+for (const [legacy, stt] of Object.entries(LEGACY_ALIASES)) {
+  if (TEMPLATE_CONFIGS[stt]) {
+    TEMPLATE_CONFIGS[legacy] = TEMPLATE_CONFIGS[stt];
   }
 }
 
 export function getTemplateConfig(slug: string, template: any): RealEstateConfig {
+  const resolvedSlug = LEGACY_ALIASES[slug] || slug;
+  if (TEMPLATE_CONFIGS[resolvedSlug]) return TEMPLATE_CONFIGS[resolvedSlug];
   if (TEMPLATE_CONFIGS[slug]) return TEMPLATE_CONFIGS[slug];
 
   const colors = [

@@ -1183,7 +1183,7 @@ export default function BDS08Template({
 
             <div className="flex items-center gap-2.5 pt-2">
               <a href="https://facebook.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-blue-600 flex items-center justify-center text-xs font-bold transition">FB</a>
-              <a href="https://zalo.me/0919006030" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-blue-600 flex items-center justify-center text-xs font-bold transition">ZL</a>
+              <a href="https://zalo.me/0919006030" target="_blank" rel="noreferrer" className="px-2 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-blue-600 flex items-center justify-center text-[11px] font-extrabold transition">Zalo</a>
               <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-emerald-700 flex items-center justify-center text-xs font-bold transition">📞</a>
               <a href="https://youtube.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-red-600 flex items-center justify-center text-xs font-bold transition">YT</a>
             </div>

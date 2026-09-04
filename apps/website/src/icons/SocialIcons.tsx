@@ -37,6 +37,18 @@ export const LinkedinIcon = ({ className = 'w-4 h-4', ...props }: IconProps) => 
 export const ZaloIcon = ({ className = 'w-4 h-4', ...props }: IconProps) => (
   <svg viewBox="0 0 48 48" fill="none" className={className} aria-hidden="true" {...props}>
     <path d="M24 4C12.954 4 4 12.518 4 23.024c0 5.51 2.47 10.462 6.494 13.918l-1.966 6.58c-.202.676.524 1.242 1.122.826l7.306-5.064a27.33 27.33 0 0 0 7.032.92C35.034 40.204 44 31.686 44 21.18 44 10.674 35.046 4 24 4Z" fill="#0068FF" />
-    <path d="M13.5 17H21a1 1 0 0 1 .528 1.844L16.2 24.5H21a1 1 0 1 1 0 2h-7.5a1 1 0 0 1-.528-1.844L18.3 19h-4.8a1 1 0 1 1 0-2Zm11.5.5a1 1 0 0 1 1 1v7a1 1 0 1 1-2 0v-7a1 1 0 0 1 1-1Zm3 0a1 1 0 0 1 1 1v6h3.5a1 1 0 1 1 0 2H28a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1Zm9.5-.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9Zm0 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z" fill="white" />
+    <text
+      x="24"
+      y="25.5"
+      textAnchor="middle"
+      dominantBaseline="central"
+      fill="#FFFFFF"
+      fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+      fontWeight="900"
+      fontSize="13.5"
+      letterSpacing="0.2px"
+    >
+      Zalo
+    </text>
   </svg>
 );

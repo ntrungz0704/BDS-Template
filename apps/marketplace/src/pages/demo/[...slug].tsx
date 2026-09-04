@@ -17,13 +17,9 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
-import axios from 'axios';
 import { ALL_TEMPLATES, findTemplateBySlugOrId } from '../../data/templatesData';
 import DemoRenderer from '../../components/demo/DemoRenderer';
 import PreviewToolbar, { ViewportType } from '../../components/demo/PreviewToolbar';
-import { useAuth } from '../../context/AuthContext';
-
-const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 
 // ─── Viewport configuration ──────────────────────────────────────────────────
 
@@ -89,7 +85,6 @@ function DemoLoadingSkeleton() {
 
 export default function TemplateLiveDemoPage() {
   const router = useRouter();
-  const { addToCart } = useAuth();
   const { slug } = router.query;
 
   const templateSlug = Array.isArray(slug) ? slug[0] : slug;
@@ -100,13 +95,6 @@ export default function TemplateLiveDemoPage() {
   const [viewport, setViewport] = useState<ViewportType>('desktop');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-
-  const [session, setSession] = useState<{
-    token: string;
-    expiresAt: string;
-    saveCount: number;
-    expired: boolean;
-  } | null>(null);
 
   // Synchronize parent URL with iframe navigation (same-origin polling)
   useEffect(() => {
@@ -140,74 +128,23 @@ export default function TemplateLiveDemoPage() {
     ) || ALL_TEMPLATES[0];
   }, [templateSlug]);
 
+  // Clean up any legacy demo session tokens from previous versions
   useEffect(() => {
-    if (!router.isReady || !template || isEmbed) return;
-    
-    const fetchOrInitSession = async () => {
-      const templateParam = template.slug || template.id;
+    if (typeof window !== 'undefined') {
       try {
-        const savedToken = localStorage.getItem(`demo_session_${templateParam}`) || localStorage.getItem(`demo_session_${template.id}`);
-        if (savedToken && savedToken !== 'local-demo-session') {
-          try {
-            const res = await axios.get(`${API_URL}/api/demo/sessions/${savedToken}`, { withCredentials: true });
-            if (res.data?.success) {
-              if (res.data.data.expired) {
-                // Token expired: remove from localStorage and auto-refresh a new session
-                localStorage.removeItem(`demo_session_${templateParam}`);
-                localStorage.removeItem(`demo_session_${template.id}`);
-              } else {
-                setSession({
-                  token: res.data.data.sessionToken || savedToken,
-                  expiresAt: res.data.data.expiresAt,
-                  saveCount: res.data.data.saveCount || 0,
-                  expired: false,
-                });
-                return;
-              }
-            }
-          } catch {
-            // Ignore error and proceed to fresh session
+        const keysToRemove: string[] = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith('demo_session_')) {
+            keysToRemove.push(key);
           }
         }
-        
-        // Init fresh session via API
-        try {
-          const res = await axios.post(`${API_URL}/api/demo/sessions`, { templateId: templateParam }, { withCredentials: true });
-          if (res.data?.success) {
-            const { sessionToken, expiresAt } = res.data.data;
-            localStorage.setItem(`demo_session_${templateParam}`, sessionToken);
-            setSession({
-              token: sessionToken,
-              expiresAt,
-              saveCount: 0,
-              expired: false,
-            });
-            return;
-          }
-        } catch {
-          // Fall through to local session
-        }
-
-        // Always provide an active local session so the customer is never blocked
-        setSession({
-          token: 'local-demo-session',
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-          saveCount: 0,
-          expired: false,
-        });
-      } catch (err) {
-        console.warn('Khởi tạo phiên demo:', err);
-        setSession({
-          token: 'local-demo-session',
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-          saveCount: 0,
-          expired: false,
-        });
+        keysToRemove.forEach((k) => localStorage.removeItem(k));
+      } catch {
+        // Safe ignore
       }
-    };
-    
-    fetchOrInitSession();
-  }, [router.isReady, template, isEmbed]);
+    }
+  }, []);
 
   // ── Early returns ────────────────────────────────────────────────────────
 
@@ -253,14 +190,6 @@ export default function TemplateLiveDemoPage() {
           isFullscreen ? 'fixed inset-0 z-[99998]' : 'min-h-screen'
         }`}
       >
-        {/* Banner session */}
-        {!isEmbed && session && !session.expired && (
-          <div className="bg-gradient-to-r from-amber-500 to-amber-700 text-white text-center py-1.5 px-4 text-xs font-medium flex justify-center items-center gap-4 shadow-sm z-50">
-            <span>🚀 Phiên dùng thử: còn {Math.max(0, Math.ceil((new Date(session.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))} ngày</span>
-            <span className="w-1 h-1 rounded-full bg-white/50"></span>
-            <span>Đã lưu {session.saveCount}/3 lần</span>
-          </div>
-        )}
 
 
 

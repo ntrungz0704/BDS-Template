@@ -1,0 +1,41 @@
+================================================================================
+HƯỚNG DẪN ĐẶT ẢNH CHỤP GIAO DIỆN (DESKTOP, TABLET, MOBILE)
+================================================================================
+
+Trong thư mục này gồm 31 thư mục con tương ứng với:
+- 24 Templates: từ "bds-01" đến "bds-24"
+- 7 Landing Pages: từ "lp-01" đến "lp-07"
+
+--------------------------------------------------------------------------------
+1. QUY TẮC ĐẶT TÊN ẢNH TRONG MỖI THƯ MỤC
+--------------------------------------------------------------------------------
+Trong mỗi thư mục (ví dụ thư mục "bds-01"), bạn chỉ cần bỏ vào 3 ảnh:
+
+  - desktop.png   (hoặc desktop.jpg, pc.png, 1.png)
+    -> Ảnh chụp giao diện máy tính (Desktop).
+    
+  - tablet.png    (hoặc tablet.jpg, ipad.png, 2.png)
+    -> Ảnh chụp giao diện máy tính bảng (Tablet).
+    
+  - mobile.png    (hoặc mobile.jpg, phone.png, 3.png)
+    -> Ảnh chụp giao diện điện thoại (Mobile).
+
+* Lưu ý: Định dạng hỗ trợ: .png, .jpg, .jpeg, .webp (đều được).
+
+--------------------------------------------------------------------------------
+2. CÁCH CHỤP ẢNH NHANH VÀ ĐẸP NHẤT TỪ WEB DEMO
+--------------------------------------------------------------------------------
+- Bước 1: Mở trang demo tương ứng (ví dụ: templates.aireviewbds.com/demo/bds-01)
+- Bước 2: 
+  + Chọn chế độ "Desktop" trên thanh toolbar -> Chụp phần đầu trang (Hero banner + menu).
+  + Bấm nút "Tablet" trên toolbar (khung tự co về 768px) -> Chụp màn hình khung Tablet.
+  + Bấm nút "Mobile" trên toolbar (khung tự co về 390px) -> Chụp màn hình khung Mobile.
+- Bước 3: Đổi tên thành desktop.png, tablet.png, mobile.png và lưu vào thư mục bds-01.
+
+* Mẹo nhỏ: Bạn dùng phím tắt Windows: [Windows + Shift + S] để quét chụp cực nhanh!
+Chỉ cần chụp phần nửa trên màn hình (Header + Hero Banner lớn) thì khi ghép mockup sẽ nổi bật và đẹp nhất.
+
+Sau khi bạn bỏ ảnh vào xong, chỉ cần nhắn tôi: "Ghép ảnh mockup cho tôi nhé",
+hệ thống sẽ tự động ghép thành 1 ảnh phối cảnh 3 thiết bị (Desktop + Tablet + Mobile) 
+chuẩn như mẫu Flatsome!
+================================================================================

@@ -487,31 +487,97 @@ export default function BDS08Template({
   company,
   theme,
   projects,
-  posts
-, pageContent }: TemplateProps) {
+  posts,
+  pageContent
+}: TemplateProps) {
   // CMS Dynamic Section Data
   const cmsHero = getCmsHero(pageContent);
   const cmsStats = getCmsQuickStats(pageContent, []);
   const cmsPolicies = getCmsPolicies(pageContent, []);
 
+  const primaryColor = theme?.primaryColor;
+  const secondaryColor = theme?.secondaryColor;
+  const accentColor = theme?.accentColor;
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
+
+  const activeProjects = useMemo<ProjectCardItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      return projects.map((p: any, idx: number): ProjectCardItem => {
+        const cat = (p.type?.toLowerCase().includes('đất') || p.type === 'LAND')
+          ? 'dat-nen'
+          : (p.type?.toLowerCase().includes('biệt') || p.type === 'VILLA')
+          ? 'biet-thu'
+          : (p.type?.toLowerCase().includes('shophouse') || p.type === 'SHOPHOUSE')
+          ? 'shophouse'
+          : (p.type?.toLowerCase().includes('condotel') || p.type === 'CONDOTEL')
+          ? 'condotel'
+          : 'can-ho';
+        const catLabel = cat === 'dat-nen' ? 'Đất Nền' : (cat === 'biet-thu' ? 'Biệt Thự' : (cat === 'shophouse' ? 'Shophouse' : (cat === 'condotel' ? 'Condotel' : 'Căn Hộ')));
+
+        return {
+          id: p.id || idx + 1,
+          title: p.title || p.name || 'Dự án bất động sản quy mô',
+          slug: p.slug || `du-an-${idx + 1}`,
+          category: cat,
+          categoryLabel: catLabel,
+          statusBadge: p.status || (idx === 0 ? 'Đang mở bán' : 'Sắp ra mắt'),
+          price: p.price || (p.priceFrom ? `${p.priceFrom} Tỷ` : 'Liên hệ'),
+          priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 3.0),
+          area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '100 m²'),
+          areaNum: typeof p.area === 'number' ? p.area : 100,
+          location: p.address || p.location || 'Vị trí chiến lược trung tâm',
+          city: p.city || 'Bà Rịa - Vũng Tàu',
+          bedrooms: p.bedrooms || 2,
+          bathrooms: p.bathrooms || 2,
+          image: p.thumbnail || p.image || p.images?.[0] || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+          gallery: p.gallery || [p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80'],
+          featured: Boolean(p.featured || idx < 4),
+          desc: p.description || p.desc || 'Đại đô thị thông minh tiêu chuẩn quốc tế.',
+          details: Array.isArray(p.details) ? p.details : ['Pháp lý minh bạch', 'Chủ đầu tư uy tín', 'Sinh lời cao'],
+          investor: p.investor || company?.name || 'Tập đoàn BĐS',
+          legal: p.legal || 'Sổ hồng riêng',
+          handover: p.handover || 'Năm 2026',
+        };
+      });
+    }
+    return BDS08_PROJECTS;
+  }, [projects, company]);
+
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      return posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức sự kiện BĐS',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || company?.name || 'Ban Truyền Thông',
+        category: p.category || 'Sự Kiện',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&q=80',
+        excerpt: p.summary || p.excerpt || 'Cập nhật sự kiện BĐS mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+    }
+    return [...BDS08_NEWS_EVENTS, ...BDS08_COMPANY_ACTIVITIES];
+  }, [posts, company]);
 
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedProperty, setSelectedProperty] = useState<ProjectCardItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS08_PROJECTS.find(p => p.slug === initialParsed.propSlug);
+      const found = activeProjects.find(p => p.slug === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS08_PROJECTS[0];
+    return activeProjects[0] || BDS08_PROJECTS[0];
   });
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = [...BDS08_NEWS_EVENTS, ...BDS08_COMPANY_ACTIVITIES].find(a => a.slug === initialParsed.artSlug);
+      const found = activeNews.find(a => a.slug === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS08_NEWS_EVENTS[0];
+    return (activeNews[0] || BDS08_NEWS_EVENTS[0]);
   });
 
   // UI Interactive States
@@ -534,7 +600,7 @@ export default function BDS08Template({
     const res = resolvePageAndDetail(initialPage);
     setCurrentPageState(res.page);
     if (res.propSlug) {
-      const found = BDS08_PROJECTS.find(p => p.slug === res.propSlug);
+      const found = activeProjects.find(p => p.slug === res.propSlug);
       if (found) setSelectedProperty(found);
     }
     if (res.artSlug) {
@@ -795,7 +861,7 @@ export default function BDS08Template({
           
           {/* LEFT: 6 Project Cards Grid (2 rows x 3 cols) */}
           <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-            {BDS08_PROJECTS.map(proj => (
+            {activeProjects.map(proj => (
               <div
                 key={proj.id}
                 onClick={() => handleOpenProperty(proj)}
@@ -956,7 +1022,7 @@ export default function BDS08Template({
               Tin tức — sự kiện
             </h3>
             <div className="space-y-3">
-              {BDS08_NEWS_EVENTS.map(news => (
+              {activeNews.map(news => (
                 <div
                   key={news.id}
                   onClick={() => handleOpenArticle(news)}
@@ -1020,7 +1086,7 @@ export default function BDS08Template({
                 ★ VINH DANH THƯƠNG HIỆU UY TÍN ★
               </span>
               <h4 className="text-sm font-black text-center text-white mt-1">
-                &ldquo;Hưng Lộc Phát vào TOP 10 thương hiệu mạnh uy tín của Việt Nam&rdquo;
+                "Hưng Lộc Phát vào TOP 10 thương hiệu mạnh uy tín của Việt Nam"
               </h4>
               <p className="text-[11px] text-slate-300 text-center leading-relaxed mt-2">
                 Liên hoan các Doanh nghiệp Rồng Vàng & Thương hiệu mạnh Việt Nam 2017-2018 vừa diễn ra tại Hà Nội nhằm tri ân Tập đoàn Hưng Lộc Phát lọt vào Top 10.
@@ -1112,7 +1178,7 @@ export default function BDS08Template({
 
             <div className="flex items-center gap-2.5 pt-2">
               <a href="https://facebook.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-blue-600 flex items-center justify-center text-xs font-bold transition">FB</a>
-              <a href="https://zalo.me/0919006030" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-blue-600 flex items-center justify-center text-xs font-bold transition">ZL</a>
+              <a href="https://zalo.me/0919006030" target="_blank" rel="noreferrer" className="px-2 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-blue-600 flex items-center justify-center text-[11px] font-extrabold transition">Zalo</a>
               <a href={`tel:${company?.phone?.replace(/\s+/g, '') || '0919006030'}`} className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-emerald-700 flex items-center justify-center text-xs font-bold transition">📞</a>
               <a href="https://youtube.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-sm bg-white/20 hover:bg-white text-white hover:text-red-600 flex items-center justify-center text-xs font-bold transition">YT</a>
             </div>
@@ -1165,7 +1231,7 @@ export default function BDS08Template({
                 onChange={e => setQuickLeadForm({ ...quickLeadForm, project: e.target.value })}
                 className="w-full bg-white text-slate-800 px-3.5 py-2 rounded-lg focus:outline-none"
               >
-                {BDS08_PROJECTS.map(p => (
+                {activeProjects.map(p => (
                   <option key={p.id} value={p.title}>{p.title}</option>
                 ))}
               </select>
@@ -1280,7 +1346,7 @@ export default function BDS08Template({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {[...BDS08_NEWS_EVENTS, ...BDS08_COMPANY_ACTIVITIES].map(news => (
+          {activeNews.map(news => (
             <div
               key={news.id}
               onClick={() => handleOpenArticle(news)}
@@ -1446,7 +1512,7 @@ export default function BDS08Template({
                 onChange={e => setQuickLeadForm({ ...quickLeadForm, project: e.target.value })}
                 className="w-full p-3 rounded-sm border bg-slate-50 focus:bg-white focus:outline-none"
               >
-                {BDS08_PROJECTS.map(p => (
+                {activeProjects.map(p => (
                   <option key={p.id} value={p.title}>{p.title}</option>
                 ))}
               </select>
