@@ -17,6 +17,7 @@ export default function TenantDirectSitePage() {
 
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [isSuspended, setIsSuspended] = useState(false);
   const [template, setTemplate] = useState<Template | null>(null);
   const [tenantInfo, setTenantInfo] = useState<any>(null);
   const [tenantProjects, setTenantProjects] = useState<any[]>([]);
@@ -31,6 +32,7 @@ export default function TenantDirectSitePage() {
     const fetchTenantData = async () => {
       setLoading(true);
       setNotFound(false);
+      setIsSuspended(false);
       try {
         let tenantSlug = rawSubdomain;
 
@@ -61,6 +63,12 @@ export default function TenantDirectSitePage() {
         }
 
         const data = infoRes.data.data;
+        if (data?.tenant?.status === 'SUSPENDED') {
+          setIsSuspended(true);
+          setLoading(false);
+          return;
+        }
+
         setTenantInfo(data);
 
         // 3. Lấy đúng mẫu template đã được mua & lưu trong database
@@ -110,7 +118,25 @@ export default function TenantDirectSitePage() {
           setTenantConfig(getDefaultTenantConfig(dbMatched.slug));
         }
       } catch (err: any) {
-        // Universal Smart Fallback khi API timeout hoặc Render đang khởi động lại
+        // Kiểm tra nếu website đang bị khóa hoặc tạm ngưng hoạt động (403 TENANT_SUSPENDED)
+        if (
+          err?.response?.status === 403 ||
+          err?.response?.data?.error?.code === 'TENANT_SUSPENDED' ||
+          err?.response?.data?.code === 'TENANT_SUSPENDED'
+        ) {
+          setIsSuspended(true);
+          setLoading(false);
+          return;
+        }
+
+        // Nếu API phản hồi 404 (website không tồn tại hoặc đơn hàng đã bị xóa / chưa duyệt)
+        if (err?.response?.status === 404) {
+          setNotFound(true);
+          setLoading(false);
+          return;
+        }
+
+        // Universal Smart Fallback CHỈ KHI Render API ngủ đông hoặc lỗi mạng kết nối
         const tplCodeMatch = rawSubdomain.match(/(bds-\d+|lp-\d+|portal-\d+|luxury-gold|minimal-white)/i);
         const detectedSlug = tplCodeMatch ? tplCodeMatch[1].toLowerCase() : (rawSubdomain.includes('16') ? 'bds-16' : 'bds-01');
         const matchedTpl = findTemplateBySlugOrId(detectedSlug) || ALL_TEMPLATES[0];
@@ -150,6 +176,52 @@ export default function TenantDirectSitePage() {
           <div className="w-12 h-12 border-[3px] border-blue-500 border-t-transparent rounded-full animate-spin" />
           <div className="text-sm font-semibold tracking-wider uppercase text-slate-400">
             Đang xác thực & tải website: {rawSubdomain}...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Màn hình Khóa: Website đang bị tạm ngưng / tạm khóa bởi Admin
+  if (isSuspended) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-6 text-center font-sans">
+        <Head>
+          <title>Website Đang Tạm Khóa | AI Review BĐS</title>
+        </Head>
+        <div className="max-w-md w-full bg-slate-900/90 border border-rose-900/40 rounded-3xl p-8 shadow-2xl backdrop-blur-xl">
+          <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 flex items-center justify-center mx-auto mb-5 shadow-inner">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <span className="text-[11px] font-black tracking-widest text-rose-400 uppercase bg-rose-500/10 px-3 py-1 rounded-full border border-rose-500/20">
+            Website Đang Tạm Khóa
+          </span>
+          <h1 className="text-xl font-black text-white mt-4 mb-2">
+            Website Tạm Ngưng Hoạt Động
+          </h1>
+          <p className="text-sm font-mono text-rose-300/80 mb-3 break-all">
+            {rawSubdomain}
+          </p>
+          <p className="text-xs text-slate-400 leading-relaxed mb-6">
+            Website này hiện đang trong trạng thái tạm khóa theo yêu cầu của Quản trị viên hệ thống hoặc hết hạn gói dịch vụ. Vui lòng liên hệ ban quản trị để mở lại.
+          </p>
+          <div className="flex flex-col gap-3">
+            <a
+              href="https://zalo.me/0919006030"
+              target="_blank"
+              rel="noreferrer"
+              className="w-full py-3 px-4 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-bold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
+            >
+              <span>Hỗ Trợ Kích Hoạt Lại (Zalo)</span>
+            </a>
+            <Link
+              href="/"
+              className="w-full py-3 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm rounded-xl transition-all"
+            >
+              ← Về Trang Chủ Marketplace
+            </Link>
           </div>
         </div>
       </div>

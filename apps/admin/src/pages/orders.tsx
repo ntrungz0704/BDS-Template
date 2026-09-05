@@ -231,24 +231,24 @@ export default function AdminOrders() {
     },
   });
 
-  // 5. Mutation XÓA SẠCH VĨNH VIỄN 100% TÀI KHOẢN & TẤT CẢ ĐƠN HÀNG (Dành cho Super Admin reset test)
-  const purgeCustomerMutation = useMutation({
-    mutationFn: async ({ email, phone, userId }: { email?: string; phone?: string; userId?: string }) => {
+  // 5. Mutation Khóa / Mở Khóa Website Khách Hàng (Thay vì xóa vĩnh viễn)
+  const toggleSuspendMutation = useMutation({
+    mutationFn: async ({ userId, suspended }: { userId: string; suspended: boolean }) => {
       const res = await axios.post(
-        `${API_URL}/api/admin/users/purge`,
-        { email, phone, userId },
+        `${API_URL}/api/admin/customers/${userId}/suspend`,
+        { suspended, reason: suspended ? 'Tạm khóa website bởi quản trị viên.' : 'Mở khóa website.' },
         { withCredentials: true }
       );
       return res.data;
     },
-    onSuccess: (res: any) => {
-      alert(res?.message || '✅ Đã xóa hoàn toàn tài khoản khách hàng, tất cả đơn hàng và website liên quan thành công. Bạn có thể test mua lại từ đầu!');
+    onSuccess: (_res: any, variables: any) => {
+      alert(variables.suspended ? '🔒 Đã tạm khóa website và tài khoản khách hàng thành công.' : '🔓 Đã mở khóa website và kích hoạt lại tài khoản thành công.');
       setSelectedOrder(null);
       queryClient.invalidateQueries({ queryKey: ['adminOrders'] });
       queryClient.invalidateQueries({ queryKey: ['adminStats'] });
     },
     onError: (err: any) => {
-      const msg = err.response?.data?.error?.message || err.message || 'Có lỗi xảy ra khi dọn dẹp tài khoản.';
+      const msg = err.response?.data?.error?.message || err.message || 'Có lỗi xảy ra khi cập nhật trạng thái khóa website.';
       alert(`⚠️ Lỗi: ${msg}`);
     },
   });
@@ -946,24 +946,35 @@ export default function AdminOrders() {
                   </button>
                 )}
 
-                {/* Nút Xóa Sạch Tài Khoản Test (Reset từ đầu) */}
-                <button
-                  onClick={() => {
-                    const confirmMsg = `⚠️ CẢNH BÁO RESET DỮ LIỆU TEST:\n\nBạn có chắc chắn muốn XÓA VĨNH VIỄN toàn bộ tài khoản [${selectedOrder.email}], tất cả các đơn hàng đã mua và mọi website liên quan không?\n\nThao tác này dùng để dọn dẹp sạch sẽ để test lại từ đầu. Không thể hoàn tác!`;
-                    if (confirm(confirmMsg)) {
-                      purgeCustomerMutation.mutate({
-                        email: selectedOrder.email,
-                        phone: selectedOrder.phone,
-                        userId: selectedOrder.userId,
-                      });
-                    }
-                  }}
-                  disabled={purgeCustomerMutation.isPending}
-                  className="px-3.5 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs rounded-xl border border-amber-300 transition-all flex items-center gap-1.5"
-                  title="Xóa triệt để toàn bộ dữ liệu tài khoản và các đơn hàng này để test lại từ đầu"
-                >
-                  {purgeCustomerMutation.isPending ? 'Đang dọn dẹp sạch...' : '🗑️ Xóa Sạch Tài Khoản (Reset Test)'}
-                </button>
+                {/* Nút Khóa / Mở Khóa Website (Thay vì xóa vĩnh viễn đơn hàng) */}
+                {selectedOrder.status === 'COMPLETED' && (selectedOrder.userId || selectedOrder.user?.id) && (
+                  <button
+                    onClick={() => {
+                      const isCurrentlySuspended = selectedOrder.tenant?.status === 'SUSPENDED' || selectedOrder.user?.status === 'BANNED' || selectedOrder.fulfillmentStatus === 'SUSPENDED';
+                      const actionLabel = isCurrentlySuspended ? 'MỞ KHÓA' : 'TẠM KHÓA';
+                      const confirmMsg = `Xác nhận ${actionLabel} website của khách hàng [${selectedOrder.fullName || selectedOrder.email}]?\n\n- Khi khóa: Khách truy cập sẽ thấy thông báo tạm ngưng hoạt động.\n- Khi mở khóa: Website hoạt động trở lại bình thường.`;
+                      if (confirm(confirmMsg)) {
+                        toggleSuspendMutation.mutate({
+                          userId: selectedOrder.userId || selectedOrder.user?.id,
+                          suspended: !isCurrentlySuspended,
+                        });
+                      }
+                    }}
+                    disabled={toggleSuspendMutation.isPending}
+                    className={`px-3.5 py-2.5 font-bold text-xs rounded-xl border transition-all flex items-center gap-1.5 ${
+                      selectedOrder.tenant?.status === 'SUSPENDED' || selectedOrder.user?.status === 'BANNED' || selectedOrder.fulfillmentStatus === 'SUSPENDED'
+                        ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-300'
+                        : 'bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-300'
+                    }`}
+                    title="Khóa hoặc mở khóa website mà không xóa dữ liệu đơn hàng"
+                  >
+                    {toggleSuspendMutation.isPending ? 'Đang xử lý...' : (
+                      selectedOrder.tenant?.status === 'SUSPENDED' || selectedOrder.user?.status === 'BANNED' || selectedOrder.fulfillmentStatus === 'SUSPENDED'
+                        ? '🔓 Mở Khóa Website'
+                        : '🔒 Tạm Khóa Website'
+                    )}
+                  </button>
+                )}
               </div>
 
               <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
