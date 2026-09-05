@@ -60,6 +60,7 @@ export interface DemoRendererProps {
   projects?: any[];
   posts?: any[];
   pageContent?: any;
+  config?: any;
 }
 
 export const normalizePageSlug = (p?: string): string => {
@@ -1149,7 +1150,8 @@ export default function DemoRenderer({
   theme,
   projects,
   posts,
-  pageContent
+  pageContent,
+  config
 }: DemoRendererProps) {
   const slug = template.slug?.toLowerCase() || '';
   const sourceSlug = String(template.sectionConfig?.sourceSlug || slug).toLowerCase();
@@ -1267,7 +1269,7 @@ export default function DemoRenderer({
     }
     // 16. Top Personal Broker
     if (['16', 'bds-16', 'portal-16', 'personal-top-broker', 'personal-agent', 'elite-broker'].some(k => slug.includes(k) || sourceSlug.includes(k))) {
-      return <BDS16Template template={template} viewport={viewport} initialPage={initialPage} company={makeCompany('TL BDS16', false)} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
+      return <BDS16Template template={template} viewport={viewport} initialPage={initialPage} config={config} company={makeCompany('TL BDS16', false)} theme={theme} projects={projects} posts={posts} pageContent={pageContent} />;
     }
     // 17. Portal BĐS Số 1 (Hà Nội Heritage)
     if (['17', 'bds-17', 'portal-17', 'portal-bds-so1', 'portal-listing', 'hanoi-capital'].some(k => slug.includes(k) || sourceSlug.includes(k))) {

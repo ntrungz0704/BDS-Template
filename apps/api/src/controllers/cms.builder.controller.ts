@@ -11,7 +11,8 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { prisma, Prisma, TemplateRegistry } from '@repo/database';
-import { TEMPLATE_CONFIGS } from '@repo/utils';
+import { TEMPLATE_CONFIGS, getDefaultTenantConfig } from '@repo/utils';
+import { TenantConfigSchema, TenantMenuItem, TenantHeroSlide } from '@repo/types';
 import { z } from 'zod';
 import { logger } from '../index';
 import dns from 'dns';
@@ -1545,4 +1546,209 @@ export async function updateSeoConfig(req: Request, res: Response, next: NextFun
     next(err);
   }
 }
+
+// ─── Universal Template Config Engine Handlers ──────────────────────────────
+
+export async function getTenantConfig(req: Request, res: Response, next: NextFunction) {
+  const tenantId = getTenantId(req);
+  if (!tenantId) return res.status(400).json({ success: false, error: { code: 'MISSING_TENANT', message: 'Không tìm thấy Tenant.' } });
+
+  try {
+    const [tenant, company, menu, banners, theme] = await Promise.all([
+      prisma.tenant.findUnique({
+        where: { id: tenantId },
+        include: { template: { select: { slug: true } } },
+      }),
+      prisma.companyInfo.findUnique({ where: { tenantId } }),
+      prisma.menu.findFirst({
+        where: { tenantId, location: 'header' },
+        include: {
+          menuItems: {
+            orderBy: { sortOrder: 'asc' },
+          },
+        },
+      }),
+      prisma.banner.findMany({
+        where: { tenantId },
+        orderBy: { sortOrder: 'asc' },
+      }),
+      prisma.tenantThemeSettings.findUnique({ where: { tenantId } }),
+    ]);
+
+    const tplSlug = tenant?.template?.slug || 'bds-16';
+    const fallback = getDefaultTenantConfig(tplSlug);
+
+    const menuItems: TenantMenuItem[] = menu?.menuItems && menu.menuItems.length > 0
+      ? menu.menuItems.map((item: any, idx: number) => ({
+          id: item.id || `m-${idx + 1}`,
+          label: item.label,
+          url: item.url,
+          target: (item.target === '_blank' ? '_blank' : '_self') as any,
+          order: item.sortOrder ?? idx + 1,
+          visible: item.isActive ?? true,
+        }))
+      : fallback.navigation.menuItems;
+
+    const slides: TenantHeroSlide[] = banners && banners.length > 0
+      ? banners.map((b: any, idx: number) => ({
+          id: b.id || `slide-${idx + 1}`,
+          title: b.title,
+          subtitle: b.subtitle || '',
+          badge: 'HOT',
+          imageUrl: b.imageUrl,
+          actionUrl: b.actionUrl || '/',
+          actionText: b.actionText || 'Xem Chi Tiết',
+          order: b.sortOrder ?? idx + 1,
+        }))
+      : fallback.heroSlider.slides;
+
+    const config: TenantConfigSchema = {
+      version: 1,
+      tenantSlug: tenant?.slug || 'demo',
+      templateSlug: tplSlug,
+      logo: {
+        url: company?.logo || '',
+        text: (company as any)?.logoText || fallback.logo.text,
+        slogan: company?.slogan || fallback.logo.slogan,
+        width: 180,
+        height: 48,
+      },
+      navigation: {
+        menuItems,
+      },
+      heroSlider: {
+        enabled: banners.length > 0 ? banners.some((b: any) => b.isActive) : fallback.heroSlider.enabled,
+        autoplay: true,
+        intervalSec: 5,
+        slides,
+      },
+      contact: {
+        companyName: company?.name || tenant?.name || fallback.contact.companyName,
+        brandTitle: company?.slogan || fallback.contact.brandTitle,
+        slogan: company?.slogan || fallback.contact.slogan,
+        phone: company?.phone || company?.hotline || fallback.contact.phone,
+        hotline: company?.hotline || company?.phone || fallback.contact.hotline,
+        zalo: company?.zalo || company?.phone || fallback.contact.zalo,
+        email: company?.email || fallback.contact.email,
+        address: company?.address || fallback.contact.address,
+        workingHours: company?.workingHours || fallback.contact.workingHours,
+        facebook: company?.facebook || fallback.contact.facebook,
+        youtube: company?.youtube || fallback.contact.youtube,
+        tiktok: company?.tiktok || '',
+        googleMapsEmbed: company?.googleMapsEmbed || '',
+      },
+      theme: {
+        primaryColor: theme?.primaryColor || fallback.theme?.primaryColor,
+        secondaryColor: theme?.secondaryColor || fallback.theme?.secondaryColor,
+        accentColor: theme?.accentColor || fallback.theme?.accentColor,
+        fontFamily: theme?.fontHeading || fallback.theme?.fontFamily,
+      },
+    };
+
+    return res.json({ success: true, data: config });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function updateTenantConfig(req: Request, res: Response, next: NextFunction) {
+  const tenantId = getTenantId(req);
+  if (!tenantId) return res.status(400).json({ success: false, error: { code: 'MISSING_TENANT', message: 'Không tìm thấy Tenant.' } });
+
+  const payload: Partial<TenantConfigSchema> = req.body;
+
+  try {
+    await prisma.$transaction(async (tx: any) => {
+      // 1. Update CompanyInfo
+      if (payload.contact || payload.logo) {
+        await tx.companyInfo.upsert({
+          where: { tenantId },
+          create: {
+            tenantId,
+            name: payload.contact?.companyName,
+            slogan: payload.contact?.slogan || payload.logo?.slogan,
+            phone: payload.contact?.phone,
+            hotline: payload.contact?.hotline || payload.contact?.phone,
+            zalo: payload.contact?.zalo || payload.contact?.phone,
+            email: payload.contact?.email,
+            address: payload.contact?.address,
+            workingHours: payload.contact?.workingHours,
+            facebook: payload.contact?.facebook,
+            youtube: payload.contact?.youtube,
+            tiktok: payload.contact?.tiktok,
+            logo: payload.logo?.url || null,
+          },
+          update: {
+            ...(payload.contact?.companyName ? { name: payload.contact.companyName } : {}),
+            ...(payload.contact?.slogan !== undefined ? { slogan: payload.contact.slogan } : {}),
+            ...(payload.contact?.phone ? { phone: payload.contact.phone } : {}),
+            ...(payload.contact?.hotline ? { hotline: payload.contact.hotline } : {}),
+            ...(payload.contact?.zalo ? { zalo: payload.contact.zalo } : {}),
+            ...(payload.contact?.email ? { email: payload.contact.email } : {}),
+            ...(payload.contact?.address !== undefined ? { address: payload.contact.address } : {}),
+            ...(payload.contact?.workingHours !== undefined ? { workingHours: payload.contact.workingHours } : {}),
+            ...(payload.contact?.facebook !== undefined ? { facebook: payload.contact.facebook } : {}),
+            ...(payload.contact?.youtube !== undefined ? { youtube: payload.contact.youtube } : {}),
+            ...(payload.contact?.tiktok !== undefined ? { tiktok: payload.contact.tiktok } : {}),
+            ...(payload.logo?.url !== undefined ? { logo: payload.logo.url } : {}),
+          },
+        });
+      }
+
+      // 2. Update Menu & MenuItems
+      if (payload.navigation?.menuItems) {
+        let menu = await tx.menu.findFirst({
+          where: { tenantId, location: 'header' },
+        });
+        if (!menu) {
+          menu = await tx.menu.create({
+            data: {
+              tenantId,
+              name: 'Main Navigation Header',
+              location: 'header',
+              isActive: true,
+            },
+          });
+        }
+        await tx.menuItem.deleteMany({ where: { menuId: menu.id } });
+        if (payload.navigation.menuItems.length > 0) {
+          await tx.menuItem.createMany({
+            data: payload.navigation.menuItems.map((item: TenantMenuItem, idx: number) => ({
+              menuId: menu.id,
+              label: item.label,
+              url: item.url,
+              target: item.target || '_self',
+              sortOrder: item.order ?? idx + 1,
+              isActive: item.visible ?? true,
+            })),
+          });
+        }
+      }
+
+      // 3. Update Hero Slider Banners
+      if (payload.heroSlider?.slides) {
+        await tx.banner.deleteMany({ where: { tenantId } });
+        if (payload.heroSlider.slides.length > 0) {
+          await tx.banner.createMany({
+            data: payload.heroSlider.slides.map((slide: TenantHeroSlide, idx: number) => ({
+              tenantId,
+              title: slide.title,
+              subtitle: slide.subtitle || (slide.price ? `${slide.price} - ${slide.location || ''}` : ''),
+              imageUrl: slide.imageUrl,
+              actionUrl: slide.actionUrl || '/',
+              actionText: slide.actionText || 'Xem Chi Tiết',
+              sortOrder: slide.order ?? idx + 1,
+              isActive: payload.heroSlider?.enabled ?? true,
+            })),
+          });
+        }
+      }
+    });
+
+    return res.json({ success: true, message: 'Đã cập nhật cấu hình giao diện thành công.' });
+  } catch (err) {
+    next(err);
+  }
+}
+
 

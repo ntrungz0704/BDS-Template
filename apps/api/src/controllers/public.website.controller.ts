@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '@repo/database';
+import { getDefaultTenantConfig } from '@repo/utils';
+import { TenantConfigSchema } from '@repo/types';
 import { z } from 'zod';
 import { logger } from '../index';
 
@@ -495,4 +497,108 @@ export async function getTenantStatus(req: Request, res: Response, next: NextFun
     next(error);
   }
 }
+
+export async function getPublicTenantConfig(req: Request, res: Response, next: NextFunction) {
+  const tenantId = req.tenantId;
+  const tenantSlug = (req.params.tenantSlug || 'demo').toLowerCase();
+
+  try {
+    const [tenant, company, menu, banners, theme] = await Promise.all([
+      tenantId ? prisma.tenant.findUnique({
+        where: { id: tenantId },
+        include: { template: { select: { slug: true } } },
+      }) : null,
+      tenantId ? prisma.companyInfo.findUnique({ where: { tenantId } }) : null,
+      tenantId ? prisma.menu.findFirst({
+        where: { tenantId, location: 'header' },
+        include: {
+          menuItems: {
+            where: { isActive: true },
+            orderBy: { sortOrder: 'asc' },
+          },
+        },
+      }) : null,
+      tenantId ? prisma.banner.findMany({
+        where: { tenantId, isActive: true },
+        orderBy: { sortOrder: 'asc' },
+      }) : [],
+      tenantId ? prisma.tenantThemeSettings.findUnique({ where: { tenantId } }) : null,
+    ]);
+
+    const tplSlug = tenant?.template?.slug || (tenantSlug.includes('lp') ? 'lp-01' : 'bds-16');
+    const fallback = getDefaultTenantConfig(tplSlug);
+
+    const menuItems = menu?.menuItems && menu.menuItems.length > 0
+      ? menu.menuItems.map((item: any, idx: number) => ({
+          id: item.id || `m-${idx + 1}`,
+          label: item.label,
+          url: item.url,
+          target: (item.target === '_blank' ? '_blank' : '_self') as any,
+          order: item.sortOrder ?? idx + 1,
+          visible: item.isActive ?? true,
+        }))
+      : fallback.navigation.menuItems;
+
+    const slides = banners && banners.length > 0
+      ? banners.map((b: any, idx: number) => ({
+          id: b.id || `slide-${idx + 1}`,
+          title: b.title,
+          subtitle: b.subtitle || '',
+          badge: 'HOT',
+          imageUrl: b.imageUrl,
+          actionUrl: b.actionUrl || '/',
+          actionText: b.actionText || 'Xem Chi Tiết',
+          order: b.sortOrder ?? idx + 1,
+        }))
+      : fallback.heroSlider.slides;
+
+    const config: TenantConfigSchema = {
+      version: 1,
+      tenantSlug: tenant?.slug || tenantSlug,
+      templateSlug: tplSlug,
+      logo: {
+        url: company?.logo || '',
+        text: (company as any)?.logoText || fallback.logo.text,
+        slogan: company?.slogan || fallback.logo.slogan,
+        width: 180,
+        height: 48,
+      },
+      navigation: {
+        menuItems,
+      },
+      heroSlider: {
+        enabled: banners.length > 0 ? banners.some((b: any) => b.isActive) : fallback.heroSlider.enabled,
+        autoplay: true,
+        intervalSec: 5,
+        slides,
+      },
+      contact: {
+        companyName: company?.name || tenant?.name || fallback.contact.companyName,
+        brandTitle: company?.slogan || fallback.contact.brandTitle,
+        slogan: company?.slogan || fallback.contact.slogan,
+        phone: company?.phone || company?.hotline || fallback.contact.phone,
+        hotline: company?.hotline || company?.phone || fallback.contact.hotline,
+        zalo: company?.zalo || company?.phone || fallback.contact.zalo,
+        email: company?.email || fallback.contact.email,
+        address: company?.address || fallback.contact.address,
+        workingHours: company?.workingHours || fallback.contact.workingHours,
+        facebook: company?.facebook || fallback.contact.facebook,
+        youtube: company?.youtube || fallback.contact.youtube,
+        tiktok: company?.tiktok || '',
+        googleMapsEmbed: company?.googleMapsEmbed || '',
+      },
+      theme: {
+        primaryColor: theme?.primaryColor || fallback.theme?.primaryColor,
+        secondaryColor: theme?.secondaryColor || fallback.theme?.secondaryColor,
+        accentColor: theme?.accentColor || fallback.theme?.accentColor,
+        fontFamily: theme?.fontHeading || fallback.theme?.fontFamily,
+      },
+    };
+
+    return res.json({ success: true, data: config });
+  } catch (error) {
+    next(error);
+  }
+}
+
 

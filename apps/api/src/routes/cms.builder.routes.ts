@@ -62,7 +62,9 @@ import {
   getCompanyInfo,
   updateCompanyInfo,
   getSeoConfig,
-  updateSeoConfig
+  updateSeoConfig,
+  getTenantConfig,
+  updateTenantConfig
  } from '../controllers/cms.builder.controller';
 
 const router = Router();
@@ -116,6 +118,11 @@ router.get('/subscription', getSubscription);
 // ── Company Info (Cài đặt Thông tin công ty) ──────────────────────────────
 router.get('/company-info', getCompanyInfo);
 router.put('/company-info', csrfMiddleware, updateCompanyInfo);
+
+// ── Universal Template Config (Menu, Logo, Hero Slider, Branding) ─────────
+router.get('/tenant-config', getTenantConfig);
+router.put('/tenant-config', csrfMiddleware, updateTenantConfig);
+
 
 
 // ── Tenant Self-Service Upgrade / Rollback ──────────────────────────

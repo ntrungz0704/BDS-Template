@@ -191,4 +191,6 @@ export function getTenantSiteUrl(ordOrSubdomain: any, customEnvDomain?: string):
 export * from './template-configs';
 export * from './vietnam-addresses';
 export * from './bds-canonical-configs';
+export * from './universal-config';
+
 

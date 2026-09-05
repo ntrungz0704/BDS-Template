@@ -14,11 +14,14 @@ import {
 import { MAX_W } from '../design-system';
 import UniversalTemplateFooter from '../UniversalTemplateFooter';
 import { syncDemoUrl } from '../../../utils/demo';
+import { TenantConfigSchema, TenantMenuItem } from '@repo/types';
+import { getDefaultTenantConfig } from '@repo/utils';
 
 export interface TemplateProps {
   template: { name: string; slug: string; collectionSlug?: string; sectionConfig?: Record<string, unknown> };
   viewport?: 'desktop' | 'tablet' | 'mobile';
   initialPage?: string;
+  config?: TenantConfigSchema;
   company?: {
     name?: string;
     slogan?: string;
@@ -88,6 +91,47 @@ export interface NewsItem {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const BDS16_PROPERTIES: PropertyItem[] = [
+  // 0. BUILDING & CHDV (TRUNG NGHĨA NHÀ PHỐ / S.HOUSE REFERENCE)
+  {
+    id: 'building-nguyen-luong-bang-q7',
+    title: 'Bán Tòa Nhà Văn Phòng Mặt Tiền Nguyễn Lương Bằng, Quận 7 (1 Hầm 7 Lầu)',
+    slug: 'ban-toa-nha-van-phong-nguyen-luong-bang-q7',
+    type: 'Building',
+    category: 'ban',
+    price: '45 Tỷ VNĐ',
+    priceNum: 45.0,
+    area: '176 m²',
+    areaNum: 176,
+    direction: 'Hướng Đông Nam',
+    location: 'Đường Nguyễn Lương Bằng, P. Tân Phú, Quận 7, TP.HCM',
+    district: 'Quận 7',
+    city: 'Hồ Chí Minh',
+    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+    hot: true,
+    featured: true,
+    description: 'Tòa nhà văn phòng chuẩn hạng B gồm 1 hầm, lửng và 7 lầu nổi, thang máy tốc độ cao, PCCC thẩm duyệt chuẩn nhà nước. Đang khai thác dòng tiền 180 triệu/tháng.',
+    specs: ['Ngang 8m x 22m', '1 Hầm 7 Lầu', 'Dòng tiền 180 tr/tháng', 'Sổ hồng hoàn công đủ']
+  },
+  {
+    id: 'chdv-him-lam-quan-7',
+    title: 'Tòa Căn Hộ Dịch Vụ 20 Phòng Full Nội Thất KDC Him Lam, Tân Hưng, Quận 7',
+    slug: 'toa-can-ho-dich-vu-20-phong-him-lam-q7',
+    type: 'CHDV',
+    category: 'ban',
+    price: '28.5 Tỷ VNĐ',
+    priceNum: 28.5,
+    area: '125 m²',
+    areaNum: 125,
+    direction: 'Hướng Nam',
+    location: 'Khu Dân Cư Him Lam, Phường Tân Hưng, Quận 7, TP.HCM',
+    district: 'Quận 7',
+    city: 'Hồ Chí Minh',
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+    hot: true,
+    featured: true,
+    description: 'Tòa nhà CHDV xây dựng kiên cố 6 tầng thang máy với 20 phòng khép kín cao cấp, doanh thu khoán đạt 110 triệu/tháng, tỷ suất sinh lời vượt trội.',
+    specs: ['20 Phòng khép kín', 'Thang máy thẻ từ', 'Doanh thu 110 tr/th', 'Gần Lotte Mart Q7']
+  },
   // 1. NHÀ ĐẤT BÁN
   {
     id: 'biet-thu-ciputra-tay-ho',
@@ -434,35 +478,134 @@ export default function BDS16Template({
   template,
   viewport = 'desktop',
   initialPage = 'home',
+  config,
   company,
   theme,
   projects,
-  posts
-, pageContent }: TemplateProps) {
+  posts, pageContent
+}: TemplateProps) {
   // CMS Dynamic Section Data
   const cmsHero = getCmsHero(pageContent);
   const cmsStats = getCmsQuickStats(pageContent, []);
   const cmsPolicies = getCmsPolicies(pageContent, []);
 
+  const primaryColor = theme?.primaryColor;
+  const secondaryColor = theme?.secondaryColor;
+  const accentColor = theme?.accentColor;
+
   const isSmall = viewport === 'mobile' || viewport === 'tablet';
   const initialParsed = useMemo(() => resolvePageAndDetail(initialPage), [initialPage]);
+
+  // Universal Tenant Config (Fallback-resilient)
+  const resolvedConfig = useMemo<TenantConfigSchema>(() => {
+    if (config) return config;
+    return getDefaultTenantConfig('bds-16', {
+      contact: {
+        companyName: company?.name,
+        phone: company?.phone,
+        email: company?.email,
+        address: company?.address,
+        zalo: company?.social?.zalo || company?.phone,
+        facebook: company?.social?.facebook,
+        youtube: company?.social?.youtube,
+        tiktok: company?.social?.tiktok,
+      } as any,
+      logo: {
+        url: company?.logo,
+        text: (company as any)?.logoText,
+        slogan: company?.slogan,
+      },
+      theme: {
+        primaryColor,
+        secondaryColor,
+        accentColor,
+      },
+    });
+  }, [config, company, primaryColor, secondaryColor, accentColor]);
+
+  // Hero Slider Carousel State
+  const [currentSlideIdx, setCurrentSlideIdx] = useState(0);
+
+  useEffect(() => {
+    if (!resolvedConfig.heroSlider.enabled) return;
+    const slidesCount = resolvedConfig.heroSlider.slides?.length || 0;
+    if (slidesCount <= 1) return;
+
+    const timer = setInterval(() => {
+      setCurrentSlideIdx(prev => (prev + 1) % slidesCount);
+    }, (resolvedConfig.heroSlider.intervalSec || 5) * 1000);
+
+    return () => clearInterval(timer);
+  }, [resolvedConfig.heroSlider]);
+
+  const activeProperties = useMemo<PropertyItem[]>(() => {
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      const customProps = projects.map((p: any, idx: number): PropertyItem => ({
+        id: p.slug || `prop-${idx + 1}`,
+        title: p.title || p.name || 'Bất động sản cao cấp',
+        slug: p.slug || `bds-${idx + 1}`,
+        type: p.type || 'Căn Hộ Cao Cấp',
+        category: (p.category === 'thue' || p.category === 'cho-thue') ? 'thue' : 'ban',
+        price: p.price || (p.priceFrom ? `${p.priceFrom} Tỷ` : 'Liên hệ'),
+        priceNum: typeof p.priceNum === 'number' ? p.priceNum : (parseFloat(p.price) || 3.5),
+        area: typeof p.area === 'number' ? `${p.area} m²` : (p.area || '80 m²'),
+        areaNum: typeof p.area === 'number' ? p.area : 80,
+        beds: p.beds || p.bedrooms || 2,
+        baths: p.baths || p.bathrooms || 2,
+        direction: p.direction || 'Đông Nam',
+        location: p.address || p.location || 'TP. Hồ Chí Minh',
+        district: p.district || 'Quận 2',
+        city: p.city || 'TP. Hồ Chí Minh',
+        image: p.thumbnail || p.image || p.images?.[0] || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        hot: Boolean(idx === 0),
+        featured: Boolean(idx < 4),
+        description: p.description || p.desc || 'Không gian sống hiện đại, tiện ích chuẩn quốc tế.',
+        specs: Array.isArray(p.specs) ? p.specs : ['Sổ hồng lâu dài', 'Vị trí đắc địa', 'Giao thông thuận tiện'],
+      }));
+      const customSlugs = new Set(customProps.map((cp: any) => cp.slug));
+      const remainingDefaults = (BDS16_PROPERTIES).filter((dp: any) => !customSlugs.has(dp.slug));
+      return [...customProps, ...remainingDefaults];
+    }
+    return BDS16_PROPERTIES;
+  }, [projects]);
+
+  const activeNews = useMemo<NewsItem[]>(() => {
+    if (posts && Array.isArray(posts) && posts.length > 0) {
+      const customNews = posts.map((p: any, idx: number): NewsItem => ({
+        id: p.id || idx + 1,
+        title: p.title || 'Tin tức thị trường bất động sản',
+        slug: p.slug || `tin-tuc-${idx + 1}`,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('vi-VN') : 'Hôm nay',
+        author: p.author || company?.name || 'Ban Biên Tập',
+        category: p.category || 'Tin Tức',
+        image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        excerpt: p.summary || p.excerpt || 'Cập nhật tin tức thị trường BĐS mới nhất.',
+        content: Array.isArray(p.content) ? p.content : [p.content || p.summary || ''],
+        views: p.views || 1200,
+      }));
+      const customSlugs = new Set(customNews.map((cn: any) => cn.slug));
+      const remainingDefaults = (BDS16_NEWS).filter((dn: any) => !customSlugs.has(dn.slug));
+      return [...customNews, ...remainingDefaults];
+    }
+    return BDS16_NEWS;
+  }, [posts, company]);
 
   const [currentPage, setCurrentPageState] = useState<string>(() => initialParsed.page);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedProperty, setSelectedProperty] = useState<PropertyItem>(() => {
     if (initialParsed.propSlug) {
-      const found = BDS16_PROPERTIES.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
+      const found = activeProperties.find(p => p.slug === initialParsed.propSlug || p.id === initialParsed.propSlug);
       if (found) return found;
     }
-    return BDS16_PROPERTIES[0];
+    return activeProperties[0] || BDS16_PROPERTIES[0];
   });
 
   const [selectedArticle, setSelectedArticle] = useState<NewsItem>(() => {
     if (initialParsed.artSlug) {
-      const found = BDS16_NEWS.find(n => n.slug === initialParsed.artSlug || n.id.toString() === initialParsed.artSlug);
+      const found = activeNews.find(n => n.slug === initialParsed.artSlug || n.id.toString() === initialParsed.artSlug);
       if (found) return found;
     }
-    return BDS16_NEWS[0];
+    return activeNews[0] || BDS16_NEWS[0];
   });
 
   // Dynamic Properties from CMS or Default Mock
@@ -559,6 +702,82 @@ export default function BDS16Template({
     else urlSlug = page;
 
     syncDemoUrl(urlSlug, tSlug);
+  };
+
+  const handleMenuItemClick = (item: TenantMenuItem) => {
+    setMobileMenuOpen(false);
+    const target = item.target || '_self';
+    const url = (item.url || '').trim();
+
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      if (typeof window !== 'undefined') {
+        window.open(url, target);
+      }
+      return;
+    }
+
+    const cleanUrl = url.toLowerCase().replace(/^\/+/, '');
+    const labelLower = item.label.toLowerCase();
+
+    if (!cleanUrl || cleanUrl === 'home' || labelLower.includes('trang chủ')) {
+      setFilterType('all');
+      navigate('home');
+    } else if (cleanUrl.includes('gioi-thieu') || labelLower.includes('giới thiệu')) {
+      navigate('about');
+    } else if (cleanUrl.includes('tin-tuc') || labelLower.includes('tin tức')) {
+      navigate('news');
+    } else if (cleanUrl.includes('huong-dan') || labelLower.includes('hướng dẫn')) {
+      navigate('guide');
+    } else if (cleanUrl.includes('lien-he') || labelLower.includes('liên hệ')) {
+      navigate('contact');
+    } else if (cleanUrl.includes('nha-ban') || labelLower.includes('nhà bán')) {
+      setFilterType('all');
+      navigate('for-sale');
+    } else if (cleanUrl.includes('nha-cho-thue') || labelLower.includes('cho thuê')) {
+      setFilterType('all');
+      navigate('for-rent');
+    } else if (cleanUrl.includes('ban-do') || labelLower.includes('bản đồ')) {
+      if (currentPage !== 'home') {
+        navigate('home');
+        setTimeout(() => {
+          document.getElementById('ban-do-bds')?.scrollIntoView({ behavior: 'smooth' });
+        }, 300);
+      } else {
+        document.getElementById('ban-do-bds')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (cleanUrl.includes('building') || labelLower.includes('building') || labelLower.includes('tòa nhà')) {
+      navigate('home');
+      setFilterType('Building');
+      setTimeout(() => {
+        document.getElementById('danh-sach-san-pham')?.scrollIntoView({ behavior: 'smooth' });
+      }, 200);
+    } else if (cleanUrl.includes('chdv') || labelLower.includes('chdv') || labelLower.includes('căn hộ')) {
+      navigate('home');
+      setFilterType('CHDV');
+      setTimeout(() => {
+        document.getElementById('danh-sach-san-pham')?.scrollIntoView({ behavior: 'smooth' });
+      }, 200);
+    } else {
+      navigate(cleanUrl);
+    }
+  };
+
+  const isMenuItemActive = (item: TenantMenuItem) => {
+    const cleanUrl = (item.url || '').toLowerCase().replace(/^\/+/, '');
+    const labelLower = item.label.toLowerCase();
+
+    if ((!cleanUrl || cleanUrl === 'home' || labelLower.includes('trang chủ')) && currentPage === 'home' && filterType === 'all') {
+      return true;
+    }
+    if ((cleanUrl.includes('gioi-thieu') || labelLower.includes('giới thiệu')) && currentPage === 'about') return true;
+    if ((cleanUrl.includes('tin-tuc') || labelLower.includes('tin tức')) && (currentPage === 'news' || currentPage === 'news-detail')) return true;
+    if ((cleanUrl.includes('huong-dan') || labelLower.includes('hướng dẫn')) && currentPage === 'guide') return true;
+    if ((cleanUrl.includes('lien-he') || labelLower.includes('liên hệ')) && currentPage === 'contact') return true;
+    if ((cleanUrl.includes('nha-ban') || labelLower.includes('nhà bán')) && currentPage === 'for-sale') return true;
+    if ((cleanUrl.includes('nha-cho-thue') || labelLower.includes('cho thuê')) && currentPage === 'for-rent') return true;
+    if ((cleanUrl.includes('building') || labelLower.includes('building')) && filterType.toLowerCase().includes('building')) return true;
+    if ((cleanUrl.includes('chdv') || labelLower.includes('chdv')) && filterType.toLowerCase().includes('chdv')) return true;
+    return false;
   };
 
   const handleOpenProperty = (prop: PropertyItem) => {
@@ -658,16 +877,34 @@ export default function BDS16Template({
       <div className="bg-[#051420] text-slate-300 text-xs py-1 px-4 border-b border-slate-800 hidden md:block">
         <div className={`${MAX_W} mx-auto flex items-center justify-between text-[11px]`}>
           <div className="flex items-center gap-6">
-            <button onClick={() => navigate('contact')} className="hover:text-amber-400 transition">
-              ✉ Liên hệ
+            <button onClick={() => navigate('contact')} className="hover:text-amber-400 transition flex items-center gap-1.5">
+              <Mail size={12} className="text-amber-400" />
+              <span>{resolvedConfig.contact.email}</span>
             </button>
+            <a href={`tel:${resolvedConfig.contact.phone.replace(/[^0-9]/g, '')}`} className="hover:text-amber-400 transition flex items-center gap-1.5">
+              <Phone size={12} className="text-amber-400" />
+              <span>Hotline: <strong className="text-amber-300">{resolvedConfig.contact.phone}</strong></span>
+            </a>
+            {resolvedConfig.contact.address && (
+              <span className="text-slate-400 hidden lg:inline-flex items-center gap-1">
+                <MapPin size={11} className="text-amber-400" />
+                {resolvedConfig.contact.address}
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-4">
-            <a href="https://facebook.com" target="_blank" rel="noreferrer" className="hover:text-amber-400">f</a>
-            <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-amber-400">t</a>
-            <a href="https://youtube.com" target="_blank" rel="noreferrer" className="hover:text-amber-400">▶</a>
-            <a href="https://google.com" target="_blank" rel="noreferrer" className="hover:text-amber-400">G+</a>
-            <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-amber-400">📷</a>
+            {resolvedConfig.contact.facebook && (
+              <a href={resolvedConfig.contact.facebook} target="_blank" rel="noreferrer" className="hover:text-amber-400" title="Facebook">f</a>
+            )}
+            {resolvedConfig.contact.youtube && (
+              <a href={resolvedConfig.contact.youtube} target="_blank" rel="noreferrer" className="hover:text-amber-400" title="YouTube">▶</a>
+            )}
+            {resolvedConfig.contact.zalo && (
+              <a href={`https://zalo.me/${resolvedConfig.contact.zalo.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="hover:text-amber-400 font-bold" title="Zalo">Zalo</a>
+            )}
+            {resolvedConfig.contact.tiktok && (
+              <a href={resolvedConfig.contact.tiktok} target="_blank" rel="noreferrer" className="hover:text-amber-400 font-bold" title="TikTok">TT</a>
+            )}
           </div>
         </div>
       </div>
@@ -675,74 +912,71 @@ export default function BDS16Template({
       {/* Main Header with Logo & Navigation */}
       <div className={`${MAX_W} mx-auto px-3 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between gap-2 sm:gap-4`}>
         
-        {/* Logo {company?.name || 'TEMPLATESBDS'} */}
+        {/* Logo */}
         <div 
           onClick={() => navigate('home')}
           className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0 max-w-[calc(100%-55px)] sm:max-w-none shrink-0"
         >
-          <div className="bg-white p-1.5 sm:p-2 border border-slate-300 shadow-sm flex flex-col items-center shrink-0">
-            <div className="flex items-center gap-1">
-              <div className="w-4 h-4 sm:w-5 sm:h-5 border-t-2 border-l-2 border-[#E11D48] rotate-45 transform -translate-y-0.5" />
-              <span className="text-base sm:text-xl font-black text-slate-900 tracking-tight leading-none">
-                EGA <span className="text-[#D97706]">LAND</span>
+          {resolvedConfig.logo.url ? (
+            <div className="bg-white p-1 sm:p-1.5 border border-slate-300 shadow-sm flex items-center justify-center shrink-0">
+              <img
+                src={resolvedConfig.logo.url}
+                alt={resolvedConfig.logo.text || resolvedConfig.contact.companyName}
+                className="h-8 sm:h-11 w-auto max-w-[180px] object-contain"
+                onError={(e) => {
+                  (e.currentTarget as HTMLElement).style.display = 'none';
+                }}
+              />
+            </div>
+          ) : (
+            <div className="bg-white p-1.5 sm:p-2 border border-slate-300 shadow-sm flex flex-col items-center shrink-0">
+              <div className="flex items-center gap-1">
+                <div className="w-4 h-4 sm:w-5 sm:h-5 border-t-2 border-l-2 border-[#E11D48] rotate-45 transform -translate-y-0.5" />
+                <span className="text-base sm:text-xl font-black text-slate-900 tracking-tight leading-none">
+                  {resolvedConfig.logo.text || (company as any)?.logoText || "S.HOUSE"}
+                </span>
+              </div>
+              <span className="text-[6.5px] sm:text-[7.5px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">
+                {resolvedConfig.logo.slogan || "TRAO BẠN CUỘC SỐNG MƠ ƯỚC"}
               </span>
             </div>
-            <span className="text-[6.5px] sm:text-[7.5px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">
-              TRAO BẠN CUỘC SỐNG MƠ ƯỚC
+          )}
+
+          {/* Brand Name / Title beside Logo */}
+          <div className="flex flex-col min-w-0">
+            <span className="text-sm sm:text-base font-black text-white tracking-wide uppercase truncate leading-tight">
+              {resolvedConfig.contact.brandTitle || resolvedConfig.contact.companyName || "TRUNG NGHĨA NHÀ PHỐ"}
+            </span>
+            <span className="text-[9px] sm:text-[10.5px] text-amber-300/90 font-medium tracking-normal truncate leading-tight mt-0.5">
+              {resolvedConfig.contact.slogan || "CHUYÊN TÒA NHÀ & CĂN HỘ DỊCH VỤ QUẬN 7"}
             </span>
           </div>
         </div>
 
         {/* Navigation Menu */}
         <nav className="hidden xl:flex items-center gap-1 2xl:gap-2 text-xs font-bold uppercase tracking-wider text-slate-200 whitespace-nowrap">
-          <button 
-            onClick={() => navigate('home')} 
-            className={`whitespace-nowrap px-3.5 py-2 transition-all ${currentPage === 'home' ? 'bg-[#0B3556] text-amber-400 font-extrabold border-b-2 border-amber-400' : 'hover:text-amber-400'}`}
-          >
-            Trang Chủ
-          </button>
-          <button 
-            onClick={() => navigate('about')} 
-            className={`whitespace-nowrap px-3.5 py-2 transition-all ${currentPage === 'about' ? 'bg-[#0B3556] text-amber-400 font-extrabold border-b-2 border-amber-400' : 'hover:text-amber-400'}`}
-          >
-            Giới Thiệu
-          </button>
-          <button 
-            onClick={() => navigate('news')} 
-            className={`whitespace-nowrap px-3.5 py-2 transition-all ${currentPage === 'news' || currentPage === 'news-detail' ? 'bg-[#0B3556] text-amber-400 font-extrabold border-b-2 border-amber-400' : 'hover:text-amber-400'}`}
-          >
-            Tin Tức
-          </button>
-          <button 
-            onClick={() => navigate('for-sale')} 
-            className={`whitespace-nowrap px-3.5 py-2 transition-all ${currentPage === 'for-sale' ? 'bg-[#0B3556] text-amber-400 font-extrabold border-b-2 border-amber-400' : 'hover:text-amber-400'}`}
-          >
-            Nhà Bán
-          </button>
-          <button 
-            onClick={() => navigate('for-rent')} 
-            className={`whitespace-nowrap px-3.5 py-2 transition-all ${currentPage === 'for-rent' ? 'bg-[#0B3556] text-amber-400 font-extrabold border-b-2 border-amber-400' : 'hover:text-amber-400'}`}
-          >
-            Nhà Cho Thuê
-          </button>
-          <button 
-            onClick={() => navigate('guide')} 
-            className={`whitespace-nowrap px-3.5 py-2 transition-all ${currentPage === 'guide' ? 'bg-[#0B3556] text-amber-400 font-extrabold border-b-2 border-amber-400' : 'hover:text-amber-400'}`}
-          >
-            Hướng Dẫn
-          </button>
-          <button 
-            onClick={() => navigate('contact')} 
-            className={`whitespace-nowrap px-3.5 py-2 transition-all ${currentPage === 'contact' ? 'bg-[#0B3556] text-amber-400 font-extrabold border-b-2 border-amber-400' : 'hover:text-amber-400'}`}
-          >
-            Liên Hệ
-          </button>
+          {resolvedConfig.navigation.menuItems
+            .filter(item => item.visible !== false)
+            .map(item => {
+              const active = isMenuItemActive(item);
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleMenuItemClick(item)}
+                  className={`whitespace-nowrap px-3.5 py-2 transition-all cursor-pointer ${
+                    active ? 'bg-[#0B3556] text-amber-400 font-extrabold border-b-2 border-amber-400' : 'hover:text-amber-400'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
         </nav>
 
         {/* Mobile Menu Toggle */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-1.5 sm:p-2 text-white xl:hidden hover:bg-white/10 shrink-0 flex items-center justify-center ml-auto"
+          className="p-1.5 sm:p-2 text-white xl:hidden hover:bg-white/10 shrink-0 flex items-center justify-center ml-auto cursor-pointer"
           aria-label="Toggle navigation menu"
         >
           {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -754,13 +988,17 @@ export default function BDS16Template({
       {mobileMenuOpen && (
         <div className="xl:hidden bg-[#051420] border-t border-slate-800 px-6 py-4 space-y-2 animate-in slide-in-from-top duration-200">
           <div className="grid grid-cols-2 gap-2 text-xs font-bold uppercase">
-            <button onClick={() => navigate('home')} className="p-2.5 text-left bg-slate-900 hover:text-amber-400">Trang Chủ</button>
-            <button onClick={() => navigate('about')} className="p-2.5 text-left bg-slate-900 hover:text-amber-400">Giới Thiệu</button>
-            <button onClick={() => navigate('news')} className="p-2.5 text-left bg-slate-900 hover:text-amber-400">Tin Tức</button>
-            <button onClick={() => navigate('for-sale')} className="p-2.5 text-left bg-slate-900 hover:text-amber-400">Nhà Bán</button>
-            <button onClick={() => navigate('for-rent')} className="p-2.5 text-left bg-slate-900 hover:text-amber-400">Nhà Cho Thuê</button>
-            <button onClick={() => navigate('guide')} className="p-2.5 text-left bg-slate-900 hover:text-amber-400">Hướng Dẫn</button>
-            <button onClick={() => navigate('contact')} className="p-2.5 text-left bg-slate-900 hover:text-amber-400">Liên Hệ</button>
+            {resolvedConfig.navigation.menuItems
+              .filter(item => item.visible !== false)
+              .map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => handleMenuItemClick(item)}
+                  className="p-2.5 text-left bg-slate-900 hover:text-amber-400 text-slate-200"
+                >
+                  {item.label}
+                </button>
+              ))}
           </div>
         </div>
       )}
@@ -904,36 +1142,185 @@ export default function BDS16Template({
   );
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 3. MAIN CONTENT: HERO SHOWCASE BANNER
+  // 3. MAIN CONTENT: HERO SHOWCASE BANNER / INTERACTIVE SLIDER
   // ─────────────────────────────────────────────────────────────────────────
   const renderHeroShowcase = () => {
-    let title = 'EGAHOMES RIVERSIDE';
-    let subtitle = 'Mở Bán Biệt Thự Hoa Sữa 10&11';
-    let image = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80';
+    const slides = resolvedConfig.heroSlider.slides;
+    if (!resolvedConfig.heroSlider.enabled || !slides || slides.length === 0) {
+      let title = 'EGAHOMES RIVERSIDE';
+      let subtitle = 'Mở Bán Biệt Thự Hoa Sữa 10&11';
+      let image = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80';
 
-    if (currentPage === 'for-rent') {
-      title = 'OFFICE-TEL KHU THỦ THIÊM';
-      subtitle = 'Ưu Đãi Thanh Toán 1,5% Mỗi Tháng';
-      image = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80';
+      if (currentPage === 'for-rent') {
+        title = 'OFFICE-TEL KHU THỦ THIÊM';
+        subtitle = 'Ưu Đãi Thanh Toán 1,5% Mỗi Tháng';
+        image = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80';
+      }
+
+      return (
+        <div className="relative aspect-[16/8] sm:aspect-[16/7] overflow-hidden border border-slate-300 shadow-md group">
+          <img
+            src={image}
+            alt={title}
+            onError={handleImgError}
+            className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-6">
+            <div className="bg-black/60 backdrop-blur-sm p-4 border border-white/20 max-w-xl text-white space-y-1">
+              <h2 className="text-lg sm:text-2xl font-serif font-black uppercase text-amber-300 tracking-wider drop-shadow-md">
+                {title}
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-200 font-medium">
+                {subtitle}
+              </p>
+            </div>
+          </div>
+        </div>
+      );
     }
 
+    const currentSlide = slides[currentSlideIdx % slides.length] || slides[0];
+
     return (
-      <div className="relative aspect-[16/8] sm:aspect-[16/7] overflow-hidden border border-slate-300 shadow-md group">
+      <div className="relative aspect-[16/8] sm:aspect-[16/7] overflow-hidden border border-slate-300 shadow-md group select-none">
+        {/* Slide Image */}
         <img
-          src={image}
-          alt={title}
+          key={currentSlide.id}
+          src={currentSlide.imageUrl}
+          alt={currentSlide.title}
           onError={handleImgError}
-          className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-6">
-          <div className="bg-black/60 backdrop-blur-sm p-4 border border-white/20 max-w-xl text-white space-y-1">
-            <h2 className="text-lg sm:text-2xl font-serif font-black uppercase text-amber-300 tracking-wider drop-shadow-md">
-              {title}
+
+        {/* Overlay with info */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent flex flex-col justify-end p-4 sm:p-6">
+          <div className="bg-black/65 backdrop-blur-sm p-3.5 sm:p-5 border border-white/20 max-w-2xl text-white space-y-2">
+            <div className="flex flex-wrap items-center gap-2">
+              {currentSlide.badge && (
+                <span className="bg-[#E11D48] text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded shadow">
+                  {currentSlide.badge}
+                </span>
+              )}
+              {currentSlide.price && (
+                <span className="bg-[#D97706] text-white text-[11px] font-extrabold px-2.5 py-0.5 rounded shadow">
+                  {currentSlide.price}
+                </span>
+              )}
+              {currentSlide.location && (
+                <span className="text-[11px] text-slate-300 flex items-center gap-1 font-medium">
+                  <MapPin size={11} className="text-amber-400" /> {currentSlide.location}
+                </span>
+              )}
+            </div>
+
+            <h2 className="text-base sm:text-2xl font-serif font-black uppercase text-amber-300 tracking-wider drop-shadow leading-tight">
+              {currentSlide.title}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-200 font-medium">
-              {subtitle}
-            </p>
+
+            {currentSlide.subtitle && (
+              <p className="text-xs sm:text-sm text-slate-200 line-clamp-2 font-medium">
+                {currentSlide.subtitle}
+              </p>
+            )}
+
+            {currentSlide.actionUrl && (
+              <button
+                onClick={() => {
+                  if (currentSlide.actionUrl?.startsWith('http')) {
+                    window.open(currentSlide.actionUrl, '_blank');
+                  } else {
+                    handleMenuItemClick({
+                      id: 'slide-action',
+                      label: currentSlide.actionText || 'Xem Chi Tiết',
+                      url: currentSlide.actionUrl || '/',
+                      order: 1,
+                      visible: true,
+                    });
+                  }
+                }}
+                className="mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#D97706] hover:bg-[#B45309] text-white text-xs font-bold uppercase rounded shadow transition cursor-pointer"
+              >
+                <span>{currentSlide.actionText || 'Xem Chi Tiết'}</span>
+                <ArrowRight size={13} />
+              </button>
+            )}
           </div>
+        </div>
+
+        {/* Carousel Prev/Next Controls */}
+        {slides.length > 1 && (
+          <>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentSlideIdx(prev => (prev - 1 + slides.length) % slides.length);
+              }}
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 bg-black/50 hover:bg-black/80 text-white flex items-center justify-center rounded-full backdrop-blur-sm border border-white/20 transition cursor-pointer"
+              aria-label="Slide trước"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentSlideIdx(prev => (prev + 1) % slides.length);
+              }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 bg-black/50 hover:bg-black/80 text-white flex items-center justify-center rounded-full backdrop-blur-sm border border-white/20 transition cursor-pointer"
+              aria-label="Slide tiếp"
+            >
+              <ChevronRight size={20} />
+            </button>
+
+            {/* Carousel Indicators */}
+            <div className="absolute bottom-2 right-4 flex items-center gap-1.5 z-10">
+              {slides.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentSlideIdx(idx);
+                  }}
+                  className={`h-2.5 rounded-full transition-all cursor-pointer ${
+                    (currentSlideIdx % slides.length) === idx
+                      ? 'bg-amber-400 w-6'
+                      : 'bg-white/50 hover:bg-white/80 w-2.5'
+                  }`}
+                  aria-label={`Tới slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    );
+  };
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 3.5. INTERACTIVE MAP SECTION
+  // ─────────────────────────────────────────────────────────────────────────
+  const renderMapSection = () => {
+    const mapAddress = resolvedConfig.contact.address || 'Quận 7, TP. Hồ Chí Minh';
+    const embedSrc = resolvedConfig.contact.googleMapsEmbed || `https://maps.google.com/maps?q=${encodeURIComponent(mapAddress)}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
+
+    return (
+      <div id="ban-do-bds" className="bg-white p-4 sm:p-5 border border-slate-300 shadow-sm space-y-3">
+        <div className="border-b-2 border-[#D97706] pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+          <h2 className="text-base sm:text-lg font-serif font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+            <MapPin size={18} className="text-[#D97706]" />
+            Bản Đồ Vị Trí & Khu Vực Hoạt Động
+          </h2>
+          <span className="text-xs text-slate-500 font-medium">
+            {mapAddress}
+          </span>
+        </div>
+        <div className="aspect-[16/7] w-full border border-slate-200 overflow-hidden shadow-inner bg-slate-100">
+          <iframe
+            src={embedSrc}
+            className="w-full h-full border-0"
+            allowFullScreen
+            loading="lazy"
+            title="Bản đồ vị trí bất động sản"
+          />
         </div>
       </div>
     );
@@ -1095,7 +1482,7 @@ export default function BDS16Template({
       </div>
 
       <div className="space-y-6 divide-y divide-slate-200">
-        {BDS16_NEWS.map(n => (
+        {activeNews.map(n => (
           <div key={n.id} className="pt-6 first:pt-0 grid grid-cols-1 md:grid-cols-12 gap-5 items-start group">
             
             {/* Image Left */}
@@ -1210,19 +1597,19 @@ export default function BDS16Template({
             </div>
           </div>
 
-          {/* Col 3: EGANY */}
+          {/* Col 3: Thông Tin Doanh Nghiệp */}
           <div className="space-y-3">
             <h4 className="font-serif font-black text-white uppercase tracking-wider text-sm border-b border-slate-800 pb-2">
-              EGANY
+              {resolvedConfig.contact.companyName}
             </h4>
             <p className="text-slate-400 text-xs leading-relaxed">
-              Nền tảng phân phối và quản lý bất động sản cao cấp, mang lại giải pháp an cư và đầu tư sinh lời vượt trội cho khách hàng.
+              {resolvedConfig.contact.slogan || 'Nền tảng phân phối và quản lý bất động sản cao cấp, mang lại giải pháp an cư và đầu tư sinh lời vượt trội cho khách hàng.'}
             </p>
             <p className="text-slate-400 text-xs">
-              Trụ sở: Lầu 3 - Tòa nhà Lữ Gia - Số 70 Lữ Gia - P.15 - Q.11 - TP.HCM
+              Trụ sở: {resolvedConfig.contact.address}
             </p>
             <p className="text-slate-400 text-xs">
-              Email: support@sapo.vn | Hotline: 19006750
+              Email: {resolvedConfig.contact.email} | Hotline: {resolvedConfig.contact.phone}
             </p>
           </div>
 
@@ -1236,14 +1623,14 @@ export default function BDS16Template({
           <span className="font-serif font-black text-sm tracking-widest text-slate-300">PARK HILL</span>
           <span className="font-serif font-black text-sm tracking-widest text-slate-300">VINPEARL</span>
           <span className="font-serif font-black text-sm tracking-widest text-slate-300">VINGROUP</span>
-          <span className="font-serif font-black text-sm tracking-widest text-slate-300">TIMES CITY</span>
-          <span className="font-serif font-black text-sm tracking-widest text-slate-300">PARK HILL</span>
+          <span className="font-serif font-black text-sm tracking-widest text-slate-300">SUN GROUP</span>
+          <span className="font-serif font-black text-sm tracking-widest text-slate-300">MASTERISE</span>
         </div>
       </div>
 
       {/* Copyright Bar */}
       <div className="bg-white text-slate-600 text-[11px] py-3 text-center border-t border-slate-200 px-4">
-        Lầu 3 - Tòa nhà Lữ Gia - Số 70 Lữ Gia - P.15 - Q.11 - TP.HCM. Email: support@sapo.vn | Hotline: 19006750
+        © {new Date().getFullYear()} {resolvedConfig.contact.companyName}. {resolvedConfig.contact.address} | Hotline: {resolvedConfig.contact.phone} | Email: {resolvedConfig.contact.email}
       </div>
 
     </footer>
@@ -1336,6 +1723,7 @@ export default function BDS16Template({
                   <>
                     {renderHeroShowcase()}
                     {renderPropertyGrid()}
+                    {currentPage === 'home' && renderMapSection()}
                   </>
                 )}
 
@@ -1350,14 +1738,14 @@ export default function BDS16Template({
                 {currentPage === 'about' && (
                   <div className="bg-white p-6 border border-slate-300 shadow-sm space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
                     <h1 className="text-xl font-serif font-black text-slate-900 uppercase border-b pb-2">
-                      GIỚI THIỆU TẬP ĐOÀN BẤT ĐỘNG SẢN {company?.name || 'TEMPLATESBDS'}
+                      GIỚI THIỆU TẬP ĐOÀN BẤT ĐỘNG SẢN {resolvedConfig.contact.companyName || company?.name || 'TEMPLATESBDS'}
                     </h1>
                     <p>
-                      EGA Land là một trong những thương hiệu tiên phong trong lĩnh vực đầu tư, phát triển và phân phối bất động sản nhà ở, căn hộ dịch vụ cao cấp và biệt thự nghỉ dưỡng sinh thái trên khắp cả nước.
+                      {resolvedConfig.contact.companyName} là một trong những thương hiệu tiên phong trong lĩnh vực đầu tư, phát triển và phân phối bất động sản nhà ở, căn hộ dịch vụ cao cấp và biệt thự nghỉ dưỡng sinh thái trên khắp cả nước.
                     </p>
                     <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80" alt="" className="w-full h-80 object-cover border" />
                     <p>
-                      Với phương châm &quot;Trao bạn cuộc sống mơ ước&quot;, chúng tôi cam kết mang tới cho từng khách hàng những sản phẩm bất động sản có pháp lý minh bạch 100%, tiềm năng sinh lời vượt trội và chất lượng dịch vụ chuyên nghiệp hàng đầu.
+                      Với phương châm &quot;{resolvedConfig.logo.slogan || 'Trao bạn cuộc sống mơ ước'}&quot;, chúng tôi cam kết mang tới cho từng khách hàng những sản phẩm bất động sản có pháp lý minh bạch 100%, tiềm năng sinh lời vượt trội và chất lượng dịch vụ chuyên nghiệp hàng đầu.
                     </p>
                   </div>
                 )}
@@ -1366,7 +1754,7 @@ export default function BDS16Template({
                 {currentPage === 'guide' && (
                   <div className="bg-white p-6 border border-slate-300 shadow-sm space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
                     <h1 className="text-xl font-serif font-black text-slate-900 uppercase border-b pb-2">
-                      HƯỚNG DẪN MUA BÁN & THUÊ NHÀ ĐẤT TẠI {company?.name || 'TEMPLATESBDS'}
+                      HƯỚNG DẪN MUA BÁN & THUÊ NHÀ ĐẤT TẠI {resolvedConfig.contact.companyName || company?.name || 'TEMPLATESBDS'}
                     </h1>
                     <div className="space-y-3">
                       <div className="p-3 bg-slate-50 border border-slate-200">
@@ -1375,7 +1763,7 @@ export default function BDS16Template({
                       </div>
                       <div className="p-3 bg-slate-50 border border-slate-200">
                         <strong className="text-slate-900 block mb-1">Bước 2: Xem nhà thực tế & Thẩm định pháp lý</strong>
-                        <p className="text-slate-600 text-xs">Chuyên viên EGA Land hỗ trợ kiểm tra quy hoạch và dẫn xem trực tiếp miễn phí.</p>
+                        <p className="text-slate-600 text-xs">Chuyên viên hỗ trợ kiểm tra quy hoạch và dẫn xem trực tiếp miễn phí.</p>
                       </div>
                       <div className="p-3 bg-slate-50 border border-slate-200">
                         <strong className="text-slate-900 block mb-1">Bước 3: Đặt cọc & Công chứng chuyển nhượng</strong>
@@ -1393,16 +1781,23 @@ export default function BDS16Template({
                     </h1>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
                       <div className="space-y-3 text-slate-700">
-                        <p>📍 <strong>Trụ sở chính:</strong> Lầu 3 - Tòa nhà Lữ Gia - Số 70 Lữ Gia - P.15 - Q.11 - TP.HCM</p>
-                        <p>📞 <strong>Hotline:</strong> 1900.636.099 — 098 765 432</p>
-                        <p>✉ <strong>Email:</strong> support@sapo.vn</p>
+                        <p>📍 <strong>Trụ sở chính:</strong> {resolvedConfig.contact.address}</p>
+                        <p>📞 <strong>Hotline:</strong> {resolvedConfig.contact.phone} {resolvedConfig.contact.hotline && resolvedConfig.contact.hotline !== resolvedConfig.contact.phone ? `— ${resolvedConfig.contact.hotline}` : ''}</p>
+                        <p>✉ <strong>Email:</strong> {resolvedConfig.contact.email}</p>
+                        {resolvedConfig.contact.workingHours && (
+                          <p>⏰ <strong>Giờ làm việc:</strong> {resolvedConfig.contact.workingHours}</p>
+                        )}
+                        {resolvedConfig.contact.zalo && (
+                          <p>💬 <strong>Zalo tư vấn 24/7:</strong> {resolvedConfig.contact.zalo}</p>
+                        )}
                       </div>
                       <div className="h-64 border border-slate-300">
                         <iframe 
-                          src="https://maps.google.com/maps?q=District+11+Ho+Chi+Minh&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                          src={resolvedConfig.contact.googleMapsEmbed || `https://maps.google.com/maps?q=${encodeURIComponent(resolvedConfig.contact.address || 'Quận 7, TP.HCM')}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
                           className="w-full h-full border-0"
                           allowFullScreen
                           loading="lazy"
+                          title="Bản đồ liên hệ"
                         ></iframe>
                       </div>
                     </div>

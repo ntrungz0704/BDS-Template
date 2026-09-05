@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import AdmZip from 'adm-zip';
 import { prisma } from '@repo/database';
+import { getDefaultTenantConfig } from '@repo/utils';
 import { logger } from '../index';
 
 export interface PackageOptions {
@@ -537,6 +538,21 @@ window.CMS_CONFIG = {
 `;
       zip.addFile('html/js/cms-sync.js', Buffer.from(cmsSyncJs, 'utf-8'));
       zip.addFile('php/cms-sync.js', Buffer.from(cmsSyncJs, 'utf-8'));
+
+      // 1.5.2b Đính kèm Universal Tenant Config Schema JSON (offline / standalone)
+      const tenantConfig = getDefaultTenantConfig(slug, {
+        tenantSlug: customerEmail ? customerEmail.split('@')[0] : 'customer',
+        contact: {
+          companyName: customerName || 'Bất Động Sản Cao Cấp',
+          phone: customerPhone || '0909.123.456',
+          email: customerEmail || 'lienhe@domain.vn',
+          address: 'Việt Nam',
+        } as any,
+      });
+      const configJsonStr = JSON.stringify(tenantConfig, null, 2);
+      zip.addFile('tenant.config.json', Buffer.from(configJsonStr, 'utf-8'));
+      zip.addFile('html/tenant.config.json', Buffer.from(configJsonStr, 'utf-8'));
+      zip.addFile('php/tenant.config.json', Buffer.from(configJsonStr, 'utf-8'));
 
       // 1.5.3 Chèn script vào html/index.html bên trong ZIP
       const htmlEntry = zip.getEntry('html/index.html');

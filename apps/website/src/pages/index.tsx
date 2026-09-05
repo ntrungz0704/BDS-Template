@@ -23,9 +23,10 @@ interface HomeProps {
     hasActiveSubscription: boolean;
     isSuspended: boolean;
   };
+  config?: any;
 }
 
-export default function TenantHome({ company, theme, pageContent, projects, posts, tenantSlug, error, tenantStatus, initialPage = 'home' }: HomeProps) {
+export default function TenantHome({ company, theme, pageContent, projects, posts, tenantSlug, error, tenantStatus, initialPage = 'home', config }: HomeProps) {
   // Register global submitContactForm helper for all templates
   React.useEffect(() => {
     if (typeof globalThis !== 'undefined') {
@@ -143,6 +144,7 @@ export default function TenantHome({ company, theme, pageContent, projects, post
         initialPage={initialPage}
         pageContent={pageContent}
         tenantSlug={tenantSlug}
+        config={config}
       />
     </>
   );
@@ -281,18 +283,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   try {
     const API_URL = DEFAULT_API_URL;
-    const [compRes, themeRes, pageRes, projRes, postRes, statusRes] = await Promise.all([
+    const [compRes, themeRes, pageRes, projRes, postRes, statusRes, configRes] = await Promise.all([
       axios.get(`${API_URL}/api/website/${tenantSlug}/company-info`, { timeout: 3500 }).catch(() => ({ data: { data: null } })),
       axios.get(`${API_URL}/api/website/${tenantSlug}/theme`, { timeout: 3500 }).catch(() => ({ data: { data: null } })),
       axios.get(`${API_URL}/api/website/${tenantSlug}/pages/home`, { timeout: 3500 }).catch(() => ({ data: { data: null } })),
       axios.get(`${API_URL}/api/website/${tenantSlug}/projects?limit=6`, { timeout: 3500 }).catch(() => ({ data: { data: [] } })),
       axios.get(`${API_URL}/api/website/${tenantSlug}/posts?limit=3`, { timeout: 3500 }).catch(() => ({ data: { data: [] } })),
       axios.get(`${API_URL}/api/website/${tenantSlug}/status`, { timeout: 3500 }).catch(() => ({ data: { data: null } })),
+      axios.get(`${API_URL}/api/website/${tenantSlug}/tenant-config`, { timeout: 3500 }).catch(() => ({ data: { data: null } })),
     ]);
 
     const compData = compRes.data?.data;
     const themeData = themeRes.data?.data;
     const statusData = statusRes.data?.data;
+    const configData = configRes.data?.data;
 
     return {
       props: {
@@ -304,6 +308,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         tenantSlug: tenantSlug || 'demo',
         initialPage,
         tenantStatus: statusData || { isAccessible: true, status: 'ACTIVE', isSuspended: false },
+        config: configData || null,
       },
     };
   } catch (error: any) {

@@ -3,8 +3,9 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
 import axios from 'axios';
-import { findTemplateBySlugOrId, Template } from '../../data/templatesData';
+import { findTemplateBySlugOrId, Template, ALL_TEMPLATES } from '../../data/templatesData';
 import DemoRenderer from '../../components/demo/DemoRenderer';
+import { getDefaultTenantConfig } from '@repo/utils';
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5000' : 'https://bds-template-api.onrender.com'));
 
@@ -22,6 +23,7 @@ export default function TenantDirectSitePage() {
   const [tenantPosts, setTenantPosts] = useState<any[]>([]);
   const [tenantTheme, setTenantTheme] = useState<any>(null);
   const [tenantPageContent, setTenantPageContent] = useState<any>(null);
+  const [tenantConfig, setTenantConfig] = useState<any>(null);
 
   useEffect(() => {
     if (!router.isReady || !rawSubdomain) return;
@@ -55,9 +57,7 @@ export default function TenantDirectSitePage() {
         });
         
         if (!infoRes.data?.success || !infoRes.data?.data) {
-          setNotFound(true);
-          setLoading(false);
-          return;
+          throw new Error('Tenant not found in database');
         }
 
         const data = infoRes.data.data;
@@ -81,11 +81,12 @@ export default function TenantDirectSitePage() {
 
         // 4. Lấy dữ liệu dự án, bài viết, theme, nội dung trang tùy biến của website khách hàng (kèm timestamp chống stale cache)
         const targetPage = pageSlug && pageSlug !== 'home' ? pageSlug : 'home';
-        const [projectsRes, postsRes, themeRes, pageRes] = await Promise.allSettled([
+        const [projectsRes, postsRes, themeRes, pageRes, configRes] = await Promise.allSettled([
           axios.get(`${API_URL}/api/website/${tenantSlug}/projects?limit=50&_t=${t}`),
           axios.get(`${API_URL}/api/website/${tenantSlug}/posts?limit=50&_t=${t}`),
           axios.get(`${API_URL}/api/website/${tenantSlug}/theme?_t=${t}`),
           axios.get(`${API_URL}/api/website/${tenantSlug}/pages/${targetPage}?_t=${t}`),
+          axios.get(`${API_URL}/api/website/${tenantSlug}/tenant-config?_t=${t}`),
         ]);
 
         if (projectsRes.status === 'fulfilled' && Array.isArray(projectsRes.value.data?.data)) {
@@ -103,9 +104,33 @@ export default function TenantDirectSitePage() {
         if (pageRes.status === 'fulfilled' && pageRes.value.data?.data) {
           setTenantPageContent(pageRes.value.data.data);
         }
+
+        if (configRes.status === 'fulfilled' && configRes.value.data?.data) {
+          setTenantConfig(configRes.value.data.data);
+        }
       } catch (err: any) {
-        // Website không tồn tại trong database hoặc chưa được kích hoạt
-        setNotFound(true);
+        // Fallback tự động khi chạy demo hoặc khi backend chưa online
+        if (['trungnghia', 'trung-nghia', 'bds16', 'bds-16', 'personal-top-broker'].includes(rawSubdomain.toLowerCase())) {
+          const bds16Template = findTemplateBySlugOrId('bds-16') || findTemplateBySlugOrId('personal-top-broker') || ALL_TEMPLATES[0];
+          setTemplate(bds16Template);
+          setTenantInfo({
+            companyName: 'Trung Nghĩa Nhà Phố',
+            brandTitle: 'Trung Nghĩa Nhà Phố',
+            slogan: 'CHUYÊN TÒA NHÀ & CĂN HỘ DỊCH VỤ QUẬN 7',
+            phone: '0394678913',
+            email: 'thienanminhcorp@gmail.com',
+            address: 'Tòa Nhà Paragon, 3 Nguyễn Lương Bằng, Phường Tân Phú, Quận 7, TP Hồ Chí Minh',
+            tenant: {
+              template: { slug: 'bds-16' },
+              templateId: 'bds-16',
+            }
+          });
+          setTenantConfig(getDefaultTenantConfig('bds-16'));
+          setNotFound(false);
+        } else {
+          // Website không tồn tại trong database hoặc chưa được kích hoạt
+          setNotFound(true);
+        }
       } finally {
         setLoading(false);
       }
@@ -252,6 +277,7 @@ export default function TenantDirectSitePage() {
           projects={tenantProjects.length > 0 ? tenantProjects : undefined}
           posts={tenantPosts.length > 0 ? tenantPosts : undefined}
           pageContent={tenantPageContent}
+          config={tenantConfig}
         />
       </div>
     </>

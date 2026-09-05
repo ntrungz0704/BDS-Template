@@ -11,9 +11,10 @@ interface TenantRendererProps {
   initialPage?: string;
   pageContent?: any;
   tenantSlug?: string;
+  config?: any;
 }
 
-export default function TenantRenderer({ templateSlug, company, theme, projects, posts, initialPage = 'home', pageContent, tenantSlug = '' }: TenantRendererProps) {
+export default function TenantRenderer({ templateSlug, company, theme, projects, posts, initialPage = 'home', pageContent, tenantSlug = '', config }: TenantRendererProps) {
   const slug = templateSlug?.toLowerCase();
 
   // Tenant must render the exact template that was provisioned. Rendering a
@@ -56,6 +57,7 @@ export default function TenantRenderer({ templateSlug, company, theme, projects,
         posts={posts}
         initialPage={initialPage}
         pageContent={pageContent}
+        config={config}
       />
     </div>
   );
