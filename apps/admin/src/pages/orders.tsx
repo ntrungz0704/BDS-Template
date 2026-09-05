@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import { ExternalLink } from 'lucide-react';
 import AdminLayout from '../components/AdminLayout';
 import { 
   formatVND, 
@@ -520,10 +521,29 @@ export default function AdminOrders() {
                             <span className="font-bold text-slate-800 text-[11px] block">Mua Mã Nguồn</span>
                             <span className="text-[9px] text-slate-400 italic">File nén mã nguồn</span>
                           </div>
+                        ) : order.status === 'COMPLETED' ? (
+                          <div>
+                            <a
+                              href={`https://templates.aireviewbds.com/site/${formatSiteSlug(order)}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="font-mono font-bold text-emerald-600 hover:text-emerald-700 hover:underline text-[11px] inline-flex items-center gap-1 group"
+                              title="Bấm để xem website thực tế của khách hàng"
+                            >
+                              <span>{formatSiteSlug(order)}</span>
+                              <ExternalLink className="w-3 h-3 opacity-70 group-hover:opacity-100" />
+                            </a>
+                            <span className="text-[9px] text-emerald-600 font-medium block">✓ Đã kích hoạt · Bấm để xem</span>
+                          </div>
+                        ) : isPending ? (
+                          <div>
+                            <span className="font-mono font-bold text-slate-500 text-[11px] block">{formatSiteSlug(order)}</span>
+                            <span className="text-[9px] text-amber-600 font-semibold block">⏳ Chờ duyệt (Chưa mở link)</span>
+                          </div>
                         ) : (
                           <div>
-                            <span className="font-mono font-bold text-indigo-700 text-[11px] truncate block">{formatSiteSlug(order)}</span>
-                            <span className="text-[9px] text-slate-400 italic">templates.aireviewbds.com/site/...</span>
+                            <span className="font-mono text-slate-400 line-through text-[11px] block">{formatSiteSlug(order)}</span>
+                            <span className="text-[9px] text-rose-500 font-medium block">✕ Đã từ chối</span>
                           </div>
                         )}
                       </td>

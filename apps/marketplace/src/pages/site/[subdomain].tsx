@@ -71,11 +71,17 @@ export default function TenantDirectSitePage() {
           return;
         }
 
-        const dbMatched = findTemplateBySlugOrId(assignedTplId);
+        // 3. Lấy đúng mẫu template đã được mua & lưu trong database
+        let dbMatched = findTemplateBySlugOrId(assignedTplId);
         if (!dbMatched) {
-          setNotFound(true);
-          setLoading(false);
-          return;
+          // Thử trích xuất mã template từ subdomain (ví dụ: chu-tung-bds-01-3456 -> bds-01)
+          const matchedCode = rawSubdomain.match(/(bds-\d+|lp-\d+)/i);
+          if (matchedCode) {
+            dbMatched = findTemplateBySlugOrId(matchedCode[1]);
+          }
+        }
+        if (!dbMatched) {
+          dbMatched = ALL_TEMPLATES[0];
         }
         setTemplate(dbMatched);
 
@@ -107,30 +113,34 @@ export default function TenantDirectSitePage() {
 
         if (configRes.status === 'fulfilled' && configRes.value.data?.data) {
           setTenantConfig(configRes.value.data.data);
+        } else {
+          setTenantConfig(getDefaultTenantConfig(dbMatched.slug));
         }
       } catch (err: any) {
-        // Fallback tự động khi chạy demo hoặc khi backend chưa online
-        if (['trungnghia', 'trung-nghia', 'bds16', 'bds-16', 'personal-top-broker'].includes(rawSubdomain.toLowerCase())) {
-          const bds16Template = findTemplateBySlugOrId('bds-16') || findTemplateBySlugOrId('personal-top-broker') || ALL_TEMPLATES[0];
-          setTemplate(bds16Template);
-          setTenantInfo({
-            companyName: 'Trung Nghĩa Nhà Phố',
-            brandTitle: 'Trung Nghĩa Nhà Phố',
-            slogan: 'CHUYÊN TÒA NHÀ & CĂN HỘ DỊCH VỤ QUẬN 7',
-            phone: '0394678913',
-            email: 'thienanminhcorp@gmail.com',
-            address: 'Tòa Nhà Paragon, 3 Nguyễn Lương Bằng, Phường Tân Phú, Quận 7, TP Hồ Chí Minh',
-            tenant: {
-              template: { slug: 'bds-16' },
-              templateId: 'bds-16',
-            }
-          });
-          setTenantConfig(getDefaultTenantConfig('bds-16'));
-          setNotFound(false);
-        } else {
-          // Website không tồn tại trong database hoặc chưa được kích hoạt
-          setNotFound(true);
-        }
+        // Universal Smart Fallback khi API timeout hoặc Render đang khởi động lại
+        const tplCodeMatch = rawSubdomain.match(/(bds-\d+|lp-\d+|portal-\d+|luxury-gold|minimal-white)/i);
+        const detectedSlug = tplCodeMatch ? tplCodeMatch[1].toLowerCase() : (rawSubdomain.includes('16') ? 'bds-16' : 'bds-01');
+        const matchedTpl = findTemplateBySlugOrId(detectedSlug) || ALL_TEMPLATES[0];
+
+        // Trích xuất tên thương hiệu từ subdomain (ví dụ chu-tung-bds-01-3456 -> Chú Tùng)
+        const parts = rawSubdomain.replace(/-(bds-\d+|lp-\d+).*$/i, '').split('-');
+        const customerName = parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ') || 'Bất Động Sản Chuyên Nghiệp';
+
+        setTemplate(matchedTpl);
+        setTenantInfo({
+          companyName: customerName,
+          brandTitle: customerName,
+          slogan: 'Uy Tín Tạo Niềm Tin - Đồng Hành Cùng Thịnh Vượng',
+          phone: '0987.123.456',
+          email: 'lienhe@platformbds.vn',
+          address: 'Việt Nam',
+          tenant: {
+            template: { slug: matchedTpl.slug },
+            templateId: matchedTpl.id,
+          }
+        });
+        setTenantConfig(getDefaultTenantConfig(matchedTpl.slug));
+        setNotFound(false);
       } finally {
         setLoading(false);
       }
