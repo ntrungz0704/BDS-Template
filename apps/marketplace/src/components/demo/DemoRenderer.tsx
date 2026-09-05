@@ -1169,13 +1169,21 @@ export default function DemoRenderer({
   };
 
   const renderContent = () => {
-    const makeCompany = (code: string, isLP: boolean) => ({
-      ...(company || {}),
-      name: code,
-      logoText: code,
-      brandShort: isLP ? 'LP' : 'TL',
-      shortName: code,
-    });
+    const makeCompany = (code: string, isLP: boolean) => {
+      const brandShort = isLP ? 'LP' : 'TL';
+      const actualName = company?.name || company?.companyName || code;
+      const actualLogo = company?.logoText || (company?.name ? company.name : code);
+      return {
+        brandShort,
+        shortName: actualName,
+        logoText: actualLogo,
+        name: actualName,
+        ...(company || {}),
+        ...(company?.name ? { name: company.name } : {}),
+        ...(company?.companyName ? { companyName: company.companyName } : {}),
+        ...(company?.logoText ? { logoText: company.logoText } : {}),
+      };
+    };
     // ─── SPECIALIZED HIGH-CONVERTING SALES LANDING PAGES (CHECK FIRST) ───
     // LP-01: Landing Page Căn Hộ Chung Cư Cao Cấp
     if (['lp-01', 'landing-01', 'luxury-condo-lp', 'condos-sales'].some(k => slug === k || slug.startsWith(k) || sourceSlug.includes(k))) {

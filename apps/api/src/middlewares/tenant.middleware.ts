@@ -23,12 +23,32 @@ export async function resolveTenantSlug(req: Request, res: Response, next: NextF
     });
 
     if (!tenant) {
-      // Fallback: Tìm qua Order nếu slug từng thuộc về đơn hàng đó
+      // 1. Fallback: Tìm qua TenantDomainSettings
+      const domainSetting = await prisma.tenantDomainSettings.findFirst({
+        where: {
+          OR: [
+            { subdomain: slug },
+            { customDomain: slug },
+          ],
+        },
+        select: { tenantId: true },
+      });
+      if (domainSetting?.tenantId) {
+        tenant = await prisma.tenant.findUnique({
+          where: { id: domainSetting.tenantId, status: 'ACTIVE', deletedAt: null },
+          select: { id: true },
+        });
+      }
+    }
+
+    if (!tenant) {
+      // 2. Fallback: Tìm qua Order nếu slug từng thuộc về đơn hàng đó
       const order = await prisma.order.findFirst({
         where: {
           OR: [
             { subdomain: slug },
             { orderNumber: slug },
+            { subdomain: { contains: slug, mode: 'insensitive' } },
           ],
         },
         select: { tenantId: true },
@@ -36,6 +56,24 @@ export async function resolveTenantSlug(req: Request, res: Response, next: NextF
       if (order?.tenantId) {
         tenant = await prisma.tenant.findUnique({
           where: { id: order.tenantId, status: 'ACTIVE', deletedAt: null },
+          select: { id: true },
+        });
+      }
+    }
+
+    if (!tenant) {
+      // 3. Fallback: Tìm qua prefix slug (ví dụ chu-tung-bds-01-3456 -> chu-tung)
+      const basePrefix = slug.replace(/-(bds-\d+|lp-\d+).*$/i, '');
+      if (basePrefix && basePrefix !== slug) {
+        tenant = await prisma.tenant.findFirst({
+          where: {
+            OR: [
+              { slug: basePrefix },
+              { slug: { startsWith: basePrefix, mode: 'insensitive' } },
+            ],
+            status: 'ACTIVE',
+            deletedAt: null,
+          },
           select: { id: true },
         });
       }

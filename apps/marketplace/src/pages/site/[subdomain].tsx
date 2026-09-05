@@ -65,14 +65,7 @@ export default function TenantDirectSitePage() {
 
         // 3. Lấy đúng mẫu template đã được mua & lưu trong database
         const assignedTplId = data?.tenant?.template?.slug || data?.tenant?.templateId;
-        if (!assignedTplId) {
-          setNotFound(true);
-          setLoading(false);
-          return;
-        }
-
-        // 3. Lấy đúng mẫu template đã được mua & lưu trong database
-        let dbMatched = findTemplateBySlugOrId(assignedTplId);
+        let dbMatched = assignedTplId ? findTemplateBySlugOrId(assignedTplId) : null;
         if (!dbMatched) {
           // Thử trích xuất mã template từ subdomain (ví dụ: chu-tung-bds-01-3456 -> bds-01)
           const matchedCode = rawSubdomain.match(/(bds-\d+|lp-\d+)/i);
